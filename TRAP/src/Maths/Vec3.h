@@ -387,73 +387,73 @@ constexpr TRAP::Math::Vec<3, T>::Vec(T x, T y, T z)
 template<typename T>
 template<typename U>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, U>& v)
-	: x(static_cast<T>(v.x))
-	, y(static_cast<T>(v.x))
-	, z(static_cast<T>(v.x))
+	: x(static_cast<T>(v.x)),
+	  y(static_cast<T>(v.x)),
+	  z(static_cast<T>(v.x))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(X x, Y y, Z z)
-	: x(static_cast<T>(x))
-	, y(static_cast<T>(y))
-	, z(static_cast<T>(z))
+	: x(static_cast<T>(x)),
+	  y(static_cast<T>(y)),
+	  z(static_cast<T>(z))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, X>& x, Y y, Z z)
-	: x(static_cast<T>(x.x))
-	, y(static_cast<T>(y))
-	, z(static_cast<T>(z))
+	: x(static_cast<T>(x.x)),
+	  y(static_cast<T>(y)),
+	  z(static_cast<T>(z))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(X x, const Vec<1, Y>& y, Z z)
-	: x(static_cast<T>(x))
-	, y(static_cast<T>(y.x))
-	, z(static_cast<T>(z))
+	: x(static_cast<T>(x)),
+	  y(static_cast<T>(y.x)),
+	  z(static_cast<T>(z))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, X>& x, const Vec<1, Y>& y, Z z)
-	: x(static_cast<T>(x.x))
-	, y(static_cast<T>(y.x))
-	, z(static_cast<T>(z))
+	: x(static_cast<T>(x.x)),
+	  y(static_cast<T>(y.x)),
+	  z(static_cast<T>(z))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(X x, Y y, const Vec<1, Z>& z)
-	: x(static_cast<T>(x))
-	, y(static_cast<T>(y))
-	, z(static_cast<T>(z.x))
+	: x(static_cast<T>(x)),
+	  y(static_cast<T>(y)),
+	  z(static_cast<T>(z.x))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, X>& x, Y y, const Vec<1, Z>& z)
-	: x(static_cast<T>(x.x))
-	, y(static_cast<T>(y))
-	, z(static_cast<T>(z.x))
+	: x(static_cast<T>(x.x)),
+	  y(static_cast<T>(y)),
+	  z(static_cast<T>(z.x))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(X x, const Vec<1, Y>& y, const Vec<1, Z>& z)
-	: x(static_cast<T>(x))
-	, y(static_cast<T>(y.x))
-	, z(static_cast<T>(z.x))
+	: x(static_cast<T>(x)),
+	  y(static_cast<T>(y.x)),
+	  z(static_cast<T>(z.x))
 {}
 
 template<typename T>
 template<typename X, typename Y, typename Z>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, X>& x, const Vec<1, Y>& y, const Vec<1, Z>& z)
-	: x(static_cast<T>(x.x))
-	, y(static_cast<T>(y.x))
-	, z(static_cast<T>(z.x))
+	: x(static_cast<T>(x.x)),
+	  y(static_cast<T>(y.x)),
+	  z(static_cast<T>(z.x))
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -462,49 +462,49 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, X>& x, const Vec<1, Y>& y, con
 template<typename T>
 template<typename A, typename B>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, B z)
-	: x(static_cast<T>(xy.x))
-	, y(static_cast<T>(xy.y))
-	, z(static_cast<T>(z))
+	: x(static_cast<T>(xy.x)),
+	  y(static_cast<T>(xy.y)),
+	  z(static_cast<T>(z))
 {}
 
 template<typename T>
 template<typename A, typename B>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const Vec<1, B>& z)
-	: x(static_cast<T>(xy.x))
-	, y(static_cast<T>(xy.y))
-	, z(static_cast<T>(z.x))
+	: x(static_cast<T>(xy.x)),
+	  y(static_cast<T>(xy.y)),
+	  z(static_cast<T>(z.x))
 {}
 
 template<typename T>
 template<typename A, typename B>
 constexpr TRAP::Math::Vec<3, T>::Vec(A x, const Vec<2, B>& yz)
-	: x(static_cast<T>(x))
-	, y(static_cast<T>(yz.x))
-	, z(static_cast<T>(yz.y))
+	: x(static_cast<T>(x)),
+	  y(static_cast<T>(yz.x)),
+	  z(static_cast<T>(yz.y))
 {}
 
 template<typename T>
 template<typename A, typename B>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<1, A>& x, const Vec<2, B>& yz)
-	: x(static_cast<T>(x.x))
-	, y(static_cast<T>(yz.x))
-	, z(static_cast<T>(yz.y))
+	: x(static_cast<T>(x.x)),
+	  y(static_cast<T>(yz.x)),
+	  z(static_cast<T>(yz.y))
 {}
 
 template<typename T>
 template<typename U>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<3, U>& v)
-	: x(static_cast<T>(v.x))
-	, y(static_cast<T>(v.y))
-	, z(static_cast<T>(v.z))
+	: x(static_cast<T>(v.x)),
+	  y(static_cast<T>(v.y)),
+	  z(static_cast<T>(v.z))
 {}
 
 template<typename T>
 template<typename U>
 constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<4, U>& v)
-	: x(static_cast<T>(v.x))
-	, y(static_cast<T>(v.y))
-	, z(static_cast<T>(v.z))
+	: x(static_cast<T>(v.x)),
+	  y(static_cast<T>(v.y)),
+	  z(static_cast<T>(v.z))
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -729,7 +729,7 @@ template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator++(int)
 {
 	Vec<3, T> result(*this);
-	++* this;
+	++*this;
 
 	return result;
 }
@@ -738,7 +738,7 @@ template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::Vec<3, T>::operator--(int)
 {
 	Vec<3, T> result(*this);
-	--* this;
+	--*this;
 
 	return result;
 }

@@ -35,7 +35,7 @@ namespace TRAP::Utils
 		/// Default Move Assignment Operator.
 		/// </summary>
 		Timer& operator=(Timer&&) = default;
-		
+
 		/// <summary>
 		/// Resets and restarts the Timer.
 		/// </summary>

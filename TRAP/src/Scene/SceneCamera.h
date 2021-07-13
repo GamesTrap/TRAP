@@ -5,7 +5,7 @@
 
 namespace TRAP
 {
-	//Document
+	//TODO Document
 	class SceneCamera : public Graphics::Camera
 	{
 	public:
@@ -14,7 +14,7 @@ namespace TRAP
 			Perspective = 0,
 			Orthographic = 1
 		};
-		
+
 		SceneCamera();
 		virtual ~SceneCamera() = default;
 
@@ -52,10 +52,10 @@ namespace TRAP
 		void RecalculateProjection();
 
 		ProjectionType m_projectionType = ProjectionType::Orthographic;
-		
+
 		float m_perspectiveFOV = Math::Radians(45.0f);
 		float m_perspectiveNear = 0.01f, m_perspectiveFar = 1000.0f;
-		
+
 		float m_orthographicSize = 10.0f;
 		float m_orthographicNear = -1.0f, m_orthographicFar = 1.0f;
 

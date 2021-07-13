@@ -54,7 +54,8 @@ namespace TRAP::INTERNAL
 		static Scope<WindowingAPI::InternalCursor> s_customCursor;
 		static TRAP::Graphics::RenderAPI s_renderAPI;
 
-		//Chain WindowingAPI callbacks for main viewport: our callbacks will call the user's previously installed callbacks, if any.
+		//Chain WindowingAPI callbacks for main viewport: our callbacks will call the user's
+		//                                                previously installed callbacks, if any.
 		static WindowingAPI::MouseButtonFunc s_prevUserCallbackMouseButton;
 		static WindowingAPI::ScrollFunc s_prevUserCallbackScroll;
 		static WindowingAPI::KeyFunc s_prevUserCallbackKey;
@@ -71,18 +72,20 @@ namespace TRAP::INTERNAL
 			{
 				IM_ASSERT(Window == nullptr);
 			}
-		};		
-		
+		};
+
 		static void InitPlatformInterface();
 		static void UpdateMousePosAndButtons();
 		static void UpdateMouseCursor();
 		static void UpdateGamepads();
 		static void UpdateMonitors();
 
-		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks, Graphics::RenderAPI renderAPI);
+		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
+		                 Graphics::RenderAPI renderAPI);
 		static const char* GetClipboardText(void* userData);
 		static void SetClipboardText(void* userData, const char* text);
-		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
+		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton,
+		                                bool pressed);
 		static void ScrollCallback(const WindowingAPI::InternalWindow* window, double xOffset, double yOffset);
 		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, bool pressed);
 		static void CharCallback(const WindowingAPI::InternalWindow* window, uint32_t codePoint);
@@ -106,7 +109,8 @@ namespace TRAP::INTERNAL
 #ifdef TRAP_PLATFORM_WINDOWS
 		static void SetIMEInputPos(ImGuiViewport* viewport, ImVec2 pos);
 #endif
-		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator, ImU64* outVkSurface);
+		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator,
+		                               ImU64* outVkSurface);
 	};
 }
 

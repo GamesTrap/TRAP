@@ -508,7 +508,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() co
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale, TRAP::Window* window)
+TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale,
+	TRAP::Window* window)
 	: m_XScale(xScale), m_YScale(yScale), m_window(window)
 {
 }

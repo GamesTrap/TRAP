@@ -24,7 +24,7 @@ namespace TRAP
 	public:
 		Scene() = default;
 		~Scene() = default;
-		
+
 		Scene(const Scene&) = delete;
 		Scene(Scene&&) = default;
 		Scene& operator=(const Scene&) = delete;
@@ -42,15 +42,15 @@ namespace TRAP
 		void OnUpdate(Utils::TimeStep deltaTime);
 		void OnTick();
 		void OnViewportResize(uint32_t width, uint32_t height);
-		
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
-		
+
 		friend class Entity;
 		friend class SceneSerializer;
 		friend class SceneGraphPanel;
-		
+
 		entt::registry m_registry;
 		uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 	};

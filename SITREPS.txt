@@ -1917,6 +1917,7 @@ SITREP 06/27/2021|21w25a4
     - UniformBuffer Added GetUBOs() function which returns the internal buffers holding the data ~<10 mins
     - Moved UniformBuffer Use() function to inside Shader Use() ~<20 mins
     - VulkanMultiWindowTets Added UBO test for secondary Window ~<20 mins
+    - Created TextureAbstraction branch ~<5 mins
 
 SITREP 07/03/2021|21w26a1
     - Changed TRAP Engine version to 21w26a1(0.7.54)
@@ -1929,3 +1930,7 @@ SITREP 07/03/2021|21w26a1
     - Replaced some push_back with emplace_back ~<10 mins
     - VulkanShader Added UseSampler & UseSamplers functions to bind given Sampler(s) to Descriptor ~<15 mins
     - VulkanTextureTests Replaced direct Sampler binding with abstraction ~<10 mins
+
+SITREP 07/13/2021|21w28a1
+    - Changed TRAP Engine version to 21w28a1(0.7.55)
+    - Big code maintenance ~>960 mins

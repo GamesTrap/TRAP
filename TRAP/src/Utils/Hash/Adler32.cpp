@@ -4,7 +4,7 @@
 #include "Utils/ByteSwap.h"
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t length)
-{	
+{
 	TP_PROFILE_FUNCTION();
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
@@ -38,6 +38,6 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t len
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
-{	
+{
 	return Adler32(str.data(), str.length());
 }

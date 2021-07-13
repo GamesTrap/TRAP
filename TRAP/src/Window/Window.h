@@ -10,7 +10,9 @@ namespace TRAP
 {
 	struct WindowProps;
 	class Monitor;
-	
+
+	//TODO Also document on which platforms function execution differs
+
 	/// <summary>
 	/// Interface representing a desktop system based Window.
 	/// </summary>
@@ -58,7 +60,7 @@ namespace TRAP
 		/// Specifies the cursor type (visual appearance) of a TRAP::Window.
 		/// </summary>
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
-		
+
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
 		/// <summary>
@@ -92,7 +94,7 @@ namespace TRAP
 		/// Updates all TRAP::Windows (polls events from OS etc.).
 		/// </summary>
 		static void OnUpdate();
-		
+
 		/// <summary>
 		/// Get the amount of all active TRAP::Windows.
 		/// </summary>
@@ -130,7 +132,8 @@ namespace TRAP
 		/// <returns>TRAP::Window::DisplayMode of the TRAP::Window.</returns>
 		DisplayMode GetDisplayMode() const;
 		/// <summary>
-		/// Get the current TRAP::Monitor used by the TRAP::Window (only in TRAP::Window::DisplayMode Fullscreen and Borderless).
+		/// Get the current TRAP::Monitor used by the TRAP::Window
+		/// (only in TRAP::Window::DisplayMode Fullscreen and Borderless).
 		/// </summary>
 		/// <returns>Object of TRAP::Monitor class used by the TRAP::Window.</returns>
 		Monitor GetMonitor() const;
@@ -177,7 +180,9 @@ namespace TRAP
 		/// <param name="mode">New TRAP::Window::DisplayMode for the TRAP::Window.</param>
 		/// <param name="width">New width (ignored when used with TRAP::Window::DisplayMode Borderless).</param>
 		/// <param name="height">New height (ignored when used with TRAP::Window::DisplayMode Borderless).</param>
-		/// <param name="refreshRate">New refresh rate (ignored when used with TRAP::Window::DisplayMode Borderless, Windowed).</param>
+		/// <param name="refreshRate">
+		/// New refresh rate (ignored when used with TRAP::Window::DisplayMode Borderless, Windowed).
+		/// </param>
 		void SetDisplayMode(const DisplayMode& mode,
 			                uint32_t width = 0,
 			                uint32_t height = 0,
@@ -214,7 +219,8 @@ namespace TRAP
 		/// </summary>
 		void SetIcon() const;
 		/// <summary>
-		/// Set a custom logo as TRAP::Window icon (Image must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo).
+		/// Set a custom logo as TRAP::Window icon (Image must be non HDR RGBA 32 bits per pixel)
+		/// (nullptr resets the icon to the TRAP logo).
 		/// </summary>
 		/// <param name="image">New logo to be used by the TRAP::Window.</param>
 		void SetIcon(const Scope<Image>& image) const;
@@ -233,13 +239,14 @@ namespace TRAP
 		/// </summary>
 		/// <param name="minWidth">Min width.</param>
 		/// <param name="minHeight">Min height.</param>
-		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight) const;
+		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight);
 		/// <summary>
-		/// Limit the maximum size of the TRAP::Window.
+		/// Limit the maximum size of the TRAP::Window.<br>
+		/// Setting any of the two parameters to 0 will disable the maximum size restriction.
 		/// </summary>
 		/// <param name="maxWidth">Max width.</param>
 		/// <param name="maxHeight">Max height.</param>
-		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight) const;
+		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight);
 		/// <summary>
 		/// Set the opacity of the TRAP::Window (1.0f = Fully opaque, 0.0f = Fully transparent).
 		/// </summary>
@@ -323,27 +330,35 @@ namespace TRAP
 		/// <param name="props">TRAP::WindowProps for the new TRAP::Window.</param>
 		void Init(const WindowProps& props);
 		/// <summary>
-		/// Shutdown current TRAP::Window and if there are no other open TRAP::Windows also deinitialize internal WindowingAPI.
+		/// Shutdown current TRAP::Window and if there are no other open TRAP::Windows also
+		/// deinitializes the internal WindowingAPI.
 		/// </summary>
 		void Shutdown();
-		
+		/// <summary>
+		/// Setup how to handle/process/dispatch incoming events from the internal WindowingAPI.
+		/// </summary>
+		void SetupEventCallbacks();
+
 		Scope<INTERNAL::WindowingAPI::InternalWindow> m_window;
 		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
-		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
+		//Stores the underlying video mode being used by the OS for every monitor
+		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
 
 		/// <summary>
 		/// Used when switched back from Fullscreen to Windowed mode.
 		/// </summary>
 		struct WindowedModeParams
 		{
-			int32_t Width, Height, RefreshRate;
+			int32_t Width = 800, Height = 600, RefreshRate;
 			int32_t XPos, YPos;
-		} m_oldWindowedParams{};
+		};
 
 		struct WindowData
 		{
 			std::string Title;
 			int32_t Width{}, Height{}, RefreshRate{};
+			int32_t MinWidth = 800, MinHeight = 600;
+			int32_t MaxWidth = -1, MaxHeight = -1;
 			bool VSync{};
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
@@ -353,13 +368,16 @@ namespace TRAP
 
 			EventCallbackFn EventCallback;
 
-			WindowedModeParams* windowModeParams = nullptr;
+			WindowedModeParams windowModeParams{};
 			Window* Win = nullptr;
 		} m_data;
-		
+
 		static uint32_t s_windows;
 		static bool s_WindowingAPIInitialized;
 		static std::vector<Window*> s_fullscreenWindows;
+
+		inline static constexpr int32_t MinimumSupportedWindowWidth = 2; //800 for games, but for tools?!
+		inline static constexpr int32_t MinimumSupportedWindowHeight = 2; //600 for games, but for tools?!
 	};
 
 	/// <summary>
@@ -408,7 +426,6 @@ namespace TRAP
 			                       bool decorated = true,
 			                       bool rawMouseInput = false,
 			                       Window::CursorMode cursorMode = Window::CursorMode::Normal);
-			
 		} Advanced{};
 
 		/// <summary>

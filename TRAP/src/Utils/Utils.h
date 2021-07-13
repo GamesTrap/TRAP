@@ -16,9 +16,11 @@ namespace TRAP::Utils
 	/// <returns>16 byte long UUID.</returns>
 	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
 
+	//TODO Document
 	inline void HashCombine(std::size_t&)
 	{}
 
+	//TODO Document
 	template<typename T, typename... Rest>
 	void HashCombine(std::size_t& seed, const T& v, Rest... rest)
 	{
@@ -73,8 +75,18 @@ namespace TRAP::Utils
 	/// <summary>
 	/// Get the Window Manager used by Linux based systems.
 	/// </summary>
-	/// <returns>TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).</returns>
+	/// <returns>
+	/// TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or
+	/// TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).
+	/// </returns>
 	LinuxWindowManager GetLinuxWindowManager();
+
+	/// <summary>
+	/// Get a string representation of the LinuxWindowManager.
+	/// </summary>
+	/// <param name="lwm">LinuxWindowManager to convert to a string.</param>
+	/// <returns>String representation.</returns>
+	std::string LinuxWindowManagerToString(LinuxWindowManager lwm);
 }
 
 #endif /*_TRAP_UTILS_H_*/

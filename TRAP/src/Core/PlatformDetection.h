@@ -12,7 +12,8 @@
 	#endif
 #elif defined(__APPLE__) || defined(__MACH__)
 	#error "macOS is unsupported!"
-//We also have to check __ANDROID__ before __linux__ since android is based on the linux kernel it has __linux__ defined
+//We also have to check __ANDROID__ before __linux__ since android
+//is based on the linux kernel it has __linux__ defined
 #elif defined(__ANDROID__)
 	#error "Android is unsupported!" //Maybe in the future
 #elif defined(__linux__)

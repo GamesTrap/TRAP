@@ -22,10 +22,10 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 				if (m_queues[(i + n) % m_maxThreadsCount].TryPop(f))
 					break;
 			}
-			
+
 			if (!f && !m_queues[i].Pop(f))
 				break;
-			
+
 			f();
 		}
 	};
@@ -40,7 +40,7 @@ TRAP::ThreadPool::~ThreadPool() noexcept
 {
 	for (Queue& queue : m_queues)
 		queue.Done();
-	
+
 	for (std::thread& thread : m_threads)
 		thread.join();
 }

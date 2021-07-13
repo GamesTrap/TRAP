@@ -15,13 +15,12 @@ namespace TRAP::Utils::INTERNAL
     template<typename T>
     struct IsUniformInt
     {
-        static constexpr bool value =
-            std::is_same<T, int16_t>::value
-            || std::is_same<T, int32_t>::value
-            || std::is_same<T, int64_t>::value
-            || std::is_same<T, uint16_t>::value
-            || std::is_same<T, uint32_t>::value
-            || std::is_same<T, uint64_t>::value;
+        static constexpr bool value = std::is_same<T,  int16_t>::value ||
+                                      std::is_same<T,  int32_t>::value ||
+                                      std::is_same<T,  int64_t>::value ||
+                                      std::is_same<T, uint16_t>::value ||
+                                      std::is_same<T, uint32_t>::value ||
+                                      std::is_same<T, uint64_t>::value;
     };
 
     /// <summary>
@@ -31,10 +30,9 @@ namespace TRAP::Utils::INTERNAL
     template<typename T>
     struct IsUniformReal
     {
-        static constexpr bool value =
-            std::is_same<T, float>::value
-            || std::is_same<T, double>::value
-            || std::is_same<T, long double>::value;
+        static constexpr bool value = std::is_same<T,       float>::value ||
+                                      std::is_same<T,      double>::value ||
+                                      std::is_same<T, long double>::value;
     };
 
     /// <summary>
@@ -44,9 +42,8 @@ namespace TRAP::Utils::INTERNAL
     template<typename T>
     struct IsByte
     {
-        static constexpr bool value =
-            std::is_same<T, int8_t>::value
-            || std::is_same<T, uint8_t>::value;
+        static constexpr bool value = std::is_same<T,  int8_t>::value ||
+                                      std::is_same<T, uint8_t>::value;
     };
 
     /// <summary>
@@ -56,10 +53,9 @@ namespace TRAP::Utils::INTERNAL
     template<typename T>
     struct IsSupportedNumber
     {
-        static constexpr bool value =
-            IsByte        <T>::value
-            || IsUniformReal<T>::value
-            || IsUniformInt <T>::value;
+        static constexpr bool value = IsByte<T>::value ||
+                                      IsUniformReal<T>::value ||
+                                      IsUniformInt <T>::value;
     };
 
     /// <summary>
@@ -69,11 +65,10 @@ namespace TRAP::Utils::INTERNAL
     template<typename T>
     struct IsSupportedCharacter
     {
-        static constexpr bool value =
-            std::is_same<T, char>::value
-            || std::is_same<T, wchar_t>::value
-            || std::is_same<T, char16_t>::value
-            || std::is_same<T, char32_t>::value;
+        static constexpr bool value = std::is_same<T,     char>::value ||
+                                      std::is_same<T,  wchar_t>::value ||
+                                      std::is_same<T, char16_t>::value ||
+                                      std::is_same<T, char32_t>::value;
     };
 
     /// <summary>
@@ -86,16 +81,14 @@ namespace TRAP::Utils::INTERNAL
     private:
         static char Test(...) { return 0; }
 
-        template <typename U,
-            typename = typename std::iterator_traits<U>::difference_type,
-            typename = typename std::iterator_traits<U>::pointer,
-            typename = typename std::iterator_traits<U>::reference,
-            typename = typename std::iterator_traits<U>::value_type,
-            typename = typename std::iterator_traits<U>::iterator_category
-        > static long Test(U&&) { return 0; }
+        template <typename U, typename = typename std::iterator_traits<U>::difference_type,
+                              typename = typename std::iterator_traits<U>::pointer,
+                              typename = typename std::iterator_traits<U>::reference,
+                              typename = typename std::iterator_traits<U>::value_type,
+                              typename = typename std::iterator_traits<U>::iterator_category>
+        static long Test(U&&) { return 0; }
     public:
-        static constexpr bool value = std::is_same<
-            decltype(Test(std::declval<T>())), long>::value;
+        static constexpr bool value = std::is_same<decltype(Test(std::declval<T>())), long>::value;
     };
 }
 

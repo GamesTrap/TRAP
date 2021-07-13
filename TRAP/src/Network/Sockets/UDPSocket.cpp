@@ -41,16 +41,15 @@ TRAP::Network::UDPSocket::UDPSocket()
 
 uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-		//Retrieve information about the local end of the socket
-		sockaddr_in address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
-	}
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0; //We failed to retrieve the port
 
-	//We failed to retrieve the port
+	//Retrieve information about the local end of the socket
+	sockaddr_in address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+		return ntohs(address.sin_port);
+
 	return 0;
 }
 
@@ -89,7 +88,9 @@ void TRAP::Network::UDPSocket::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, const std::size_t size, const IPv4Address& remoteAddress, uint16_t remotePort)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, const std::size_t size,
+                                                             const IPv4Address& remoteAddress,
+														     const uint16_t remotePort)
 {
 	//Create the internal socket if it doesn't exist
 	CreateIPv4();
@@ -106,7 +107,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
-	const int32_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0, reinterpret_cast<sockaddr*>(&address), sizeof(address));
+	const int32_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0,
+	                            reinterpret_cast<sockaddr*>(&address), sizeof(address));
 
 	//Check for errors
 	if (sent < 0)
@@ -117,7 +119,9 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, const std::size_t size, std::size_t& received, IPv4Address& remoteAddress, uint16_t& remotePort) const
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, const std::size_t size,
+                                                                std::size_t& received, IPv4Address& remoteAddress,
+																uint16_t& remotePort) const
 {
 	//First clear the variables to fill
 	received = 0;
@@ -127,7 +131,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 	//Check the destination buffer
 	if(!data)
 	{
-		TP_ERROR(Log::NetworkUDPSocketPrefix, "Cannot receive data from the network (the destination buffer is invalid)");
+		TP_ERROR(Log::NetworkUDPSocketPrefix,
+		         "Cannot receive data from the network (the destination buffer is invalid)");
 		return Status::Error;
 	}
 
@@ -136,7 +141,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(address);
-	const int32_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), static_cast<int32_t>(size), 0, reinterpret_cast<sockaddr*>(&address), &addressSize);
+	const int32_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), static_cast<int32_t>(size), 0,
+	                                      reinterpret_cast<sockaddr*>(&address), &addressSize);
 
 	//Check for errors
 	if (sizeReceived < 0)
@@ -152,7 +158,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, const IPv4Address& remoteAddress, const uint16_t remotePort)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, const IPv4Address& remoteAddress,
+                                                             const uint16_t remotePort)
 {
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
@@ -173,7 +180,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress, uint16_t& remotePort)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress,
+                                                                uint16_t& remotePort)
 {
 	//See the detailed comment in Send(Packet) above.
 

@@ -59,7 +59,7 @@ namespace TRAP::Network
 		/// Deleted Copy Assignment Constructor.
 		/// </summary>
 		FTP& operator=(const FTP&) = delete;
-		
+
 		/// <summary>
 		/// Enumeration of transfer modes
 		/// </summary>
@@ -116,7 +116,7 @@ namespace TRAP::Network
 				FileActionAborted = 450, //Requested file action not taken
 				LocalError = 451, //Requested action aborted, local error in processing
 				InsufficientStorageSpace = 452, //Requested action not taken; insufficient storage space in system, file unavailable
-				
+
 				//5XX: the command was not accepted and
 				//     the requested action did not take place
 				CommandUnknown = 500, //Syntax error, command unrecognized
@@ -220,7 +220,7 @@ namespace TRAP::Network
 		/// Default Constructor.
 		/// </summary>
 		FTP() = default;
-		
+
 		/// <summary>
 		/// Automatically closes the connection with the server if it is still opened.
 		/// </summary>
@@ -244,7 +244,8 @@ namespace TRAP::Network
 		/// <param name="port">Port used for the connection.</param>
 		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns>Server response to the request.</returns>
-		Response Connect(const IPv4Address& server, uint16_t port = 21, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		Response Connect(const IPv4Address& server, uint16_t port = 21,
+		                 Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
 		/// Close the connection with the server.
@@ -371,10 +372,13 @@ namespace TRAP::Network
 		/// be overwritten.
 		/// </summary>
 		/// <param name="remoteFile">Filename of the distant file to download.</param>
-		/// <param name="localVirtualOrPhysicalPath">The directory in which to put the file on the local computer.</param>
+		/// <param name="localVirtualOrPhysicalPath">
+		/// The directory in which to put the file on the local computer.
+		/// </param>
 		/// <param name="mode">Transfer mode.</param>
 		/// <returns>Server response to the request.</returns>
-		Response Download(const std::string& remoteFile, const std::string& localVirtualOrPhysicalPath, TransferMode mode = TransferMode::Binary);
+		Response Download(const std::string& remoteFile, const std::string& localVirtualOrPhysicalPath,
+		                  TransferMode mode = TransferMode::Binary);
 
 		/// <summary>
 		/// Upload a file to the server.<br>
@@ -390,9 +394,12 @@ namespace TRAP::Network
 		/// <param name="localVirtualOrPhysicalFile">Path of the local file to upload.</param>
 		/// <param name="remotePath">The directory in which to put the file on the server.</param>
 		/// <param name="mode">Transfer mode.</param>
-		/// <param name="append">Pass true to append to or false to overwrite the remote file if it already exists.</param>
+		/// <param name="append">
+		/// Pass true to append to or false to overwrite the remote file if it already exists.
+		/// </param>
 		/// <returns>Server response to the request.</returns>
-		Response Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath, TransferMode mode = TransferMode::Binary, bool append = false);
+		Response Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath,
+		                TransferMode mode = TransferMode::Binary, bool append = false);
 
 		/// <summary>
 		/// Send a command to the FTP server.<br>

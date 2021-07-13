@@ -11,7 +11,7 @@ TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, c
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	TP_PROFILE_FUNCTION();
-	
+
 	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	m_handle = monitors[monitor];
 }
@@ -34,7 +34,7 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 
 	for(auto i = internalModes.rbegin(); i != internalModes.rend(); ++i)
 		modes.emplace_back(i->Width, i->Height, i->RefreshRate);
-		
+
 	return modes;
 }
 
@@ -53,7 +53,7 @@ TRAP::Math::Vec2 TRAP::Monitor::GetContentScale() const
 
 	TRAP::Math::Vec2 scale{};
 	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, scale.x, scale.y);
-	
+
 	return scale;
 }
 
@@ -184,6 +184,6 @@ std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Monitor TRAP::Monitor::GetPrimaryMonitor()
-{	
+{
 	return Monitor(0);
 }

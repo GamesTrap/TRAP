@@ -49,7 +49,8 @@ std::string TRAP::Utils::Dialogs::SelectFolder(const std::string& title, const s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message,
+TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title,
+                                                                 const std::string& message,
     const Style style, const Buttons buttons)
 {
     return MD::ShowMsgBox(title, message, style, buttons);
@@ -57,7 +58,8 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message,
+TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title,
+                                                                 const std::string& message,
     const Style style)
 {
     return MD::ShowMsgBox(title, message, style);
@@ -65,7 +67,8 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message,
+TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title,
+                                                                 const std::string& message,
     const Buttons buttons)
 {
     return MD::ShowMsgBox(title, message, buttons);
@@ -73,7 +76,8 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message)
+TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title,
+                                                                 const std::string& message)
 {
     return MD::ShowMsgBox(title, message);
 }

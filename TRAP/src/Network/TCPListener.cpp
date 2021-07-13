@@ -43,17 +43,16 @@ TRAP::Network::TCPListener::TCPListener()
 
 uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-		//Retrieve information about the local end of the socket
-		sockaddr_in address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
-	}
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0; //We failed to retrieve the port
 
-	//We failed to retrieve the port
-	return 0;
+	//Retrieve information about the local end of the socket
+	sockaddr_in address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+		return ntohs(address.sin_port);
+
+	return 0; //We failed to retrieve the port
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

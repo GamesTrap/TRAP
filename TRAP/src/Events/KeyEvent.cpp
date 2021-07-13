@@ -228,7 +228,7 @@ std::string TRAP::Events::KeyPressEvent::ToString() const
 {
 	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
 
-	return "KeyPressEvent: " + (name ? name : NonPrintableKeyToString(m_key)) + 
+	return "KeyPressEvent: " + (name ? name : NonPrintableKeyToString(m_key)) +
 		   "(" + std::to_string(static_cast<int32_t>(m_key)) + ") (" + std::to_string(m_repeatCount) + " repeats)";
 }
 

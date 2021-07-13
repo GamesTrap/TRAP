@@ -14,8 +14,9 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 	m_isHDR = true;
 	m_bitsPerPixel = 96;
 	m_colorFormat = ColorFormat::RGB;
-	
-	TP_DEBUG(Log::ImageRadiancePrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
+
+	TP_DEBUG(Log::ImageRadiancePrefix, "Loading Image: \"",
+	         Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
@@ -25,117 +26,116 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 		return;
 	}
 
-	if (VFS::FileOrFolderExists(physicalPath))
+	if (!VFS::FileOrFolderExists(physicalPath))
+		return;
+
+	std::ifstream file(physicalPath, std::ios::binary);
+	if (!file.is_open())
 	{
-		std::ifstream file(physicalPath, std::ios::binary);
-		if (!file.is_open())
-		{
-			TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
-			return;
-		}
-
-		//Magic Number check
-		std::string str;
-		std::getline(file, str);
-		//Magic Number = 23 3F 52 41 44 49 41 4E 43 45 0A == #?RADIANCE
-		//Magic Number = 23 3F 52 47 42 45 == #?RGBE
-		if(str.find("#?RADIANCE") == std::string::npos && str.find("#?RGBE") == std::string::npos)
-		{
-			file.close();
-			TP_ERROR(Log::ImageRadiancePrefix, "Invalid Magic Number!");
-			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
-			return;
-		}
-
-		bool formatFound = false;
-		do
-		{
-			std::getline(file, str);
-			if (str.find("FORMAT=32-bit_rle_rgbe") != std::string::npos)
-				formatFound = true;			
-		} while (!str.empty());
-
-		if(!formatFound)
-		{
-			file.close();
-			TP_ERROR(Log::ImageRadiancePrefix, "Invalid File Format!");
-			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
-			return;
-		}
-
-		char signOne, signTwo, axisOne, axisTwo;
-		signOne = static_cast<char>(file.get());
-		axisOne = static_cast<char>(file.get());
-		file >> m_width;
-		file.ignore();
-		signTwo = static_cast<char>(file.get());
-		axisTwo = static_cast<char>(file.get());
-		file >> m_height;
-		file.ignore();
-
-		bool needYFlip = false;
-		bool needXFlip = false;
-		if(axisOne == 'Y' && axisTwo == 'X')
-		{
-			if (signOne == '+' && signTwo != '+')
-				needYFlip = true;
-			else if (signTwo == '-' && signOne != '-')
-				needXFlip = true;
-		}
-		else if(axisOne == 'X' && axisTwo == 'Y')
-		{
-			if (signOne == '-' && signTwo != '-')
-				needXFlip = true;
-			else if (signTwo == '+' && signOne != '+')
-				needYFlip = true;
-		}
-		else
-		{
-			file.close();
-			TP_ERROR(Log::ImageRadiancePrefix, "Invalid Resolution!");
-			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
-			return;
-		}
-
-
-		if(m_width == 0 || m_height == 0)
-		{
-			file.close();
-			TP_ERROR(Log::ImageRadiancePrefix, "Invalid Width or Height!");
-			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
-			return;
-		}
-
-		m_data.resize(m_width * m_height * 3, 0.0f);
-		uint32_t dataIndex = 0;
-
-		std::vector<std::array<uint8_t, 4>> scanline;
-		scanline.resize(m_width);
-
-		//Convert image
-		for(int32_t y = m_height - 1; y >= 0; y--)
-		{
-			uint32_t scanlineIndex = 0;
-			if (!Decrunch(scanline, scanlineIndex, m_width, file))
-			{
-				m_data.clear();
-				file.close();
-				TP_ERROR(Log::ImageRadiancePrefix, "Decrunching failed!");
-				TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
-				return;
-			}
-			WorkOnRGBE(scanline, scanlineIndex, m_data, dataIndex);
-			dataIndex += m_width * 3;
-		}
-
-		file.close();
-		
-		if (needXFlip)
-			m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
-		if (needYFlip)
-			m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
+		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open FilePath: ", m_filepath, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		return;
 	}
+
+	//Magic Number check
+	std::string str;
+	std::getline(file, str);
+	//Magic Number = 23 3F 52 41 44 49 41 4E 43 45 0A == #?RADIANCE
+	//Magic Number = 23 3F 52 47 42 45 == #?RGBE
+	if(str.find("#?RADIANCE") == std::string::npos && str.find("#?RGBE") == std::string::npos)
+	{
+		file.close();
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid Magic Number!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		return;
+	}
+
+	bool formatFound = false;
+	do
+	{
+		std::getline(file, str);
+		if (str.find("FORMAT=32-bit_rle_rgbe") != std::string::npos)
+			formatFound = true;
+	} while (!str.empty());
+
+	if(!formatFound)
+	{
+		file.close();
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid File Format!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		return;
+	}
+
+	char signOne, signTwo, axisOne, axisTwo;
+	signOne = static_cast<char>(file.get());
+	axisOne = static_cast<char>(file.get());
+	file >> m_width;
+	file.ignore();
+	signTwo = static_cast<char>(file.get());
+	axisTwo = static_cast<char>(file.get());
+	file >> m_height;
+	file.ignore();
+
+	bool needYFlip = false;
+	bool needXFlip = false;
+	if(axisOne == 'Y' && axisTwo == 'X')
+	{
+		if (signOne == '+' && signTwo != '+')
+			needYFlip = true;
+		else if (signTwo == '-' && signOne != '-')
+			needXFlip = true;
+	}
+	else if(axisOne == 'X' && axisTwo == 'Y')
+	{
+		if (signOne == '-' && signTwo != '-')
+			needXFlip = true;
+		else if (signTwo == '+' && signOne != '+')
+			needYFlip = true;
+	}
+	else
+	{
+		file.close();
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid Resolution!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		return;
+	}
+
+	if(m_width == 0 || m_height == 0)
+	{
+		file.close();
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid Width or Height!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		return;
+	}
+
+	m_data.resize(m_width * m_height * 3, 0.0f);
+	uint32_t dataIndex = 0;
+
+	std::vector<std::array<uint8_t, 4>> scanline;
+	scanline.resize(m_width);
+
+	//Convert image
+	for(int32_t y = m_height - 1; y >= 0; y--)
+	{
+		uint32_t scanlineIndex = 0;
+		if (!Decrunch(scanline, scanlineIndex, m_width, file))
+		{
+			m_data.clear();
+			file.close();
+			TP_ERROR(Log::ImageRadiancePrefix, "Decrunching failed!");
+			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+			return;
+		}
+		WorkOnRGBE(scanline, scanlineIndex, m_data, dataIndex);
+		dataIndex += m_width * 3;
+	}
+
+	file.close();
+
+	if (needXFlip)
+		m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
+	if (needYFlip)
+		m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -219,7 +219,8 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex, uint32_t length, std::ifstream& file)
+bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline,
+                                                uint32_t scanlineIndex, uint32_t length, std::ifstream& file)
 {
 	int32_t rshift = 0;
 
@@ -255,10 +256,11 @@ bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex, std::vector<float>& data, uint32_t dataIndex)
+void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
+                                               uint32_t scanlineIndex, std::vector<float>& data, uint32_t dataIndex)
 {
 	int32_t length = m_width;
-	
+
 	while(length-- > 0)
 	{
 		const int8_t exponent = scanline[0 + scanlineIndex][E] - 128;

@@ -44,6 +44,20 @@ uint32_t TRAP::Image::GetBytesPerPixel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Image::GetBitsPerChannel() const
+{
+	return m_bitsPerPixel / static_cast<uint32_t>(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Image::GetBytesPerChannel() const
+{
+	return GetBytesPerPixel() / static_cast<uint32_t>(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Image::GetWidth() const
 {
 	return m_width;
@@ -89,6 +103,13 @@ bool TRAP::Image::IsImageColored() const
 bool TRAP::Image::IsHDR() const
 {
 	return m_isHDR;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::IsLDR() const
+{
+	return !m_isHDR;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

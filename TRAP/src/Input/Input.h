@@ -29,7 +29,7 @@ The above license only applies to some of the Controller specific parts of this 
 #ifndef _TRAP_INPUT_H_
 #define _TRAP_INPUT_H_
 
-#include "TRAPPCH.h" //Needed for OS dependent includes
+#include "Core/PlatformDetection.h" //Needed for OS dependent includes
 
 #include "Maths/Math.h"
 #include "Events/Event.h"
@@ -83,7 +83,7 @@ namespace TRAP
 		enum class Key
 		{
 			Unknown = -1,
-			
+
 			Space          = 32,
 			Apostrophe     = 39,
 			Comma          = 44,
@@ -303,7 +303,6 @@ namespace TRAP
 			Left_Up    = Left | Up,
 			Left_Down  = Left | Down
 		};
-
 		/// <summary>
 		/// Check if a button on the keyboard is pressed.
 		/// </summary>
@@ -499,15 +498,17 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Contents of clipboard.</returns>
 		static std::string GetClipboard();
-		
+
 		/// <summary>
 		/// Update an existing Controller mapping or add a new one.<br>
 		/// <br>
 		/// Description:<br>
-		/// Each mapping is a single line of comma-separated values describing the GUID, name and layout of the Controller.<br>
+		/// Each mapping is a single line of comma-separated values describing the GUID,
+		/// name and layout of the Controller.<br>
 		/// Note: Lines that do not begin with a hexadecimal digit are ignored!<br>
 		/// <br>
-		/// The first value is always the Controller GUID, a 32 character long hexadecimal string that typically identifies its make, model, revision and tht type
+		/// The first value is always the Controller GUID, a 32 character long hexadecimal string
+		/// that typically identifies its make, model, revision and the type
 		/// of connection to the computer.<br>
 		/// When this information is not available, the GUID is generated using the Controller name.<br>
 		/// TRAP uses the SDL 2.0.5+ GUID format but can convert from the older formats.<br>
@@ -517,15 +518,19 @@ namespace TRAP
 		/// All subsequent values are in the form "<field>:<value>" and describe the layout of the mapping.<br>
 		/// These fields may not all be present and may occur in any order.<br>
 		/// <br>
-		/// The button fields are "a", "b", "c", "d", "back", "start", "guide", "dpup", "dpright", "dpdown", "dpleft", "leftshoulder", "rightshoulder", "leftstick" and "rightstick".<br>
+		/// The button fields are "a", "b", "c", "d", "back", "start", "guide", "dpup", "dpright", "dpdown",
+		/// "dpleft", "leftshoulder", "rightshoulder", "leftstick" and "rightstick".<br>
 		/// The axis fields are "leftx", "lefty", "rightx", "righty", "lefttrigger" and "righttrigger".<br>
 		/// <br>
-		/// The value of an axis or button field can be a Controller button, a Controller axis, a hat bitmask or empty.<br>
+		/// The value of an axis or button field can be a Controller button, a Controller axis,
+		/// a hat bitmask or empty.<br>
 		/// Controller buttons are specified as "bN", for example "b2" for the third button.<br>
 		/// Controller axes are specified as "aN", for example "a7" for the eighth axis.<br>
-		/// Controller hit bit masks are specified as "hN.N", for example "h0.8" for left on the first hat. More than one bit may be set in the mask.<br>
+		/// Controller hit bit masks are specified as "hN.N", for example "h0.8" for left on the first hat.
+		/// More than one bit may be set in the mask.<br>
 		/// <br>
-		/// Before an axis there may be a "+" or "-" range modifier, for example "+a3" for the positive half of the fourth axis.<br>
+		/// Before an axis there may be a "+" or "-" range modifier, for example "+a3" for the
+		/// positive half of the fourth axis.<br>
 		/// This restricts input to only the positive or negative halves of the Controller axis.<br>
 		/// After an axis of half-axis there may be the "~" inversion modifier, for example "a2~" or "-a7~".<br>
 		/// This negates the values of the Controller axis.<br>
@@ -555,9 +560,9 @@ namespace TRAP
 		/// Shutdown Input.
 		/// </summary>
 		static void Shutdown();
-		
+
 		friend class TRAP::Application;
-		
+
 #ifdef TRAP_PLATFORM_WINDOWS
 		static void DetectControllerConnectionWin32();
 		static void DetectControllerDisconnectionWin32();
@@ -576,7 +581,7 @@ namespace TRAP
 			Buttons = 2,
 			All = (Axes | Buttons)
 		};
-		
+
 		//Universal API Methods
 
 		/// <summary>
@@ -609,7 +614,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="guid">New GUID.</param>
 		static void UpdateControllerGUID(std::string& guid);
-		
+
 #ifdef TRAP_PLATFORM_WINDOWS
 		static constexpr std::string_view MappingName = "Windows";
 		///////////////
@@ -738,7 +743,7 @@ namespace TRAP
 			PFN_XInputGetState GetState{};
 			PFN_XInputSetState SetState{};
 		} inline static s_xinput{};
-		
+
 		struct Object
 		{
 			int32_t Offset = 0;
@@ -791,7 +796,7 @@ namespace TRAP
 			std::array<std::array<int32_t, 4>, 2> DPads{};
 		};
 #endif
-		
+
 		static EventCallbackFn s_eventCallback;
 
 		//Controller mapping element
@@ -802,7 +807,7 @@ namespace TRAP
 			int8_t AxisScale = 0;
 			int8_t AxisOffset = 0;
 		};
-		
+
 		//Controller mapping
 		struct Mapping
 		{
@@ -825,7 +830,7 @@ namespace TRAP
 			bool Connected = false;
 			float LeftMotor = 0.0f;
 			float RightMotor = 0.0f;
-			
+
 #ifdef TRAP_PLATFORM_WINDOWS
 			ControllerWindows WinCon;
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -842,7 +847,8 @@ namespace TRAP
 		/// <param name="buttonCount">Amount of Buttons.</param>
 		/// <param name="dpadCount">Amount of DPads.</param>
 		/// <returns>Pointer to the new ControllerInternal or nullptr if there are already 16 Controller connected.</returns>
-		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
+		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid,
+		                                                 int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
 		/// <summary>
 		/// Internally DPad input processing.
 		/// </summary>
@@ -864,10 +870,10 @@ namespace TRAP
 		/// <param name="button">Which Button.</param>
 		/// <param name="pressed">New pressed or not pressed state.</param>
 		static void InternalInputControllerButton(ControllerInternal* con, int32_t button, bool pressed);
-		
+
 		///////////
 		//Mapping//
-		///////////	
+		///////////
 		static std::vector<Mapping> s_mappings;
 
 		/// <summary>

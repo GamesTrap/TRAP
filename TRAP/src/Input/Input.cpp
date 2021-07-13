@@ -49,7 +49,7 @@ void TRAP::Input::Init()
 	TP_DEBUG(Log::InputPrefix, "Initializing");
 
 	s_mappings.reserve(Embed::ControllerMappings.size());
-	
+
 	if(!InitController())
 		TP_ERROR(Log::InputControllerPrefix, "Failed to initialize Controller support!");
 }
@@ -61,7 +61,7 @@ void TRAP::Input::Shutdown()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::InputPrefix, "Shutting down Input");
-	
+
 	ShutdownController();
 }
 
@@ -77,7 +77,8 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 		return false;
 	}
 
-	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), key);
+	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	                                                  (Application::GetWindow()->GetInternalWindow()), key);
 
 	return state;
 }
@@ -98,8 +99,9 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsKeyPressed!");
 		return false;
 	}
-	
-	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), key);
+
+	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	                                                  (window->GetInternalWindow()), key);
 
 	return state;
 }
@@ -110,7 +112,9 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
 	TP_PROFILE_FUNCTION();
 
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), button);
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	                                                          (Application::GetWindow()->GetInternalWindow()),
+															  button);
 
 	return state;
 }
@@ -126,8 +130,9 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Scope<Win
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsMouseButtonPressed!");
 		return false;
 	}
-	
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), button);
+
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	                                                          (window->GetInternalWindow()), button);
 
 	return state;
 }
@@ -159,7 +164,7 @@ bool TRAP::Input::IsControllerGamepad(const Controller controller)
 
 	if (!PollController(controller, PollMode::Presence))
 		return false;
-	
+
 	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping;
 }
 
@@ -170,7 +175,8 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 	TP_PROFILE_FUNCTION();
 
 	double xPos, yPos;
-	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), xPos, yPos);
+	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	                                     (Application::GetWindow()->GetInternalWindow()), xPos, yPos);
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
 }
@@ -184,13 +190,14 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
 	if(!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to GetMousePosition!");
-		return {0.0f, 0.0f};
+		return TRAP::Math::Vec2{};
 	}
-	
-	double xPos, yPos;
-	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), xPos, yPos);
 
-	return { static_cast<float>(xPos), static_cast<float>(yPos) };
+	double xPos, yPos;
+	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+	                                     (window->GetInternalWindow()), xPos, yPos);
+
+	return TRAP::Math::Vec2{ static_cast<float>(xPos), static_cast<float>(yPos) };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -235,11 +242,13 @@ std::string TRAP::Input::GetKeyName(const Key key)
 {
 	TP_PROFILE_FUNCTION();
 
-	if (INTERNAL::WindowingAPI::GetKeyName(key, 0))
-		return INTERNAL::WindowingAPI::GetKeyName(key, 0);	
+	if (!INTERNAL::WindowingAPI::GetKeyName(key, 0))
+	{
+		TP_ERROR(Log::InputPrefix, "Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
+		return "";
+	}
 
-	TP_ERROR(Log::InputPrefix, "Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
-	return "";
+	return INTERNAL::WindowingAPI::GetKeyName(key, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -352,7 +361,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(cons
 
 	if (!PollController(controller, PollMode::Buttons))
 		return {};
-	
+
 	return s_controllerInternal[static_cast<uint32_t>(controller)].DPads;
 }
 
@@ -373,7 +382,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 	{
 		s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor = leftMotor;
 		s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor = rightMotor;
-		SetControllerVibrationInternal(controller, leftMotor, rightMotor);	
+		SetControllerVibrationInternal(controller, leftMotor, rightMotor);
 	}
 }
 
@@ -404,7 +413,8 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 {
 	TP_PROFILE_FUNCTION();
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), x, y);
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	                                     (Application::GetWindow()->GetInternalWindow()), x, y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -419,7 +429,8 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Scope<Win
 		return;
 	}
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), x, y);
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	                                     (window->GetInternalWindow()), x, y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -428,7 +439,8 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 {
 	TP_PROFILE_FUNCTION();
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), position.x, position.y);
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	                                     (Application::GetWindow()->GetInternalWindow()), position.x, position.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -443,7 +455,8 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Scope<Windo
 		return;
 	}
 
-	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), position.x, position.y);
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	                                     (window->GetInternalWindow()), position.x, position.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -487,7 +500,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 		else
 			s_mappings.push_back(mapping);
 	}
-	
+
 	for(uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
 		ControllerInternal* con = &s_controllerInternal[cID];
@@ -498,7 +511,11 @@ void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::string& name, const std::string& guid, const int32_t axisCount, const int32_t buttonCount, const int32_t dpadCount)
+TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::string& name,
+                                                                    const std::string& guid,
+																	const int32_t axisCount,
+																	const int32_t buttonCount,
+																	const int32_t dpadCount)
 {
 	uint32_t cID;
 	for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
@@ -509,7 +526,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 
 	if (cID > static_cast<uint32_t>(Controller::Sixteen))
 		return nullptr;
-	
+
 	ControllerInternal* con = &s_controllerInternal[cID];
 	con->Connected = true;
 	con->Name = name;
@@ -520,8 +537,9 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 	con->ButtonCount = buttonCount;
 	con->mapping = FindValidMapping(con);
 
-	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping ? con->mapping->Name : con->Name), " (", cID, ") Connected!");
-	
+	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping ? con->mapping->Name : con->Name),
+	        " (", cID, ") Connected!");
+
 	return con;
 }
 
@@ -554,7 +572,7 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* con, const int
 	else if (con->Buttons[base + 3])
 		con->DPads[dpad] = ControllerDPad::Left;
 	else
-		con->DPads[dpad] = ControllerDPad::Centered;	
+		con->DPads[dpad] = ControllerDPad::Centered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -636,7 +654,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		return false;
 	}
 	mapping.guid = splittedString[0];
-	
+
 	if(splittedString[1].empty())
 	{
 		TP_ERROR(Log::InputControllerPrefix, "Mapping Name can't be empty!");
@@ -654,12 +672,14 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		}
 		if (splittedField.size() < 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", static_cast<uint32_t>(i), "! Mapping: ", splittedString[1]);
+			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", static_cast<uint32_t>(i),
+			         "! Mapping: ", splittedString[1]);
 			return false;
 		}
 		if (splittedField.size() > 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", static_cast<uint32_t>(i), "! Mapping: ", splittedString[1]);
+			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", static_cast<uint32_t>(i),
+			         "! Mapping: ", splittedString[1]);
 			return false;
 		}
 
@@ -667,12 +687,14 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		{
 			if(c == '+' || c == '-')
 			{
-				TP_WARN(Log::InputControllerPrefix, "Controller Mapping output modifiers WIP! Mapping: ", splittedString[1]);
+				TP_WARN(Log::InputControllerPrefix, "Controller Mapping output modifiers WIP! Mapping: ",
+				        splittedString[1]);
 				return false;
 			}
 			else if (!std::isalnum(static_cast<int8_t>(c)))
 			{
-				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", static_cast<uint32_t>(i), "! Mapping: ", splittedString[1]);
+				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", static_cast<uint32_t>(i),
+				         "! Mapping: ", splittedString[1]);
 				return false;
 			}
 		}
@@ -688,7 +710,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 			}
 		}
 
-		if(found && fields[j].Element) //Bug PS5 not working
+		if(found && fields[j].Element)
 		{
 			MapElement* e = fields[j].Element;
 			int8_t minimum = -1;
@@ -745,7 +767,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 	mapping.guid = Utils::String::ToLower(mapping.guid);
 
 	UpdateControllerGUID(mapping.guid);
-	
+
 	return true;
 }
 
@@ -755,9 +777,11 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 {
 	for (auto& Mapping : s_mappings)
+	{
 		if(Mapping.guid == guid)
 			return &Mapping;
-	
+	}
+
 	return nullptr;
 }
 
@@ -767,29 +791,32 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* con)
 {
 	Mapping* mapping = FindMapping(con->guid);
-	if(mapping)
+
+	if(!mapping)
+		return nullptr;
+
+	uint8_t i;
+
+	for(i = 0; i <= static_cast<uint8_t>(ControllerButton::DPad_Left); i++)
 	{
-		uint8_t i;
-		
-		for(i = 0; i <= static_cast<uint8_t>(ControllerButton::DPad_Left); i++)
+		if(!IsValidElementForController(&mapping->Buttons[i], con))
 		{
-			if(!IsValidElementForController(&mapping->Buttons[i], con))
-			{
-				TP_ERROR(Log::InputControllerPrefix, "Invalid button in Controller mapping: ", mapping->guid, " ", mapping->Name);
-				return nullptr;
-			}
-		}
-		
-		for(i = 0; i <= static_cast<uint8_t>(ControllerAxis::Right_Trigger); i++)
-		{
-			if(!IsValidElementForController(&mapping->Axes[i], con))
-			{
-				TP_ERROR(Log::InputControllerPrefix, "Invalid axis in Controller mapping: ", mapping->guid, " ", mapping->Name);
-				return nullptr;
-			}
+			TP_ERROR(Log::InputControllerPrefix, "Invalid button in Controller mapping: ", mapping->guid,
+						" ", mapping->Name);
+			return nullptr;
 		}
 	}
-	
+
+	for(i = 0; i <= static_cast<uint8_t>(ControllerAxis::Right_Trigger); i++)
+	{
+		if(!IsValidElementForController(&mapping->Axes[i], con))
+		{
+			TP_ERROR(Log::InputControllerPrefix, "Invalid axis in Controller mapping: ", mapping->guid,
+						" ", mapping->Name);
+			return nullptr;
+		}
+	}
+
 	return mapping;
 }
 
@@ -804,7 +831,7 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 		return false;
 	if(e->Type == 1 && e->Index >= (con->Axes.size() + 1))
 		return false;
-		
+
 	return true;
 }
 
@@ -826,7 +853,8 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 			return con->Buttons[e->Index];
 	if (e->Type == 1) //Axis
 	{
-		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
+		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) +
+		                    static_cast<float>(e->AxisOffset);
 		if (e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
 		{
 			if (value >= 0.0f)
@@ -853,16 +881,17 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 {
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
-		
+
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
-		
+
 	if(!con->mapping)
 		return 0.0f;
-		
+
 	const MapElement* e = &con->mapping->Axes[static_cast<uint8_t>(axis)];
 	if(e->Type == 1) //Axis
 	{
-		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
+		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) +
+		                    static_cast<float>(e->AxisOffset);
 		return Math::Min(Math::Max(value, -1.0f), 1.0f);
 	}
 	if(e->Type == 2) //Button
@@ -871,10 +900,10 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 	{
 		if(con->Buttons[e->Index >>  4])
 			return 1.0f;
-		
+
 		return -1.0f;
 	}
-		
+
 	return 0.0f;
 }
 
@@ -884,15 +913,15 @@ TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller cont
 {
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
-		
+
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
-		
+
 	if (!con->mapping)
 		return ControllerDPad::Centered;
-		
+
 	const MapElement* e = &con->mapping->Buttons[11 + (dpad * 4)];
 	if(e->Type == 3)
 		return con->DPads[e->Index >> 4];
-		
+
 	return ControllerDPad::Centered;
 }

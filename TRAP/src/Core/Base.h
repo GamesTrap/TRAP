@@ -67,16 +67,22 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 54);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 55);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
-#define MAKE_ENUM_FLAG(ENUM_TYPE)\
-	static inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) { return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
-																		                        static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); } \
-	static inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) { return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
-																		                        static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); } \
+#define MAKE_ENUM_FLAG(ENUM_TYPE) \
+	static inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) \
+	{ \
+		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
+		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
+	} \
+	static inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) \
+	{ \
+		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
+									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
+	} \
 	static inline ENUM_TYPE operator|=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a | b); }\
 	static inline ENUM_TYPE operator&=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a & b); }
 #endif
@@ -98,7 +104,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 54);
 		/// Set a cross platform Debug Break.<br>
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		#include <signal.h>	
+		#include <signal.h>
 		inline void TRAP_DEBUG_BREAK()
 		{
 			raise(SIGTRAP);
@@ -109,7 +115,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 54);
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK()
-		{			
+		{
 		}
 	#endif
 #else
@@ -118,7 +124,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 54);
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK()
-		{			
+		{
 		}
 #endif
 
@@ -159,7 +165,7 @@ namespace TRAP
 	template<typename T, typename... Args>
 	constexpr Scope<T> MakeScope(Args&&... args)
 	{
-		return std::make_unique<T>(std::forward<Args>(args)...);		
+		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
 	/// <summary>

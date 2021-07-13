@@ -28,59 +28,47 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		return;
 	}
 
-	if (VFS::FileOrFolderExists(physicalPath))
+	if (!VFS::FileOrFolderExists(physicalPath))
+		return;
+
+	std::ifstream file(physicalPath, std::ios::binary);
+	if (!file.is_open())
 	{
-		std::ifstream file(physicalPath, std::ios::binary);
-		if (!file.is_open())
+		TP_ERROR(Log::ImagePNGPrefix, "Couldn't open FilePath: ", m_filepath, "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+		return;
+	}
+
+	//Read in MagicNumber
+	std::array<uint8_t, 8> MagicNumber{};
+	file.read(reinterpret_cast<char*>(MagicNumber.data()), MagicNumber.size() * sizeof(uint8_t));
+
+	//Check MagicNumber
+	if (MagicNumber[0] != 0x89 || MagicNumber[1] != 0x50 || MagicNumber[2] != 0x4E || MagicNumber[3] != 0x47 ||
+		MagicNumber[4] != 0x0D || MagicNumber[5] != 0x0A || MagicNumber[6] != 0x1A || MagicNumber[7] != 0x0A)
+	{
+		file.close();
+		TP_ERROR(Log::ImagePNGPrefix, "Magic number is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+		return;
+	}
+
+	//File uses big-endian
+	bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
+
+	//Load Chunk
+	Data data{};
+	{
+		NextChunk nextChunk{};
+		nextChunk.MagicNumber.resize(4);
+		AlreadyLoaded alreadyLoaded{};
+		while (nextChunk.MagicNumber != "IEND")
 		{
-			TP_ERROR(Log::ImagePNGPrefix, "Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-			return;
-		}
+			file.read(reinterpret_cast<char*>(&nextChunk.Length), sizeof(uint32_t));
+			file.read(reinterpret_cast<char*>(nextChunk.MagicNumber.data()), nextChunk.MagicNumber.size());
+			if (needSwap)
+				Utils::Memory::SwapBytes(nextChunk.Length);
 
-		//Read in MagicNumber
-		std::array<uint8_t, 8> MagicNumber{};
-		file.read(reinterpret_cast<char*>(MagicNumber.data()), MagicNumber.size() * sizeof(uint8_t));
-
-		//Check MagicNumber
-		if (MagicNumber[0] != 0x89 || MagicNumber[1] != 0x50 || MagicNumber[2] != 0x4E || MagicNumber[3] != 0x47 ||
-			MagicNumber[4] != 0x0D || MagicNumber[5] != 0x0A || MagicNumber[6] != 0x1A || MagicNumber[7] != 0x0A)
-		{
-			file.close();
-			TP_ERROR(Log::ImagePNGPrefix, "Magic number is invalid!");
-			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-			return;
-		}
-
-		//File uses big-endian
-		bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
-
-		//Load Chunk
-		Data data{};
-		{
-			NextChunk nextChunk{};
-			AlreadyLoaded alreadyLoaded{};
-			while (!(nextChunk.MagicNumber[0] == 'I' && nextChunk.MagicNumber[1] == 'E' && nextChunk.MagicNumber[2] == 'N' && nextChunk.MagicNumber[3] == 'D'))
-			{
-				file.read(reinterpret_cast<char*>(&nextChunk.Length), sizeof(uint32_t));
-				file.read(reinterpret_cast<char*>(nextChunk.MagicNumber.data()), nextChunk.MagicNumber.size());
-				if (needSwap)
-					Utils::Memory::SwapBytes(nextChunk.Length);
-
-				if (nextChunk.Length > 2147483647)
-				{
-					file.close();
-					TP_ERROR(Log::ImagePNGPrefix, "Chunk Length is invalid!");
-					TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-					return;
-				}
-
-				if (!ProcessChunk(nextChunk, file, data, alreadyLoaded, needSwap))
-				{
-					file.close();
-					return;
-				}
-			}
 			if (nextChunk.Length > 2147483647)
 			{
 				file.close();
@@ -88,207 +76,226 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 			}
+
+			if (!ProcessChunk(nextChunk, file, data, alreadyLoaded, needSwap))
+			{
+				file.close();
+				return;
+			}
 		}
-
-		file.close();
-
-		m_width = data.Width;
-		m_height = data.Height;
-
-		if (data.CompressionMethod != 0)
+		if (nextChunk.Length > 2147483647)
 		{
-			TP_ERROR(Log::ImagePNGPrefix, "Compression Method is invalid!");
+			file.close();
+			TP_ERROR(Log::ImagePNGPrefix, "Chunk Length is invalid!");
 			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
 		}
+	}
 
-		switch (data.ColorType)
+	file.close();
+
+	m_width = data.Width;
+	m_height = data.Height;
+
+	if (data.CompressionMethod != 0)
+	{
+		TP_ERROR(Log::ImagePNGPrefix, "Compression Method is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+		return;
+	}
+
+	switch (data.ColorType)
+	{
+	case 0: //GrayScale
+	{
+		switch (data.BitDepth)
 		{
-		case 0: //GrayScale
-			switch (data.BitDepth)
-			{
-			case 1:
-				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
+		case 1:
+		case 2:
+		case 4:
+			TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+			return;
 
-			case 2:
-				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-
-			case 4:
-				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-
-			case 8:
-				m_bitsPerPixel = 8;
-				break;
-
-			case 16:
-				m_bitsPerPixel = 16;
-				break;
-
-			default:
-				break;
-			}
-			break;
-
-		case 2: //TrueColor
-			if (data.BitDepth == 8)
-				m_bitsPerPixel = 24;
-			else if (data.BitDepth == 16)
-				m_bitsPerPixel = 48;
-			break;
-
-		case 3: //Indexed Color
-			switch (data.BitDepth)
-			{
-			case 1:
-				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-
-			case 2:
-				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-
-			case 4:
-				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-
-			case 8:
-				m_bitsPerPixel = 8;
-				break;
-
-			default:
-				break;
-			}
-			break;
-
-		case 4: //GrayScale Alpha
-			if (data.BitDepth == 8)
-				m_bitsPerPixel = 16;
-			else if (data.BitDepth == 16)
-				m_bitsPerPixel = 32;
-			break;
-
-		case 6: //TrueColor Alpha
-			if (data.BitDepth == 8)
-				m_bitsPerPixel = 32;
-			else if (data.BitDepth == 16)
-				m_bitsPerPixel = 64;
+		case 8:
+		case 16:
+			m_bitsPerPixel = data.BitDepth;
 			break;
 
 		default:
 			break;
 		}
+		break;
+	}
 
-		if (!(data.InterlaceMethod == 0 || data.InterlaceMethod == 1))
+	case 2: //TrueColor
+	{
+		if (data.BitDepth == 8)
+			m_bitsPerPixel = 24;
+		else if (data.BitDepth == 16)
+			m_bitsPerPixel = 48;
+		break;
+	}
+
+	case 3: //Indexed Color
+	{
+		switch (data.BitDepth)
 		{
-			TP_ERROR(Log::ImagePNGPrefix, "Interlace method is invalid!");
+		case 1:
+		case 2:
+		case 4:
+			TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
-		}
-		std::vector<uint8_t> decompressedData{};
 
-		if (data.InterlaceMethod == 0)
-			decompressedData.resize(GetRawSizeIDAT(m_width, m_height, m_bitsPerPixel));
-		else if (data.InterlaceMethod == 1)
-		{
-			//Adam7 Interlaced: Expected size is the sum of the 7 sub-images sizes
-			std::size_t expectedSize = 0;
-			expectedSize += GetRawSizeIDAT((m_width + 7) >> 3, (m_height + 7) >> 3, m_bitsPerPixel);
-			if (m_width > 4)
-				expectedSize += GetRawSizeIDAT((m_width + 3) >> 3, (m_height + 7) >> 3, m_bitsPerPixel);
-			expectedSize += GetRawSizeIDAT((m_width + 3) >> 2, (m_height + 3) >> 3, m_bitsPerPixel);
-			if (m_width > 2)
-				expectedSize += GetRawSizeIDAT((m_width + 1) >> 2, (m_height + 3) >> 2, m_bitsPerPixel);
-			expectedSize += GetRawSizeIDAT((m_width + 1) >> 1, (m_height + 1) >> 2, m_bitsPerPixel);
-			if (m_width > 1)
-				expectedSize += GetRawSizeIDAT((m_width + 0) >> 1, (m_height + 1) >> 1, m_bitsPerPixel);
-			expectedSize += GetRawSizeIDAT((m_width + 0), (m_height + 0) >> 1, m_bitsPerPixel);
-
-			decompressedData.resize(expectedSize);
-		}
-
-		if (!DecompressData(data.CompressedData.data(), static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(), static_cast<uint32_t>(decompressedData.size())))
-		{
-			decompressedData.clear();
-			return;
-		}
-
-		std::vector<uint8_t> raw(GetRawSize(m_width, m_height, m_bitsPerPixel), 0);
-		if (!PostProcessScanlines(raw.data(), decompressedData.data(), m_width, m_height, m_bitsPerPixel, data.InterlaceMethod))
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "DeInterlacing Failed!");
-			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-			return;
-		}
-
-		switch (data.ColorType)
-		{
-		case 0: //GrayScale
-			m_colorFormat = ColorFormat::GrayScale;
-			if (data.BitDepth == 8)
-				m_data = raw;
-			else
-				m_data2Byte = ConvertTo2Byte(raw);
+		case 8:
+			m_bitsPerPixel = 8;
 			break;
 
-		case 2: //TrueColor
-			m_colorFormat = ColorFormat::RGB;
-			if (data.BitDepth == 8)
-				m_data = raw;
-			else
-				m_data2Byte = ConvertTo2Byte(raw);
+		default:
 			break;
+		}
+		break;
+	}
 
-		case 3: //Indexed Color
-			m_colorFormat = ColorFormat::RGBA;
+	case 4: //GrayScale Alpha
+	{
+		if (data.BitDepth == 8)
+			m_bitsPerPixel = 16;
+		else if (data.BitDepth == 16)
 			m_bitsPerPixel = 32;
-			if(data.Palette.empty())
-			{
-				TP_ERROR(Log::ImagePNGPrefix, "Indexed missing Palette!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-			}
-			
-			if (data.BitDepth == 8)
-				m_data = ResolveIndexed(raw, m_width, m_height, data);
-			else
-			{
-				if (data.BitDepth > 8)
-					TP_ERROR(Log::ImagePNGPrefix, "Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is invalid!");
-				else
-					TP_ERROR(Log::ImagePNGPrefix, "Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-				return;
-			}
-			break;
+		break;
+	}
 
-		case 4: //GrayScale Alpha
-			m_colorFormat = ColorFormat::GrayScaleAlpha;
-			if (data.BitDepth == 8)
-				m_data = raw;
-			else
-				m_data2Byte = ConvertTo2Byte(raw);
-			break;
+	case 6: //TrueColor Alpha
+	{
+		if (data.BitDepth == 8)
+			m_bitsPerPixel = 32;
+		else if (data.BitDepth == 16)
+			m_bitsPerPixel = 64;
+		break;
+	}
 
-		case 6: //TrueColor Alpha
-			m_colorFormat = ColorFormat::RGBA;
-			if (data.BitDepth == 8)
-				m_data = raw;
-			else
-				m_data2Byte = ConvertTo2Byte(raw);
-			break;
+	default:
+		break;
+	}
 
-		default:
-			break;
+	if (data.InterlaceMethod != 0 && data.InterlaceMethod != 1)
+	{
+		TP_ERROR(Log::ImagePNGPrefix, "Interlace method is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+		return;
+	}
+	std::vector<uint8_t> decompressedData{};
+
+	if (data.InterlaceMethod == 0)
+		decompressedData.resize(GetRawSizeIDAT(m_width, m_height, m_bitsPerPixel));
+	else if (data.InterlaceMethod == 1)
+	{
+		//Adam7 Interlaced: Expected size is the sum of the 7 sub-images sizes
+		std::size_t expectedSize = 0;
+		expectedSize += GetRawSizeIDAT((m_width + 7) >> 3, (m_height + 7) >> 3, m_bitsPerPixel);
+		if (m_width > 4)
+			expectedSize += GetRawSizeIDAT((m_width + 3) >> 3, (m_height + 7) >> 3, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 3) >> 2, (m_height + 3) >> 3, m_bitsPerPixel);
+		if (m_width > 2)
+			expectedSize += GetRawSizeIDAT((m_width + 1) >> 2, (m_height + 3) >> 2, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 1) >> 1, (m_height + 1) >> 2, m_bitsPerPixel);
+		if (m_width > 1)
+			expectedSize += GetRawSizeIDAT((m_width + 0) >> 1, (m_height + 1) >> 1, m_bitsPerPixel);
+		expectedSize += GetRawSizeIDAT((m_width + 0), (m_height + 0) >> 1, m_bitsPerPixel);
+
+		decompressedData.resize(expectedSize);
+	}
+
+	if (!DecompressData(data.CompressedData.data(),
+	                    static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(),
+						static_cast<uint32_t>(decompressedData.size())))
+	{
+		decompressedData.clear();
+		return;
+	}
+
+	std::vector<uint8_t> raw(GetRawSize(m_width, m_height, m_bitsPerPixel), 0);
+	if (!PostProcessScanlines(raw.data(), decompressedData.data(), m_width, m_height, m_bitsPerPixel,
+	                          data.InterlaceMethod))
+	{
+		TP_ERROR(Log::ImagePNGPrefix, "DeInterlacing Failed!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+		return;
+	}
+
+	switch (data.ColorType)
+	{
+	case 0: //GrayScale
+	{
+		m_colorFormat = ColorFormat::GrayScale;
+		if (data.BitDepth == 8)
+			m_data = raw;
+		else
+			m_data2Byte = ConvertTo2Byte(raw);
+		break;
+	}
+
+	case 2: //TrueColor
+	{
+		m_colorFormat = ColorFormat::RGB;
+		if (data.BitDepth == 8)
+			m_data = raw;
+		else
+			m_data2Byte = ConvertTo2Byte(raw);
+		break;
+	}
+
+	case 3: //Indexed Color
+	{
+		m_colorFormat = ColorFormat::RGBA;
+		m_bitsPerPixel = 32;
+		if(data.Palette.empty())
+		{
+			TP_ERROR(Log::ImagePNGPrefix, "Indexed missing Palette!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+			return;
 		}
+
+		if (data.BitDepth == 8)
+			m_data = ResolveIndexed(raw, m_width, m_height, data);
+		else
+		{
+			if (data.BitDepth > 8)
+				TP_ERROR(Log::ImagePNGPrefix, "Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth),
+					" is invalid!");
+			else
+				TP_ERROR(Log::ImagePNGPrefix, "Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth),
+					" is unsupported!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
+			return;
+		}
+		break;
+	}
+
+	case 4: //GrayScale Alpha
+	{
+		m_colorFormat = ColorFormat::GrayScaleAlpha;
+		if (data.BitDepth == 8)
+			m_data = raw;
+		else
+			m_data2Byte = ConvertTo2Byte(raw);
+		break;
+	}
+
+	case 6: //TrueColor Alpha
+	{
+		m_colorFormat = ColorFormat::RGBA;
+		if (data.BitDepth == 8)
+			m_data = raw;
+		else
+			m_data2Byte = ConvertTo2Byte(raw);
+		break;
+	}
+
+	default:
+		break;
 	}
 }
 
@@ -314,114 +321,120 @@ uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data, AlreadyLoaded& alreadyLoaded, const bool needSwap)
+bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
+                                            AlreadyLoaded& alreadyLoaded, const bool needSwap)
 {
-	if (nextChunk.MagicNumber[0] == 'I' && nextChunk.MagicNumber[1] == 'H' && nextChunk.MagicNumber[2] == 'D' && nextChunk.MagicNumber[3] == 'R' && !alreadyLoaded.IHDR)
+	if (nextChunk.MagicNumber == "IHDR" && !alreadyLoaded.IHDR)
 	{
 		alreadyLoaded.IHDR = true;
 		if (ProcessIHDR(file, data, needSwap))
 			return true;
 	}
+
 	if (alreadyLoaded.IHDR)
 	{
-		if (nextChunk.MagicNumber[0] == 'c' && nextChunk.MagicNumber[1] == 'H' && nextChunk.MagicNumber[2] == 'R' && nextChunk.MagicNumber[3] == 'M' && !alreadyLoaded.cHRM && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "cHRM" && !alreadyLoaded.cHRM && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.cHRM = true;
 			if (ProcesscHRM(file))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'g' && nextChunk.MagicNumber[1] == 'A' && nextChunk.MagicNumber[2] == 'M' && nextChunk.MagicNumber[3] == 'A' && !alreadyLoaded.gAMA && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "gAMA" && !alreadyLoaded.gAMA && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.gAMA = true;
 			if (ProcessgAMA(file))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'i' && nextChunk.MagicNumber[1] == 'C' && nextChunk.MagicNumber[2] == 'C' && nextChunk.MagicNumber[3] == 'P' && !alreadyLoaded.iCCP && !alreadyLoaded.sRGB && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "iCCP" && !alreadyLoaded.iCCP && !alreadyLoaded.sRGB && !alreadyLoaded.PLTE &&
+		    !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.iCCP = true;
 			if (ProcessiCCP(file, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 's' && nextChunk.MagicNumber[1] == 'B' && nextChunk.MagicNumber[2] == 'I' && nextChunk.MagicNumber[3] == 'T' && !alreadyLoaded.sBIT && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "sBIT" && !alreadyLoaded.sBIT && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.sBIT = true;
 			if (ProcesssBIT(file, data))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 's' && nextChunk.MagicNumber[1] == 'R' && nextChunk.MagicNumber[2] == 'G' && nextChunk.MagicNumber[3] == 'B' && !alreadyLoaded.sRGB && !alreadyLoaded.iCCP && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "sRGB" && !alreadyLoaded.sRGB && !alreadyLoaded.iCCP && !alreadyLoaded.PLTE &&
+		    !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.sRGB = true;
 			if (ProcesssRGB(file))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'b' && nextChunk.MagicNumber[1] == 'K' && nextChunk.MagicNumber[2] == 'G' && nextChunk.MagicNumber[3] == 'D' && !alreadyLoaded.bKGD && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "bKGD" && !alreadyLoaded.bKGD && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.bKGD = true;
 			if (ProcessbKGD(file, data, needSwap))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'h' && nextChunk.MagicNumber[1] == 'I' && nextChunk.MagicNumber[2] == 'S' && nextChunk.MagicNumber[3] == 'T' && !alreadyLoaded.hIST && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "hIST" && !alreadyLoaded.hIST && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.hIST = true;
 			if (ProcesshIST(file, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 't' && nextChunk.MagicNumber[1] == 'R' && nextChunk.MagicNumber[2] == 'N' && nextChunk.MagicNumber[3] == 'S' && !alreadyLoaded.tRNS && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "tRNS" && !alreadyLoaded.tRNS && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.tRNS = true;
 			if (ProcesstRNS(file, nextChunk.Length, data))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'p' && nextChunk.MagicNumber[1] == 'H' && nextChunk.MagicNumber[2] == 'Y' && nextChunk.MagicNumber[3] == 's' && !alreadyLoaded.pHYs && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "pHYs" && !alreadyLoaded.pHYs && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.pHYs = true;
 			if (ProcesspHYs(file))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 's' && nextChunk.MagicNumber[1] == 'P' && nextChunk.MagicNumber[2] == 'L' && nextChunk.MagicNumber[3] == 'T' && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "sPLT" && !alreadyLoaded.IDAT)
 		{
 			if (ProcesssPLT(file, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 't' && nextChunk.MagicNumber[1] == 'I' && nextChunk.MagicNumber[2] == 'M' && nextChunk.MagicNumber[3] == 'E' && !alreadyLoaded.tIME)
+		if (nextChunk.MagicNumber == "tIME" && !alreadyLoaded.tIME)
 		{
 			if (ProcesstIME(file, needSwap))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'i' && nextChunk.MagicNumber[1] == 'T' && nextChunk.MagicNumber[2] == 'X' && nextChunk.MagicNumber[3] == 't')
+		if (nextChunk.MagicNumber == "iTXt")
 		{
 			if (ProcessiTXt(file, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 't' && nextChunk.MagicNumber[1] == 'E' && nextChunk.MagicNumber[2] == 'X' && nextChunk.MagicNumber[3] == 't')
+		if (nextChunk.MagicNumber == "tEXt")
 		{
 			if (ProcesstEXt(file, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'z' && nextChunk.MagicNumber[1] == 'T' && nextChunk.MagicNumber[2] == 'X' && nextChunk.MagicNumber[3] == 't')
+		if (nextChunk.MagicNumber == "zTXt")
 		{
 			if (ProcesszTXt(file, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'P' && nextChunk.MagicNumber[1] == 'L' && nextChunk.MagicNumber[2] == 'T' && nextChunk.MagicNumber[3] == 'E' && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "PLTE" && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
 		{
 			if (ProcessPLTE(file, data, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'I' && nextChunk.MagicNumber[1] == 'D' && nextChunk.MagicNumber[2] == 'A' && nextChunk.MagicNumber[3] == 'T')
+		if (nextChunk.MagicNumber == "IDAT")
 		{
 			if (ProcessIDAT(file, data, nextChunk.Length))
 				return true;
 		}
-		if (nextChunk.MagicNumber[0] == 'I' && nextChunk.MagicNumber[1] == 'E' && nextChunk.MagicNumber[2] == 'N' && nextChunk.MagicNumber[3] == 'D')
+		if (nextChunk.MagicNumber == "IEND")
 			return true;
 		//Extension
-		if (nextChunk.MagicNumber[0] == 'e' && nextChunk.MagicNumber[1] == 'X' && nextChunk.MagicNumber[2] == 'I' && nextChunk.MagicNumber[3] == 'f' && !alreadyLoaded.eXIf)
+		if (nextChunk.MagicNumber == "eXIf" && !alreadyLoaded.eXIf)
+		{
 			if (ProcesseXIf(file, nextChunk.Length))
 				return true;
+		}
 	}
 
-	TP_ERROR(Log::ImagePNGPrefix, "Invalid or Multiple Usage of Chunk Magic Number: ", nextChunk.MagicNumber[0], nextChunk.MagicNumber[1], nextChunk.MagicNumber[2], nextChunk.MagicNumber[3], "!");
+	TP_ERROR(Log::ImagePNGPrefix, "Invalid or Multiple Usage of Chunk Magic Number: ", nextChunk.MagicNumber, "!");
 	TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 	return false;
 }
@@ -431,7 +444,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
 {
 	IHDRChunk ihdrChunk{};
-	//Read in IHDR Chunk		
+	//Read in IHDR Chunk
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Width), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Height), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&ihdrChunk.BitDepth), sizeof(uint8_t));
@@ -453,33 +466,24 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 
 	std::array<uint8_t, 17> CRCData
 	{
-		'I',
-		'H',
-		'D',
-		'R',
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[3],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[2],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[1],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[0],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[3],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[2],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[1],
-		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[0],
-		ihdrChunk.BitDepth,
-		ihdrChunk.ColorType,
-		ihdrChunk.CompressionMethod,
-		ihdrChunk.FilterMethod,
+		'I', 'H', 'D', 'R',
+		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[3], reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[2],
+		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[1], reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[0],
+		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[3], reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[2],
+		reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[1], reinterpret_cast<uint8_t*>(&ihdrChunk.Height)[0],
+		ihdrChunk.BitDepth, ihdrChunk.ColorType, ihdrChunk.CompressionMethod, ihdrChunk.FilterMethod,
 		ihdrChunk.InterlaceMethod
 	};
 
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != ihdrChunk.CRC[0] && crc[1] != ihdrChunk.CRC[1] && crc[2] != ihdrChunk.CRC[2] && crc[3] != ihdrChunk.CRC[3])
+	if (crc[0] != ihdrChunk.CRC[0] && crc[1] != ihdrChunk.CRC[1] && crc[2] != ihdrChunk.CRC[2] &&
+	    crc[3] != ihdrChunk.CRC[3])
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "IHDR CRC: ", Utils::Hash::ConvertHashToString(ihdrChunk.CRC), " is wrong!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
-	
+
 	if (!IHDRCheck(ihdrChunk))
 		return false;
 
@@ -508,42 +512,15 @@ bool TRAP::INTERNAL::PNGImage::ProcesscHRM(std::ifstream& file)
 
 	std::array<uint8_t, 36> CRCData
 	{
-		'c',
-		'H',
-		'R',
-		'M',
-		unusedData[0],
-		unusedData[1],
-		unusedData[2],
-		unusedData[3],
-		unusedData[4],
-		unusedData[5],
-		unusedData[6],
-		unusedData[7],
-		unusedData[8],
-		unusedData[9],
-		unusedData[10],
-		unusedData[11],
-		unusedData[12],
-		unusedData[13],
-		unusedData[14],
-		unusedData[15],
-		unusedData[16],
-		unusedData[17],
-		unusedData[18],
-		unusedData[19],
-		unusedData[20],
-		unusedData[21],
-		unusedData[22],
-		unusedData[23],
-		unusedData[24],
-		unusedData[25],
-		unusedData[26],
-		unusedData[27],
-		unusedData[28],
-		unusedData[29],
-		unusedData[30],
-		unusedData[31]
+		'c', 'H', 'R', 'M',
+		unusedData[0], unusedData[1], unusedData[2], unusedData[3], unusedData[4],
+		unusedData[5], unusedData[6], unusedData[7], unusedData[8], unusedData[9],
+		unusedData[10], unusedData[11], unusedData[12], unusedData[13],
+		unusedData[14], unusedData[15], unusedData[16], unusedData[17],
+		unusedData[18], unusedData[19], unusedData[20], unusedData[21],
+		unusedData[22], unusedData[23], unusedData[24], unusedData[25],
+		unusedData[26], unusedData[27], unusedData[28], unusedData[29],
+		unusedData[30], unusedData[31]
 	};
 
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
@@ -571,14 +548,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessgAMA(std::ifstream& file)
 
 	std::array<uint8_t, 8> CRCData
 	{
-		'g',
-		'A',
-		'M',
-		'A',
-		unusedData[0],
-		unusedData[1],
-		unusedData[2],
-		unusedData[3]
+		'g', 'A', 'M', 'A',
+		unusedData[0], unusedData[1], unusedData[2], unusedData[3]
 	};
 
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
@@ -662,8 +633,11 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
 		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		std::array<uint8_t, 7> CRCData{ 's', 'B', 'I', 'T', significantRGBBits[0], significantRGBBits[1], significantRGBBits[2] };
+		std::array<uint8_t, 7> CRCData
+		{
+			's', 'B', 'I', 'T',
+			significantRGBBits[0], significantRGBBits[1], significantRGBBits[2]
+		};
 
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
@@ -686,7 +660,11 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
 		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
 
-		std::array<uint8_t, 6> CRCData{ 's', 'B', 'I', 'T', significantGrayScaleAlphaBits[0], significantGrayScaleAlphaBits[1] };
+		std::array<uint8_t, 6> CRCData
+		{
+			's', 'B', 'I', 'T',
+			significantGrayScaleAlphaBits[0], significantGrayScaleAlphaBits[1]
+		};
 
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
@@ -711,14 +689,9 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 
 		std::array<uint8_t, 8> CRCData
 		{
-			's',
-			'B',
-			'I',
-			'T',
-			significantRGBAlphaBits[0],
-			significantRGBAlphaBits[1],
-			significantRGBAlphaBits[2],
-			significantRGBAlphaBits[3]
+			's', 'B', 'I', 'T',
+			significantRGBAlphaBits[0], significantRGBAlphaBits[1],
+			significantRGBAlphaBits[2], significantRGBAlphaBits[3]
 		};
 
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
@@ -783,7 +756,11 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 		if (needSwap)
 			Utils::Memory::SwapBytes(backgroundColor);
 
-		std::array<uint8_t, 6> CRCData{ 'b', 'K', 'G', 'D', reinterpret_cast<uint8_t*>(&backgroundColor)[1], reinterpret_cast<uint8_t*>(&backgroundColor)[0] };
+		std::array<uint8_t, 6> CRCData
+		{
+			'b', 'K', 'G', 'D',
+			reinterpret_cast<uint8_t*>(&backgroundColor)[1], reinterpret_cast<uint8_t*>(&backgroundColor)[0]
+		};
 
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
@@ -821,16 +798,10 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 
 		std::array<uint8_t, 10> CRCData
 		{
-			'b',
-			'K',
-			'G',
-			'D',
-			reinterpret_cast<uint8_t*>(&Red)[1],
-			reinterpret_cast<uint8_t*>(&Red)[0],
-			reinterpret_cast<uint8_t*>(&Green)[1],
-			reinterpret_cast<uint8_t*>(&Green)[0],
-			reinterpret_cast<uint8_t*>(&Blue)[1],
-			reinterpret_cast<uint8_t*>(&Blue)[0]
+			'b', 'K', 'G', 'D',
+			reinterpret_cast<uint8_t*>(&Red)[1], reinterpret_cast<uint8_t*>(&Red)[0],
+			reinterpret_cast<uint8_t*>(&Green)[1], reinterpret_cast<uint8_t*>(&Green)[0],
+			reinterpret_cast<uint8_t*>(&Blue)[1], reinterpret_cast<uint8_t*>(&Blue)[0]
 		};
 
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
@@ -856,10 +827,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 
 		std::array<uint8_t, 5> CRCData
 		{
-			'b',
-			'K',
-			'G',
-			'D',
+			'b', 'K', 'G', 'D',
 			paletteIndex
 		};
 
@@ -963,16 +931,10 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 		std::array<uint8_t, 10> CRCData
 		{
-			't',
-			'R',
-			'N',
-			'S',
-			redAlpha1,
-			redAlpha2,
-			greenAlpha1,
-			greenAlpha2,
-			blueAlpha1,
-			blueAlpha2
+			't', 'R', 'N', 'S',
+			redAlpha1, redAlpha2,
+			greenAlpha1, greenAlpha2,
+			blueAlpha1, blueAlpha2
 		};
 
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
@@ -1109,17 +1071,9 @@ bool TRAP::INTERNAL::PNGImage::ProcesstIME(std::ifstream& file, const bool needS
 
 	std::array<uint8_t, 11> CRCData
 	{
-		't',
-		'I',
-		'M',
-		'E',
-		reinterpret_cast<uint8_t*>(&timeChunk.Year)[1],
-		reinterpret_cast<uint8_t*>(&timeChunk.Year)[0],
-		timeChunk.Month,
-		timeChunk.Day,
-		timeChunk.Hour,
-		timeChunk.Minute,
-		timeChunk.Second
+		't', 'I', 'M', 'E',
+		reinterpret_cast<uint8_t*>(&timeChunk.Year)[1], reinterpret_cast<uint8_t*>(&timeChunk.Year)[0],
+		timeChunk.Month, timeChunk.Day, timeChunk.Hour, timeChunk.Minute, timeChunk.Second
 	};
 
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
@@ -1241,7 +1195,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 	}
 	if (data.ColorType == 0 || data.ColorType == 4)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "PLTE Invalid usage! This chunk should not appear with Color Type: ", static_cast<uint32_t>(data.ColorType), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "PLTE Invalid usage! This chunk should not appear with Color Type: ",
+			static_cast<uint32_t>(data.ColorType), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
@@ -1368,7 +1323,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	}
 
 	//Check if Bit Depth is a valid number
-	if (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 && ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16)
+	if (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 && ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8 &&
+	    ihdrChunk.BitDepth != 16)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Bit Depth is invalid!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
@@ -1376,7 +1332,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	}
 
 	//Check if Color Type is a valid number
-	if (ihdrChunk.ColorType != 0 && ihdrChunk.ColorType != 2 && ihdrChunk.ColorType != 3 && ihdrChunk.ColorType != 4 && ihdrChunk.ColorType != 6)
+	if (ihdrChunk.ColorType != 0 && ihdrChunk.ColorType != 2 && ihdrChunk.ColorType != 3 &&
+	    ihdrChunk.ColorType != 4 && ihdrChunk.ColorType != 6)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Color Type is invalid!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
@@ -1386,25 +1343,30 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	//Check if Color Type matches Bit Depth
 	if (ihdrChunk.ColorType == 2 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color Type: TrueColor(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: TrueColor(", static_cast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
-	if (ihdrChunk.ColorType == 3 && (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 && ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8))
+	if (ihdrChunk.ColorType == 3 && (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 &&
+		ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color Type: Indexed-Color(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: Indexed-Color(", static_cast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 4 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color Type: GrayScale Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: GrayScale Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 6 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Color Type: TrueColor Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: TrueColor Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType),
+			") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
@@ -1412,7 +1374,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	//Only Deflate/Inflate Compression Method is defined by the ISO
 	if (ihdrChunk.CompressionMethod != 0)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Compression Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod), " is unsupported!");
+		TP_ERROR(Log::ImagePNGPrefix, "Compression Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod),
+			" is unsupported!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
@@ -1420,7 +1383,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	//Only Adaptive filtering with 5 basic filter types is defined by the ISO
 	if (ihdrChunk.FilterMethod != 0)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Filter Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod), " is unsupported!");
+		TP_ERROR(Log::ImagePNGPrefix, "Filter Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod),
+			" is unsupported!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
@@ -1428,7 +1392,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	//Only No Interlace and Adam7 Interlace are defined by the ISO
 	if (ihdrChunk.InterlaceMethod != 0 && ihdrChunk.InterlaceMethod != 1)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Interlace Method: ", static_cast<uint32_t>(ihdrChunk.InterlaceMethod), " is unsupported!");
+		TP_ERROR(Log::ImagePNGPrefix, "Interlace Method: ", static_cast<uint32_t>(ihdrChunk.InterlaceMethod),
+			" is unsupported!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
@@ -1440,42 +1405,14 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 
 bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 {
-	//Check Month validity
-	if (timeChunk.Month < 1 || timeChunk.Month > 12)
+	//Check timestamp validity
+	if ((timeChunk.Month < 1 || timeChunk.Month > 12) || (timeChunk.Day < 1 || timeChunk.Day > 31) ||
+	    timeChunk.Hour > 23 || timeChunk.Minute > 59 || timeChunk.Second > 59)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Month: ", static_cast<uint32_t>(timeChunk.Month), " is invalid!");
-		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-		return false;
-	}
-
-	//Check Day validity
-	if (timeChunk.Day < 1 || timeChunk.Day > 31)
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Day: ", static_cast<uint32_t>(timeChunk.Day), " is invalid!");
-		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-		return false;
-	}
-
-	//Check Hour validity
-	if (timeChunk.Hour > 23)
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Hour: ", static_cast<uint32_t>(timeChunk.Hour), " is invalid!");
-		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-		return false;
-	}
-
-	//Check Minute validity
-	if (timeChunk.Minute > 59)
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Minute: ", static_cast<uint32_t>(timeChunk.Minute), " is invalid!");
-		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
-		return false;
-	}
-
-	//Check Second validity
-	if (timeChunk.Second > 60)
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Second: ", timeChunk.Second, " is invalid!");
+		TP_ERROR(Log::ImagePNGPrefix, "Time stamp: ", static_cast<uint32_t>(timeChunk.Day), '/',
+		static_cast<uint32_t>(timeChunk.Month), '/', static_cast<uint32_t>(timeChunk.Year), ' ',
+		static_cast<uint32_t>(timeChunk.Hour), ':', static_cast<uint32_t>(timeChunk.Minute), '.',
+		static_cast<uint32_t>(timeChunk.Second), " is invalid!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
@@ -1483,7 +1420,8 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	return true;
 }
 
-bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength)
+bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination,
+										      const int destinationLength)
 {
 	if (sourceLength < 2)
 	{
@@ -1493,7 +1431,8 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 	}
 	if ((source[0] * 256 + source[1]) % 31 != 0)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! 256 * source[0](", source[0], ") + source[1](", source[1], ") must be a multiple of 31(", static_cast<uint32_t>(source[0] * 256 + source[1]), ")!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! 256 * source[0](", source[0], ") + source[1](",
+			source[1], ") must be a multiple of 31(", static_cast<uint32_t>(source[0] * 256 + source[1]), ")!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: 256 * source[0] + source[1] must be a multiple of 31, the FCHECK value is supposed to be made this way
 	}
@@ -1506,13 +1445,15 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 
 	if (CM != 8 || CINFO > 7)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Only Compression Method 8(De/Inflate) with sliding window of 32K is supported by the PNG Specification!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Only Compression Method 8(De/Inflate) with ",
+		                              "sliding window of 32K is supported by the PNG Specification!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: Only compression method 8: inflate with sliding window of 32K is supported by the PNG specification
 	}
 	if(FDICT != 0)
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Additional Flags should not specify a preset dictionary!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Additional Flags should ",
+			                          "not specify a preset dictionary!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: The PNG specification says that the zlib stream should not specify a preset dictionary in the additional flags!
 	}
@@ -1534,9 +1475,12 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 	};
 	std::array<uint8_t, 4> checksum = Utils::Hash::Adler32(destination, destinationLength);
 
-	if (checksum[0] != adler32[0] && checksum[1] != adler32[1] && checksum[2] != adler32[2] && checksum[3] != adler32[3])
+	if (checksum[0] != adler32[0] && checksum[1] != adler32[1] && checksum[2] != adler32[2] &&
+	    checksum[3] != adler32[3])
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Adler32 Checksum: ", Utils::Hash::ConvertHashToString(adler32), " doesnt match Checksum: ", Utils::Hash::ConvertHashToString(checksum), "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Adler32 Checksum: ",
+		                              Utils::Hash::ConvertHashToString(adler32),
+									  " doesnt match Checksum: ", Utils::Hash::ConvertHashToString(checksum), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: Adler checksum not correct, data must be corrupt
 	}
@@ -1556,25 +1500,31 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 	//For PNG Filter Method 0
 	//UnFilter a PNG Image Scanline by Scanline.
 	//When the pixels are smaller than 1 Byte, the Filter works Byte per Byte (byteWidth = 1)
-	//precon is the previous unFiltered Scanline, recon the result, scanline the current one the incoming Scanlines do NOT include the FilterType byte, that one is given in the parameter filterType instead
+	//precon is the previous unFiltered Scanline, recon the result, scanline the current one the incoming
+	//Scanlines do NOT include the FilterType byte, that one is given in the parameter filterType instead
 	//recon and scanline MAY be the same memory address!
 	//precon must be disjoint.
 	std::size_t i;
 	switch (filterType)
 	{
 	case 0:
+	{
 		for (i = 0; i != length; ++i)
 			recon[i] = scanline[i];
 		break;
+	}
 
 	case 1:
+	{
 		for (i = 0; i != byteWidth; ++i)
 			recon[i] = scanline[i];
 		for (i = byteWidth; i < length; ++i)
 			recon[i] = scanline[i] + recon[i - byteWidth];
 		break;
+	}
 
 	case 2:
+	{
 		if (precon)
 			for (i = 0; i != length; ++i)
 				recon[i] = scanline[i] + precon[i];
@@ -1582,8 +1532,10 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 			for (i = 0; i != length; ++i)
 				recon[i] = scanline[i];
 		break;
+	}
 
 	case 3:
+	{
 		if (precon)
 		{
 			for (i = 0; i != byteWidth; ++i)
@@ -1599,8 +1551,10 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 				recon[i] = scanline[i] + (recon[i - byteWidth] >> 1u);
 		}
 		break;
+	}
 
 	case 4:
+	{
 		if (precon)
 		{
 			for (i = 0; i != byteWidth; ++i)
@@ -1614,7 +1568,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 				for (; i + 3 < length; i += 4)
 				{
 					const std::size_t j = i - byteWidth;
-					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1], s2 = scanline[i + 2], s3 = scanline[i + 3];
+					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1];
+					const uint8_t s2 = scanline[i + 2], s3 = scanline[i + 3];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1], r2 = recon[j + 2], r3 = recon[j + 3];
 					const uint8_t p0 = precon[i + 0], p1 = precon[i + 1], p2 = precon[i + 2], p3 = precon[i + 3];
 					const uint8_t q0 = precon[j + 0], q1 = precon[j + 1], q2 = precon[j + 2], q3 = precon[j + 3];
@@ -1663,6 +1618,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 				recon[i] = (scanline[i] + recon[i - byteWidth]);
 		}
 		break;
+	}
 
 	default:
 		return false;
@@ -1673,13 +1629,15 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel)
+bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const uint32_t width, const uint32_t height,
+                                        const uint32_t bitsPerPixel)
 {
 	//For PNG Filter Method 0
 	//This function unFilters a single image(e.g. without interlacing this is called once, with Adam7 seven times)
 	//out must have enough bytes allocated already, in must have the scanlines + 1 filterType byte per scanline
 	//width and height are image dimensions or dimensions of reduced image, bitsPerPixel is bits per pixel
-	//in and out are allowed to be the same memory address(but are not the same size since in has the extra filter Bytes)
+	//in and out are allowed to be the same memory address
+	//(but are not the same size since in has the extra filter Bytes)
 	uint8_t* prevLine = nullptr;
 
 	//byteWidth is used for filtering, is 1 when bpp < 8, number of bytes per pixel otherwise
@@ -1721,28 +1679,34 @@ uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel)
+std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
+                                                     const uint32_t bitsPerPixel)
 {
 	//In an IDAT chunk, each scanline is a multiple of 8 bits and in addition has one extra byte per line: the filter byte.
 	//+ 1 for the filter byte, and possibly plus padding bits per line
-	const std::size_t line = (static_cast<std::size_t>(width / 8u)* bitsPerPixel) + 1u + ((width & 7u) * bitsPerPixel + 7u) / 8u;
+	const std::size_t line = (static_cast<std::size_t>(width / 8u) * bitsPerPixel) +
+	                         1u + ((width & 7u) * bitsPerPixel + 7u) / 8u;
 
-	return static_cast<std::size_t>(height)* line;
+	return static_cast<std::size_t>(height) * line;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel)
+std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
+                                                 const uint32_t bitsPerPixel)
 {
-	const std::size_t n = static_cast<std::size_t>(width)* static_cast<std::size_t>(height);
+	const std::size_t n = static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
 	return ((n / 8u) * bitsPerPixel) + ((n & 7u) * bitsPerPixel + 7u) / 8u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const uint8_t interlaceMethod)
+bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, const uint32_t width,
+                                                    const uint32_t height, const uint32_t bitsPerPixel,
+													const uint8_t interlaceMethod)
 {
-	//out must be a buffer big enough to contain full image, and in must contain the full decompressed data from the IDAT chunks(with filter bytes and possible padding bits)
+	//out must be a buffer big enough to contain full image, and in must contain the full decompressed
+	//data from the IDAT chunks(with filter bytes and possible padding bits)
 	//This function converts filtered-padded-interlaced data into pure 2D image buffer with the PNGs colorType.
 	//Steps:
 	//*) If no Adam7: 1) UnFilter 2) Remove padding bits(= possible extra bits per scanline if bitsPerPixel < 8)
@@ -1752,7 +1716,7 @@ bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, c
 		return false;
 
 	if (interlaceMethod == 0)
-	{		
+	{
 		if (!UnFilter(out, in, width, height, bitsPerPixel))
 			return false;
 	}
@@ -1763,7 +1727,7 @@ bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, c
 		std::array<std::size_t, 8> filterPassStart{}, paddedPassStart{}, passStart{};
 
 		Adam7GetPassValues(passW, passH, filterPassStart, paddedPassStart, passStart, width, height, bitsPerPixel);
-		
+
 		for (uint32_t i = 0; i != 7; ++i)
 			if (!UnFilter(&in[paddedPassStart[i]], &in[filterPassStart[i]], passW[i], passH[i], bitsPerPixel))
 				return false;
@@ -1794,8 +1758,10 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	//passW: Output containing the width of the 7 passes
 	//passH: Output containing the height of the 7 passes
 	//filterPassStart: Output containing the index of the start and end of each reduced image with filter bytes
-	//paddedPassStat: Output containing the index of the start and end of each reduced image when without filter bytes but with padded scanlines
-	//passStart: Output containing the index of the start and end of each reduced image without padding between scanlines, but still padding between the images
+	//paddedPassStat: Output containing the index of the start and end of each
+	//reduced image when without filter bytes but with padded scanlines
+	//passStart: Output containing the index of the start and end of each
+	//reduced image without padding between scanlines, but still padding between the images
 	//width, height: Width and Height of non-interlaced image
 	//bitsPerPixel: bits per pixel
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
@@ -1818,7 +1784,8 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	for (i = 0; i != 7; ++i)
 	{
 		//If passW[i] is 0, its 0 bytes, not 1(no filterType-byte)
-		filterPassStart[i + 1] = filterPassStart[i] + ((passW[i] && passH[i]) ? passH[i] * (1u + (passW[i] * bitsPerPixel + 7u) / 8u) : 0);
+		filterPassStart[i + 1] = filterPassStart[i] + ((passW[i] && passH[i]) ?
+			passH[i] * (1u + (passW[i] * bitsPerPixel + 7u) / 8u) : 0);
 		//Bits padded if needed to fill full byte at the end of each scanline
 		paddedPassStart[i + 1] = paddedPassStart[i] + passH[i] * ((passW[i] * bitsPerPixel + 7u) / 8u);
 		//Only padded at end of reduced image
@@ -1828,14 +1795,17 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in, const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel)
+void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in, const uint32_t width,
+                                                const uint32_t height, const uint32_t bitsPerPixel)
 {
-	//in: Adam7 Interlaced Image, with no padding bits between scanlines, but between reduced images so that each reduced image starts at a byte.
+	//in: Adam7 Interlaced Image, with no padding bits between scanlines, but
+	//between reduced images so that each reduced image starts at a byte.
 	//out: The same pixels, but re-ordered so that they are now a non-interlaced image with size width * height
 	//bitsPerPixel: bits per pixel
 	//out has the following size in bits: width * height * bitsPerPixel.
 	//in is possibly bigger due to padding bits between reduced images.
-	//out must be big enough AND must be 0 everywhere if bitsPerPixel < 8 in the current implementation(because that is likely a little bit faster)
+	//out must be big enough AND must be 0 everywhere
+	//if bitsPerPixel < 8 in the current implementation(because that is likely a little bit faster)
 	//NOTE: Comments about padding bits are only relevant if bitsPerPixel < 8
 
 	std::array<uint32_t, 7> passW{}, passH{};
@@ -1843,19 +1813,22 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in,
 
 	Adam7GetPassValues(passW, passH, filterPassStart, paddedPassStart, passStart, width, height, bitsPerPixel);
 
-	if (bitsPerPixel >= 8)
+	if(bitsPerPixel < 8)
+		return;
+
+	for (uint32_t i = 0; i != 7; ++i)
 	{
-		for (uint32_t i = 0; i != 7; ++i)
+		const std::size_t byteWidth = bitsPerPixel / 8u;
+		for (uint32_t y = 0; y < passH[i]; ++y)
 		{
-			const std::size_t byteWidth = bitsPerPixel / 8u;
-			for (uint32_t y = 0; y < passH[i]; ++y)
-				for (uint32_t x = 0; x < passW[i]; ++x)
-				{
-					const std::size_t pixelInStart = passStart[i] + (y * passW[i] + x) * byteWidth;
-					const std::size_t pixelOutStart = ((ADAM7_IY[i] + y * ADAM7_DY[i]) * width + ADAM7_IX[i] + x * ADAM7_DX[i]) * byteWidth;
-					for (uint32_t b = 0; b < byteWidth; ++b)
-						out[pixelOutStart + b] = in[pixelInStart + b];
-				}
+			for (uint32_t x = 0; x < passW[i]; ++x)
+			{
+				const std::size_t pixelInStart = passStart[i] + (y * passW[i] + x) * byteWidth;
+				const std::size_t pixelOutStart = ((ADAM7_IY[i] + y * ADAM7_DY[i]) *
+				                                   width + ADAM7_IX[i] + x * ADAM7_DX[i]) * byteWidth;
+				for (uint32_t b = 0; b < byteWidth; ++b)
+					out[pixelOutStart + b] = in[pixelInStart + b];
+			}
 		}
 	}
 }
@@ -1891,7 +1864,8 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width, const uint32_t height, const Data& data)
+std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
+                                                              const uint32_t height, const Data& data)
 {
 	std::vector<uint8_t> result(width * height * 4, 0);
 	uint32_t resultIndex = 0;

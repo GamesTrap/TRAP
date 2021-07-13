@@ -3,7 +3,7 @@
 
 #include "Layer.h"
 
-namespace TRAP 
+namespace TRAP
 {
 	class LayerStack
 	{

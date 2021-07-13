@@ -47,12 +47,15 @@ namespace TRAP::INTERNAL
 
 	private:
 		static float ConvertComponent(int8_t exponent, int32_t value);
-		static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex, uint32_t length, std::ifstream& file);
-		static bool OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex, uint32_t length, std::ifstream& file);
-		void WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex, std::vector<float>& data, uint32_t dataIndex);
+		static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		                     uint32_t length, std::ifstream& file);
+		static bool OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		                        uint32_t length, std::ifstream& file);
+		void WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		                std::vector<float>& data, uint32_t dataIndex);
 
 		int8_t eMax, eMin;
-		
+
 		std::vector<float> m_data;
 
 		inline static constexpr uint32_t MinEncodingLength = 8; //Minimum scanline length for encoding

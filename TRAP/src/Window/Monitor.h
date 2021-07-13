@@ -24,7 +24,7 @@ namespace TRAP
 			/// <param name="height">Height.</param>
 			/// <param name="refreshRate">Refresh rate.</param>
 			VideoMode(int32_t width, int32_t height, int32_t refreshRate);
-			
+
 			int32_t Width = 0;
 			int32_t Height = 0;
 			int32_t RefreshRate = 0;
@@ -141,7 +141,7 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Pointer to TRAP::INTERNAL::WindowingAPI::InternalMonitor of the TRAP::Monitor.</returns>
 		void* GetInternalMonitor() const;
-		
+
 		/// <summary>
 		/// Retrieve all currently connected Monitors.
 		/// </summary>
@@ -151,7 +151,7 @@ namespace TRAP
 		/// Retrieve the primary Monitor.
 		/// </summary>
 		/// <returns>Primary TRAP::Monitor.</returns>
-		static Monitor GetPrimaryMonitor();		
+		static Monitor GetPrimaryMonitor();
 
 	private:
 		/// <summary>

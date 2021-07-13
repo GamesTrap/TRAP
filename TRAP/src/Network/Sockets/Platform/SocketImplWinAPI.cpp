@@ -44,7 +44,8 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const uint32_t ad
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address, const uint16_t port)
+sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
+                                                                const uint16_t port)
 {
 	sockaddr_in6 addr{};
 	std::memset(&addr, 0, sizeof(addr));
@@ -96,7 +97,7 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 
 	case WSAEISCONN:
 		return TRAP::Network::Socket::Status::Done; //When connecting a non-blocking socket
-		
+
 	default:
 		return TRAP::Network::Socket::Status::Error;
 	}

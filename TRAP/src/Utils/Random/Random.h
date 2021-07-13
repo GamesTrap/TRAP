@@ -24,7 +24,7 @@ namespace TRAP::Utils
         std::seed_seq SeedSeq
         { {
                 static_cast<std::uintmax_t>(std::random_device{ }()),
-                static_cast<std::uintmax_t>(std::chrono::steady_clock::now().time_since_epoch().count()),
+                static_cast<std::uintmax_t>(std::chrono::steady_clock::now().time_since_epoch().count())
         } };
     };
 
@@ -35,14 +35,11 @@ namespace TRAP::Utils
     /// </summary>
     /// <typeparam name="engine">A random engine with interface like in the std::mt19937.</typeparam>
     /// <typeparam name="Seeder">A seeder type which return seed for internal engine through operator().</typeparam>
-    template
-	<
-        typename engine,
-        typename Seeder = SeederDefault,
-        template<typename> class IntegerDist = std::uniform_int_distribution,
-        template<typename> class RealDist = std::uniform_real_distribution,
-        typename BoolDist = std::bernoulli_distribution
-    >
+    template<typename engine,
+             typename Seeder = SeederDefault,
+             template<typename> class IntegerDist = std::uniform_int_distribution,
+             template<typename> class RealDist = std::uniform_real_distribution,
+             typename BoolDist = std::bernoulli_distribution>
     class BasicRandomStatic
 	{
     public:
@@ -220,7 +217,7 @@ namespace TRAP::Utils
     	{
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
-        	
+
             return IntegerDist<T>{ to, from }(EngineInstance());
         }
 
@@ -236,7 +233,7 @@ namespace TRAP::Utils
     	{
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
-        	
+
             return RealDist<T>{ to, from }(EngineInstance());
         }
 
@@ -252,7 +249,7 @@ namespace TRAP::Utils
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                int16_t, uint16_t>::type;
+                                                      int16_t, uint16_t>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
@@ -260,22 +257,21 @@ namespace TRAP::Utils
         /// <summary>
         /// Generate a random common_type number in a [from; to] range.
         /// </summary>
-        /// <typeparam name="Key">Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.</typeparam>
+        /// <typeparam name="Key">
+        /// Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.
+        /// </typeparam>
         /// <param name="from">First limit number of a random range.</param>
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random common_type number in a [from; to] range.</returns>
-        template
-    	<
-            typename Key,
-            typename A,
-            typename B,
-            typename C = typename std::common_type<A, B>::type
-        >
+        template<typename Key,
+                 typename A,
+                 typename B,
+                 typename C = typename std::common_type<A, B>::type>
         static typename std::enable_if<std::is_same<Key, Common>::value &&
-            INTERNAL::IsSupportedNumber<A>::value &&
-            INTERNAL::IsSupportedNumber<B>::value &&
-            //Prevent implicit type conversion from singed to unsigned types
-            std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
+                                       INTERNAL::IsSupportedNumber<A>::value &&
+                                       INTERNAL::IsSupportedNumber<B>::value &&
+                                       //Prevent implicit type conversion from singed to unsigned types
+                                       std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
     	Get(A from = std::numeric_limits<A>::min(),
             B to = std::numeric_limits<B>::max())
     	{
@@ -293,15 +289,19 @@ namespace TRAP::Utils
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
-                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from), static_cast<std::int64_t>(to) }(EngineInstance()));
-        	
-            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(EngineInstance()));
+                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
+                                                                 static_cast<std::int64_t>(to) }(EngineInstance()));
+
+            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to),
+                                                             static_cast<std::int64_t>(from) }(EngineInstance()));
         }
 
         /// <summary>
         /// Generate a bool value with specific probability by std::bernoulli_distribution.
         /// </summary>
-        /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
+        /// <param name="probability">
+        /// Probability of generating true in [0; 1] range 0 means always false, 1 means always true.
+        /// </param>
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
         static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
@@ -336,7 +336,8 @@ namespace TRAP::Utils
     	Get(InputIt first, InputIt last)
     	{
             const auto size = std::distance(first, last);
-            if (0 == size) return last;
+            if (0 == size)
+                return last;
             using diff_t = typename std::iterator_traits<InputIt>::difference_type;
             return std::next(first, Get<diff_t>(0, size - 1));
         }
@@ -354,7 +355,7 @@ namespace TRAP::Utils
         {
             return Get(std::begin(container), std::end(container));
         }
-    	
+
         /// <summary>
         /// Get random pointer from built-in array.
         /// </summary>
@@ -390,8 +391,8 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Reorders the elements in the given range [first, last) such that each possible permutation of those elements
-        /// has equal probability of appearance.
+        /// Reorders the elements in the given range [first, last) such that each possible permutation
+        /// of those elements has equal probability of appearance.
         /// </summary>
         /// <param name="first">Range of elements to shuffle randomly.</param>
         /// <param name="last">Range of elements to shuffle randomly.</param>
@@ -429,7 +430,7 @@ namespace TRAP::Utils
     	{
             return EngineInstance();
         }
-    	
+
     protected:
         /// <summary>
         /// Get reference to the static engine instance.
@@ -449,14 +450,11 @@ namespace TRAP::Utils
     /// </summary>
     /// <typeparam name="engine">A random engine with interface like in the std::mt19937.</typeparam>
     /// <typeparam name="Seeder">A seeder type which return seed for internal engine through operator().</typeparam>
-    template
-	<
-        typename engine,
-        typename Seeder = SeederDefault,
-        template<typename> class IntegerDist = std::uniform_int_distribution,
-        template<typename> class RealDist = std::uniform_real_distribution,
-        typename BoolDist = std::bernoulli_distribution
-    >
+    template<typename engine,
+             typename Seeder = SeederDefault,
+             template<typename> class IntegerDist = std::uniform_int_distribution,
+             template<typename> class RealDist = std::uniform_real_distribution,
+             typename BoolDist = std::bernoulli_distribution>
     class BasicRandomThreadLocal
 	{
     public:
@@ -525,7 +523,7 @@ namespace TRAP::Utils
         {
             return engine::min();
         }
-        	
+
         /// <summary>
         /// Retrieve the maximum value potentially generated by the random-number engine.
         /// </summary>
@@ -552,7 +550,7 @@ namespace TRAP::Utils
             Seeder seeder;
             Seed(seeder());
         }
-    	
+
         /// <summary>
         /// Re-Initializes the internal state of the random-number engine using new seed value.
         /// </summary>
@@ -630,7 +628,7 @@ namespace TRAP::Utils
     	{
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
-        	
+
             return IntegerDist<T>{ to, from }(EngineInstance());
         }
 
@@ -646,7 +644,7 @@ namespace TRAP::Utils
     	{
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
-        	
+
             return RealDist<T>{ to, from }(EngineInstance());
         }
 
@@ -670,22 +668,21 @@ namespace TRAP::Utils
         /// <summary>
         /// Generate a random common_type number in a [from; to] range.
         /// </summary>
-        /// <typeparam name="Key">The Key type for this version of 'get' method Type should be '(THIS_TYPE)::Common' struct.</typeparam>
+        /// <typeparam name="Key">
+        /// The Key type for this version of 'get' method Type should be '(THIS_TYPE)::Common' struct.
+        /// </typeparam>
         /// <param name="from">First limit number of a random range.</param>
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random common_type number in a [from; to] range.</returns>
-        template
-    	<
-            typename Key,
-            typename A,
-            typename B,
-            typename C = typename std::common_type<A, B>::type
-        >
+        template<typename Key,
+                 typename A,
+                 typename B,
+                 typename C = typename std::common_type<A, B>::type>
         static typename std::enable_if<std::is_same<Key, Common>::value &&
-            INTERNAL::IsSupportedNumber<A>::value &&
-            INTERNAL::IsSupportedNumber<B>::value &&
-			//Prevent implicit type conversion from singed to unsigned types
-			std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
+                                       INTERNAL::IsSupportedNumber<A>::value &&
+                                       INTERNAL::IsSupportedNumber<B>::value &&
+			                           //Prevent implicit type conversion from singed to unsigned types
+			                           std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
     	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
             return Get(static_cast<C>(from), static_cast<C>(to));
@@ -702,15 +699,19 @@ namespace TRAP::Utils
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
-                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from), static_cast<std::int64_t>(to) }(EngineInstance()));
-        	
-            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(EngineInstance()));
+                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
+                                                                 static_cast<std::int64_t>(to) }(EngineInstance()));
+
+            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to),
+                                                             static_cast<std::int64_t>(from) }(EngineInstance()));
         }
 
         /// <summary>
         /// Generate a bool value with specific probability by std::bernoulli_distribution.
         /// </summary>
-        /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
+        /// <param name="probability">
+        /// Probability of generating true in [0; 1] range 0 means always false, 1 means always true.
+        /// </param>
         /// <returns>'True' with 'probability' probability ('False' otherwise).</returns>
         template<typename T>
         static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
@@ -743,7 +744,8 @@ namespace TRAP::Utils
     	Get(InputIt first, InputIt last)
     	{
             const auto size = std::distance(first, last);
-            if (0 == size) return last;
+            if (0 == size)
+                return last;
             using diff_t = typename std::iterator_traits<InputIt>::difference_type;
             return std::next(first, Get<diff_t>(0, size - 1));
         }
@@ -797,8 +799,8 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Reorders the elements in the given range [first, last) such that each possible permutation of those elements
-        /// has equal probability of appearance.
+        /// Reorders the elements in the given range [first, last) such that each possible permutation of
+        /// those elements has equal probability of appearance.
         /// </summary>
         /// <param name="first">Range of elements to shuffle randomly.</param>
         /// <param name="last">Range of elements to shuffle randomly.</param>
@@ -855,14 +857,11 @@ namespace TRAP::Utils
     /// </summary>
     /// <typeparam name="engine">Random engine with interface like in the std::mt19937.</typeparam>
     /// <typeparam name="Seeder">Seeder type which return seed for internal engine through operator().</typeparam>
-    template
-	<
-        typename engine,
-        typename Seeder = SeederDefault,
-        template<typename> class IntegerDist = std::uniform_int_distribution,
-        template<typename> class RealDist = std::uniform_real_distribution,
-        typename BoolDist = std::bernoulli_distribution
-    >
+    template<typename engine,
+             typename Seeder = SeederDefault,
+             template<typename> class IntegerDist = std::uniform_int_distribution,
+             template<typename> class RealDist = std::uniform_real_distribution,
+             typename BoolDist = std::bernoulli_distribution>
     class BasicRandomLocal
 	{
     public:
@@ -924,7 +923,7 @@ namespace TRAP::Utils
         {
             m_engine.discard(z);
         }
-    	
+
         /// <summary>
         /// Reseed by Seeder.
         /// </summary>
@@ -1011,7 +1010,7 @@ namespace TRAP::Utils
     	{
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(m_engine);
-        	
+
             return IntegerDist<T>{ to, from }(m_engine);
         }
 
@@ -1027,7 +1026,7 @@ namespace TRAP::Utils
     	{
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(m_engine);
-        	
+
             return RealDist<T>{ to, from }(m_engine);
         }
 
@@ -1051,22 +1050,21 @@ namespace TRAP::Utils
         /// <summary>
         /// Generate a random common_type number in a [from; to] range.
         /// </summary>
-        /// <typeparam name="Key">Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.</typeparam>
+        /// <typeparam name="Key">
+        /// Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.
+        /// </typeparam>
         /// <param name="from">First limit number of a random range.</param>
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random common_type number in a [from; to] range.</returns>
-        template
-    	<
-            typename Key,
-            typename A,
-            typename B,
-            typename C = typename std::common_type<A, B>::type
-        >
+        template<typename Key,
+                 typename A,
+                 typename B,
+                 typename C = typename std::common_type<A, B>::type>
         typename std::enable_if<std::is_same<Key, Common>::value &&
-            INTERNAL::IsSupportedNumber<A>::value &&
-            INTERNAL::IsSupportedNumber<B>::value &&
-			//Prevent implicit type conversion from singed to unsigned types
-			std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
+                                INTERNAL::IsSupportedNumber<A>::value &&
+                                INTERNAL::IsSupportedNumber<B>::value &&
+			                    //Prevent implicit type conversion from singed to unsigned types
+			                    std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
     	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
             return Get(static_cast<C>(from), static_cast<C>(to));
@@ -1084,15 +1082,19 @@ namespace TRAP::Utils
     	{
             //Allow range from higher to lower
             if (from < to)
-                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from), static_cast<std::int64_t>(to) }(m_engine));
+                return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
+                                                                 static_cast<std::int64_t>(to) }(m_engine));
 
-            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(m_engine));
+            return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to),
+                                                             static_cast<std::int64_t>(from) }(m_engine));
         }
 
         /// <summary>
         /// Generate a bool value with specific probability by std::bernoulli_distribution.
         /// </summary>
-        /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
+        /// <param name="probability">
+        /// Probability of generating true in [0; 1] range 0 means always false, 1 means always true.
+        /// </param>
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
         typename std::enable_if<std::is_same<T, bool>::value, bool>::type
@@ -1125,7 +1127,8 @@ namespace TRAP::Utils
     	Get(InputIt first, InputIt last)
     	{
             const auto size = std::distance(first, last);
-            if (0 == size) return last;
+            if (0 == size)
+                return last;
             using diff_t = typename std::iterator_traits<InputIt>::difference_type;
             return std::next(first, Get<diff_t>(0, size - 1));
         }
@@ -1180,8 +1183,8 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Reorders the elements in the given range [first, last) such that each possible permutation of those elements
-        /// has equal probability of appearance.
+        /// Reorders the elements in the given range [first, last) such that each possible permutation of
+        /// those elements has equal probability of appearance.
         /// </summary>
         /// <param name="first">Range of elements to shuffle randomly.</param>
         /// <param name="last">Range of elements to shuffle randomly.</param>
@@ -1220,7 +1223,7 @@ namespace TRAP::Utils
     	{
             return m_engine;
         }
-    	
+
     protected:
         /// <summary>
         /// Retrieve engine seeded by Seeder
@@ -1230,7 +1233,7 @@ namespace TRAP::Utils
     	{
             //Make seeder instance for seed return by reference like std::seed_seq
             return engine{ Seeder{ }() };
-        } 
+        }
 
         /// <summary>
         /// Random number engine

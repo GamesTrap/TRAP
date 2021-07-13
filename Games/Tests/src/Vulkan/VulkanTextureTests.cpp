@@ -231,5 +231,12 @@ bool VulkanTextureTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
     else if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
 
+    if (e.GetKey() == TRAP::Input::Key::F5 && e.GetRepeatCount() < 1) //Make Window windowed
+		TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed, 1280, 720);
+	if (e.GetKey() == TRAP::Input::Key::F6 && e.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
+		TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
+	if (e.GetKey() == TRAP::Input::Key::F7 && e.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
+		TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
+
     return false;
 }

@@ -8,11 +8,16 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//-------------------------------------------------------------------------------------------------------------------//
 const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::None;
-const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<uint8_t, 16>{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-																						  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
-const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<uint8_t, 16>{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-																							   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01});
+const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::Any(std::array<uint8_t, 16>
+	{
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	});
+const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::array<uint8_t, 16>
+    {
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
+	});
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -120,9 +125,8 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 
 TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
-	//HTTP URL ip6ony.me
-	//"/api/"
-	//GetBody and parse CSV
+	//HTTP URL v6.ident.me
+	//GetBody
 	TRAP::Network::HTTP server("v6.ident.me");
 	const TRAP::Network::HTTP::Request request("", TRAP::Network::HTTP::Request::Method::GET);
 	const TRAP::Network::HTTP::Response page = server.SendRequest(request, timeout);
@@ -140,44 +144,44 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 	m_address = {};
 	m_valid = false;
 
-	if(!address.empty())
+	if(address.empty())
+		return;
+
+	const std::string lowerAddress = Utils::String::ToLower(address);
+	if (address == "::" || address == "0:0:0:0:0:0:0:0" ||
+		address == "0000:0000:0000:0000:0000:0000:0000:0000")
 	{
-		const std::string lowerAddress = Utils::String::ToLower(address);
-		if (address == "::" || address == "0:0:0:0:0:0:0:0" ||
-			address == "0000:0000:0000:0000:0000:0000:0000:0000")
-		{
 #ifdef TRAP_PLATFORM_WINDOWS
-			std::memcpy(m_address.data(), in6addr_any.u.Byte, m_address.size());
+		std::memcpy(m_address.data(), in6addr_any.u.Byte, m_address.size());
 #else
-			std::memcpy(m_address.data(), in6addr_any.s6_addr, m_address.size());
+		std::memcpy(m_address.data(), in6addr_any.s6_addr, m_address.size());
 #endif
+		m_valid = true;
+	}
+	else
+	{
+		//Try to convert the address as a hex representation ("XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX")
+		std::array<uint8_t, 16> ip{};
+		if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()))
+		{
+			m_address = ip;
 			m_valid = true;
 		}
 		else
 		{
-			//Try to convert the address as a hex representation ("XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX")
-			std::array<uint8_t, 16> ip{};
-			if(inet_pton(AF_INET6, lowerAddress.c_str(), ip.data()))
+			//Not a valid address, try to convert it as a host name
+			addrinfo hints{};
+			std::memset(&hints, 0, sizeof(hints));
+			hints.ai_family = AF_INET6;
+			addrinfo* result = nullptr;
+			if(getaddrinfo(lowerAddress.c_str(), nullptr, &hints, &result) == 0)
 			{
-				m_address = ip;
-				m_valid = true;
-			}
-			else
-			{
-				//Not a valid address, try to convert it as a host name
-				addrinfo hints{};
-				std::memset(&hints, 0, sizeof(hints));
-				hints.ai_family = AF_INET6;
-				addrinfo* result = nullptr;
-				if(getaddrinfo(lowerAddress.c_str(), nullptr, &hints, &result) == 0)
+				if(result)
 				{
-					if(result)
-					{
-						std::memcpy(ip.data(), &reinterpret_cast<sockaddr_in6*>(result->ai_addr)->sin6_addr, 16);
-						freeaddrinfo(result);
-						m_address = ip;
-						m_valid = true;
-					}
+					std::memcpy(ip.data(), &reinterpret_cast<sockaddr_in6*>(result->ai_addr)->sin6_addr, 16);
+					freeaddrinfo(result);
+					m_address = ip;
+					m_valid = true;
 				}
 			}
 		}

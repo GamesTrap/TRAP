@@ -47,6 +47,14 @@ namespace TRAP::INTERNAL
 
 	private:
 		std::vector<float> m_data;
+
+		struct Header
+		{
+			std::string MagicNumber = "";
+			uint32_t Width = 0;
+			uint32_t Height = 0;
+			float ByteOrder = 0.0f;
+		};
 	};
 }
 

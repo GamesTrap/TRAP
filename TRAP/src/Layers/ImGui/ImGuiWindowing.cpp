@@ -81,7 +81,9 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	TP_PROFILE_FUNCTION();
 
 	ImGuiIO& io = ImGui::GetIO();
-	IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
+	IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It generally built by the renderer back-end. "
+	                                 "Missing call to renderer _NewFrame() function? "
+								     "e.g. ImGui_ImplOpenGL3_NewFrame().");
 
 	//Setup display size (every frame to accommodate for window resizing)
 	int32_t width, height;
@@ -90,7 +92,8 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	WindowingAPI::GetFrameBufferSize(s_window, displayWidth, displayHeight);
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	if (width > 0 && height > 0)
-		io.DisplayFramebufferScale = ImVec2(static_cast<float>(displayWidth) / static_cast<float>(width), static_cast<float>(displayHeight) / static_cast<float>(height));
+		io.DisplayFramebufferScale = ImVec2(static_cast<float>(displayWidth) / static_cast<float>(width),
+		                                    static_cast<float>(displayHeight) / static_cast<float>(height));
 	if (s_wantUpdateMonitors)
 		UpdateMonitors();
 
@@ -115,7 +118,8 @@ void TRAP::INTERNAL::ImGuiWindowing::SetCustomCursor(Scope<WindowingAPI::Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, const bool installCallbacks, const TRAP::Graphics::RenderAPI renderAPI)
+bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, const bool installCallbacks,
+                                          const TRAP::Graphics::RenderAPI renderAPI)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -161,13 +165,34 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, 
 
 	s_mouseCursors[ImGuiMouseCursor_Arrow] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Arrow);
 	s_mouseCursors[ImGuiMouseCursor_TextInput] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Input);
-	s_mouseCursors[ImGuiMouseCursor_ResizeNS] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeVertical);
-	s_mouseCursors[ImGuiMouseCursor_ResizeEW] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeHorizontal);
-	s_mouseCursors[ImGuiMouseCursor_Hand] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::PointingHand);
-	s_mouseCursors[ImGuiMouseCursor_ResizeAll] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeAll);
-	s_mouseCursors[ImGuiMouseCursor_ResizeNESW] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight);
-	s_mouseCursors[ImGuiMouseCursor_ResizeNWSE] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft);
-	s_mouseCursors[ImGuiMouseCursor_NotAllowed] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::NotAllowed);
+	s_mouseCursors[ImGuiMouseCursor_ResizeNS] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::ResizeVertical
+	);
+	s_mouseCursors[ImGuiMouseCursor_ResizeEW] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::ResizeHorizontal
+	);
+	s_mouseCursors[ImGuiMouseCursor_Hand] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::PointingHand
+	);
+	s_mouseCursors[ImGuiMouseCursor_ResizeAll] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::ResizeAll
+	);
+	s_mouseCursors[ImGuiMouseCursor_ResizeNESW] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight
+	);
+	s_mouseCursors[ImGuiMouseCursor_ResizeNWSE] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft
+	);
+	s_mouseCursors[ImGuiMouseCursor_NotAllowed] = WindowingAPI::CreateStandardCursor
+	(
+		WindowingAPI::CursorType::NotAllowed
+	);
 
 	//Chain WindowingAPI callback: our callback will call the user's previously installed callbacks, if any.
 	s_prevUserCallbackMouseButton = nullptr;
@@ -248,8 +273,10 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 	ImGuiIO& io = ImGui::GetIO();
 	for(uint32_t i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
 	{
-		//If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
-		io.MouseDown[i] = s_mouseJustPressed[i] || WindowingAPI::GetMouseButton(s_window, static_cast<Input::MouseButton>(i)) != 0;
+		//If a mouse press event came, always pass it as "mouse held this frame",
+		//so we don't miss click-release events that are shorter than 1 frame.
+		io.MouseDown[i] = s_mouseJustPressed[i] ||
+		                  WindowingAPI::GetMouseButton(s_window, static_cast<Input::MouseButton>(i)) != 0;
 		s_mouseJustPressed[i] = false;
 	}
 
@@ -261,30 +288,37 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 	for(uint32_t n = 0; n < static_cast<uint32_t>(platformIO.Viewports.Size); n++)
 	{
 		ImGuiViewport* viewport = platformIO.Viewports[n];
-		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>(viewport->PlatformHandle);
-		
+		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>
+		(
+			viewport->PlatformHandle
+		);
+
 		if (!windowPtr)
 			return;
-		
+
 		const bool focused = WindowingAPI::GetWindowHint(windowPtr, WindowingAPI::Hint::Focused);
 		if(focused)
 		{
 			if (io.WantSetMousePos)
-				WindowingAPI::SetCursorPos(windowPtr, static_cast<double>(mousePosBackup.x - viewport->Pos.x), static_cast<double>(mousePosBackup.y - viewport->Pos.y));
+				WindowingAPI::SetCursorPos(windowPtr, static_cast<double>(mousePosBackup.x - viewport->Pos.x),
+				                           static_cast<double>(mousePosBackup.y - viewport->Pos.y));
 			else
 			{
 				double mouseX = 0.0, mouseY = 0.0;
 				WindowingAPI::GetCursorPos(windowPtr, mouseX, mouseY);
 				if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 				{
-					//Multi-Viewport mode: mouse position in OS absolute coordinates (io.MousePos is (0,0) when the mouse is on the upper-left of the primary monitor)
+					//Multi-Viewport mode: mouse position in OS absolute coordinates (io.MousePos is (0,0)
+					//when the mouse is on the upper-left of the primary monitor)
 					int32_t windowX = 0, windowY = 0;
 					WindowingAPI::GetWindowPos(windowPtr, windowX, windowY);
-					io.MousePos = ImVec2(static_cast<float>(mouseX) + static_cast<float>(windowX), static_cast<float>(mouseY) + static_cast<float>(windowY));
+					io.MousePos = ImVec2(static_cast<float>(mouseX) + static_cast<float>(windowX),
+					                     static_cast<float>(mouseY) + static_cast<float>(windowY));
 				}
 				else
 				{
-					//Single-Viewport mode: mouse position in client window coordinates (io.MousePos is (0,0) when the mouse is on the upper-left corner of the app window)
+					//Single-Viewport mode: mouse position in client window coordinates (io.MousePos is (0,0)
+					//when the mouse is on the upper-left corner of the app window)
 					io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
 				}
 			}
@@ -292,13 +326,18 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 				io.MouseDown[i] |= WindowingAPI::GetMouseButton(windowPtr, static_cast<Input::MouseButton>(i)) != 0;
 		}
 
-		//(Optional) When using multiple viewports: set io.MouseHoveredViewport to the viewport the OS mouse cursor is hovering.
-		//Important: This information is not easy to provide and many high-level windowing libraries won't be able to provide it correctly, because
+		//(Optional) When using multiple viewports: set io.MouseHoveredViewport to the viewport
+		//                                          the OS mouse cursor is hovering.
+		//Important: This information is not easy to provide and many high-level windowing libraries
+		//           won't be able to provide it correctly, because
 		//- This is _ignoring_ viewport with the ImGuiViewportFlags_NoInputs flag (pass-through windows).
 		//- This is _regardless_ of whether another viewport is focused or being dragged from.
-		//If ImGuiBackendFlags_HasMouseHoveredViewport is not set by the back-end, imgui will ignore this field and infer the information by relying on the
-		//rectangles and last focused time of every viewports it knows about. It will be unaware of other windows that may be sitting between or over your windows.
-		if (WindowingAPI::GetWindowHint(windowPtr, WindowingAPI::Hint::Hovered) && !(viewport->Flags & ImGuiViewportFlags_NoInputs))
+		//If ImGuiBackendFlags_HasMouseHoveredViewport is not set by the back-end,
+		//imgui will ignore this field and infer the information by relying on the
+		//rectangles and last focused time of every viewports it knows about.
+		//It will be unaware of other windows that may be sitting between or over your windows.
+		if (WindowingAPI::GetWindowHint(windowPtr, WindowingAPI::Hint::Hovered) &&
+		    !(viewport->Flags & ImGuiViewportFlags_NoInputs))
 			io.MouseHoveredViewport = viewport->ID;
 	}
 }
@@ -310,16 +349,20 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 	TP_PROFILE_FUNCTION();
 
 	ImGuiIO& io = ImGui::GetIO();
-	if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || (WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Disabled ||
-		                                                            WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Hidden))
+	if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) ||
+	    (WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Disabled ||
+		 WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Hidden))
 		return;
 
 	const ImGuiMouseCursor imguiCursor = ImGui::GetMouseCursor();
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	for(uint32_t n = 0; n < static_cast<uint32_t>(platformIO.Viewports.Size); n++)
 	{
-		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>(platformIO.Viewports[n]->PlatformHandle);
-		
+		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>
+		(
+			platformIO.Viewports[n]->PlatformHandle
+		);
+
 		if (!windowPtr)
 			return;
 
@@ -333,7 +376,8 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 			if (imguiCursor != ImGuiMouseCursor_Arrow)
 			{
 				//Show OS mouse cursor
-				WindowingAPI::SetCursor(windowPtr, s_mouseCursors[imguiCursor] ? s_mouseCursors[imguiCursor].get() : s_mouseCursors[ImGuiMouseCursor_Arrow].get());
+				WindowingAPI::SetCursor(windowPtr, s_mouseCursors[imguiCursor] ?
+					s_mouseCursors[imguiCursor].get() : s_mouseCursors[ImGuiMouseCursor_Arrow].get());
 				WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);
 			}
 			else
@@ -395,7 +439,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateGamepads()
 		MAP_ANALOG(ImGuiNavInput_LStickRight, 0, +0.3f, +0.9f);
 		MAP_ANALOG(ImGuiNavInput_LStickUp, 1, +0.3f, +0.9f);
 		MAP_ANALOG(ImGuiNavInput_LStickDown, 1, -0.3f, -0.9f);
-	
+
 		io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
 	}
 	else
@@ -425,7 +469,8 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 		monitor.WorkPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 		monitor.WorkSize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 
-		//Warning: The validity of monitor DPI information on Windows depends on the application DPI awareness settings,
+		//Warning: The validity of monitor DPI information on Windows depends on the application
+		//DPI awareness settings,
 		//which generally needs to be set in the manifest or at runtime.
 		float xScale, yScale;
 		WindowingAPI::GetMonitorContentScale(n, xScale, yScale);
@@ -455,7 +500,8 @@ void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void*, const char* text)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::InternalWindow* window,
+                                                         Input::MouseButton mouseButton, const bool pressed)
 {
 	if (s_prevUserCallbackMouseButton != nullptr && window == s_window)
 		s_prevUserCallbackMouseButton(window, mouseButton, pressed);
@@ -466,7 +512,8 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::InternalWindow* window, const double xOffset, const double yOffset)
+void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::InternalWindow* window,
+                                                    const double xOffset, const double yOffset)
 {
 	if (s_prevUserCallbackScroll != nullptr && window == s_window)
 		s_prevUserCallbackScroll(window, xOffset, yOffset);
@@ -478,7 +525,8 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::Internal
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key,
+                                                 const bool pressed)
 {
 	if (s_prevUserCallbackKey != nullptr && window == s_window)
 		s_prevUserCallbackKey(window, key, pressed);
@@ -490,15 +538,20 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 		io.KeysDown[static_cast<uint32_t>(key)] = false;
 
 	//Modifiers are not reliable across systems
-	io.KeyCtrl = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_Control)] || io.KeysDown[static_cast<uint32_t>(Input::Key::Right_Control)];
-	io.KeyShift = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_Shift)] || io.KeysDown[static_cast<uint32_t>(Input::Key::Right_Shift)];
-	io.KeyAlt = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_ALT)] || io.KeysDown[static_cast<uint32_t>(Input::Key::Right_ALT)];
-	io.KeySuper = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_Super)] || io.KeysDown[static_cast<uint32_t>(Input::Key::Right_Super)];
+	io.KeyCtrl = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_Control)] ||
+	             io.KeysDown[static_cast<uint32_t>(Input::Key::Right_Control)];
+	io.KeyShift = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_Shift)] ||
+	              io.KeysDown[static_cast<uint32_t>(Input::Key::Right_Shift)];
+	io.KeyAlt = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_ALT)] ||
+	            io.KeysDown[static_cast<uint32_t>(Input::Key::Right_ALT)];
+	io.KeySuper = io.KeysDown[static_cast<uint32_t>(Input::Key::Left_Super)] ||
+	              io.KeysDown[static_cast<uint32_t>(Input::Key::Right_Super)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const WindowingAPI::InternalWindow* window, const uint32_t codePoint)
+void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const WindowingAPI::InternalWindow* window,
+                                                  const uint32_t codePoint)
 {
 	if (s_prevUserCallbackChar != nullptr && window == s_window)
 		s_prevUserCallbackChar(window, codePoint);
@@ -509,13 +562,18 @@ void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const WindowingAPI::InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 //MULTI-VIEWPORT | PLATFORM INTERFACE SUPPORT
-//This is an _advanced_ and _optional_ feature, allowing the back-end to create and handle multiple viewports simultaneously.
-//If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first...
+//This is an _advanced_ and _optional_ feature,
+//allowing the back-end to create and handle multiple viewports simultaneously.
+//If you are new to dear imgui or creating a new binding for dear imgui,
+//it is recommended that you completely ignore this section first...
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const WindowingAPI::InternalWindow* window)
 {
-	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
+	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle
+	(
+		const_cast<WindowingAPI::InternalWindow*>(window))
+	)
 		viewport->PlatformRequestClose = true;
 }
 
@@ -523,7 +581,10 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const WindowingAPI::Int
 
 void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t, int32_t)
 {
-	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
+	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle
+	(
+		const_cast<WindowingAPI::InternalWindow*>(window))
+	)
 		viewport->PlatformRequestMove = true;
 }
 
@@ -531,7 +592,10 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::Inter
 
 void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t, int32_t)
 {
-	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
+	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle
+	(
+		const_cast<WindowingAPI::InternalWindow*>(window)
+	))
 	{
 		if(ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData))
 		{
@@ -539,7 +603,8 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const WindowingAPI::Inte
 			//However depending on the platform the callback may be invoked at different time:
 			//On Windows it appears to be called within the SetWindowSize() call whereas
 			//on Linux it is queued and invoked during PollEvents().
-			//Because the event doesn't always fire on SetWindowSize() we use a frame counter tag to only ignore recent SetWindowSize() calls.
+			//Because the event doesn't always fire on SetWindowSize() we use a frame counter
+			//tag to only ignore recent SetWindowSize() calls.
 			const bool ignoreEvent = (ImGui::GetFrameCount() <= data->IgnoreWindowSizeEventFrame + 1);
 			data->IgnoreWindowSizeEventFrame = -1;
 			if (ignoreEvent)
@@ -561,17 +626,21 @@ void TRAP::INTERNAL::ImGuiWindowing::CreateWindow(ImGuiViewport* viewport)
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Visible, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Focused, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::FocusOnShow, false);
-	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) ? false : true);
-	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) ? true : false);
+	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) ?
+		false : true);
+	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) ?
+		true : false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::MousePassthrough, true);
-	data->Window = WindowingAPI::CreateWindow(static_cast<int32_t>(viewport->Size.x), static_cast<int32_t>(viewport->Size.y), "No Title Yet", nullptr);
+	data->Window = WindowingAPI::CreateWindow(static_cast<int32_t>(viewport->Size.x),
+	                                          static_cast<int32_t>(viewport->Size.y), "No Title Yet", nullptr);
 	data->WindowPtr = data->Window.get();
 	data->WindowOwned = true;
 	viewport->PlatformHandle = static_cast<void*>(data->WindowPtr);
 #ifdef TRAP_PLATFORM_WINDOWS
 	viewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(data->WindowPtr);
 #endif
-	WindowingAPI::SetWindowPos(data->WindowPtr, static_cast<int32_t>(viewport->Pos.x), static_cast<int32_t>(viewport->Pos.y));
+	WindowingAPI::SetWindowPos(data->WindowPtr, static_cast<int32_t>(viewport->Pos.x),
+	                           static_cast<int32_t>(viewport->Pos.y));
 
 	//Install callbacks for secondary viewports
 	WindowingAPI::SetMouseButtonCallback(data->WindowPtr, MouseButtonCallback);
@@ -616,7 +685,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* viewport)
 
 	if(viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
 		WindowingAPI::HideWindowFromTaskbar(static_cast<WindowingAPI::InternalWindow*>(viewport->PlatformHandle));
-	
+
 	WindowingAPI::ShowWindow(data->WindowPtr);
 }
 
@@ -629,7 +698,7 @@ ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowPos(ImGuiViewport* viewport)
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	int32_t x = 0, y = 0;
 	WindowingAPI::GetWindowPos(data->WindowPtr, x, y);
-	
+
 	return ImVec2(static_cast<float>(x), static_cast<float>(y));
 }
 
@@ -757,7 +826,8 @@ void TRAP::INTERNAL::ImGuiWindowing::SetIMEInputPos(ImGuiViewport* viewport, con
 {
 	TP_PROFILE_FUNCTION();
 
-	COMPOSITIONFORM cf = { CFS_FORCE_POSITION, {static_cast<LONG>(pos.x - viewport->Pos.x), static_cast<LONG>(pos.y - viewport->Pos.y)}, {0, 0, 0, 0} };
+	COMPOSITIONFORM cf = { CFS_FORCE_POSITION, {static_cast<LONG>(pos.x - viewport->Pos.x),
+	                                            static_cast<LONG>(pos.y - viewport->Pos.y)}, {0, 0, 0, 0} };
 	if(HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw))
 	{
 		if(HIMC himc = ::ImmGetContext(hwnd))
@@ -773,7 +843,8 @@ void TRAP::INTERNAL::ImGuiWindowing::SetIMEInputPos(ImGuiViewport* viewport, con
 // Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance, const void* vkAllocator, ImU64* outVkSurface)
+int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
+                                                        const void* vkAllocator, ImU64* outVkSurface)
 {
 	TP_PROFILE_FUNCTION();
 

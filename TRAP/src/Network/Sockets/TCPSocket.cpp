@@ -58,16 +58,15 @@ TRAP::Network::TCPSocket::TCPSocket()
 
 uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-		//Retrieve information about the local end of the socket
-		sockaddr_in address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
-	}
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0; //We failed to retrieve the port
 
-	//We failed to retrieve the port
+	//Retrieve information about the local end of the socket
+	sockaddr_in address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+		return ntohs(address.sin_port);
+
 	return 0;
 }
 
@@ -75,16 +74,15 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 
 TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-		//Retrieve information about the remote end of the socket
-		sockaddr_in address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return IPv4Address(ntohl(address.sin_addr.s_addr));
-	}
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return IPv4Address::None; //We failed to retrieve the address
 
-	//We failed to retrieve the address
+	//Retrieve information about the remote end of the socket
+	sockaddr_in address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+		return IPv4Address(ntohl(address.sin_addr.s_addr));
+
 	return IPv4Address::None;
 }
 
@@ -92,22 +90,22 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 
 uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-		//Retrieve information about the remote end of the socket
-		sockaddr_in address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
-	}
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0; //We failed to retrieve the port
 
-	//We failed to retrieve the port
+	//Retrieve information about the remote end of the socket
+	sockaddr_in address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+		return ntohs(address.sin_port);
+
 	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Address& remoteAddress, const uint16_t remotePort, Utils::TimeStep timeout)
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Address& remoteAddress,
+                                                                const uint16_t remotePort, Utils::TimeStep timeout)
 {
 	//Disconnect the socket if it is already connected
 	Disconnect();
@@ -174,21 +172,12 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 				//At this point the connection may have been either accepted or refused.
 				//To know whether it's a success or a failure, we must check the address of the connected peer
 				if(GetRemoteAddress() != IPv4Address::None)
-				{
-					//Connection accepted
-					status = Status::Done;
-				}
+					status = Status::Done; //Connection accepted
 				else
-				{
-					//Conncetion refused
-					status = INTERNAL::Network::SocketImpl::GetErrorStatus();
-				}
+					status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Conncetion refused
 			}
 			else
-			{
-				//Failed to connect before timeout is over
-				status = INTERNAL::Network::SocketImpl::GetErrorStatus();
-			}
+				status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Failed to connect before timeout is over
 		}
 
 		//Switch back to blocking mode
@@ -223,7 +212,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, const std::size_t size, std::size_t& sent) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, const std::size_t size,
+                                                             std::size_t& sent) const
 {
 	//Check the parameters
 	if(!data || (size == 0))
@@ -256,7 +246,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, const std::size_t size, std::size_t& received) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, const std::size_t size,
+                                                                std::size_t& received) const
 {
 	//First clear the variables to fill
 	received = 0;
@@ -264,7 +255,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, cons
 	//Check the destination buffer
 	if(!data)
 	{
-		TP_ERROR(Log::NetworkTCPSocketPrefix, "Cannot receive data from the network (the destination buffer is invalid)");
+		TP_ERROR(Log::NetworkTCPSocketPrefix,
+		         "Cannot receive data from the network (the destination buffer is invalid)");
 		return Status::Error;
 	}
 
@@ -279,7 +271,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, cons
 	}
 	if (sizeReceived == 0)
 		return Status::Disconnected;
-	
+
 	return INTERNAL::Network::SocketImpl::GetErrorStatus();
 }
 
@@ -341,7 +333,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 		while(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 		{
 			char* data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
-			const Status status = Receive(data, sizeof(m_pendingPacket.Size) - m_pendingPacket.SizeReceived, received);
+			const Status status = Receive(data, sizeof(m_pendingPacket.Size) - m_pendingPacket.SizeReceived,
+			                              received);
 			m_pendingPacket.SizeReceived += received;
 
 			if (status != Status::Done)
@@ -362,7 +355,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 	while(m_pendingPacket.Data.size() < packetSize)
 	{
 		//Receive a chunk of data
-		const std::size_t sizeToGet = std::min(static_cast<std::size_t>(packetSize - m_pendingPacket.Data.size()), buffer.size());
+		const std::size_t sizeToGet = std::min(static_cast<std::size_t>(packetSize - m_pendingPacket.Data.size()),
+		                                       buffer.size());
 		const Status status = Receive(buffer.data(), sizeToGet, received);
 		if (status != Status::Done)
 			return status;
@@ -373,7 +367,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
 			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
 			std::memcpy(begin, buffer.data(), received);
-		}		
+		}
 	}
 
 	//we have received all the packet data: we can copy it to the user packet

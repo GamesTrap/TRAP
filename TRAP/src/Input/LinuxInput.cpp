@@ -50,7 +50,8 @@ bool TRAP::Input::InitController()
 	{
 		//HACK: Register for IN_ATTRIB to get notified when udev is done
 		//This works well in practice but the true way is libudev
-		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName, IN_CREATE | IN_ATTRIB | IN_DELETE);
+		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName,
+		                                            IN_CREATE | IN_ATTRIB | IN_DELETE);
 	}
 
 	//Continue without device connection notifications if inotify fails
@@ -110,7 +111,7 @@ void TRAP::Input::ShutdownController()
 
 		close(s_linuxController.INotify);
 	}
-	
+
 	s_controllerInternal = {};
 }
 
@@ -120,56 +121,57 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 {
 	if(!PollController(controller, PollMode::Presence))
 		return;
-		
+
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
-	if(con->LinuxCon.VibrationSupported)
+
+	if(!con->LinuxCon.VibrationSupported)
+		return;
+
+	struct input_event play;
+	//Delete any existing effect
+	if(con->LinuxCon.CurrentVibration != -1)
 	{
-		struct input_event play;
-		//Delete any existing effect
-		if(con->LinuxCon.CurrentVibration != -1)
+		//Stop the effect
+		play.type = EV_FF;
+		play.code = con->LinuxCon.CurrentVibration;
+		play.value = 0;
+
+		if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
 		{
-			//Stop the effect
-			play.type = EV_FF;
-			play.code = con->LinuxCon.CurrentVibration;
-			play.value = 0;
-		
-			if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
-			{
-				TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop Vibration");
-				return;
-			}
-		
-			//Delete the effect
-			ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration);
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop Vibration");
+			return;
 		}
-	
-		//If VibrationSupported is true, start the new effect
-		if(leftMotor != 0.0f || rightMotor != 0.0f)
+
+		//Delete the effect
+		ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration);
+	}
+
+	//If VibrationSupported is true, start the new effect
+	if(leftMotor != 0.0f || rightMotor != 0.0f)
+	{
+		struct ff_effect ff;
+
+		//Define an effect for this vibration setting
+		ff.type = FF_RUMBLE;
+		ff.id = -1;
+		ff.u.rumble.strong_magnitude = static_cast<uint16_t>(leftMotor * 65535);
+		ff.u.rumble.weak_magnitude = static_cast<uint16_t>(rightMotor * 65535);
+		ff.replay.length = 65535;
+		ff.replay.delay = 0;
+
+		//Upload the effect
+		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) != -1)
+			con->LinuxCon.CurrentVibration = ff.id;
+
+		//Play the effect
+		play.type = EV_FF;
+		play.code = con->LinuxCon.CurrentVibration;
+		play.value = 1;
+
+		if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
 		{
-			struct ff_effect ff;
-		
-			//Define an effect for this vibration setting
-			ff.type = FF_RUMBLE;
-			ff.id = -1;
-			ff.u.rumble.strong_magnitude = static_cast<uint16_t>(leftMotor * 65535);
-			ff.u.rumble.weak_magnitude = static_cast<uint16_t>(rightMotor * 65535);
-			ff.replay.length = 65535;
-			ff.replay.delay = 0;
-		
-			//Upload the effect
-			if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) != -1)
-				con->LinuxCon.CurrentVibration = ff.id;
-			
-			//Play the effect
-			play.type = EV_FF;
-			play.code = con->LinuxCon.CurrentVibration;
-			play.value = 1;
-		
-			if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
-			{
-				TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start Vibration");
-				return;
-			}
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start Vibration");
+			return;
 		}
 	}
 }
@@ -191,10 +193,10 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	LinuxCon.FD = open(path.data(), O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
 	if(LinuxCon.FD != -1)
 		LinuxCon.VibrationSupported = true;
-		
+
 	if(errno == EACCES)
 		LinuxCon.FD = open(path.data(), O_RDONLY | O_NONBLOCK);
-	
+
 	if (LinuxCon.FD == -1)
 		return false;
 
@@ -296,12 +298,14 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	//Get index of our ControllerInternal
 	uint8_t index;
 	for (index = 0; index <= static_cast<uint8_t>(Controller::Sixteen); index++)
+	{
 		if (&s_controllerInternal[index] == con)
 			break;
+	}
 
 	Events::ControllerConnectEvent event(static_cast<Controller>(index));
 	s_eventCallback(event);
-	
+
 	return true;
 }
 
@@ -311,20 +315,22 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 void TRAP::Input::CloseController(Controller controller)
 {
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
-	
+
 	close(con->LinuxCon.FD);
 
 	bool connected = con->Connected;
 
 	if(connected)
+	{
 		TP_INFO(Log::InputControllerPrefix, "Controller: ",
 		        (con->mapping
 			        ? con->mapping->Name
 			        : con->Name),
 		        " (", static_cast<uint32_t>(controller), ") Disconnected!");
+	}
 
 	*con = {};
-	
+
 	if (!s_eventCallback)
 		return;
 
@@ -382,9 +388,9 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
 		ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
-	
+
 		//Read all queued events (non-blocking)
-		for(;;)
+		while(true)
 		{
 			struct input_event e;
 

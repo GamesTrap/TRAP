@@ -4,8 +4,8 @@
 #include "Utils/Time/TimeStep.h"
 #include "Events/Event.h"
 
-namespace TRAP {
-
+namespace TRAP
+{
 	class Layer
 	{
 	public:
@@ -68,7 +68,7 @@ namespace TRAP {
 		/// </summary>
 		/// <returns>Name of the Layer.</returns>
 		const std::string& GetName() const;
-		
+
 	protected:
 		std::string m_DebugName;
 	};

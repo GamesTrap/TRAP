@@ -173,7 +173,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="renderAPI">New TRAP::Graphics::API::RenderAPI to be used.</param>
 		void ReCreate(Graphics::RenderAPI renderAPI) const;
-		
+
 		/// <summary>
 		/// Handles all Events for the Main Render Window and the TRAP::LayerStack.
 		/// </summary>

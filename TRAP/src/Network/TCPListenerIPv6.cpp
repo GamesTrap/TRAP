@@ -43,17 +43,16 @@ TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
 
 uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
-	{
-		//Retrieve information about the local end of the socket
-		sockaddr_in6 address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin6_port);
-	}
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0; //We failed to retrieve the port
 
-	//We failed to retrieve the port
-	return 0;
+	//Retrieve information about the local end of the socket
+	sockaddr_in6 address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+		return ntohs(address.sin6_port);
+
+	return 0; //We failed to retrieve the port
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -175,7 +175,7 @@ namespace TRAP::Math
 		template<typename U>
 		constexpr Vec<2, T>& operator>>=(const Vec<2, U>& v);
 	};
-	
+
 	//Unary operators
 	template<typename T>
 	constexpr Vec<2, T> operator+(const Vec<2, T>& v);
@@ -441,15 +441,7 @@ constexpr T& TRAP::Math::Vec<2, T>::operator[](int i)
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
-	switch (i)
-	{
-	default:
-	case 0:
-		return x;
-
-	case 1:
-		return y;
-	}
+	return i == 0 ? x : y;
 }
 
 template<typename T>
@@ -457,15 +449,7 @@ constexpr const T& TRAP::Math::Vec<2, T>::operator[](int i) const
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
-	switch (i)
-	{
-	default:
-	case 0:
-		return x;
-
-	case 1:
-		return y;
-	}
+	return i == 0 ? x : y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -626,7 +610,7 @@ template<typename T>
 constexpr TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator++(int)
 {
 	Vec<2, T> result(*this);
-	++* this;
+	++*this;
 
 	return result;
 }
@@ -635,7 +619,7 @@ template<typename T>
 constexpr TRAP::Math::Vec<2, T> TRAP::Math::Vec<2, T>::operator--(int)
 {
 	Vec<2, T> result(*this);
-	--* this;
+	--*this;
 
 	return result;
 }

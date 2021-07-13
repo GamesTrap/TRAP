@@ -148,7 +148,7 @@ namespace TRAP::Network
 		static const IPv4Address Any; //Value representing any address (0.0.0.0)
 		static const IPv4Address LocalHost; //The "localhost" address (for connecting a computer to itself locally)
 		static const IPv4Address Broadcast; //The "broadcast" address (for sending UDP messages to everyone on a local network)
-		
+
 	private:
 		friend bool operator<(const IPv4Address& left, const IPv4Address& right);
 

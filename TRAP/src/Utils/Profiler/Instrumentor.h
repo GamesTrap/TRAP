@@ -82,7 +82,7 @@ namespace TRAP::Utils::Debug
 		/// </summary>
 		/// <param name="result">Profiling result.</param>
 		void WriteProfile(const ProfileResult& result);
-		
+
 	private:
 		/// <summary>
 		/// Write header of profiler.
@@ -96,9 +96,9 @@ namespace TRAP::Utils::Debug
 		/// End session and close file.
 		/// </summary>
 		void InternalEndSession();
-		
+
 		std::mutex m_mutex;
-		InstrumentationSession* m_currentSession;
+		TRAP::Scope<InstrumentationSession> m_currentSession;
 		std::ofstream m_outputStream;
 	};
 
@@ -140,7 +140,7 @@ namespace TRAP::Utils::Debug
 		/// Stop the time and write to profiler.
 		/// </summary>
 		void Stop();
-		
+
 	private:
 		const char* m_name = nullptr;
 		std::chrono::time_point<std::chrono::steady_clock> m_startTimePoint;
@@ -165,7 +165,8 @@ namespace TRAP::Utils::Debug
 			while(srcIndex < N)
 			{
 				std::size_t matchIndex = 0;
-				while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+				while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 &&
+				       expr[srcIndex + matchIndex] == remove[matchIndex])
 					matchIndex++;
 				if (matchIndex == K - 1)
 					srcIndex += matchIndex;
@@ -182,7 +183,8 @@ namespace TRAP::Utils::Debug
 
 #ifdef TRAP_PROFILE
 	//Resolve which function signature macro will be used.
-	//Note that this only is resolved when the (pre)compiler starts, so the syntax highlighting could mark the wrong one in your editor!
+	//Note that this only is resolved when the (pre)compiler starts, so the syntax highlighting
+	//could mark the wrong one in your editor!
 	#if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
 		#define TP_FUNC_SIG __PRETTY_FUNCTION__
 	#elif defined(__DMC__) && (__DMC__ >= 0x810)
@@ -219,7 +221,8 @@ namespace TRAP::Utils::Debug
 	{
 		::TRAP::Utils::Debug::Instrumentor::Get().EndSession();
 	}
-	#define TP_PROFILE_SCOPE(name) constexpr auto fixedName = ::TRAP::Utils::Debug::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
+	#define TP_PROFILE_SCOPE(name) constexpr auto fixedName = \
+	    ::TRAP::Utils::Debug::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
 		::TRAP::Utils::Debug::InstrumentationTimer timer##__LINE__(fixedName.Data);
 	#define TP_PROFILE_FUNCTION() TP_PROFILE_SCOPE(TP_FUNC_SIG)
 #else

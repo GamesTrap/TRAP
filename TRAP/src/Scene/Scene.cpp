@@ -42,7 +42,7 @@ void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 			nsc.Instance->OnUpdate(deltaTime);
 		});
 	}
-	
+
 	//Render 2D
 	//Find Main Camera
 	Graphics::Camera* mainCamera = nullptr;
