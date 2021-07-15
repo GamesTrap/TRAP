@@ -20,7 +20,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	  m_device()
 {
 	TRAP_ASSERT(m_physicalDevice, "physicalDevice is nullptr");
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
 #endif
@@ -43,16 +43,14 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif
 
-	if (std::find_if(extensions.begin(),
-			extensions.end(),
-			[](const char* ext)
-			{
-				return std::strcmp(ext, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) == 0;
-			}) != extensions.end())
+	if (std::find_if(extensions.begin(), extensions.end(), [](const char* ext)
+		{
+			return std::strcmp(ext, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) == 0;
+		}) != extensions.end())
 	{
 		m_physicalDevice->RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 	}
-	
+
 	VkPhysicalDeviceFeatures2 deviceFeatures2{};
 	VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures{};
 	VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragmentShaderInterlockFeatures{};
@@ -78,7 +76,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 			deviceFeatures2.pNext = &ycbcrFeatures;
 			ycbcrFeatures.pNext = &descriptorIndexingFeatures;
 		}
-		
+
 		vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &deviceFeatures2);
 	}
 
@@ -111,28 +109,28 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		}
 	}
 
-	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&deviceFeatures2, queueCreateInfos, extensions);
+	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&deviceFeatures2, queueCreateInfos,
+	                                                                    extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
 
 	VkLoadDevice(m_device);
 
 	VulkanRenderer::s_debugMarkerSupport = (&vkCmdBeginDebugUtilsLabelEXT) && (&vkCmdEndDebugUtilsLabelEXT) &&
-		(&vkCmdInsertDebugUtilsLabelEXT) && (&vkSetDebugUtilsObjectNameEXT);
+		                                   (&vkCmdInsertDebugUtilsLabelEXT) && (&vkSetDebugUtilsObjectNameEXT);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
-	if(m_device)
-	{
+	TRAP_ASSERT(m_device);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif
-		vkDestroyDevice(m_device, nullptr);
-		m_device = nullptr;
-	}
+	vkDestroyDevice(m_device, nullptr);
+	m_device = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -162,15 +160,18 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 {
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ", static_cast<uint32_t>(m_graphicsQueueFamilyIndex));
+	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
+	         static_cast<uint32_t>(m_graphicsQueueFamilyIndex));
 #endif
 	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, m_computeQueueFamilyIndex, m_computeQueueIndex);
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ", static_cast<uint32_t>(m_computeQueueFamilyIndex));
+	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ",
+	         static_cast<uint32_t>(m_computeQueueFamilyIndex));
 #endif
 	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, m_transferQueueFamilyIndex, m_transferQueueIndex);
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ", static_cast<uint32_t>(m_transferQueueFamilyIndex));
+	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ",
+	         static_cast<uint32_t>(m_transferQueueFamilyIndex));
 #endif
 }
 
@@ -183,7 +184,8 @@ void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType, uint8_t& queueFamilyIndex, uint8_t& queueIndex)
+void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
+                                                             uint8_t& queueFamilyIndex, uint8_t& queueIndex)
 {
 	uint32_t qfi = std::numeric_limits<uint32_t>::max();
 	uint32_t qi = std::numeric_limits<uint32_t>::max();
@@ -247,7 +249,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		qfi = 0;
 		qi = 0;
 
-		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", static_cast<uint32_t>(queueType), ". Using default queue");
+		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ",
+		        static_cast<uint32_t>(queueType), ". Using default queue");
 	}
 
 	queueFamilyIndex = static_cast<uint8_t>(qfi);
@@ -256,7 +259,9 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties, uint8_t& queueFamilyIndex, uint8_t& queueIndex)
+void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
+                                                             VkQueueFamilyProperties& queueFamilyProperties,
+															 uint8_t& queueFamilyIndex, uint8_t& queueIndex)
 {
 	uint32_t qfi = std::numeric_limits<uint32_t>::max();
 	uint32_t qi = std::numeric_limits<uint32_t>::max();
@@ -320,7 +325,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		qfi = 0;
 		qi = 0;
 
-		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", static_cast<uint32_t>(queueType), ". Using default queue");
+		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ",
+		        static_cast<uint32_t>(queueType), ". Using default queue");
 	}
 
 	queueFamilyProperties = props[qfi];

@@ -30,7 +30,7 @@ namespace TRAP::Graphics::API
 	public:
 		explicit VulkanRenderer();
 		~VulkanRenderer();
-		
+
 		VulkanRenderer(const VulkanRenderer&) = delete;
 		VulkanRenderer& operator=(const VulkanRenderer&) = delete;
 		VulkanRenderer(VulkanRenderer&&) = delete;
@@ -41,7 +41,7 @@ namespace TRAP::Graphics::API
 		void Present(const Scope<Window>& window) override;
 
 		void SetVSync(bool vsync, Window* window = nullptr) override;
-		
+
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) override;
 		void SetDepthTesting(bool enabled, Window* window = nullptr) override;
 		void SetDepthWriting(bool enabled, Window* window = nullptr) override;
@@ -64,25 +64,24 @@ namespace TRAP::Graphics::API
 							  Window* window = nullptr) override;
 
 		void Clear(ClearFlags clear, ClearValue value, Window* window = nullptr) override;
-		
-		void SetViewport(uint32_t x,
-		                 uint32_t y,
-		                 uint32_t width,
-		                 uint32_t height,
-		                 float minDepth = 0.0f,
-		                 float maxDepth = 1.0f,
-		                 Window* window = nullptr) override;
+
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth = 0.0f,
+		                 float maxDepth = 1.0f, Window* window = nullptr) override;
 		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) override;
 
 		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window = nullptr) override;
-		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex, Window* window = nullptr) override;
+		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex,
+		                 Window* window = nullptr) override;
 
 		void BindShader(Shader* shader, Window* window = nullptr) const;
-		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) override;
-		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window = nullptr) override;
+		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
+		                      Window* window = nullptr) override;
+		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType,
+		                     Window* window = nullptr) override;
 		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window = nullptr) override;
 		void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) override;
-		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData, Window* window = nullptr) override;
+		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
+		                              Window* window = nullptr) override;
 
 		//void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		//void Draw(const Scope<VertexArray>& vertexArray) override;
@@ -128,7 +127,7 @@ namespace TRAP::Graphics::API
 			uint32_t Size;
 			uint32_t Offset;
 		};
-		
+
 		union DescriptorUpdateData
 		{
 			VkDescriptorImageInfo ImageInfo;
@@ -165,7 +164,8 @@ namespace TRAP::Graphics::API
 			std::vector<VkDescriptorSetLayoutBinding> Bindings{};
 			//Array of all descriptors in this descriptor set
 			std::vector<DescriptorInfo*> Descriptors{};
-			//Array of all descriptors marked as dynamic in this descriptor set (applicable to DescriptorType::UniformBuffer)
+			//Array of all descriptors marked as dynamic in this descriptor set
+			//(applicable to DescriptorType::UniformBuffer)
 			std::vector<DescriptorInfo*> DynamicDescriptors{};
 			//Hash map to get index of the descriptor in the root signature
 			std::unordered_map<DescriptorInfo*, uint32_t> DescriptorIndexMap{};
@@ -174,8 +174,10 @@ namespace TRAP::Graphics::API
 		//Create default resources to be used as null descriptors in case user does not specify some descriptors
 		struct NullDescriptors
 		{
-			std::array<TRAP::Ref<VulkanTexture>, static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
-			std::array<TRAP::Ref<VulkanTexture>, static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
+			std::array<TRAP::Ref<VulkanTexture>,
+			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
+			std::array<TRAP::Ref<VulkanTexture>,
+			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
 			TRAP::Ref<VulkanSampler> DefaultSampler;
@@ -208,7 +210,7 @@ namespace TRAP::Graphics::API
 		using FrameBufferMap = std::unordered_map<uint64_t, TRAP::Ref<VulkanFrameBuffer>>;
 		using FrameBufferMapNode = FrameBufferMap::value_type;
 		using FrameBufferMapIt = FrameBufferMap::iterator;
-		
+
 		static RenderPassMap& GetRenderPassMap();
 		static FrameBufferMap& GetFrameBufferMap();
 
@@ -217,7 +219,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
 
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
-	
+
 	private:
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
@@ -228,17 +230,19 @@ namespace TRAP::Graphics::API
 
 		static void StartGraphicRecording(const TRAP::Scope<PerWindowData>& p);
 		static void EndGraphicRecording(const TRAP::Scope<PerWindowData>& p);
-		
+
 		std::string m_rendererTitle;
 
 		TRAP::Ref<VulkanInstance> m_instance;
 		TRAP::Scope<VulkanDebug> m_debug;
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
-		
-		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting a RenderPass Map for the first time)
+
+		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting
+		//a RenderPass Map for the first time)
 		static std::unordered_map<std::thread::id, RenderPassMap> s_renderPassMap;
-		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting a FrameBuffer Map for the first time)
+		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting
+		//a FrameBuffer Map for the first time)
 		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
 		static std::mutex s_renderPassMutex;
 
@@ -246,7 +250,7 @@ namespace TRAP::Graphics::API
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 		static std::mutex s_pipelineMutex;
-		
+
 		static VulkanRenderer* s_renderer;
 	};
 }

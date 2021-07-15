@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "Utils/Utils.h"
 
-std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>, TRAP::Graphics::SamplerHash> TRAP::Graphics::Sampler::s_cachedSamplers;
+std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -127,11 +127,13 @@ void TRAP::Graphics::Sampler::ClearCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::size_t TRAP::Graphics::SamplerHash::operator()(const RendererAPI::SamplerDesc& desc) const noexcept
+std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
 {
 	std::size_t hash = 0;
 
-	TRAP::Utils::HashCombine(hash,
+	TRAP::Utils::HashCombine
+	(
+		hash,
 		desc.MinFilter,
 		desc.MagFilter,
 		desc.MipMapMode,
@@ -146,7 +148,9 @@ std::size_t TRAP::Graphics::SamplerHash::operator()(const RendererAPI::SamplerDe
 		desc.MipLevel
 	);
 
-	TRAP::Utils::HashCombine(hash,
+	TRAP::Utils::HashCombine
+	(
+		hash,
 		desc.SamplerConversionDesc.Format,
 		desc.SamplerConversionDesc.Model,
 		desc.SamplerConversionDesc.Range,

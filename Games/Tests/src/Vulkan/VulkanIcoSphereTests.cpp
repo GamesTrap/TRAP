@@ -20,7 +20,7 @@ void VulkanIcoSphereTests::OnAttach()
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
 		static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Static);
-	const TRAP::Graphics::BufferLayout layout =
+	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
 		{TRAP::Graphics::ShaderDataType::Float3, "Col"}

@@ -34,9 +34,9 @@
 
 TRAP::Graphics::Texture::Texture()
 	: m_textureType(TextureType::Texture2D),
-	  m_texture(nullptr),
 	  m_textureUsage(TextureUsage::Static),
-	  m_syncToken()
+	  m_syncToken(),
+	  m_texture(nullptr)
 {
 }
 

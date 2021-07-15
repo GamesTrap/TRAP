@@ -5,20 +5,25 @@
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/SPIRVTools.h"
 
-std::array<TRAP::Graphics::RendererAPI::DescriptorType, static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
+std::array<TRAP::Graphics::RendererAPI::DescriptorType,
+           static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
 {
 	TRAP::Graphics::RendererAPI::DescriptorType::Undefined, TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
-	TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer, TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer,
-	TRAP::Graphics::RendererAPI::DescriptorType::Texture, TRAP::Graphics::RendererAPI::DescriptorType::RWTexture,
-	TRAP::Graphics::RendererAPI::DescriptorType::Sampler, TRAP::Graphics::RendererAPI::DescriptorType::RootConstant,
-	TRAP::Graphics::RendererAPI::DescriptorType::InputAttachment, TRAP::Graphics::RendererAPI::DescriptorType::TexelBuffer,
-	TRAP::Graphics::RendererAPI::DescriptorType::RWTexelBuffer, TRAP::Graphics::RendererAPI::DescriptorType::RayTracing,
+	TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
+	TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer, TRAP::Graphics::RendererAPI::DescriptorType::Texture,
+	TRAP::Graphics::RendererAPI::DescriptorType::RWTexture, TRAP::Graphics::RendererAPI::DescriptorType::Sampler,
+	TRAP::Graphics::RendererAPI::DescriptorType::RootConstant,
+	TRAP::Graphics::RendererAPI::DescriptorType::InputAttachment,
+	TRAP::Graphics::RendererAPI::DescriptorType::TexelBuffer,
+	TRAP::Graphics::RendererAPI::DescriptorType::RWTexelBuffer,
+	TRAP::Graphics::RendererAPI::DescriptorType::RayTracing,
 	TRAP::Graphics::RendererAPI::DescriptorType::CombinedImageSampler
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension, static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
+std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
+           static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
 {
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
@@ -35,7 +40,8 @@ std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension, static_cast<
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource, const TRAP::Graphics::RendererAPI::ShaderStage currentStage)
+bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
+                    const TRAP::Graphics::RendererAPI::ShaderStage currentStage)
 {
 	bool filter = false;
 
@@ -46,23 +52,26 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource, c
 	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Outputs);
 
 	//Remove stage inputs that are not on the vertex shader
-	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs && currentStage != TRAP::Graphics::RendererAPI::ShaderStage::Vertex);
+	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs &&
+	                    currentStage != TRAP::Graphics::RendererAPI::ShaderStage::Vertex);
 
 	return filter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode, RendererAPI::ShaderStage shaderStage)
+TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
+                                                                                                      RendererAPI::ShaderStage shaderStage)
 {
-	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(shaderCode.data(), static_cast<uint32_t>(shaderCode.size()));
+	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(shaderCode.data(),
+	                                                               static_cast<uint32_t>(shaderCode.size()));
 
 	ReflectEntryPoint(cc);
 	ReflectShaderResources(cc);
 	ReflectShaderVariables(cc);
 
 	ShaderReflection::ShaderReflection out{};
-	
+
 	if (shaderStage == RendererAPI::ShaderStage::Compute)
 		out.NumThreadsPerGroup = ReflectComputeShaderWorkGroupSize(cc);
 	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
@@ -79,7 +88,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		//Filter out what we don't use
 		if(!FilterResource(resource, shaderStage))
 		{
-			if (resource.Type == SPIRVTools::ResourceType::Inputs && shaderStage == TRAP::Graphics::RendererAPI::ShaderStage::Vertex)
+			if (resource.Type == SPIRVTools::ResourceType::Inputs &&
+			    shaderStage == TRAP::Graphics::RendererAPI::ShaderStage::Vertex)
 				++vertexInputCount;
 			else
 				++resourceCount;
@@ -112,7 +122,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			SPIRVTools::Resource& resource = cc.ShaderResources[i];
 
 			//Filter out what we don't use
-			if(!FilterResource(resource, shaderStage) && resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
+			if(!FilterResource(resource, shaderStage) &&
+			   resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
 			{
 				vertexInputs[j].Size = resource.Size;
 				vertexInputs[j].Name = resource.Name;
@@ -192,7 +203,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 
 	//All reflection struct should be built now
 	out.ShaderStage = shaderStage;
-	
+
 	out.VertexInputs = vertexInputs;
 	out.ShaderResources = resources;
 	out.Variables = variables;

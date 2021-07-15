@@ -9,10 +9,10 @@ TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const Rende
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanPipeline>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

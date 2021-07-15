@@ -12,6 +12,7 @@
 #include "VulkanRenderTarget.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
+
 TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
 	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA()),
 	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetInstance()),
@@ -28,7 +29,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
 #endif
-	
+
 	AddSwapchain(desc);
 }
 
@@ -36,6 +37,8 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
+	TRAP_ASSERT(m_swapChain);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
 #endif
@@ -62,18 +65,21 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	const VkSurfaceCapabilitiesKHR caps = surface->GetVkSurfaceCapabilities();
 	if ((caps.maxImageCount > 0) && (desc.ImageCount > caps.maxImageCount))
 	{
-		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount, " to maximum allowed SwapChain images ", caps.maxImageCount);
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount,
+		        " to maximum allowed SwapChain images ", caps.maxImageCount);
 		desc.ImageCount = caps.maxImageCount;
 	}
 	if(desc.ImageCount < caps.minImageCount)
 	{
-		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount, " to minimum required SwapChain images ", caps.minImageCount);
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount,
+		        " to minimum required SwapChain images ", caps.minImageCount);
 		desc.ImageCount = caps.minImageCount;
 	}
 
 	//Surface format
 	//Select a surface format, depending on whether HDR is available.
-	const VkSurfaceFormatKHR HDRSurfaceFormat = { VK_FORMAT_A2B10G10R10_UNORM_PACK32, VK_COLOR_SPACE_HDR10_ST2084_EXT };
+	const VkSurfaceFormatKHR HDRSurfaceFormat = { VK_FORMAT_A2B10G10R10_UNORM_PACK32,
+	                                              VK_COLOR_SPACE_HDR10_ST2084_EXT };
 
 	VkSurfaceFormatKHR surfaceFormat{};
 	surfaceFormat.format = VK_FORMAT_UNDEFINED;
@@ -87,7 +93,8 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	else
 	{
 		const VkFormat requestedFormat = ImageFormatToVkFormat(desc.ColorFormat);
-		const VkColorSpaceKHR requestedColorSpace = requestedFormat == HDRSurfaceFormat.format ? HDRSurfaceFormat.colorSpace : VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+		const VkColorSpaceKHR requestedColorSpace = requestedFormat == HDRSurfaceFormat.format ?
+		                                            HDRSurfaceFormat.colorSpace : VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 		for (uint32_t i = 0; i < formats.size(); ++i)
 		{
 			if ((requestedFormat == formats[i].format) && (requestedColorSpace == formats[i].colorSpace))
@@ -137,7 +144,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 			break;
 		}
 	}
-	
+
 	//SwapChain
 	VkExtent2D extent{};
 	extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
@@ -145,10 +152,14 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	desc.Width = extent.width;
 	desc.Height = extent.height;
-	
+
 	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
-	std::array<uint32_t, 2> queueFamilyIndices = { static_cast<uint32_t>(dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex()), 0 };
+	std::array<uint32_t, 2> queueFamilyIndices =
+	{
+		static_cast<uint32_t>(dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex()),
+		0
+	};
 	uint32_t presentQueueFamilyIndex = std::numeric_limits<uint32_t>::max();
 
 	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_device->GetPhysicalDevice()->GetQueueFamilyProperties();
@@ -159,8 +170,11 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 		for (uint32_t index = 0; index < queueFamilyProperties.size(); ++index)
 		{
 			VkBool32 supportsPresent = VK_FALSE;
-			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), index, surface->GetVkSurface(), &supportsPresent);
-			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) && dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex() != index)
+			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+			                                                          index, surface->GetVkSurface(),
+																	  &supportsPresent);
+			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) &&
+			    dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex() != index)
 			{
 				presentQueueFamilyIndex = index;
 				break;
@@ -173,7 +187,9 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 			for (uint32_t index = 0; index < queueFamilyProperties.size(); ++index)
 			{
 				VkBool32 supportsPresent = VK_FALSE;
-				const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), index, surface->GetVkSurface(), &supportsPresent);
+				const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+				                                                          index, surface->GetVkSurface(),
+																		  &supportsPresent);
 				if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE))
 				{
 					presentQueueFamilyIndex = index;
@@ -189,7 +205,8 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	//Find if GPU has a dedicated present queue
 	VkQueue presentQueue;
 	uint32_t finalPresentQueueFamilyIndex;
-	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() && queueFamilyIndices[0] != presentQueueFamilyIndex)
+	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() &&
+	    queueFamilyIndices[0] != presentQueueFamilyIndex)
 	{
 		queueFamilyIndices[0] = presentQueueFamilyIndex;
 		vkGetDeviceQueue(m_device->GetVkDevice(), queueFamilyIndices[0], 0, &presentQueue);
@@ -229,15 +246,15 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	VkSwapchainKHR swapChain;
 	VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
-		desc.ImageCount,
-		surfaceFormat,
-		extent,
-		sharingMode,
-		queueFamilyIndexCount,
-		queueFamilyIndices,
-		preTransform,
-		compositeAlpha,
-		presentMode);
+		                                                                               desc.ImageCount,
+		                                                                               surfaceFormat,
+		                                                                               extent,
+		                                                                               sharingMode,
+		                                                                               queueFamilyIndexCount,
+		                                                                               queueFamilyIndices,
+		                                                                               preTransform,
+		                                                                               compositeAlpha,
+		                                                                               presentMode);
 
 	VkCall(vkCreateSwapchainKHR(m_device->GetVkDevice(), &swapChainCreateInfo, nullptr, &swapChain));
 
@@ -286,7 +303,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 void TRAP::Graphics::API::VulkanSwapChain::RemoveSwapchain()
 {
 	m_device->WaitIdle();
-	
+
 	for (auto& m_renderTarget : m_renderTargets)
 		m_renderTarget.reset();
 	m_renderTargets.clear();
@@ -297,19 +314,21 @@ void TRAP::Graphics::API::VulkanSwapChain::RemoveSwapchain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const
+uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+                                                                const TRAP::Ref<Fence>& fence) const
 {
 	TRAP_ASSERT(m_device != VK_NULL_HANDLE);
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
 	TRAP_ASSERT(signalSemaphore || fence);
-	
+
 	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
 	VkResult res{};
 
 	if(fence != nullptr)
 	{
 		VulkanFence* fen = dynamic_cast<VulkanFence*>(fence.get());
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(), VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
+		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
+		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
 		//If SwapChain is out of date, let caller know by returning -1
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
@@ -324,7 +343,8 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	else
 	{
 		VulkanSemaphore* sema = dynamic_cast<VulkanSemaphore*>(signalSemaphore.get());
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(), sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
+		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
+		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
 		//If SwapChain is out of date, let caller know by returning -1
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)

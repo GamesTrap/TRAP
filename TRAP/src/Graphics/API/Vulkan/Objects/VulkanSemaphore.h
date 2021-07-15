@@ -16,12 +16,13 @@ namespace TRAP::Graphics::API
 		~VulkanSemaphore();
 
 		VkSemaphore& GetVkSemaphore();
-		
+
 	private:
-		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const;
-		
+		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
+		                                                                       const TRAP::Ref<Fence>& fence) const;
+
 		VkSemaphore m_semaphore;
-		
+
 		TRAP::Ref<VulkanDevice> m_device;
 	};
 }

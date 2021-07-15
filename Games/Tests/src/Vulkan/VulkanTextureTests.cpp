@@ -30,7 +30,7 @@ void VulkanTextureTests::OnAttach()
 
     //Setup VertexBuffer and BufferLayout
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(), static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Static);
-    const TRAP::Graphics::BufferLayout layout =
+    const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
         { TRAP::Graphics::ShaderDataType::Float2, "UV" }

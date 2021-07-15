@@ -3,6 +3,7 @@
 
 #include "Window/WindowingAPI.h"
 
+
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
@@ -20,7 +21,7 @@ namespace TRAP::Graphics::API
 		VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const;
 		const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const;
 		const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const;
-		
+
 	private:
 		VkSurfaceKHR m_surface;
 

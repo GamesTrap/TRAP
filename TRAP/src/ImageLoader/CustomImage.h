@@ -69,17 +69,17 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t wi
 	if constexpr (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	                std::is_same<T, float>::value))
 	{
-		TRAP_CORE_ASSERT(false, "Invalid type!");
+		TRAP_ASSERT(false, "Invalid type!");
 		return;
 	}
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_CORE_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_ASSERT(false, "Invalid ColorFormat!");
 		return;
 	}
 	if (pixelData.empty())
 	{
-		TRAP_CORE_ASSERT(false, "Invalid pixel data provided!");
+		TRAP_ASSERT(false, "Invalid pixel data provided!");
 		return;
 	}
 

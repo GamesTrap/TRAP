@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef _TRAP_NETWORK_SOCKETIMPL_H_
 #define _TRAP_NETWORK_SOCKETIMPL_H_
 
+#include "Core/PlatformDetection.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Platform/SocketImplWinAPI.h"
 #else

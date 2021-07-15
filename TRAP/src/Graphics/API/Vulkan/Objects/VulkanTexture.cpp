@@ -37,7 +37,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
 #endif
-	
+
 	if(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1)
 	{
 		TP_ERROR(Log::RendererVulkanTexturePrefix, "Multi-Sampled textures cannot have mip maps");
@@ -46,7 +46,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	}
 
 	if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture))
-		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ? desc.MipLevels : 0));
+		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ?
+		                           desc.MipLevels : 0));
 
 	if (desc.NativeHandle)
 	{
@@ -81,14 +82,17 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	}
 
 	RendererAPI::DescriptorType descriptors = desc.Descriptors;
-	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) == RendererAPI::DescriptorType::TextureCube;
+	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) ==
+	                       RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;
 
 	const bool isPlanarFormat = RendererAPI::ImageFormatIsPlanar(desc.Format);
 	const uint32_t numOfPlanes = RendererAPI::ImageFormatNumOfPlanes(desc.Format);
 	const bool isSinglePlane = RendererAPI::ImageFormatIsSinglePlane(desc.Format);
-	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)), "Number of planes for multi-planar formats must be 2 or 3 and for single-planar formats it must be 1");
-	
+	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)),
+	            "Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
+				"formats it must be 1");
+
 	if (imageType == VK_IMAGE_TYPE_3D)
 		arrayRequired = true;
 
@@ -112,21 +116,25 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 			info.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
 
 		VkFormatProperties formatProps{};
-		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format, &formatProps);
-		if(isPlanarFormat) //Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
+		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format,
+		                                    &formatProps);
+
+		//Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
+		if(isPlanarFormat)
 		{
 			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DISJOINT_BIT);
 			info.flags |= VK_IMAGE_CREATE_DISJOINT_BIT;
 		}
-		
+
 		if((info.usage & VK_IMAGE_USAGE_SAMPLED_BIT) || (info.usage & VK_IMAGE_USAGE_STORAGE_BIT))
 		{
 			//Make it easy to copy to and from textures
 			info.usage |= (VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 		}
 
-		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)], "GPU shader can't read from this format");
-		
+		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)],
+		            "GPU shader can't read from this format");
+
 		const VkFormatFeatureFlags formatFeatures = VkImageUsageToFormatFeatures(info.usage);
 
 		const VkFormatFeatureFlags flags = formatProps.optimalTilingFeatures & formatFeatures;
@@ -140,7 +148,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		VmaAllocationInfo allocInfo{};
 		if(isSinglePlane)
 		{
-			VkCall(vmaCreateImage(m_vma->GetVMAAllocator(), &info, &memReqs, &m_vkImage, &m_vkAllocation, &allocInfo));
+			VkCall(vmaCreateImage(m_vma->GetVMAAllocator(), &info, &memReqs, &m_vkImage, &m_vkAllocation,
+			                      &allocInfo));
 		}
 		else //Multi-Planar formats
 		{
@@ -164,14 +173,16 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 			VkMemoryRequirements memReq{};
 			std::vector<uint64_t> planeOffsets(3);
-			UtilGetPlanarVkImageMemoryRequirement(m_device->GetVkDevice(), m_vkImage, numOfPlanes, memReq, planeOffsets);
+			UtilGetPlanarVkImageMemoryRequirement(m_device->GetVkDevice(), m_vkImage, numOfPlanes, memReq,
+			                                      planeOffsets);
 
 			//Allocate image memory
 			VkMemoryAllocateInfo memAllocInfo{};
 			memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 			memAllocInfo.allocationSize = memReq.size;
 			const VkPhysicalDeviceMemoryProperties& memProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceMemoryProperties();
-			memAllocInfo.memoryTypeIndex = GetMemoryType(memReq.memoryTypeBits, memProps, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			memAllocInfo.memoryTypeIndex = GetMemoryType(memReq.memoryTypeBits, memProps,
+			                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 			VkCall(vkAllocateMemory(m_device->GetVkDevice(), &memAllocInfo, nullptr, &m_vkDeviceMemory));
 
 			//Bind planes to their memories
@@ -228,17 +239,20 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	TRAP_ASSERT(viewType != VK_IMAGE_VIEW_TYPE_MAX_ENUM, "Invalid Image View");
 
 	//SRV
-	VkImageViewCreateInfo srvDesc = VulkanInits::ImageViewCreateInfo(m_vkImage, viewType, ImageFormatToVkFormat(desc.Format), desc.MipLevels, desc.ArraySize);
+	VkImageViewCreateInfo srvDesc = VulkanInits::ImageViewCreateInfo(m_vkImage, viewType,
+	                                                                 ImageFormatToVkFormat(desc.Format),
+																	 desc.MipLevels, desc.ArraySize);
 	m_aspectMask = DetermineAspectMask(srvDesc.format, true);
 
 	if (desc.VkSamplerYcbcrConversionInfo)
 		srvDesc.pNext = desc.VkSamplerYcbcrConversionInfo;
-	
+
 	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture))
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
 
 	//SRV stencil
-	if((RendererAPI::ImageFormatHasStencil(desc.Format)) && (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
+	if((RendererAPI::ImageFormatHasStencil(desc.Format)) &&
+	   (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
 	{
 		srvDesc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVStencilDescriptor));
@@ -269,10 +283,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device,
-	const RendererAPI::TextureDesc& desc,
-	const std::vector<uint8_t>& imageData,
-	CommandBuffer* cmd,
-	TRAP::Ref<VulkanMemoryAllocator> vma)
+                                                  const RendererAPI::TextureDesc& desc,
+												  const std::vector<uint8_t>& imageData, CommandBuffer* cmd,
+												  TRAP::Ref<VulkanMemoryAllocator> vma)
 		: m_device(std::move(device)),
 	      m_vma(std::move(vma)),
 	      m_vkSRVDescriptor(VK_NULL_HANDLE),
@@ -291,7 +304,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 {
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(cmd);
-	
+
 	m_SVT = TRAP::MakeRef<RendererAPI::VirtualTexture>();
 
 	uint32_t imageSize = 0;
@@ -317,7 +330,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	                                                         VK_SAMPLE_COUNT_1_BIT,
 	                                                         VK_IMAGE_TILING_OPTIMAL,
 	                                                         VK_IMAGE_USAGE_SAMPLED_BIT |
-	                                                         VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+															 VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
 	                                                         VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 
 	VkCall(vkCreateImage(m_device->GetVkDevice(), &addInfo, nullptr, &m_vkImage));
@@ -330,7 +343,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	//Check requested image size against hardware sparse limit
 	if(sparseImageMemoryReqs.size > m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.sparseAddressSpaceSize)
 	{
-		TP_ERROR(Log::RendererVulkanVirtualTexturePrefix, "Requested sparse image size exceeds supported sparse address space size!");
+		TP_ERROR(Log::RendererVulkanVirtualTexturePrefix,
+		         "Requested sparse image size exceeds supported sparse address space size!");
 		return;
 	}
 
@@ -338,7 +352,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	//Count
 	uint32_t sparseMemoryReqsCount = 32;
 	std::vector<VkSparseImageMemoryRequirements> sparseMemoryReqs(sparseMemoryReqsCount);
-	vkGetImageSparseMemoryRequirements(m_device->GetVkDevice(), m_vkImage, &sparseMemoryReqsCount, sparseMemoryReqs.data());
+	vkGetImageSparseMemoryRequirements(m_device->GetVkDevice(), m_vkImage, &sparseMemoryReqsCount,
+	                                   sparseMemoryReqs.data());
 
 	if(sparseMemoryReqsCount == 0)
 	{
@@ -348,14 +363,20 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	sparseMemoryReqs.resize(sparseMemoryReqsCount);
 
 	//Get actual requirements
-	vkGetImageSparseMemoryRequirements(m_device->GetVkDevice(), m_vkImage, &sparseMemoryReqsCount, sparseMemoryReqs.data());
+	vkGetImageSparseMemoryRequirements(m_device->GetVkDevice(), m_vkImage, &sparseMemoryReqsCount,
+	                                   sparseMemoryReqs.data());
 
 	m_SVT->SparseVirtualTexturePageWidth = sparseMemoryReqs[0].formatProperties.imageGranularity.width;
 	m_SVT->SparseVirtualTexturePageHeight = sparseMemoryReqs[0].formatProperties.imageGranularity.height;
-	m_SVT->VirtualPageTotalCount = imageSize / (static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth) * static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight));
+	m_SVT->VirtualPageTotalCount = imageSize /
+	                               (static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth) *
+								    static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight));
 
-	uint32_t tiledMipLevel = desc.MipLevels - static_cast<uint32_t>(TRAP::Math::Log2(TRAP::Math::Min(static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth),
-		static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight))));
+	uint32_t tiledMipLevel = desc.MipLevels - static_cast<uint32_t>
+	(
+		TRAP::Math::Log2(TRAP::Math::Min(static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth),
+		                                 static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight)))
+	);
 
 	TP_INFO(Log::RendererVulkanVirtualTexturePrefix, "Sparse image memory requirements: ", sparseMemoryReqsCount);
 
@@ -381,14 +402,16 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	}
 	if(!colorAspectFound)
 	{
-		TP_ERROR(Log::RendererVulkanVirtualTexturePrefix, "Could not find sparse image memory requirements for color aspect bit!");
+		TP_ERROR(Log::RendererVulkanVirtualTexturePrefix,
+		         "Could not find sparse image memory requirements for color aspect bit!");
 		return;
 	}
 
 	VkPhysicalDeviceMemoryProperties memProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceMemoryProperties();
 
 	TRAP_ASSERT((sparseImageMemoryReqs.size % sparseImageMemoryReqs.alignment) == 0);
-	m_SVT->SparseMemoryTypeIndex = GetMemoryType(sparseImageMemoryReqs.memoryTypeBits, memProps, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	m_SVT->SparseMemoryTypeIndex = GetMemoryType(sparseImageMemoryReqs.memoryTypeBits, memProps,
+	                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 	//Check if the format has a single mip tail for all layers or one mip tail for each layer
 	//The mip tail contains all mip levels > sparseMemoryReq.imageMipTailFirstLod
@@ -398,7 +421,10 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	m_SVT->SparseImageMemoryBinds = TRAP::MakeRef<std::vector<VkSparseImageMemoryBind>>(1);
 	m_SVT->OpaqueMemoryBinds = TRAP::MakeRef<std::vector<VkSparseMemoryBind>>(1);
 
-	std::vector<VkSparseMemoryBind>& opaqueMemoryBinds = *static_cast<std::vector<VkSparseMemoryBind>*>(m_SVT->OpaqueMemoryBinds.get());
+	std::vector<VkSparseMemoryBind>& opaqueMemoryBinds = *static_cast<std::vector<VkSparseMemoryBind>*>
+	(
+		m_SVT->OpaqueMemoryBinds.get()
+	);
 
 	//Sparse bindings for each mip level of all layers outside of the mip tail
 	for(uint32_t layer = 0; layer < 1; layer++)
@@ -421,9 +447,12 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 			VkExtent3D sparseBindCounts{};
 			VkExtent3D lastBlockExtent{};
 			sparseBindCounts = AlignedDivision(extent, imageGranularity);
-			lastBlockExtent.width = ((extent.width % imageGranularity.width) ? extent.width % imageGranularity.width : imageGranularity.width);
-			lastBlockExtent.height = ((extent.height % imageGranularity.height) ? extent.height % imageGranularity.height : imageGranularity.height);
-			lastBlockExtent.depth = ((extent.depth % imageGranularity.depth) ? extent.depth % imageGranularity.depth : imageGranularity.depth);
+			lastBlockExtent.width = ((extent.width % imageGranularity.width) ?
+			                         extent.width % imageGranularity.width : imageGranularity.width);
+			lastBlockExtent.height = ((extent.height % imageGranularity.height) ?
+			                          extent.height % imageGranularity.height : imageGranularity.height);
+			lastBlockExtent.depth = ((extent.depth % imageGranularity.depth) ?
+			                         extent.depth % imageGranularity.depth : imageGranularity.depth);
 
 			//Allocate memory for some blocks
 			uint32_t index = 0;
@@ -440,14 +469,20 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 						offset.z = z * imageGranularity.depth;
 						//Size of the page
 						VkExtent3D pageExtent;
-						pageExtent.width = (x == sparseBindCounts.width - 1) ? lastBlockExtent.width : imageGranularity.width;
-						pageExtent.height = (y == sparseBindCounts.height - 1) ? lastBlockExtent.height : imageGranularity.height;
-						pageExtent.depth = (z == sparseBindCounts.depth - 1) ? lastBlockExtent.depth : imageGranularity.depth;
+						pageExtent.width = (x == sparseBindCounts.width - 1) ? lastBlockExtent.width :
+						                   imageGranularity.width;
+						pageExtent.height = (y == sparseBindCounts.height - 1) ? lastBlockExtent.height :
+						                    imageGranularity.height;
+						pageExtent.depth = (z == sparseBindCounts.depth - 1) ? lastBlockExtent.depth :
+						                   imageGranularity.depth;
 
 						//Add new virtual page
-						RendererAPI::VirtualTexturePage* newPage = AddPage(offset, pageExtent, m_SVT->SparseVirtualTexturePageWidth * m_SVT->SparseVirtualTexturePageHeight * sizeof(uint32_t), mipLevel, layer);
+						RendererAPI::VirtualTexturePage* newPage = AddPage(offset, pageExtent,
+						                                                   m_SVT->SparseVirtualTexturePageWidth *
+																		   m_SVT->SparseVirtualTexturePageHeight *
+																		   sizeof(uint32_t), mipLevel, layer);
 						newPage->ImageMemoryBind.subresource = subResource;
-						
+
 						index++;
 					}
 				}
@@ -458,14 +493,16 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		if((!singleMipTail) && (sparseMemoryReq.imageMipTailFirstLod < desc.MipLevels))
 		{
 			//Allocate memory for the mip tail
-			VkMemoryAllocateInfo allocInfo = VulkanInits::MemoryAllocateInfo(sparseMemoryReq.imageMipTailSize, m_SVT->SparseMemoryTypeIndex);
+			VkMemoryAllocateInfo allocInfo = VulkanInits::MemoryAllocateInfo(sparseMemoryReq.imageMipTailSize,
+			                                                                 m_SVT->SparseMemoryTypeIndex);
 
 			VkDeviceMemory deviceMemory;
 			VkCall(vkAllocateMemory(m_device->GetVkDevice(), &allocInfo, nullptr, &deviceMemory));
 
 			//(Opaque) sparse memory binding
 			VkSparseMemoryBind sparseMemoryBind{};
-			sparseMemoryBind.resourceOffset = sparseMemoryReq.imageMipTailOffset + layer * sparseMemoryReq.imageMipTailStride;
+			sparseMemoryBind.resourceOffset = sparseMemoryReq.imageMipTailOffset + layer *
+			                                  sparseMemoryReq.imageMipTailStride;
 			sparseMemoryBind.size = sparseMemoryReq.imageMipTailSize;
 			sparseMemoryBind.memory = deviceMemory;
 
@@ -473,14 +510,16 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		}
 	} //End Layers and Mips
 
-	TP_INFO(Log::RendererVulkanVirtualTexturePrefix, "Virtual Texture info: Dim ", desc.Width, " x ", desc.Height, " Pages ",
-		static_cast<uint32_t>((*static_cast<std::vector<VkSparseMemoryBind>*>(m_SVT->Pages.get())).size()));
+	TP_INFO(Log::RendererVulkanVirtualTexturePrefix, "Virtual Texture info: Dim ", desc.Width, " x ", desc.Height,
+	        " Pages ", static_cast<uint32_t>((*static_cast<std::vector<VkSparseMemoryBind>*>(m_SVT->Pages.get())).size()));
 
 	//Check if format has one mip tail for all layers
-	if((sparseMemoryReq.formatProperties.flags & VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT) && (sparseMemoryReq.imageMipTailFirstLod < desc.MipLevels))
+	if((sparseMemoryReq.formatProperties.flags & VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT) &&
+	   (sparseMemoryReq.imageMipTailFirstLod < desc.MipLevels))
 	{
 		//Allocate memory for the mip tail
-		VkMemoryAllocateInfo allocInfo = VulkanInits::MemoryAllocateInfo(sparseMemoryReq.imageMipTailSize, m_SVT->SparseMemoryTypeIndex);
+		VkMemoryAllocateInfo allocInfo = VulkanInits::MemoryAllocateInfo(sparseMemoryReq.imageMipTailSize,
+		                                                                 m_SVT->SparseMemoryTypeIndex);
 
 		VkDeviceMemory deviceMemory;
 		VkCall(vkAllocateMemory(m_device->GetVkDevice(), &allocInfo, nullptr, &deviceMemory));
@@ -503,7 +542,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	view.flags = 0;
 	view.viewType = VK_IMAGE_VIEW_TYPE_2D;
 	view.format = format;
-	view.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
+	view.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B,
+	                    VK_COMPONENT_SWIZZLE_A };
 	view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	view.subresourceRange.baseMipLevel = 0;
 	view.subresourceRange.baseArrayLayer = 0;
@@ -514,7 +554,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 	VkCall(vkCreateImageView(m_device->GetVkDevice(), &view, nullptr, &m_vkSRVDescriptor));
 
-	RendererAPI::TextureBarrier textureBarrier{ TRAP::Ref<VulkanTexture>(this), RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::CopyDestination };
+	RendererAPI::TextureBarrier textureBarrier{ TRAP::Ref<VulkanTexture>(this),
+	                                            RendererAPI::ResourceState::Undefined,
+												RendererAPI::ResourceState::CopyDestination };
 	cmd->ResourceBarrier({}, { textureBarrier }, {});
 
 	//Fill smallest (non-tail) mip map level
@@ -547,7 +589,7 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 			{
 				vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
 				vkFreeMemory(m_device->GetVkDevice(), m_vkDeviceMemory, nullptr);
-			}			
+			}
 		}
 		else if (m_vkImage && m_SVT)
 			vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
@@ -687,17 +729,30 @@ bool TRAP::Graphics::API::VulkanTexture::OwnsImage() const
 
 void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 {
-	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>(m_SVT->Pages.get());
-	std::vector<VkSparseImageMemoryBind>& imageMemory = *static_cast<std::vector<VkSparseImageMemoryBind>*>(m_SVT->SparseImageMemoryBinds.get());
-	std::vector<VkSparseMemoryBind>& opaqueMemoryBinds = *static_cast<std::vector<VkSparseMemoryBind>*>(m_SVT->OpaqueMemoryBinds.get());
+	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>
+	(
+		m_SVT->Pages.get()
+	);
+	std::vector<VkSparseImageMemoryBind>& imageMemory = *static_cast<std::vector<VkSparseImageMemoryBind>*>
+	(
+		m_SVT->SparseImageMemoryBinds.get()
+	);
+	std::vector<VkSparseMemoryBind>& opaqueMemoryBinds = *static_cast<std::vector<VkSparseMemoryBind>*>
+	(
+		m_SVT->OpaqueMemoryBinds.get()
+	);
 
 	imageMemory.resize(0);
 
-	const uint32_t alivePageCount = static_cast<const PageCounts*>(m_SVT->PageCounts->GetCPUMappedAddress())->AlivePageCount;
+	const uint32_t alivePageCount = static_cast<const PageCounts*>
+	(
+		m_SVT->PageCounts->GetCPUMappedAddress()
+	)->AlivePageCount;
 
 	std::vector<uint32_t> visibilityData;
 	visibilityData.resize(alivePageCount);
-	std::memcpy(visibilityData.data(), m_SVT->AlivePage->GetCPUMappedAddress(), visibilityData.size() * sizeof(uint32_t));
+	std::memcpy(visibilityData.data(), m_SVT->AlivePage->GetCPUMappedAddress(), visibilityData.size() *
+	            sizeof(uint32_t));
 
 	for(uint32_t i = 0; i < visibilityData.size(); ++i)
 	{
@@ -721,9 +776,12 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 			region.imageSubresource.layerCount = 1;
 
 			region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
-			region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth), static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
+			region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth),
+			                       static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
 
-			vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer&>(cmd).GetVkCommandBuffer(), dynamic_cast<VulkanBuffer*>(page.IntermediateBuffer.get())->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer&>(cmd).GetVkCommandBuffer(),
+			                       dynamic_cast<VulkanBuffer*>(page.IntermediateBuffer.get())->GetVkBuffer(),
+								   m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 			//Update list of memory-backed sparse image memory binds
 			imageMemory.push_back(page.ImageMemoryBind);
@@ -751,7 +809,8 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 		m_SVT->BindSparseInfo.imageOpaqueBindCount = (m_SVT->OpaqueMemoryBindInfo.bindCount > 0) ? 1 : 0;
 		m_SVT->BindSparseInfo.pImageOpaqueBinds = &m_SVT->OpaqueMemoryBindInfo;
 
-		VkCall(vkQueueBindSparse(dynamic_cast<VulkanQueue*>(cmd.GetQueue().get())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
+		VkCall(vkQueueBindSparse(dynamic_cast<VulkanQueue*>(cmd.GetQueue().get())->GetVkQueue(),
+		                         static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
 	}
 }
 
@@ -759,9 +818,15 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 
 void TRAP::Graphics::API::VulkanTexture::ReleasePage()
 {
-	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>(m_SVT->Pages.get());
+	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>
+	(
+		m_SVT->Pages.get()
+	);
 
-	const uint32_t removePageCount = static_cast<const PageCounts*>(m_SVT->PageCounts->GetCPUMappedAddress())->RemovePageCount;
+	const uint32_t removePageCount = static_cast<const PageCounts*>
+	(
+		m_SVT->PageCounts->GetCPUMappedAddress()
+	)->RemovePageCount;
 
 	if (removePageCount == 0)
 		return;
@@ -852,8 +917,7 @@ void TRAP::Graphics::API::VulkanTexture::RemoveVirtualTexture()
 
 uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
                                                            const VkPhysicalDeviceMemoryProperties& memProps,
-                                                           const VkMemoryPropertyFlags props,
-                                                           VkBool32* memTypeFound)
+                                                           const VkMemoryPropertyFlags props, VkBool32* memTypeFound)
 {
 	for(uint32_t i = 0; i < memProps.memoryTypeCount; i++)
 	{
@@ -883,7 +947,8 @@ uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkExtent3D TRAP::Graphics::API::VulkanTexture::AlignedDivision(const VkExtent3D& extent, const VkExtent3D& granularity)
+VkExtent3D TRAP::Graphics::API::VulkanTexture::AlignedDivision(const VkExtent3D& extent,
+                                                               const VkExtent3D& granularity)
 {
 	VkExtent3D out{};
 	out.width = (extent.width / granularity.width + ((extent.width % granularity.width) ? 1u : 0u));
@@ -897,46 +962,58 @@ VkExtent3D TRAP::Graphics::API::VulkanTexture::AlignedDivision(const VkExtent3D&
 
 void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(CommandBuffer* cmd, const uint32_t mipLevel)
 {
-	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>(m_SVT->Pages.get());
+	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>
+	(
+		m_SVT->Pages.get()
+	);
 
 	//Bind Data
-	std::vector<VkSparseImageMemoryBind>& imageMemory = *static_cast<std::vector<VkSparseImageMemoryBind>*>(m_SVT->SparseImageMemoryBinds.get());
-	std::vector<VkSparseMemoryBind>& opaqueMemoryBinds = *static_cast<std::vector<VkSparseMemoryBind>*>(m_SVT->OpaqueMemoryBinds.get());
+	std::vector<VkSparseImageMemoryBind>& imageMemory = *static_cast<std::vector<VkSparseImageMemoryBind>*>
+	(
+		m_SVT->SparseImageMemoryBinds.get()
+	);
+	std::vector<VkSparseMemoryBind>& opaqueMemoryBinds = *static_cast<std::vector<VkSparseMemoryBind>*>
+	(
+		m_SVT->OpaqueMemoryBinds.get()
+	);
 
 	for(uint32_t i = 0; i < static_cast<uint32_t>(m_SVT->VirtualPageTotalCount); i++)
 	{
 		RendererAPI::VirtualTexturePage& page = pageTable[i];
 		const uint32_t pageIndex = page.Index;
+		if((page.MipLevel != mipLevel) || (page.ImageMemoryBind.memory != VK_NULL_HANDLE))
+			continue;
 
-		if((page.MipLevel == mipLevel) && (page.ImageMemoryBind.memory == VK_NULL_HANDLE))
+		if(AllocateVirtualPage(page, m_SVT->SparseMemoryTypeIndex))
 		{
-			if(AllocateVirtualPage(page, m_SVT->SparseMemoryTypeIndex))
-			{
-				void* data = static_cast<void*>(m_SVT->VirtualImageData.data() + (pageIndex * static_cast<uint32_t>(page.Size)));
+			void* data = static_cast<void*>(m_SVT->VirtualImageData.data() +
+			                                (pageIndex * static_cast<uint32_t>(page.Size)));
 
-				//CPU to GPU
-				std::memcpy(page.IntermediateBuffer->GetCPUMappedAddress(), data, page.Size);
+			//CPU to GPU
+			std::memcpy(page.IntermediateBuffer->GetCPUMappedAddress(), data, page.Size);
 
-				//Copy image to VkImage
-				VkBufferImageCopy region{};
-				region.bufferOffset = 0;
-				region.bufferRowLength = 0;
-				region.bufferImageHeight = 0;
+			//Copy image to VkImage
+			VkBufferImageCopy region{};
+			region.bufferOffset = 0;
+			region.bufferRowLength = 0;
+			region.bufferImageHeight = 0;
 
-				region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-				region.imageSubresource.mipLevel = mipLevel;
-				region.imageSubresource.baseArrayLayer = 0;
-				region.imageSubresource.layerCount = 1;
+			region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			region.imageSubresource.mipLevel = mipLevel;
+			region.imageSubresource.baseArrayLayer = 0;
+			region.imageSubresource.layerCount = 1;
 
-				region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
-				region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth), static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
+			region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
+			region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth),
+			                       static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
 
-				vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(), dynamic_cast<VulkanBuffer*>(page.IntermediateBuffer.get())->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-			}
-
-			//Update list of memory-backed sparse image memory binds
-			imageMemory.push_back(page.ImageMemoryBind);
+			vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(),
+			                       dynamic_cast<VulkanBuffer*>(page.IntermediateBuffer.get())->GetVkBuffer(),
+								   m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 		}
+
+		//Update list of memory-backed sparse image memory binds
+		imageMemory.push_back(page.ImageMemoryBind);
 	}
 
 	//Update sparse bind info
@@ -959,7 +1036,8 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(CommandBuffer* 
 		m_SVT->BindSparseInfo.imageOpaqueBindCount = (m_SVT->OpaqueMemoryBindInfo.bindCount > 0) ? 1 : 0;
 		m_SVT->BindSparseInfo.pImageOpaqueBinds = &m_SVT->OpaqueMemoryBindInfo;
 
-		VkCall(vkQueueBindSparse(dynamic_cast<VulkanQueue*>(cmd->GetQueue().get())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
+		VkCall(vkQueueBindSparse(dynamic_cast<VulkanQueue*>(cmd->GetQueue().get())->GetVkQueue(),
+		                         static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
 	}
 }
 
@@ -971,7 +1049,10 @@ TRAP::Graphics::RendererAPI::VirtualTexturePage* TRAP::Graphics::API::VulkanText
                                                                                              const uint32_t mipLevel,
                                                                                              const uint32_t layer) const
 {
-	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>(m_SVT->Pages.get());
+	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>
+	(
+		m_SVT->Pages.get()
+	);
 
 	RendererAPI::VirtualTexturePage newPage{};
 	newPage.Offset = offset;
@@ -988,7 +1069,8 @@ TRAP::Graphics::RendererAPI::VirtualTexturePage* TRAP::Graphics::API::VulkanText
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanTexture::AllocateVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, const uint32_t memoryTypeIndex)
+bool TRAP::Graphics::API::VulkanTexture::AllocateVirtualPage(RendererAPI::VirtualTexturePage& virtualPage,
+                                                             const uint32_t memoryTypeIndex)
 {
 	if (virtualPage.ImageMemoryBind.memory != VK_NULL_HANDLE)
 		//Already filled
@@ -1026,7 +1108,8 @@ bool TRAP::Graphics::API::VulkanTexture::AllocateVirtualPage(RendererAPI::Virtua
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::ReleaseVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, const bool removeMemoryBind) const
+void TRAP::Graphics::API::VulkanTexture::ReleaseVirtualPage(RendererAPI::VirtualTexturePage& virtualPage,
+                                                            const bool removeMemoryBind) const
 {
 	if(removeMemoryBind && virtualPage.ImageMemoryBind.memory != VK_NULL_HANDLE)
 	{

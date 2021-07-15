@@ -1,7 +1,7 @@
 #ifndef _TRAP_VERTEXBUFFER_H_
 #define _TRAP_VERTEXBUFFER_H_
 
-#include "BufferLayout.h"
+#include "VertexBufferLayout.h"
 #include "Graphics/API/ResourceLoader.h"
 
 namespace TRAP::Graphics
@@ -20,8 +20,8 @@ namespace TRAP::Graphics
 	public:
 		~VertexBuffer();
 
-		const BufferLayout& GetLayout() const;
-		void SetLayout(const BufferLayout& layout);
+		const VertexBufferLayout& GetLayout() const;
+		void SetLayout(const VertexBufferLayout& layout);
 		uint64_t GetSize() const;
 		uint64_t GetCount() const;
 		BufferUsage GetBufferUsage() const;
@@ -29,7 +29,7 @@ namespace TRAP::Graphics
 		void SetData(float* data, uint64_t size, uint64_t offset = 0);
 
 		void Use(Window* window = nullptr) const;
-		
+
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
@@ -37,9 +37,11 @@ namespace TRAP::Graphics
 		static Scope<VertexBuffer> Create(uint64_t size, BufferUsage usage);
 
 	private:
+		static Scope<VertexBuffer> Init(float* vertices, uint64_t size, BufferUsage usage);
+
 		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer;
 
-		BufferLayout m_bufferLayout;
+		VertexBufferLayout m_bufferLayout;
 		API::SyncToken m_token;
 	};
 }

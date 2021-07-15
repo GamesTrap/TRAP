@@ -28,6 +28,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef _TRAP_WINDOWINGAPI_H_
 #define _TRAP_WINDOWINGAPI_H_
 
+#include "Core/PlatformDetection.h"
 #include "ImageLoader/Image.h"
 #include "Input/Input.h"
 

@@ -7,7 +7,7 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
-	
+
 	class VulkanRenderPass
 	{
 	public:

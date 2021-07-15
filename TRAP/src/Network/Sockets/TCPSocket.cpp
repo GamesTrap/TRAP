@@ -29,6 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "TCPSocket.h"
 
+#include "Core/PlatformDetection.h"
 #include "Network/Packet.h"
 #include "Network/IP/IPv4Address.h"
 #include "SocketImpl.h"

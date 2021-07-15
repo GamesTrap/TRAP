@@ -25,10 +25,10 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(con
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanRenderTarget>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

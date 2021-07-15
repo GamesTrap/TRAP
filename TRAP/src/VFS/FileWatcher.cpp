@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
+#include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "VFS.h"
 

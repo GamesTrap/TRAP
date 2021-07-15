@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
+#include "Core/PlatformDetection.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -815,7 +816,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!s_WindowingAPIInitialized)
 	{
 		const int32_t success = INTERNAL::WindowingAPI::Init();
-		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
+		TRAP_ASSERT(success, "Could not initialize WindowingAPI!");
 		if (!success)
 			Utils::Dialogs::ShowMsgBox("Error WindowingAPI",
 				"Could not initialize WindowingAPI!",

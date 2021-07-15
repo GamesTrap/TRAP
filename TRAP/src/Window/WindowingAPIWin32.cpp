@@ -27,6 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
+#include "PlatformDetection.h"
 #include "WindowingAPI.h"
 #include "Utils/Dialogs/Dialogs.h"
 
@@ -272,7 +273,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 	message.resize(10249);
 
 	FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM |	FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
-		           nullptr, GetLastError() & 0xffff, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	buffer.data(),
+		           nullptr, GetLastError() & 0xFFFF, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	buffer.data(),
 		           static_cast<DWORD>(buffer.size()), nullptr);
 	WideCharToMultiByte(CP_UTF8, 0, buffer.data(), -1, message.data(), static_cast<int32_t>(message.size()),
 	                    nullptr, nullptr);

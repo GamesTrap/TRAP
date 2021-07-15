@@ -10,19 +10,19 @@ namespace TRAP::Graphics
 	{
 	public:
 		static TRAP::Ref<Fence> Create();
-		
+
 		virtual ~Fence() = default;
 
 		virtual bool IsSubmitted() const;
-		
+
 		virtual RendererAPI::FenceStatus GetStatus() = 0;
 		virtual void Wait() = 0;
 
 		static void WaitForFence(std::vector<Fence>& fences);
-	
+
 	protected:
 		Fence();
-		
+
 		bool m_submitted;
 
 	private:

@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 
 		RendererAPI::IndirectArgumentType GetDrawType() const;
 		uint32_t GetStride() const;
-		
+
 	private:
 		RendererAPI::IndirectArgumentType m_drawType;
 		uint32_t m_stride;

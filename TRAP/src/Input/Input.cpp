@@ -550,10 +550,10 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* con, const int
 {
 	const int32_t base = con->ButtonCount + dpad * 4;
 
-	con->Buttons[base + 0] = (value & 0x01) ? true : false; //Up
-	con->Buttons[base + 1] = (value & 0x02) ? true : false; //Right
-	con->Buttons[base + 2] = (value & 0x04) ? true : false; //Down
-	con->Buttons[base + 3] = (value & 0x08) ? true : false; //Left
+	con->Buttons[base + 0] = (value & BIT(0)) ? true : false; //Up
+	con->Buttons[base + 1] = (value & BIT(1)) ? true : false; //Right
+	con->Buttons[base + 2] = (value & BIT(2)) ? true : false; //Down
+	con->Buttons[base + 3] = (value & BIT(3)) ? true : false; //Left
 
 	if (con->Buttons[base + 1] && con->Buttons[base + 0])
 		con->DPads[dpad] = ControllerDPad::Right_Up;

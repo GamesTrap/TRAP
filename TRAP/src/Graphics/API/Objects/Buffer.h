@@ -19,11 +19,12 @@ namespace TRAP::Graphics
 
 		virtual void MapBuffer(RendererAPI::ReadRange* range) = 0;
 		virtual void UnMapBuffer() = 0;
-	
+
 	protected:
 		Buffer();
-		
-		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps (CPU, CPUToGPU, GPUToCPU))
+
+		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps
+		//(CPU, CPUToGPU, GPUToCPU))
 		void* m_CPUMappedAddress;
 
 		uint64_t m_size;

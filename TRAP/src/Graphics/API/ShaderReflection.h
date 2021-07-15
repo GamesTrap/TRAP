@@ -4,8 +4,8 @@
 
 namespace TRAP::Graphics::API::ShaderReflection
 {
-	static const uint32_t MaxShaderStageCount = 5;
-	
+	inline static constexpr uint32_t MaxShaderStageCount = 5;
+
 	enum class TextureDimension
 	{
 		TextureDim1D,
@@ -21,7 +21,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 		TextureDimUndefined
 	};
-	
+
 	struct VertexInput
 	{
 		//The size of the attribute
@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		std::string Name;
 		uint32_t NameSize;
 	};
-	
+
 	struct ShaderResource
 	{
 		//Resource Type
@@ -56,7 +56,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		//1D / 2D / Array / MSAA / ...
 		TextureDimension Dim;
 	};
-	
+
 	struct ShaderVariable
 	{
 		//Parents resource index
@@ -71,7 +71,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		//Variable name
 		std::string Name;
 	};
-	
+
 	struct ShaderReflection
 	{
 		RendererAPI::ShaderStage ShaderStage;
@@ -90,12 +90,13 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 		std::string EntryPoint;
 	};
-	
+
 	struct PipelineReflection
 	{
 		RendererAPI::ShaderStage ShaderStages;
 		//The individual stages reflection data
-		std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> StageReflections;
+		std::array<ShaderReflection,
+		           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> StageReflections;
 		uint32_t StageReflectionCount{};
 
 		uint32_t VertexStageIndex{};
@@ -105,11 +106,13 @@ namespace TRAP::Graphics::API::ShaderReflection
 		uint32_t FragmentStageIndex{};
 
 		std::vector<ShaderResource> ShaderResources;
-		
+
 		std::vector<ShaderVariable> Variables;
 	};
 
-	TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection, uint32_t stageCount);
+	TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection,
+	                                                       static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
+														   uint32_t stageCount);
 }
 
 #endif /*_TRAP_SHADERREFLECTION_H_*/

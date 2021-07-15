@@ -5,8 +5,6 @@
 
 namespace TRAP::Graphics
 {
-	class SamplerHash;
-
 	class Sampler
 	{
 	public:
@@ -35,15 +33,18 @@ namespace TRAP::Graphics
 		Sampler() = default;
 
 	private:
-		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>, SamplerHash> s_cachedSamplers;
+		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
 
 		RendererAPI::SamplerDesc m_samplerDesc;
 	};
+}
 
-	class SamplerHash
+namespace std
+{
+	template <>
+ 	struct hash<TRAP::Graphics::RendererAPI::SamplerDesc>
 	{
-	public:
-		std::size_t operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& p) const noexcept;
+		std::size_t operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept;
 	};
 }
 

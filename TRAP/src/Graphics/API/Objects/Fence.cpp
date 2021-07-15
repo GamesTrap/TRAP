@@ -9,10 +9,10 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanFence>();
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
@@ -41,10 +41,10 @@ void TRAP::Graphics::Fence::WaitForFence(std::vector<Fence>& fences)
 	case RenderAPI::Vulkan:
 		API::VulkanFence::WaitForFence(fences);
 		break;
-		
+
 	case RenderAPI::NONE:
 		break;
-		
+
 	default:
 		break;
 	}

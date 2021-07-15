@@ -26,7 +26,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-
+#include "PlatformDetection.h"
 #include "Input/Input.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -161,7 +161,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 
 			//Generate a Controller GUID that matches the SDL 2.0.5+ one
 			sprintf_s(guid.data(), guid.size(), "78696e707574%02x000000000000000000",
-				      xic.SubType & 0xff);
+				      xic.SubType & 0xFF);
 
 			ControllerInternal* con = AddInternalController(GetDeviceDescription(&xic), guid, 6, 10, 1);
 			if (!con)

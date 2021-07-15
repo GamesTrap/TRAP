@@ -8,7 +8,7 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> TRAP::Grap
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& filepath,
-	const TextureUsage usage)
+	                                                                               const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -28,7 +28,8 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Lo
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& name,
-	const std::string& filepath, const TextureUsage usage)
+	                                                                               const std::string& filepath,
+																				   const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -47,7 +48,8 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Lo
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& name,
-	const Scope<Image>& img, const TextureUsage usage)
+	                                                                               const Scope<Image>& img,
+																				   const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -66,7 +68,9 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Lo
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name,
-	const std::string& filepath, const TextureCubeFormat format, const TextureUsage usage)
+	                                                                                 const std::string& filepath,
+																					 const TextureCubeFormat format,
+																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -85,7 +89,8 @@ const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& filepath,
-	const TextureCubeFormat format, const TextureUsage usage)
+	                                                                                 const TextureCubeFormat format,
+																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -106,7 +111,8 @@ const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name,
-	const std::array<std::string, 6> & filepaths, const TextureUsage usage)
+	                                                                                 const std::array<std::string, 6>& filepaths,
+																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -125,7 +131,9 @@ const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::unique_ptr<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name,
-	const Scope<Image>& img, const TextureCubeFormat format, const TextureUsage usage)
+	                                                                                     const Scope<Image>& img,
+																						 const TextureCubeFormat format,
+																						 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -152,7 +160,8 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 		if (!Exists(texture->GetName()))
 			s_Textures[texture->GetName()] = std::move(texture);
 		else
-			TP_ERROR(Log::TextureManagerPrefix, "Texture with Name: \"", texture->GetName(), "\" already exists! Ignoring new Texture");
+			TP_ERROR(Log::TextureManagerPrefix, "Texture with Name: \"", texture->GetName(),
+			         "\" already exists! Ignoring new Texture");
 	}
 }
 
@@ -185,7 +194,8 @@ void TRAP::Graphics::TextureManager::Remove(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Get(const std::string& name, const TextureType textureType)
+const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Get(const std::string& name,
+                                                                                const TextureType textureType)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -261,15 +271,22 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			{
 				if (s_Textures[nameOrVirtualPath])
 				{
-					const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetTextureCubeFormat();
+					const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>
+						(
+							s_Textures[nameOrVirtualPath].get()
+						)->GetTextureCubeFormat();
 
 					std::array<std::string, 6> filePaths{};
-					for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetFilePaths().size(); i++)
+					for (uint32_t i = 0;
+					     i < dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetFilePaths().size();
+						 i++)
 						filePaths[i] = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetFilePaths()[i];
 
 					s_Textures[nameOrVirtualPath].reset();
-					if (textureFormat == TextureCubeFormat::Cross /*|| textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
-						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFile(name, filePath, textureFormat, usage);
+					if (textureFormat == TextureCubeFormat::Cross /*||
+					    textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
+						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFile(name, filePath, textureFormat,
+						                                                            usage);
 					else
 						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, usage);
 
@@ -346,14 +363,18 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		{
 			if (texture)
 			{
-				const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>(texture.get())->GetTextureCubeFormat();
+				const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>
+					(
+						texture.get()
+					)->GetTextureCubeFormat();
 
 				std::array<std::string, 6> filePaths{};
 				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetFilePaths().size(); i++)
 					filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i];
 
 				s_Textures[name].reset();
-				if (textureFormat == TextureCubeFormat::Cross /*|| textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
+				if (textureFormat == TextureCubeFormat::Cross /*||
+				    textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
 					s_Textures[name] = TextureCube::CreateFromFile(name, filePath, textureFormat, usage);
 				else
 					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, usage);
@@ -411,8 +432,10 @@ bool TRAP::Graphics::TextureManager::ExistsVirtualPath(const std::string_view vi
 		{
 			const std::array<std::string, 6> imageFilePaths = reinterpret_cast<const Scope<TextureCube>&>(texture)->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
+			{
 				if (filePath == virtualPath)
 					return true;
+			}
 		}
 	}
 

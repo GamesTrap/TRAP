@@ -7,7 +7,7 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
-	
+
 	class VulkanPipelineCache final : public PipelineCache
 	{
 	public:
@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 		void Save(const std::string& virtualOrPhysicalPath) override;
 
 		VkPipelineCache GetVkPipelineCache() const;
-		
+
 	private:
 		VkPipelineCache m_cache;
 

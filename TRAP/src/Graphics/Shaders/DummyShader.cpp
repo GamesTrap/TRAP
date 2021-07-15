@@ -30,6 +30,7 @@ void TRAP::Graphics::DummyShader::UseSampler(uint32_t set, uint32_t binding, TRA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::DummyShader::UseSamplers(uint32_t set, uint32_t binding, const std::vector<TRAP::Graphics::Sampler*>& samplers)
+void TRAP::Graphics::DummyShader::UseSamplers(uint32_t set, uint32_t binding,
+                                              const std::vector<TRAP::Graphics::Sampler*>& samplers)
 {
 }

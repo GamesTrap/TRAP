@@ -186,7 +186,7 @@ void TRAP::SceneSerializer::Serialize(const std::string& filepath)
 
 void TRAP::SceneSerializer::SerializeRuntime(const std::string&)
 {
-	TRAP_CORE_ASSERT(false, "Not implemented yet!");
+	TRAP_ASSERT(false, "Not implemented yet!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -287,6 +287,6 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 
 bool TRAP::SceneSerializer::DeserializeRuntime(const std::string&)
 {
-	TRAP_CORE_ASSERT(false, "Not implemented yet!");
+	TRAP_ASSERT(false, "Not implemented yet!");
 	return false;
 }

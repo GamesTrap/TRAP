@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "TCPSocketIPv6.h"
 
+#include "Core/PlatformDetection.h"
 #include "Network/Packet.h"
 #include "Network/IP/IPv6Address.h"
 #include "SocketImpl.h"

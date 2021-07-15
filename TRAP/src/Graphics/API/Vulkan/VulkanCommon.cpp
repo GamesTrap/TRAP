@@ -7,73 +7,79 @@
 #include "Objects/VulkanInits.h"
 #include "Objects/VulkanTexture.h"
 
-bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const char* function, const char* file, const int32_t line)
+bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const char* function, const char* file,
+                                     const int32_t line)
 {
-	if (result < 0)
+	if(result >= 0)
+		return true;
+
+	switch (result)
 	{
-		switch (result)
-		{
-		case VK_ERROR_OUT_OF_HOST_MEMORY:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_HOST_MEMORY: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_OUT_OF_DEVICE_MEMORY:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DEVICE_MEMORY: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_INITIALIZATION_FAILED:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INITIALIZATION_FAILED: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_DEVICE_LOST:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_DEVICE_LOST: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_MEMORY_MAP_FAILED:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_MEMORY_MAP_FAILED: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_LAYER_NOT_PRESENT:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_LAYER_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_EXTENSION_NOT_PRESENT:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_EXTENSION_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_FEATURE_NOT_PRESENT:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FEATURE_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_INCOMPATIBLE_DRIVER:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DRIVER: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_TOO_MANY_OBJECTS:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_TOO_MANY_OBJECTS: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_FORMAT_NOT_SUPPORTED:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FORMAT_NOT_SUPPORTED: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_SURFACE_LOST_KHR:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_SURFACE_LOST_KHR: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_SUBOPTIMAL_KHR:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_SUBOPTIMAL_KHR: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_OUT_OF_DATE_KHR:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DATE_KHR: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR: ", function, " @[", file, ':', line, ']');
-			break;
-		case VK_ERROR_VALIDATION_FAILED_EXT:
-			TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_VALIDATION_FAILED_EXT: ", function, " @[", file, ':', line, ']');
-			break;
+	case VK_ERROR_OUT_OF_HOST_MEMORY:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_HOST_MEMORY: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DEVICE_MEMORY: ", function, " @[", file, ':', line,
+		         ']');
+		break;
+	case VK_ERROR_INITIALIZATION_FAILED:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INITIALIZATION_FAILED: ", function, " @[", file, ':', line,
+		         ']');
+		break;
+	case VK_ERROR_DEVICE_LOST:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_DEVICE_LOST: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_MEMORY_MAP_FAILED:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_MEMORY_MAP_FAILED: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_LAYER_NOT_PRESENT:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_LAYER_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_EXTENSION_NOT_PRESENT:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_EXTENSION_NOT_PRESENT: ", function, " @[", file, ':', line,
+		         ']');
+		break;
+	case VK_ERROR_FEATURE_NOT_PRESENT:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FEATURE_NOT_PRESENT: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_INCOMPATIBLE_DRIVER:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DRIVER: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_TOO_MANY_OBJECTS:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_TOO_MANY_OBJECTS: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_FORMAT_NOT_SUPPORTED:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_FORMAT_NOT_SUPPORTED: ", function, " @[", file, ':', line,
+		         ']');
+		break;
+	case VK_ERROR_SURFACE_LOST_KHR:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_SURFACE_LOST_KHR: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR: ", function, " @[", file, ':', line,
+		         ']');
+		break;
+	case VK_SUBOPTIMAL_KHR:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_SUBOPTIMAL_KHR: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_OUT_OF_DATE_KHR:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_OUT_OF_DATE_KHR: ", function, " @[", file, ':', line, ']');
+		break;
+	case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR: ", function, " @[", file, ':', line,
+		         ']');
+		break;
+	case VK_ERROR_VALIDATION_FAILED_EXT:
+		TP_ERROR(Log::RendererVulkanPrefix, "VK_ERROR_VALIDATION_FAILED_EXT: ", function, " @[", file, ':', line,
+		         ']');
+		break;
 
-		default:
-			TP_ERROR(Log::RendererVulkanPrefix, "Unknown error", function, " @[", file, ':', line, ']');
-			break;
-		}
-
-		return false;
+	default:
+		TP_ERROR(Log::RendererVulkanPrefix, "Unknown error", function, " @[", file, ':', line, ']');
+		break;
 	}
 
-	return true;
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -90,7 +96,7 @@ VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::Que
 
 	case RendererAPI::QueueType::Compute:
 		return VK_QUEUE_COMPUTE_BIT;
-		
+
 	default:
 		TRAP_ASSERT(false, "Invalid Queue Type");
 		return VK_QUEUE_FLAG_BITS_MAX_ENUM;
@@ -117,7 +123,7 @@ VkBlendOp TRAP::Graphics::API::RendererBlendEquationToVkBlendOp(const RendererBl
 
 	case RendererBlendEquation::Max:
 		return VK_BLEND_OP_MAX;
-		
+
 	default:
 		return VkBlendOp();
 	}
@@ -167,7 +173,7 @@ VkBlendFactor TRAP::Graphics::API::RendererBlendFunctionToVkBlendFactor(const Re
 
 	case RendererBlendFunction::One_Minus_Constant_Color:
 		return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
-		
+
 	default:
 		return VkBlendFactor();
 	}
@@ -202,7 +208,7 @@ VkCompareOp TRAP::Graphics::API::RendererFunctionToVkCompareOp(const RendererFun
 
 	case RendererFunction::Always:
 		return VK_COMPARE_OP_ALWAYS;
-		
+
 	default:
 		return VkCompareOp();
 	}
@@ -237,7 +243,7 @@ VkStencilOp TRAP::Graphics::API::RendererOperationToVkStencilOp(const RendererOp
 
 	case RendererOperation::Decrement_And_Clamp:
 		return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
-		
+
 	default:
 		return VkStencilOp();
 	}
@@ -254,7 +260,7 @@ VkCullModeFlagBits TRAP::Graphics::API::RendererCullModeToVkCullModeFlagBits(con
 
 	case RendererCullMode::Front:
 		return VK_CULL_MODE_FRONT_BIT;
-		
+
 	default:
 		return VkCullModeFlagBits();
 	}
@@ -271,7 +277,7 @@ VkFrontFace TRAP::Graphics::API::RendererFrontFaceToVkFrontFace(const RendererFr
 
 	case RendererFrontFace::Clockwise:
 		return VK_FRONT_FACE_CLOCKWISE;
-		
+
 	default:
 		return VkFrontFace();
 	}
@@ -281,35 +287,26 @@ VkFrontFace TRAP::Graphics::API::RendererFrontFaceToVkFrontFace(const RendererFr
 
 VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount)
 {
-	VkSampleCountFlagBits result = VK_SAMPLE_COUNT_1_BIT;
-
 	switch(sampleCount)
 	{
 	case RendererAPI::SampleCount::SampleCount1:
-		result = VK_SAMPLE_COUNT_1_BIT;
-		break;
+		return VK_SAMPLE_COUNT_1_BIT;
 
 	case RendererAPI::SampleCount::SampleCount2:
-		result = VK_SAMPLE_COUNT_2_BIT;
-		break;
+		return VK_SAMPLE_COUNT_2_BIT;
 
 	case RendererAPI::SampleCount::SampleCount4:
-		result = VK_SAMPLE_COUNT_4_BIT;
-		break;
+		return VK_SAMPLE_COUNT_4_BIT;
 
 	case RendererAPI::SampleCount::SampleCount8:
-		result = VK_SAMPLE_COUNT_8_BIT;
-		break;
+		return VK_SAMPLE_COUNT_8_BIT;
 
 	case RendererAPI::SampleCount::SampleCount16:
-		result = VK_SAMPLE_COUNT_16_BIT;
-		break;
-		
-	default:
-		break;
-	}
+		return VK_SAMPLE_COUNT_16_BIT;
 
-	return result;
+	default:
+		return VK_SAMPLE_COUNT_1_BIT;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -481,7 +478,7 @@ VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const RendererAPI::ImageForm
 	case RendererAPI::ImageFormat::PVRTC2_4BPP_UNORM: return VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG;
 	case RendererAPI::ImageFormat::PVRTC2_2BPP_SRGB: return VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG;
 	case RendererAPI::ImageFormat::PVRTC2_4BPP_SRGB: return VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG;
-		
+
 	default:
 		return VK_FORMAT_UNDEFINED;
 	}
@@ -491,37 +488,33 @@ VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const RendererAPI::ImageForm
 
 VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit)
 {
-	VkImageAspectFlags result;
 	switch(format)
 	{
 		//Depth
 	case VK_FORMAT_D16_UNORM:
 	case VK_FORMAT_X8_D24_UNORM_PACK32:
 	case VK_FORMAT_D32_SFLOAT:
-		result = VK_IMAGE_ASPECT_DEPTH_BIT;
-		break;
+		return VK_IMAGE_ASPECT_DEPTH_BIT;
 
 		//Stencil
 	case VK_FORMAT_S8_UINT:
-		result = VK_IMAGE_ASPECT_STENCIL_BIT;
-		break;
+		return VK_IMAGE_ASPECT_STENCIL_BIT;
 
 		//Depth/Stencil
 	case VK_FORMAT_D16_UNORM_S8_UINT:
 	case VK_FORMAT_D24_UNORM_S8_UINT:
 	case VK_FORMAT_D32_SFLOAT_S8_UINT:
-		result = VK_IMAGE_ASPECT_DEPTH_BIT;
+	{
+		VkImageAspectFlags res = VK_IMAGE_ASPECT_DEPTH_BIT;
 		if (includeStencilBit)
-			result |= VK_IMAGE_ASPECT_STENCIL_BIT;
-		break;
-
-		//Assume everything else is Color
-	default:
-		result = VK_IMAGE_ASPECT_COLOR_BIT;
-		break;
+			res |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		return res;
 	}
 
-	return result;
+	default:
+		//Assume everything else is Color
+		return VK_IMAGE_ASPECT_COLOR_BIT;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -534,7 +527,7 @@ VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const Render
 		result |= VK_IMAGE_USAGE_SAMPLED_BIT;
 	if ((static_cast<uint32_t>(type & RendererAPI::DescriptorType::RWTexture)))
 		result |= VK_IMAGE_USAGE_STORAGE_BIT;
-	
+
 	return result;
 }
 
@@ -542,7 +535,8 @@ VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const Render
 
 VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkImageUsageFlags usage)
 {
-	VkFormatFeatureFlags result = static_cast<VkFormatFeatureFlags>(0);
+	VkFormatFeatureFlags result = 0;
+
 	if ((usage & VK_IMAGE_USAGE_SAMPLED_BIT) == VK_IMAGE_USAGE_SAMPLED_BIT)
 		result |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
 	if ((usage & VK_IMAGE_USAGE_STORAGE_BIT) == VK_IMAGE_USAGE_STORAGE_BIT)
@@ -557,7 +551,8 @@ VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage, const bool typed)
+VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
+                                                                      const bool typed)
 {
 	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
@@ -598,7 +593,7 @@ VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType
 
 	case RendererAPI::FilterType::Linear:
 		return VK_FILTER_LINEAR;
-		
+
 	default:
 		return VK_FILTER_LINEAR;
 	}
@@ -639,7 +634,7 @@ VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const Rende
 
 	case RendererAPI::AddressMode::ClampToBorder:
 		return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
-		
+
 	default:
 		return VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	}
@@ -647,7 +642,8 @@ VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const Rende
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type, const std::string& name)
+void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type,
+                                          const std::string& name)
 {
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)
@@ -698,7 +694,7 @@ VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const Ren
 
 	case RendererAPI::DescriptorType::RayTracing:
 		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
-		
+
 	default:
 		TRAP_ASSERT("Invalid DescriptorInfo Type");
 		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
@@ -728,7 +724,7 @@ VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const Re
 		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
 			VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
 			VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
-	
+
 	TRAP_ASSERT(res != 0);
 	return res;
 }
@@ -741,7 +737,7 @@ VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCa
 
 	if (static_cast<uint32_t>(flags & RendererAPI::PipelineCacheFlags::ExternallySynchronized))
 		ret |= VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT;
-	
+
 	return ret;
 }
 
@@ -773,7 +769,7 @@ VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAP
 		ret |= VK_ACCESS_MEMORY_READ_BIT;
 	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RayTracingAccelerationStructure))
 		ret |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
-	
+
 	return ret;
 }
 
@@ -783,25 +779,25 @@ VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAP
 {
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource))
 		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopyDestination))
 		return VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::RenderTarget))
 		return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::DepthWrite))
 		return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::UnorderedAccess))
 		return VK_IMAGE_LAYOUT_GENERAL;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShaderResource))
 		return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Present))
 		return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-	
+
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Common))
 		return VK_IMAGE_LAYOUT_GENERAL;
 
@@ -811,7 +807,8 @@ VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Determines pipeline stages involved for given accesses
-VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags, const RendererAPI::QueueType queueType)
+VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
+                                                                        const RendererAPI::QueueType queueType)
 {
 	VkPipelineStageFlags flags = 0;
 
@@ -822,7 +819,8 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 		if ((accessFlags & (VK_ACCESS_INDEX_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT)) != 0)
 			flags |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
 
-		if((accessFlags & (VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT)) != 0)
+		if((accessFlags & (VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT)) !=
+		   0)
 		{
 			flags |= VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
 			flags |= VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
@@ -844,9 +842,10 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 		if ((accessFlags & (VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)) != 0)
 			flags |= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-		if ((accessFlags & (VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)) != 0)
+		if ((accessFlags &
+		     (VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)) != 0)
 			flags |= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
-		
+
 		break;
 	}
 
@@ -858,9 +857,10 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 			(accessFlags & (VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)) != 0)
 			return VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 
-		if ((accessFlags & (VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT)) != 0)
+		if ((accessFlags & (VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT)) !=
+		    0)
 			flags |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
-		
+
 		break;
 	}
 
@@ -901,7 +901,7 @@ VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::Query
 
 	case RendererAPI::QueryType::Occlusion:
 		return VK_QUERY_TYPE_OCCLUSION;
-		
+
 	default:
 		TRAP_ASSERT(false, "Invalid query heap type");
 		return VK_QUERY_TYPE_MAX_ENUM;
@@ -912,22 +912,26 @@ VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::Query
 
 VkImageAspectFlags TRAP::Graphics::API::ClearFlagsToVKImageAspectFlags(const RendererAPI::ClearFlags flags)
 {
-	if (flags == RendererAPI::ClearFlags::Color)
+	switch(flags)
+	{
+	case RendererAPI::ClearFlags::Color:
 		return VK_IMAGE_ASPECT_COLOR_BIT;
 
-	if (flags == RendererAPI::ClearFlags::Depth)
+	case RendererAPI::ClearFlags::Depth:
 		return VK_IMAGE_ASPECT_DEPTH_BIT;
 
-	if (flags == RendererAPI::ClearFlags::Stencil)
+	case RendererAPI::ClearFlags::Stencil:
 		return VK_IMAGE_ASPECT_STENCIL_BIT;
 
-	return VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+	default:
+		return VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
-	std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+	                                                                     std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
 	int32_t blendDescIndex = 0;
 
@@ -954,10 +958,12 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 		if (static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
 		{
 			const VkBool32 blendEnable =
-			(VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
-			 VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
-			 VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
-			 VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO);
+			(
+				VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			    VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
+			    VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			    VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO
+			);
 
 			attachments[i].blendEnable = blendEnable;
 			attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
@@ -1028,7 +1034,8 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc
 {
 	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES);
 	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES);
-	TRAP_ASSERT(desc.FrontFace == RendererAPI::FrontFace::CounterClockwise || desc.FrontFace == RendererAPI::FrontFace::Clockwise);
+	TRAP_ASSERT(desc.FrontFace == RendererAPI::FrontFace::CounterClockwise ||
+	            desc.FrontFace == RendererAPI::FrontFace::Clockwise);
 
 	VkPipelineRasterizationStateCreateInfo rs{};
 	rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -1044,15 +1051,14 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc
 	rs.depthBiasClamp = 0.0f;
 	rs.depthBiasSlopeFactor = desc.SlopeScaledDepthBias;
 	rs.lineWidth = 1.0f;
-	
+
 	return rs;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
-                                                                VkImage image,
-                                                                const uint32_t planesCount,
+void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image,
+																const uint32_t planesCount,
                                                                 VkMemoryRequirements& memReq,
                                                                 std::vector<uint64_t>& planesOffsets)
 {
@@ -1061,7 +1067,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 	VkImagePlaneMemoryRequirementsInfo imagePlaneMemReqInfo;
 	imagePlaneMemReqInfo.sType = VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO;
 	imagePlaneMemReqInfo.pNext = nullptr;
-	
+
 	VkImageMemoryRequirementsInfo2 imagePlaneMemReqInfo2;
 	imagePlaneMemReqInfo.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2;
 	imagePlaneMemReqInfo2.pNext = &imagePlaneMemReqInfo;
@@ -1081,7 +1087,8 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 
 		planesOffsets[i] += memReq.size;
 		memReq.alignment = TRAP::Math::Max(memReq2.memoryRequirements.alignment, memReq.alignment);
-		memReq.size += ((memReq2.memoryRequirements.size + memReq2.memoryRequirements.alignment - 1) / memReq2.memoryRequirements.alignment) * memReq2.memoryRequirements.alignment;
+		memReq.size += ((memReq2.memoryRequirements.size + memReq2.memoryRequirements.alignment - 1) /
+		                memReq2.memoryRequirements.alignment) * memReq2.memoryRequirements.alignment;
 		memReq.memoryTypeBits |= memReq2.memoryRequirements.memoryTypeBits;
 	}
 }

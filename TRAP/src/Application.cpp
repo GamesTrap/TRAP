@@ -39,7 +39,7 @@ TRAP::Application::Application(const std::string& gameName)
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP Modules...");
 
-	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
+	TRAP_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 	m_mainThreadID = std::this_thread::get_id();
 

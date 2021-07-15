@@ -15,15 +15,15 @@ namespace TRAP::Graphics::API
 		VulkanDebug& operator=(const VulkanDebug&) = default;
 		VulkanDebug(VulkanDebug&&) = default;
 		VulkanDebug& operator=(VulkanDebug&&) = default;
-		
+
 	private:
 		static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 																  VkDebugUtilsMessageTypeFlagsEXT messageType,
 																  const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
 																  void* userData);
-		
+
 		VkDebugUtilsMessengerEXT m_debugReport;
-		
+
 		Ref<VulkanInstance> m_instance;
 	};
 }

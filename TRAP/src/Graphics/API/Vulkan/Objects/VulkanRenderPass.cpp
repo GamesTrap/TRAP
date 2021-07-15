@@ -5,7 +5,8 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc)
+TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device,
+                                                        const VulkanRenderer::RenderPassDesc& desc)
 	: m_renderPass(VK_NULL_HANDLE),
 	  m_colorFormats(desc.ColorFormats),
 	  m_loadActionsColor(desc.LoadActionsColor),
@@ -18,7 +19,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	  m_device(std::move(device))
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Creating RenderPass");
 #endif
@@ -52,15 +53,17 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 
 			//Descriptions
 			attachments[ssidx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
-				sampleCount,
-				!desc.LoadActionsColor.empty() ? VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] : VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-				VK_ATTACHMENT_STORE_OP_STORE,
-				VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-				VK_ATTACHMENT_STORE_OP_STORE,
-				VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-				VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+				                                                    sampleCount,
+				                                                    !desc.LoadActionsColor.empty() ?
+																	VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
+																	VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+				                                                    VK_ATTACHMENT_STORE_OP_STORE,
+				                                                    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+				                                                    VK_ATTACHMENT_STORE_OP_STORE,
+				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 			);
-			
+
 			//References
 			colorAttachmentRefs[i].attachment = ssidx;
 			colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -72,13 +75,13 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	{
 		const uint32_t idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
-			sampleCount,
-			VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
-			VK_ATTACHMENT_STORE_OP_STORE,
-			VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
-			VK_ATTACHMENT_STORE_OP_STORE,
-			VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-			VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+			                                                                        sampleCount,
+			                                                                        VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
+			                                                                        VK_ATTACHMENT_STORE_OP_STORE,
+			                                                                        VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
+			                                                                        VK_ATTACHMENT_STORE_OP_STORE,
+			                                                                        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+			                                                                        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);
 
 		depthStencilAttachmentRefs[0].attachment = idx;
@@ -87,7 +90,8 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 
 	VkSubpassDescription subpass;
 	if(depthAttachmentCount > 0)
-		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs, depthStencilAttachmentRefs[0]);
+		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs,
+		                                          depthStencilAttachmentRefs[0]);
 	else
 		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
 
@@ -104,14 +108,13 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 
 TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
-	if (m_renderPass)
-	{
+	TRAP_ASSERT(m_renderPass);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");
+	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");
 #endif
-		vkDestroyRenderPass(m_device->GetVkDevice(), m_renderPass, nullptr);
-		m_renderPass = nullptr;
-	}
+	vkDestroyRenderPass(m_device->GetVkDevice(), m_renderPass, nullptr);
+	m_renderPass = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

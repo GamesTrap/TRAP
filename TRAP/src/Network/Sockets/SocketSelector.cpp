@@ -29,6 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketSelector.h"
 
+#include "Core/PlatformDetection.h"
 #include "Socket.h"
 #include "SocketHandle.h"
 #include "SocketImpl.h"

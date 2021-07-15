@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Renderer.h"
 
-#include "Buffers/BufferLayout.h"
+#include "Buffers/VertexBufferLayout.h"
 #include "Cameras/Camera.h"
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"
@@ -93,7 +93,8 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform)
+/*void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray,
+                                        const Math::Mat4& transform)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -102,7 +103,8 @@ void TRAP::Graphics::Renderer::EndScene()
 	{
 		//shader->Bind();
 		if (!s_uniformBuffer)
-			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData), BufferUsage::Stream);
+			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData),
+			                                        BufferUsage::Stream);
 		else
 		{
 			s_uniformBuffer->UpdateData(s_sceneData.get());
@@ -124,9 +126,9 @@ void TRAP::Graphics::Renderer::Shutdown()
 	TP_PROFILE_FUNCTION();
 
 	Renderer2D::Shutdown();
-	
+
 	if(s_uniformBuffer)
-		s_uniformBuffer.reset();		
+		s_uniformBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

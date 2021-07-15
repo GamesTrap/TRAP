@@ -9,10 +9,10 @@ TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanSemaphore>();
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

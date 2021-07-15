@@ -36,20 +36,22 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 {
 	m_numDescriptorSets = numDescriptorSets;
 	TRAP_ASSERT(m_device, "device is nullptr");
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif
 
 	if (VulkanRenderer::s_raytracingExtension)
-		s_descriptorPoolSizes[DESCRIPTOR_TYPE_RANGE_SIZE - 1] = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 1024 };
-	
+		s_descriptorPoolSizes[DESCRIPTOR_TYPE_RANGE_SIZE - 1] = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
+		                                                          1024 };
+
 	for(uint32_t i = 0; i < DescriptorTypeRangeSize; i++)
 		m_descriptorPoolSizes[i] = s_descriptorPoolSizes[i];
 
-	VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes, m_numDescriptorSets);
+	VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+	                                                                        m_numDescriptorSets);
 	VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &info, nullptr, &m_currentPool));
-	
+
 	m_descriptorPools.emplace_back(m_currentPool);
 }
 
@@ -57,15 +59,14 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 
 TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
-	if(!m_descriptorPools.empty())
-	{
+	TRAP_ASSERT(!m_descriptorPools.empty());
+
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
+	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
 #endif
-		for(VkDescriptorPool& pool : m_descriptorPools)
-			vkDestroyDescriptorPool(m_device->GetVkDevice(), pool, nullptr);
-		m_descriptorPools.clear();
-	}
+	for(VkDescriptorPool& pool : m_descriptorPools)
+		vkDestroyDescriptorPool(m_device->GetVkDevice(), pool, nullptr);
+	m_descriptorPools.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -101,7 +102,10 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
-	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>(desc.RootSignature);
+	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>
+		(
+			desc.RootSignature
+		);
 	RendererAPI::DescriptorUpdateFrequency updateFreq = desc.UpdateFrequency;
 	const uint8_t dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[static_cast<uint32_t>(updateFreq)];
 	const uint32_t maxSets = desc.MaxSets;
@@ -109,7 +113,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 	const std::vector<VulkanRenderer::SizeOffset> dynamicSizeOffsets{};
 	std::vector<VkDescriptorSetLayout> layouts{};
 	std::vector<VkDescriptorSet> handles{};
-	
+
 	if (rootSignature->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(updateFreq)] != VK_NULL_HANDLE)
 	{
 		updateData.resize(maxSets);
@@ -119,7 +123,6 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 		for(uint32_t i = 0; i < maxSets; ++i)
 		{
 			layouts[i] = rootSignature->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(updateFreq)];
-
 			updateData[i] = rootSignature->GetUpdateTemplateData()[static_cast<uint32_t>(updateFreq)];
 		}
 
@@ -128,7 +131,8 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 	}
 	else
 	{
-		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "nullptr Descriptor Set Layout for update frequency ", static_cast<uint32_t>(updateFreq), ". Cannot allocate descriptor set");
+		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "nullptr Descriptor Set Layout for update frequency ",
+		         static_cast<uint32_t>(updateFreq), ". Cannot allocate descriptor set");
 		TRAP_ASSERT(false, "nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
 	}
 
@@ -137,7 +141,9 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 		TRAP_ASSERT(dynamicOffsetCount == 1);
 	}
 
-	m_descriptorSets.emplace_back(new VulkanDescriptorSet(m_device, handles, rootSignature, updateData, dynamicSizeOffsets, maxSets, dynamicOffsetCount, updateFreq));
+	m_descriptorSets.emplace_back(new VulkanDescriptorSet(m_device, handles, rootSignature, updateData,
+	                                                      dynamicSizeOffsets, maxSets, dynamicOffsetCount,
+														  updateFreq));
 
 	return m_descriptorSets.back().get();
 }
@@ -159,7 +165,8 @@ VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorS
 		{
 			VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
 
-			VkDescriptorPoolCreateInfo poolInfo = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes, m_numDescriptorSets);
+			VkDescriptorPoolCreateInfo poolInfo = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+			                                                                            m_numDescriptorSets);
 
 			VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &poolInfo, nullptr, &descriptorPool));
 

@@ -26,6 +26,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef _TRAP_IMGUIWINDOWING_H_
 #define _TRAP_IMGUIWINDOWING_H_
 
+#include "Core/PlatformDetection.h"
 #include "Window/WindowingAPI.h"
 
 namespace TRAP::Graphics

@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "Utils.h"
 
+#include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "Utils/Dialogs/Dialogs.h"
 
@@ -154,11 +155,11 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 				const uint32_t currentLevel = (LVL_TYPE & regs1[2]) >> 8;
 				switch (currentLevel)
 				{
-				case 0x01:
+				case BIT(0):
 					numSMT = LVL_CORES & regs1[1];
 					break;
 
-				case 0x02:
+				case BIT(1):
 					cpu.LogicalCores = LVL_CORES & regs1[1];
 					break;
 

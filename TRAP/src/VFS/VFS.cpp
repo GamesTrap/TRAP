@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VFS.h"
 
+#include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 
 TRAP::Scope<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
@@ -27,7 +28,7 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 		return;
 	}
 
-	TRAP_CORE_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 
 	constexpr auto RemoveSlash = [](const std::string& pPath)
 	{
@@ -75,7 +76,7 @@ void TRAP::VFS::Unmount(const std::string& virtualPath)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP_CORE_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 
 	if(virtualPath.empty())
 	{
@@ -229,7 +230,7 @@ std::vector<uint8_t> TRAP::VFS::ReadFile(const std::string& path, const bool sil
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP_CORE_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
 	return ResolveReadPhysicalPath(path, physicalPath, silent) ? ReadPhysicalFile(physicalPath, silent) :
@@ -242,7 +243,7 @@ std::string TRAP::VFS::ReadTextFile(const std::string_view path, const bool sile
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP_CORE_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
 	return ResolveReadPhysicalPath(path, physicalPath, silent) ? ReadPhysicalTextFile(physicalPath, silent) : "";
@@ -254,7 +255,7 @@ bool TRAP::VFS::WriteFile(const std::string& path, std::vector<uint8_t>& buffer,
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP_CORE_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
 	return ResolveWritePhysicalPath(path, physicalPath) ? WritePhysicalFile(physicalPath, buffer, mode) : false;
@@ -266,7 +267,7 @@ bool TRAP::VFS::WriteTextFile(const std::string_view path, const std::string& te
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP_CORE_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
 	return ResolveWritePhysicalPath(path, physicalPath) ? WritePhysicalTextFile(physicalPath, text, mode) : false;

@@ -15,10 +15,10 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RootSignature::Create(c
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanRootSignature>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

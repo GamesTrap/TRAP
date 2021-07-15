@@ -24,7 +24,8 @@ const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name,
-	const std::string_view filepath, const TextureUsage usage)
+	                                                                             const std::string_view filepath,
+																				 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -64,7 +65,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath,
-	const TextureUsage usage)
+	                                                                             const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -99,7 +100,8 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImage(const std::string& name,
-	const Scope<Image>& img, const TextureUsage usage)
+	                                                                              const Scope<Image>& img,
+																				  const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -118,7 +120,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height,
-	uint32_t bitsPerPixel, Image::ColorFormat format, const TextureUsage usage)
+	                                                                          uint32_t bitsPerPixel,
+																			  Image::ColorFormat format,
+																			  const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 

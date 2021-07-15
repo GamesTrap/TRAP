@@ -14,7 +14,7 @@ namespace TRAP::Utils::Memory
 	template<typename T>
 	inline static void SwapBytes(T& t)
 	{
-		TRAP_CORE_ASSERT(false, "Invalid template type used for byte swapping!");
+		TRAP_ASSERT(false, "Invalid template type used for byte swapping!");
 	}
 }
 

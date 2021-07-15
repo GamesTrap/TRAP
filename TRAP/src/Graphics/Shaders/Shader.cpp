@@ -62,7 +62,8 @@ const TRAP::Graphics::Shader::DescriptorSets& TRAP::Graphics::Shader::GetDescrip
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Shader::GetUniformBuffer(const uint32_t set, const uint32_t binding)
+TRAP::Ref<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Shader::GetUniformBuffer(const uint32_t set,
+                                                                                  const uint32_t binding)
 {
 	//Check if set & binding exist in map
 	if (!m_UBOs.count(set) || !m_UBOs[set].count(binding))
@@ -73,7 +74,9 @@ TRAP::Ref<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Shader::GetUniformBuffe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath, const std::vector<Macro>* userMacros)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
+                                                                           const std::string& filePath,
+																		   const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -82,7 +85,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		TP_WARN(Log::ShaderPrefix, "Name is empty! Using Filename as Shader Name!");
 		return CreateFromFile(filePath, userMacros);
 	}
-	
+
 	std::string glslSource;
 	std::string VFSFilePath;
 	bool isSPIRV = false;
@@ -90,15 +93,16 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
-		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
+		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" &&
+		    Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
 		{
 			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
 			return nullptr;
 		}
-		
+
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
-		
+
 		if (!isSPIRV)
 			glslSource = VFS::ReadTextFile(filePath, true);
 		else
@@ -146,13 +150,13 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	if (desc.Stages == RendererAPI::ShaderStage::None)
 		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
-	
+
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
 		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
-			
+
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -168,7 +172,8 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath, const std::vector<Macro>* userMacros)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath,
+                                                                           const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -180,20 +185,21 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
-		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
+		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" &&
+		    Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
 		{
 			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
 			return nullptr;
 		}
-		
+
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
 			glslSource = VFS::ReadTextFile(filePath, true);
 		else
 			SPIRVSource = Convert8To32(VFS::ReadFile(filePath, true));
-		
+
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 		name = VFS::GetFileName(VFSFilePath);
 	}
@@ -229,7 +235,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
-		
+
 		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
 	}
 	else
@@ -250,7 +256,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
@@ -259,7 +265,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& glslSource, const std::vector<Macro>* userMacros)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
+                                                                             const std::string& glslSource,
+																			 const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -300,34 +308,29 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string_view filePa
 {
 	//Check SPIRV Magic Number
 	std::filesystem::path physicalPath;
-	if (VFS::ResolveReadPhysicalPath(filePath, physicalPath, true))
+	if (!VFS::ResolveReadPhysicalPath(filePath, physicalPath, true) && !VFS::FileOrFolderExists(physicalPath, true))
+		return false;
+
+
+	std::ifstream file(physicalPath, std::ios::binary);
+
+	if(!file.is_open())
 	{
-		if (VFS::FileOrFolderExists(physicalPath, true))
-		{
-			std::ifstream file(physicalPath, std::ios::binary);
-			if (file.is_open())
-			{
-				//SPIRV Magic Number:
-				//0x07230203
-
-				uint32_t magicNumber = 0;
-				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Number of SubShaders
-				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Size of the current SubShader in uint32_ts
-				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Type of the current SubShader
-				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //SPIRV Magic Number
-				file.close();
-
-				if (magicNumber == 0x07230203)
-					return true;
-
-				return false;
-			}
-
-			TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalPath);
-		}
+		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalPath);
+		return false;
 	}
 
-	return false;
+	//SPIRV Magic Number:
+	//0x07230203
+
+	uint32_t magicNumber = 0;
+	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Number of SubShaders
+	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Size of the current SubShader in uint32_ts
+	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Type of the current SubShader
+	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //SPIRV Magic Number
+	file.close();
+
+	return magicNumber == 0x07230203;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -347,7 +350,7 @@ std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<uin
 			                 (source[i + 3] << 24);
 		data[j++] = val;
 	}
-	
+
 	return data;
 }
 
@@ -366,40 +369,28 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 	{
 		//Optimization lines converted to lower case
 		std::string lowerLine = Utils::String::ToLower(lines[i]);
-		
+
 		//Search for a shader type tag
 		if(Utils::String::StartsWith(lowerLine, "#shader"))
 		{
 			//Detect shader type
 			if (Utils::String::FindToken(lowerLine, "vertex"))
-			{
 				currentShaderStage = RendererAPI::ShaderStage::Vertex;
-			}
 			else if (Utils::String::FindToken(lowerLine, "fragment") ||
-				Utils::String::FindToken(lowerLine, "pixel"))
-			{
+				     Utils::String::FindToken(lowerLine, "pixel"))
 				currentShaderStage = RendererAPI::ShaderStage::Fragment;
-			}
 			else if (Utils::String::FindToken(lowerLine, "geometry"))
-			{
 				currentShaderStage = RendererAPI::ShaderStage::Geometry;
-			}
 			else if (Utils::String::FindToken(lowerLine, "tessellation"))
 			{
 				//Either Control or Evaluation
 				if (Utils::String::FindToken(lowerLine, "control"))
-				{
 					currentShaderStage = RendererAPI::ShaderStage::TessellationControl;
-				}
 				else if (Utils::String::FindToken(lowerLine, "evaluation"))
-				{
 					currentShaderStage = RendererAPI::ShaderStage::TessellationEvaluation;
-				}
 			}
 			else if (Utils::String::FindToken(lowerLine, "compute"))
-			{
 				currentShaderStage = RendererAPI::ShaderStage::Compute;
-			}
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
 			//Check for duplicate "#shader XXX" defines
@@ -447,7 +438,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 				TP_WARN(Log::ShaderGLSLPrefix, "RayTracing Shader support is WIP!");
 				return false;
 				break;
-				
+
 			case RendererAPI::ShaderStage::AllGraphics:
 			case RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
 			case RendererAPI::ShaderStage::None:
@@ -483,7 +474,8 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 			case 2:
 				if (static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationEvaluation & shaderStages))
 				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "TessellationEvaluation Shader Couldn't find \"main\" function!");
+					TP_ERROR(Log::ShaderGLSLPrefix,
+					         "TessellationEvaluation Shader Couldn't find \"main\" function!");
 					return false;
 				}
 				break;
@@ -527,7 +519,8 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 			for(const Macro& macro : s_defaultShaderMacrosVulkan)
 				preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
 		}
-		else if(!shaders[i].empty() && TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
+		else if(!shaders[i].empty() &&
+		        TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
 		{
 			//Found main function
 			//Add GLSL version before any shader code
@@ -553,8 +546,8 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversion(const char* source,
-	const RendererAPI::ShaderStage stage,
-	std::string& preProcessedSource)
+	                                                                              const RendererAPI::ShaderStage stage,
+	                                                                              std::string& preProcessedSource)
 {
 	TRAP::Scope<glslang::TShader> shader;
 
@@ -596,259 +589,46 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversio
 	}
 	//TODO RayTracing
 
-	if(shader)
+	if(!shader)
+		return nullptr;
+
+	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
+	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
+	glslang::TShader::ForbidIncluder includer;
+	constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+
+	if(!shader->preprocess(&DefaultTBuiltInResource,
+		                   460,
+		                   ECoreProfile,
+		                   true,
+		                   true,
+		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
+		                   &preProcessedSource,
+		                   includer))
 	{
-		shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
-		shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
-		glslang::TShader::ForbidIncluder includer;
-		constexpr TBuiltInResource DefaultTBuiltInResource =
-		{
-			/* .MaxLights = */ 32,
-			/* .MaxClipPlanes = */ 6,
-			/* .MaxTextureUnits = */ 32,
-			/* .MaxTextureCoords = */ 32,
-			/* .MaxVertexAttribs = */ 64,
-			/* .MaxVertexUniformComponents = */ 4096,
-			/* .MaxVaryingFloats = */ 64,
-			/* .MaxVertexTextureImageUnits = */ 32,
-			/* .MaxCombinedTextureImageUnits = */ 80,
-			/* .MaxTextureImageUnits = */ 32,
-			/* .MaxFragmentUniformComponents = */ 4096,
-			/* .MaxDrawBuffers = */ 32,
-			/* .MaxVertexUniformVectors = */ 128,
-			/* .MaxVaryingVectors = */ 8,
-			/* .MaxFragmentUniformVectors = */ 16,
-			/* .MaxVertexOutputVectors = */ 16,
-			/* .MaxFragmentInputVectors = */ 15,
-			/* .MinProgramTexelOffset = */ -8,
-			/* .MaxProgramTexelOffset = */ 7,
-			/* .MaxClipDistances = */ 8,
-			/* .MaxComputeWorkGroupCountX = */ 65535,
-			/* .MaxComputeWorkGroupCountY = */ 65535,
-			/* .MaxComputeWorkGroupCountZ = */ 65535,
-			/* .MaxComputeWorkGroupSizeX = */ 1024,
-			/* .MaxComputeWorkGroupSizeY = */ 1024,
-			/* .MaxComputeWorkGroupSizeZ = */ 64,
-			/* .MaxComputeUniformComponents = */ 1024,
-			/* .MaxComputeTextureImageUnits = */ 16,
-			/* .MaxComputeImageUniforms = */ 8,
-			/* .MaxComputeAtomicCounters = */ 8,
-			/* .MaxComputeAtomicCounterBuffers = */ 1,
-			/* .MaxVaryingComponents = */ 60,
-			/* .MaxVertexOutputComponents = */ 64,
-			/* .MaxGeometryInputComponents = */ 64,
-			/* .MaxGeometryOutputComponents = */ 128,
-			/* .MaxFragmentInputComponents = */ 128,
-			/* .MaxImageUnits = */ 8,
-			/* .MaxCombinedImageUnitsAndFragmentOutputs = */ 8,
-			/* .MaxCombinedShaderOutputResources = */ 8,
-			/* .MaxImageSamples = */ 0,
-			/* .MaxVertexImageUniforms = */ 0,
-			/* .MaxTessControlImageUniforms = */ 0,
-			/* .MaxTessEvaluationImageUniforms = */ 0,
-			/* .MaxGeometryImageUniforms = */ 0,
-			/* .MaxFragmentImageUniforms = */ 8,
-			/* .MaxCombinedImageUniforms = */ 8,
-			/* .MaxGeometryTextureImageUnits = */ 16,
-			/* .MaxGeometryOutputVertices = */ 256,
-			/* .MaxGeometryTotalOutputComponents = */ 1024,
-			/* .MaxGeometryUniformComponents = */ 1024,
-			/* .MaxGeometryVaryingComponents = */ 64,
-			/* .MaxTessControlInputComponents = */ 128,
-			/* .MaxTessControlOutputComponents = */ 128,
-			/* .MaxTessControlTextureImageUnits = */ 16,
-			/* .MaxTessControlUniformComponents = */ 1024,
-			/* .MaxTessControlTotalOutputComponents = */ 4096,
-			/* .MaxTessEvaluationInputComponents = */ 128,
-			/* .MaxTessEvaluationOutputComponents = */ 128,
-			/* .MaxTessEvaluationTextureImageUnits = */ 16,
-			/* .MaxTessEvaluationUniformComponents = */ 1024,
-			/* .MaxTessPatchComponents = */ 120,
-			/* .MaxPatchVertices = */ 32,
-			/* .MaxTessGenLevel = */ 64,
-			/* .MaxViewports = */ 16,
-			/* .MaxVertexAtomicCounters = */ 0,
-			/* .MaxTessControlAtomicCounters = */ 0,
-			/* .MaxTessEvaluationAtomicCounters = */ 0,
-			/* .MaxGeometryAtomicCounters = */ 0,
-			/* .MaxFragmentAtomicCounters = */ 8,
-			/* .MaxCombinedAtomicCounters = */ 8,
-			/* .MaxAtomicCounterBindings = */ 1,
-			/* .MaxVertexAtomicCounterBuffers = */ 0,
-			/* .MaxTessControlAtomicCounterBuffers = */ 0,
-			/* .MaxTessEvaluationAtomicCounterBuffers = */ 0,
-			/* .MaxGeometryAtomicCounterBuffers = */ 0,
-			/* .MaxFragmentAtomicCounterBuffers = */ 1,
-			/* .MaxCombinedAtomicCounterBuffers = */ 1,
-			/* .MaxAtomicCounterBufferSize = */ 16384,
-			/* .MaxTransformFeedbackBuffers = */ 4,
-			/* .MaxTransformFeedbackInterleavedComponents = */ 64,
-			/* .MaxCullDistances = */ 8,
-			/* .MaxCombinedClipAndCullDistances = */ 8,
-			/* .MaxSamples = */ 4,
-			/* .maxMeshOutputVerticesNV = */ 256,
-			/* .maxMeshOutputPrimitivesNV = */ 512,
-			/* .maxMeshWorkGroupSizeX_NV = */ 32,
-			/* .maxMeshWorkGroupSizeY_NV = */ 1,
-			/* .maxMeshWorkGroupSizeZ_NV = */ 1,
-			/* .maxTaskWorkGroupSizeX_NV = */ 32,
-			/* .maxTaskWorkGroupSizeY_NV = */ 1,
-			/* .maxTaskWorkGroupSizeZ_NV = */ 1,
-			/* .maxMeshViewCountNV = */ 4,
-			/* .maxDualSourceDrawBuffersEXT = */ 1,
+		TP_ERROR(Log::ShaderSPIRVPrefix, "GLSL -> SPIR-V conversion preprocessing failed!");
+		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
+		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
 
-			/* TLimits */
-			/* .nonInductiveForLoops = */ true,
-			/* .whileLoops = */ true,
-			/* .doWhileLoops = */ true,
-			/* .generalUniformIndexing = */ true,
-			/* .generalAttributeMatrixVectorIndexing = */ true,
-			/* .generalVaryingIndexing = */ true,
-			/* .generalSamplerIndexing = */ true,
-			/* .generalVariableIndexing = */ true,
-			/* .generalConstantMatrixVectorIndexing = */ true
-		};
-
-		if(!shader->preprocess(&DefaultTBuiltInResource,
-			460,
-			ECoreProfile,
-			true,
-			true,
-			static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
-			&preProcessedSource,
-			includer))
-		{
-			TP_ERROR(Log::ShaderSPIRVPrefix, "GLSL -> SPIR-V conversion preprocessing failed!");
-			TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
-			TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
-			
-			return nullptr;
-		}
-
-		return shader;
+		return nullptr;
 	}
 
-	return nullptr;
+	return shader;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
 {
-	constexpr TBuiltInResource DefaultTBuiltInResource =
-	{
-		/* .MaxLights = */ 32,
-		/* .MaxClipPlanes = */ 6,
-		/* .MaxTextureUnits = */ 32,
-		/* .MaxTextureCoords = */ 32,
-		/* .MaxVertexAttribs = */ 64,
-		/* .MaxVertexUniformComponents = */ 4096,
-		/* .MaxVaryingFloats = */ 64,
-		/* .MaxVertexTextureImageUnits = */ 32,
-		/* .MaxCombinedTextureImageUnits = */ 80,
-		/* .MaxTextureImageUnits = */ 32,
-		/* .MaxFragmentUniformComponents = */ 4096,
-		/* .MaxDrawBuffers = */ 32,
-		/* .MaxVertexUniformVectors = */ 128,
-		/* .MaxVaryingVectors = */ 8,
-		/* .MaxFragmentUniformVectors = */ 16,
-		/* .MaxVertexOutputVectors = */ 16,
-		/* .MaxFragmentInputVectors = */ 15,
-		/* .MinProgramTexelOffset = */ -8,
-		/* .MaxProgramTexelOffset = */ 7,
-		/* .MaxClipDistances = */ 8,
-		/* .MaxComputeWorkGroupCountX = */ 65535,
-		/* .MaxComputeWorkGroupCountY = */ 65535,
-		/* .MaxComputeWorkGroupCountZ = */ 65535,
-		/* .MaxComputeWorkGroupSizeX = */ 1024,
-		/* .MaxComputeWorkGroupSizeY = */ 1024,
-		/* .MaxComputeWorkGroupSizeZ = */ 64,
-		/* .MaxComputeUniformComponents = */ 1024,
-		/* .MaxComputeTextureImageUnits = */ 16,
-		/* .MaxComputeImageUniforms = */ 8,
-		/* .MaxComputeAtomicCounters = */ 8,
-		/* .MaxComputeAtomicCounterBuffers = */ 1,
-		/* .MaxVaryingComponents = */ 60,
-		/* .MaxVertexOutputComponents = */ 64,
-		/* .MaxGeometryInputComponents = */ 64,
-		/* .MaxGeometryOutputComponents = */ 128,
-		/* .MaxFragmentInputComponents = */ 128,
-		/* .MaxImageUnits = */ 8,
-		/* .MaxCombinedImageUnitsAndFragmentOutputs = */ 8,
-		/* .MaxCombinedShaderOutputResources = */ 8,
-		/* .MaxImageSamples = */ 0,
-		/* .MaxVertexImageUniforms = */ 0,
-		/* .MaxTessControlImageUniforms = */ 0,
-		/* .MaxTessEvaluationImageUniforms = */ 0,
-		/* .MaxGeometryImageUniforms = */ 0,
-		/* .MaxFragmentImageUniforms = */ 8,
-		/* .MaxCombinedImageUniforms = */ 8,
-		/* .MaxGeometryTextureImageUnits = */ 16,
-		/* .MaxGeometryOutputVertices = */ 256,
-		/* .MaxGeometryTotalOutputComponents = */ 1024,
-		/* .MaxGeometryUniformComponents = */ 1024,
-		/* .MaxGeometryVaryingComponents = */ 64,
-		/* .MaxTessControlInputComponents = */ 128,
-		/* .MaxTessControlOutputComponents = */ 128,
-		/* .MaxTessControlTextureImageUnits = */ 16,
-		/* .MaxTessControlUniformComponents = */ 1024,
-		/* .MaxTessControlTotalOutputComponents = */ 4096,
-		/* .MaxTessEvaluationInputComponents = */ 128,
-		/* .MaxTessEvaluationOutputComponents = */ 128,
-		/* .MaxTessEvaluationTextureImageUnits = */ 16,
-		/* .MaxTessEvaluationUniformComponents = */ 1024,
-		/* .MaxTessPatchComponents = */ 120,
-		/* .MaxPatchVertices = */ 32,
-		/* .MaxTessGenLevel = */ 64,
-		/* .MaxViewports = */ 16,
-		/* .MaxVertexAtomicCounters = */ 0,
-		/* .MaxTessControlAtomicCounters = */ 0,
-		/* .MaxTessEvaluationAtomicCounters = */ 0,
-		/* .MaxGeometryAtomicCounters = */ 0,
-		/* .MaxFragmentAtomicCounters = */ 8,
-		/* .MaxCombinedAtomicCounters = */ 8,
-		/* .MaxAtomicCounterBindings = */ 1,
-		/* .MaxVertexAtomicCounterBuffers = */ 0,
-		/* .MaxTessControlAtomicCounterBuffers = */ 0,
-		/* .MaxTessEvaluationAtomicCounterBuffers = */ 0,
-		/* .MaxGeometryAtomicCounterBuffers = */ 0,
-		/* .MaxFragmentAtomicCounterBuffers = */ 1,
-		/* .MaxCombinedAtomicCounterBuffers = */ 1,
-		/* .MaxAtomicCounterBufferSize = */ 16384,
-		/* .MaxTransformFeedbackBuffers = */ 4,
-		/* .MaxTransformFeedbackInterleavedComponents = */ 64,
-		/* .MaxCullDistances = */ 8,
-		/* .MaxCombinedClipAndCullDistances = */ 8,
-		/* .MaxSamples = */ 4,
-		/* .maxMeshOutputVerticesNV = */ 256,
-		/* .maxMeshOutputPrimitivesNV = */ 512,
-		/* .maxMeshWorkGroupSizeX_NV = */ 32,
-		/* .maxMeshWorkGroupSizeY_NV = */ 1,
-		/* .maxMeshWorkGroupSizeZ_NV = */ 1,
-		/* .maxTaskWorkGroupSizeX_NV = */ 32,
-		/* .maxTaskWorkGroupSizeY_NV = */ 1,
-		/* .maxTaskWorkGroupSizeZ_NV = */ 1,
-		/* .maxMeshViewCountNV = */ 4,
-		/* .maxDualSourceDrawBuffersEXT = */ 1,
+	constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
-		/* TLimits */
-		/* .nonInductiveForLoops = */ true,
-		/* .whileLoops = */ true,
-		/* .doWhileLoops = */ true,
-		/* .generalUniformIndexing = */ true,
-		/* .generalAttributeMatrixVectorIndexing = */ true,
-		/* .generalVaryingIndexing = */ true,
-		/* .generalSamplerIndexing = */ true,
-		/* .generalVariableIndexing = */ true,
-		/* .generalConstantMatrixVectorIndexing = */ true
-	};
-
-	if(!shader->parse(&DefaultTBuiltInResource, 460, true, static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
+	if(!shader->parse(&DefaultTBuiltInResource, 460, true,
+	                  static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
 		TP_ERROR(Log::ShaderGLSLPrefix, "Parsing failed: ");
 		TP_ERROR(Log::ShaderGLSLPrefix, shader->getInfoLog());
 		TP_ERROR(Log::ShaderGLSLPrefix, shader->getInfoDebugLog());
-		
+
 		return false;
 	}
 
@@ -867,7 +647,7 @@ bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* shader, glslang::TPro
 		TP_ERROR(Log::ShaderGLSLPrefix, "Linking failed: ");
 		TP_ERROR(Log::ShaderGLSLPrefix, program.getInfoLog());
 		TP_ERROR(Log::ShaderGLSLPrefix, program.getInfoDebugLog());
-		
+
 		return false;
 	}
 
@@ -884,7 +664,7 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 		TP_ERROR(Log::ShaderGLSLPrefix, "No Shader Stage found!");
 		return false;
 	}
-	
+
 	//Check for "Normal" Shader Stages combined with Compute
 	if((static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages) ||
 		static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) ||
@@ -924,7 +704,7 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 		TP_ERROR(Log::ShaderGLSLPrefix, "Only Vertex Shader Stage provided! Missing Fragment/Pixel Shader Stage");
 		return false;
 	}
-	
+
 	//Shader Stages should be valid
 	return true;
 }
@@ -932,7 +712,7 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLSLToSPIRV(const std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-	const RendererAPI::ShaderStage& shaderStages)
+	                                                                                     const RendererAPI::ShaderStage& shaderStages)
 {
 	if(!s_glslangInitialized)
 	{
@@ -947,170 +727,186 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 	for(uint32_t i = 0; i < shaders.size(); ++i)
 	{
-		if(!shaders[i].empty())
+		if(shaders[i].empty())
+			continue;
+
+		glslang::TProgram program;
+
+		std::string preProcessedSource;
+
+		switch(i)
 		{
-			glslang::TProgram program;
-			
-			std::string preProcessedSource;
+		case 0:
+		{
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Vertex Shader");
+			glslShaders[0] = PreProcessGLSLForConversion(shaders[0].data(), RendererAPI::ShaderStage::Vertex,
+															preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
 
-			switch(i)
-			{
-			case 0:
-			{
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Vertex Shader");
-				glslShaders[0] = PreProcessGLSLForConversion(shaders[0].data(), RendererAPI::ShaderStage::Vertex, preProcessedSource);
-				if (preProcessedSource.empty())
-					return{};
-				
-				const char* preProcessedCStr = preProcessedSource.c_str();
-				glslShaders[0]->setStrings(&preProcessedCStr, 1);
-				
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Vertex Shader");
-				if (!ParseGLSLang(glslShaders[0].get()))
-					return{};
-				
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Vertex Shader");
-				if (!LinkGLSLang(glslShaders[0].get(), program))
-					return{};
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[0]->setStrings(&preProcessedCStr, 1);
 
-				TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-				const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[0].get(), RendererAPI::ShaderStage::Vertex, program);
-				
-				desc.Vertex = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-				break;
-			}
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Vertex Shader");
+			if (!ParseGLSLang(glslShaders[0].get()))
+				return{};
 
-			case 1:
-			{
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing TessellationControl Shader");
-				glslShaders[1] = PreProcessGLSLForConversion(shaders[1].data(), RendererAPI::ShaderStage::TessellationControl, preProcessedSource);
-				if (preProcessedSource.empty())
-					return{};
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Vertex Shader");
+			if (!LinkGLSLang(glslShaders[0].get(), program))
+				return{};
 
-				const char* preProcessedCStr = preProcessedSource.c_str();
-				glslShaders[1]->setStrings(&preProcessedCStr, 1);
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[0].get(),
+																RendererAPI::ShaderStage::Vertex, program);
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing TessellationControl Shader");
-				if (!ParseGLSLang(glslShaders[1].get()))
-					return{};
+			desc.Vertex = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			break;
+		}
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Linking TessellationControl Shader");
-				if (!LinkGLSLang(glslShaders[1].get(), program))
-					return{};
+		case 1:
+		{
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing TessellationControl Shader");
+			glslShaders[1] = PreProcessGLSLForConversion(shaders[1].data(),
+															RendererAPI::ShaderStage::TessellationControl,
+															preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
 
-				TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-				const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[1].get(), RendererAPI::ShaderStage::TessellationControl, program);
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[1]->setStrings(&preProcessedCStr, 1);
 
-				desc.TessellationControl = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-				break;
-			}
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing TessellationControl Shader");
+			if (!ParseGLSLang(glslShaders[1].get()))
+				return{};
 
-			case 2:
-			{
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing TessellationEvaluation Shader");
-				glslShaders[2] = PreProcessGLSLForConversion(shaders[2].data(), RendererAPI::ShaderStage::TessellationEvaluation, preProcessedSource);
-				if (preProcessedSource.empty())
-					return{};
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking TessellationControl Shader");
+			if (!LinkGLSLang(glslShaders[1].get(), program))
+				return{};
 
-				const char* preProcessedCStr = preProcessedSource.c_str();
-				glslShaders[2]->setStrings(&preProcessedCStr, 1);
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[1].get(),
+																RendererAPI::ShaderStage::TessellationControl,
+																program);
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing TessellationEvaluation Shader");
-				if (!ParseGLSLang(glslShaders[2].get()))
-					return{};
+			desc.TessellationControl = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			break;
+		}
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Linking TessellationEvaluation Shader");
-				if (!LinkGLSLang(glslShaders[2].get(), program))
-					return{};
+		case 2:
+		{
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing TessellationEvaluation Shader");
+			glslShaders[2] = PreProcessGLSLForConversion(shaders[2].data(),
+															RendererAPI::ShaderStage::TessellationEvaluation,
+															preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
 
-				TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-				const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[2].get(), RendererAPI::ShaderStage::TessellationEvaluation, program);
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[2]->setStrings(&preProcessedCStr, 1);
 
-				desc.TessellationEvaluation = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-				break;
-			}
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing TessellationEvaluation Shader");
+			if (!ParseGLSLang(glslShaders[2].get()))
+				return{};
 
-			case 3:
-			{
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Geometry Shader");
-				glslShaders[3] = PreProcessGLSLForConversion(shaders[3].data(), RendererAPI::ShaderStage::Geometry, preProcessedSource);
-				if (preProcessedSource.empty())
-					return{};
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking TessellationEvaluation Shader");
+			if (!LinkGLSLang(glslShaders[2].get(), program))
+				return{};
 
-				const char* preProcessedCStr = preProcessedSource.c_str();
-				glslShaders[3]->setStrings(&preProcessedCStr, 1);
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[2].get(),
+																RendererAPI::ShaderStage::TessellationEvaluation,
+																program);
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Geometry Shader");
-				if (!ParseGLSLang(glslShaders[3].get()))
-					return{};
+			desc.TessellationEvaluation = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			break;
+		}
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Geometry Shader");
-				if (!LinkGLSLang(glslShaders[3].get(), program))
-					return{};
+		case 3:
+		{
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Geometry Shader");
+			glslShaders[3] = PreProcessGLSLForConversion(shaders[3].data(), RendererAPI::ShaderStage::Geometry,
+															preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
 
-				TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-				const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[3].get(), RendererAPI::ShaderStage::Geometry, program);
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[3]->setStrings(&preProcessedCStr, 1);
 
-				desc.Geometry = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-				break;
-			}
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Geometry Shader");
+			if (!ParseGLSLang(glslShaders[3].get()))
+				return{};
 
-			case 4:
-			{
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Fragment Shader");
-				glslShaders[4] = PreProcessGLSLForConversion(shaders[4].data(), RendererAPI::ShaderStage::Fragment, preProcessedSource);
-				if (preProcessedSource.empty())
-					return{};
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Geometry Shader");
+			if (!LinkGLSLang(glslShaders[3].get(), program))
+				return{};
 
-				const char* preProcessedCStr = preProcessedSource.c_str();
-				glslShaders[4]->setStrings(&preProcessedCStr, 1);
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[3].get(),
+																RendererAPI::ShaderStage::Geometry, program);
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Fragment Shader");
-				if (!ParseGLSLang(glslShaders[4].get()))
-					return{};
+			desc.Geometry = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			break;
+		}
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Fragment Shader");
-				if (!LinkGLSLang(glslShaders[4].get(), program))
-					return{};
+		case 4:
+		{
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Fragment Shader");
+			glslShaders[4] = PreProcessGLSLForConversion(shaders[4].data(),
+															RendererAPI::ShaderStage::Fragment, preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
 
-				TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-				const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[4].get(), RendererAPI::ShaderStage::Fragment, program);
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[4]->setStrings(&preProcessedCStr, 1);
 
-				desc.Fragment = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-				break;
-			}
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Fragment Shader");
+			if (!ParseGLSLang(glslShaders[4].get()))
+				return{};
 
-			case 5:
-			{
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Compute Shader");
-				glslShaders[5] = PreProcessGLSLForConversion(shaders[5].data(), RendererAPI::ShaderStage::Compute, preProcessedSource);
-				if (preProcessedSource.empty())
-					return{};
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Fragment Shader");
+			if (!LinkGLSLang(glslShaders[4].get(), program))
+				return{};
 
-				const char* preProcessedCStr = preProcessedSource.c_str();
-				glslShaders[5]->setStrings(&preProcessedCStr, 1);
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[4].get(),
+																RendererAPI::ShaderStage::Fragment, program);
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Compute Shader");
-				if (!ParseGLSLang(glslShaders[5].get()))
-					return{};
+			desc.Fragment = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			break;
+		}
 
-				TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Compute Shader");
-				if (!LinkGLSLang(glslShaders[5].get(), program))
-					return{};
+		case 5:
+		{
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Compute Shader");
+			glslShaders[5] = PreProcessGLSLForConversion(shaders[5].data(),
+															RendererAPI::ShaderStage::Compute, preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
 
-				TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-				const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[5].get(), RendererAPI::ShaderStage::Compute, program);
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[5]->setStrings(&preProcessedCStr, 1);
 
-				desc.Compute = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
-				break;
-			}
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Compute Shader");
+			if (!ParseGLSLang(glslShaders[5].get()))
+				return{};
 
-				//TODO RayTracing Shaders
-				
-			default:
-				break;
-			}
-			
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Compute Shader");
+			if (!LinkGLSLang(glslShaders[5].get(), program))
+				return{};
+
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[5].get(),
+																RendererAPI::ShaderStage::Compute,
+																program);
+
+			desc.Compute = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
+			break;
+		}
+
+			//TODO RayTracing Shaders
+
+		default:
+			break;
 		}
 	}
 
@@ -1119,64 +915,66 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* shader, const RendererAPI::ShaderStage stage, glslang::TProgram& program)
+std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* shader,
+                                                             const RendererAPI::ShaderStage stage,
+															 glslang::TProgram& program)
 {
 	std::vector<uint32_t> SPIRV{};
-	
-	if(shader)
-	{
-		spv::SpvBuildLogger logger{};
-		glslang::SpvOptions spvOptions{};
+
+	if(!shader)
+		return SPIRV;
+
+	spv::SpvBuildLogger logger{};
+	glslang::SpvOptions spvOptions{};
 #ifdef TRAP_DEBUG
-		spvOptions.validate = true;
-		spvOptions.disableOptimizer = true;
+	spvOptions.validate = true;
+	spvOptions.disableOptimizer = true;
 #else
-		spvOptions.disableOptimizer = false;
-		spvOptions.optimizeSize = true;
+	spvOptions.disableOptimizer = false;
+	spvOptions.optimizeSize = true;
 #endif
-		switch(stage)
-		{
-		case RendererAPI::ShaderStage::Vertex:
-			glslang::GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV, &logger, &spvOptions);
-			if (logger.getAllMessages().length() > 0)
-				TP_ERROR(Log::ShaderSPIRVPrefix, "Vertex Shader: ", logger.getAllMessages());
-			break;
+	switch(stage)
+	{
+	case RendererAPI::ShaderStage::Vertex:
+		glslang::GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV, &logger, &spvOptions);
+		if (logger.getAllMessages().length() > 0)
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Vertex Shader: ", logger.getAllMessages());
+		break;
 
-		case RendererAPI::ShaderStage::TessellationControl:
-			glslang::GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV, &logger, &spvOptions);
-			if (logger.getAllMessages().length() > 0)
-				TP_ERROR(Log::ShaderSPIRVPrefix, "TessellationControl Shader: ", logger.getAllMessages());
-			break;
+	case RendererAPI::ShaderStage::TessellationControl:
+		glslang::GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV, &logger, &spvOptions);
+		if (logger.getAllMessages().length() > 0)
+			TP_ERROR(Log::ShaderSPIRVPrefix, "TessellationControl Shader: ", logger.getAllMessages());
+		break;
 
-		case RendererAPI::ShaderStage::TessellationEvaluation:
-			glslang::GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV, &logger, &spvOptions);
-			if (logger.getAllMessages().length() > 0)
-				TP_ERROR(Log::ShaderSPIRVPrefix, "TessellationEvaluation Shader: ", logger.getAllMessages());
-			break;
+	case RendererAPI::ShaderStage::TessellationEvaluation:
+		glslang::GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV, &logger, &spvOptions);
+		if (logger.getAllMessages().length() > 0)
+			TP_ERROR(Log::ShaderSPIRVPrefix, "TessellationEvaluation Shader: ", logger.getAllMessages());
+		break;
 
-		case RendererAPI::ShaderStage::Geometry:
-			glslang::GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV, &logger, &spvOptions);
-			if (logger.getAllMessages().length() > 0)
-				TP_ERROR(Log::ShaderSPIRVPrefix, "Geometry Shader: ", logger.getAllMessages());
-			break;
+	case RendererAPI::ShaderStage::Geometry:
+		glslang::GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV, &logger, &spvOptions);
+		if (logger.getAllMessages().length() > 0)
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Geometry Shader: ", logger.getAllMessages());
+		break;
 
-		case RendererAPI::ShaderStage::Fragment:
-			glslang::GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV, &logger, &spvOptions);
-			if (logger.getAllMessages().length() > 0)
-				TP_ERROR(Log::ShaderSPIRVPrefix, "Fragment Shader: ", logger.getAllMessages());
-			break;
+	case RendererAPI::ShaderStage::Fragment:
+		glslang::GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV, &logger, &spvOptions);
+		if (logger.getAllMessages().length() > 0)
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Fragment Shader: ", logger.getAllMessages());
+		break;
 
-		case RendererAPI::ShaderStage::Compute:
-			glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV, &logger, &spvOptions);
-			if (logger.getAllMessages().length() > 0)
-				TP_ERROR(Log::ShaderSPIRVPrefix, "Compute Shader: ", logger.getAllMessages());
-			break;
+	case RendererAPI::ShaderStage::Compute:
+		glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV, &logger, &spvOptions);
+		if (logger.getAllMessages().length() > 0)
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Compute Shader: ", logger.getAllMessages());
+		break;
 
-			//TODO RayTracing shaders
-			
-		default:
-			break;
-		}
+		//TODO RayTracing shaders
+
+	default:
+		break;
 	}
 
 	return SPIRV;
@@ -1196,7 +994,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 		const uint32_t SPIRVSize = SPIRV[index++];
 		const RendererAPI::ShaderStage stage = static_cast<RendererAPI::ShaderStage>(SPIRV[index++]);
 		desc.Stages |= stage;
-		
+
 		switch(stage)
 		{
 		case RendererAPI::ShaderStage::Vertex:
@@ -1205,12 +1003,14 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 			break;
 
 		case RendererAPI::ShaderStage::TessellationControl:
-			desc.TessellationControl.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
+			desc.TessellationControl.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index,
+			                                                          SPIRV.begin() + index + SPIRVSize);
 			index += SPIRVSize;
 			break;
 
 		case RendererAPI::ShaderStage::TessellationEvaluation:
-			desc.TessellationEvaluation.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
+			desc.TessellationEvaluation.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index,
+			                                                             SPIRV.begin() + index + SPIRVSize);
 			index += SPIRVSize;
 			break;
 
@@ -1228,7 +1028,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 			desc.Compute.ByteCode = std::vector<uint32_t>(SPIRV.begin() + index, SPIRV.begin() + index + SPIRVSize);
 			index += SPIRVSize;
 			break;
-			
+
 		//case RendererAPI::ShaderStage::RayTracing:
 			//TODO RayTracing
 
@@ -1238,6 +1038,6 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 			break;
 		}
 	}
-	
+
 	return desc;
 }

@@ -9,12 +9,12 @@ namespace TRAP::Graphics
 	{
 	public:
 		static TRAP::Ref<QueryPool> Create(const RendererAPI::QueryPoolDesc& desc);
-	
+
 		virtual ~QueryPool() = default;
 
 	protected:
 		QueryPool() = default;
-		
+
 		//No Graphic API independent data
 	};
 }

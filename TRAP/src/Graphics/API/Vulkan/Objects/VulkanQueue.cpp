@@ -21,7 +21,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	  m_timestampPeriod(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod)
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");
 #endif
@@ -42,12 +42,13 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 
 TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 {
+	TRAP_ASSERT(m_vkQueue);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Destroying Queue");
 #endif
 
-	if(m_vkQueue)
-		--m_device->m_usedQueueCount[m_flags];
+	--m_device->m_usedQueueCount[m_flags];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -126,35 +127,41 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	uint32_t waitCount = 0;
 	for (const auto& waitSemaphore : desc.WaitSemaphores)
 	{
-		if(waitSemaphore->IsSignaled())
-		{
-			waitSemaphores[waitCount] = dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore();
-			waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
-			++waitCount;
+		if(!waitSemaphore->IsSignaled())
+			continue;
 
-			waitSemaphore->m_signaled = false;
-		}
+		waitSemaphores[waitCount] = dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore();
+		waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+		++waitCount;
+
+		waitSemaphore->m_signaled = false;
 	}
 
 	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
 	uint32_t signalCount = 0;
 	for(uint32_t i = 0; i < desc.SignalSemaphores.size(); ++i)
 	{
-		if(!desc.SignalSemaphores[i]->IsSignaled())
-		{
-			signalSemaphores[signalCount] = dynamic_cast<VulkanSemaphore*>(desc.SignalSemaphores[i].get())->GetVkSemaphore();
-			desc.SignalSemaphores[i]->m_signaled = true;
-			++signalCount;
-		}
+		if(desc.SignalSemaphores[i]->IsSignaled())
+			continue;
+
+		signalSemaphores[signalCount] = dynamic_cast<VulkanSemaphore*>
+		(
+			desc.SignalSemaphores[i].get()
+		)->GetVkSemaphore();
+		desc.SignalSemaphores[i]->m_signaled = true;
+		++signalCount;
 	}
 
 	VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitMasks, cmds, signalSemaphores);
 
 	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
 	//Many setups have just one queue family and one queue.
-	//In this case, async compute, async transfer doesn't exist and we end up using the same queue for all three operations
+	//In this case, async compute, async transfer doesn't exist and we end up using the same queue for all
+	//three operations
 	std::lock_guard<std::mutex> lock(m_submitMutex);
-	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ? dynamic_cast<VulkanFence*>(desc.SignalFence.get())->GetVkFence() : VK_NULL_HANDLE));
+	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ?
+	                                                dynamic_cast<VulkanFence*>(desc.SignalFence.get())->GetVkFence() :
+													VK_NULL_HANDLE));
 
 	if (desc.SignalFence)
 		desc.SignalFence->m_submitted = true;
@@ -166,41 +173,42 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 {
 	const std::vector<TRAP::Ref<Semaphore>>& waitSemaphores = desc.WaitSemaphores;
 	RendererAPI::PresentStatus presentStatus = RendererAPI::PresentStatus::Failed;
-	
-	if(desc.SwapChain)
+
+	if(!desc.SwapChain)
+		return presentStatus;
+
+	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
+
+	std::vector<VkSemaphore> wSemaphores;
+	if (!waitSemaphores.empty())
+		wSemaphores.reserve(waitSemaphores.size());
+	for (const auto& waitSemaphore : waitSemaphores)
 	{
-		TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
-
-		std::vector<VkSemaphore> wSemaphores;
-		if (!waitSemaphores.empty())
-			wSemaphores.reserve(waitSemaphores.size());
-		for (const auto& waitSemaphore : waitSemaphores)
+		if(waitSemaphore->IsSignaled())
 		{
-			if(waitSemaphore->IsSignaled())
-			{
-				wSemaphores.push_back(dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore());
-				waitSemaphore->m_signaled = false;
-			}
+			wSemaphores.push_back(dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore());
+			waitSemaphore->m_signaled = false;
 		}
+	}
 
-		uint32_t presentIndex = desc.Index;
+	uint32_t presentIndex = desc.Index;
 
-		VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
-		VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sChain->GetVkSwapChain(), presentIndex);
+	VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
+	VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sChain->GetVkSwapChain(), presentIndex);
 
-		//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
-		std::lock_guard<std::mutex> lock(m_submitMutex);
-		const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() ? sChain->GetPresentVkQueue() : m_vkQueue, &presentInfo);
-		if (res == VK_SUCCESS)
-			presentStatus = RendererAPI::PresentStatus::Success;
-		else if (res == VK_ERROR_DEVICE_LOST)
-			presentStatus = RendererAPI::PresentStatus::DeviceReset;		
-		else if(res == VK_ERROR_OUT_OF_DATE_KHR)
-			presentStatus = RendererAPI::PresentStatus::OutOfDate;
-		else
-		{
-			VkCall(res);
-		}
+	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
+	std::lock_guard<std::mutex> lock(m_submitMutex);
+	const VkResult res = vkQueuePresentKHR(sChain->GetPresentVkQueue() ? sChain->GetPresentVkQueue() : m_vkQueue,
+	                                       &presentInfo);
+	if (res == VK_SUCCESS)
+		presentStatus = RendererAPI::PresentStatus::Success;
+	else if (res == VK_ERROR_DEVICE_LOST)
+		presentStatus = RendererAPI::PresentStatus::DeviceReset;
+	else if(res == VK_ERROR_OUT_OF_DATE_KHR)
+		presentStatus = RendererAPI::PresentStatus::OutOfDate;
+	else
+	{
+		VkCall(res);
 	}
 
 	return presentStatus;

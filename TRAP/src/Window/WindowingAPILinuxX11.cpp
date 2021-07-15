@@ -27,6 +27,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
+#include "Core/PlatformDetection.h"
+
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "WindowingAPI.h"
@@ -4091,7 +4093,7 @@ uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** s)
 		count++;
 	} while((**s & 0xC0) == 0x80);
 
-	TRAP_CORE_ASSERT(count <= 6, "");
+	TRAP_ASSERT(count <= 6, "");
 
 	return ch - offsets[count - 1];
 }

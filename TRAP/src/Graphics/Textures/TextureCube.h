@@ -17,10 +17,14 @@ namespace TRAP::Graphics
 	class TextureCube : public Texture
 	{
 	public:
-		static Scope<TextureCube> CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureUsage usage);
-		static Scope<TextureCube> CreateFromFile(const std::string& name, const std::string& filepath, TextureCubeFormat format, TextureUsage usage);
-		static Scope<TextureCube> CreateFromFile(const std::string& filepath, TextureCubeFormat format, TextureUsage usage);
-		static Scope<TextureCube> CreateFromImage(const std::string& name, const Scope<Image>& img, TextureCubeFormat format, TextureUsage usage);
+		static Scope<TextureCube> CreateFromFiles(const std::string& name,
+		                                          const std::array<std::string, 6>& filepaths, TextureUsage usage);
+		static Scope<TextureCube> CreateFromFile(const std::string& name, const std::string& filepath,
+		                                         TextureCubeFormat format, TextureUsage usage);
+		static Scope<TextureCube> CreateFromFile(const std::string& filepath, TextureCubeFormat format,
+		                                         TextureUsage usage);
+		static Scope<TextureCube> CreateFromImage(const std::string& name, const Scope<Image>& img,
+		                                          TextureCubeFormat format, TextureUsage usage);
 		static Scope<TextureCube> Create(TextureUsage usage); //Fallback Texture
 
 		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
@@ -37,4 +41,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif
+#endif /*_TRAP_TEXTURECUBE_H_*/

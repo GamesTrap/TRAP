@@ -11,7 +11,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 {
 	TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice();
 	TRAP_ASSERT(device);
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Creating QueryPool");
 #endif
@@ -19,7 +19,8 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 	m_type = QueryTypeToVkQueryType(desc.Type);
 	m_count = desc.QueryCount;
 
-	VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(desc.QueryCount, QueryTypeToVkQueryType(desc.Type));
+	VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(desc.QueryCount,
+	                                                              QueryTypeToVkQueryType(desc.Type));
 	VkCall(vkCreateQueryPool(device->GetVkDevice(), &info, nullptr, &m_vkQueryPool));
 }
 
@@ -27,12 +28,14 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 
 TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 {
+	TRAP_ASSERT(m_vkQueryPool);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Destroying QueryPool");
 #endif
 
-	TRAP_ASSERT(m_vkQueryPool);
-	vkDestroyQueryPool(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()->GetVkDevice(), m_vkQueryPool, nullptr);
+	vkDestroyQueryPool(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()->GetVkDevice(),
+	                   m_vkQueryPool, nullptr);
 }
 
 VkQueryPool& TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool()

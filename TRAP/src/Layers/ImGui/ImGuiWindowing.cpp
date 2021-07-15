@@ -24,6 +24,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
+#include "Core/PlatformDetection.h"
 #include "ImGuiWindowing.h"
 #include "Application.h"
 

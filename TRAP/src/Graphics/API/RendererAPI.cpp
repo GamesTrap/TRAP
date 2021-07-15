@@ -18,15 +18,18 @@
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
-std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
+std::unordered_map<TRAP::Window*,
+                   TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
 std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
-std::array<TRAP::Ref<TRAP::Graphics::CommandPool>, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
-std::array<TRAP::Graphics::CommandBuffer*, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
+std::array<TRAP::Ref<TRAP::Graphics::CommandPool>,
+           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
+std::array<TRAP::Graphics::CommandBuffer*,
+           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -139,34 +142,33 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 {
-	if (api != s_RenderAPI)
+	if(api == s_RenderAPI)
+		return;
+
+	if (api == RenderAPI::Vulkan)
 	{
-		if (api == RenderAPI::Vulkan)
+		if (s_Renderer->IsVulkanCapable())
 		{
-			if (s_Renderer->IsVulkanCapable())
-			{
-				TP_WARN(Log::RendererPrefix, "Switching RenderAPI to Vulkan");
-				s_RenderAPI = RenderAPI::Vulkan;
+			TP_WARN(Log::RendererPrefix, "Switching RenderAPI to Vulkan");
+			s_RenderAPI = RenderAPI::Vulkan;
 
-				return;
-			}
+			return;
+		}
 
-			TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
-			
-			TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-				"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-				Utils::Dialogs::Style::Error,
-				Utils::Dialogs::Buttons::Quit);
-			TRAP::Application::Shutdown();
-		}
-		else
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-				"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-				Utils::Dialogs::Style::Error,
-				Utils::Dialogs::Buttons::Quit);
-			TRAP::Application::Shutdown();
-		}
+		TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
+		
+		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
+			                             "TRAP was unable to detect a compatible RenderAPI!\n"
+										 "Please check your GPU driver!", Utils::Dialogs::Style::Error,
+			                             Utils::Dialogs::Buttons::Quit);
+		TRAP::Application::Shutdown();
+	}
+	else
+	{
+		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found", "TRAP was unable to detect a compatible "
+		                                 "RenderAPI!\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
+			                             Utils::Dialogs::Buttons::Quit);
+		TRAP::Application::Shutdown();
 	}
 }
 
@@ -222,7 +224,10 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RootSignature;
+	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
+	(
+		s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline
+	).RootSignature;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -250,7 +255,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			//Instance Extensions
 			std::vector<std::string> instanceExtensions{};
 			const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-			if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) || !API::VulkanInstance::IsExtensionSupported(reqExt[1]))
+			if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
+			    !API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 			{
 				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
 				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
@@ -278,7 +284,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 				if(physicalDevices.empty())
 				{
 					s_isVulkanCapable = false;
-					TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to find a suitable GPU meeting all requirements!");
+					TP_CRITICAL(Log::RendererVulkanPrefix,
+					            "Failed to find a suitable GPU meeting all requirements!");
 				}
 			}
 			else
@@ -327,15 +334,21 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 
 bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const
 {
-	return MinFilter == s.MinFilter && MagFilter == s.MagFilter && MipMapMode == s.MipMapMode &&
-		AddressU == s.AddressU && AddressV == s.AddressV && AddressW == s.AddressW &&
-		MipLodBias == s.MipLodBias && MaxAnisotropy == s.MaxAnisotropy && CompareFunc == s.CompareFunc &&
-		ForceMipLevel == s.ForceMipLevel && MipLevel == s.MipLevel &&
-		SamplerConversionDesc.Format == s.SamplerConversionDesc.Format &&
-		SamplerConversionDesc.Model == s.SamplerConversionDesc.Model &&
-		this->SamplerConversionDesc.Range == s.SamplerConversionDesc.Range &&
-		this->SamplerConversionDesc.ChromaOffsetX == s.SamplerConversionDesc.ChromaOffsetX &&
-		this->SamplerConversionDesc.ChromaOffsetY == s.SamplerConversionDesc.ChromaOffsetY &&
-		this->SamplerConversionDesc.ChromaFilter == s.SamplerConversionDesc.ChromaFilter &&
-		this->SamplerConversionDesc.ForceExplicitReconstruction == s.SamplerConversionDesc.ForceExplicitReconstruction;
+	//Deep equality
+	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
+		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
+		   this->MipLodBias == s.MipLodBias && this->MaxAnisotropy == s.MaxAnisotropy &&
+		   this->CompareFunc == s.CompareFunc && this->ForceMipLevel == s.ForceMipLevel &&
+		   this->MipLevel == s.MipLevel && this->SamplerConversionDesc == s.SamplerConversionDesc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const
+{
+	//Deep equality
+	return this->Format == s.Format && this->Model == s.Model && this->Range == s.Range &&
+	       this->ChromaOffsetX == s.ChromaOffsetX && this->ChromaOffsetY == s.ChromaOffsetY &&
+		   this->ChromaFilter == s.ChromaFilter &&
+		   this->ForceExplicitReconstruction == s.ForceExplicitReconstruction;
 }

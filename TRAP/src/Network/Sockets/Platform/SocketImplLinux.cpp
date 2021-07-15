@@ -32,6 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <errno.h>
 #include <fcntl.h>
 #include <cstring>
+#include "Core/PlatformDetection.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 

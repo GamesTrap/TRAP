@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "UDPSocketIPv6.h"
 
+#include "Core/PlatformDetection.h"
 #include "Network/Packet.h"
 #include "SocketImpl.h"
 

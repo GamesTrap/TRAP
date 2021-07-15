@@ -39,6 +39,8 @@ namespace TRAP::Graphics
 		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, BufferUsage usage);
 
 	private:
+		static Scope<UniformBuffer> Init(const std::string& name, void* data, uint64_t size, BufferUsage usage);
+
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
 		std::vector<API::SyncToken> m_tokens;

@@ -16,7 +16,7 @@ namespace TRAP::Graphics
 	{
 	public:
 		static void Init();
-		
+
 		static const std::string& GetTitle();
 		static uint32_t GetFPS();
 		static float GetFrameTime();
@@ -30,7 +30,7 @@ namespace TRAP::Graphics
 		static void EndScene();
 
 		//static void Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4(1.0f));
-		
+
 		static void Shutdown();
 
 	private:

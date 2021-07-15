@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketImplWinAPI.h"
 
+#include "PlatformDetection.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const uint32_t address, const uint16_t port)

@@ -10,10 +10,10 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanSwapChain>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
@@ -28,7 +28,7 @@ TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::SwapChain::GetRecommend
 	{
 	case RenderAPI::Vulkan:
 		return API::VulkanGetRecommendedSwapchainFormat(HDR);
-		
+
 	case RenderAPI::NONE:
 	default:
 		return RendererAPI::ImageFormat::Undefined;

@@ -22,10 +22,10 @@ namespace TRAP::Graphics::API
 		void FreeCommandBuffer(CommandBuffer* cmdBuffer) override;
 
 		void Reset() const override;
-		
-	private:		
+
+	private:
 		TRAP::Ref<VulkanDevice> m_device;
-		
+
 		VkCommandPool m_vkCommandPool;
 	};
 }

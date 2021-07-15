@@ -2,73 +2,34 @@
 #include "IndexBuffer.h"
 
 #include "Graphics/API/Objects/Buffer.h"
-#include "BufferLayout.h"
+#include "VertexBufferLayout.h"
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, const uint32_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, const uint64_t size,
+                                                                             const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer());
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::IndexBuffer;
-	desc.Desc.Size = size;
-	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap : RendererAPI::BufferCreationFlags::None;
-	desc.Data = indices;
-
-	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
-
-	buffer->m_indexType = RendererAPI::IndexType::UInt32;
-	buffer->m_indexBuffer = desc.Buffer;
-
-	return buffer;
+	return Init<uint32_t>(indices, size, usage);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint16_t* indices, const uint32_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint16_t* indices, const uint64_t size,
+                                                                             const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer());
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::IndexBuffer;
-	desc.Desc.Size = size;
-	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap : RendererAPI::BufferCreationFlags::None;
-	desc.Data = indices;
-
-	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
-
-	buffer->m_indexType = RendererAPI::IndexType::UInt16;
-	buffer->m_indexBuffer = desc.Buffer;
-
-	return buffer;
+	return Init<uint16_t>(indices, size, usage);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
+                                                                             const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer());
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::IndexBuffer;
-	desc.Desc.Size = size;
-	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap : RendererAPI::BufferCreationFlags::None;
-	desc.Data = nullptr;
-
-	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
-
-	buffer->m_indexType = RendererAPI::IndexType::UInt16;
-	buffer->m_indexBuffer = desc.Buffer;
-
-	return buffer;
+	return Init<uint16_t>(nullptr, size, usage); //uint16_t get ignored
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -89,7 +50,8 @@ TRAP::Graphics::IndexBuffer::~IndexBuffer()
 
 uint64_t TRAP::Graphics::IndexBuffer::GetCount() const
 {
-	return m_indexBuffer->GetSize() / ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(uint16_t) : sizeof(uint32_t));
+	return m_indexBuffer->GetSize() / ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(uint16_t) :
+	                                                                                     sizeof(uint32_t));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -103,39 +65,22 @@ uint64_t TRAP::Graphics::IndexBuffer::GetSize() const
 
 TRAP::Graphics::BufferUsage TRAP::Graphics::IndexBuffer::GetBufferUsage() const
 {
-	return (m_indexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? BufferUsage::Static : BufferUsage::Dynamic;
+	return (m_indexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? BufferUsage::Static :
+	                                                                                        BufferUsage::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(uint16_t* indices, const uint32_t size, const uint32_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(uint16_t* indices, const uint64_t size, const uint64_t offset)
 {
-	TRAP_ASSERT(indices);
-	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
-
-	RendererAPI::BufferUpdateDesc desc{};
-	desc.Buffer = m_indexBuffer;
-	desc.DstOffset = offset;
-	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	std::memcpy(desc.MappedData, indices, size);
-	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
-	m_indexType = RendererAPI::IndexType::UInt16;
+	SetDataInternal(indices, size, offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(uint32_t* indices, const uint32_t size, const uint32_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(uint32_t* indices, const uint64_t size, const uint64_t offset)
 {
-	TRAP_ASSERT(indices);
-	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
-
-	RendererAPI::BufferUpdateDesc desc{};
-	desc.Buffer = m_indexBuffer;
-	desc.DstOffset = offset;
-	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	std::memcpy(desc.MappedData, indices, size);
-	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
-	m_indexType = RendererAPI::IndexType::UInt32;
+	SetDataInternal(indices, size, offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

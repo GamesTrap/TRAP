@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "TextureCube.h"
 
-
 #include "Graphics/API/RendererAPI.h"
 #include "VFS/VFS.h"
 
@@ -14,7 +13,8 @@ TRAP::Graphics::TextureCube::TextureCube()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name,
-	const std::array<std::string, 6>& filepaths, const TextureUsage usage)
+	                                                                                  const std::array<std::string, 6>& filepaths,
+																					  const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -55,7 +55,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::string& name,
-	const std::string& filepath, const TextureCubeFormat format, const TextureUsage usage)
+	                                                                                 const std::string& filepath,
+																					 const TextureCubeFormat format,
+																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -77,7 +79,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
 		desc.Filepaths[0] = filepath;
 		desc.IsCubemap = true;
-		//desc.Type = format == TextureCubeFormat::Cross ? RendererAPI::TextureCubeType::Cross : RendererAPI::TextureCubeType::Equirectangular;
+		/*desc.Type = format == TextureCubeFormat::Cross ? RendererAPI::TextureCubeType::Cross :
+		              RendererAPI::TextureCubeType::Equirectangular;*/
 		desc.Type = RendererAPI::TextureCubeType::Cross; //TODO Replace when Equirectangular is implemented
 		desc.Texture = &texture->m_texture;
 
@@ -99,7 +102,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::string& filepath,
-	const TextureCubeFormat format, const TextureUsage usage)
+	                                                                                 const TextureCubeFormat format,
+																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -117,7 +121,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
 		desc.Filepaths[0] = filepath;
 		desc.IsCubemap = true;
-		//desc.Type = format == TextureCubeFormat::Cross ? RendererAPI::TextureCubeType::Cross : RendererAPI::TextureCubeType::Equirectangular;
+		/*desc.Type = format == TextureCubeFormat::Cross ? RendererAPI::TextureCubeType::Cross :
+		              RendererAPI::TextureCubeType::Equirectangular;*/
 		desc.Type = RendererAPI::TextureCubeType::Cross; //TODO Replace when Equirectangular is implemented
 		desc.Texture = &texture->m_texture;
 
@@ -139,7 +144,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromImage(const std::string& name,
-	const Scope<Image>& img, const TextureCubeFormat format, const TextureUsage usage)
+	                                                                                  const Scope<Image>& img,
+																					  const TextureCubeFormat format,
+																					  const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 

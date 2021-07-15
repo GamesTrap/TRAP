@@ -7,7 +7,7 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
-	
+
 	class VulkanQueryPool final : public QueryPool
 	{
 	public:
@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API
 		VkQueryPool& GetVkQueryPool();
 		VkQueryType GetVkQueryType() const;
 		uint32_t GetCount() const;
-		
+
 	private:
 		VkQueryPool m_vkQueryPool;
 		VkQueryType m_type;

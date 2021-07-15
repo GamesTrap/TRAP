@@ -2,6 +2,7 @@
 #define _TRAP_CORE_H_
 
 #include <memory>
+#include "PlatformDetection.h"
 
 //Set this define to enable renderdoc layer
 //NOTE: Settings this define will disable use of the KHR dedicated allocation extension since

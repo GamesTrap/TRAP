@@ -20,12 +20,17 @@ namespace TRAP::Graphics
 		TextureManager& operator=(TextureManager&&) = delete;
 
 		static const Scope<Texture2D>& Load(const std::string& filepath, TextureUsage usage);
-		static const Scope<Texture2D>& Load(const std::string& name, const std::string& filepath, TextureUsage usage);
+		static const Scope<Texture2D>& Load(const std::string& name, const std::string& filepath,
+		                                    TextureUsage usage);
 		static const Scope<Texture2D>& Load(const std::string& name, const Scope<Image>& img, TextureUsage usage);
-		static const Scope<TextureCube>& Load(const std::string& name, const std::string& filepath, TextureCubeFormat format, TextureUsage usage);
-		static const Scope<TextureCube>& Load(const std::string& filepath, TextureCubeFormat format, TextureUsage usage);
-		static const Scope<TextureCube>& Load(const std::string& name, const std::array<std::string, 6>& filepaths, TextureUsage usage);
-		static const Scope<TextureCube>& Load(const std::string& name, const Scope<Image>& img, TextureCubeFormat format, TextureUsage usage);
+		static const Scope<TextureCube>& Load(const std::string& name, const std::string& filepath,
+		                                      TextureCubeFormat format, TextureUsage usage);
+		static const Scope<TextureCube>& Load(const std::string& filepath, TextureCubeFormat format,
+		                                      TextureUsage usage);
+		static const Scope<TextureCube>& Load(const std::string& name, const std::array<std::string, 6>& filepaths,
+		                                      TextureUsage usage);
+		static const Scope<TextureCube>& Load(const std::string& name, const Scope<Image>& img,
+		                                      TextureCubeFormat format, TextureUsage usage);
 
 		static void Add(Scope<Texture> texture);
 		static void Remove(const Scope<Texture>& texture);

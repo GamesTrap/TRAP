@@ -5,7 +5,8 @@
 
 namespace TRAP::Graphics::API
 {
-	ShaderReflection::ShaderReflection VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode, RendererAPI::ShaderStage shaderStage);
+	ShaderReflection::ShaderReflection VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
+	                                                            RendererAPI::ShaderStage shaderStage);
 }
 
 #endif /*_TRAP_VULKANSHADERREFLECTION_H_*/
