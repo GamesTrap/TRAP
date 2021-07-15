@@ -275,7 +275,8 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	descColor.Depth = 1;
 	descColor.ArraySize = 1;
 	descColor.Format = desc.ColorFormat;
-	descColor.ClearValue = desc.ColorClearValue;
+	descColor.ClearColor = desc.ClearColor;
+	descColor.ClearDepthStencil = desc.ClearDepthStencil;
 	descColor.SampleCount = RendererAPI::SampleCount::SampleCount1;
 	descColor.SampleQuality = 0;
 	descColor.StartState = RendererAPI::ResourceState::Present;

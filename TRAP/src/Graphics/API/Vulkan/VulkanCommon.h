@@ -20,7 +20,7 @@ namespace TRAP::Graphics::API
 	VkFrontFace RendererFrontFaceToVkFrontFace(RendererFrontFace frontFace);
 
 	VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount);
-	VkFormat ImageFormatToVkFormat(RendererAPI::ImageFormat imageFormat);
+	VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat);
 	VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
 	VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type);
 	VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage);
@@ -44,9 +44,9 @@ namespace TRAP::Graphics::API
 	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount,
 	                                           VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
 
-	RendererAPI::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
+	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
 
-	RendererAPI::ImageFormat ImageFormatFromVkFormat(VkFormat format);
+	TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string& name);
 

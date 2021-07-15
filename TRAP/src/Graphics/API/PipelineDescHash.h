@@ -122,7 +122,7 @@ namespace std
                     g.RasterizerState->DepthClampEnable
                 );
 
-				for (const TRAP::Graphics::RendererAPI::ImageFormat i : g.ColorFormats)
+				for (const TRAP::Graphics::API::ImageFormat i : g.ColorFormats)
 					TRAP::Utils::HashCombine(hash, i);
 			}
 

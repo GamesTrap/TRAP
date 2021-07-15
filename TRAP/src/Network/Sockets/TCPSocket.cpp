@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Network/Packet.h"
 #include "Network/IP/IPv4Address.h"
 #include "SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far
@@ -66,7 +68,14 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 	sockaddr_in address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin_port);
+	{
+		uint16_t port = address.sin_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(port);
+
+		return port;
+	}
 
 	return 0;
 }
@@ -82,7 +91,14 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 	sockaddr_in address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return IPv4Address(ntohl(address.sin_addr.s_addr));
+	{
+		uint32_t addr = address.sin_addr.s_addr;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(addr);
+
+		return IPv4Address(addr);
+	}
 
 	return IPv4Address::None;
 }
@@ -98,7 +114,14 @@ uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 	sockaddr_in address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin_port);
+	{
+		uint16_t port = address.sin_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(port);
+
+		return port;
+	}
 
 	return 0;
 }
@@ -294,7 +317,10 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 	const void* data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
-	uint32_t packetSize = htonl(static_cast<uint32_t>(size));
+	uint32_t packetSize = static_cast<uint32_t>(size);
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(packetSize);
 
 	//Allocate memory for the data block to send
 	std::vector<char> blockToSend(sizeof(packetSize) + size);
@@ -343,12 +369,16 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 		}
 
 		//The packet size has been fully received
-		packetSize = ntohl(m_pendingPacket.Size);
+		packetSize = m_pendingPacket.Size;
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(packetSize);
 	}
 	else
 	{
 		//The packet size has already been received in a previous call
-		packetSize = ntohl(m_pendingPacket.Size);
+		packetSize = m_pendingPacket.Size;
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(packetSize);
 	}
 
 	//Loop until we receive all the packet data

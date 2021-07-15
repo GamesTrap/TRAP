@@ -1933,4 +1933,9 @@ SITREP 07/03/2021|21w26a1
 
 SITREP 07/13/2021|21w28a1
     - Changed TRAP Engine version to 21w28a1(0.7.55)
-    - Big code maintenance ~>960 mins
+    - Big code maintenance (+100 Files changed) ~>960 mins
+
+SITREP 07/15/2021|21w28a2
+    - Changed TRAP Engine version to 21w28a2(0.7.56)
+    - Big code maintenance (+100 Files changed) ~>600 mins
+    - Big code maintenance (+40 Files changed) ~>240 mins

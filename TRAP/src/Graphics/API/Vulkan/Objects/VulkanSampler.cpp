@@ -35,7 +35,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		info.maxLod = desc.MipLevel;
 	}
 
-	if(!RendererAPI::ImageFormatIsPlanar(desc.SamplerConversionDesc.Format))
+	if(!TRAP::Graphics::API::ImageFormatIsPlanar(desc.SamplerConversionDesc.Format))
 	{
 		VkCall(vkCreateSampler(m_device->GetVkDevice(), &info, nullptr, &m_vkSampler));
 		return;

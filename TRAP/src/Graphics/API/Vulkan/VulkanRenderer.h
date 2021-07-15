@@ -43,6 +43,7 @@ namespace TRAP::Graphics::API
 		void SetVSync(bool vsync, Window* window = nullptr) override;
 
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) override;
+		void SetClearDepthStencil(float depth = 1.0f, uint32_t stencil = 0, Window* window = nullptr) override;
 		void SetDepthTesting(bool enabled, Window* window = nullptr) override;
 		void SetDepthWriting(bool enabled, Window* window = nullptr) override;
 		void SetDepthFunction(CompareMode function, Window* window = nullptr) override;
@@ -63,7 +64,8 @@ namespace TRAP::Graphics::API
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
 							  Window* window = nullptr) override;
 
-		void Clear(ClearFlags clear, ClearValue value, Window* window = nullptr) override;
+		void Clear(ClearColor color, Window* window = nullptr) override;
+		void Clear(ClearDepthStencil depthStencil, Window* window = nullptr) override;
 
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth = 0.0f,
 		                 float maxDepth = 1.0f, Window* window = nullptr) override;

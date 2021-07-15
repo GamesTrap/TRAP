@@ -226,7 +226,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 					inputBindings[inputBindingCount - 1].inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
 				else
 					inputBindings[inputBindingCount - 1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-				inputBindings[inputBindingCount - 1].stride += RendererAPI::ImageFormatBitSizeOfBlock(attribute.Format) / 8;
+				inputBindings[inputBindingCount - 1].stride += TRAP::Graphics::API::ImageFormatBitSizeOfBlock(attribute.Format) / 8;
 
 				inputAttributes[inputAttributeCount].location = attribute.Location;
 				inputAttributes[inputAttributeCount].binding = attribute.Binding;

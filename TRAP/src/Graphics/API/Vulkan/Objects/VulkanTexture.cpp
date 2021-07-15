@@ -20,6 +20,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
 	  m_vkImage(VK_NULL_HANDLE),
 	  m_vkAllocation(),
+	  m_vkDeviceMemory(),
 	  m_width(desc.Width),
 	  m_height(desc.Height),
 	  m_depth(desc.Depth),
@@ -86,9 +87,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	                       RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;
 
-	const bool isPlanarFormat = RendererAPI::ImageFormatIsPlanar(desc.Format);
-	const uint32_t numOfPlanes = RendererAPI::ImageFormatNumOfPlanes(desc.Format);
-	const bool isSinglePlane = RendererAPI::ImageFormatIsSinglePlane(desc.Format);
+	const bool isPlanarFormat = TRAP::Graphics::API::ImageFormatIsPlanar(desc.Format);
+	const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(desc.Format);
+	const bool isSinglePlane = TRAP::Graphics::API::ImageFormatIsSinglePlane(desc.Format);
 	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)),
 	            "Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
 				"formats it must be 1");
@@ -251,7 +252,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
 
 	//SRV stencil
-	if((RendererAPI::ImageFormatHasStencil(desc.Format)) &&
+	if((TRAP::Graphics::API::ImageFormatHasStencil(desc.Format)) &&
 	   (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
 	{
 		srvDesc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
@@ -581,7 +582,7 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 	{
 		if (m_vkImage && !m_SVT)
 		{
-			if(RendererAPI::ImageFormatIsSinglePlane(m_format))
+			if(TRAP::Graphics::API::ImageFormatIsSinglePlane(m_format))
 			{
 				vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
 			}
@@ -692,7 +693,7 @@ uint32_t TRAP::Graphics::API::VulkanTexture::GetArraySizeMinusOne() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::API::VulkanTexture::GetImageFormat() const
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanTexture::GetImageFormat() const
 {
 	return m_format;
 }

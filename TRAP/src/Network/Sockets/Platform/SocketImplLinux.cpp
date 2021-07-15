@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <fcntl.h>
 #include <cstring>
 #include "Core/PlatformDetection.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -40,9 +42,16 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 {
 	sockaddr_in addr{};
 	std::memset(&addr, 0, sizeof(addr));
-	addr.sin_addr.s_addr = htonl(address);
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	{
+		TRAP::Utils::Memory::SwapBytes(address);
+		TRAP::Utils::Memory::SwapBytes(port);
+	}
+
+	addr.sin_addr.s_addr = address;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
+	addr.sin_port = port;
 
 	return addr;
 }
@@ -50,13 +59,17 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 //-------------------------------------------------------------------------------------------------------------------//
 
 sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
-                                                                const uint16_t port)
+                                                                uint16_t port)
 {
 	sockaddr_in6 addr{};
 	std::memset(&addr, 0, sizeof(addr));
 	std::memcpy(addr.sin6_addr.s6_addr, address.data(), address.size());
 	addr.sin6_family = AF_INET6;
-	addr.sin6_port = htons(port);
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(port);
+
+	addr.sin6_port = port;
 
 	return addr;
 }

@@ -87,8 +87,8 @@ namespace TRAP::Graphics::API
 		                      RendererAPI::ShadingRateCombiner postRasterizerRate,
 							  RendererAPI::ShadingRateCombiner finalRate);*/
 
-		void Clear(RendererAPI::ClearFlags flags, RendererAPI::ClearValue value, uint32_t width,
-		           uint32_t height) override;
+		void Clear(RendererAPI::ClearColor color, uint32_t width, uint32_t height) override;
+		void Clear(RendererAPI::ClearDepthStencil depthStencil, uint32_t width, uint32_t height) override;
 
 		VkRenderPass GetActiveVkRenderPass() const;
 

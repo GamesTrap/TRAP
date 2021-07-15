@@ -158,6 +158,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
 	loadActions.ClearColorValues[0] = p->ClearColor;
+	loadActions.ClearDepthStencil = p->ClearDepthStencil;
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, {}, {},
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
@@ -233,7 +234,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 		swapChainDesc.Height = p->Window->GetHeight();
 		swapChainDesc.ImageCount = RendererAPI::ImageCount;
 		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
-		swapChainDesc.ColorClearValue = p->ClearColor;
+		swapChainDesc.ClearColor = p->ClearColor;
+		swapChainDesc.ClearDepthStencil = p->ClearDepthStencil;
 		swapChainDesc.EnableVSync = p->CurrentVSync;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
@@ -358,6 +360,16 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color,
 		window = TRAP::Application::GetWindow().get();
 
 	s_perWindowDataMap[window]->ClearColor = { color.x, color.y, color.z, color.w };
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetClearDepthStencil(const float depth, const uint32_t stencil, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	s_perWindowDataMap[window]->ClearDepthStencil = { depth, stencil };
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -610,23 +622,28 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearFlags clear, const ClearValue value, Window* window)
+void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearColor color, Window* window)
 {
-	if ((static_cast<uint32_t>(clear & ClearFlags::Color) && static_cast<uint32_t>(clear & ClearFlags::Depth)) ||
-		(static_cast<uint32_t>(clear & ClearFlags::Color) && static_cast<uint32_t>(clear & ClearFlags::Stencil)))
-	{
-		TP_ERROR(Log::RendererVulkanPrefix, "ClearFlags must be Color or a combination of Depth/Stencil!");
-		return;
-	}
-
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
 	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
 
-	data->GraphicCommandBuffers[data->ImageIndex]->Clear(clear, value, renderTarget->GetWidth(),
-	                                                     renderTarget->GetHeight());
+	data->GraphicCommandBuffers[data->ImageIndex]->Clear(color, renderTarget->GetWidth(), renderTarget->GetHeight());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearDepthStencil depthStencil, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
+	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
+
+	data->GraphicCommandBuffers[data->ImageIndex]->Clear(depthStencil, renderTarget->GetWidth(), renderTarget->GetHeight());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -983,7 +1000,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		swapChainDesc.ImageCount = RendererAPI::ImageCount;
 		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
 		swapChainDesc.EnableVSync = p->CurrentVSync;
-		swapChainDesc.ColorClearValue = p->ClearColor;
+		swapChainDesc.ClearColor = p->ClearColor;
+		swapChainDesc.ClearDepthStencil = p->ClearDepthStencil;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		if (!p->SwapChain)

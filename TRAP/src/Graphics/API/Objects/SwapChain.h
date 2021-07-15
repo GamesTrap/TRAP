@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<SwapChain> Create(RendererAPI::SwapChainDesc& desc);
 
-		static RendererAPI::ImageFormat GetRecommendedSwapchainFormat(bool HDR);
+		static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR);
 
 		virtual ~SwapChain();
 

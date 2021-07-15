@@ -24,8 +24,9 @@ namespace TRAP::Graphics::API
 		uint32_t GetMipLevels() const override;
 		RendererAPI::SampleCount GetSampleCount() const override;
 		uint32_t GetSampleQuality() const override;
-		RendererAPI::ImageFormat GetImageFormat() const override;
-		RendererAPI::ClearValue GetClearValue() const override;
+		TRAP::Graphics::API::ImageFormat GetImageFormat() const override;
+		RendererAPI::ClearColor GetClearColor() const override;
+		RendererAPI::ClearDepthStencil GetClearDepthStencil() const override;
 		RendererAPI::DescriptorType GetDescriptorType() const override;
 
 		VkImageView& GetVkImageView();

@@ -503,58 +503,59 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 {
 	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
-	if (image) //If image is not nullptr
+	if(!image)
 	{
-		if (image->IsHDR())
-		{
-			InputError(Error::Invalid_Value, "[Icon] HDR is unsupported as icon!");
-			return;
-		}
-
-		if(image->GetBitsPerPixel() > 32)
-		{
-			InputError(Error::Invalid_Value, "[Icon] BPP > 32 is unsupported as icon!");
-			return;
-		}
-
-		if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) ||
-		     (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
-		{
-			InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
-			return;
-		}
-
-		//Convert to RGBA 32BPP
-		if (image->GetColorFormat() == Image::ColorFormat::RGB)
-		{
-			std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()),
-			                               static_cast<const uint8_t*>(image->GetPixelData()) +
-										   image->GetPixelDataSize());
-			const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) +
-			                         (image->GetWidth() * image->GetHeight());
-			std::vector<uint8_t> pixelDataRGBA(newSize, 0);
-			uint32_t pixelCount = 0;
-			for (uint32_t i = 0; i < pixelData.size(); i++)
-			{
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				i++; pixelCount++;
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				i++; pixelCount++;
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				pixelCount++;
-				pixelDataRGBA[pixelCount] = 255;
-				pixelCount++;
-			}
-
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(),
-			                                                     Image::ColorFormat::RGBA, pixelDataRGBA);
-			PlatformSetWindowIcon(window, iconImage);
-		}
-		else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
-			PlatformSetWindowIcon(window, image);
-	}
-	else
 		PlatformSetWindowIcon(window, nullptr);
+		return;
+	}
+
+	if (image->IsHDR())
+	{
+		InputError(Error::Invalid_Value, "[Icon] HDR is unsupported as icon!");
+		return;
+	}
+
+	if(image->GetBitsPerPixel() > 32)
+	{
+		InputError(Error::Invalid_Value, "[Icon] BPP > 32 is unsupported as icon!");
+		return;
+	}
+
+	if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) ||
+			(image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
+	{
+		InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
+		return;
+	}
+
+	//Convert to RGBA 32BPP
+	if (image->GetColorFormat() == Image::ColorFormat::RGB)
+	{
+		std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()),
+										static_cast<const uint8_t*>(image->GetPixelData()) +
+										image->GetPixelDataSize());
+		const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) +
+									(image->GetWidth() * image->GetHeight());
+		std::vector<uint8_t> pixelDataRGBA(newSize, 0);
+		uint32_t pixelCount = 0;
+		for (uint32_t i = 0; i < pixelData.size(); i++)
+		{
+			pixelDataRGBA[pixelCount] = pixelData[i];
+			i++; pixelCount++;
+			pixelDataRGBA[pixelCount] = pixelData[i];
+			i++; pixelCount++;
+			pixelDataRGBA[pixelCount] = pixelData[i];
+			pixelCount++;
+			pixelDataRGBA[pixelCount] = 255;
+			pixelCount++;
+		}
+
+		const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(),
+																Image::ColorFormat::RGBA, pixelDataRGBA);
+		PlatformSetWindowIcon(window, iconImage);
+	}
+	else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
+		PlatformSetWindowIcon(window, image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

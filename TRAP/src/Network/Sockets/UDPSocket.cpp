@@ -31,6 +31,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/Packet.h"
 #include "SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::Network::UDPSocket::UDPSocket()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
@@ -48,7 +50,14 @@ uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 	sockaddr_in address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin_port);
+	{
+		uint16_t port = address.sin_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(port);
+
+		return port;
+	}
 
 	return 0;
 }
@@ -150,8 +159,18 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 
 	//Fill the sender information
 	received = static_cast<std::size_t>(sizeReceived);
-	remoteAddress = IPv4Address(ntohl(address.sin_addr.s_addr));
-	remotePort = ntohs(address.sin_port);
+
+	uint32_t addr = address.sin_addr.s_addr;
+	uint16_t port = address.sin_port;
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	{
+		TRAP::Utils::Memory::SwapBytes(addr);
+		TRAP::Utils::Memory::SwapBytes(port);
+	}
+
+	remoteAddress = IPv4Address(addr);
+	remotePort = port;
 
 	return Status::Done;
 }

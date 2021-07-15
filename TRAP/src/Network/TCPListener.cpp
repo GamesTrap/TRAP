@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/Socket.h"
 #include "Sockets/TCPSocket.h"
 #include "Sockets/SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::Network::TCPListener::TCPListener()
 	: Socket(Type::TCP)
@@ -50,7 +52,14 @@ uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 	sockaddr_in address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin_port);
+	{
+		uint16_t res = address.sin_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(res);
+
+		return res;
+	}
 
 	return 0; //We failed to retrieve the port
 }

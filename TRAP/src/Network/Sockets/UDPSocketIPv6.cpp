@@ -4,6 +4,8 @@
 #include "Core/PlatformDetection.h"
 #include "Network/Packet.h"
 #include "SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::Network::UDPSocketIPv6::UDPSocketIPv6()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
@@ -21,7 +23,14 @@ uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 	sockaddr_in6 address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin6_port);
+	{
+		uint16_t port = address.sin6_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(port);
+
+		return port;
+	}
 
 	return 0;
 }
@@ -137,7 +146,13 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, 
 	std::memcpy(addr.data(), address.sin6_addr.s6_addr, addr.size());
 #endif
 	remoteAddress = IPv6Address(addr);
-	remotePort = ntohs(address.sin6_port);
+
+	uint16_t port = address.sin6_port;
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(port);
+
+	remotePort = port;
 
 	return Status::Done;
 }

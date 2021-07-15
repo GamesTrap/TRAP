@@ -30,7 +30,7 @@ namespace TRAP::Graphics::API
 		uint32_t GetDepth() const;
 		uint32_t GetMipLevels() const;
 		uint32_t GetArraySizeMinusOne() const;
-		RendererAPI::ImageFormat GetImageFormat() const;
+		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
 		uint32_t GetAspectMask() const;
 		RendererAPI::DescriptorType GetUAV() const;
 		TRAP::Ref<RendererAPI::VirtualTexture> GetSVT() const;
@@ -69,12 +69,9 @@ namespace TRAP::Graphics::API
 		VkImageView m_vkSRVStencilDescriptor;
 		//Native handle of the underlying resource
 		VkImage m_vkImage;
-		union
-		{
-			//Contains resource allocation info such as parent heap, offset in heap
-			VmaAllocation m_vkAllocation;
-			VkDeviceMemory m_vkDeviceMemory;
-		};
+		//Contains resource allocation info such as parent heap, offset in heap
+		VmaAllocation m_vkAllocation;
+		VkDeviceMemory m_vkDeviceMemory;
 
 		TRAP::Ref<RendererAPI::VirtualTexture> m_SVT;
 		//Current state of the buffer
@@ -83,7 +80,7 @@ namespace TRAP::Graphics::API
 		uint32_t m_depth;
 		uint32_t m_mipLevels;
 		uint32_t m_arraySizeMinusOne;
-		RendererAPI::ImageFormat m_format;
+		TRAP::Graphics::API::ImageFormat m_format;
 		//Flags specifying which aspects (Color, Depth, Stencil) are included in the m_vkImageView
 		uint32_t m_aspectMask;
 		RendererAPI::DescriptorType m_UAV;

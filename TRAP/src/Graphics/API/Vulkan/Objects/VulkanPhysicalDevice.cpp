@@ -96,10 +96,10 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	VulkanRenderer::s_subgroupBroadcastDynamicID = m_physicalDeviceVulkan12Features.subgroupBroadcastDynamicId;
 
 	//Capabilities for VulkanRenderer
-	for(uint32_t i = 0; i < static_cast<uint32_t>(RendererAPI::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+	for(uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
 		VkFormatProperties formatSupport;
-		VkFormat fmt = ImageFormatToVkFormat(static_cast<RendererAPI::ImageFormat>(i));
+		VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)
 			continue;
 

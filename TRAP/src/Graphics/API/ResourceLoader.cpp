@@ -152,9 +152,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const RendererAPI::ImageFormat fmt)
+uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt)
 {
-	const uint32_t blockSize = Math::Max(1u, RendererAPI::ImageFormatBitSizeOfBlock(fmt) >> 3);
+	const uint32_t blockSize = Math::Max(1u, TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3);
 	const uint32_t alignment = ((RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
 	                            blockSize) * blockSize;
 
@@ -164,7 +164,7 @@ uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const RendererAPI::ImageFormat fmt,
+uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
                                                                  const uint32_t width, const uint32_t height,
 																 const uint32_t depth, const uint32_t rowStride,
 																 const uint32_t sliceStride,
@@ -210,7 +210,7 @@ uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const RendererA
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
-	                                                         const RendererAPI::ImageFormat fmt,
+	                                                         const TRAP::Graphics::API::ImageFormat fmt,
 															 uint32_t* outNumBytes, uint32_t* outRowBytes,
 															 uint32_t* outNumRows)
 {
@@ -218,16 +218,16 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 	uint64_t rowBytes;
 	uint64_t numRows;
 
-	const uint32_t bpp = RendererAPI::ImageFormatBitSizeOfBlock(fmt);
-	const bool compressed = RendererAPI::ImageFormatIsCompressed(fmt);
-	const bool planar = RendererAPI::ImageFormatIsPlanar(fmt);
+	const uint32_t bpp = TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt);
+	const bool compressed = TRAP::Graphics::API::ImageFormatIsCompressed(fmt);
+	const bool planar = TRAP::Graphics::API::ImageFormatIsPlanar(fmt);
 
 	const bool packed = false;
 
 	if(compressed)
 	{
-		const uint32_t blockWidth = RendererAPI::ImageFormatWidthOfBlock(fmt);
-		const uint32_t blockHeight = RendererAPI::ImageFormatHeightOfBlock(fmt);
+		const uint32_t blockWidth = TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
+		const uint32_t blockHeight = TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
 		uint32_t numBlocksWide = 0;
 		uint32_t numBlocksHigh = 0;
 		if(width > 0)
@@ -246,12 +246,12 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 	}
 	else if(planar)
 	{
-		const uint32_t numOfPlanes = RendererAPI::ImageFormatNumOfPlanes(fmt);
+		const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
 
 		for(uint32_t i = 0; i < numOfPlanes; ++i)
-			numBytes += RendererAPI::ImageFormatPlaneWidth(fmt, i, width) *
-			            RendererAPI::ImageFormatPlaneHeight(fmt, i, height) *
-						RendererAPI::ImageFormatPlaneSizeOfBlock(fmt, i);
+			numBytes += TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width) *
+			            TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height) *
+						TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
 
 		numRows = 1;
 		rowBytes = numBytes;
@@ -457,7 +457,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 {
 	//TODO Replace with abstraction
 	const TRAP::Ref<TRAP::Graphics::API::VulkanTexture> texture = desc.Texture;
-	const RendererAPI::ImageFormat fmt = texture->GetImageFormat();
+	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	const uint32_t alignment = UtilGetTextureSubresourceAlignment(fmt);
 
 	const bool success = UtilGetSurfaceInfo(texture->GetWidth(), texture->GetHeight(),
@@ -932,7 +932,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	//All that is left to do is record and execute the Copy commands
 	bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer ? true : false;
 	const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& texture = textureUpdateDesc.Texture; //TODO Replace with abstraction
-	const RendererAPI::ImageFormat format = texture->GetImageFormat();
+	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
 	CommandBuffer* cmd = AcquireCmd(activeSet);
 
 	const uint32_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
@@ -1287,14 +1287,11 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			if(valid)
 			{
-				if(baseImg->IsHDR())
+				if(baseImg->IsHDR() && baseImg->GetBytesPerChannel() == 4)
 					images = SplitImageFromCross<float>(baseImg, faceWidth, faceHeight);
-				else if ((baseImg->IsImageGrayScale() && baseImg->GetBitsPerPixel() == 16 && !baseImg->HasAlphaChannel()) ||
-						 (baseImg->IsImageGrayScale() && baseImg->GetBitsPerPixel() == 32 &&  baseImg->HasAlphaChannel()) ||
-						 (baseImg->IsImageColored()   && baseImg->GetBitsPerPixel() == 48 && !baseImg->HasAlphaChannel()) ||
-						 (baseImg->IsImageColored()   && baseImg->GetBitsPerPixel() == 64 &&  baseImg->HasAlphaChannel()))
+				else if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 2)
 					images = SplitImageFromCross<uint16_t>(baseImg, faceWidth, faceHeight);
-				else
+				else /*if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 1)*/
 					images = SplitImageFromCross<uint8_t>(baseImg, faceWidth, faceHeight);
 			}
 			else //Use FallbackCube
@@ -1330,23 +1327,23 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		}
 
 		if (images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Always no Alpha Channel
-			textureDesc.Format = RendererAPI::ImageFormat::R32G32B32A32_SFLOAT;
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
 		else if(images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale)
-			textureDesc.Format = RendererAPI::ImageFormat::R32_SFLOAT;
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
 		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 64 && images[0]->HasAlphaChannel())
-			 textureDesc.Format = RendererAPI::ImageFormat::R16G16B16A16_UNORM;
+			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
 		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 48 && !images[0]->HasAlphaChannel())
-			 textureDesc.Format = RendererAPI::ImageFormat::R16G16B16A16_UNORM;
+			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
 		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 32 && images[0]->HasAlphaChannel())
-			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_UNORM;
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && images[0]->HasAlphaChannel())
-			 textureDesc.Format = RendererAPI::ImageFormat::R8G8_UNORM;
+			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
 		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && !images[0]->HasAlphaChannel())
-			textureDesc.Format = RendererAPI::ImageFormat::R16_UNORM;
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16_UNORM;
 		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 8 && !images[0]->HasAlphaChannel())
-			textureDesc.Format = RendererAPI::ImageFormat::R8_UNORM;
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UNORM;
 		else
-			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_UNORM;
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 
 		//TODO Replace with Texture abstraction
 		TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
@@ -1375,7 +1372,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 		textureDesc.Width = images[0]->GetWidth();
 		textureDesc.Height = images[0]->GetHeight();
-		textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
 		textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
 			(
 				Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),
@@ -1393,7 +1390,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Height = images[0]->GetHeight();
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
-		textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
 		textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
 			(
 				Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),

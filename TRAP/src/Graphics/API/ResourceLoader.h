@@ -65,12 +65,12 @@ namespace TRAP::Graphics::API
 
 		static RendererAPI::ResourceLoaderDesc DefaultResourceLoaderDesc;
 		static void StreamerThreadFunc(ResourceLoader* loader);
-		static uint32_t UtilGetTextureSubresourceAlignment(RendererAPI::ImageFormat fmt = RendererAPI::ImageFormat::Undefined);
-		static uint32_t UtilGetSurfaceSize(RendererAPI::ImageFormat fmt, uint32_t width, uint32_t height,
+		static uint32_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined);
+		static uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
 		                                   uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
 										   uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
 										   uint32_t arrayLayers);
-		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, RendererAPI::ImageFormat fmt,
+		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
 		                               uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
 		static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
 		void QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer, RendererAPI::ResourceState state, SyncToken* token);

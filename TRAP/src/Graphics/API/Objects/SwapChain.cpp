@@ -22,7 +22,7 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR)
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR)
 {
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -31,7 +31,7 @@ TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::SwapChain::GetRecommend
 
 	case RenderAPI::NONE:
 	default:
-		return RendererAPI::ImageFormat::Undefined;
+		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}
 }
 

@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 #endif
 
 	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
-	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != RendererAPI::ImageFormat::Undefined ? 1 : 0;
+	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
 
 	std::vector<VkAttachmentDescription> attachments{};
 	std::vector<VkAttachmentReference> colorAttachmentRefs{};
@@ -126,7 +126,7 @@ VkRenderPass& TRAP::Graphics::API::VulkanRenderPass::GetVkRenderPass()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::RendererAPI::ImageFormat>& TRAP::Graphics::API::VulkanRenderPass::GetColorFormats() const
+const std::vector<TRAP::Graphics::API::ImageFormat>& TRAP::Graphics::API::VulkanRenderPass::GetColorFormats() const
 {
 	return m_colorFormats;
 }
@@ -161,7 +161,7 @@ TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::API::VulkanRenderPass::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::API::VulkanRenderPass::GetDepthStencilFormat() const
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanRenderPass::GetDepthStencilFormat() const
 {
 	return m_depthStencilFormat;
 }

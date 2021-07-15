@@ -283,8 +283,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		renderPass = node->second;
 	else
 	{
-		std::array<RendererAPI::ImageFormat, 8> colorFormats{};
-		RendererAPI::ImageFormat depthStencilFormat = RendererAPI::ImageFormat::Undefined;
+		std::array<TRAP::Graphics::API::ImageFormat, 8> colorFormats{};
+		TRAP::Graphics::API::ImageFormat depthStencilFormat = TRAP::Graphics::API::ImageFormat::Undefined;
 		for (uint32_t i = 0; i < renderTargets.size(); ++i)
 			colorFormats[i] = renderTargets[i]->GetImageFormat();
 		if (depthStencil)
@@ -298,7 +298,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		VulkanRenderer::RenderPassDesc desc{};
 		desc.RenderTargetCount = static_cast<uint32_t>(renderTargets.size());
 		desc.SampleCount = sampleCount;
-		desc.ColorFormats = std::vector<RendererAPI::ImageFormat>(colorFormats.begin(), colorFormats.end());
+		desc.ColorFormats = std::vector<TRAP::Graphics::API::ImageFormat>(colorFormats.begin(), colorFormats.end());
 		desc.DepthStencilFormat = depthStencilFormat;
 		desc.LoadActionsColor = loadActions ?
 		                        std::vector<RendererAPI::LoadActionType>(loadActions->LoadActionsColor.begin(),
@@ -344,16 +344,16 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		for(uint32_t i = 0; i < renderTargets.size(); ++i)
 		{
-			RendererAPI::ClearValue clearValue = loadActions->ClearColorValues[i];
+			RendererAPI::ClearColor clearColor = loadActions->ClearColorValues[i];
 			VkClearValue val{};
-			val.color = { {clearValue.Color.R, clearValue.Color.G, clearValue.Color.B, clearValue.Color.A} };
+			val.color = { {clearColor.R, clearColor.G, clearColor.B, clearColor.A} };
 			clearValues.push_back(val);
 		}
 		if(depthStencil)
 		{
 			VkClearValue val{};
-			val.depthStencil = { loadActions->ClearDepth.DepthStencil.Depth,
-			                     loadActions->ClearDepth.DepthStencil.Stencil };
+			val.depthStencil = { loadActions->ClearDepthStencil.Depth,
+			                     loadActions->ClearDepthStencil.Stencil };
 			clearValues.push_back(val);
 		}
 	}
@@ -584,19 +584,19 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 {
 	VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
 
-	const RendererAPI::ImageFormat fmt = texture->GetImageFormat();
-	if(RendererAPI::ImageFormatIsSinglePlane(fmt))
+	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
+	if(TRAP::Graphics::API::ImageFormatIsSinglePlane(fmt))
 	{
 		const uint32_t width = TRAP::Math::Max<uint32_t>(1u, texture->GetWidth() >> subresourceDesc.MipLevel);
 		const uint32_t height = TRAP::Math::Max<uint32_t>(1u, texture->GetHeight() >> subresourceDesc.MipLevel);
 		const uint32_t depth = TRAP::Math::Max<uint32_t>(1u, texture->GetDepth() >> subresourceDesc.MipLevel);
-		const uint32_t numBlocksWide = subresourceDesc.RowPitch / (RendererAPI::ImageFormatBitSizeOfBlock(fmt) >> 3);
+		const uint32_t numBlocksWide = subresourceDesc.RowPitch / (TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3);
 		const uint32_t numBlocksHigh = (subresourceDesc.SlicePitch / subresourceDesc.RowPitch);
 
 		VkBufferImageCopy copy{};
 		copy.bufferOffset = subresourceDesc.SrcOffset;
-		copy.bufferRowLength = numBlocksWide * RendererAPI::ImageFormatWidthOfBlock(fmt);
-		copy.bufferImageHeight = numBlocksHigh * RendererAPI::ImageFormatHeightOfBlock(fmt);
+		copy.bufferRowLength = numBlocksWide * TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
+		copy.bufferImageHeight = numBlocksHigh * TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
 		copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlags>(texture->GetAspectMask());
 		copy.imageSubresource.mipLevel = subresourceDesc.MipLevel;
 		copy.imageSubresource.baseArrayLayer = subresourceDesc.ArrayLayer;
@@ -616,7 +616,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 		const uint32_t width = texture->GetWidth();
 		const uint32_t height = texture->GetHeight();
 		const uint32_t depth = texture->GetDepth();
-		const uint32_t numOfPlanes = RendererAPI::ImageFormatNumOfPlanes(fmt);
+		const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
 
 		uint64_t offset = subresourceDesc.SrcOffset;
 		std::vector<VkBufferImageCopy> bufferImagesCopy(3);
@@ -634,11 +634,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 			copy.imageOffset.x = 0;
 			copy.imageOffset.y = 0;
 			copy.imageOffset.z = 0;
-			copy.imageExtent.width = RendererAPI::ImageFormatPlaneWidth(fmt, i, width);
-			copy.imageExtent.height = RendererAPI::ImageFormatPlaneHeight(fmt, i, height);
+			copy.imageExtent.width = TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width);
+			copy.imageExtent.height = TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height);
 			copy.imageExtent.depth = depth;
 			offset += copy.imageExtent.width * copy.imageExtent.height *
-			          RendererAPI::ImageFormatPlaneSizeOfBlock(fmt, i);
+			          TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
 		}
 
 		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, texture->GetVkImage(),
@@ -925,8 +925,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearFlags flags,
-                                                     const RendererAPI::ClearValue value, const uint32_t width,
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearColor color, const uint32_t width,
 													 const uint32_t height)
 {
 	VkClearRect rect{};
@@ -940,12 +939,32 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearFla
 	rect.layerCount = 1;
 
 	VkClearAttachment attachment{};
-	attachment.aspectMask = ClearFlagsToVKImageAspectFlags(flags);
+	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	attachment.colorAttachment = 0;
-	if (flags == RendererAPI::ClearFlags::Color)
-		attachment.clearValue.color = { value.Color.R, value.Color.G, value.Color.B, value.Color.A };
-	else
-		attachment.clearValue.depthStencil = { value.DepthStencil.Depth, value.DepthStencil.Stencil };
+	attachment.clearValue.color = { color.R, color.G, color.B, color.A };
+
+	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearDepthStencil depthStencil,
+                                                     const uint32_t width, const uint32_t height)
+{
+	VkClearRect rect{};
+	VkRect2D r{};
+	r.offset.x = 0;
+	r.offset.y = 0;
+	r.extent.width = width;
+	r.extent.height = height;
+	rect.rect = r;
+	rect.baseArrayLayer = 0;
+	rect.layerCount = 1;
+
+	VkClearAttachment attachment{};
+	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	attachment.colorAttachment = 0;
+	attachment.clearValue.depthStencil = { depthStencil.Depth, depthStencil.Stencil };
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }

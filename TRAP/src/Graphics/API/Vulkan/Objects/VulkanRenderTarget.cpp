@@ -25,7 +25,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	m_sampleCount = desc.SampleCount;
 	m_sampleQuality = desc.SampleQuality;
 	m_format = desc.Format;
-	m_clearValue = desc.ClearValue;
+	m_clearColor = desc.ClearColor;
+	m_clearDepthStencil = desc.ClearDepthStencil;
 	m_descriptors = desc.Descriptors;
 
 	TRAP_ASSERT(m_device, "device is nullptr");
@@ -34,8 +35,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Creating RenderTarget");
 #endif
 
-	const bool isDepth = RendererAPI::ImageFormatIsDepthOnly(desc.Format) ||
-	                     RendererAPI::ImageFormatIsDepthAndStencil(desc.Format);
+	const bool isDepth = TRAP::Graphics::API::ImageFormatIsDepthOnly(desc.Format) ||
+	                     TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
 
 	TRAP_ASSERT(!((isDepth) && static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture)),
 	            "Cannot use depth stencil as UAV");
@@ -62,7 +63,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	textureDesc.SampleCount = desc.SampleCount;
 	textureDesc.SampleQuality = desc.SampleQuality;
 	textureDesc.Format = desc.Format;
-	textureDesc.ClearValue = desc.ClearValue;
+	textureDesc.ClearColor = desc.ClearColor;
+	textureDesc.ClearDepthStencil = desc.ClearDepthStencil;
 	textureDesc.NativeHandle = desc.NativeHandle;
 
 	if (!isDepth)
@@ -90,7 +92,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 			//Fall back to something that's guaranteed to work
 			if(res != VK_SUCCESS)
 			{
-				textureDesc.Format = RendererAPI::ImageFormat::D16_UNORM;
+				textureDesc.Format = TRAP::Graphics::API::ImageFormat::D16_UNORM;
 				TP_WARN(Log::RendererVulkanRenderTargetPrefix, "Depth stencil format (",
 				        static_cast<uint32_t>(desc.Format), ") is not supported. Falling back to D16 format");
 			}
@@ -229,16 +231,23 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetSampleQuality() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::API::VulkanRenderTarget::GetImageFormat() const
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanRenderTarget::GetImageFormat() const
 {
 	return m_format;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ClearValue TRAP::Graphics::API::VulkanRenderTarget::GetClearValue() const
+TRAP::Graphics::RendererAPI::ClearColor TRAP::Graphics::API::VulkanRenderTarget::GetClearColor() const
 {
-	return m_clearValue;
+	return m_clearColor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::ClearDepthStencil TRAP::Graphics::API::VulkanRenderTarget::GetClearDepthStencil() const
+{
+	return m_clearDepthStencil;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

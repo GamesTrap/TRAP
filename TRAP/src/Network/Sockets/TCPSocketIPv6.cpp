@@ -5,6 +5,8 @@
 #include "Network/Packet.h"
 #include "Network/IP/IPv6Address.h"
 #include "SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far
@@ -38,7 +40,14 @@ uint16_t TRAP::Network::TCPSocketIPv6::GetLocalPort() const
 	sockaddr_in6 address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin6_port);
+	{
+		uint16_t port = address.sin6_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(port);
+
+		return port;
+	}
 
 	return 0;
 }
@@ -78,7 +87,14 @@ uint16_t TRAP::Network::TCPSocketIPv6::GetRemotePort() const
 	sockaddr_in6 address{};
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-		return ntohs(address.sin6_port);
+	{
+		uint16_t port = address.sin6_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(port);
+
+		return port;
+	}
 
 	return 0;
 }
@@ -273,7 +289,10 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 	const void* data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
-	uint32_t packetSize = htonl(static_cast<uint32_t>(size));
+	uint32_t packetSize = static_cast<uint32_t>(size);
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(packetSize);
 
 	//Allocate memory for the data block to send
 	std::vector<char> blockToSend(sizeof(packetSize) + size);
@@ -322,12 +341,16 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		}
 
 		//The packet size has been fully received
-		packetSize = ntohl(m_pendingPacket.Size);
+		packetSize = m_pendingPacket.Size;
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(packetSize);
 	}
 	else
 	{
 		//The packet size has already been received in a previous call
-		packetSize = ntohl(m_pendingPacket.Size);
+		packetSize = m_pendingPacket.Size;
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(packetSize);
 	}
 
 	//Loop until we receive all the packet data

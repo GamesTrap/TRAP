@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 	VkBufferCreateInfo info = VulkanInits::BufferCreateInfo(allocationSize,
 	                                                        DescriptorTypeToVkBufferUsage(desc.Descriptors,
-															                              desc.Format != RendererAPI::ImageFormat::Undefined));
+															                              desc.Format != TRAP::Graphics::API::ImageFormat::Undefined));
 
 	//Buffer can be used as dest in a transfer command (Uploading data to a storage buffer, Readback query data)
 	if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::GPUOnly ||
