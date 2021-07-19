@@ -926,6 +926,7 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* s
 
 	spv::SpvBuildLogger logger{};
 	glslang::SpvOptions spvOptions{};
+
 #ifdef TRAP_DEBUG
 	spvOptions.validate = true;
 	spvOptions.disableOptimizer = true;
@@ -933,6 +934,7 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* s
 	spvOptions.disableOptimizer = false;
 	spvOptions.optimizeSize = true;
 #endif
+
 	switch(stage)
 	{
 	case RendererAPI::ShaderStage::Vertex:

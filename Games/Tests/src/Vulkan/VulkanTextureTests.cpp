@@ -69,7 +69,6 @@ void VulkanTextureTests::OnAttach()
     m_texture = TRAP::Graphics::TextureManager::Load("/Textures/vulkanlogo.png", TRAP::Graphics::TextureUsage::Static).get();
     m_texture->AwaitLoading();
     m_maxMipLevel = m_texture->GetMipLevels();
-    m_textureSamplers.resize(m_maxMipLevel);
 
     //Load Shader
     std::vector<TRAP::Graphics::Shader::Macro> macros{};
@@ -86,13 +85,7 @@ void VulkanTextureTests::OnAttach()
 	samplerDesc.CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Never;
 	samplerDesc.MipLodBias = 0.0f;
 	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
-	samplerDesc.ForceMipLevel = true;
-    samplerDesc.MipLevel = 0.0f;
-    for(uint32_t i = 0; i < m_maxMipLevel; ++i)
-    {
-        samplerDesc.MipLevel = static_cast<float>(i);
-        m_textureSamplers[i] = TRAP::Graphics::Sampler::Create(samplerDesc);
-    }
+    m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //TODO Test Runtime Texture Update Cubemaps (ArrayLayer)
 
@@ -110,10 +103,7 @@ void VulkanTextureTests::OnAttach()
     m_shader->GetDescriptorSets().StaticDescriptors->Update(0, { param });
     //////////////////////////////////////
 
-    std::vector<TRAP::Graphics::Sampler*> samplers(m_maxMipLevel, nullptr);
-    for (uint32_t i = 0; i < samplers.size(); ++i)
-        samplers[i] = m_textureSamplers[i].get();
-    m_shader->UseSamplers(0, 1, samplers);
+    m_shader->UseSampler(0, 1, m_textureSampler.get());
 
     //Bind buffers
     m_vertexBuffer->Use();
@@ -124,7 +114,7 @@ void VulkanTextureTests::OnAttach()
 
 void VulkanTextureTests::OnDetach()
 {
-    m_textureSamplers.clear();
+    m_textureSampler.reset();
     m_indexBuffer.reset();
     m_vertexBuffer.reset();
 }

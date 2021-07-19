@@ -132,8 +132,8 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-		"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-		Utils::Dialogs::Style::Error,
+		                             "TRAP was unable to detect a compatible RenderAPI!"
+									 "\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 }
@@ -156,7 +156,7 @@ void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 		}
 
 		TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
-		
+
 		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
 			                             "TRAP was unable to detect a compatible RenderAPI!\n"
 										 "Please check your GPU driver!", Utils::Dialogs::Style::Error,
@@ -234,81 +234,81 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
-	if (s_isVulkanCapableFirstTest)
+	if(!s_isVulkanCapableFirstTest)
+		return s_isVulkanCapable;
+
+	TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+	TP_INFO(Log::RendererVulkanPrefix, "Running Vulkan Capability Tester");
+
+	s_isVulkanCapableFirstTest = false;
+
+	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
-		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-		TP_INFO(Log::RendererVulkanPrefix, "Running Vulkan Capability Tester");
-		
-		s_isVulkanCapableFirstTest = false;
-		
-		if (INTERNAL::WindowingAPI::VulkanSupported())
+		if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
 		{
-			if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
-			{
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Instance version Test!");
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
-				TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-				s_isVulkanCapable = false;
-				return s_isVulkanCapable;
-			}
-			
-			//Instance Extensions
-			std::vector<std::string> instanceExtensions{};
-			const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-			if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
-			    !API::VulkanInstance::IsExtensionSupported(reqExt[1]))
-			{
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
-				TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-				s_isVulkanCapable = false;
-				return s_isVulkanCapable;
-			}
-			instanceExtensions.push_back(reqExt[0]);
-			instanceExtensions.push_back(reqExt[1]);
-
-			//Create Instance
-			VkInstance instance;
-			std::vector<const char*> extensions(instanceExtensions.size());
-			for (uint32_t i = 0; i < instanceExtensions.size(); i++)
-				extensions[i] = instanceExtensions[i].c_str();
-			const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
-			VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
-			VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));			
-			if (instance)
-			{
-				VkLoadInstance(instance);
-
-				//Physical Device
-				const auto& physicalDevices = API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(instance);
-				if(physicalDevices.empty())
-				{
-					s_isVulkanCapable = false;
-					TP_CRITICAL(Log::RendererVulkanPrefix,
-					            "Failed to find a suitable GPU meeting all requirements!");
-				}
-			}
-			else
-			{
-				s_isVulkanCapable = false;
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan Instance!");
-			}
-		}
-		else
-			s_isVulkanCapable = false;
-
-		if (s_isVulkanCapable)
-		{
-			TP_INFO(Log::RendererVulkanPrefix, "Passed Vulkan Capability Tester!");
-			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-		}
-		else
-		{
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Instance version Test!");
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+			s_isVulkanCapable = false;
+			return s_isVulkanCapable;
+		}
+
+		//Instance Extensions
+		std::vector<std::string> instanceExtensions{};
+		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
+		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
+			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
+		{
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+			s_isVulkanCapable = false;
+			return s_isVulkanCapable;
+		}
+		instanceExtensions.push_back(reqExt[0]);
+		instanceExtensions.push_back(reqExt[1]);
+
+		//Create Instance
+		VkInstance instance;
+		std::vector<const char*> extensions(instanceExtensions.size());
+		for (uint32_t i = 0; i < instanceExtensions.size(); i++)
+			extensions[i] = instanceExtensions[i].c_str();
+		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
+		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
+		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
+		if (instance)
+		{
+			VkLoadInstance(instance);
+
+			//Physical Device
+			const auto& physicalDevices = API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(instance);
+			if(physicalDevices.empty())
+			{
+				s_isVulkanCapable = false;
+				TP_CRITICAL(Log::RendererVulkanPrefix,
+							"Failed to find a suitable GPU meeting all requirements!");
+			}
+		}
+		else
+		{
+			s_isVulkanCapable = false;
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan Instance!");
 		}
 	}
-	
+	else
+		s_isVulkanCapable = false;
+
+	if (s_isVulkanCapable)
+	{
+		TP_INFO(Log::RendererVulkanPrefix, "Passed Vulkan Capability Tester!");
+		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+	}
+	else
+	{
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+	}
+
 	return s_isVulkanCapable;
 }
 
@@ -338,8 +338,7 @@ bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) 
 	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
 		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
 		   this->MipLodBias == s.MipLodBias && this->MaxAnisotropy == s.MaxAnisotropy &&
-		   this->CompareFunc == s.CompareFunc && this->ForceMipLevel == s.ForceMipLevel &&
-		   this->MipLevel == s.MipLevel && this->SamplerConversionDesc == s.SamplerConversionDesc;
+		   this->CompareFunc == s.CompareFunc && this->SamplerConversionDesc == s.SamplerConversionDesc;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1939,3 +1939,8 @@ SITREP 07/15/2021|21w28a2
     - Changed TRAP Engine version to 21w28a2(0.7.56)
     - Big code maintenance (+100 Files changed) ~>600 mins
     - Big code maintenance (+40 Files changed) ~>240 mins
+
+SITREP 07/16/2021|21w28a3
+    - Changed TRAP Engine version to 21w28a3(0.7.57)
+    - RendererAPI Removed ForceMipLevel in SamplerDesc ~<10 mins
+    - VulkanTextureTests Replaced ForceMipLevel in SamplerDesc with textureLod in shader ~<10 mins

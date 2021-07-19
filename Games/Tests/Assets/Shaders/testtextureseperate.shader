@@ -16,8 +16,7 @@ layout(location = 0) out vec4 FragColor;
 layout(location = 0) in vec2 vUV;
 
 layout(UpdateFreqNone, binding = 0) uniform texture2D Texture;
-//layout(UpdateFreqNone, binding = 1) uniform sampler Sampler;
-layout(UpdateFreqNone, binding = 1) uniform sampler Samplers[MAX_TEXTURE_MIP_LEVELS];
+layout(UpdateFreqNone, binding = 1) uniform sampler Sampler;
 
 layout(push_constant) uniform PushConstantBlock
 {
@@ -26,6 +25,7 @@ layout(push_constant) uniform PushConstantBlock
 
 void main()
 {
-    FragColor = texture(sampler2D(Texture, Samplers[SamplerRootConstant.SamplerIndex]), vUV);
+    FragColor = textureLod(sampler2D(Texture, Sampler), vUV, SamplerRootConstant.SamplerIndex);
+    //FragColor = texture(sampler2D(Texture, Sampler), vUV);
     //FragColor = vec4(vUV, 0.0f, 1.0f);
 }

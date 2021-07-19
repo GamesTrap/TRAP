@@ -22,11 +22,6 @@ namespace TRAP::Graphics
 		float GetMaxAnisotropy() const;
 		RendererAPI::CompareMode GetCompareFunc() const;
 
-		//Whether sampler is forced to use a specific mip level or not
-		bool GetForceMipLevel() const;
-		//Returns the forced mip level, if mip level is not forced returns 0.0f
-		float GetMipLevel() const;
-
 		static void ClearCache();
 
 	protected:

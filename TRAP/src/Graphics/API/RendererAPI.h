@@ -826,10 +826,6 @@ namespace TRAP::Graphics
 			float MaxAnisotropy{};
 			CompareMode CompareFunc{};
 
-			//Optional (used to display specific mip level at all times)
-			bool ForceMipLevel{};
-			float MipLevel{};
-
 			struct SamplerConversionDesc
 			{
 				TRAP::Graphics::API::ImageFormat Format;

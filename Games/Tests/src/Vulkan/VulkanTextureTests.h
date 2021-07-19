@@ -21,7 +21,7 @@ private:
 
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-    std::vector<TRAP::Ref<TRAP::Graphics::Sampler>> m_textureSamplers;
+    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
 
     bool m_cycleMips;
     uint32_t m_currentMipLevel;
@@ -45,7 +45,7 @@ private:
     bool m_debugImgVisible;
 
     TRAP::Graphics::Shader* m_shader;
-	
+
     //////////////////////////////////////
 	//INTERNAL CODE USE AT YOUR OWN RISK//
 	//////////////////////////////////////

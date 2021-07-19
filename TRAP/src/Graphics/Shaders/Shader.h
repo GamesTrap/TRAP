@@ -98,7 +98,7 @@ namespace TRAP::Graphics
 			}
 		};
 
-		inline static constexpr TBuiltInResource GetDefaultTBuiltInResource()
+		inline static constexpr TBuiltInResource GetDefaultTBuiltInResource() //TODO Set these values with VkPhysicalDevice limits?!
 		{
 			return TBuiltInResource
 			{

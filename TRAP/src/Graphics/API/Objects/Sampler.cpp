@@ -103,23 +103,6 @@ TRAP::Graphics::RendererAPI::CompareMode TRAP::Graphics::Sampler::GetCompareFunc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Sampler::GetForceMipLevel() const
-{
-	return m_samplerDesc.ForceMipLevel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-float TRAP::Graphics::Sampler::GetMipLevel() const
-{
-	if(GetForceMipLevel())
-		return m_samplerDesc.MipLevel;
-
-	return 0.0f;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::Sampler::ClearCache()
 {
 	s_cachedSamplers.clear();
@@ -142,10 +125,7 @@ std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(cons
 		desc.AddressW,
 		desc.MipLodBias,
 		desc.MaxAnisotropy,
-		desc.CompareFunc,
-
-		desc.ForceMipLevel,
-		desc.MipLevel
+		desc.CompareFunc
 	);
 
 	TRAP::Utils::HashCombine
