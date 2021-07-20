@@ -771,13 +771,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer,
                                                            const VertexBufferLayout& layout, Window* window)
 {
-	auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
+	//Vertex Buffer realistically only consists of floating point values
+	constexpr auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
 	{
 		switch(s)
 		{
-		case ShaderDataType::Bool:
-			return ImageFormat::R1_UNORM;
-
 		case ShaderDataType::Float:
 			return ImageFormat::R32_SFLOAT;
 
@@ -789,24 +787,6 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 		case ShaderDataType::Float4:
 			return ImageFormat::R32G32B32A32_SFLOAT;
-
-		case ShaderDataType::Int:
-			return ImageFormat::R32_SINT;
-
-		case ShaderDataType::Int2:
-			return ImageFormat::R32G32_SINT;
-
-		case ShaderDataType::Int3:
-			return ImageFormat::R32G32B32_SINT;
-
-		case ShaderDataType::Int4:
-			return ImageFormat::R32G32B32A32_SINT;
-
-		/*case ShaderDataType::Mat3:
-			return;
-
-		case ShaderDataType::Mat4:
-			return;*/
 
 		case ShaderDataType::None:
 		default:

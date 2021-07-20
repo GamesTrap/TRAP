@@ -23,19 +23,6 @@ namespace TRAP::Graphics
 
 	using TextureUsage = BufferUsage;
 
-	//TODO Move to Sampler class
-	// using TextureWrap = RendererAPI::AddressMode;
-	// using TextureFilter = RendererAPI::FilterType;
-	// struct TextureParameters
-	// {
-	// 	TextureFilter Filter;
-	// 	TextureWrap Wrap;
-
-	// 	TextureParameters();
-	// 	explicit TextureParameters(TextureFilter filter);
-	// 	TextureParameters(TextureFilter filter, TextureWrap wrap);
-	// };
-
 	class Texture
 	{
 	protected:

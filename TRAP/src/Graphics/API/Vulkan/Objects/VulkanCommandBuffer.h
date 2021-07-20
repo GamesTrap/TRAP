@@ -67,7 +67,6 @@ namespace TRAP::Graphics::API
 		                  uint64_t srcOffset, uint64_t size) const override;
 		void UpdateSubresource(const TRAP::Ref<VulkanTexture>& texture, const TRAP::Ref<Buffer>& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
-		void UpdateVirtualTexture(const TRAP::Ref<VulkanTexture>& virtualTexture) override;
 
 		void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery,
 		                    uint32_t queryCount) const override;

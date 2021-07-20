@@ -648,17 +648,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::UpdateVirtualTexture(const TRAP::Ref<VulkanTexture>& virtualTexture)
-{
-	if(!virtualTexture->GetSVT()->Visibility)
-		return;
-
-	virtualTexture->ReleasePage();
-	virtualTexture->FillVirtualTexture(*this);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool,
                                                               const uint32_t startQuery,
 															  const uint32_t queryCount) const
