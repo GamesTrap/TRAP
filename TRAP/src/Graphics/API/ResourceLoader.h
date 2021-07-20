@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 namespace TRAP::Graphics::API
 {
 	typedef uint64_t SyncToken;
-	class ResourceLoader
+	class ResourceLoader //TODO Maybe use ThreadPool for more parallelization?!
 	{
 	public:
 		explicit ResourceLoader(const RendererAPI::ResourceLoaderDesc* desc = nullptr);

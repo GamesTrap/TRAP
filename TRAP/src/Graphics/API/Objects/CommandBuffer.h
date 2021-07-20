@@ -66,7 +66,6 @@ namespace TRAP::Graphics
 		virtual void UpdateSubresource(const TRAP::Ref<API::VulkanTexture>& texture,
 		                               const TRAP::Ref<Buffer>& srcBuffer,
 									   const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
-		virtual void UpdateVirtualTexture(const TRAP::Ref<API::VulkanTexture>& virtualTexture) = 0;
 
 		virtual void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery,
 		                            uint32_t queryCount) const = 0;

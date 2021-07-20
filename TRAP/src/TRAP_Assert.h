@@ -33,7 +33,7 @@
 #define TRAP_ASSERT(...) TRAP_EXPAND_MACRO(TRAP_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(" ", __VA_ARGS__))
 #else
 template<typename... Args>
-constexpr void TRAP_ASSERT(const Args&... args) {}
+constexpr void TRAP_ASSERT(const Args&...) {}
 #endif
 
 #endif /*_TRAP_TRAPASSERT_H_*/

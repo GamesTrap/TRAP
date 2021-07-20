@@ -15,9 +15,6 @@ namespace TRAP::Graphics::API
 	public:
 		VulkanTexture(TRAP::Ref<VulkanDevice> device, const RendererAPI::TextureDesc& desc,
 			          TRAP::Ref<VulkanMemoryAllocator> vma);
-		VulkanTexture(TRAP::Ref<VulkanDevice> device, const RendererAPI::TextureDesc& desc,
-			          const std::vector<uint8_t>& imageData, CommandBuffer* cmd,
-					  TRAP::Ref<VulkanMemoryAllocator> vma);
 		~VulkanTexture();
 
 		VkImageView& GetSRVVkImageView();
@@ -33,30 +30,13 @@ namespace TRAP::Graphics::API
 		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
 		uint32_t GetAspectMask() const;
 		RendererAPI::DescriptorType GetUAV() const;
-		TRAP::Ref<RendererAPI::VirtualTexture> GetSVT() const;
 		bool OwnsImage() const;
-
-		void FillVirtualTexture(CommandBuffer& cmd);
-		void ReleasePage();
 
 		void SetTextureName(const std::string& name) const;
 
 	private:
-		struct PageCounts
-		{
-			uint32_t AlivePageCount;
-			uint32_t RemovePageCount;
-		};
-
-		void RemoveVirtualTexture();
 		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
 		                              VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
-		static VkExtent3D AlignedDivision(const VkExtent3D& extent, const VkExtent3D& granularity);
-		void FillVirtualTextureLevel(CommandBuffer* cmd, uint32_t mipLevel);
-		RendererAPI::VirtualTexturePage* AddPage(const VkOffset3D& offset, const VkExtent3D& extent,
-		                                         VkDeviceSize size, uint32_t mipLevel, uint32_t layer) const;
-		bool AllocateVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, uint32_t memoryTypeIndex);
-		void ReleaseVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, bool removeMemoryBind) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
@@ -73,7 +53,6 @@ namespace TRAP::Graphics::API
 		VmaAllocation m_vkAllocation;
 		VkDeviceMemory m_vkDeviceMemory;
 
-		TRAP::Ref<RendererAPI::VirtualTexture> m_SVT;
 		//Current state of the buffer
 		uint32_t m_width;
 		uint32_t m_height;
