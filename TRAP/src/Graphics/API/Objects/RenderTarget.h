@@ -5,6 +5,8 @@
 
 namespace TRAP::Graphics
 {
+	class TextureBase;
+
 	class RenderTarget
 	{
 	public:
@@ -27,7 +29,7 @@ namespace TRAP::Graphics
 	protected:
 		RenderTarget();
 
-		TRAP::Ref<API::VulkanTexture> m_texture; //TODO
+		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;
 
 		RendererAPI::ClearColor m_clearColor;
 		RendererAPI::ClearDepthStencil m_clearDepthStencil;

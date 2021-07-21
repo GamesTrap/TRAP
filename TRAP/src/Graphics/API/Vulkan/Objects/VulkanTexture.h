@@ -3,14 +3,14 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Utils/VMA.h"
-
+#include "Graphics/Textures/TextureBase.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanMemoryAllocator;
 	class VulkanDevice;
 
-	class VulkanTexture
+	class VulkanTexture : public TextureBase
 	{
 	public:
 		VulkanTexture(TRAP::Ref<VulkanDevice> device, const RendererAPI::TextureDesc& desc,
@@ -22,17 +22,8 @@ namespace TRAP::Graphics::API
 		const std::vector<VkImageView>& GetUAVVkImageViews() const;
 		VkImage& GetVkImage();
 		VmaAllocation& GetVMAAllocation();
-		uint32_t GetWidth() const;
-		uint32_t GetHeight() const;
-		uint32_t GetDepth() const;
-		uint32_t GetMipLevels() const;
-		uint32_t GetArraySizeMinusOne() const;
-		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
-		uint32_t GetAspectMask() const;
-		RendererAPI::DescriptorType GetUAV() const;
-		bool OwnsImage() const;
 
-		void SetTextureName(const std::string& name) const;
+		void SetTextureName(const std::string& name) const override;
 
 	private:
 		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
@@ -52,19 +43,6 @@ namespace TRAP::Graphics::API
 		//Contains resource allocation info such as parent heap, offset in heap
 		VmaAllocation m_vkAllocation;
 		VkDeviceMemory m_vkDeviceMemory;
-
-		//Current state of the buffer
-		uint32_t m_width;
-		uint32_t m_height;
-		uint32_t m_depth;
-		uint32_t m_mipLevels;
-		uint32_t m_arraySizeMinusOne;
-		TRAP::Graphics::API::ImageFormat m_format;
-		//Flags specifying which aspects (Color, Depth, Stencil) are included in the m_vkImageView
-		uint32_t m_aspectMask;
-		RendererAPI::DescriptorType m_UAV;
-		//This value will be false if the underlying resource is not owned by the texture (swapchain textures,...)
-		bool m_ownsImage;
 	};
 }
 

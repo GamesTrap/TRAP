@@ -20,31 +20,14 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
 	  m_vkImage(VK_NULL_HANDLE),
 	  m_vkAllocation(),
-	  m_vkDeviceMemory(),
-	  m_width(desc.Width),
-	  m_height(desc.Height),
-	  m_depth(desc.Depth),
-	  m_mipLevels(desc.MipLevels),
-	  m_arraySizeMinusOne(desc.ArraySize - 1),
-	  m_format(desc.Format),
-	  m_aspectMask(),
-	  m_UAV(desc.Descriptors & RendererAPI::DescriptorType::RWTexture),
-	  m_ownsImage(true)
+	  m_vkDeviceMemory()
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 	TRAP_ASSERT(m_vma, "vma is nullptr");
-	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
 #endif
-
-	if(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1)
-	{
-		TP_ERROR(Log::RendererVulkanTexturePrefix, "Multi-Sampled textures cannot have mip maps");
-		TRAP_ASSERT(false);
-		return;
-	}
 
 	if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture))
 		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ?
@@ -361,69 +344,6 @@ VmaAllocation& TRAP::Graphics::API::VulkanTexture::GetVMAAllocation()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanTexture::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanTexture::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanTexture::GetDepth() const
-{
-	return m_depth;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanTexture::GetMipLevels() const
-{
-	return m_mipLevels;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanTexture::GetArraySizeMinusOne() const
-{
-	return m_arraySizeMinusOne;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanTexture::GetImageFormat() const
-{
-	return m_format;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanTexture::GetAspectMask() const
-{
-	return m_aspectMask;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanTexture::GetUAV() const
-{
-	return m_UAV;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::VulkanTexture::OwnsImage() const
-{
-	return m_ownsImage;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
                                                            const VkPhysicalDeviceMemoryProperties& memProps,
                                                            const VkMemoryPropertyFlags props, VkBool32* memTypeFound)
@@ -449,7 +369,7 @@ uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
 		return 0;
 	}
 
-	TP_ERROR(Log::RendererVulkanVirtualTexturePrefix, "Could not find a matching memory type");
+	TP_ERROR(Log::RendererVulkanTexturePrefix, "Could not find a matching memory type");
 	TRAP_ASSERT(false);
 	return 0;
 }

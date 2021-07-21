@@ -65,7 +65,7 @@ namespace TRAP::Graphics::API
 
 		void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, uint64_t dstOffset, const TRAP::Ref<Buffer>& srcBuffer,
 		                  uint64_t srcOffset, uint64_t size) const override;
-		void UpdateSubresource(const TRAP::Ref<VulkanTexture>& texture, const TRAP::Ref<Buffer>& srcBuffer,
+		void UpdateSubresource(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture, const TRAP::Ref<Buffer>& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 
 		void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery,
@@ -82,7 +82,7 @@ namespace TRAP::Graphics::API
 		void SetStencilReferenceValue(uint32_t val) const override;
 
 		//TODO
-		/*void SetShadingRate(RendererAPI::ShadingRate shadingRate, TRAP::Ref<VulkanTexture> texture,
+		/*void SetShadingRate(RendererAPI::ShadingRate shadingRate, TRAP::Ref<TRAP::Graphics::TextureBase> texture,
 		                      RendererAPI::ShadingRateCombiner postRasterizerRate,
 							  RendererAPI::ShadingRateCombiner finalRate);*/
 

@@ -4,6 +4,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "VFS/VFS.h"
 #include "Graphics/API/ResourceLoader.h"
+#include "TextureBase.h"
 
 std::vector<std::pair<TRAP::Graphics::Texture2D*, std::future<TRAP::Scope<TRAP::Image>>>> TRAP::Graphics::Texture2D::m_loadingTextures{};
 

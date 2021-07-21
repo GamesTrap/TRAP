@@ -4,9 +4,10 @@
 #include "VulkanBuffer.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
-#include "VulkanTexture.h"
 #include "VulkanSampler.h"
 #include "VulkanRootSignature.h"
+#include "VulkanTexture.h"
+#include "Graphics/Textures/TextureBase.h"
 
 TRAP::Graphics::API::VulkanDescriptorSet::~VulkanDescriptorSet()
 {
@@ -175,7 +176,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 		case RendererAPI::DescriptorType::CombinedImageSampler:
 		{
-			const std::vector<VulkanTexture*>& textures = std::get<std::vector<VulkanTexture*>>(param.Resource);
+			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + std::string(desc->Name) +
 			                    std::string(")"));
 
@@ -193,8 +194,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 				updateData[desc->HandleIndex + arr].ImageInfo =
 				{
-					nullptr,                                 //Sampler
-					textures[arr]->GetSRVVkImageView(),      //Image View
+					nullptr, //Sampler
+					dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetSRVVkImageView(), //Image View
 					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
 				};
 
@@ -205,7 +206,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 		case RendererAPI::DescriptorType::Texture:
 		{
-			const std::vector<VulkanTexture*>& textures = std::get<std::vector<VulkanTexture*>>(param.Resource);
+			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + std::string(desc->Name) +
 			                    std::string(")"));
 
@@ -218,9 +219,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 					updateData[desc->HandleIndex + arr].ImageInfo =
 					{
-						VK_NULL_HANDLE,                           //Sampler
-						textures[arr]->GetSRVVkImageView(),       //Image View
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL  //Image Layout
+						VK_NULL_HANDLE, //Sampler
+						dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetSRVVkImageView(), //Image View
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
 					};
 
 					update = true;
@@ -235,9 +236,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 					updateData[desc->HandleIndex + arr].ImageInfo =
 					{
-						VK_NULL_HANDLE,                                  //Sampler
-						textures[arr]->GetSRVStencilVkImageView(),       //Image View
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL         //Image Layout
+						VK_NULL_HANDLE, //Sampler
+						dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetSRVStencilVkImageView(), //Image View
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
 					};
 
 					update = true;
@@ -248,7 +249,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 		case RendererAPI::DescriptorType::RWTexture:
 		{
-			const std::vector<VulkanTexture*>& textures = std::get<std::vector<VulkanTexture*>>(param.Resource);
+			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty RW Texture (") + std::string(desc->Name) +
 			                    std::string(")"));
 
@@ -261,9 +262,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 				{
 					updateData[desc->HandleIndex + arr].ImageInfo =
 					{
-						VK_NULL_HANDLE,                         //Sampler
-						textures[0]->GetUAVVkImageViews()[arr], //Image View
-						VK_IMAGE_LAYOUT_GENERAL                 //Image Layout
+						VK_NULL_HANDLE, //Sampler
+						dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(textures[0])->GetUAVVkImageViews()[arr], //Image View
+						VK_IMAGE_LAYOUT_GENERAL //Image Layout
 					};
 
 					update = true;
@@ -289,9 +290,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 					updateData[desc->HandleIndex + arr].ImageInfo =
 					{
-						VK_NULL_HANDLE,                                //Sampler
-						textures[arr]->GetUAVVkImageViews()[mipSlice], //Image View
-						VK_IMAGE_LAYOUT_GENERAL                        //Image Layout
+						VK_NULL_HANDLE, //Sampler
+						dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(textures[arr])->GetUAVVkImageViews()[mipSlice], //Image View
+						VK_IMAGE_LAYOUT_GENERAL //Image Layout
 					};
 
 					update = true;

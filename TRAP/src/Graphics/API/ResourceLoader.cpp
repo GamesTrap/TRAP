@@ -5,6 +5,7 @@
 #include "Objects/Buffer.h"
 #include "Objects/CommandBuffer.h"
 #include "Objects/CommandPool.h"
+#include "Graphics/Textures/TextureBase.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
@@ -13,6 +14,7 @@
 #include "Vulkan/Objects/VulkanDevice.h"
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Vulkan/Objects/VulkanCommandBuffer.h"
+#include "Vulkan/Objects/VulkanTexture.h"
 
 TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20, 2};
 
@@ -241,7 +243,7 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 	}
 	else if(packed)
 	{
-		TP_ERROR(Log::RendererVulkanTexturePrefix, "Packed not implemented!");
+		TP_ERROR(Log::TextureBasePrefix, "Packed not implemented!");
 		return false;
 	}
 	else if(planar)
@@ -390,14 +392,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 
 		//If texture is supposed to be filled later (UAV / Update later / ...) proceed with the StartState provided
 		//by the user in the texture description
-		//TODO Replace with Texture abstraction
-		TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
-			(
-				RendererAPI::GetRenderer().get()
-			);
-		*textureDesc.Texture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(vkRenderer->GetDevice(),
-		                                                                         *textureDesc.Desc,
-																				 vkRenderer->GetVMA());
+		*textureDesc.Texture = TRAP::Graphics::TextureBase::Create(*textureDesc.Desc);
 
 		//Transition texture to desired state for Vulkan since all Vulkan resources are created in undefined state
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
@@ -455,8 +450,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 
 void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc)
 {
-	//TODO Replace with abstraction
-	const TRAP::Ref<TRAP::Graphics::API::VulkanTexture> texture = desc.Texture;
+	const TRAP::Ref<TRAP::Graphics::TextureBase> texture = desc.Texture;
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	const uint32_t alignment = UtilGetTextureSubresourceAlignment(fmt);
 
@@ -663,7 +657,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& texture,
+void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
                                                               RendererAPI::ResourceState state, SyncToken* token)
 {
 	SyncToken t = 0;
@@ -931,7 +925,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
 	bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer ? true : false;
-	const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& texture = textureUpdateDesc.Texture; //TODO Replace with abstraction
+	const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = textureUpdateDesc.Texture;
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
 	CommandBuffer* cmd = AcquireCmd(activeSet);
 
@@ -1114,9 +1108,11 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			blit.dstSubresource.baseArrayLayer = 0;
 			blit.dstSubresource.layerCount = 1;
 
+			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+
 			vkCmdBlitImage(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(),
-				texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-				texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+				vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1, &blit,
 				VK_FILTER_LINEAR);
 
@@ -1345,14 +1341,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		else
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 
-		//TODO Replace with Texture abstraction
-		TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
-			(
-				RendererAPI::GetRenderer().get()
-			);
-		*textureLoadDesc.Texture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(vkRenderer->GetDevice(),
-		                                                                             textureDesc,
-																					 vkRenderer->GetVMA());
+		*textureLoadDesc.Texture = TRAP::Graphics::TextureBase::Create(textureDesc);
 
 		updateDesc.Texture = *textureLoadDesc.Texture;
 		updateDesc.BaseMipLevel = 0;
@@ -1398,14 +1387,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			) + 1); //Minimum 1 Mip Level
 	}
 
-	//TODO Replace with Texture abstraction
-	TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
-		(
-			RendererAPI::GetRenderer().get()
-		);
-	*textureLoadDesc.Texture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(vkRenderer->GetDevice(),
-	                                                                             textureDesc,
-																				 vkRenderer->GetVMA());
+	*textureLoadDesc.Texture = TRAP::Graphics::TextureBase::Create(textureDesc);
 
 	updateDesc.Texture = *textureLoadDesc.Texture;
 	updateDesc.BaseMipLevel = 0;

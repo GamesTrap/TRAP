@@ -2,12 +2,12 @@
 #define _TRAP_RESOURCELOADER_H_
 
 #include "RendererAPI.h"
-#include "Vulkan/Objects/VulkanTexture.h"
 #include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {
 	class CommandPool;
+	class TextureBase;
 }
 
 namespace TRAP::Graphics::API
@@ -53,7 +53,7 @@ namespace TRAP::Graphics::API
 	private:
 		struct TextureUpdateDescInternal
 		{
-			TRAP::Ref<TRAP::Graphics::API::VulkanTexture> Texture = nullptr; //TODO Replace with abstraction
+			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
 			RendererAPI::MappedMemoryRange Range{};
 			uint32_t BaseMipLevel = 0;
 			uint32_t MipLevels = 0;
@@ -77,7 +77,7 @@ namespace TRAP::Graphics::API
 		void QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc, SyncToken* token);
 		void QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc, SyncToken* token);
 		void QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate, SyncToken* token);
-		void QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& texture,
+		void QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
 		                         RendererAPI::ResourceState state, SyncToken* token);
 
 		RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);

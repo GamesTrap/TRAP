@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "VFS/VFS.h"
+#include "TextureBase.h"
 
 TRAP::Graphics::TextureCube::TextureCube()
 	: m_textureFormat(TextureCubeFormat::Cross)

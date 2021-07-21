@@ -12,6 +12,7 @@ namespace TRAP::Graphics
 	class Buffer;
 	class RenderTarget;
 	class RootSignature;
+	class TextureBase;
 
 	class CommandBuffer
 	{
@@ -63,7 +64,7 @@ namespace TRAP::Graphics
 
 		virtual void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, uint64_t dstOffset,
 		                          const TRAP::Ref<Buffer>& srcBuffer, uint64_t srcOffset, uint64_t size) const = 0;
-		virtual void UpdateSubresource(const TRAP::Ref<API::VulkanTexture>& texture,
+		virtual void UpdateSubresource(const TRAP::Ref<TextureBase>& texture,
 		                               const TRAP::Ref<Buffer>& srcBuffer,
 									   const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 

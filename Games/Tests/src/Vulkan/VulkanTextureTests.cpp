@@ -97,7 +97,7 @@ void VulkanTextureTests::OnAttach()
     //////////////////////////////////////
     TRAP::Graphics::RendererAPI::DescriptorData param{};
     param.Name = "Texture";
-    param.Resource = std::vector<TRAP::Graphics::API::VulkanTexture*>{ m_texture->GetTexture().get() };
+    param.Resource = std::vector<TRAP::Graphics::TextureBase*>{ m_texture->GetTexture().get() };
     param.Count = 1;
 
     m_shader->GetDescriptorSets().StaticDescriptors->Update(0, { param });

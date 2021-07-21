@@ -368,7 +368,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + arr].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)]->GetSRVVkImageView(),
+							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetSRVVkImageView(),
 							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 						};
 					}
@@ -380,7 +380,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + arr].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)]->GetUAVVkImageViews()[0],
+							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetUAVVkImageViews()[0],
 							VK_IMAGE_LAYOUT_GENERAL
 						};
 					}

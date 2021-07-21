@@ -8,7 +8,6 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanMemoryAllocator;
-	class VulkanTexture;
 	class VulkanDevice;
 
 	class VulkanRenderTarget final : public RenderTarget

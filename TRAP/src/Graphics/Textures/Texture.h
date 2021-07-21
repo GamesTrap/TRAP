@@ -8,13 +8,12 @@ namespace TRAP
 {
 	class Image;
 }
-namespace TRAP::Graphics::API
-{
-	class VulkanTexture;
-}
+
 
 namespace TRAP::Graphics
 {
+	class TextureBase;
+
 	enum class TextureType
 	{
 		Texture2D,
@@ -49,7 +48,7 @@ namespace TRAP::Graphics
 
 		//TODO Getters for other things?
 
-		TRAP::Ref<TRAP::Graphics::API::VulkanTexture> GetTexture() const;//TODO Remove
+		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
 
 		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
 
@@ -59,7 +58,7 @@ namespace TRAP::Graphics
 		TextureUsage m_textureUsage;
 		API::SyncToken m_syncToken;
 
-		TRAP::Ref<TRAP::Graphics::API::VulkanTexture> m_texture;
+		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;
 	};
 }
 

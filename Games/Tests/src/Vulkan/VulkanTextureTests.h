@@ -2,7 +2,6 @@
 #define _GAMESTRAP_VULKANTEXTURETESTS_H_
 
 #include <TRAP.h>
-#include <Graphics/API/Vulkan/Objects/VulkanTexture.h>
 
 class VulkanTextureTests final : public TRAP::Layer
 {

@@ -122,7 +122,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion = "[21w28a3]";
+		inline static constexpr auto WindowVersion = "[21w29a1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -140,6 +140,7 @@ namespace TRAP
 		inline static constexpr auto TextureCubeVulkanPrefix = "[TextureCube][Vulkan] ";
 		inline static constexpr auto Texture2DPrefix = "[Texture2D] ";
 		inline static constexpr auto Texture2DVulkanPrefix = "[Texture2D][Vulkan] ";
+		inline static constexpr auto TextureBasePrefix = "[TextureBase] ";
 		inline static constexpr auto EnginePrefix = "[Engine] ";
 		inline static constexpr auto EngineLinuxPrefix = "[Engine][Linux] ";
 		inline static constexpr auto EngineLinuxX11Prefix = "[Engine][Linux][X11] ";
@@ -190,7 +191,6 @@ namespace TRAP
 		inline static constexpr auto RendererVulkanTexturePrefix = "[Renderer][Vulkan][Texture] ";
 		inline static constexpr auto RendererVulkanSwapChainPrefix = "[Renderer][Vulkan][SwapChain] ";
 		inline static constexpr auto RendererVulkanSurfacePrefix = "[Renderer][Vulkan][Surface] ";
-		inline static constexpr auto RendererVulkanVirtualTexturePrefix = "[Renderer][Vulkan][VirtualTexture] ";
 		inline static constexpr auto RendererVulkanShaderPrefix = "[Renderer][Vulkan][Shader] ";
 		inline static constexpr auto RendererVulkanRootSignaturePrefix = "[Renderer][Vulkan][RootSignature] ";
 		inline static constexpr auto RendererVulkanVMAPrefix = "[Renderer][Vulkan][VMA] ";

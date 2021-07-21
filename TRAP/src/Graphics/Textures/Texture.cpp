@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Texture.h"
 
-#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include "TextureBase.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -112,7 +112,7 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::API::VulkanTexture> TRAP::Graphics::Texture::GetTexture() const
+TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::Texture::GetTexture() const
 {
 	return m_texture;
 }

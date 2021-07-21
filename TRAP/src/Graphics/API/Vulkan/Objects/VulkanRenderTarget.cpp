@@ -1,11 +1,12 @@
 #include "TRAPPCH.h"
 #include "VulkanRenderTarget.h"
 
-#include "VulkanTexture.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 std::atomic_int32_t TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
 
@@ -101,8 +102,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	textureDesc.Name = desc.Name;
 
-	m_texture = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc,
-	                                         dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA());
+	m_texture = TRAP::Graphics::TextureBase::Create(textureDesc);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
 	if (desc.Height > 1)
@@ -110,7 +110,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	else
 		viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_1D_ARRAY : VK_IMAGE_VIEW_TYPE_1D;
 
-	VkImageViewCreateInfo rtvDesc = VulkanInits::ImageViewCreateInfo(m_texture->GetVkImage(), viewType,
+	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(m_texture.get());
+	VkImageViewCreateInfo rtvDesc = VulkanInits::ImageViewCreateInfo(vkTexture->GetVkImage(), viewType,
 	                                                                 ImageFormatToVkFormat(desc.Format), 1,
 																	 depthOrArraySize);
 

@@ -6,15 +6,16 @@
 #include "VulkanPipeline.h"
 #include "VulkanCommandSignature.h"
 #include "VulkanQueryPool.h"
-#include "VulkanTexture.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanBuffer.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/Textures/TextureBase.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanRootSignature.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "VulkanQueue.h"
+#include "VulkanTexture.h"
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
@@ -578,11 +579,12 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref<VulkanTexture>& texture,
+void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
                                                                  const TRAP::Ref<Buffer>& srcBuffer,
                                                                  const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
 	VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
+	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
 
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	if(TRAP::Graphics::API::ImageFormatIsSinglePlane(fmt))
@@ -608,7 +610,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 		copy.imageExtent.height = height;
 		copy.imageExtent.depth = depth;
 
-		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, texture->GetVkImage(),
+		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, vkTexture->GetVkImage(),
 		                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
 	}
 	else
@@ -641,7 +643,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 			          TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
 		}
 
-		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, texture->GetVkImage(),
+		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, vkTexture->GetVkImage(),
 		                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, numOfPlanes, bufferImagesCopy.data());
 	}
 }
@@ -781,7 +783,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 	for (const auto& trans : textureBarriers)
 	{
-		const TRAP::Ref<VulkanTexture>& texture = trans.Texture;
+		const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = trans.Texture;
+		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
 		VkImageMemoryBarrier* imageBarrier;
 
 		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -810,7 +813,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 		if(imageBarrier)
 		{
-			imageBarrier->image = texture->GetVkImage();
+			imageBarrier->image = vkTexture->GetVkImage();
 			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
 			imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
 			imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
@@ -840,7 +843,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 	for (const auto& trans : renderTargetBarriers)
 	{
-		const TRAP::Ref<VulkanTexture> texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture;
+		const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture;
+		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
 		VkImageMemoryBarrier* imageBarrier;
 
 		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -869,7 +873,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 		if(imageBarrier)
 		{
-			imageBarrier->image = texture->GetVkImage();
+			imageBarrier->image = vkTexture->GetVkImage();
 			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
 			imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
 			imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;

@@ -7,7 +7,6 @@ namespace TRAP::Graphics::API
 {
 	class VulkanQueue;
 	class VulkanPhysicalDevice;
-	class VulkanTexture;
 
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
 	VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);

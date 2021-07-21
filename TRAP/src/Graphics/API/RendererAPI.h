@@ -32,6 +32,7 @@ namespace TRAP::Graphics
 	class RootSignature;
 	class Sampler;
 	class RenderTarget;
+	class TextureBase;
 	enum class RendererCullMode;
 	enum class RendererOperation;
 	enum class RendererFaceMode;
@@ -45,7 +46,6 @@ namespace TRAP::Graphics
 namespace TRAP::Graphics::API
 {
 	class ResourceLoader;
-	class VulkanTexture;
 
 	namespace ShaderReflection
 	{
@@ -760,10 +760,9 @@ namespace TRAP::Graphics
 			::VkSamplerYcbcrConversionInfo* VkSamplerYcbcrConversionInfo{};
 		};
 
-		//TODO Replace with Texture abstraction
 		struct TextureLoadDesc
 		{
-			TRAP::Ref<TRAP::Graphics::API::VulkanTexture>* Texture;
+			TRAP::Ref<TRAP::Graphics::TextureBase>* Texture;
 			//Load empty texture
 			TRAP::Ref<TextureDesc> Desc;
 			//Filepath with extension.
@@ -1143,7 +1142,7 @@ namespace TRAP::Graphics
 
 		struct TextureBarrier
 		{
-			TRAP::Ref<API::VulkanTexture> Texture{};
+			TRAP::Ref<TRAP::Graphics::TextureBase> Texture{};
 			ResourceState CurrentState{};
 			ResourceState NewState{};
 			bool BeginOnly{};
@@ -1187,9 +1186,9 @@ namespace TRAP::Graphics
 			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
 			//DescriptorRange can hold only one resource type array
 			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
-			std::variant<std::vector<API::VulkanTexture*>, std::vector<Sampler*>,
+			std::variant<std::vector<TRAP::Graphics::TextureBase*>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<API::VulkanTexture*>()};
+				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::TextureBase*>()};
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
@@ -1231,7 +1230,7 @@ namespace TRAP::Graphics
 		//Note: Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
 		struct TextureUpdateDesc
 		{
-			TRAP::Ref<TRAP::Graphics::API::VulkanTexture> Texture; //TODO Replace VulkanTexture with TRAP::Graphics::Texture
+			TRAP::Ref<TRAP::Graphics::TextureBase> Texture;
 			uint32_t ArrayLayer;
 
 			//To be filled by the caller

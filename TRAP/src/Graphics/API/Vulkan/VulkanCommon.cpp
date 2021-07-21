@@ -5,7 +5,6 @@
 #include "VulkanRenderer.h"
 #include "Graphics/RenderCommand.h"
 #include "Objects/VulkanInits.h"
-#include "Objects/VulkanTexture.h"
 
 bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const char* function, const char* file,
                                      const int32_t line)

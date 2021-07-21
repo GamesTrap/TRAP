@@ -1944,3 +1944,7 @@ SITREP 07/16/2021|21w28a3
     - Changed TRAP Engine version to 21w28a3(0.7.57)
     - RendererAPI Removed ForceMipLevel in SamplerDesc ~<10 mins
     - VulkanTextureTests Replaced ForceMipLevel in SamplerDesc with textureLod in shader ~<10 mins
+
+SITREP 07/21/2021|21w29a1
+    - Changed TRAP Engine version to 21w29a1(0.7.58)
+    - Added TextureBase class as API agnostic Texture abstraction ~>80 mins

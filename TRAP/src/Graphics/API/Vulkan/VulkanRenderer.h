@@ -6,12 +6,16 @@
 #include "Window/WindowingAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 
+namespace TRAP::Graphics
+{
+	class TextureBase;
+}
+
 namespace TRAP::Graphics::API
 {
 	class VulkanSampler;
 	class VulkanRenderTarget;
 	class VulkanBuffer;
-	class VulkanTexture;
 	class VulkanMemoryAllocator;
 	class VulkanFrameBuffer;
 	class VulkanRenderPass;
@@ -176,9 +180,9 @@ namespace TRAP::Graphics::API
 		//Create default resources to be used as null descriptors in case user does not specify some descriptors
 		struct NullDescriptors
 		{
-			std::array<TRAP::Ref<VulkanTexture>,
+			std::array<TRAP::Ref<TRAP::Graphics::TextureBase>,
 			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
-			std::array<TRAP::Ref<VulkanTexture>,
+			std::array<TRAP::Ref<TRAP::Graphics::TextureBase>,
 			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
@@ -200,7 +204,7 @@ namespace TRAP::Graphics::API
 		static VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc;
 		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;
 
-		static void UtilInitialTransition(TRAP::Ref<VulkanTexture> texture, RendererAPI::ResourceState startState);
+		static void UtilInitialTransition(TRAP::Ref<TRAP::Graphics::TextureBase> texture, RendererAPI::ResourceState startState);
 
 		//Per Thread Render Pass synchronization logic
 		//Render-passes are not exposed to the engine code since they are not available on all APIs
