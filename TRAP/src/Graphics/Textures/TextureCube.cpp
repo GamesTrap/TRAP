@@ -5,14 +5,6 @@
 #include "VFS/VFS.h"
 #include "TextureBase.h"
 
-TRAP::Graphics::TextureCube::TextureCube()
-	: m_textureFormat(TextureCubeFormat::Cross)
-{
-	m_textureType = TextureType::TextureCube;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name,
 	                                                                                  const std::array<std::string, 6>& filepaths,
 																					  const TextureUsage usage)
@@ -40,7 +32,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 		texture->m_name = name;
-		texture->m_texture->SetTextureName(texture->m_name);
 		texture->m_filepaths = filepaths;
 		texture->m_textureType = TextureType::TextureCube;
 		texture->m_textureUsage = usage;
@@ -48,7 +39,11 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		return texture;
 	}
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -61,8 +56,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
-
-	TRAP_ASSERT(format == TextureCubeFormat::None);
 
 	if(name.empty())
 	{
@@ -87,7 +80,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 		texture->m_name = name;
-		texture->m_texture->SetTextureName(texture->m_name);
 		texture->m_filepaths[0] = filepath;
 		texture->m_textureType = TextureType::TextureCube;
 		texture->m_textureUsage = usage;
@@ -95,7 +87,11 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		return texture;
 	}
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -107,8 +103,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 																					 const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
-
-	TRAP_ASSERT(format == TextureCubeFormat::None);
 
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 
@@ -129,7 +123,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 		texture->m_name = name;
-		texture->m_texture->SetTextureName(texture->m_name);
 		texture->m_filepaths[0] = filepath;
 		texture->m_textureType = TextureType::TextureCube;
 		texture->m_textureUsage = usage;
@@ -137,7 +130,11 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		return texture;
 	}
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -151,8 +148,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP_ASSERT(format == TextureCubeFormat::None);
-
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -160,7 +155,11 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		return nullptr;
 		//return MakeScope<API::VulkanTextureCube>(name, img, format);
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -170,13 +169,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(const TextureUsage usage)
 {
 	return nullptr; //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::TextureCube::UploadImage(const TRAP::Scope<TRAP::Image>& image)
-{
-	//TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -191,4 +183,33 @@ std::array<std::string, 6> TRAP::Graphics::TextureCube::GetFilePaths() const
 TRAP::Graphics::TextureCubeFormat TRAP::Graphics::TextureCube::GetTextureCubeFormat() const
 {
 	return m_textureFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::TextureCube::GetDepth() const
+{
+	return 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::TextureCube::GetArraySize() const
+{
+	return 6;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::TextureCube::UploadImage(const TRAP::Scope<TRAP::Image>& image)
+{
+	//TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureCube::TextureCube()
+	: m_textureFormat(TextureCubeFormat::Cross)
+{
+	m_textureType = TextureType::TextureCube;
 }

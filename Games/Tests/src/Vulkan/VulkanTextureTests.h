@@ -44,12 +44,6 @@ private:
     bool m_debugImgVisible;
 
     TRAP::Graphics::Shader* m_shader;
-
-    //////////////////////////////////////
-	//INTERNAL CODE USE AT YOUR OWN RISK//
-	//////////////////////////////////////
-    //TRAP::Ref<TRAP::Graphics::API::VulkanTexture> m_texture;
-	//////////////////////////////////////
     TRAP::Graphics::Texture* m_texture;
 };
 

@@ -28,7 +28,7 @@ namespace TRAP::Graphics
 		Texture();
 
 	public:
-		virtual ~Texture();
+		~Texture() = default;
 		Texture(const Texture&) = default;
 		Texture& operator=(const Texture&) = default;
 		Texture(Texture&&) = default;
@@ -36,19 +36,17 @@ namespace TRAP::Graphics
 
 		const std::string& GetName() const;
 		TextureType GetType() const;
-
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
-		uint32_t GetDepth() const;
+		virtual uint32_t GetDepth() const = 0;
+		virtual uint32_t GetArraySize() const = 0;
 		uint32_t GetMipLevels() const;
 		TextureUsage GetTextureUsage() const;
 
+		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
+
 		bool IsLoaded() const;
 		void AwaitLoading() const;
-
-		//TODO Getters for other things?
-
-		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
 
 		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
 

@@ -10,20 +10,6 @@ std::vector<std::pair<TRAP::Graphics::Texture2D*, std::future<TRAP::Scope<TRAP::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture2D::Texture2D()
-{
-	m_textureType = TextureType::Texture2D;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name,
 	                                                                             const std::string_view filepath,
 																				 const TextureUsage usage)
@@ -50,7 +36,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 		texture->m_name = name;
-		texture->m_texture->SetTextureName(texture->m_name);
 		texture->m_filepath = filepath;
 		texture->m_textureType = TextureType::Texture2D;
 		texture->m_textureUsage = usage;
@@ -58,7 +43,11 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		return texture;
 	}
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -93,7 +82,11 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		return texture;
 	}
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -113,7 +106,11 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 		return nullptr;
 		//return MakeScope<API::VulkanTexture2D>(name, img);
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -134,7 +131,11 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 		return nullptr;
 		//return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format);
 
+	case RenderAPI::NONE:
+		return nullptr;
+
 	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -144,6 +145,27 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(const TextureUsage usage)
 {
 	return nullptr; //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture2D::GetDepth() const
+{
+	return 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture2D::GetArraySize() const
+{
+	return m_texture->GetArraySize();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
+{
+	return m_filepath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -175,4 +197,11 @@ void TRAP::Graphics::Texture2D::UpdateLoadingTextures()
 			}
 		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Texture2D::Texture2D()
+{
+	m_textureType = TextureType::Texture2D;
 }

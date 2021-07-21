@@ -3,48 +3,12 @@
 
 #include "TextureBase.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-// TRAP::Graphics::TextureParameters::TextureParameters()
-// 	: Filter(TextureFilter::Nearest), Wrap(TextureWrap::Clamp_To_Edge)
-// {
-// 	TP_PROFILE_FUNCTION();
-
-// }
-
-// //-------------------------------------------------------------------------------------------------------------------//
-
-// TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter)
-// 	: Filter(filter), Wrap(TextureWrap::Clamp_To_Edge)
-// {
-// 	TP_PROFILE_FUNCTION();
-
-// }
-
-// //-------------------------------------------------------------------------------------------------------------------//
-
-// TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter, const TextureWrap wrap)
-// 	: Filter(filter), Wrap(wrap)
-// {
-// 	TP_PROFILE_FUNCTION();
-
-// }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::Texture::Texture()
 	: m_textureType(TextureType::Texture2D),
 	  m_textureUsage(TextureUsage::Static),
 	  m_syncToken(),
 	  m_texture(nullptr)
 {
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Texture::~Texture()
-{
-	m_texture.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -77,13 +41,6 @@ uint32_t TRAP::Graphics::Texture::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetDepth() const
-{
-	return m_texture->GetDepth();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 uint32_t TRAP::Graphics::Texture::GetMipLevels() const
 {
 	return m_texture->GetMipLevels();
@@ -98,6 +55,13 @@ TRAP::Graphics::TextureUsage TRAP::Graphics::Texture::GetTextureUsage() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::Texture::GetTexture() const
+{
+	return m_texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::Texture::IsLoaded() const
 {
 	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_syncToken);
@@ -108,11 +72,4 @@ bool TRAP::Graphics::Texture::IsLoaded() const
 void TRAP::Graphics::Texture::AwaitLoading() const
 {
 	RendererAPI::GetResourceLoader()->WaitForToken(&m_syncToken);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::Texture::GetTexture() const
-{
-	return m_texture;
 }

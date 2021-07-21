@@ -45,7 +45,9 @@ namespace TRAP::Graphics
 		Ref<UniformBuffer> GetUniformBuffer(uint32_t set, uint32_t binding);
 
 		virtual void Use(Window* window = nullptr) = 0;
-		virtual void UseTexture(uint32_t binding, const TRAP::Graphics::Texture* texture) = 0;
+		virtual void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture) = 0;
+		virtual void UseTextures(uint32_t set, uint32_t binding,
+		                         const std::vector<TRAP::Graphics::Texture*>& textures) = 0;
 		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) = 0;
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) = 0;

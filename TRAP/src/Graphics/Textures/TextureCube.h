@@ -8,8 +8,6 @@ namespace TRAP::Graphics
 {
 	enum class TextureCubeFormat
 	{
-		None = 0,
-
 		Cross,
 		//Equiretangular //TODO
 	};
@@ -27,10 +25,12 @@ namespace TRAP::Graphics
 		                                          TextureCubeFormat format, TextureUsage usage);
 		static Scope<TextureCube> Create(TextureUsage usage); //Fallback Texture
 
-		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
-
 		std::array<std::string, 6> GetFilePaths() const;
 		TextureCubeFormat GetTextureCubeFormat() const;
+		uint32_t GetDepth() const override;
+		uint32_t GetArraySize() const override;
+
+		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
 
 		~TextureCube() = default;
 	protected:

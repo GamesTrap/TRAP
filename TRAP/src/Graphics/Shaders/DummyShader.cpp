@@ -18,19 +18,28 @@ void TRAP::Graphics::DummyShader::Use(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::DummyShader::UseTexture(const uint32_t binding, const TRAP::Graphics::Texture* texture)
+void TRAP::Graphics::DummyShader::UseTexture(const uint32_t set, const uint32_t binding,
+                                             TRAP::Graphics::Texture* const texture)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::DummyShader::UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler)
+void TRAP::Graphics::DummyShader::UseTextures(const uint32_t set, const uint32_t binding,
+                                              const std::vector<TRAP::Graphics::Texture*>& textures)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::DummyShader::UseSamplers(uint32_t set, uint32_t binding,
+void TRAP::Graphics::DummyShader::UseSampler(const uint32_t set, const uint32_t binding,
+                                             TRAP::Graphics::Sampler* const sampler)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::DummyShader::UseSamplers(const uint32_t set, const uint32_t binding,
                                               const std::vector<TRAP::Graphics::Sampler*>& samplers)
 {
 }

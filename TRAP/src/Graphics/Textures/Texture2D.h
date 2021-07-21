@@ -18,6 +18,8 @@ namespace TRAP::Graphics
 		                                    Image::ColorFormat format, TextureUsage usage);
 		static Scope<Texture2D> Create(TextureUsage usage); //Fallback Texture
 
+		uint32_t GetDepth() const override;
+		uint32_t GetArraySize() const override;
 		const std::string& GetFilePath() const;
 
 		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
