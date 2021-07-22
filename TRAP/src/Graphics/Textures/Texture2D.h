@@ -22,17 +22,11 @@ namespace TRAP::Graphics
 		uint32_t GetArraySize() const override;
 		const std::string& GetFilePath() const;
 
-		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
-
-		static void UpdateLoadingTextures();
-
 		~Texture2D() = default;
 	protected:
 		Texture2D();
 
 		std::string m_filepath;
-
-		static std::vector<std::pair<Texture2D*, std::future<Scope<Image>>>> m_loadingTextures;
 	};
 }
 

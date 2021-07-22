@@ -262,8 +262,6 @@ void TRAP::Application::Run()
 			Graphics::RenderCommand::Present(m_window);
 		TRAP::Window::OnUpdate();
 
-		Graphics::Texture2D::UpdateLoadingTextures();
-
 		if (!m_hotReloadingThread && (VFS::GetHotShaderReloading() || VFS::GetHotTextureReloading()))
 		{
 			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading,

@@ -6,10 +6,6 @@
 #include "Graphics/API/ResourceLoader.h"
 #include "TextureBase.h"
 
-std::vector<std::pair<TRAP::Graphics::Texture2D*, std::future<TRAP::Scope<TRAP::Image>>>> TRAP::Graphics::Texture2D::m_loadingTextures{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name,
 	                                                                             const std::string_view filepath,
 																				 const TextureUsage usage)
@@ -127,9 +123,29 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		//TODO
-		return nullptr;
-		//return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format);
+	{
+		API::ImageFormat imageFormat = ColorFormatBPPToImageFormat(format, bitsPerPixel);
+
+		if(imageFormat == API::ImageFormat::Undefined)
+			return nullptr;
+
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Desc = TRAP::MakeRef<RendererAPI::TextureDesc>();
+		desc.Desc->Width = width;
+		desc.Desc->Height = height;
+		desc.Desc->Format = imageFormat;
+		desc.Desc->Descriptors = RendererAPI::DescriptorType::Texture;
+		desc.IsCubemap = false;
+		desc.Texture = &texture->m_texture;
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+		texture->m_textureType = TextureType::Texture2D;
+		texture->m_textureUsage = usage;
+
+		return texture;
+	}
 
 	case RenderAPI::NONE:
 		return nullptr;
@@ -144,7 +160,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(const TextureUsage usage)
 {
-	return nullptr; //TODO
+	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback(), TextureUsage::Static);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -166,37 +182,6 @@ uint32_t TRAP::Graphics::Texture2D::GetArraySize() const
 const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
 {
 	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Texture2D::UploadImage(const TRAP::Scope<TRAP::Image>& image)
-{
-	//TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//TODO Move to Texture (TextureCube support?!)
-void TRAP::Graphics::Texture2D::UpdateLoadingTextures()
-{
-	for (uint32_t i = 0; i < m_loadingTextures.size(); i++)
-	{
-		auto& [texturePtr, image] = m_loadingTextures[i];
-		if (texturePtr && image.valid())
-		{
-			if (image.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
-			{
-				//Image finished loading
-				texturePtr->UploadImage(image.get());
-
-				//Image isn't needed anymore so remove it from vector
-				//O(1) way of removing from an unsorted vector like this :D
-				m_loadingTextures[i] = std::move(m_loadingTextures.back());
-				m_loadingTextures.pop_back();
-			}
-		}
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

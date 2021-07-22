@@ -2,27 +2,28 @@ Shader (After Reflection):
     UniformBuffers:
         ✔ Create automatically & save in shader (use reflection) @done(21-06-07 12:34)
         ✔ Add a Get method to retrieve the UniformBuffer pointer @done(21-06-07 12:34)
-        ☐ Test if UpdateFreqNone still works
+        ✔ Test if UpdateFreqNone still works @done(21-07-22 14:04)
     Descriptors:
         ✔ Create descriptors per shader (includes RootSignature per Shader (maybe not needed?!) @done(21-06-07 03:21)
             ☐ Test with global GraphicsRootSignature again
     Textures/Samplers:
-        ☐ Implement abstraction
-        ☐ CombinedImageSampler vs seperate image & sampler
-            ☐ If seperate samplers need a Use method using the name?!
-            ☐ Else provide sampler to Textures Use method
-        ☐ On Sampler::Create instead of always creating a new Sampler use a cached
-            ☐ This will need a hash function for the SamplerDesc
+        ✔ Implement abstraction @done(21-07-22 14:04)
+        ✔ CombinedImageSampler vs seperate image & sampler @done(21-07-22 14:04)
+            ✔ If seperate samplers need a Use method using the name?! @done(21-07-22 14:04)
+            ✘ Else provide sampler to Textures Use method @cancelled(21-07-22 14:04)
+        ✔ On Sampler::Create instead of always creating a new Sampler use a cached @done(21-07-22 14:03)
+            ✔ This will need a hash function for the SamplerDesc @done(21-07-22 14:03)
     RenderAPI switching:
         ☐ Fix runtime API switching
 
 Non-functional:
     ✔ Make VulkanTextureTest work again @done(21-06-08 13:24)
-    ☐ Make VulkanMultiWindowTest work again
+    ✔ Make VulkanMultiWindowTest work again @done(21-07-22 14:03)
 
 Bugs:
-    ☐ Fix "[03:18:21][Error][Renderer][Vulkan] Failed Vulkan Version Test!" on Linux which still passes capability tester?!
+    ✔ Fix "[03:18:21][Error][Renderer][Vulkan] Failed Vulkan Version Test!" on Linux which still passes capability tester?! @done(21-07-22 14:04)
         Not reproducable on Windows
+        LLVM pipe was causing the error
 
 With most things working with Vulkan:
     ☐ Create a Vulkan-Development branch on GitHub TRAP repo

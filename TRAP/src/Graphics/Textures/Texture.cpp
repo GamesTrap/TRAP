@@ -73,3 +73,55 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 {
 	RendererAPI::GetResourceLoader()->WaitForToken(&m_syncToken);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBPPToImageFormat(const Image::ColorFormat colorFormat,
+	                             											          const uint32_t bpp)
+{
+	if(colorFormat == Image::ColorFormat::GrayScale)
+	{
+		if(bpp == 8)
+			return API::ImageFormat::R8_UNORM;
+		if(bpp == 16)
+			return API::ImageFormat::R16_UNORM;
+		if(bpp == 32)
+			return API::ImageFormat::R32_SFLOAT;
+
+		TRAP_ASSERT(false, "Invalid BitsPerPixel & Image::ColorFormat combination provided!");
+		return API::ImageFormat::Undefined;
+	}
+	else if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
+	{
+		if(bpp == 16)
+			return API::ImageFormat::R8G8_UNORM;
+		if(bpp == 32)
+		    return API::ImageFormat::R16G16_UNORM;
+		if(bpp == 64)
+		    return API::ImageFormat::R32G32_SFLOAT;
+
+		TRAP_ASSERT(false, "Invalid BitsPerPixel & Image::ColorFormat combination provided!");
+		return API::ImageFormat::Undefined;
+	}
+	else if(colorFormat == Image::ColorFormat::RGB)
+	{
+		//TODO RGB without A is not supported by almost any GPU
+		TRAP_ASSERT(false, "Image::ColorFormat::RGB is not allowed on empty Texture as it needs an alpha channel!");
+		return API::ImageFormat::Undefined;
+	}
+	else if(colorFormat == Image::ColorFormat::RGBA)
+	{
+		if(bpp == 32)
+			return API::ImageFormat::R8G8B8A8_UNORM;
+		if(bpp == 64)
+			return API::ImageFormat::R16G16B16A16_UNORM;
+		if(bpp == 128)
+			return API::ImageFormat::R32G32B32A32_SFLOAT;
+
+		TRAP_ASSERT(false, "Invalid BitsPerPixel & Image::ColorFormat combination provided!");
+		return API::ImageFormat::Undefined;
+	}
+
+	TRAP_ASSERT(false, "Invalid Image::ColorFormat provided!");
+	return API::ImageFormat::Undefined;
+}

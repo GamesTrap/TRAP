@@ -48,9 +48,9 @@ namespace TRAP::Graphics
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
-		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
-
 	protected:
+		static API::ImageFormat ColorFormatBPPToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+
 		std::string m_name;
 		TextureType m_textureType;
 		TextureUsage m_textureUsage;

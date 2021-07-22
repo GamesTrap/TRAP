@@ -352,7 +352,10 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				if (desc.ForceReset)
 					std::memset(updateDesc.MappedData, 0, chunkSize);
 				else
+				{
+					TRAP_ASSERT(data);
 					std::memcpy(updateDesc.MappedData, static_cast<const uint8_t*>(data) + offset, chunkSize);
+				}
 				EndUpdateResource(updateDesc, token);
 			}
 		}
@@ -364,7 +367,11 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			if (desc.ForceReset)
 				std::memset(updateDesc.MappedData, 0, static_cast<std::size_t>(desc.Desc.Size));
 			else
-				std::memcpy(updateDesc.MappedData, desc.Data, static_cast<std::size_t>(desc.Desc.Size));
+			{
+				TRAP_ASSERT(!desc.Desc.Size || desc.Data);
+				if(desc.Data)
+					std::memcpy(updateDesc.MappedData, desc.Data, static_cast<std::size_t>(desc.Desc.Size));
+			}
 			EndUpdateResource(updateDesc, token);
 		}
 	}
@@ -1001,7 +1008,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				const uint8_t* pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
 
 				//RGB also needs an alpha value
-				if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB)
+				if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //TODO Function to make RGB->RGBA?!
 				{
 					uint8_t alpha1Byte = 255;
 					uint16_t alpha2Byte = 65535;
@@ -1322,24 +1329,27 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				) + 1); //Minimum 1 Mip Level
 		}
 
-		if (images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Always no Alpha Channel
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+
+		if (images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB HDR (32 bpc) | Will be converted to RGBA before upload
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32B32A32_SFLOAT;
-		else if(images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale)
-			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
-		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 64 && images[0]->HasAlphaChannel())
+		else if (images[0]->GetBitsPerChannel() == 16 && (images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA || //RGB(A) 16 bpc | Will be converted to RGBA before upload
+				 images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB))
 			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
-		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 48 && !images[0]->HasAlphaChannel())
-			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16B16A16_UNORM;
-		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 32 && images[0]->HasAlphaChannel())
+		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGBA) //RGBA 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && images[0]->HasAlphaChannel())
+		else if (images[0]->GetBitsPerChannel() == 32 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha HDR (32 bpc)
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32G32_SFLOAT;
+		else if (images[0]->GetBitsPerChannel() == 16 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 16 bpc
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16G16_UNORM;
+		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScaleAlpha) //GrayScale Alpha 8 bpc
 			 textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8_UNORM;
-		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && !images[0]->HasAlphaChannel())
+		else if(images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale HDR (32 bpc)
+			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R32_SFLOAT;
+		else if (images[0]->GetBitsPerChannel() == 16 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 16 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R16_UNORM;
-		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 8 && !images[0]->HasAlphaChannel())
+		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UNORM;
-		else
-			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 
 		*textureLoadDesc.Texture = TRAP::Graphics::TextureBase::Create(textureDesc);
 

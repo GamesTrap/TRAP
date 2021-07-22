@@ -30,8 +30,6 @@ namespace TRAP::Graphics
 		uint32_t GetDepth() const override;
 		uint32_t GetArraySize() const override;
 
-		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
-
 		~TextureCube() = default;
 	protected:
 		TextureCube();

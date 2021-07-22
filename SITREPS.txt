@@ -1948,7 +1948,7 @@ SITREP 07/16/2021|21w28a3
 SITREP 07/21/2021|21w29a1
     - Changed TRAP Engine version to 21w29a1(0.7.58)
     - Added TextureBase class as API agnostic Texture abstraction ~>80 mins
-    - Texture now uses TextureBase internally (not inherited!) ~<15 mins
+    - Texture classes now uses TextureBase internally (not inherited!) ~<15 mins
     - VulkanShader Added RetrieveDescriptorName to reduce code duplication in Use*** functions ~<15 mins
-    - Shader Implemented UseTexture(s) functions ~<20 mins
+    - Shader/DummyShader/VulkanShader Implemented UseTexture(s) functions ~<20 mins
     - VulkanTextureTests now uses Shader::UseTexture instead of internal API ~<5 mins

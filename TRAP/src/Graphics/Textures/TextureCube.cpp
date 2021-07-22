@@ -201,13 +201,6 @@ uint32_t TRAP::Graphics::TextureCube::GetArraySize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureCube::UploadImage(const TRAP::Scope<TRAP::Image>& image)
-{
-	//TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::TextureCube::TextureCube()
 	: m_textureFormat(TextureCubeFormat::Cross)
 {
