@@ -1952,3 +1952,13 @@ SITREP 07/21/2021|21w29a1
     - VulkanShader Added RetrieveDescriptorName to reduce code duplication in Use*** functions ~<15 mins
     - Shader/DummyShader/VulkanShader Implemented UseTexture(s) functions ~<20 mins
     - VulkanTextureTests now uses Shader::UseTexture instead of internal API ~<5 mins
+
+SITREP 07/22/2021|21w29a2
+    - Changed TRAP Engine version to 21w29a2(0.7.59)
+    - ResourceLoader added R16G16 and R32G32 format support ~<10 mins
+    - Texture Added convert function for colorformat + bpp to image format ~<20 mins
+    - Texture2D/Cube Removed old leftover Upload functions ~<5 mins
+    - Texture2D Implemented CreateFromFile and Create functions ~<20 mins
+    - Image Added function to convert RGB images to RGBA ~<20 mins
+    - WindowingAPI Replaced manual RGB to RGBA conversion with TRAP::Image::ConvertRGBToRGBA ~<10 mins
+    - ResourceLoader Replaced manual RGB to RGBA conversion with TRAP::Image::ConvertRGBToRGBA ~<10 mins

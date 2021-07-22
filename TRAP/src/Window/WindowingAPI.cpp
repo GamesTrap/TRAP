@@ -420,31 +420,12 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 	//Convert to RGBA 32BPP
 	if (image->GetColorFormat() == Image::ColorFormat::RGB)
 	{
-		std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()),
-		                               static_cast<const uint8_t*>(image->GetPixelData()) +
-									   image->GetPixelDataSize());
-		const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) + (image->GetWidth() * image->GetHeight());
-		std::vector<uint8_t> pixelDataRGBA(newSize, 0);
-		uint32_t pixelCount = 0;
-		for (uint32_t i = 0; i < pixelData.size(); i++)
-		{
-			pixelDataRGBA[pixelCount] = pixelData[i];
-			i++; pixelCount++;
-			pixelDataRGBA[pixelCount] = pixelData[i];
-			i++; pixelCount++;
-			pixelDataRGBA[pixelCount] = pixelData[i];
-			pixelCount++;
-			pixelDataRGBA[pixelCount] = 255;
-			pixelCount++;
-		}
-
-		const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(),
-		                                                     Image::ColorFormat::RGBA, pixelDataRGBA);
+		const Scope<Image> iconImage = Image::ConvertRGBToRGBA(image);
 
 		cursor = MakeScope<InternalCursor>();
 		s_Data.CursorList.emplace_front(cursor.get());
 
-		if(!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
+		if(!PlatformCreateCursor(cursor.get(), iconImage, xHotspot, yHotspot))
 		{
 			DestroyCursor(std::move(cursor));
 			return nullptr;
@@ -531,28 +512,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 	//Convert to RGBA 32BPP
 	if (image->GetColorFormat() == Image::ColorFormat::RGB)
 	{
-		std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()),
-										static_cast<const uint8_t*>(image->GetPixelData()) +
-										image->GetPixelDataSize());
-		const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) +
-									(image->GetWidth() * image->GetHeight());
-		std::vector<uint8_t> pixelDataRGBA(newSize, 0);
-		uint32_t pixelCount = 0;
-		for (uint32_t i = 0; i < pixelData.size(); i++)
-		{
-			pixelDataRGBA[pixelCount] = pixelData[i];
-			i++; pixelCount++;
-			pixelDataRGBA[pixelCount] = pixelData[i];
-			i++; pixelCount++;
-			pixelDataRGBA[pixelCount] = pixelData[i];
-			pixelCount++;
-			pixelDataRGBA[pixelCount] = 255;
-			pixelCount++;
-		}
-
-		const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(),
-																Image::ColorFormat::RGBA, pixelDataRGBA);
-		PlatformSetWindowIcon(window, iconImage);
+		const Scope<Image> imageRGBA = Image::ConvertRGBToRGBA(image);
+		PlatformSetWindowIcon(window, imageRGBA);
 	}
 	else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
 		PlatformSetWindowIcon(window, image);

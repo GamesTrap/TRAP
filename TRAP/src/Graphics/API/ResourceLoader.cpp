@@ -1005,47 +1005,17 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			for(uint32_t z = 0; z < subDepth; ++z)
 			{
 				uint8_t* dstData = data + subSlicePitch * z;
-				const uint8_t* pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
-
-				//RGB also needs an alpha value
-				if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //TODO Function to make RGB->RGBA?!
+				TRAP::Scope<TRAP::Image> RGBAImage = nullptr;
+				const uint8_t* pixelData = nullptr;
+				if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 				{
-					uint8_t alpha1Byte = 255;
-					uint16_t alpha2Byte = 65535;
-					float alphaHDR = 1.0f;
-					uint32_t pixelDataByteSizePerChannel = (*images)[layer]->GetBytesPerPixel() / 3;
-					uint64_t pixelDataSizeRGBA = (*images)[layer]->GetWidth() * (*images)[layer]->GetHeight() * 4 *
-					                             pixelDataByteSizePerChannel;
-					uint64_t pixelDataOffset = 0;
-					for(uint64_t j = 0; j < pixelDataSizeRGBA; j += 4 * pixelDataByteSizePerChannel)
-					{
-						memcpy(dstData + j, pixelData + pixelDataOffset, 3 * pixelDataByteSizePerChannel);
-						pixelDataOffset += 3 * pixelDataByteSizePerChannel;
-
-						switch(pixelDataByteSizePerChannel)
-						{
-						case 1:
-							memcpy(dstData + j + 3 * pixelDataByteSizePerChannel, &alpha1Byte,
-							       1 * pixelDataByteSizePerChannel);
-							break;
-
-						case 2:
-							memcpy(dstData + j + 3 * pixelDataByteSizePerChannel, &alpha2Byte,
-							       1 * pixelDataByteSizePerChannel);
-							break;
-
-						case 4:
-							memcpy(dstData + j + 3 * pixelDataByteSizePerChannel, &alphaHDR,
-							       1 * pixelDataByteSizePerChannel);
-							break;
-
-						default:
-							break;
-						}
-					}
+					RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer]);
+					pixelData = static_cast<const uint8_t*>(RGBAImage->GetPixelData());
 				}
 				else
-					memcpy(dstData, pixelData, subRowSize * subNumRows);
+					pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
+
+				memcpy(dstData, pixelData, subRowSize * subNumRows);
 			}
 		}
 

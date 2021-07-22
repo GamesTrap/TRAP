@@ -168,7 +168,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(const TextureUsage usage)
 {
-	return nullptr; //TODO
+	return nullptr; //TODO Needs the Debug Texture as Cross in Embed.h
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

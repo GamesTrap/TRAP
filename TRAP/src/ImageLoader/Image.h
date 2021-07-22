@@ -193,15 +193,21 @@ namespace TRAP
 		/// <summary>
 		/// Flip an Image on its X axis.
 		/// </summary>
-		/// <param name="img">Image to flip</param>
-		/// <returns>Flipped Image.</returns>
+		/// <param name="img">Image to flip.</param>
+		/// <returns>Flipped Image</returns>
 		static Scope<Image> FlipX(const Scope<Image>& img);
 		/// <summary>
 		/// Flip an Image on its Y axis.
 		/// </summary>
-		/// <param name="img">Image to flip</param>
-		/// <returns>Flipped Image.</returns>
+		/// <param name="img">Image to flip.</param>
+		/// <returns>Flipped Image</returns>
 		static Scope<Image> FlipY(const Scope<Image>& img);
+		/// <summary>
+		/// Convert a RGB Image to RGBA.
+		/// </summary>
+		/// <param name="img">Image to convert.</param>
+		/// <returns>Converted Image</returns>
+		static Scope<Image> ConvertRGBToRGBA(const Scope<Image>& img);
 
 		static const std::array<std::string, 14> SupportedImageFormatSuffixes;
 
@@ -228,6 +234,17 @@ namespace TRAP
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
 		static std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		/// <summary>
+		/// Converts raw RGB pixel data to RGBA.
+		/// </summary>
+		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
+		/// <param name="width">Width of Image in pixels.</param>
+		/// <param name="height">Height of Image in pixels.</param>
+		/// <param name="format">Color format of the Image data.</param>
+		/// <param name="data">Raw pixel data.</param>
+		/// <returns>Converted RGBA raw pixel data</returns>
+		template<typename T>
+		static std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 
 		//Used by multiple Image formats
 		static std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source,
@@ -250,75 +267,6 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Scope<Image>& img)
-{
-	if(!img)
-		return nullptr;
-
-	Scope<Image> result;
-
-	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
-	{
-		const std::vector<float> flipped = FlipX(img->GetWidth(), img->GetHeight(),
-		                                         img->GetColorFormat(),
-												 static_cast<const float*>(img->GetPixelData()));
-
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
-	}
-	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
-	{
-		const std::vector<uint16_t> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                            static_cast<const uint16_t*>(img->GetPixelData()));
-
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
-	}
-	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
-	{
-		const std::vector<uint8_t> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                           static_cast<const uint8_t*>(img->GetPixelData()));
-
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
-	}
-
-	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Scope<Image>& img)
-{
-	if (!img)
-		return nullptr;
-
-	Scope<Image> result;
-
-	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
-	{
-		const std::vector<float> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                         static_cast<const float*>(img->GetPixelData()));
-
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
-	}
-	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
-	{
-		const std::vector<uint16_t> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                            static_cast<const uint16_t*>(img->GetPixelData()));
-
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
-	}
-	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
-	{
-		const std::vector<uint8_t> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
-		                                           static_cast<const uint8_t*>(img->GetPixelData()));
-
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
-	}
-
-	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 template <typename T>
 std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
                                   const T* data)
@@ -329,9 +277,14 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 		TRAP_ASSERT(false, "Invalid type!");
 		return std::vector<T>();
 	}
-	if (format == ColorFormat::NONE || !data)
+	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		return std::vector<T>();
+	}
+	if(!data)
+	{
+		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
 		return std::vector<T>();
 	}
 
@@ -368,9 +321,14 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 		TRAP_ASSERT(false, "Invalid type!");
 		return std::vector<T>();
 	}
-	if (format == ColorFormat::NONE || !data)
+	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		return std::vector<T>();
+	}
+	if(!data)
+	{
+		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
 		return std::vector<T>();
 	}
 
@@ -390,6 +348,50 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 		std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());
 		std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);
 		std::copy(row.data(), row.data() + stride, newData.data() + highOffset);
+	}
+
+	return newData;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
+									         const T* data)
+{
+	if constexpr(!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	               std::is_same<T, float>::value))
+	{
+		TRAP_ASSERT(false, "Invalid type!");
+		return std::vector<T>();
+	}
+	if(format != ColorFormat::RGB)
+	{
+		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		return std::vector<T>();
+	}
+	if(!data)
+	{
+		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
+		return std::vector<T>();
+	}
+
+	T whitePixelColor;
+	if(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value)
+		whitePixelColor = std::numeric_limits<T>::max();
+	else
+		whitePixelColor = 1.0f;
+
+	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGBA));
+	uint32_t newDataIndex = 0;
+	for(uint32_t oldDataIndex = 0; oldDataIndex < width * height * static_cast<uint32_t>(ColorFormat::RGB);
+		oldDataIndex += 3)
+	{
+		newData[newDataIndex + 0] = data[oldDataIndex + 0];
+		newData[newDataIndex + 1] = data[oldDataIndex + 1];
+		newData[newDataIndex + 2] = data[oldDataIndex + 2];
+		newData[newDataIndex + 3] = whitePixelColor;
+		newDataIndex += 4;
 	}
 
 	return newData;
