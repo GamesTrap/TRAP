@@ -76,8 +76,8 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBPPToImageFormat(const Image::ColorFormat colorFormat,
-	                             											          const uint32_t bpp)
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
+	                             											                   const uint32_t bpp)
 {
 	if(colorFormat == Image::ColorFormat::GrayScale)
 	{
@@ -105,8 +105,7 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBPPToImageF
 	}
 	else if(colorFormat == Image::ColorFormat::RGB)
 	{
-		//TODO RGB without A is not supported by almost any GPU
-		TRAP_ASSERT(false, "Image::ColorFormat::RGB is not allowed on empty Texture as it needs an alpha channel!");
+		TRAP_ASSERT(false, "Image::ColorFormat::RGB is not allowed on empty Textures as GPUs need an alpha channel!");
 		return API::ImageFormat::Undefined;
 	}
 	else if(colorFormat == Image::ColorFormat::RGBA)
@@ -124,4 +123,12 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBPPToImageF
 
 	TRAP_ASSERT(false, "Invalid Image::ColorFormat provided!");
 	return API::ImageFormat::Undefined;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
+{
+	return Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(width),
+					                                                            static_cast<float>(height))))) + 1);
 }

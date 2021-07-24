@@ -1230,9 +1230,9 @@ namespace TRAP::Graphics
 		//Note: Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
 		struct TextureUpdateDesc
 		{
-			TRAP::Ref<TRAP::Graphics::TextureBase> Texture;
-			uint32_t MipLevel;
-			uint32_t ArrayLayer;
+			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
+			uint32_t MipLevel = 0;
+			uint32_t ArrayLayer = 0;
 
 			//To be filled by the caller
 			//Example

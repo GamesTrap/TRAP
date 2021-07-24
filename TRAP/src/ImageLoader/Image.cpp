@@ -387,7 +387,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Scope<Image>& img)
 		const std::vector<float> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
 															  img->GetColorFormat(),
 															  static_cast<const float*>(img->GetPixelData()));
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), converted);
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, converted);
 	}
 	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
 	{
@@ -395,7 +395,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Scope<Image>& img)
 		                                                         img->GetColorFormat(),
 		                                                         static_cast<const uint16_t*>(img->GetPixelData()));
 
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), converted);
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, converted);
 	}
 	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
 	{
@@ -403,7 +403,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Scope<Image>& img)
 		                                                      img->GetColorFormat(),
 		                                                      static_cast<const uint8_t*>(img->GetPixelData()));
 
-		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, flipped);
 	}
 
 	return result;

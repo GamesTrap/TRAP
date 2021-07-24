@@ -93,14 +93,68 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 	                                                                              const Scope<Image>& img,
 																				  const TextureUsage usage)
 {
+	TRAP_ASSERT(img, "Image is nullptr!");
+
 	TP_PROFILE_FUNCTION();
+
+	TRAP::Scope<Image> imgRGBA = nullptr;
+	if(img->GetColorFormat() == Image::ColorFormat::RGB)
+		imgRGBA = TRAP::Image::ConvertRGBToRGBA(img);
+
+	Image* useImg = imgRGBA ? imgRGBA.get() : img.get();
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		//TODO
-		return nullptr;
-		//return MakeScope<API::VulkanTexture2D>(name, img);
+	{
+		API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
+
+		if(imageFormat == API::ImageFormat::Undefined)
+			return nullptr;
+
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+
+		//Create empty TextureBase
+		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
+		loadDesc.IsCubemap = false;
+		loadDesc.Desc = TRAP::MakeRef<RendererAPI::TextureDesc>();
+		loadDesc.Desc->Width = useImg->GetWidth();
+		loadDesc.Desc->Height = useImg->GetHeight();
+		loadDesc.Desc->MipLevels = CalculateMipLevels(useImg->GetWidth(), useImg->GetHeight());
+		loadDesc.Desc->Format = imageFormat;
+		loadDesc.Desc->StartState = RendererAPI::ResourceState::Common;
+		loadDesc.Desc->Descriptors = RendererAPI::DescriptorType::Texture;
+		loadDesc.Texture = &texture->m_texture;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
+
+		//Set Texture2D data
+		texture->m_name = name;
+		texture->m_filepath = useImg->GetFilePath();
+		texture->m_textureType = TextureType::Texture2D;
+		texture->m_textureUsage = usage;
+
+		//Wait for texture to be ready
+		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
+
+		//Fill empty TextureBase with images pixel data
+		RendererAPI::TextureUpdateDesc updateDesc{};
+		updateDesc.Texture = texture->m_texture;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
+		if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single memcpy is enough
+			memcpy(updateDesc.MappedData, useImg->GetPixelData(), useImg->GetPixelDataSize());
+		else //Needs row by row copy
+		{
+			for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+			{
+				memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
+				       reinterpret_cast<const uint8_t*>(useImg->GetPixelData()) + r * updateDesc.SrcRowStride,
+					   updateDesc.SrcRowStride);
+			}
+		}
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &texture->m_syncToken);
+
+		return texture;
+	}
 
 	case RenderAPI::NONE:
 		return nullptr;
@@ -124,7 +178,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 	{
 	case RenderAPI::Vulkan:
 	{
-		API::ImageFormat imageFormat = ColorFormatBPPToImageFormat(format, bitsPerPixel);
+		API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
 
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
@@ -160,7 +214,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(const TextureUsage usage)
 {
-	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback(), TextureUsage::Static);
+	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback(), usage);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

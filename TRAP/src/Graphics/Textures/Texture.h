@@ -49,7 +49,8 @@ namespace TRAP::Graphics
 		void AwaitLoading() const;
 
 	protected:
-		static API::ImageFormat ColorFormatBPPToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		static uint32_t CalculateMipLevels(uint32_t width, uint32_t height);
 
 		std::string m_name;
 		TextureType m_textureType;

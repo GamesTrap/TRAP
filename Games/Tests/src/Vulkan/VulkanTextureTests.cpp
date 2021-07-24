@@ -42,18 +42,11 @@ void VulkanTextureTests::OnAttach()
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(), static_cast<uint16_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Static);
     m_indexBuffer->AwaitLoading();
 
-    // TRAP::Scope<TRAP::Image> m_vulkanLogoImg = TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png");
-    // m_vulkanLogoImgData.resize(m_vulkanLogoImg->GetWidth() * m_vulkanLogoImg->GetHeight() * 4);
-    // uint32_t imgCounter = 0;
-    // for(uint32_t i = 0; i < m_vulkanLogoImg->GetWidth() * m_vulkanLogoImg->GetHeight() * 4; i += 4)
-    // {
-    //     m_vulkanLogoImgData[i + 0] = *((uint8_t*)m_vulkanLogoImg->GetPixelData() + imgCounter++);
-    //     m_vulkanLogoImgData[i + 1] = *((uint8_t*)m_vulkanLogoImg->GetPixelData() + imgCounter++);
-    //     m_vulkanLogoImgData[i + 2] = *((uint8_t*)m_vulkanLogoImg->GetPixelData() + imgCounter++);
-    //     m_vulkanLogoImgData[i + 3] = 255;
-    // }
+    //TODO Test if Texture loading from memory image works
+    TRAP::Scope<TRAP::Image> vulkanLogoImg = TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png");
 
-    m_texture = TRAP::Graphics::TextureManager::Load("/Textures/vulkanlogo.png", TRAP::Graphics::TextureUsage::Static).get();
+    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", vulkanLogoImg, TRAP::Graphics::TextureUsage::Static).get();
+    //m_texture = TRAP::Graphics::TextureManager::Load("/Textures/vulkanlogo.png", TRAP::Graphics::TextureUsage::Static).get();
     m_texture->AwaitLoading();
     m_maxMipLevel = m_texture->GetMipLevels();
 
@@ -74,7 +67,7 @@ void VulkanTextureTests::OnAttach()
 	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
-    //TODO Test Runtime Texture Update Cubemaps (ArrayLayer)
+    //TODO Test Runtime Texture Update using abstraction
 
     //Just in case
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

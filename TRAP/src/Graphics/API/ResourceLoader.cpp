@@ -964,7 +964,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Ref<TRAP::
 		blit.srcSubresource.mipLevel = i - 1;
 		blit.srcSubresource.baseArrayLayer = 0;
 		blit.srcSubresource.layerCount = 1;
-		blit.dstOffsets[0] = {0, 0, 0,};
+		blit.dstOffsets[0] = {0, 0, 0};
 		blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1};
 		blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		blit.dstSubresource.mipLevel = i;
@@ -1117,7 +1117,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	}
 
 	//TODO Make API independent (Compute Shader approach)
-	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan && texture->GetMipLevels() > 1)
 		VulkanGenerateMipMaps(texture, cmd); //Mipmapping via vkCmdBlitImage
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
