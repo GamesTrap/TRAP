@@ -65,6 +65,7 @@ namespace TRAP::Graphics::API
 
 		static RendererAPI::ResourceLoaderDesc DefaultResourceLoaderDesc;
 		static void StreamerThreadFunc(ResourceLoader* loader);
+		static uint32_t UtilGetTextureRowAlignment();
 		static uint32_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined);
 		static uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
 		                                   uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
@@ -93,6 +94,8 @@ namespace TRAP::Graphics::API
 
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
+
+		static void VulkanGenerateMipMaps(TRAP::Ref<TRAP::Graphics::TextureBase> texture, CommandBuffer* cmd);
 
 		enum class UploadFunctionResult
 		{

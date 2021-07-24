@@ -1231,6 +1231,7 @@ namespace TRAP::Graphics
 		struct TextureUpdateDesc
 		{
 			TRAP::Ref<TRAP::Graphics::TextureBase> Texture;
+			uint32_t MipLevel;
 			uint32_t ArrayLayer;
 
 			//To be filled by the caller

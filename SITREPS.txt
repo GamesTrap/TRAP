@@ -1962,3 +1962,7 @@ SITREP 07/22/2021|21w29a2
     - Image Added function to convert RGB images to RGBA ~<20 mins
     - WindowingAPI Replaced manual RGB to RGBA conversion with TRAP::Image::ConvertRGBToRGBA ~<10 mins
     - ResourceLoader Replaced manual RGB to RGBA conversion with TRAP::Image::ConvertRGBToRGBA ~<10 mins
+
+SITREP 07/24/2021|21w29a3
+    - Changed TRAP Engine version to 21w29a3(0.7.60)
+    - ResourceLoader Restructured loading procedure ~<30 mins

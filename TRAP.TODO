@@ -16,6 +16,19 @@ Shader (After Reflection):
     RenderAPI switching:
         ☐ Fix runtime API switching
 
+Trigger Rumble (XBox Impule Triggers):
+    - How does F1 2020 & F1 2021 do it using an XINPUT (XBox One) controller?!
+        - Needs to use UWPs Windows.Gaming.Input for this feature!
+        - Requires Windows 10 Build 10240 or newer! (Check this)
+PS5 Adaptive Trigger support & more:
+    - https://github.com/Ohjurot/DualSense-Windows
+GLFW:
+    - First document current platform implemented differences
+    - Port to Android using NDK (Needs Vulkan as backend | maybe switch to Vulkan 1.0
+                                    and use extension instead of current Vulkan 1.2 directly?!)
+        Use the following as basis for the implementation: https://github.com/xCuri0/glfw/tree/android &
+                                                            https://github.com/xCuri0/glfw-android-example
+
 Non-functional:
     ✔ Make VulkanTextureTest work again @done(21-06-08 13:24)
     ✔ Make VulkanMultiWindowTest work again @done(21-07-22 14:03)
