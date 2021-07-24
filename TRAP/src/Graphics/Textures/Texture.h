@@ -42,8 +42,15 @@ namespace TRAP::Graphics
 		virtual uint32_t GetArraySize() const = 0;
 		uint32_t GetMipLevels() const;
 		TextureUsage GetTextureUsage() const;
+		Image::ColorFormat GetColorFormat() const;
+		uint32_t GetBitsPerChannel() const;
+		uint32_t GetBytesPerChannel() const;
+		uint32_t GetBitsPerPixel() const;
+		uint32_t GetBytesPerPixel() const;
 
 		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
+
+		virtual void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) = 0;
 
 		bool IsLoaded() const;
 		void AwaitLoading() const;
@@ -53,6 +60,8 @@ namespace TRAP::Graphics
 		static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image);
 	protected:
 		static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		static Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat);
+		static uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat);
 
 		std::string m_name;
 		TextureType m_textureType;

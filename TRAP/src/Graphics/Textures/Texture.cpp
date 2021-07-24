@@ -55,6 +55,41 @@ TRAP::Graphics::TextureUsage TRAP::Graphics::Texture::GetTextureUsage() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const
+{
+	return ImageFormatToColorFormat(m_texture->GetImageFormat());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const
+{
+	return GetBitsPerChannelFromImageFormat(m_texture->GetImageFormat());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const
+{
+	return GetBitsPerChannel() / 8;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const
+{
+	return GetBitsPerChannelFromImageFormat(m_texture->GetImageFormat()) * static_cast<uint32_t>(GetColorFormat());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const
+{
+	return GetBitsPerPixel() / 8;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::Texture::GetTexture() const
 {
 	return m_texture;
@@ -131,4 +166,56 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixe
 
 	TRAP_ASSERT(false, "Invalid Image::ColorFormat provided!");
 	return API::ImageFormat::Undefined;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFormat(const API::ImageFormat imageFormat)
+{
+	switch(imageFormat)
+	{
+	case API::ImageFormat::R8_UNORM:
+	case API::ImageFormat::R16_UNORM:
+	case API::ImageFormat::R32_SFLOAT:
+		return Image::ColorFormat::GrayScale;
+
+	case API::ImageFormat::R8G8_UNORM:
+	case API::ImageFormat::R16G16_UNORM:
+	case API::ImageFormat::R32G32_SFLOAT:
+		return Image::ColorFormat::GrayScaleAlpha;
+
+	case API::ImageFormat::R8G8B8A8_UNORM:
+	case API::ImageFormat::R16G16B16A16_UNORM:
+	case API::ImageFormat::R32G32B32A32_SFLOAT:
+		return Image::ColorFormat::RGBA;
+
+	default:
+		return Image::ColorFormat::NONE;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat)
+{
+	switch(imageFormat)
+	{
+	case API::ImageFormat::R8_UNORM:
+	case API::ImageFormat::R8G8_UNORM:
+	case API::ImageFormat::R8G8B8A8_UNORM:
+		return 8;
+
+	case API::ImageFormat::R16_UNORM:
+	case API::ImageFormat::R16G16_UNORM:
+	case API::ImageFormat::R16G16B16A16_UNORM:
+		return 16;
+
+	case API::ImageFormat::R32_SFLOAT:
+	case API::ImageFormat::R32G32_SFLOAT:
+	case API::ImageFormat::R32G32B32A32_SFLOAT:
+		return 32;
+
+	default:
+		return 0;
+	}
 }

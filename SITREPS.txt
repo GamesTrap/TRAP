@@ -1968,3 +1968,6 @@ SITREP 07/24/2021|21w29a3
     - ResourceLoader Restructured loading procedure ~<30 mins
     - Texture2D Implemented CreateFromImage ~<30 mins
     - Fixed wrong ColorFormat after converting an image from RGB to RGBA ~<5 mins
+    - TextureCube Implemented CreateFromImage(s) ~<60 mins
+    - Texture Implemented various GetBit/BytesPerPixel/Channel functions ~<15 mins
+    - Texture2D/Cube Implemented complete Texture Update ~>60 mins

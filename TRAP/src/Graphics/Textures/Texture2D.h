@@ -22,6 +22,8 @@ namespace TRAP::Graphics
 		uint32_t GetArraySize() const override;
 		const std::string& GetFilePath() const;
 
+		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
+
 		~Texture2D() = default;
 	protected:
 		Texture2D();

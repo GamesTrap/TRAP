@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "VFS/VFS.h"
+#include "Graphics/API/ResourceLoader.h"
 #include "TextureBase.h"
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name,
@@ -394,6 +395,35 @@ uint32_t TRAP::Graphics::TextureCube::GetDepth() const
 uint32_t TRAP::Graphics::TextureCube::GetArraySize() const
 {
 	return 6;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeInBytes, uint32_t mipLevel,
+										 uint32_t arrayLayer)
+{
+	TRAP_ASSERT(arrayLayer < 6, "Invalid Arraylayer provided!");
+	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid Miplevel provided!");
+	TRAP_ASSERT(sizeInBytes >= (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *
+	            GetBytesPerPixel(), "Texture update size is too small");
+
+	RendererAPI::TextureUpdateDesc updateDesc{};
+	updateDesc.Texture = m_texture;
+	updateDesc.MipLevel = mipLevel;
+	updateDesc.ArrayLayer = arrayLayer;
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
+	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single memcpy is enough
+		memcpy(updateDesc.MappedData, data, updateDesc.RowCount * updateDesc.SrcRowStride);
+	else //Needs row by row copy
+	{
+		for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+		{
+			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
+				   reinterpret_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+				   updateDesc.SrcRowStride);
+		}
+	}
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

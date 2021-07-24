@@ -40,9 +40,6 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    std::vector<uint8_t> m_vulkanLogoImgData;
-    bool m_debugImgVisible;
-
     TRAP::Graphics::Shader* m_shader;
     TRAP::Graphics::Texture* m_texture;
 };

@@ -33,6 +33,8 @@ namespace TRAP::Graphics
 		uint32_t GetDepth() const override;
 		uint32_t GetArraySize() const override;
 
+		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
+
 		~TextureCube() = default;
 	protected:
 		TextureCube();

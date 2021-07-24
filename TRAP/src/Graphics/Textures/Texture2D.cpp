@@ -240,6 +240,35 @@ const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Texture2D::Update(const void* data, const uint32_t sizeInBytes, const uint32_t mipLevel,
+ 									   const uint32_t arrayLayer)
+{
+	TRAP_ASSERT(arrayLayer < m_texture->GetArraySize(), "Invalid Arraylayer provided!");
+	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid Miplevel provided!");
+	TRAP_ASSERT(sizeInBytes >= (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *
+	            GetBytesPerPixel(), "Texture update size is too small");
+
+	RendererAPI::TextureUpdateDesc updateDesc{};
+	updateDesc.Texture = m_texture;
+	updateDesc.MipLevel = mipLevel;
+	updateDesc.ArrayLayer = arrayLayer;
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
+	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single memcpy is enough
+		memcpy(updateDesc.MappedData, data, updateDesc.RowCount * updateDesc.SrcRowStride);
+	else //Needs row by row copy
+	{
+		for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+		{
+			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
+				   reinterpret_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+				   updateDesc.SrcRowStride);
+		}
+	}
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::Texture2D::Texture2D()
 {
 	m_textureType = TextureType::Texture2D;

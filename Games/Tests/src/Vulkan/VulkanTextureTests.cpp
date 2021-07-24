@@ -12,7 +12,6 @@ VulkanTextureTests::VulkanTextureTests()
       m_currentMipLevel(0),
       m_maxMipLevel(0),
       m_updateTexture(false),
-      m_debugImgVisible(false),
 	  m_shader(nullptr),
       m_texture(nullptr)
 {
@@ -42,10 +41,7 @@ void VulkanTextureTests::OnAttach()
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(), static_cast<uint16_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Static);
     m_indexBuffer->AwaitLoading();
 
-    //TODO Test if Texture loading from memory image works
-    TRAP::Scope<TRAP::Image> vulkanLogoImg = TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png");
-
-    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", vulkanLogoImg, TRAP::Graphics::TextureUsage::Static).get();
+    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png"), TRAP::Graphics::TextureUsage::Static).get();
     //m_texture = TRAP::Graphics::TextureManager::Load("/Textures/vulkanlogo.png", TRAP::Graphics::TextureUsage::Static).get();
     m_texture->AwaitLoading();
     m_maxMipLevel = m_texture->GetMipLevels();
@@ -66,8 +62,6 @@ void VulkanTextureTests::OnAttach()
 	samplerDesc.MipLodBias = 0.0f;
 	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
-
-    //TODO Test Runtime Texture Update using abstraction
 
     //Just in case
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -109,40 +103,12 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     else
         m_currentMipLevel = 0;
 
-    // if(m_updateTexture)
-    // {
-    //     m_updateTexture = false;
-
-    //     //NOTE: This also automagically updates all miplevels
-    //     TRAP::Graphics::API::SyncToken token{};
-    //     TRAP::Graphics::RendererAPI::TextureUpdateDesc desc{};
-    //     desc.Texture = m_texture;
-    //     TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-
-    //     if(m_debugImgVisible)
-    //         std::memcpy(desc.MappedData, m_vulkanLogoImgData.data(), desc.DstSliceStride);
-    //     else
-    //     {
-    //         //This puts the debug texture in the middle (tiny) and makes everything else white
-    //         std::vector<uint8_t> col(desc.DstSliceStride, 255);
-    //         uint32_t j = 0;
-    //         for(uint32_t y = 0; y < 32; ++y)
-    //         {
-    //             for(uint32_t x = 0; x < 32; ++x)
-    //             {
-    //                 col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 0)] = TRAP::Embed::DefaultImageData[j++];
-    //                 col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 1)] = TRAP::Embed::DefaultImageData[j++];
-    //                 col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 2)] = TRAP::Embed::DefaultImageData[j++];
-    //                 col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 3)] = TRAP::Embed::DefaultImageData[j++];
-    //             }
-    //         }
-    //         std::memcpy(desc.MappedData, col.data(), desc.DstSliceStride);
-    //     }
-    //     m_debugImgVisible = !m_debugImgVisible;
-
-    //     TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &token);
-    //     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&token);
-    // }
+    if(m_updateTexture)
+    {
+        m_updateTexture = false;
+        TRAP::Scope<TRAP::Image> vulkanLogoImg = TRAP::Image::LoadFromFile("/Textures/vulkanlogoTransparent.png");
+        m_texture->Update(vulkanLogoImg->GetPixelData(), vulkanLogoImg->GetPixelDataSize());
+    }
 
 	//Bind shader
     TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
