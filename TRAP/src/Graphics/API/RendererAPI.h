@@ -1236,7 +1236,7 @@ namespace TRAP::Graphics
 
 			//To be filled by the caller
 			//Example
-			//TRAP::Graphics::RendererAPI::BufferUpdateDesc update = {Texture, 1};
+			//TRAP::Graphics::RendererAPI::TextureUpdateDesc update = {Texture};
 			//TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(update);
 			//Row by row copy is required if DstRowStride > SrcRowStride.
 			//Single memcpy will work if DstRowStride == SrcRowStride.

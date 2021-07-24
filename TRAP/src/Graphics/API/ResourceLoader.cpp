@@ -6,6 +6,7 @@
 #include "Objects/CommandBuffer.h"
 #include "Objects/CommandPool.h"
 #include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
@@ -1228,11 +1229,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			textureDesc.Height = images[0]->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
-			textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
-				(
-					Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),
-					                                 static_cast<float>(textureDesc.Height))))
-				) + 1); //Minimum 1 Mip Level
+			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width, textureDesc.Height);
 		}
 		/*else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Equirectangular)
 		{
@@ -1248,7 +1245,6 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			TRAP::Scope<TRAP::Image> baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
 
 			bool valid = true;
-			uint32_t faceWidth = 0, faceHeight = 0;
 			if(baseImg->GetWidth() > baseImg->GetHeight()) //Horizontal
 			{
 				if(baseImg->GetWidth() % 4 != 0 || baseImg->GetHeight() % 3 != 0)
@@ -1257,9 +1253,6 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 					TP_ERROR(Log::TextureCubePrefix,
 					         "Width must be a multiple of 4 & Height must be a multiple of 3!");
 				}
-
-				faceWidth = baseImg->GetWidth() / 4;
-				faceHeight = baseImg->GetHeight() / 3;
 			}
 			else //Vertical
 			{
@@ -1269,19 +1262,16 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 					         "Width must be a multiple of 3 & Height must be a multiple of 4!");
 					valid = false;
 				}
-
-				faceWidth = baseImg->GetWidth() / 3;
-				faceHeight = baseImg->GetHeight() / 4;
 			}
 
 			if(valid)
 			{
 				if(baseImg->IsHDR() && baseImg->GetBytesPerChannel() == 4)
-					images = SplitImageFromCross<float>(baseImg, faceWidth, faceHeight);
+					images = TRAP::Graphics::Texture::SplitImageFromCross<float>(baseImg);
 				else if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 2)
-					images = SplitImageFromCross<uint16_t>(baseImg, faceWidth, faceHeight);
+					images = TRAP::Graphics::Texture::SplitImageFromCross<uint16_t>(baseImg);
 				else /*if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 1)*/
-					images = SplitImageFromCross<uint8_t>(baseImg, faceWidth, faceHeight);
+					images = TRAP::Graphics::Texture::SplitImageFromCross<uint8_t>(baseImg);
 			}
 			else //Use FallbackCube
 			{
@@ -1296,11 +1286,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			textureDesc.Height = images[0]->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
-			textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
-				(
-					Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),
-					                                 static_cast<float>(textureDesc.Height))))
-				) + 1); //Minimum 1 Mip Level
+			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
+			                                                                    textureDesc.Height);
 		}
 		else //if(!textureLoadDesc.IsCubemap) //Normal Texture
 		{
@@ -1308,11 +1295,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			textureDesc.Width = images[0]->GetWidth();
 			textureDesc.Height = images[0]->GetHeight();
-			textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
-				(
-					Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),
-					                                 static_cast<float>(textureDesc.Height))))
-				) + 1); //Minimum 1 Mip Level
+			textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
+			                                                                    textureDesc.Height);
 		}
 
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
@@ -1359,11 +1343,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Width = images[0]->GetWidth();
 		textureDesc.Height = images[0]->GetHeight();
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
-		textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
-			(
-				Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),
-				                                 static_cast<float>(textureDesc.Height))))
-			) + 1); //Minimum 1 Mip Level
+		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
+			                                                                textureDesc.Height);
 	}
 	else
 	{
@@ -1377,11 +1358,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
 		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
-		textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>
-			(
-				Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width),
-				                                 static_cast<float>(textureDesc.Height))))
-			) + 1); //Minimum 1 Mip Level
+		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
+			                                                                textureDesc.Height);
 	}
 
 	*textureLoadDesc.Texture = TRAP::Graphics::TextureBase::Create(textureDesc);
@@ -1394,119 +1372,6 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	updateDesc.LayerCount = textureDesc.ArraySize;
 
 	return UpdateTexture(activeSet, updateDesc, &images);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename T>
-std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::API::ResourceLoader::SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image,
-																							     const uint32_t faceWidth,
-																								 const uint32_t faceHeight)
-{
-	const bool isHorizontal = image->GetWidth() > image->GetHeight();
-
-	const uint32_t stride = image->GetBytesPerPixel();
-	uint32_t face = 0;
-	uint32_t cxLimit = 4, cyLimit = 3;
-	if(!isHorizontal)
-	{
-		cxLimit = 3;
-		cyLimit = 4;
-	}
-
-	std::array<std::vector<T>, 6> cubeTextureData;
-	for(auto& i : cubeTextureData)
-		i.resize(faceWidth * faceHeight * stride);
-
-	for(uint32_t cy = 0; cy < cyLimit; ++cy)
-	{
-		for(uint32_t cx = 0; cx < cxLimit; ++cx)
-		{
-			if((cy == 0 || cy == 2 || cy == 3) && cx != 1)
-				continue;
-
-			for(uint32_t y = 0; y < faceHeight; ++y)
-			{
-				uint32_t offset = y;
-				if(!isHorizontal && face == 5)
-					offset = faceHeight - (y + 1);
-				const uint32_t yp = cy * faceHeight + offset;
-
-				for(uint32_t x = 0; x < faceWidth; ++x)
-				{
-					offset = x;
-					if(!isHorizontal && face == 5)
-						offset = faceWidth - (x + 1);
-					const uint32_t xp = cx * faceWidth + offset;
-					switch(stride)
-					{
-					case 1:
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						break;
-
-					case 2:
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 1];
-						break;
-
-					case 3:
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 1];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 2];
-						break;
-
-					case 4:
-						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 0];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 1];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 2];
-						cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const T*>
-							(
-								image->GetPixelData()
-							)[(xp + yp * image->GetWidth()) * stride + 3];
-						break;
-
-					default:
-						break;
-					}
-				}
-			}
-			++face;
-		}
-	}
-
-	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
-
-	for(uint32_t i = 0; i < images.size(); ++i)
-		images[i] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[i]);
-
-	return images;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

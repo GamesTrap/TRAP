@@ -76,6 +76,14 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
+{
+	return Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(width),
+					                                                            static_cast<float>(height))))) + 1);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
 	                             											                   const uint32_t bpp)
 {
@@ -123,12 +131,4 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixe
 
 	TRAP_ASSERT(false, "Invalid Image::ColorFormat provided!");
 	return API::ImageFormat::Undefined;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
-{
-	return Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(width),
-					                                                            static_cast<float>(height))))) + 1);
 }

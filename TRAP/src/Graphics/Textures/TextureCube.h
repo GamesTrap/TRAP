@@ -9,6 +9,7 @@ namespace TRAP::Graphics
 	enum class TextureCubeFormat
 	{
 		Cross,
+		MultiFile,
 		//Equiretangular //TODO
 	};
 
@@ -23,6 +24,8 @@ namespace TRAP::Graphics
 		                                         TextureUsage usage);
 		static Scope<TextureCube> CreateFromImage(const std::string& name, const Scope<Image>& img,
 		                                          TextureCubeFormat format, TextureUsage usage);
+		static Scope<TextureCube> CreateFromImages(const std::string& name, const std::array<Scope<Image>, 6>& imgs,
+		                                           TextureUsage usage);
 		static Scope<TextureCube> Create(TextureUsage usage); //Fallback Texture
 
 		std::array<std::string, 6> GetFilePaths() const;

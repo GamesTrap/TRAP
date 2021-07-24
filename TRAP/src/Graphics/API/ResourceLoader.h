@@ -116,10 +116,6 @@ namespace TRAP::Graphics::API
 		                                   std::array<TRAP::Scope<TRAP::Image>, 6>* const img);
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 
-		template<typename T>
-		std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image,
-			                                                        uint32_t faceWidth, uint32_t faceHeight);
-
 		RendererAPI::ResourceLoaderDesc m_desc;
 
 		volatile int32_t m_run;
