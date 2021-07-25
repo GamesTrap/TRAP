@@ -1976,3 +1976,7 @@ SITREP 07/25/2021|21w29a4
     - Changed TRAP Engine version to 21w29a4(0.7.61)
     - Texture Added GetMipWidth/Height/Size functions ~<15 mins
     - VulkanTextureTests Added runtime updating of the Texture ~<10 mins
+    - Merged TextureAbstraction into master (internal) ~<10 mins
+    - Updated stable TRAPVK (internal) version ~>60 mins
+    - Doxygen excluded ControllerMappings ~<5 mins
+    - Better documentation of internal WindowingAPI ~>45 mins

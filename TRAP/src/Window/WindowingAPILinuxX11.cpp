@@ -1870,57 +1870,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowFrameSize(const InternalWindow* window,
-															  int32_t& left, int32_t& top,
-															  int32_t& right, int32_t& bottom)
-{
-	int32_t* extents = nullptr;
-
-	if(window->Monitor || !window->Decorated)
-		return;
-
-	if(s_Data.NET_FRAME_EXTENTS == 0)
-		return;
-
-	if(!PlatformWindowVisible(window) && s_Data.NET_REQUEST_FRAME_EXTENTS)
-	{
-		XEvent event;
-		double timeout = 0.5;
-
-		//Ensure _NET_FRAME_EXTENTS is set, allowing GetWindowFrameSize to function before the window is mapped
-		SendEventToWM(window, s_Data.NET_REQUEST_FRAME_EXTENTS, 0, 0, 0, 0, 0);
-
-		//HACK: Use a timeout because earlier versions of some window managers (at least Unity, Fluxbox and Xfwm)
-		//      failed to send the reply. They have been fixed but broken versions are still in the wild.
-		//      If you are affected by this and your window manager is NOT listed above, PLEASE report it to their
-		//      and our issue trackers
-		while(!s_Data.XLIB.CheckIfEvent(s_Data.display, &event, IsFrameExtentsEvent, (XPointer)window))
-		{
-			if(!WaitForEvent(&timeout))
-			{
-				InputError(Error::Platform_Error,
-				           "[X11] The window manager has a broken _NET_REQUEST_FRAME_EXTENTS implementation! "
-						   "Please report this issue");
-				return;
-			}
-		}
-	}
-
-	if(GetWindowPropertyX11(window->Handle, s_Data.NET_FRAME_EXTENTS, XA_CARDINAL,
-	                        reinterpret_cast<uint8_t**>(&extents)) == 4)
-	{
-		left = extents[0];
-		top = extents[2];
-		right = extents[1];
-		bottom = extents[3];
-	}
-
-	if(extents)
-		s_Data.XLIB.Free(extents);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 														    int32_t xPos, int32_t yPos, int32_t width,
 															int32_t height, int32_t)

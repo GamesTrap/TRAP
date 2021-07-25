@@ -11,8 +11,6 @@ namespace TRAP
 	struct WindowProps;
 	class Monitor;
 
-	//TODO Also document on which platforms function execution differs
-
 	/// <summary>
 	/// Interface representing a desktop system based Window.
 	/// </summary>

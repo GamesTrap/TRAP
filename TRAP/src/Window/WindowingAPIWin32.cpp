@@ -1767,31 +1767,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowFrameSize(const InternalWindow* window, int32_t& left,
-                                                              int32_t& top, int32_t& right, int32_t& bottom)
-{
-	RECT rect{};
-	int32_t width = 0, height = 0;
-
-	PlatformGetWindowSize(window, width, height);
-	SetRect(&rect, 0, 0, width, height);
-
-	if (IsWindows10AnniversaryUpdateOrGreaterWin32())
-	{
-		s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
-			                                   s_Data.User32.GetDPIForWindow(window->Handle));
-	}
-	else
-		AdjustWindowRectEx(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window));
-
-	left = -rect.left;
-	top = -rect.top;
-	right = rect.right - width;
-	bottom = rect.bottom - height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* window, const int32_t xPos,
                                                         const int32_t yPos)
 {

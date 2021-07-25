@@ -871,6 +871,8 @@ RECURSIVE              = YES
 EXCLUDE                = ../TRAP/src/Graphics/API/Vulkan/Utils/VMA.h \
                          ../TRAP/src/Graphics/API/Vulkan/Utils/VMA.cpp \
                          ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h \
+                         ../TRAP/src/Input/ControllerMappings.h \
+                         ../TRAP/src/Input/ControllerMappings.h.in \
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

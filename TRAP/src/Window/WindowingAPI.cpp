@@ -347,8 +347,6 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 			description += " Out of memory";
 		else if (code == Error::API_Unavailable)
 			description += " The requested API is unavailable";
-		else if (code == Error::Version_Unavailable)
-			description += " The requested API version is unavailable";
 		else if (code == Error::Platform_Error)
 			description += " A platform-specific error occurred";
 		else if (code == Error::Format_Unavailable)
