@@ -41,8 +41,12 @@ void VulkanTextureTests::OnAttach()
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(), static_cast<uint16_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Static);
     m_indexBuffer->AwaitLoading();
 
-    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png"), TRAP::Graphics::TextureUsage::Static).get();
-    //m_texture = TRAP::Graphics::TextureManager::Load("/Textures/vulkanlogo.png", TRAP::Graphics::TextureUsage::Static).get();
+    //Load Images
+    m_vulkanLogo = TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png");
+    m_vulkanLogoTransparent = TRAP::Image::LoadFromFile("/Textures/vulkanlogoTransparent.png");
+
+    //Load Texture
+    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", m_vulkanLogo, TRAP::Graphics::TextureUsage::Static).get();
     m_texture->AwaitLoading();
     m_maxMipLevel = m_texture->GetMipLevels();
 
@@ -106,8 +110,12 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if(m_updateTexture)
     {
         m_updateTexture = false;
-        TRAP::Scope<TRAP::Image> vulkanLogoImg = TRAP::Image::LoadFromFile("/Textures/vulkanlogoTransparent.png");
-        m_texture->Update(vulkanLogoImg->GetPixelData(), vulkanLogoImg->GetPixelDataSize());
+        m_currentTexture = (m_currentTexture + 1) % 2;
+
+        if(m_currentTexture == 0)
+            m_texture->Update(m_vulkanLogo->GetPixelData(), m_vulkanLogo->GetPixelDataSize());
+        else if(m_currentTexture == 1)
+            m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), m_vulkanLogoTransparent->GetPixelDataSize());
     }
 
 	//Bind shader

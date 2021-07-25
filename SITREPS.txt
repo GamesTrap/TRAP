@@ -1971,3 +1971,8 @@ SITREP 07/24/2021|21w29a3
     - TextureCube Implemented CreateFromImage(s) ~<60 mins
     - Texture Implemented various GetBit/BytesPerPixel/Channel functions ~<15 mins
     - Texture2D/Cube Implemented complete Texture Update ~>60 mins
+
+SITREP 07/25/2021|21w29a4
+    - Changed TRAP Engine version to 21w29a4(0.7.61)
+    - Texture Added GetMipWidth/Height/Size functions ~<15 mins
+    - VulkanTextureTests Added runtime updating of the Texture ~<10 mins

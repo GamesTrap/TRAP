@@ -402,10 +402,28 @@ uint32_t TRAP::Graphics::TextureCube::GetArraySize() const
 void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeInBytes, uint32_t mipLevel,
 										 uint32_t arrayLayer)
 {
+	TRAP_ASSERT(data, "Update: Data is nullptr!");
 	TRAP_ASSERT(arrayLayer < 6, "Invalid Arraylayer provided!");
 	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid Miplevel provided!");
 	TRAP_ASSERT(sizeInBytes >= (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *
 	            GetBytesPerPixel(), "Texture update size is too small");
+
+	if(arrayLayer >= 6)
+	{
+		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid Arraylayer provided!");
+		return;
+	}
+	if(mipLevel >= m_texture->GetMipLevels())
+	{
+		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid MipLevel provided!");
+		return;
+	}
+	if(sizeInBytes < (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *
+	   GetBytesPerPixel())
+	{
+		TP_ERROR(Log::TextureCubePrefix, "Update: Texture update size is too small!");
+		return;
+	}
 
 	RendererAPI::TextureUpdateDesc updateDesc{};
 	updateDesc.Texture = m_texture;

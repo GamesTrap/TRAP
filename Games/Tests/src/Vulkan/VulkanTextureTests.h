@@ -26,6 +26,7 @@ private:
     uint32_t m_currentMipLevel;
     uint32_t m_maxMipLevel;
     bool m_updateTexture;
+    uint32_t m_currentTexture;
 
     std::array<float, 5 * 4> m_quadVerticesIndexed
 	{
@@ -42,6 +43,8 @@ private:
 
     TRAP::Graphics::Shader* m_shader;
     TRAP::Graphics::Texture* m_texture;
+    TRAP::Scope<TRAP::Image> m_vulkanLogo;
+    TRAP::Scope<TRAP::Image> m_vulkanLogoTransparent;
 };
 
 #endif /*_GAMESTRAP_VULKANTEXTURETESTS_H_*/

@@ -47,9 +47,13 @@ namespace TRAP::Graphics
 		uint32_t GetBytesPerChannel() const;
 		uint32_t GetBitsPerPixel() const;
 		uint32_t GetBytesPerPixel() const;
+		uint32_t GetMipWidth(uint32_t mipLevel) const;
+		uint32_t GetMipHeight(uint32_t mipLevel) const;
+		Math::Vec2ui GetMipSize(uint32_t mipLevel) const;
 
 		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
 
+		//Data array length and sizeInBytes must match the textures current size or it won't update
 		virtual void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) = 0;
 
 		bool IsLoaded() const;

@@ -90,6 +90,33 @@ uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
+{
+	if(mipLevel >= m_texture->GetMipLevels())
+		TP_ERROR(Log::TexturePrefix, "GetMipWidth: Invalid mip level provided!");
+
+	return Math::Max(1u, m_texture->GetWidth() >> mipLevel);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
+{
+	if(mipLevel >= m_texture->GetMipLevels())
+		TP_ERROR(Log::TexturePrefix, "GetMipHeight: Invalid mip level provided!");
+
+	return Math::Max(1u, m_texture->GetHeight() >> mipLevel);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) const
+{
+	return {GetMipWidth(mipLevel), GetMipHeight(mipLevel)};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::Texture::GetTexture() const
 {
 	return m_texture;
