@@ -6,12 +6,7 @@
 
 namespace TRAP::Graphics
 {
-	enum class TextureCubeFormat
-	{
-		Cross,
-		MultiFile,
-		//Equiretangular //TODO
-	};
+	using TextureCubeFormat = RendererAPI::TextureCubeType;
 
 	class TextureCube : public Texture
 	{

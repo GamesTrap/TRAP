@@ -1,9 +1,5 @@
 #include "VulkanTextureTests.h"
 
-#include <Embed.h>
-
-#include <Graphics/API/Objects/DescriptorSet.h>
-
 VulkanTextureTests::VulkanTextureTests()
     : Layer("VulkanTextureTests"),
       m_vertexBuffer(nullptr),
