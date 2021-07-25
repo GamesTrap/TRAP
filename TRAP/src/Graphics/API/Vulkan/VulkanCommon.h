@@ -7,8 +7,7 @@ namespace TRAP::Graphics::API
 {
 	class VulkanQueue;
 	class VulkanPhysicalDevice;
-	class VulkanTexture;
-	
+
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
 	VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);
 
@@ -20,7 +19,7 @@ namespace TRAP::Graphics::API
 	VkFrontFace RendererFrontFaceToVkFrontFace(RendererFrontFace frontFace);
 
 	VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount);
-	VkFormat ImageFormatToVkFormat(RendererAPI::ImageFormat imageFormat);
+	VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat);
 	VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
 	VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type);
 	VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage);
@@ -36,26 +35,30 @@ namespace TRAP::Graphics::API
 	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType);
 	VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type);
 	VkImageAspectFlags ClearFlagsToVKImageAspectFlags(RendererAPI::ClearFlags flags);
-	
-	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc, std::vector<VkPipelineColorBlendAttachmentState>& attachments);
+
+	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	                                                    std::vector<VkPipelineColorBlendAttachmentState>& attachments);
 	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
 	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
-	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount, VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
+	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount,
+	                                           VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
 
-	RendererAPI::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
+	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
 
-	RendererAPI::ImageFormat ImageFormatFromVkFormat(VkFormat format);
-	
-	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
+	TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 
-	inline static constexpr std::array<VkAttachmentLoadOp, static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
+	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string& name);
+
+	inline static constexpr std::array<VkAttachmentLoadOp,
+	                                   static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
 	{
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 		VK_ATTACHMENT_LOAD_OP_LOAD,
 		VK_ATTACHMENT_LOAD_OP_CLEAR
 	};
 
-	inline static constexpr std::array<VkCompareOp, static_cast<uint32_t>(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
+	inline static constexpr std::array<VkCompareOp,
+	                                   static_cast<uint32_t>(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
 	{
 		VK_COMPARE_OP_NEVER,
 		VK_COMPARE_OP_LESS,
@@ -67,7 +70,8 @@ namespace TRAP::Graphics::API
 		VK_COMPARE_OP_ALWAYS
 	};
 
-	inline static constexpr std::array<VkPipelineBindPoint, static_cast<uint32_t>(RendererAPI::PipelineType::PIPELINE_TYPE_COUNT)> VkPipelineBindPointTranslator =
+	inline static constexpr std::array<VkPipelineBindPoint,
+	                                   static_cast<uint32_t>(RendererAPI::PipelineType::PIPELINE_TYPE_COUNT)> VkPipelineBindPointTranslator =
 	{
 		VK_PIPELINE_BIND_POINT_MAX_ENUM,
 		VK_PIPELINE_BIND_POINT_COMPUTE,
@@ -75,7 +79,8 @@ namespace TRAP::Graphics::API
 		VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
 	};
 
-	inline static constexpr std::array<VkBlendFactor, static_cast<uint32_t>(RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS)> VkBlendConstantTranslator =
+	inline static constexpr std::array<VkBlendFactor,
+	                                   static_cast<uint32_t>(RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS)> VkBlendConstantTranslator =
 	{
 		VK_BLEND_FACTOR_ZERO,
 		VK_BLEND_FACTOR_ONE,
@@ -92,7 +97,8 @@ namespace TRAP::Graphics::API
 		VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR
 	};
 
-	inline static constexpr std::array<VkBlendOp, static_cast<uint32_t>(RendererAPI::BlendMode::MAX_BLEND_MODES)> VkBlendOpTranslator =
+	inline static constexpr std::array<VkBlendOp,
+	                                   static_cast<uint32_t>(RendererAPI::BlendMode::MAX_BLEND_MODES)> VkBlendOpTranslator =
 	{
 		VK_BLEND_OP_ADD,
 		VK_BLEND_OP_SUBTRACT,
@@ -101,7 +107,8 @@ namespace TRAP::Graphics::API
 		VK_BLEND_OP_MAX
 	};
 
-	inline static constexpr std::array<VkStencilOp, static_cast<uint32_t>(RendererAPI::StencilOp::MAX_STENCIL_OPS)> VkStencilOpTranslator =
+	inline static constexpr std::array<VkStencilOp,
+	                                   static_cast<uint32_t>(RendererAPI::StencilOp::MAX_STENCIL_OPS)> VkStencilOpTranslator =
 	{
 		VK_STENCIL_OP_KEEP,
 		VK_STENCIL_OP_ZERO,
@@ -113,14 +120,16 @@ namespace TRAP::Graphics::API
 		VK_STENCIL_OP_DECREMENT_AND_CLAMP
 	};
 
-	inline static constexpr std::array<VkCullModeFlagBits, static_cast<uint32_t>(RendererAPI::CullMode::MAX_CULL_MODES)> VkCullModeTranslator =
+	inline static constexpr std::array<VkCullModeFlagBits,
+	                                   static_cast<uint32_t>(RendererAPI::CullMode::MAX_CULL_MODES)> VkCullModeTranslator =
 	{
 		VK_CULL_MODE_NONE,
 		VK_CULL_MODE_BACK_BIT,
 		VK_CULL_MODE_FRONT_BIT
 	};
-	
-	inline static constexpr std::array<VkPolygonMode, static_cast<uint32_t>(RendererAPI::FillMode::MAX_FILL_MODES)> VkFillModeTranslator =
+
+	inline static constexpr std::array<VkPolygonMode,
+	                                   static_cast<uint32_t>(RendererAPI::FillMode::MAX_FILL_MODES)> VkFillModeTranslator =
 	{
 		VK_POLYGON_MODE_FILL,
 		VK_POLYGON_MODE_LINE
@@ -137,7 +146,8 @@ namespace TRAP::Graphics::API
 
 #ifdef TRAP_DEBUG
 #if __cplusplus > 201703L
-	#define VkCall(x) std::source_location loc = std::source_location::current(); ::TRAP::Graphics::API::ErrorCheck(x, #x, loc.file_name, loc.line);
+	#define VkCall(x) std::source_location loc = std::source_location::current();\
+	                  ::TRAP::Graphics::API::ErrorCheck(x, #x, loc.file_name, loc.line);
 #else
 	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
 #endif

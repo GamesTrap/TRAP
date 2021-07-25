@@ -15,10 +15,10 @@ TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const RendererA
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanBuffer>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

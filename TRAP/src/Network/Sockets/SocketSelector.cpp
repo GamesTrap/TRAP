@@ -29,6 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketSelector.h"
 
+#include "Core/PlatformDetection.h"
 #include "Socket.h"
 #include "SocketHandle.h"
 #include "SocketImpl.h"
@@ -52,7 +53,7 @@ namespace TRAP::Network
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::SocketSelector::SocketSelector()
-	: m_impl(new SocketSelectorImpl)
+	: m_impl(TRAP::MakeScope<SocketSelectorImpl>())
 {
 	Clear();
 }
@@ -60,7 +61,7 @@ TRAP::Network::SocketSelector::SocketSelector()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
-	: m_impl(new SocketSelectorImpl(*copy.m_impl))
+	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
 {
 }
 
@@ -68,7 +69,7 @@ TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 
 TRAP::Network::SocketSelector::~SocketSelector()
 {
-	delete m_impl;
+	m_impl.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -153,7 +154,8 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 	//Wait until one of the sockets is ready for reading, or timeout is reached
 	//The first parameter is ignored on Windows
-	const int32_t count = select(m_impl->MaxSockets + 1, &m_impl->SocketsReady, nullptr, nullptr, timeout != Utils::TimeStep(0.0f) ? &time : nullptr);
+	const int32_t count = select(m_impl->MaxSockets + 1, &m_impl->SocketsReady, nullptr, nullptr,
+	                             timeout != Utils::TimeStep(0.0f) ? &time : nullptr);
 
 	return count > 0;
 }

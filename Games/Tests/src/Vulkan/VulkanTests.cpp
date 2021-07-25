@@ -29,7 +29,7 @@ void VulkanTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
-	const TRAP::Graphics::BufferLayout layout =
+	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
 		{TRAP::Graphics::ShaderDataType::Float3, "Color"}
@@ -72,7 +72,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	else
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
 
-	const TRAP::Graphics::BufferLayout layout =
+	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
 		{TRAP::Graphics::ShaderDataType::Float3, "Color"}
@@ -93,7 +93,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		{
 			m_vertexBuffer->SetData(m_quadVerticesIndexed.data(), static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float));
 			m_indexBuffer->SetData(m_quadIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t));
-			const TRAP::Graphics::BufferLayout layout =
+			const TRAP::Graphics::VertexBufferLayout layout =
 			{
 				{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
 				{TRAP::Graphics::ShaderDataType::Float3, "Color"},

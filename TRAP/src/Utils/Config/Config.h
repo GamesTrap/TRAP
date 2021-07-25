@@ -141,7 +141,7 @@ namespace TRAP::Utils
 		bool m_isChanged;
 		std::vector<std::pair<std::string, std::string>> m_data;
 		const std::locale m_locale;
-	};	
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -150,8 +150,8 @@ template<typename T>
 void TRAP::Utils::Config::Get(const std::string_view key, T& value) const
 {
 	TP_PROFILE_FUNCTION();
-	
-	const auto it = std::find_if(m_data.begin(), m_data.end(), 
+
+	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
 		{
 			return Utils::String::CompareAnyCase(element.first, key);
@@ -169,8 +169,8 @@ template<typename T>
 void TRAP::Utils::Config::Get(const std::string_view key, std::vector<T>& value) const
 {
 	TP_PROFILE_FUNCTION();
-	
-	const auto it = std::find_if(m_data.begin(), m_data.end(), 
+
+	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
 		{
 			return Utils::String::CompareAnyCase(element.first, key);
@@ -192,7 +192,7 @@ T TRAP::Utils::Config::Get(const std::string_view key) const
 {
 	TP_PROFILE_FUNCTION();
 
-	const auto it = std::find_if(m_data.begin(), m_data.end(), 
+	const auto it = std::find_if(m_data.begin(), m_data.end(),
 		[&key](const std::pair<std::string, std::string>& element)
 		{
 			return Utils::String::CompareAnyCase(element.first, key);
@@ -236,7 +236,7 @@ template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const T value)
 {
 	TP_PROFILE_FUNCTION();
-	
+
 	//Replaces the value if the key is found
 	m_isChanged = true;
 	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
@@ -249,7 +249,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 	else
 	{
 		//If not it creates a new element
-		m_data.push_back({ key, ConvertToString<T>(value) });
+		m_data.emplace_back(key, ConvertToString<T>(value));
 	}
 }
 
@@ -259,7 +259,7 @@ template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& value)
 {
 	TP_PROFILE_FUNCTION();
-	
+
 	//Transform the vector into a string that separates the elements with a comma
 	std::string valueAsString;
 	for (std::size_t i = 0; i < value.size() - 1; ++i)
@@ -278,7 +278,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 	else
 	{
 		//If not it creates a new element
-		m_data.push_back({ key, valueAsString });
+		m_data.emplace_back(key, valueAsString);
 	}
 }
 
@@ -287,8 +287,10 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 template<typename T>
 T TRAP::Utils::Config::ConvertToType(const std::string&) const
 {
-	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
-	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
+	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, "
+	                   "or define the handle case in Config.h");
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, "
+	                                  "or define the handle case in Config.h");
 	return T();
 }
 
@@ -300,7 +302,8 @@ inline int8_t TRAP::Utils::Config::ConvertToType<int8_t>(const std::string& inpu
 	try
 	{
 		const int32_t value = std::stoi(input);
-		if (value > std::numeric_limits<int8_t>::max() || value < std::numeric_limits<int8_t>::min())
+		if (value > std::numeric_limits<int8_t>::max() ||
+		    value < std::numeric_limits<int8_t>::min())
 			return 0;
 
 		return static_cast<int8_t>(value);
@@ -320,7 +323,8 @@ inline uint8_t TRAP::Utils::Config::ConvertToType<uint8_t>(const std::string& in
 	try
 	{
 		const uint32_t value = std::stoul(input);
-		if (value > std::numeric_limits<uint8_t>::max() || value < std::numeric_limits<uint8_t>::min())
+		if (value > std::numeric_limits<uint8_t>::max() ||
+		    value < std::numeric_limits<uint8_t>::min())
 			return 0;
 
 		return static_cast<uint8_t>(value);
@@ -340,7 +344,8 @@ inline int16_t TRAP::Utils::Config::ConvertToType<int16_t>(const std::string& in
 	try
 	{
 		const int32_t value = std::stoi(input);
-		if (value > std::numeric_limits<int16_t>::max() || value < std::numeric_limits<int16_t>::min())
+		if (value > std::numeric_limits<int16_t>::max() ||
+		    value < std::numeric_limits<int16_t>::min())
 			return 0;
 
 		return static_cast<int16_t>(value);
@@ -360,7 +365,8 @@ inline uint16_t TRAP::Utils::Config::ConvertToType<uint16_t>(const std::string& 
 	try
 	{
 		const uint32_t value = std::stoul(input);
-		if (value > std::numeric_limits<uint16_t>::max() || value < std::numeric_limits<uint16_t>::min())
+		if (value > std::numeric_limits<uint16_t>::max() ||
+		    value < std::numeric_limits<uint16_t>::min())
 			return 0;
 
 		return static_cast<uint16_t>(value);
@@ -475,7 +481,7 @@ inline bool TRAP::Utils::Config::ConvertToType<bool>(const std::string& input) c
 {
 	if (String::CompareAnyCase("TRUE", input))
 		return true;
-	
+
 	return false;
 }
 
@@ -506,7 +512,8 @@ inline std::string_view TRAP::Utils::Config::ConvertToType<std::string_view>(con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline TRAP::Window::DisplayMode TRAP::Utils::Config::ConvertToType<TRAP::Window::DisplayMode>(const std::string& input) const
+inline TRAP::Window::DisplayMode
+TRAP::Utils::Config::ConvertToType<TRAP::Window::DisplayMode>(const std::string& input) const
 {
 	if (Utils::String::CompareAnyCase("Windowed", input))
 		return Window::DisplayMode::Windowed;
@@ -522,7 +529,8 @@ inline TRAP::Window::DisplayMode TRAP::Utils::Config::ConvertToType<TRAP::Window
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline TRAP::Graphics::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::Graphics::RenderAPI>(const std::string& input) const
+inline TRAP::Graphics::RenderAPI
+TRAP::Utils::Config::ConvertToType<TRAP::Graphics::RenderAPI>(const std::string& input) const
 {
 	if (Utils::String::CompareAnyCase("Vulkan", input) || Utils::String::CompareAnyCase("VulkanAPI", input))
 		return Graphics::RenderAPI::Vulkan;
@@ -536,8 +544,10 @@ inline TRAP::Graphics::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::Graphi
 template<typename T>
 std::string TRAP::Utils::Config::ConvertToString(T) const
 {
-	TP_ERROR(TRAP::Log::ConfigPrefix, "Unsupported type supplied, either change types, or write a correct conversion function for the template type.");
-	throw "[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.";
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Unsupported type supplied, either change types, "
+	                                  "or write a correct conversion function for the template type.");
+	throw "[Config] Unsupported type supplied, either change types, or write a correct conversion "
+	      "function for the template type.";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -647,7 +657,8 @@ inline std::string TRAP::Utils::Config::ConvertToString<double>(const double val
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Window::DisplayMode>(const Window::DisplayMode value) const
+inline std::string
+TRAP::Utils::Config::ConvertToString<TRAP::Window::DisplayMode>(const Window::DisplayMode value) const
 {
 	switch (value)
 	{
@@ -668,7 +679,8 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Window::DisplayMod
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::RenderAPI>(const Graphics::RenderAPI value) const
+inline std::string
+TRAP::Utils::Config::ConvertToString<TRAP::Graphics::RenderAPI>(const Graphics::RenderAPI value) const
 {
 	switch (value)
 	{

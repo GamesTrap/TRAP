@@ -21,14 +21,15 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 			m_drawType = RendererAPI::IndirectArgumentType::IndirectDrawIndex;
 			m_stride += sizeof(RendererAPI::IndirectDrawIndexArguments);
 			break;
-			
+
 		case RendererAPI::IndirectArgumentType::IndirectDispatch:
 			m_drawType = RendererAPI::IndirectArgumentType::IndirectDispatch;
 			m_stride += sizeof(RendererAPI::IndirectDispatchArguments);
 			break;
 
 		default:
-			TP_ERROR(false, "Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch at this point!");
+			TP_ERROR(false, "Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
+			         "at this point!");
 			break;
 		}
 	}

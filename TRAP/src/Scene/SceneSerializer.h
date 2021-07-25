@@ -5,7 +5,7 @@
 
 namespace TRAP
 {
-	//Document
+	//TODO Document
 	class SceneSerializer
 	{
 	public:

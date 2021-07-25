@@ -6,6 +6,7 @@
 #include "VulkanInstance.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
+
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 												  const TRAP::Ref<VulkanDevice>& device,
                                                   TRAP::Window* window)
@@ -19,34 +20,40 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
 #endif
 
-	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(), static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), nullptr, m_surface));
+	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(),
+	                                                         static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()),
+															 nullptr, m_surface));
 
-	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &m_surfaceCapabilities));
+	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	                                                 &m_surfaceCapabilities));
 
 	uint32_t surfaceFormatCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &surfaceFormatCount, nullptr));
+	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	                                            &surfaceFormatCount, nullptr));
 	m_surfaceFormats.resize(surfaceFormatCount);
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &surfaceFormatCount, m_surfaceFormats.data()));
+	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	                                            &surfaceFormatCount, m_surfaceFormats.data()));
 
 	uint32_t surfacePresentCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &surfacePresentCount, nullptr));
+	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	                                                 &surfacePresentCount, nullptr));
 	m_surfacePresentModes.resize(surfacePresentCount);
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &surfacePresentCount, m_surfacePresentModes.data()));
+	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface,
+	                                                 &surfacePresentCount, m_surfacePresentModes.data()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
-	if(m_surface)
-	{
+	TRAP_ASSERT(m_surface);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");
+	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");
 #endif
 
-		vkDestroySurfaceKHR(m_instance->GetVkInstance(), m_surface, nullptr);
-		m_surface = nullptr;
-	}
+	vkDestroySurfaceKHR(m_instance->GetVkInstance(), m_surface, nullptr);
+	m_surface = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

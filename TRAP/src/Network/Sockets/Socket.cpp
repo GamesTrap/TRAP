@@ -74,18 +74,18 @@ TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
 void TRAP::Network::Socket::CreateIPv4()
 {
 	//Don't create the socket if it already exists
-	if(m_socket == INTERNAL::Network::SocketImpl::InvalidSocket())
+	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
+		return;
+
+	const SocketHandle handle = socket(PF_INET, m_type == Type::TCP ? SOCK_STREAM : SOCK_DGRAM, 0);
+
+	if(handle == INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
-		const SocketHandle handle = socket(PF_INET, m_type == Type::TCP ? SOCK_STREAM : SOCK_DGRAM, 0);
-
-		if(handle == INTERNAL::Network::SocketImpl::InvalidSocket())
-		{
-			TP_ERROR(Log::NetworkSocketPrefix, "Failed to create socket");
-			return;
-		}
-
-		Create(handle);
+		TP_ERROR(Log::NetworkSocketPrefix, "Failed to create socket");
+		return;
 	}
+
+	Create(handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -93,18 +93,18 @@ void TRAP::Network::Socket::CreateIPv4()
 void TRAP::Network::Socket::CreateIPv6()
 {
 	//Don't create the socket if it already exists
-	if (m_socket == INTERNAL::Network::SocketImpl::InvalidSocket())
+	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
+		return;
+
+	const SocketHandle handle = socket(PF_INET6, m_type == Type::TCP ? SOCK_STREAM : SOCK_DGRAM, 0);
+
+	if (handle == INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
-		const SocketHandle handle = socket(PF_INET6, m_type == Type::TCP ? SOCK_STREAM : SOCK_DGRAM, 0);
-
-		if (handle == INTERNAL::Network::SocketImpl::InvalidSocket())
-		{
-			TP_ERROR(Log::NetworkSocketPrefix, "Failed to create socket");
-			return;
-		}
-
-		Create(handle);
+		TP_ERROR(Log::NetworkSocketPrefix, "Failed to create socket");
+		return;
 	}
+
+	Create(handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,28 +112,29 @@ void TRAP::Network::Socket::CreateIPv6()
 void TRAP::Network::Socket::Create(const SocketHandle handle)
 {
 	//Don't create the socket if it already exists
-	if(m_socket == INTERNAL::Network::SocketImpl::InvalidSocket())
+	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
+		return;
+
+	//Assign the new handle
+	m_socket = handle;
+
+	//Set the current blocking state
+	SetBlocking(m_isBlocking);
+
+	if(m_type == Type::TCP)
 	{
-		//Assign the new handle
-		m_socket = handle;
-
-		//Set the current blocking state
-		SetBlocking(m_isBlocking);
-
-		if(m_type == Type::TCP)
-		{
-			//Disable the Nagle algorithm (i.e. removes buffering of TCP packets)
-			int32_t yes = 1;
-			if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&yes), sizeof(yes)) == -1)
-				TP_ERROR(Log::NetworkSocketPrefix, "Failed to set socket option \"TCP_NODELAY\"; all your TCP packets will be buffered");
-		}
-		else
-		{
-			//Enable broadcast by default for UDP sockets
-			int32_t yes = 1;
-			if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<char*>(&yes), sizeof(yes)) == -1)
-				TP_ERROR(Log::NetworkSocketPrefix, "Failed to enable broadcast on UDP socket");
-		}
+		//Disable the Nagle algorithm (i.e. removes buffering of TCP packets)
+		int32_t yes = 1;
+		if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&yes), sizeof(yes)) == -1)
+			TP_ERROR(Log::NetworkSocketPrefix,
+						"Failed to set socket option \"TCP_NODELAY\"; all your TCP packets will be buffered");
+	}
+	else
+	{
+		//Enable broadcast by default for UDP sockets
+		int32_t yes = 1;
+		if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<char*>(&yes), sizeof(yes)) == -1)
+			TP_ERROR(Log::NetworkSocketPrefix, "Failed to enable broadcast on UDP socket");
 	}
 }
 

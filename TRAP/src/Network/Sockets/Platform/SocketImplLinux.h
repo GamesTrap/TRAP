@@ -29,7 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef _TRAP_NETWORK_SOCKETIMPLLINUX_H_
 #define _TRAP_NETWORK_SOCKETIMPLLINUX_H_
 
-#include "Network/Sockets/Socket.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -37,6 +36,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
+#include "Network/Sockets/Socket.h"
+#include "Core/PlatformDetection.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 

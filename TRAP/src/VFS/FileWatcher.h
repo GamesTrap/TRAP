@@ -26,7 +26,7 @@ namespace TRAP
 			/// </summary>
 			Erased
 		};
-		
+
 		/// <summary>
 		/// Keeps a record of files from every physicalPath inside the virtualPath and their last modification time.
 		/// </summary>
@@ -74,8 +74,9 @@ namespace TRAP
 		/// <param name="virtualPath">Virtual folder path.</param>
 		/// <param name="physicalFilePath">Physical file path.</param>
 		/// <returns>Virtual file path to the physical file path.</returns>
-		std::string VirtualFilePathFormatter(const std::string& virtualPath, const std::filesystem::directory_entry& physicalFilePath) const;
-		
+		std::string VirtualFilePathFormatter(const std::string& virtualPath,
+		                                     const std::filesystem::directory_entry& physicalFilePath) const;
+
 		//Virtual folder to monitor
 		std::string m_virtualPathToWatch;
 		//All Physical paths corresponding to the virtualPath that should be monitored

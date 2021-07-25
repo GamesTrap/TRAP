@@ -10,7 +10,10 @@ namespace TRAP::Utils::Dialogs
 	/// </summary>
 	/// <param name="title">Title for the Dialog.</param>
 	/// <param name="defaultPathAndFile">Sets a default path and file.</param>
-	/// <param name="filterPatterns">File filters (Separate multiple extensions for the same filter with a ';'. Example: {"Test File", "*.Test;*.TS"}.</param>
+	/// <param name="filterPatterns">
+	/// File filters (Separate multiple extensions for the same filter with a ';'.
+	/// Example: {"Test File", "*.Test;*.TS"}.
+	/// </param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical Path of the Dialog or empty string.</returns>
 	std::string SaveFile(const std::string& title,
@@ -25,7 +28,10 @@ namespace TRAP::Utils::Dialogs
 	/// </summary>
 	/// <param name="title">Title for the Dialog.</param>
 	/// <param name="defaultPathAndFile">Sets a default path and file.</param>
-	/// <param name="filterPatterns">File filters (Separate multiple extensions for the same filter with a ';'. Example: {"Test File", "*.Test;*.TS"}.</param>
+	/// <param name="filterPatterns">
+	/// File filters (Separate multiple extensions for the same filter with a ';'.
+	/// Example: {"Test File", "*.Test;*.TS"}.
+	/// </param>
 	/// <param name="allowMultipleSelects">Whether to allow multiple file selections or not.</param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical Path(s) of the Dialog or empty string or vector.</returns>
@@ -41,7 +47,10 @@ namespace TRAP::Utils::Dialogs
 	/// </summary>
 	/// <param name="title">Title for the Dialog.</param>
 	/// <param name="defaultPathAndFile">Sets a default path and file.</param>
-	/// <param name="filterPatterns">File filters (Separate multiple extensions for the same filter with a ';'. Example: {"Test File", "*.Test;*.TS"}.</param>
+	/// <param name="filterPatterns">
+	/// File filters (Separate multiple extensions for the same filter with a ';'.
+	/// Example: {"Test File", "*.Test;*.TS"}.
+	/// </param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical Path of the Dialog or empty string.</returns>
 	std::string OpenSingleFile(const std::string& title,
@@ -55,7 +64,10 @@ namespace TRAP::Utils::Dialogs
 	/// </summary>
 	/// <param name="title">Title for the Dialog.</param>
 	/// <param name="defaultPathAndFile">Sets a default path and file.</param>
-	/// <param name="filterPatterns">File filters (Separate multiple extensions for the same filter with a ';'. Example: {"Test File", "*.Test;*.TS"}.</param>
+	/// <param name="filterPatterns">
+	/// File filters (Separate multiple extensions for the same filter with a ';'.
+	/// Example: {"Test File", "*.Test;*.TS"}.
+	/// </param>
 	/// <param name="allFiles">Whether to add a filter for "All Files (*.*)" or not.</param>
 	/// <returns>Physical Paths of the Dialog or empty vector.</returns>
 	std::vector<std::string> OpenMultipleFiles(const std::string& title,
@@ -78,19 +90,19 @@ namespace TRAP::Utils::Dialogs
 	/// <summary>
 	/// Styles for message boxes
 	/// </summary>
-	typedef enum MD::Style Style;
+	using Style = MD::Style;
 
 	/// <summary>
 	/// Buttons for message boxes
 	/// </summary>
-	typedef enum MD::Buttons Buttons;
+	using Buttons = MD::Buttons;
 
 	/// <summary>
 	/// Possible responses from a message box.<br>
 	/// "None" signifies that no option was selected.<br>
 	/// "Error" signifies that an error was encountered while creating the message box.
 	/// </summary>
-	typedef enum MD::Selection Selection;
+	using Selection = MD::Selection;
 
 	/// <summary>
     /// Blocking call to create a modal message box with the given title, message, style and buttons.

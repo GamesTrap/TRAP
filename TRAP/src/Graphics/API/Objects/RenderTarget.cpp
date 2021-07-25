@@ -5,7 +5,8 @@
 
 TRAP::Graphics::RenderTarget::RenderTarget()
 	: m_texture(nullptr),
-	  m_clearValue(),
+	  m_clearColor(),
+	  m_clearDepthStencil(),
 	  m_arraySize(),
 	  m_depth(),
 	  m_width(),
@@ -25,10 +26,10 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(con
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanRenderTarget>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

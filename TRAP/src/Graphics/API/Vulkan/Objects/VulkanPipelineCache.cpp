@@ -11,13 +11,14 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 	: m_cache(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
 {
 	TRAP_ASSERT(m_device);
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
 #endif
 
 	VkPipelineCacheCreateInfo psoCacheCreateInfo;
-	psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data, PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
+	psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data,
+	                                                          PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
 	VkCall(vkCreatePipelineCache(m_device->GetVkDevice(), &psoCacheCreateInfo, nullptr, &m_cache));
 }
 
@@ -25,12 +26,13 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 
 TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
+	TRAP_ASSERT(m_cache);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Destroying PipelineCache");
 #endif
 
-	if(m_cache)
-		vkDestroyPipelineCache(m_device->GetVkDevice(), m_cache, nullptr);
+	vkDestroyPipelineCache(m_device->GetVkDevice(), m_cache, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -57,7 +59,8 @@ void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::string& virtualOr
 	GetPipelineCacheData(&dataSize, data.data());
 
 	if (!TRAP::VFS::WriteFile(virtualOrPhysicalPath, data))
-		TP_ERROR(Log::RendererVulkanPipelineCachePrefix, "Saving of PipelineCache to path: \"", virtualOrPhysicalPath, "\" failed!");
+		TP_ERROR(Log::RendererVulkanPipelineCachePrefix, "Saving of PipelineCache to path: \"",
+		         virtualOrPhysicalPath, "\" failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

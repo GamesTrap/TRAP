@@ -83,7 +83,7 @@ namespace TRAP
 		out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
 		return out;
 	}
-	
+
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out << YAML::BeginMap; //Entity
@@ -186,7 +186,7 @@ void TRAP::SceneSerializer::Serialize(const std::string& filepath)
 
 void TRAP::SceneSerializer::SerializeRuntime(const std::string&)
 {
-	TRAP_CORE_ASSERT(false, "Not implemented yet!");
+	TRAP_ASSERT(false, "Not implemented yet!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -250,7 +250,10 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
 
 					auto cameraProps = cameraComponent["Camera"];
-					cc.Camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(cameraProps["ProjectionType"].as<int32_t>()));
+					cc.Camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>
+						(
+							cameraProps["ProjectionType"].as<int32_t>()
+						));
 
 					cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
 					cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
@@ -275,7 +278,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 
 		return true;
 	}
-	
+
 	TP_ERROR(Log::SceneSerializerPrefix, " File: \"", path, "\" doesnt exists!");
 	return false;
 }
@@ -284,6 +287,6 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 
 bool TRAP::SceneSerializer::DeserializeRuntime(const std::string&)
 {
-	TRAP_CORE_ASSERT(false, "Not implemented yet!");
+	TRAP_ASSERT(false, "Not implemented yet!");
 	return false;
 }

@@ -125,7 +125,7 @@ namespace TRAP::Network
 	private:
 		struct SocketSelectorImpl;
 
-		SocketSelectorImpl* m_impl; //Opaque pointer to the implementation (which requires OS-specific types)
+		TRAP::Scope<SocketSelectorImpl> m_impl; //Opaque pointer to the implementation (which requires OS-specific types)
 	};
 }
 

@@ -63,7 +63,7 @@ namespace TRAP::Utils::String
 	/// <param name="token">Token to find in string.</param>
 	/// <returns>If found string starting on first occurrence of the token, nullptr otherwise.</returns>
 	const char* FindToken(std::string_view string, std::string_view token);
-	
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
@@ -96,7 +96,7 @@ namespace TRAP::Utils::String
 	std::string GetBlock(std::string_view string, uint32_t offset = 0);
 
 	//-------------------------------------------------------------------------------------------------------------------//
-	
+
 	/// <summary>
 	/// Get a statement ending with a ';' from a string.
 	/// </summary>
@@ -113,7 +113,7 @@ namespace TRAP::Utils::String
 	std::string GetStatement(const char* str, const char** outPosition = nullptr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
-	
+
 	/// <summary>
 	/// Tokenize a string.
 	/// </summary>
@@ -169,7 +169,7 @@ namespace TRAP::Utils::String
 	/// <param name="string">String to convert.</param>
 	/// <returns>Upper case version of the given string.</returns>
 	std::string ToUpper(const std::string& string);
-	
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
@@ -179,7 +179,7 @@ namespace TRAP::Utils::String
 	/// <param name="delimiter">Delimiter to find.</param>
 	/// <returns>Number of occurrences of the delimiter inside the given string.</returns>
 	uint32_t GetCount(std::string_view string, char delimiter);
-	
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>

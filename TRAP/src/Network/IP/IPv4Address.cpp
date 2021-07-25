@@ -31,6 +31,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/HTTP/HTTP.h"
 #include "Network/Sockets/SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None;
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);
@@ -62,16 +64,21 @@ TRAP::Network::IPv4Address::IPv4Address(const char* address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2, const uint8_t byte3)
-	: m_address(htonl((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
+TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
+                                        const uint8_t byte3)
+	: m_address((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3), m_valid(true)
 {
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
-	: m_address(htonl(address)), m_valid(true)
+	: m_address(address), m_valid(true)
 {
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(m_address);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -90,7 +97,12 @@ std::string TRAP::Network::IPv4Address::ToString() const
 
 uint32_t TRAP::Network::IPv4Address::ToInteger() const
 {
-	return ntohl(m_address);
+	uint32_t address = m_address;
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(address);
+
+	return address;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -107,7 +119,12 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 		return IPv4Address();
 
 	//Connect the socket to localhost on any port
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(ntohl(INADDR_LOOPBACK), 9);
+	uint32_t loopback = INADDR_LOOPBACK;
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(loopback);
+
+	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
 	if (connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
@@ -126,7 +143,12 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	INTERNAL::Network::SocketImpl::Close(sock);
 
 	//Finally build the IP address
-	return IPv4Address(ntohl(address.sin_addr.s_addr));
+	uint32_t addr = address.sin_addr.s_addr;
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(addr);
+
+	return IPv4Address(addr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

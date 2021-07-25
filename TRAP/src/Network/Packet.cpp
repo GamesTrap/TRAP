@@ -29,6 +29,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "Packet.h"
 
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
+
 TRAP::Network::Packet::Packet()
 	: m_readPos(0), m_sendPos(0), m_isValid(true)
 {
@@ -38,12 +41,12 @@ TRAP::Network::Packet::Packet()
 
 void TRAP::Network::Packet::Append(const void* data, const std::size_t sizeInBytes)
 {
-	if(data && (sizeInBytes > 0))
-	{
-		const std::size_t start = m_data.size();
-		m_data.resize(start + sizeInBytes);
-		std::memcpy(&m_data[start], data, sizeInBytes);
-	}
+	if(!data || (sizeInBytes == 0))
+		return;
+
+	const std::size_t start = m_data.size();
+	m_data.resize(start + sizeInBytes);
+	std::memcpy(&m_data[start], data, sizeInBytes);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -133,7 +136,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = ntohs(*reinterpret_cast<const int16_t*>(&m_data[m_readPos]));
+		data = *reinterpret_cast<int16_t*>(&m_data[m_readPos]);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
 		m_readPos += sizeof(data);
 	}
 
@@ -146,7 +153,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = ntohs(*reinterpret_cast<const uint16_t*>(&m_data[m_readPos]));
+		data = *reinterpret_cast<uint16_t*>(&m_data[m_readPos]);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
 		m_readPos += sizeof(data);
 	}
 
@@ -159,7 +170,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = ntohl(*reinterpret_cast<const int32_t*>(&m_data[m_readPos]));
+		data = *reinterpret_cast<int32_t*>(&m_data[m_readPos]);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
 		m_readPos += sizeof(data);
 	}
 
@@ -172,7 +187,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = ntohl(*reinterpret_cast<const uint32_t*>(&m_data[m_readPos]));
+		data = *reinterpret_cast<uint32_t*>(&m_data[m_readPos]);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
 		m_readPos += sizeof(data);
 	}
 
@@ -185,17 +204,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		//Since nothll is not available everywhere, we have to convert
-		//to network byte order (big endian) manually
-		const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&m_data[m_readPos]);
-		data = (static_cast<int64_t>(bytes[0]) << 56) |
-			   (static_cast<int64_t>(bytes[1]) << 48) |
-			   (static_cast<int64_t>(bytes[2]) << 40) |
-			   (static_cast<int64_t>(bytes[3]) << 32) |
-			   (static_cast<int64_t>(bytes[4]) << 24) |
-			   (static_cast<int64_t>(bytes[5]) << 16) |
-			   (static_cast<int64_t>(bytes[6]) << 8) |
-			   (static_cast<int64_t>(bytes[7]));
+		data = *reinterpret_cast<int64_t*>(&m_data[m_readPos]);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
 		m_readPos += sizeof(data);
 	}
 
@@ -208,17 +221,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		//Since nothll is not available everywhere, we have to convert
-		//to network byte order (big endian) manually
-		const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&m_data[m_readPos]);
-		data = (static_cast<uint64_t>(bytes[0]) << 56) |
-			   (static_cast<uint64_t>(bytes[1]) << 48) |
-			   (static_cast<uint64_t>(bytes[2]) << 40) |
-			   (static_cast<uint64_t>(bytes[3]) << 32) |
-			   (static_cast<uint64_t>(bytes[4]) << 24) |
-			   (static_cast<uint64_t>(bytes[5]) << 16) |
-			   (static_cast<uint64_t>(bytes[6]) << 8) |
-			   (static_cast<uint64_t>(bytes[7]));
+		data = *reinterpret_cast<uint64_t*>(&m_data[m_readPos]);
+
+		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
+			TRAP::Utils::Memory::SwapBytes(data);
+
 		m_readPos += sizeof(data);
 	}
 
@@ -231,7 +238,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<const float*>(&m_data[m_readPos]);
+		data = *reinterpret_cast<float*>(&m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -244,7 +251,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<const double*>(&m_data[m_readPos]);
+		data = *reinterpret_cast<double*>(&m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -368,7 +375,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint8_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 {
-	int16_t toWrite = htons(data);
+	int16_t toWrite = data;
+
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
+
 	Append(&toWrite, sizeof(toWrite));
 	return *this;
 }
@@ -377,7 +388,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 {
-	int16_t toWrite = htons(data);
+	uint16_t toWrite = data;
+
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
+
 	Append(&toWrite, sizeof(toWrite));
 	return *this;
 }
@@ -386,7 +401,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 {
-	int32_t toWrite = htonl(data);
+	int32_t toWrite = data;
+
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
+
 	Append(&toWrite, sizeof(toWrite));
 	return *this;
 }
@@ -395,7 +414,11 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 {
-	uint32_t toWrite = htonl(data);
+	uint32_t toWrite = data;
+
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
+
 	Append(&toWrite, sizeof(toWrite));
 	return *this;
 }
@@ -404,20 +427,12 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 {
-	//Since htonll is not available everywhere, we have to convert
-	//to network byte order (big endian) manually
-	std::array<uint8_t, 8> toWrite
-	{
-		static_cast<uint8_t>((data >> 56) & 0xFF),
-		static_cast<uint8_t>((data >> 48) & 0xFF),
-		static_cast<uint8_t>((data >> 40) & 0xFF),
-		static_cast<uint8_t>((data >> 32) & 0xFF),
-		static_cast<uint8_t>((data >> 24) & 0xFF),
-		static_cast<uint8_t>((data >> 16) & 0xFF),
-		static_cast<uint8_t>((data >>  8) & 0xFF),
-		static_cast<uint8_t>((data      ) & 0xFF)
-	};
-	Append(toWrite.data(), toWrite.size());
+	int64_t toWrite = data;
+
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
+
+	Append(&toWrite, sizeof(toWrite));
 	return *this;
 }
 
@@ -425,20 +440,12 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint64_t data)
 {
-	//Since htonll is not available everywhere, we have to convert
-	//to network byte order (big endian) manually
-	std::array<uint8_t, 8> toWrite
-	{
-		static_cast<uint8_t>((data >> 56) & 0xFF),
-		static_cast<uint8_t>((data >> 48) & 0xFF),
-		static_cast<uint8_t>((data >> 40) & 0xFF),
-		static_cast<uint8_t>((data >> 32) & 0xFF),
-		static_cast<uint8_t>((data >> 24) & 0xFF),
-		static_cast<uint8_t>((data >> 16) & 0xFF),
-		static_cast<uint8_t>((data >>  8) & 0xFF),
-		static_cast<uint8_t>((data      ) & 0xFF)
-	};
-	Append(toWrite.data(), toWrite.size());
+	uint64_t toWrite = data;
+
+	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
+		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
+
+	Append(&toWrite, sizeof(toWrite));
 	return *this;
 }
 

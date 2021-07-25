@@ -35,7 +35,7 @@ void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 
 	TP_DEBUG(Log::LayerStackPrefix, "Pushing Overlay: ", overlay->GetName());
 	overlay->OnAttach();
-	m_layers.push_back(std::move(overlay));
+	m_layers.emplace_back(std::move(overlay));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

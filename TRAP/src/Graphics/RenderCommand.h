@@ -90,7 +90,7 @@ namespace TRAP::Graphics
 	{
 	public:
 		static void Clear(RendererBufferType buffer);
-		static void Present(const std::unique_ptr<Window>& window);
+		static void Present(const Scope<Window>& window);
 
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
 		static void SetDepthTesting(bool enabled);
@@ -98,25 +98,31 @@ namespace TRAP::Graphics
 		static void SetDepthFunction(RendererFunction function = RendererFunction::Less);
 		static void SetStencilTesting(bool enabled);
 		static void SetStencilMasking(uint32_t mask);
-		static void SetStencilMaskingSeparate(RendererFaceMode face = RendererFaceMode::Front_And_Back, uint32_t mask = 0xFF);
+		static void SetStencilMaskingSeparate(RendererFaceMode face = RendererFaceMode::Front_And_Back,
+		                                      uint32_t mask = 0xFF);
 		static void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask);
-		static void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask);
-		static void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass);
-		static void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass);
+		static void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference,
+		                                       uint32_t mask);
+		static void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail,
+		                                RendererOperation pass);
+		static void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail,
+		                                        RendererOperation depthFail, RendererOperation pass);
 		static void SetBlend(bool enabled);
 		static void SetCull(bool enabled);
 		static void SetFrontFace(RendererFrontFace frontFace = RendererFrontFace::Counter_Clockwise);
 		static void SetWireFrame(bool enabled);
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
-		static void SetBlendFunction(RendererBlendFunction source = RendererBlendFunction::One, RendererBlendFunction destination = RendererBlendFunction::Zero);
+		static void SetBlendFunction(RendererBlendFunction source = RendererBlendFunction::One,
+		                             RendererBlendFunction destination = RendererBlendFunction::Zero);
 		static void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB = RendererBlendFunction::One,
 		                                     RendererBlendFunction sourceAlpha = RendererBlendFunction::One,
 		                                     RendererBlendFunction destinationRGB = RendererBlendFunction::Zero,
 		                                     RendererBlendFunction destinationAlpha = RendererBlendFunction::Zero
 		);
 		static void SetBlendEquation(RendererBlendEquation blendEquation = RendererBlendEquation::Add);
-		static void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB = RendererBlendEquation::Add, RendererBlendEquation blendEquationAlpha = RendererBlendEquation::Add);
+		static void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB = RendererBlendEquation::Add,
+		                                     RendererBlendEquation blendEquationAlpha = RendererBlendEquation::Add);
 
 		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
 

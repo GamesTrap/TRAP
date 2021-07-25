@@ -8,18 +8,22 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()), m_vkCommandPool(VK_NULL_HANDLE)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	  m_vkCommandPool(VK_NULL_HANDLE)
 {
 	m_queue = desc.Queue;
-	
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 	TRAP_ASSERT(m_queue, "queue is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");
 #endif
-	
-	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo(dynamic_cast<VulkanQueue*>(m_queue.get())->GetQueueFamilyIndex());
+
+	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo
+		(
+			dynamic_cast<VulkanQueue*>(m_queue.get())->GetQueueFamilyIndex()
+		);
 	if (desc.Transient)
 		info.flags |= VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 
@@ -30,18 +34,17 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 {
-	if(m_vkCommandPool)
-	{
-		for (auto& m_commandBuffer : m_commandBuffers)
-			m_commandBuffer.reset();
-		m_commandBuffers.clear();
-		
+	TRAP_ASSERT(m_vkCommandPool);
+
+	for (auto& m_commandBuffer : m_commandBuffers)
+		m_commandBuffer.reset();
+	m_commandBuffers.clear();
+
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Destroying CommandPool");
+	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Destroying CommandPool");
 #endif
-		
-		vkDestroyCommandPool(m_device->GetVkDevice(), m_vkCommandPool, nullptr);
-	}
+
+	vkDestroyCommandPool(m_device->GetVkDevice(), m_vkCommandPool, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,8 +57,8 @@ VkCommandPool& TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
-{	
-	m_commandBuffers.push_back(TRAP::Scope<VulkanCommandBuffer>(new VulkanCommandBuffer(m_device, m_queue, m_vkCommandPool, secondary)));
+{
+	m_commandBuffers.emplace_back(new VulkanCommandBuffer(m_device, m_queue, m_vkCommandPool, secondary));
 	return m_commandBuffers.back().get();
 }
 
@@ -65,14 +68,14 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(CommandBuffer* cm
 {
 	for(uint32_t i = 0; i < m_commandBuffers.size(); i++)
 	{
-		if(m_commandBuffers[i].get() == cmdBuffer)
-		{
-			TRAP::Scope<CommandBuffer> cmdBuf = std::move(m_commandBuffers[i]);
-			cmdBuf.reset();
+		if(m_commandBuffers[i].get() != cmdBuffer)
+			continue;
 
-			m_commandBuffers[i] = std::move(m_commandBuffers.back());
-			m_commandBuffers.pop_back();
-		}
+		TRAP::Scope<CommandBuffer> cmdBuf = std::move(m_commandBuffers[i]);
+		cmdBuf.reset();
+
+		m_commandBuffers[i] = std::move(m_commandBuffers.back());
+		m_commandBuffers.pop_back();
 	}
 }
 

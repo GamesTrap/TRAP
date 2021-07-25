@@ -9,10 +9,10 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanDescriptorPool>(numDescriptorSets);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

@@ -132,7 +132,10 @@ typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush(const T& item)
+typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush
+(
+	const T& item
+)
 {
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
@@ -168,7 +171,8 @@ typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::Pop(T& item)
+typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
+TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	std::unique_lock lock(m_mutex);
 	while (m_queue.empty() && !m_done)
@@ -206,7 +210,8 @@ typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::Blo
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPop(T& item)
+typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
+TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
 	if (!lock || m_queue.empty())

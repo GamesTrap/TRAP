@@ -28,8 +28,6 @@ namespace TRAP::Graphics
 		BufferUsage GetBufferUsage() const;
 		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const;
 
-		//void Use(Shader* shader); TODO REMOVE
-
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
 
 		bool IsLoaded() const;
@@ -41,6 +39,8 @@ namespace TRAP::Graphics
 		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, BufferUsage usage);
 
 	private:
+		static Scope<UniformBuffer> Init(const std::string& name, void* data, uint64_t size, BufferUsage usage);
+
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
 		std::vector<API::SyncToken> m_tokens;

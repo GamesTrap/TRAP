@@ -212,7 +212,8 @@ TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseBut
 
 std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
-	return "MouseButtonPressEvent: " + MouseButtonToString(m_button) + "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
+	return "MouseButtonPressEvent: " + MouseButtonToString(m_button) +
+	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -256,7 +257,8 @@ TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::Mous
 
 std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
-	return "MouseButtonReleaseEvent: " + MouseButtonToString(m_button) + "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
+	return "MouseButtonReleaseEvent: " + MouseButtonToString(m_button) +
+	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

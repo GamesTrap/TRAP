@@ -187,10 +187,10 @@ void TRAP::SceneCamera::RecalculateProjection()
 		const float orthographicTop = m_orthographicSize * 0.5f;
 
 		m_projection = Math::Orthographic(orthographicLeft,
-			orthographicRight,
-			orthographicBottom,
-			orthographicTop,
-			m_orthographicNear,
-			m_orthographicFar);
+			                              orthographicRight,
+			                              orthographicBottom,
+			                              orthographicTop,
+			                              m_orthographicNear,
+			                              m_orthographicFar);
 	}
 }

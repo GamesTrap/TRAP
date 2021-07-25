@@ -48,6 +48,14 @@ namespace TRAP::INTERNAL
 	private:
 		std::vector<uint8_t> m_data;
 		std::vector<uint16_t> m_data2Byte;
+
+		struct Header
+		{
+			std::string MagicNumber = "";
+			std::uint32_t Width = 0;
+			std::uint32_t Height = 0;
+			std::uint32_t MaxValue = 255;
+		};
 	};
 }
 

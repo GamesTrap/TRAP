@@ -7,7 +7,7 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
-	
+
 	class VulkanSampler final : public Sampler
 	{
 	public:
@@ -15,10 +15,10 @@ namespace TRAP::Graphics::API
 		~VulkanSampler();
 
 		VkSampler& GetVkSampler();
-		
+
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
-		
+
 		//Native handle of the underlying resource
 		VkSampler m_vkSampler;
 		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion;

@@ -7,7 +7,7 @@
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
-	
+
 	class VulkanQueue final : public Queue
 	{
 	public:
@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 		void Submit(const RendererAPI::QueueSubmitDesc& desc) const override;
 
 		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
-		
+
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
 

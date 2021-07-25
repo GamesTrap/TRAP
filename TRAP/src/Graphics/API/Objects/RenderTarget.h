@@ -5,11 +5,13 @@
 
 namespace TRAP::Graphics
 {
+	class TextureBase;
+
 	class RenderTarget
 	{
 	public:
 		static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
-		
+
 		virtual ~RenderTarget() = default;
 
 		virtual uint32_t GetWidth() const = 0;
@@ -19,16 +21,18 @@ namespace TRAP::Graphics
 		virtual uint32_t GetMipLevels() const = 0;
 		virtual RendererAPI::SampleCount GetSampleCount() const = 0;
 		virtual uint32_t GetSampleQuality() const = 0;
-		virtual RendererAPI::ImageFormat GetImageFormat() const = 0;
-		virtual RendererAPI::ClearValue GetClearValue() const = 0;
+		virtual TRAP::Graphics::API::ImageFormat GetImageFormat() const = 0;
+		virtual RendererAPI::ClearColor GetClearColor() const = 0;
+		virtual RendererAPI::ClearDepthStencil GetClearDepthStencil() const = 0;
 		virtual RendererAPI::DescriptorType GetDescriptorType() const = 0;
 
 	protected:
 		RenderTarget();
-		
-		TRAP::Ref<API::VulkanTexture> m_texture; //TODO
 
-		RendererAPI::ClearValue m_clearValue;
+		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;
+
+		RendererAPI::ClearColor m_clearColor;
+		RendererAPI::ClearDepthStencil m_clearDepthStencil;
 		uint32_t m_arraySize;
 		uint32_t m_depth;
 		uint32_t m_width;
@@ -36,7 +40,7 @@ namespace TRAP::Graphics
 		RendererAPI::DescriptorType m_descriptors;
 		uint32_t m_mipLevels;
 		uint32_t m_sampleQuality;
-		RendererAPI::ImageFormat m_format;
+		TRAP::Graphics::API::ImageFormat m_format;
 		RendererAPI::SampleCount m_sampleCount;
 	};
 }

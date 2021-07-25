@@ -26,14 +26,15 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	  m_vkPushConstantCount()
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Creating RootSignature");
 #endif
 
 	static constexpr uint32_t maxLayoutCount = static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT);
 	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
-	std::array<VkPushConstantRange, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
+	std::array<VkPushConstantRange,
+	           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
 	uint32_t pushConstantCount = 0;
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
 	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>> staticSamplerMap;
@@ -41,7 +42,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	for(uint32_t i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
 		TRAP_ASSERT(desc.StaticSamplers[i]);
-		staticSamplerMap.insert({ {desc.StaticSamplerNames[i], std::dynamic_pointer_cast<VulkanSampler>(desc.StaticSamplers[i])} });
+		staticSamplerMap.insert({ {desc.StaticSamplerNames[i],
+		                           std::dynamic_pointer_cast<VulkanSampler>(desc.StaticSamplers[i])} });
 	}
 
 	RendererAPI::PipelineType pipelineType = RendererAPI::PipelineType::Undefined;
@@ -52,7 +54,10 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//be considered the same resource)
 	for(uint32_t sh = 0; sh < desc.Shaders.size(); ++sh)
 	{
-		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>(desc.Shaders[sh])->GetReflection();
+		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
+		(
+			desc.Shaders[sh]
+		)->GetReflection();
 
 		if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::Compute))
 			pipelineType = RendererAPI::PipelineType::Compute;
@@ -69,10 +74,11 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			if(resNameIt == indexMap.Map.end())
 			{
 				auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
-				                       [res](const ShaderReflection::ShaderResource& a)
-				                       {
-					                       return (a.Type == res.Type) && (a.UsedStages == res.UsedStages) && (((a.Reg ^ res.Reg) | (a.Set ^ res.Set)) == 0);
-				                       });
+				                          [res](const ShaderReflection::ShaderResource& a)
+				{
+					return (a.Type == res.Type) && (a.UsedStages == res.UsedStages) &&
+					       (((a.Reg ^ res.Reg) | (a.Set ^ res.Set)) == 0);
+				});
 				if(resIt == shaderResources.end())
 				{
 					indexMap.Map.insert({ res.Name, static_cast<uint32_t>(shaderResources.size()) });
@@ -84,9 +90,11 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					if(res.Type != resIt->Type)
 					{
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
-						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " and ", resIt->Name, " have mismatching types (", static_cast<uint32_t>(res.Type),
-							") and (", static_cast<uint32_t>(resIt->Type), "). All shader resources sharing the same",
-							"register and space RootSignature must have the same type");
+						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name,
+						         " and ", resIt->Name, " have mismatching types (", static_cast<uint32_t>(res.Type),
+							     ") and (", static_cast<uint32_t>(resIt->Type),
+								 "). All shader resources sharing the same",
+								 "register and space RootSignature must have the same type");
 						return;
 					}
 
@@ -99,17 +107,17 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				if(shaderResources[resNameIt->second].Reg != res.Reg)
 				{
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
-					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " has mismatching binding.", 
-						" All shader resources shared by multiple shaders specified in RootSignature ",
-						"must have the same binding and set.");
+					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name,
+					         " has mismatching binding. All shader resources shared by multiple shaders specified ",
+							 "in RootSignature must have the same binding and set.");
 					return;
 				}
 				if (shaderResources[resNameIt->second].Set != res.Set)
 				{
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
-					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " has mismatching set.",
-						" All shader resources shared by multiple shaders specified in RootSignature ",
-						"must have the same binding and set.");
+					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name,
+					         " has mismatching set. All shader resources shared by multiple shaders specified "
+							 "in RootSignature must have the same binding and set.");
 					return;
 				}
 
@@ -148,7 +156,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		descInfo.Name = res.Name;
 		descInfo.Dimension = res.Dim;
 
-		//If descriptor is not a root constant create a new layout binding for this descriptor and add it to the binding array
+		//If descriptor is not a root constant create a new layout binding for this descriptor and add it to
+		//the binding array
 		if(descInfo.Type != RendererAPI::DescriptorType::RootConstant)
 		{
 			VkDescriptorSetLayoutBinding binding{};
@@ -166,12 +175,14 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			{
 				if(descInfo.Size == 1)
 				{
-					TP_INFO("Descriptor (", descInfo.Name, "): User specified VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC");
+					TP_INFO("Descriptor (", descInfo.Name,
+					        "): User specified VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC");
 					binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 				}
 				else
 				{
-					TP_WARN("Descriptor (", descInfo.Name, "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
+					TP_WARN("Descriptor (", descInfo.Name,
+					        "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
 				}
 			}
 
@@ -233,16 +244,16 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		if(!layouts[i].Bindings.empty())
 		{
 			//Sort table by type (CBV/SRV/UAV) by register
-			std::sort(layout.Bindings.begin(), layout.Bindings.end(),
-				[](const VkDescriptorSetLayoutBinding& lhs, const VkDescriptorSetLayoutBinding& rhs)
-				{
-					return lhs.binding > rhs.binding;
-				});
-			std::sort(layout.Bindings.begin(), layout.Bindings.end(),
-				[](const VkDescriptorSetLayoutBinding& lhs, const VkDescriptorSetLayoutBinding& rhs)
-				{
-					return lhs.descriptorType > rhs.descriptorType;
-				});
+			std::sort(layout.Bindings.begin(), layout.Bindings.end(), [](const VkDescriptorSetLayoutBinding& lhs,
+			                                                             const VkDescriptorSetLayoutBinding& rhs)
+			{
+				return lhs.binding > rhs.binding;
+			});
+			std::sort(layout.Bindings.begin(), layout.Bindings.end(), [](const VkDescriptorSetLayoutBinding& lhs,
+			                                                             const VkDescriptorSetLayoutBinding& rhs)
+			{
+				return lhs.descriptorType > rhs.descriptorType;
+			});
 		}
 
 		bool createLayout = !layout.Bindings.empty();
@@ -256,7 +267,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		{
 			VkDescriptorSetLayoutCreateInfo layoutInfo = VulkanInits::DescriptorSetLayoutCreateInfo(layout.Bindings);
 
-			VkCall(vkCreateDescriptorSetLayout(m_device->GetVkDevice(), &layoutInfo, nullptr, &m_vkDescriptorSetLayouts[i]));
+			VkCall(vkCreateDescriptorSetLayout(m_device->GetVkDevice(), &layoutInfo, nullptr,
+			                                   &m_vkDescriptorSetLayouts[i]));
 		}
 
 		if (layouts[i].Bindings.empty())
@@ -284,17 +296,23 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Pipeline layout
 	std::array<VkDescriptorSetLayout, maxLayoutCount> descriptorSetLayouts{};
 	uint32_t descriptorSetLayoutCount = 0;
-	for(uint32_t i = 0; i < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++i)
+	for(uint32_t i = 0;
+	    i < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++i)
 	{
 		if (m_vkDescriptorSetLayouts[i])
 			descriptorSetLayouts[descriptorSetLayoutCount++] = m_vkDescriptorSetLayouts[i];
 	}
 
-	VkPipelineLayoutCreateInfo addInfo = VulkanInits::PipelineLayoutCreateInfo(descriptorSetLayoutCount, descriptorSetLayouts.data(), m_vkPushConstantCount, pushConstants.data());
+	VkPipelineLayoutCreateInfo addInfo = VulkanInits::PipelineLayoutCreateInfo(descriptorSetLayoutCount,
+	                                                                           descriptorSetLayouts.data(),
+																			   m_vkPushConstantCount,
+																			   pushConstants.data());
 	VkCall(vkCreatePipelineLayout(m_device->GetVkDevice(), &addInfo, nullptr, &m_pipelineLayout));
 
 	//Update templates
-	for(uint32_t setIndex = 0; setIndex < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++setIndex)
+	for(uint32_t setIndex = 0;
+	    setIndex < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT);
+		++setIndex)
 	{
 		if(m_vkDescriptorCounts[setIndex])
 		{
@@ -334,17 +352,38 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				{
 				case RendererAPI::DescriptorType::Sampler:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
-						updateData[descInfo->HandleIndex + arr].ImageInfo = {VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(), VK_NULL_HANDLE, VK_IMAGE_LAYOUT_UNDEFINED};
+					{
+						updateData[descInfo->HandleIndex + arr].ImageInfo =
+						{
+							VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+						    VK_NULL_HANDLE,
+							VK_IMAGE_LAYOUT_UNDEFINED
+						};
+					}
 					break;
 
 				case RendererAPI::DescriptorType::Texture:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
-						updateData[descInfo->HandleIndex + arr].ImageInfo = { VK_NULL_HANDLE, VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)]->GetSRVVkImageView(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
+					{
+						updateData[descInfo->HandleIndex + arr].ImageInfo =
+						{
+							VK_NULL_HANDLE,
+							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetSRVVkImageView(),
+							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+						};
+					}
 					break;
 
 				case RendererAPI::DescriptorType::RWTexture:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
-						updateData[descInfo->HandleIndex + arr].ImageInfo = {VK_NULL_HANDLE, VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)]->GetUAVVkImageViews()[0], VK_IMAGE_LAYOUT_GENERAL};
+					{
+						updateData[descInfo->HandleIndex + arr].ImageInfo =
+						{
+							VK_NULL_HANDLE,
+							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetUAVVkImageViews()[0],
+							VK_IMAGE_LAYOUT_GENERAL
+						};
+					}
 					break;
 
 				case RendererAPI::DescriptorType::UniformBuffer:
@@ -391,21 +430,24 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				++entryCount;
 			}
 
-			VkDescriptorUpdateTemplateCreateInfo createInfo =
-					VulkanInits::DescriptorUpdateTemplateCreateInfo(m_vkDescriptorSetLayouts[setIndex],
-					                                                entryCount,
-					                                                entries.data(),
-					                                                VkPipelineBindPointTranslator[static_cast<uint32_t>(m_pipelineType)],
-					                                                m_pipelineLayout,
-					                                                setIndex);
-			VkCall(vkCreateDescriptorUpdateTemplate(m_device->GetVkDevice(), &createInfo, nullptr, &m_updateTemplates[setIndex]));
+			VkDescriptorUpdateTemplateCreateInfo createInfo = VulkanInits::DescriptorUpdateTemplateCreateInfo
+			(
+				m_vkDescriptorSetLayouts[setIndex], entryCount, entries.data(),
+				VkPipelineBindPointTranslator[static_cast<uint32_t>(m_pipelineType)],
+				m_pipelineLayout, setIndex
+			);
+			VkCall(vkCreateDescriptorUpdateTemplate(m_device->GetVkDevice(), &createInfo, nullptr,
+			                                        &m_updateTemplates[setIndex]));
 
 			entries.clear();
 		}
 		else if(m_vkDescriptorSetLayouts[setIndex] != VK_NULL_HANDLE)
 		{
 			//Consume empty descriptor sets from empty descriptor set pool
-			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<TRAP::Graphics::API::VulkanDescriptorPool*>(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDescriptorPool().get())->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
+			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<TRAP::Graphics::API::VulkanDescriptorPool*>
+			(
+				dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDescriptorPool().get()
+			)->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
 		}
 	}
 }
@@ -414,11 +456,14 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
+	TRAP_ASSERT(m_pipelineLayout);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");
 #endif
-	
-	for(uint32_t i = 0; i < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++i)
+
+	for(uint32_t i = 0;
+	    i < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++i)
 	{
 		vkDestroyDescriptorSetLayout(m_device->GetVkDevice(), m_vkDescriptorSetLayouts[i], nullptr);
 		if (m_updateTemplates[i] != VK_NULL_HANDLE)
@@ -429,8 +474,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 	m_descriptorNameToIndexMap->Map.clear();
 
-	if (m_pipelineLayout)
-		vkDestroyPipelineLayout(m_device->GetVkDevice(), m_pipelineLayout, nullptr);
+	vkDestroyPipelineLayout(m_device->GetVkDevice(), m_pipelineLayout, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -450,7 +494,8 @@ VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout()
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const ->
-const std::array<VkDescriptorSetLayout, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+const std::array<VkDescriptorSetLayout,
+                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_vkDescriptorSetLayouts;
 }
@@ -458,7 +503,8 @@ const std::array<VkDescriptorSetLayout, static_cast<uint32_t>(TRAP::Graphics::Re
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const ->
-	const std::array<uint32_t, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint32_t,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_vkCumulativeDescriptorsCounts;
 }
@@ -466,7 +512,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts()
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
-	const std::array<uint16_t, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint16_t,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_vkDescriptorCounts;
 }
@@ -474,7 +521,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const ->
-	const std::array<uint8_t, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint8_t,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_vkDynamicDescriptorCounts;
 }
@@ -482,7 +530,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() co
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const ->
-	const std::array<uint8_t, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint8_t,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_vkRayTracingDescriptorCounts;
 }
@@ -490,7 +539,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts()
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
-	const std::array<VkDescriptorUpdateTemplate, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<VkDescriptorUpdateTemplate,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_updateTemplates;
 }
@@ -498,7 +548,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const ->
-	const std::array<VkDescriptorSet, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<VkDescriptorSet,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_vkEmptyDescriptorSets;
 }
@@ -506,7 +557,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
-	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>, static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
+	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
 {
 	return m_updateTemplateData;
 }

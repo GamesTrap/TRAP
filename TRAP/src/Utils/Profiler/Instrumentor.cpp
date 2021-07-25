@@ -23,14 +23,16 @@ void TRAP::Utils::Debug::Instrumentor::BeginSession(const std::string& name, con
 		//If there is already a current session, then close it before beginning a new one.
 		//Subsequent profiling output meant for the original session will end up in the newly opened session instead.
 		//That is better than having badly formatted profiling output.
-		TP_ERROR(Log::InstrumentorPrefix, "Instrumentor::BeginSession('", name, "') when session '", m_currentSession->Name, "' already open!");
+		TP_ERROR(Log::InstrumentorPrefix, "Instrumentor::BeginSession('", name, "') when session '",
+		         m_currentSession->Name, "' already open!");
 		InternalEndSession();
 	}
 	m_outputStream.open(filePath);
-	
+
 	if(m_outputStream.is_open())
 	{
-		m_currentSession = new InstrumentationSession({ name });
+		m_currentSession = TRAP::MakeScope<InstrumentationSession>();
+		m_currentSession->Name = name;
 		WriteHeader();
 	}
 	else
@@ -61,7 +63,7 @@ void TRAP::Utils::Debug::Instrumentor::WriteProfile(const ProfileResult& result)
 	json << "\"tid\":" << result.ThreadID << ",";
 	json << "\"ts\":" << result.Start.count();
 	json << "}";
-	
+
 	std::lock_guard lock(m_mutex);
 	if(m_currentSession)
 	{
@@ -103,8 +105,7 @@ void TRAP::Utils::Debug::Instrumentor::InternalEndSession()
 	{
 		WriteFooter();
 		m_outputStream.close();
-		delete m_currentSession;
-		m_currentSession = nullptr;
+		m_currentSession.reset();
 	}
 }
 
@@ -133,7 +134,7 @@ void TRAP::Utils::Debug::InstrumentationTimer::Stop()
 	const auto endTimePoint = std::chrono::steady_clock::now();
 	const auto highResStart = FloatingPointMicroseconds{ m_startTimePoint.time_since_epoch() };
 	const auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimePoint).time_since_epoch() -
-			std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimePoint).time_since_epoch();
+			                 std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimePoint).time_since_epoch();
 
 	Instrumentor::Get().WriteProfile({ m_name, highResStart, elapsedTime, std::this_thread::get_id() });
 

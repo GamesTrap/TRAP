@@ -13,14 +13,14 @@ namespace TRAP::Graphics
 		virtual ~Queue() = default;
 
 		virtual void WaitQueueIdle() const = 0;
-		
+
 		virtual void Submit(const RendererAPI::QueueSubmitDesc& desc) const = 0;
 
 		virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
-	
+
 	protected:
 		Queue() = default;
-		
+
 		//No Graphic API independent data
 	};
 }

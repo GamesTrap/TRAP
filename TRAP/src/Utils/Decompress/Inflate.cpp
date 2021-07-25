@@ -68,12 +68,13 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_
 	const std::size_t size = Size;
 	if (start + 2u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) | static_cast<uint32_t>(Data[start + 2] << 16u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) |
+		         static_cast<uint32_t>(Data[start + 2] << 16u);
 		Buffer >>= (BP & 7u);
 
 		return true;
 	}
-	
+
 	Buffer = 0;
 	if (start + 0u < size)
 		Buffer |= Data[start + 0];
@@ -92,7 +93,8 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_
 	const std::size_t size = Size;
 	if (start + 3u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) | static_cast<uint32_t>(Data[start + 2] << 16u) | static_cast<uint32_t>(Data[start + 3] << 24u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) |
+		         static_cast<uint32_t>(Data[start + 2] << 16u) | static_cast<uint32_t>(Data[start + 3] << 24u);
 		Buffer >>= (BP & 7u);
 
 		return true;
@@ -118,7 +120,8 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_
 	const std::size_t size = Size;
 	if (start + 4u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) | static_cast<uint32_t>(Data[start + 2] << 16u) | static_cast<uint32_t>(Data[start + 3] << 24u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) |
+		         static_cast<uint32_t>(Data[start + 2] << 16u) | static_cast<uint32_t>(Data[start + 3] << 24u);
 		Buffer >>= (BP & 7u);
 		Buffer |= (static_cast<uint32_t>(Data[start + 4] << 24u) << (7u - (BP & 7u)));
 
@@ -152,7 +155,8 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b, const std::size_t c)
+bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b,
+                                                                   const std::size_t c)
 {
 	std::size_t d;
 	if (AddOverflow(a, b, d))
@@ -180,8 +184,10 @@ void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Safely check if multiplying two integers will overflow(no undefined behavior, compiler removing the code, etc...) and output result
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b, std::size_t& result)
+//Safely check if multiplying two integers will overflow(no undefined behavior, compiler removing the code, etc...)
+//and output result
+bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b,
+                                                                    std::size_t& result)
 {
 	result = a * b; //Unsigned multiplication is well defined and safe
 
@@ -190,7 +196,8 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b, std::size_t& result)
+bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b,
+                                                               std::size_t& result)
 {
 	result = a + b; //Unsigned addition is well defined and safe
 
@@ -211,7 +218,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(Huffman
 {
 	if (!treeLL.GenerateFixedLiteralLengthTree())
 		return false;
-	
+
 	if (!treeD.GenerateFixedDistanceTree())
 		return false;
 
@@ -221,7 +228,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(Huffman
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get the tree of a deflated block with dynamic tree, the tree itself is also Huffman compressed with a known tree
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(HuffmanTree& treeLL, HuffmanTree& treeD, BitReader& reader)
+bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(HuffmanTree& treeLL, HuffmanTree& treeD,
+                                                                           BitReader& reader)
 {
 	//Make sure that length values that arent filled in will be 0, or a wrong tree will be generated
 	uint32_t n, i;
@@ -242,7 +250,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 	//Unlike the spec, the value 4 is added to it here already
 	const uint32_t HCLEN = reader.ReadBits(4) + 4;
 
-	//Code length code lengths ("clcl"), the bit lengths of the Huffman Tree used to compress bitLengthLL and bitLengthD
+	//Code length code lengths ("clcl"), the bit lengths of the Huffman Tree used to compress
+	//bitLengthLL and bitLengthD
 	std::array<uint32_t, 19> bitLengthCL{};
 
 	bool error = false;
@@ -270,7 +279,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 		std::array<uint32_t, NumDeflateCodeSymbols> bitLengthLL{};
 		std::array<uint32_t, NumDistanceSymbols> bitLengthD{};
 
-		//i is the current symbol we are reading in the part that contains the code lengths of literal/length and distance codes
+		//i is the current symbol we are reading in the part that contains the code lengths of
+		//literal/length and distance codes
 		i = 0;
 		while(i < HLIT + HDIST)
 		{
@@ -309,7 +319,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 						error = true; //Error: i is larger than the amount of codes
 						break;
 					}
-					
+
 					if (i < HLIT)
 						bitLengthLL[i] = value;
 					else
@@ -403,7 +413,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 	if(l <= FirstBits)
 	{
 		reader.AdvanceBits(l);
-		
+
 		return value;
 	}
 
@@ -420,7 +430,8 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
 {
 	uint32_t i;
-	std::array<uint32_t, NumDeflateCodeSymbols> bitLength{}; //256 literals, the end code, some length codes, and 2 unused codes
+	//256 literals, the end code, some length codes, and 2 unused codes
+	std::array<uint32_t, NumDeflateCodeSymbols> bitLength{};
 
 	//288 possible codes: 0-255 = Literals, 256 = EndCode, 257-285 = LengthCodes, 286-287 = Unused
 	for (i = 0; i <= 143; ++i)
@@ -432,7 +443,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthT
 	for (i = 280; i <= 287; ++i)
 		bitLength[i] = 8;
 
-	if (!MakeFromLengths(bitLength.data(), NumDeflateCodeSymbols, 15)) //256 literals, the end code, some length codes, and 2 unused codes
+	//256 literals, the end code, some length codes, and 2 unused codes
+	if (!MakeFromLengths(bitLength.data(), NumDeflateCodeSymbols, 15))
 		return false;
 
 	return true;
@@ -443,7 +455,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthT
 //Get the distance code tree of a deflated block with fixed tree, as specified in the deflate specification
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 {
-	std::array<uint32_t, NumDistanceSymbols> bitLength{}; //The distance codes have their own symbols, 30 used, 2 unused
+	//The distance codes have their own symbols, 30 used, 2 unused
+	std::array<uint32_t, NumDistanceSymbols> bitLength{};
 
 	//There are 32 distance codes, but 30-31 are unused
 	for (uint32_t i = 0; i != NumDistanceSymbols; ++i)
@@ -459,7 +472,9 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 
 //Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
 //MaxBitLength is the maximum bits that a code in the tree can have.
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* bitLength, const std::size_t numCodes, const uint32_t maxBitLength)
+bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* bitLength,
+                                                                     const std::size_t numCodes,
+																	 const uint32_t maxBitLength)
 {
 	Lengths.resize(numCodes);
 	for (uint32_t i = 0; i != numCodes; ++i)
@@ -558,16 +573,17 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 		const uint32_t reverse = ReverseBits(symbol, l);
 		if (l == 0)
 			continue;
-		
+
 		numPresent++;
-		
+
 		if(l <= FirstBits)
 		{
 			//Short symbol, fully in first table, replicated num times if l < FIRSTBITS(9u)
 			const uint32_t num = 1u << (FirstBits - l);
 			for(uint32_t j = 0; j < num; ++j)
 			{
-				//Bit reader will read the 1 bits of symbol first, the remaining FIRSTBITS(9u) - l bits go to the MSBs
+				//Bit reader will read the 1 bits of symbol first, the remaining FIRSTBITS(9u) - l bits
+				//go to the MSBs
 				const uint32_t index = reverse | (j << l);
 				if (TableLength[index] != 16)
 					return false; //Invalid tree: Long symbol shares prefix with short symbol
@@ -584,7 +600,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 			//log2 of secondary table length, should be >= l - FIRSTBITS(9u)
 			const uint32_t tableLength = maxLength - FirstBits;
 			const uint32_t start = TableValue[index]; //Starting index in secondary table
-			const uint32_t num = 1u << (tableLength - (l - FirstBits)); //Amount of entries of this symbol in secondary table
+			//Amount of entries of this symbol in secondary table
+			const uint32_t num = 1u << (tableLength - (l - FirstBits));
 			if (maxLength < l)
 				return false; //Invalid tree: Long symbol shares prefix with short symbol
 			for(uint32_t j = 0; j < num; ++j)
@@ -600,28 +617,34 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	if(numPresent < 2)
 	{
 		//In case of exactly 1 symbol, in theory the Huffman symbol needs 0 bits, but deflate uses 1 bit instead.
-		//In case of 0 symbols, no symbols can appear at all, but such Huffman Tree could still exist(e.g. if distance codes are never used).
+		//In case of 0 symbols, no symbols can appear at all, but such Huffman Tree could still
+		//exist(e.g. if distance codes are never used).
 		//In both cases, not all symbols of the table will be filled in.
-		//Fill them in with an invalid symbol value so returning them from HuffmanTree::DecodeSymbol will cause error
+		//Fill them in with an invalid symbol value so returning them from HuffmanTree::DecodeSymbol
+		//will cause error
 		for (i = 0; i < size; ++i)
 		{
 			if (TableLength[i] == 16)
 			{
-				//As Length, use a value smaller than FIRSTBITS(9u) for the head table, and a value larger than FIRSTBITS(9u) for the secondary table,
+				//As Length, use a value smaller than FIRSTBITS(9u) for the head table, and a value larger
+				//than FIRSTBITS(9u) for the secondary table,
 				//to ensure valid behavior for advanceBits when reading this symbol.
 				TableLength[i] = i < headSize ? 1 : FirstBits + 1;
 				TableValue[i] = InvalidSymbol;
-			}			
+			}
 		}
 	}
 	else
 	{
 		//A good Huffman Tree has N * 2 - 1 nodes, of which N - 1 are internal nodes.
-		//If that is not the case(due to too long length codes), the table will not have been fully used, and this is an error
-		//(not all bit combinations can be decoded)		
+		//If that is not the case(due to too long length codes), the table will not have been fully used,
+		//and this is an error
+		//(not all bit combinations can be decoded)
 		for (i = 0; i < size; ++i)
+		{
 			if (TableLength[i] == 16)
 				return false;
+		}
 	}
 
 	return true;
@@ -640,7 +663,8 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint3
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader)
+bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos,
+                                                             BitReader& reader)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -652,9 +676,11 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 	//Read LEN(2Bytes) and NLEN(2Bytes)
 	if (bytePos + 4 >= size)
 		return false; //Error, bit pointer will jump past memory
-	const uint32_t LEN = static_cast<uint32_t>(reader.Data[bytePos]) + static_cast<uint32_t>(reader.Data[bytePos + 1] << 8u);
+	const uint32_t LEN = static_cast<uint32_t>(reader.Data[bytePos]) +
+	                     static_cast<uint32_t>(reader.Data[bytePos + 1] << 8u);
 	bytePos += 2;
-	const uint32_t NLEN = static_cast<uint32_t>(reader.Data[bytePos]) + static_cast<uint32_t>(reader.Data[bytePos + 1] << 8u);
+	const uint32_t NLEN = static_cast<uint32_t>(reader.Data[bytePos]) +
+	                      static_cast<uint32_t>(reader.Data[bytePos + 1] << 8u);
 	bytePos += 2;
 
 	//Check if 16-bit NLEN is really the ones complement of LEN
@@ -678,7 +704,8 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader, const uint32_t btype)
+bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos,
+                                                            BitReader& reader, const uint32_t btype)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -687,11 +714,11 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 
 	if (btype != 1 && btype != 2)
 		return false;
-	
+
 	if (btype == 1)
 		if (!HuffmanTree::GetTreeInflateFixed(treeLL, treeD))
 			return false;
-	
+
 	if(btype == 2)
 		if (!HuffmanTree::GetTreeInflateDynamic(treeLL, treeD, reader))
 			return false;
@@ -727,8 +754,8 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 				{
 					error = true; //Error: Invalid distance code (30-31 are never used)
 					break;
-				}				
-				
+				}
+
 				error = true; //Error: Tried to read disallowed Huffman symbol
 				break;
 			}
@@ -783,7 +810,8 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t sourceLength, uint8_t* destination, const std::size_t destinationLength)
+bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t sourceLength, uint8_t* destination,
+                                      const std::size_t destinationLength)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -810,10 +838,13 @@ bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t s
 				return false;
 		}
 		else
-			if (!TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(result, pos, reader, BTYPE)) //Compression, BTYPE 01 or 10
+		{
+			//Compression, BTYPE 01 or 10
+			if (!TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(result, pos, reader, BTYPE))
 				return false;
+		}
 	}
-	
+
 	std::memcpy(destination, result.data(), result.size());
 
 	return true;

@@ -182,3 +182,5 @@ premake5Private.lua
 *.make
 *.code-workspace
 !/GeneratorScripts/**
+gitui
+

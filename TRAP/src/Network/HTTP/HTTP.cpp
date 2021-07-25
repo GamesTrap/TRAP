@@ -106,7 +106,7 @@ std::string TRAP::Network::HTTP::Request::Prepare() const
 	case Method::DELETE:
 		method = "DELETE";
 		break;
-		
+
 	default:
 		method = "GET";
 		break;
@@ -152,7 +152,7 @@ const std::string& TRAP::Network::HTTP::Response::GetField(const std::string& fi
 	const FieldTable::const_iterator it = m_fields.find(Utils::String::ToLower(field));
 	if (it != m_fields.end())
 		return it->second;
-	
+
 	static const std::string empty;
 	return empty;
 }

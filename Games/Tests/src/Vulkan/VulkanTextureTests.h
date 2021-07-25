@@ -2,7 +2,6 @@
 #define _GAMESTRAP_VULKANTEXTURETESTS_H_
 
 #include <TRAP.h>
-#include <Graphics/API/Vulkan/Objects/VulkanTexture.h>
 
 class VulkanTextureTests final : public TRAP::Layer
 {
@@ -21,12 +20,13 @@ private:
 
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
-    std::vector<TRAP::Ref<TRAP::Graphics::Sampler>> m_textureSamplers;
+    TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
 
     bool m_cycleMips;
     uint32_t m_currentMipLevel;
     uint32_t m_maxMipLevel;
     bool m_updateTexture;
+    uint32_t m_currentTexture;
 
     std::array<float, 5 * 4> m_quadVerticesIndexed
 	{
@@ -41,16 +41,10 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    std::vector<uint8_t> m_vulkanLogoImgData;
-    bool m_debugImgVisible;
-
     TRAP::Graphics::Shader* m_shader;
-	
-    //////////////////////////////////////
-	//INTERNAL CODE USE AT YOUR OWN RISK//
-	//////////////////////////////////////
-    TRAP::Ref<TRAP::Graphics::API::VulkanTexture> m_texture;
-	//////////////////////////////////////
+    TRAP::Graphics::Texture* m_texture;
+    TRAP::Scope<TRAP::Image> m_vulkanLogo;
+    TRAP::Scope<TRAP::Image> m_vulkanLogoTransparent;
 };
 
 #endif /*_GAMESTRAP_VULKANTEXTURETESTS_H_*/

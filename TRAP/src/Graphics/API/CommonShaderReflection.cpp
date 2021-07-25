@@ -1,7 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderReflection.h"
 
-bool ShaderResourceCmp(TRAP::Graphics::API::ShaderReflection::ShaderResource& a, TRAP::Graphics::API::ShaderReflection::ShaderResource& b)
+bool ShaderResourceCmp(TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
+                       TRAP::Graphics::API::ShaderReflection::ShaderResource& b)
 {
 	bool isSame = true;
 
@@ -14,7 +15,8 @@ bool ShaderResourceCmp(TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ShaderVariableCmp(TRAP::Graphics::API::ShaderReflection::ShaderVariable& a, TRAP::Graphics::API::ShaderReflection::ShaderVariable& b)
+bool ShaderVariableCmp(TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
+                       TRAP::Graphics::API::ShaderReflection::ShaderVariable& b)
 {
 	bool isSame = true;
 
@@ -49,7 +51,8 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	{
 		if(static_cast<uint32_t>(combinedShaderStages & reflection[i].ShaderStage) != 0)
 		{
-			TP_ERROR(Log::RendererVulkanShaderPrefix, "Duplicate shader stage was detected in shader reflection array.");
+			TP_ERROR(Log::RendererVulkanShaderPrefix,
+			         "Duplicate shader stage was detected in shader reflection array.");
 			return nullptr;
 		}
 		combinedShaderStages = combinedShaderStages | reflection[i].ShaderStage;
@@ -69,7 +72,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	uint32_t variableCount = 0;
 
 	TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
-	
+
 	std::array<ShaderResource*, 512> uniqueResources{};
 	std::array<RendererAPI::ShaderStage, 512> shaderUsage{};
 	std::array<ShaderVariable*, 512> uniqueVariable{};

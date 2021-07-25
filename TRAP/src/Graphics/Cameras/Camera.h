@@ -6,7 +6,7 @@
 namespace TRAP::Graphics
 {
 	class Camera
-	{		
+	{
 	public:
 		Camera() = default;
 		explicit Camera(const Math::Mat4& projection);
@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 		Camera(Camera&&) = default;
 		Camera& operator=(const Camera&) = default;
 		Camera& operator=(Camera&&) = default;
-		
+
 		const Math::Mat4& GetProjectionMatrix() const;
 
 	protected:

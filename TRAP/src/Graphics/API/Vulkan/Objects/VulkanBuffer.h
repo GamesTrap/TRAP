@@ -9,7 +9,7 @@ namespace TRAP::Graphics::API
 {
 	class VulkanMemoryAllocator;
 	class VulkanDevice;
-	
+
 	class VulkanBuffer final : public Buffer
 	{
 	public:
@@ -22,19 +22,19 @@ namespace TRAP::Graphics::API
 		uint64_t GetOffset() const;
 		VkDeviceMemory GetVkDeviceMemory() const;
 		uint64_t GetVkDeviceMemoryOffset() const;
-		
+
 		uint64_t GetSize() const override;
 		RendererAPI::DescriptorType GetDescriptors() const override;
 		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const override;
-		
+
 		void* GetCPUMappedAddress() const override;
 
 		void MapBuffer(RendererAPI::ReadRange* range) override;
 		void UnMapBuffer() override;
-		
+
 	private:
 		void SetBufferName(const char* name) const;
-		
+
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_VMA;
 

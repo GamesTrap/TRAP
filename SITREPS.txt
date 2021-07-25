@@ -1917,3 +1917,62 @@ SITREP 06/27/2021|21w25a4
     - UniformBuffer Added GetUBOs() function which returns the internal buffers holding the data ~<10 mins
     - Moved UniformBuffer Use() function to inside Shader Use() ~<20 mins
     - VulkanMultiWindowTets Added UBO test for secondary Window ~<20 mins
+    - Created TextureAbstraction branch ~<5 mins
+
+SITREP 07/03/2021|21w26a1
+    - Changed TRAP Engine version to 21w26a1(0.7.54)
+    - Added SamplerHash class for RendererAPI::SamplerDesc hashing ~<15 mins
+    - Sampler Added GetMinFilter, GetMagFilter, GetMipMapMode, GetAddressU, GetAddressV,
+      GetAddressW, GetMipLodBias, GetMaxAnisotropy, GetCompareFunc, GetForceMipLevel &
+      GetMipLevel functions ~<20 mins
+    - Sampler Added caching of newly created Samplers so they are reused instead of always
+      creating new ones (should prevent from ever reaching maxSamplerAllocationCount limit)
+    - Replaced some push_back with emplace_back ~<10 mins
+    - VulkanShader Added UseSampler & UseSamplers functions to bind given Sampler(s) to Descriptor ~<15 mins
+    - VulkanTextureTests Replaced direct Sampler binding with abstraction ~<10 mins
+
+SITREP 07/13/2021|21w28a1
+    - Changed TRAP Engine version to 21w28a1(0.7.55)
+    - Big code maintenance (+100 Files changed) ~>960 mins
+
+SITREP 07/15/2021|21w28a2
+    - Changed TRAP Engine version to 21w28a2(0.7.56)
+    - Big code maintenance (+100 Files changed) ~>600 mins
+    - Big code maintenance (+40 Files changed) ~>240 mins
+
+SITREP 07/16/2021|21w28a3
+    - Changed TRAP Engine version to 21w28a3(0.7.57)
+    - RendererAPI Removed ForceMipLevel in SamplerDesc ~<10 mins
+    - VulkanTextureTests Replaced ForceMipLevel in SamplerDesc with textureLod in shader ~<10 mins
+
+SITREP 07/21/2021|21w29a1
+    - Changed TRAP Engine version to 21w29a1(0.7.58)
+    - Added TextureBase class as API agnostic Texture abstraction ~>80 mins
+    - Texture classes now uses TextureBase internally (not inherited!) ~<15 mins
+    - VulkanShader Added RetrieveDescriptorName to reduce code duplication in Use*** functions ~<15 mins
+    - Shader/DummyShader/VulkanShader Implemented UseTexture(s) functions ~<20 mins
+    - VulkanTextureTests now uses Shader::UseTexture instead of internal API ~<5 mins
+
+SITREP 07/22/2021|21w29a2
+    - Changed TRAP Engine version to 21w29a2(0.7.59)
+    - ResourceLoader added R16G16 and R32G32 format support ~<10 mins
+    - Texture Added convert function for colorformat + bpp to image format ~<20 mins
+    - Texture2D/Cube Removed old leftover Upload functions ~<5 mins
+    - Texture2D Implemented CreateFromFile and Create functions ~<20 mins
+    - Image Added function to convert RGB images to RGBA ~<20 mins
+    - WindowingAPI Replaced manual RGB to RGBA conversion with TRAP::Image::ConvertRGBToRGBA ~<10 mins
+    - ResourceLoader Replaced manual RGB to RGBA conversion with TRAP::Image::ConvertRGBToRGBA ~<10 mins
+
+SITREP 07/24/2021|21w29a3
+    - Changed TRAP Engine version to 21w29a3(0.7.60)
+    - ResourceLoader Restructured loading procedure ~<30 mins
+    - Texture2D Implemented CreateFromImage ~<30 mins
+    - Fixed wrong ColorFormat after converting an image from RGB to RGBA ~<5 mins
+    - TextureCube Implemented CreateFromImage(s) ~<60 mins
+    - Texture Implemented various GetBit/BytesPerPixel/Channel functions ~<15 mins
+    - Texture2D/Cube Implemented complete Texture Update ~>60 mins
+
+SITREP 07/25/2021|21w29a4
+    - Changed TRAP Engine version to 21w29a4(0.7.61)
+    - Texture Added GetMipWidth/Height/Size functions ~<15 mins
+    - VulkanTextureTests Added runtime updating of the Texture ~<10 mins

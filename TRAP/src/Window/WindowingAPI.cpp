@@ -27,6 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
+#include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
 #include "Window.h"
 #include "Events/KeyEvent.h"
@@ -48,12 +49,6 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 		return false;
 	}
 
-	if(!PlatformCreateTLS(s_Data.ContextSlot))
-	{
-		Shutdown();
-		return false;
-	}
-
 	s_Data.Initialized = true;
 
 	DefaultWindowHints();
@@ -64,23 +59,23 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::Shutdown()
-{	
+{
 	if (!s_Data.Initialized)
 		return;
 
 	s_Data.Callbacks.Monitor = nullptr;
 
-	for (auto& Monitor : s_Data.Monitors)
-		if (Monitor)
-			Monitor.reset();
+	for (auto& monitor : s_Data.Monitors)
+	{
+		if (monitor)
+			monitor.reset();
+	}
 
 	s_Data.Monitors.clear();
 
 	PlatformShutdown();
 
 	s_Data.Initialized = false;
-
-	PlatformDestroyTLS(s_Data.ContextSlot);
 
 	s_Data = {};
 }
@@ -133,66 +128,46 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 {
 	switch(hint)
 	{
-		case Hint::Resizable:
-		{
-			s_Data.Hints.Window.Resizable = value;
-			break;
-		}
+	case Hint::Resizable:
+		s_Data.Hints.Window.Resizable = value;
+		break;
 
-		case Hint::Maximized:
-		{
-			s_Data.Hints.Window.Maximized = value;
-			break;
-		}
+	case Hint::Maximized:
+		s_Data.Hints.Window.Maximized = value;
+		break;
 
-		case Hint::Minimized:
-		{
-			s_Data.Hints.Window.Maximized = !value;
-			break;
-		}
+	case Hint::Minimized:
+		s_Data.Hints.Window.Maximized = !value;
+		break;
 
-		case Hint::Visible:
-		{
-			s_Data.Hints.Window.Visible = value;
-			break;
-		}
+	case Hint::Visible:
+		s_Data.Hints.Window.Visible = value;
+		break;
 
-		case Hint::Focused:
-		{
-			s_Data.Hints.Window.Focused = value;
-			break;
-		}
+	case Hint::Focused:
+		s_Data.Hints.Window.Focused = value;
+		break;
 
-		case Hint::FocusOnShow:
-		{
-			s_Data.Hints.Window.FocusOnShow = value;
-			break;
-		}
+	case Hint::FocusOnShow:
+		s_Data.Hints.Window.FocusOnShow = value;
+		break;
 
-		case Hint::Decorated:
-		{
-			s_Data.Hints.Window.Decorated = value;
-			break;
-		}
+	case Hint::Decorated:
+		s_Data.Hints.Window.Decorated = value;
+		break;
 
-		case Hint::Floating:
-		{
-			s_Data.Hints.Window.Floating = value;
-			break;
-		}
+	case Hint::Floating:
+		s_Data.Hints.Window.Floating = value;
+		break;
 
-		case Hint::MousePassthrough:
-		{
-			s_Data.Hints.Window.MousePassthrough = value;
-			break;
-		}
+	case Hint::MousePassthrough:
+		s_Data.Hints.Window.MousePassthrough = value;
+		break;
 
-		case Hint::Hovered:
-		default:
-		{
-			InputError(Error::Invalid_Enum, " Invalid Window Hint!");
-			break;			
-		}
+	case Hint::Hovered:
+	default:
+		InputError(Error::Invalid_Enum, " Invalid Window Hint!");
+		break;
 	}
 }
 
@@ -218,7 +193,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 	for (const Scope<InternalMonitor>& monitor : s_Data.Monitors)
 		monitors.push_back(monitor.get());
-	
+
 	return monitors;
 }
 
@@ -249,13 +224,14 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	                                                                                                 const std::string& title,
 	                                                                                                 InternalMonitor* monitor)
 {
-	TRAP_CORE_ASSERT(!title.empty(), "[Window] Empty Title provided!");
-	TRAP_CORE_ASSERT(width > 0, "[Window] Invalid width provided!");
-	TRAP_CORE_ASSERT(height > 0, "[Window] Invalid height provided!");
+	TRAP_ASSERT(!title.empty(), "[Window] Empty Title provided!");
+	TRAP_ASSERT(width > 0, "[Window] Invalid width provided!");
+	TRAP_ASSERT(height > 0, "[Window] Invalid height provided!");
 
 	if(width <= 0 || height <= 0)
 	{
-		InputError(Error::Invalid_Value, " Invalid Window size: " + std::to_string(width) + "x" + std::to_string(height));
+		InputError(Error::Invalid_Value, " Invalid Window size: " + std::to_string(width) + "x" +
+		           std::to_string(height));
 		return nullptr;
 	}
 
@@ -290,7 +266,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	window->MinHeight = -1;
 	window->MaxWidth = -1;
 	window->MaxHeight = -1;
-	
+
 	//Open the actual window and create its context
 	if (!PlatformCreateWindow(window.get(), WNDConfig, FBConfig))
 	{
@@ -320,7 +296,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, const bool value)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	window->ShouldClose = value;
 }
@@ -329,14 +305,15 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, 
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, const std::string& title)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	PlatformSetWindowTitle(window, title);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale)
+void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor* monitor, float& xScale,
+                                                          float& yScale)
 {
 	PlatformGetMonitorContentScale(monitor, xScale, yScale);
 }
@@ -357,7 +334,7 @@ void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow* win
 void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string& str)
 {
 	std::string description = "[WindowingAPI]";
-	
+
 	if (!str.empty())
 		description += str;
 	else
@@ -416,73 +393,58 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 {
 	Scope<InternalCursor> cursor;
 
-	TRAP_CORE_ASSERT(image.get(), "[Window] image is nullptr!");
+	TRAP_ASSERT(image.get(), "[Window] image is nullptr!");
 
-	if (image) //If image is not nullptr
+	if(!image)
+		return nullptr;
+
+	if (image->IsHDR())
 	{
-		if (image->IsHDR())
+		InputError(Error::Invalid_Value, "[Cursor] HDR is unsupported as icon!");
+		return nullptr;
+	}
+
+	if (image->GetBitsPerPixel() > 32)
+	{
+		InputError(Error::Invalid_Value, "[Cursor] BPP > 32 is unsupported as icon!");
+		return nullptr;
+	}
+
+	if (!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) ||
+	      (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
+	{
+		InputError(Error::Invalid_Value, "[Cursor] Unsupported BPP or format used!");
+		return nullptr;
+	}
+
+	//Convert to RGBA 32BPP
+	if (image->GetColorFormat() == Image::ColorFormat::RGB)
+	{
+		const Scope<Image> iconImage = Image::ConvertRGBToRGBA(image);
+
+		cursor = MakeScope<InternalCursor>();
+		s_Data.CursorList.emplace_front(cursor.get());
+
+		if(!PlatformCreateCursor(cursor.get(), iconImage, xHotspot, yHotspot))
 		{
-			InputError(Error::Invalid_Value, "[Cursor] HDR is unsupported as icon!");
+			DestroyCursor(std::move(cursor));
 			return nullptr;
 		}
 
-		if (image->GetBitsPerPixel() > 32)
+		return cursor;
+	}
+	if (image->GetColorFormat() == Image::ColorFormat::RGBA)
+	{
+		cursor = MakeScope<InternalCursor>();
+		s_Data.CursorList.emplace_front(cursor.get());
+
+		if (!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
 		{
-			InputError(Error::Invalid_Value, "[Cursor] BPP > 32 is unsupported as icon!");
+			DestroyCursor(std::move(cursor));
 			return nullptr;
 		}
 
-		if (!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
-		{
-			InputError(Error::Invalid_Value, "[Cursor] Unsupported BPP or format used!");
-			return nullptr;
-		}
-
-		//Convert to RGBA 32BPP
-		if (image->GetColorFormat() == Image::ColorFormat::RGB)
-		{
-			std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()), static_cast<const uint8_t*>(image->GetPixelData()) + image->GetPixelDataSize());
-			const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) + (image->GetWidth() * image->GetHeight());
-			std::vector<uint8_t> pixelDataRGBA(newSize, 0);
-			uint32_t pixelCount = 0;
-			for (uint32_t i = 0; i < pixelData.size(); i++)
-			{
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				i++; pixelCount++;
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				i++; pixelCount++;
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				pixelCount++;
-				pixelDataRGBA[pixelCount] = 255;
-				pixelCount++;
-			}			
-
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), Image::ColorFormat::RGBA, pixelDataRGBA);
-			
-			cursor = MakeScope<InternalCursor>();
-			s_Data.CursorList.emplace_front(cursor.get());
-
-			if(!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
-			{
-				DestroyCursor(std::move(cursor));
-				return nullptr;
-			}
-
-			return cursor;
-		}
-		if (image->GetColorFormat() == Image::ColorFormat::RGBA)
-		{
-			cursor = MakeScope<InternalCursor>();
-			s_Data.CursorList.emplace_front(cursor.get());
-			
-			if (!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
-			{
-				DestroyCursor(std::move(cursor));
-				return nullptr;
-			}
-
-			return cursor;
-		}
+		return cursor;
 	}
 
 	return nullptr;
@@ -495,7 +457,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 	Scope<InternalCursor> cursor = MakeScope<InternalCursor>();
 
 	s_Data.CursorList.emplace_front(cursor.get());
-	
+
 	if (!PlatformCreateStandardCursor(cursor.get(), type))
 	{
 		DestroyCursor(std::move(cursor));
@@ -509,7 +471,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCursor* cursor)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	window->Cursor = cursor;
 
@@ -520,62 +482,48 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCur
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const Scope<Image>& image)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
-	if (image) //If image is not nullptr
+	if(!image)
 	{
-		if (image->IsHDR())
-		{
-			InputError(Error::Invalid_Value, "[Icon] HDR is unsupported as icon!");
-			return;
-		}
-
-		if(image->GetBitsPerPixel() > 32)
-		{
-			InputError(Error::Invalid_Value, "[Icon] BPP > 32 is unsupported as icon!");
-			return;
-		}
-
-		if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
-		{
-			InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
-			return;			
-		}
-
-		//Convert to RGBA 32BPP
-		if (image->GetColorFormat() == Image::ColorFormat::RGB)
-		{
-			std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()), static_cast<const uint8_t*>(image->GetPixelData()) + image->GetPixelDataSize());
-			const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) + (image->GetWidth() * image->GetHeight());
-			std::vector<uint8_t> pixelDataRGBA(newSize, 0);
-			uint32_t pixelCount = 0;
-			for (uint32_t i = 0; i < pixelData.size(); i++)
-			{
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				i++; pixelCount++;
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				i++; pixelCount++;
-				pixelDataRGBA[pixelCount] = pixelData[i];
-				pixelCount++;
-				pixelDataRGBA[pixelCount] = 255;
-				pixelCount++;
-			}
-
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), Image::ColorFormat::RGBA, pixelDataRGBA);
-			PlatformSetWindowIcon(window, iconImage);
-		}
-		else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
-			PlatformSetWindowIcon(window, image);
-	}
-	else
 		PlatformSetWindowIcon(window, nullptr);
+		return;
+	}
+
+	if (image->IsHDR())
+	{
+		InputError(Error::Invalid_Value, "[Icon] HDR is unsupported as icon!");
+		return;
+	}
+
+	if(image->GetBitsPerPixel() > 32)
+	{
+		InputError(Error::Invalid_Value, "[Icon] BPP > 32 is unsupported as icon!");
+		return;
+	}
+
+	if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) ||
+			(image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
+	{
+		InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
+		return;
+	}
+
+	//Convert to RGBA 32BPP
+	if (image->GetColorFormat() == Image::ColorFormat::RGB)
+	{
+		const Scope<Image> imageRGBA = Image::ConvertRGBToRGBA(image);
+		PlatformSetWindowIcon(window, imageRGBA);
+	}
+	else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
+		PlatformSetWindowIcon(window, image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, const int32_t xPos, const int32_t yPos)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if (window->Monitor)
 		return;
@@ -588,11 +536,11 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, co
 //Retrieves the position of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	xPos = 0;
 	yPos = 0;
-	
+
 	PlatformGetWindowPos(window, xPos, yPos);
 }
 
@@ -601,9 +549,9 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, in
 //Sets the size of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const int32_t width, const int32_t height)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	TRAP_CORE_ASSERT(width > 0, "[Window] width is smaller than or equal to 0!");
-	TRAP_CORE_ASSERT(height > 0, "[Window] height is smaller than or equal to 0!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(width > 0, "[Window] width is smaller than or equal to 0!");
+	TRAP_ASSERT(height > 0, "[Window] height is smaller than or equal to 0!");
 
 	window->videoMode.Width = width;
 	window->videoMode.Height = height;
@@ -616,11 +564,11 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const i
 //Retrieves the size of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	width = 0;
 	height = 0;
-	
+
 	PlatformGetWindowSize(window, width, height);
 }
 
@@ -629,11 +577,11 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, i
 //Retrieves the size of the framebuffer of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	width = 0;
 	height = 0;
-	
+
 	PlatformGetFrameBufferSize(window, width, height);
 }
 
@@ -642,7 +590,7 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* wind
 //Sets the opacity of the whole window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window, const float opacity)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if(opacity < 0.0f || opacity > 1.0f)
 	{
@@ -658,7 +606,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window
 //Returns the opacity of the whole window.
 float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return PlatformGetWindowOpacity(window);
 }
@@ -668,7 +616,7 @@ float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* windo
 //Retrieves the content scale for the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	xScale = 0.0f;
 	yScale = 0.0f;
@@ -681,70 +629,58 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 //Sets an attribute for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const Hint hint, const bool value)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	switch(hint)
 	{
-		case Hint::Resizable:
-		{
-			if (window->Resizable == value)
-				return;
+	case Hint::Resizable:
+		if (window->Resizable == value)
+			return;
 
-			window->Resizable = value;
+		window->Resizable = value;
 
-			if (!window->Monitor)
-				PlatformSetWindowResizable(window, value);
-			break;
-		}
+		if (!window->Monitor)
+			PlatformSetWindowResizable(window, value);
+		break;
 
-		case Hint::FocusOnShow:
-		{
-			window->FocusOnShow = value;
-			break;
-		}
+	case Hint::FocusOnShow:
+		window->FocusOnShow = value;
+		break;
 
-		case Hint::Decorated:
-		{
-			if (window->Decorated == value)
-				return;
+	case Hint::Decorated:
+		if (window->Decorated == value)
+			return;
 
-			window->Decorated = value;
-			if (!window->Monitor)
-				PlatformSetWindowDecorated(window, value);
-			break;
-		}
+		window->Decorated = value;
+		if (!window->Monitor)
+			PlatformSetWindowDecorated(window, value);
+		break;
 
-		case Hint::Floating:
-		{
-			if (window->Floating == value)
-				return;
+	case Hint::Floating:
+		if (window->Floating == value)
+			return;
 
-			window->Floating = value;
-			if (!window->Monitor)
-				PlatformSetWindowFloating(window, value);
-			break;
-		}
+		window->Floating = value;
+		if (!window->Monitor)
+			PlatformSetWindowFloating(window, value);
+		break;
 
-		case Hint::MousePassthrough:
-		{
-			if (window->MousePassthrough == value)
-				return;
+	case Hint::MousePassthrough:
+		if (window->MousePassthrough == value)
+			return;
 
-			window->MousePassthrough = value;
-			PlatformSetWindowMousePassthrough(window, value);
-			break;
-		}
+		window->MousePassthrough = value;
+		PlatformSetWindowMousePassthrough(window, value);
+		break;
 
-		case Hint::Maximized:
-		case Hint::Minimized:
-		case Hint::Visible:
-		case Hint::Focused:
-		case Hint::Hovered:
-		default:
-		{
-			InputError(Error::Invalid_Enum, " Invalid window attribute provided!");
-			break;
-		}
+	case Hint::Maximized:
+	case Hint::Minimized:
+	case Hint::Visible:
+	case Hint::Focused:
+	case Hint::Hovered:
+	default:
+		InputError(Error::Invalid_Enum, " Invalid window attribute provided!");
+		break;
 	}
 }
 
@@ -753,7 +689,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 //Returns an attribute of the specified window.
 bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, const Hint hint)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	switch(hint)
 	{
@@ -786,7 +722,7 @@ bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, c
 
 	case Hint::MousePassthrough:
 		return window->MousePassthrough;
-		
+
 	default:
 		return false;
 	}
@@ -803,13 +739,14 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
                                                     const int32_t height,
                                                     const int32_t refreshRate)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	TRAP_CORE_ASSERT(width > 0, "[Window] width is smaller than or equal to 0!");
-	TRAP_CORE_ASSERT(height > 0, "[Window] height is smaller than or equal to 0!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(width > 0, "[Window] width is smaller than or equal to 0!");
+	TRAP_ASSERT(height > 0, "[Window] height is smaller than or equal to 0!");
 
 	if (width <= 0 || height <= 0)
 	{
-		InputError(Error::Invalid_Value, " Invalid window size " + std::to_string(width) + "x" + std::to_string(height));
+		InputError(Error::Invalid_Value, " Invalid window size " + std::to_string(width) + "x" +
+		           std::to_string(height));
 		return;
 	}
 
@@ -823,9 +760,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
 	window->videoMode.Height = height;
 	window->videoMode.RefreshRate = refreshRate;
 
-	PlatformSetWindowMonitor(window, monitor,
-		xPos, yPos, width, height,
-		refreshRate);
+	PlatformSetWindowMonitor(window, monitor, xPos, yPos, width, height, refreshRate);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -833,8 +768,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
 //Sets the mode, monitor and placement of a window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	TRAP_CORE_ASSERT(monitor, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(monitor, "[Window] window is nullptr!");
 
 	window->videoMode.Width = monitor->CurrentMode.Width;
 	window->videoMode.Height = monitor->CurrentMode.Height;
@@ -851,8 +786,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* wi
 //Sets the user pointer of the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* window, void* pointer)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->UserPointer = pointer;
 }
 
@@ -861,8 +796,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* window, 
 //Returns the user pointer of the specified window.
 void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	return window->UserPointer;
 }
 
@@ -878,7 +813,7 @@ void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback
 //Sets the position callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, const WindowPositionFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	window->Callbacks.Pos = callback;
 }
@@ -888,17 +823,18 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, 
 //Sets the size callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window, const WindowSizeFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Size = callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the minimize callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* window, const WindowMinimizeFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* window,
+                                                             const WindowMinimizeFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	window->Callbacks.Minimize = callback;
 }
@@ -906,9 +842,10 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the maximize callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* window, const WindowMaximizeFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* window,
+                                                             const WindowMaximizeFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	window->Callbacks.Maximize = callback;
 }
@@ -918,8 +855,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* win
 //Sets the close callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window, const WindowCloseFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Close = callback;
 }
 
@@ -928,28 +865,30 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window
 //Sets the focus callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* window, const WindowFocusFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Focus = callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the framebuffer resize callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* window, const FrameBufferSizeFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* window,
+                                                              const FrameBufferSizeFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.FBSize = callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the window content scale callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* window, const WindowContentScaleFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* window,
+                                                           const WindowContentScaleFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Scale = callback;
 }
 
@@ -958,8 +897,8 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* windo
 //Sets the key callback.
 void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const KeyFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Key = callback;
 }
 
@@ -968,8 +907,8 @@ void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const 
 //Sets the Unicode character callback.
 void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const CharFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Character = callback;
 }
 
@@ -978,8 +917,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const
 //Sets the mouse button callback.
 void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window, const MouseButtonFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.MouseButton = callback;
 }
 
@@ -988,8 +927,8 @@ void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window
 //Sets the cursor position callback.
 void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, const CursorPositionFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.CursorPos = callback;
 }
 
@@ -998,7 +937,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, 
 //Sets the cursor enter callback.
 void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window, const CursorEnterFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	window->Callbacks.CursorEnter = callback;
 }
@@ -1008,8 +947,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window
 //Sets the scroll callback.
 void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, const ScrollFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Scroll = callback;
 }
 
@@ -1018,8 +957,8 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, con
 //Sets the path drop callback.
 void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* window, const DropFunc callback)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	window->Callbacks.Drop = callback;
 }
 
@@ -1035,7 +974,7 @@ TRAP::INTERNAL::WindowingAPI::MonitorFunc TRAP::INTERNAL::WindowingAPI::GetMonit
 //Gets the position callback for the specified window.
 TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::GetWindowPosCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Pos;
 }
@@ -1045,7 +984,7 @@ TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::G
 //Gets the size callback for the specified window.
 TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWindowSizeCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Size;
 }
@@ -1055,7 +994,7 @@ TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWi
 //Gets the close callback for the specified window.
 TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetWindowCloseCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Close;
 }
@@ -1065,7 +1004,7 @@ TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetW
 //Gets the focus callback for the specified window.
 TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetWindowFocusCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Focus;
 }
@@ -1075,7 +1014,7 @@ TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetW
 //Gets the framebuffer resize callback for the specified window.
 TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::GetFrameBufferSizeCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.FBSize;
 }
@@ -1085,7 +1024,7 @@ TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::
 //Gets the window content scale callback for the specified window.
 TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAPI::GetWindowContentScaleCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Scale;
 }
@@ -1095,8 +1034,8 @@ TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAP
 //Gets the key callback.
 TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	return window->Callbacks.Key;
 }
 
@@ -1105,7 +1044,7 @@ TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallba
 //Gets the Unicode character callback.
 TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Character;
 }
@@ -1115,7 +1054,7 @@ TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCall
 //Gets the mouse button callback.
 TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetMouseButtonCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.MouseButton;
 }
@@ -1125,7 +1064,7 @@ TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetM
 //Gets the cursor position callback.
 TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::GetCursorPosCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.CursorPos;
 }
@@ -1135,7 +1074,7 @@ TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::G
 //Gets the cursor enter callback.
 TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.CursorEnter;
 }
@@ -1145,7 +1084,7 @@ TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetC
 //Gets the scroll callback.
 TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScrollCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Scroll;
 }
@@ -1155,7 +1094,7 @@ TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScroll
 //Gets the path drop callback.
 TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCallback(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.Drop;
 }
@@ -1173,8 +1112,8 @@ void TRAP::INTERNAL::WindowingAPI::PollEvents()
 //Sets the cursor mode for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const CursorMode mode)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	if (window->cursorMode == mode)
 		return;
 
@@ -1189,7 +1128,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const C
 //Retrrieves the cursor mode for the specified window.
 TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->cursorMode;
 }
@@ -1198,7 +1137,7 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 
 //Returns whether raw mouse motion is supported.
 bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
-{	
+{
 	return PlatformRawMouseMotionSupported();
 }
 
@@ -1224,7 +1163,7 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* window,
 //Retrvieves the raw mouse motion mode for the specified window.
 bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->RawMouseMotion;
 }
@@ -1252,7 +1191,7 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 //Returns the last reported state of a keyboard key for the specified window.
 bool TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::Key key)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
@@ -1268,7 +1207,7 @@ bool TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::K
 //Returns the last reported state of a mouse button for the specified window.
 bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, Input::MouseButton button)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->MouseButtons[static_cast<uint32_t>(button)];
 }
@@ -1278,12 +1217,13 @@ bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, 
 //Sets the position of the cursor, relative to the content area of the window
 void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const double xPos, const double yPos)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if (xPos < -DBL_MAX || xPos > DBL_MAX ||
 	    yPos < -DBL_MAX || yPos > DBL_MAX)
 	{
-		InputError(Error::Invalid_Value, " Invalid cursor position: " + std::to_string(xPos) + "x" + std::to_string(yPos));
+		InputError(Error::Invalid_Value, " Invalid cursor position: " + std::to_string(xPos) + "x" +
+		           std::to_string(yPos));
 		return;
 	}
 
@@ -1306,7 +1246,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const do
 //Retrieves the position of the cursor relative to the content area of the window.
 void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, double& xPos, double& yPos)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	xPos = 0.0;
 	yPos = 0.0;
@@ -1325,7 +1265,7 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, do
 //Returns the position of the monitor's viewport on the virtual screen.
 void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos)
 {
-	TRAP_CORE_ASSERT(monitor, "[Window] monitor is nullptr!");
+	TRAP_ASSERT(monitor, "[Window] monitor is nullptr!");
 
 	xPos = 0;
 	yPos = 0;
@@ -1335,9 +1275,10 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+                                                      int32_t& width, int32_t& height)
 {
-	TRAP_CORE_ASSERT(monitor, "[Window] monitor is nullptr!");
+	TRAP_ASSERT(monitor, "[Window] monitor is nullptr!");
 
 	xPos = 0;
 	yPos = 0;
@@ -1352,7 +1293,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* mon
 //Makes the specified window visible.
 void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if (window->Monitor)
 		return;
@@ -1368,7 +1309,7 @@ void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 //Brings the specified window to front and sets input focus.
 void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	PlatformFocusWindow(window);
 }
@@ -1378,7 +1319,7 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 //Maximizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if (window->Monitor || !window->Resizable)
 		return;
@@ -1391,8 +1332,8 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 //Minimizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
-	
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
+
 	PlatformMinimizeWindow(window);
 }
 
@@ -1401,7 +1342,7 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 //Requests user attention to the specified window.
 void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	PlatformRequestWindowAttention(window);
 }
@@ -1411,7 +1352,7 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 //Hides the specified window.
 void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	if (window->Monitor)
 		return;
@@ -1423,7 +1364,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
 	PlatformRestoreWindow(window);
 }
@@ -1436,26 +1377,21 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
                                                        const int32_t maxWidth,
                                                        const int32_t maxHeight)
 {
-	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_ASSERT(window, "[Window] window is nullptr!");
 
-	if(minWidth != -1 && minHeight != -1)
+	if(minWidth != -1 && minHeight != -1 && (minWidth < 0 || minHeight < 0))
 	{
-		if(minWidth < 0 || minHeight < 0)
-		{
-			InputError(Error::Invalid_Value, " Invalid Minimum Window Size!");
-			return;
-		}
+		InputError(Error::Invalid_Value, " Invalid Minimum Window Size!");
+		return;
 	}
 
-	if(maxWidth != -1 || maxHeight != -1)
+	if((maxWidth != -1 || maxHeight != -1) &&
+	   (maxWidth < 0 || maxHeight < 0 || maxWidth < minWidth || maxHeight < minHeight))
 	{
-		if(maxWidth < 0 || maxHeight < 0 || maxWidth < minWidth || maxHeight < minHeight)
-		{
-			InputError(Error::Invalid_Value, " Invalid Maximum Window Size!");
-			return;
-		}
+		InputError(Error::Invalid_Value, " Invalid Maximum Window Size!");
+		return;
 	}
-	
+
 	window->MinWidth = minWidth;
 	window->MinHeight = minHeight;
 	window->MaxWidth = maxWidth;
@@ -1471,7 +1407,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
 
 //Sets the clipboard to the specified string.
 void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string_view string)
-{	
+{
 	PlatformSetClipboardString(string);
 }
 
@@ -1479,7 +1415,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string_view str
 
 //Returns the contents of the clipboard as a string.
 std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
-{	
+{
 	return PlatformGetClipboardString();
 }
 
@@ -1487,7 +1423,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 
 //Returns whether the Vulkan loader and an ICD have been found.
 bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
-{	
+{
 	return InitVulkan(1);
 }
 
@@ -1513,8 +1449,8 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
                                                            const VkAllocationCallbacks* allocator,
                                                            VkSurfaceKHR& surface)
 {
-	TRAP_CORE_ASSERT(instance, "[Vulkan] Instance is nullptr!");
-	TRAP_CORE_ASSERT(window, " Window is nullptr!");
+	TRAP_ASSERT(instance, "[Vulkan] Instance is nullptr!");
+	TRAP_ASSERT(window, " Window is nullptr!");
 
 	if (!InitVulkan(2))
 		return VK_ERROR_INITIALIZATION_FAILED;
@@ -1592,7 +1528,7 @@ const TRAP::INTERNAL::WindowingAPI::FrameBufferConfig* TRAP::INTERNAL::Windowing
 
 			if (desired.AuxBuffers > 0 && current->AuxBuffers < desired.AuxBuffers)
 				missing += desired.AuxBuffers - current->AuxBuffers;
-			
+
 			if (desired.Samples > 0 && current->Samples == 0)
 			{
 				//Technically, several multisampling buffers could be
@@ -1721,52 +1657,75 @@ std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult r
 	{
 	case VK_SUCCESS:
 		return "Success";
+
 	case VK_NOT_READY:
 		return "A fence or query has not yet completed";
+
 	case VK_TIMEOUT:
 		return "A wait operation has not completed in the specified time";
+
 	case VK_EVENT_SET:
 		return "An event is signaled";
+
 	case VK_EVENT_RESET:
 		return "An event is unsignaled";
+
 	case VK_INCOMPLETE:
 		return "A return array was too small for the result";
+
 	case VK_ERROR_OUT_OF_HOST_MEMORY:
 		return "A host memory allocation has failed";
+
 	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
 		return "A device memory allocation has failed";
+
 	case VK_ERROR_INITIALIZATION_FAILED:
 		return "Initialization of an object could not be completed for implementation-specific reasons";
+
 	case VK_ERROR_DEVICE_LOST:
 		return "The logical or physical device has been lost";
+
 	case VK_ERROR_MEMORY_MAP_FAILED:
 		return "Mapping of a memory object has failed";
+
 	case VK_ERROR_LAYER_NOT_PRESENT:
 		return "A requested layer is not present or could not be loaded";
+
 	case VK_ERROR_EXTENSION_NOT_PRESENT:
 		return "A requested extension is not supported";
+
 	case VK_ERROR_FEATURE_NOT_PRESENT:
 		return "A requested feature is not supported";
+
 	case VK_ERROR_INCOMPATIBLE_DRIVER:
 		return "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
+
 	case VK_ERROR_TOO_MANY_OBJECTS:
 		return "Too many objects of the type have already been created";
+
 	case VK_ERROR_FORMAT_NOT_SUPPORTED:
 		return "A requested format is not supported on this device";
+
 	case VK_ERROR_SURFACE_LOST_KHR:
 		return "A surface is no longer available";
+
 	case VK_SUBOPTIMAL_KHR:
 		return "A swapchain no longer matches the surface properties exactly, but can still be used";
+
 	case VK_ERROR_OUT_OF_DATE_KHR:
 		return "A surface has changed in such a way that it is no longer compatible with the swapchain";
+
 	case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
 		return "The display used by a swapchain does not use the same presentable image layout";
+
 	case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
 		return "The requested window is already connected to a VkSurfaceKHR, or to some other non-Vulkan API";
+
 	case VK_ERROR_VALIDATION_FAILED_EXT:
 		return "A validation layer found an error";
+
 	default:
-		return "UNKNOWN VULKAN ERROR";
+		return "Unknown Vulkan error";
 	}
 }
 
@@ -1790,18 +1749,19 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a physical key event
-void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t, const bool pressed)
+void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t,
+                                            const bool pressed)
 {
-	if (key != Input::Key::Unknown)
-	{
-		if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
-			return;
+	if(key == Input::Key::Unknown)
+		return;
 
-		window->Keys[static_cast<uint32_t>(key)] = pressed;
+	if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
+		return;
 
-		if (window->Callbacks.Key)
-			window->Callbacks.Key(window, key, pressed);
-	}
+	window->Keys[static_cast<uint32_t>(key)] = pressed;
+
+	if (window->Callbacks.Key)
+		window->Callbacks.Key(window, key, pressed);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1820,7 +1780,8 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a mouse button click event
-void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button, const bool pressed)
+void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button,
+                                                   const bool pressed)
 {
 	window->MouseButtons[static_cast<uint32_t>(button)] = pressed;
 
@@ -1831,7 +1792,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a scroll event
-void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset, const double yOffset)
+void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset,
+                                               const double yOffset)
 {
 	if (window->Callbacks.Scroll)
 		window->Callbacks.Scroll(window, xOffset, yOffset);
@@ -1850,7 +1812,8 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, cons
 
 //Notifies shared code that a window framebuffer has been resized
 //The size is specified in pixels
-void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* window, const int32_t width, const int32_t height)
+void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* window, const int32_t width,
+                                                        const int32_t height)
 {
 	if (window->Callbacks.FBSize)
 		window->Callbacks.FBSize(window, width, height);
@@ -1860,7 +1823,8 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* wi
 
 //Notifies shared code that a window has been resized
 //The size is specified in screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window, const int32_t width, const int32_t height)
+void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window, const int32_t width,
+                                                   const int32_t height)
 {
 	if (window->Callbacks.Size)
 		window->Callbacks.Size(window, width, height);
@@ -1922,18 +1886,22 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, cons
 	if (window->Callbacks.Focus)
 		window->Callbacks.Focus(window, focused);
 
-	if (!focused)
-	{
-		for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
-			if (window->Keys[key] == true)
-			{
-				const int32_t scanCode = PlatformGetKeyScanCode(static_cast<Input::Key>(key));
-				InputKey(window, static_cast<Input::Key>(key), scanCode, false);
-			}
+	if(focused)
+		return;
 
-		for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
-			if (window->MouseButtons[button])
-				InputMouseClick(window, static_cast<Input::MouseButton>(button), false);
+	for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
+	{
+		if (window->Keys[key] == true)
+		{
+			const int32_t scanCode = PlatformGetKeyScanCode(static_cast<Input::Key>(key));
+			InputKey(window, static_cast<Input::Key>(key), scanCode, false);
+		}
+	}
+
+	for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
+	{
+		if (window->MouseButtons[button])
+			InputMouseClick(window, static_cast<Input::MouseButton>(button), false);
 	}
 }
 
@@ -1942,14 +1910,14 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, cons
 //Notifies shared code that a the keyboard layout has changed
 void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 {
+	if(!TRAP::Input::s_eventCallback)
+		return;
+
 	//This function is not window specific because you can only have 1 keyboard layout selected and not multiple!
 	//So apply this globally
 	//This event gets redirected to the TRAP::Input callback
-	if(TRAP::Input::s_eventCallback)
-	{
-		TRAP::Events::KeyLayoutEvent event(TRAP::Input::GetKeyboardLayoutName());
-		TRAP::Input::s_eventCallback(event);
-	}
+	TRAP::Events::KeyLayoutEvent event(TRAP::Input::GetKeyboardLayoutName());
+	TRAP::Input::s_eventCallback(event);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1994,7 +1962,8 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 	{
 		//NOTE: This happens on systems with a loader but without any Vulkan ICD
 		if (mode == 2)
-			InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extension count: " + GetVulkanResultString(err));
+			InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extension count: " +
+			           GetVulkanResultString(err));
 
 		return false;
 	}
@@ -2004,14 +1973,15 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, ep.data());
 	if (err)
 	{
-		InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extensions: " + GetVulkanResultString(err));
+		InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extensions: " +
+		           GetVulkanResultString(err));
 		return false;
 	}
 
 	for (uint32_t i = 0; i < count; i++)
 	{
 		const std::string_view ext(ep[i].extensionName);
-		
+
 		if (ext == "VK_KHR_surface")
 			s_Data.VK.KHR_Surface = true;
 #if defined(TRAP_PLATFORM_WINDOWS)
@@ -2085,7 +2055,8 @@ void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Chooses the video mode most closely matching the desired one
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor,
+                                                                                               const InternalVideoMode& desired)
 {
 	uint32_t leastSizeDiff = UINT_MAX;
 	uint32_t rateDiff, leastRateDiff = UINT_MAX;
@@ -2135,34 +2106,34 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a monitor connection or disconnection
-void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected, const uint32_t placement)
-{	
+void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected,
+                                                const uint32_t placement)
+{
 	if (connected)
 	{
+		InternalMonitor* mon = nullptr;
+
 		if (placement == 0)
 		{
 			s_Data.Monitors.insert(s_Data.Monitors.begin(), std::move(monitor));
-
-			if (s_Data.Callbacks.Monitor)
-				s_Data.Callbacks.Monitor(s_Data.Monitors.front().get(), connected);
-
-			ImGuiWindowing::MonitorCallback(s_Data.Monitors.front().get(), true);
+			mon = s_Data.Monitors.front().get();
 		}
 		else
 		{
-			s_Data.Monitors.push_back(std::move(monitor));
-			
-			if (s_Data.Callbacks.Monitor)
-				s_Data.Callbacks.Monitor(s_Data.Monitors.back().get(), connected);
+			s_Data.Monitors.emplace_back(std::move(monitor));
+			mon = s_Data.Monitors.back().get();
+		}
 
-			ImGuiWindowing::MonitorCallback(s_Data.Monitors.back().get(), true);
-		}		
+		if(s_Data.Callbacks.Monitor)
+			s_Data.Callbacks.Monitor(mon, connected);
+
+		ImGuiWindowing::MonitorCallback(mon, true);
 	}
 	else
 	{
 		if (s_Data.Callbacks.Monitor)
 			s_Data.Callbacks.Monitor(monitor.get(), connected);
-		
+
 		for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
 		{
 			if (s_Data.Monitors[i] == monitor)
@@ -2171,7 +2142,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 				break;
 			}
 		}
-		
+
 		ImGuiWindowing::MonitorCallback(monitor.get(), false);
 	}
 }
@@ -2185,7 +2156,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 
 	if (s_Data.Callbacks.Monitor)
 		s_Data.Callbacks.Monitor(monitor.get(), false);
-	
+
 	for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
 	{
 		if (s_Data.Monitors[i] == monitor)
@@ -2194,7 +2165,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 			break;
 		}
 	}
-	
+
 	ImGuiWindowing::MonitorCallback(monitor.get(), false);
 }
 
@@ -2202,8 +2173,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 
 void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* window)
 {
-	TRAP_CORE_ASSERT(window, " Window is nullptr!");
-	
+	TRAP_ASSERT(window, " Window is nullptr!");
+
 	PlatformHideWindowFromTaskbar(window);
 }
 
@@ -2211,7 +2182,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* window, const bool value)
 {
-	TRAP_CORE_ASSERT(window, " Window is nullptr!");
+	TRAP_ASSERT(window, " Window is nullptr!");
 
 	PlatformSetDragAndDrop(window, value);
 }

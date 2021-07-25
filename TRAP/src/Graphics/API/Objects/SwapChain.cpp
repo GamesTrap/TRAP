@@ -10,10 +10,10 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanSwapChain>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
@@ -22,16 +22,16 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR)
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR)
 {
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 		return API::VulkanGetRecommendedSwapchainFormat(HDR);
-		
+
 	case RenderAPI::NONE:
 	default:
-		return RendererAPI::ImageFormat::Undefined;
+		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}
 }
 

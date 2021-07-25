@@ -54,7 +54,7 @@ void VulkanMultiWindowTests::OnAttach()
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_triangleVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Static);
-	const TRAP::Graphics::BufferLayout layout =
+	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
 		{TRAP::Graphics::ShaderDataType::Float3, "Color"}

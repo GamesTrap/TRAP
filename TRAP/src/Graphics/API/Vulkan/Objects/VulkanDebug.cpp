@@ -9,11 +9,11 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	: m_debugReport(nullptr), m_instance(std::move(instance))
 {
 	TRAP_ASSERT(m_instance, "instance is nullptr");
-	
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
 #endif
-	
+
 	VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugCallback);
 
 	VkCall(vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport));
@@ -24,15 +24,14 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 
 TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 {
+	TRAP_ASSERT(m_debugReport);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
 #endif
-	
-	if(m_debugReport)
-	{
-		vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
-		m_debugReport = nullptr;
-	}
+
+	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
+	m_debugReport = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -46,11 +45,14 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugCallback(const VkDebugUtil
 	str.pop_back();
 
 	if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-		TP_INFO(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+		TP_INFO(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ",
+		        callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		TP_WARN(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+		TP_WARN(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ",
+		        callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		TP_ERROR(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+		TP_ERROR(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ",
+		         callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 
 	return VK_FALSE;
 }

@@ -16,11 +16,13 @@ namespace TRAP::Graphics
 		float GetWidth() const;
 		float GetHeight() const;
 	};
-	
+
 class OrthographicCameraController
 	{
 	public:
-		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false, Input::Controller controller = Input::Controller::One, const std::unique_ptr<Window>& window = Application::GetWindow());
+		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false,
+		                                      Input::Controller controller = Input::Controller::One,
+											  const std::unique_ptr<Window>& window = Application::GetWindow());
 
 		void OnUpdate(const Utils::TimeStep& deltaTime);
 		void OnEvent(Events::Event& e);
@@ -32,19 +34,19 @@ class OrthographicCameraController
 
 		float GetTranslationSpeed() const;
 		void SetTranslationSpeed(float translationSpeed);
-		
+
 		float GetRotationSpeed() const;
 		void SetRotationSpeed(float rotationSpeed);
-		
+
 		float GetZoomLevel() const;
 		void SetZoomLevel(float zoomLevel);
 
 		const OrthographicCameraBounds& GetBounds() const;
-		
+
 	private:
 		bool OnMouseScroll(Events::MouseScrollEvent& e);
 		bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
-		
+
 		float m_aspectRatio;
 		float m_zoomLevel = 1.0f;
 

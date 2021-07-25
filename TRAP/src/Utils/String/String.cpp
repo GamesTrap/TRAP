@@ -3,13 +3,14 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view string, const std::string_view delimiters)
+std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view string,
+                                                                   const std::string_view delimiters)
 {
 	std::size_t start = 0;
 	std::size_t end = string.find_first_of(delimiters);
 
 	std::vector<std::string_view> result;
-	
+
 	while (end <= std::string_view::npos && start < string.size())
 	{
 		std::string_view token;
@@ -33,14 +34,16 @@ std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view string, const char delimiter)
+std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view string,
+                                                                   const char delimiter)
 {
 	return SplitStringView(string, std::string_view(&delimiter, 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string> TRAP::Utils::String::SplitString(const std::string_view string, const std::string_view delimiters)
+std::vector<std::string> TRAP::Utils::String::SplitString(const std::string_view string,
+                                                          const std::string_view delimiters)
 {
 	std::size_t start = 0;
 	std::size_t end = string.find_first_of(delimiters);
@@ -223,7 +226,7 @@ std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view
 std::string TRAP::Utils::String::GetSuffix(const std::string_view name)
 {
 	const std::size_t pos = name.rfind('.');
-	
+
 	return (pos == std::string::npos) ? "" : std::string(name.substr(pos + 1));
 }
 

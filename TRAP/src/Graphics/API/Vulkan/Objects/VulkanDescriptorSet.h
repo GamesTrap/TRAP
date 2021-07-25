@@ -6,7 +6,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
-{	
+{
 	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:
@@ -20,18 +20,15 @@ namespace TRAP::Graphics::API
 		uint32_t GetMaxSets() const;
 
 		void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) override;
-		
+
 	private:
 		friend VulkanDescriptorPool;
-		
-		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device,
-							std::vector<VkDescriptorSet> vkDescriptorSetHandles,
+
+		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 		                    TRAP::Ref<VulkanRootSignature> rootSignature,
 		                    std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData,
-		                    std::vector<VulkanRenderer::SizeOffset> dynamicSizeOffsets,
-							uint32_t maxSets,
-							uint8_t dynamicOffsetCount,
-							RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		                    std::vector<VulkanRenderer::SizeOffset> dynamicSizeOffsets, uint32_t maxSets,
+							uint8_t dynamicOffsetCount, RendererAPI::DescriptorUpdateFrequency updateFrequency);
 
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
 		TRAP::Ref<VulkanRootSignature> m_rootSignature;

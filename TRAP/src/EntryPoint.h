@@ -2,6 +2,7 @@
 #define _TRAP_ENTRYPOINT_H_
 
 #include "Application.h"
+#include "Core/PlatformDetection.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 extern "C"

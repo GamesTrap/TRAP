@@ -92,7 +92,8 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
 		/// <param name="remotePort">Port of the peer that sent the data.</param>
 		/// <returns>Status code.</returns>
-		Status Receive(void* data, std::size_t size, std::size_t& received, IPv6Address& remoteAddress, uint16_t& remotePort) const;
+		Status Receive(void* data, std::size_t size, std::size_t& received, IPv6Address& remoteAddress,
+		               uint16_t& remotePort) const;
 
 		/// <summary>
 		/// Send a formatted packet of data to a remote peer.<br>

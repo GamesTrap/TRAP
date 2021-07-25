@@ -53,8 +53,10 @@ namespace TRAP
 		/// NOTE: Physical path should use forward slashes and not back slashes!<br>
 		/// NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br>
 		/// <br>
-		/// If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader TRAP::FileWatcher.<br>
-		/// If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture TRAP::FileWatcher.<br>
+		/// If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the
+		/// Shader TRAP::FileWatcher.<br>
+		/// If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the
+		/// Texture TRAP::FileWatcher.<br>
 		/// <br>
 		/// Prints an error if either virtualPath or physicalPath is empty or invalid.
 		/// </summary>
@@ -64,7 +66,8 @@ namespace TRAP
 		/// <summary>
 		/// Mount a physical folder path to the virtual folder path "/shaders".<br>
 		/// <br>
-		/// If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader TRAP::FileWatcher.<br>
+		/// If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the
+		/// Shader TRAP::FileWatcher.<br>
 		/// <br>
 		/// Prints an error if physicalPath is empty.
 		/// </summary>
@@ -73,7 +76,8 @@ namespace TRAP
 		/// <summary>
 		/// Mount a physical folder path to the virtual folder path "/textures".<br>
 		/// <br>
-		/// If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture TRAP::FileWatcher.<br>
+		/// If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the
+		/// Texture TRAP::FileWatcher.<br>
 		/// <br>
 		/// Prints an error if physicalPath is empty.
 		/// </summary>
@@ -84,8 +88,10 @@ namespace TRAP
 		/// <br>
 		/// Prints an error if virtualPath is empty.<br>
 		/// <br>
-		/// If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader TRAP::FileWatcher is already instantiated then this also stops it.<br>
-		/// If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture TRAP::FileWatcher is already instantiated then this also stops it.
+		/// If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader TRAP::FileWatcher
+		/// is already instantiated then this also stops it.<br>
+		/// If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture TRAP::FileWatcher
+		/// is already instantiated then this also stops it.
 		/// </summary>
 		/// <param name="virtualPath">Virtual folder path to unmount.</param>
 		static void Unmount(const std::string& virtualPath);
@@ -103,7 +109,8 @@ namespace TRAP
 		/// True if file or folder was found.<br>
 		/// False if it wasn't found doesn't exist.
 		/// </returns>
-		static bool ResolveReadPhysicalPath(std::string_view path, std::filesystem::path& outPhysicalPath, bool silent = false);
+		static bool ResolveReadPhysicalPath(std::string_view path, std::filesystem::path& outPhysicalPath,
+		                                    bool silent = false);
 		/// <summary>
 		/// Resolve a virtual file or folder path to its physical file or folder path.<br>
 		/// <br>
@@ -160,7 +167,8 @@ namespace TRAP
 		/// <param name="buffer">Data to be written.</param>
 		/// <param name="mode">WriteMode to use.</param>
 		/// <returns>If path could be resolved and data has been written true, false otherwise.</returns>
-		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer, WriteMode mode = WriteMode::Overwrite);
+		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer,
+		                      WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given file path.<br>
 		/// Can be a virtual or a physical file path.
@@ -169,7 +177,8 @@ namespace TRAP
 		/// <param name="text">Text to be written.</param>
 		/// <param name="mode">WriteMode to use.</param>
 		/// <returns>If path could be resolved and text has been written true, false otherwise.</returns>
-		static bool WriteTextFile(std::string_view path, const std::string& text, WriteMode mode = WriteMode::Overwrite);
+		static bool WriteTextFile(std::string_view path, const std::string& text,
+		                          WriteMode mode = WriteMode::Overwrite);
 
 		/// <summary>
 		/// Check if a file or folder exists.<br>
@@ -204,7 +213,8 @@ namespace TRAP
 		/// Get the last write time of a file or folder.<br>
 		/// Can be a virtual or a physical file or folder path.<br>
 		/// <br>
-		/// Note: If a virtual folder path is provided only the last write time of the first mounted folder gets returned!<br>
+		/// Note: If a virtual folder path is provided only the last write time of the first
+		///       mounted folder gets returned!<br>
 		/// Note: If a virtual file path is provided every mounted physical folder path to it gets checked!
 		/// </summary>
 		/// <param name="path">Virtual or physical path to a file or folder.</param>
@@ -256,7 +266,7 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Path to the temp folder.</returns>
 		static std::string GetTempFolderPath();
-	
+
 	private:
 		/// <summary>
 		/// Initializes the Virtual File System.
@@ -279,8 +289,9 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Pointer to the hot texture reloading FileWatcher.</returns>
 		static FileWatcher* GetTextureFileWatcher();
-		friend void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& run);
-		
+		friend void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders,
+		                                                   std::vector<std::string>& textures, const bool& run);
+
 		/// <summary>
 		/// Read the given physical file.<br>
 		/// <br>
@@ -293,8 +304,9 @@ namespace TRAP
 		/// Vector filled with the file content.<br>
 		/// Empty vector if an error has occurred.
 		/// </returns>
-		static std::vector<uint8_t> ReadPhysicalFile(const std::filesystem::path& physicalFilePath, bool silent = false);
-		
+		static std::vector<uint8_t> ReadPhysicalFile(const std::filesystem::path& physicalFilePath,
+		                                             bool silent = false);
+
 		/// <summary>
 		/// Read the given physical file as text.<br>
 		/// <br>
@@ -322,7 +334,8 @@ namespace TRAP
 		/// True if file was successfully written.<br>
 		/// False if an error has occurred.
 		/// </returns>
-		static bool WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer, WriteMode mode = WriteMode::Overwrite);
+		static bool WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer,
+		                              WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given physical file path.<br>
 		/// <br>
@@ -336,10 +349,11 @@ namespace TRAP
 		/// True if file was successfully written.<br>
 		/// False if an error has occurred.
 		/// </returns>
-		static bool WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, std::string_view text, WriteMode mode = WriteMode::Overwrite);
-		
+		static bool WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, std::string_view text,
+		                                  WriteMode mode = WriteMode::Overwrite);
+
 		static Scope<VFS> s_Instance;
-		
+
 		std::unordered_map<std::string, std::vector<std::string>> m_mountPoints;
 
 		bool m_hotShaderReloading = false;

@@ -60,7 +60,7 @@ namespace TRAP::Utils::Decompress
 			/// Default Move Assignment Operator.
 			/// </summary>
 			BitReader& operator=(BitReader&&) = default;
-			
+
 			const uint8_t* Data;
 			std::size_t Size; //Size of data in bytes
 			std::size_t BitSize; // Size of data in bits, end of valid BP values, should be 8 * size
@@ -121,16 +121,18 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="nBits">How many bits.</param>
 			void AdvanceBits(std::size_t nBits);
-			
+
 		private:
 			/// <summary>
-			/// Safely check if multiplying two integers will overflow(no undefined behavior, compiler removing the code, etc...) and output result.
+			/// Safely check if multiplying two integers will overflow(no undefined behavior,
+			/// compiler removing the code, etc...) and output result.
 			/// </summary>
 			/// <param name="result">Output variable for the result of the multiplication.</param>
 			/// <returns>True if no overflow happens, false otherwise.</returns>
 			static bool MultiplyOverflow(std::size_t a, std::size_t b, std::size_t& result);
 			/// <summary>
-			/// Safely check if adding two integers will overflow(no undefined behavior, compiler removing the code, etc...) and output result.
+			/// Safely check if adding two integers will overflow(no undefined behavior,
+			/// compiler removing the code, etc...) and output result.
 			/// </summary>
 			/// <param name="result">Output variable for the result of the sum.</param>
 			/// <returns>True if no overflow happens, false otherwise.</returns>
@@ -167,7 +169,7 @@ namespace TRAP::Utils::Decompress
 			/// Default Move Assignment Operator.
 			/// </summary>
 			HuffmanTree& operator=(HuffmanTree&&) = default;
-			
+
 			std::vector<uint32_t> Codes; //The Huffman codes(bit patterns representing the symbols)
 			std::vector<uint32_t> Lengths; //The lengths of the huffman codes
 			uint32_t MaxBitLength; //Maximum number of bits a single code can get
@@ -181,7 +183,8 @@ namespace TRAP::Utils::Decompress
 			/// <returns>True on success, false otherwise.</returns>
 			static bool GetTreeInflateFixed(HuffmanTree& treeLL, HuffmanTree& treeD);
 			/// <summary>
-			/// Get the tree of a deflated block with dynamic tree, the tree itself is also Huffman compressed with a known tree.
+			/// Get the tree of a deflated block with dynamic tree, the tree itself is also Huffman
+			/// compressed with a known tree.
 			/// </summary>
 			/// <param name="treeLL">Literal length huffman tree.</param>
 			/// <param name="treeD">Distance huffman tree.</param>
@@ -219,7 +222,8 @@ namespace TRAP::Utils::Decompress
 				5, 5, 5, 5,
 				0
 			};
-			//The base backwards distances(the bits of distance codes appear after length codes and use their own Huffman Tree)
+			//The base backwards distances(the bits of distance codes appear after length codes
+			//and use their own Huffman Tree)
 			static constexpr std::array<uint32_t, 30> DistanceBase
 			{
 				1, 2, 3, 4,
@@ -243,19 +247,21 @@ namespace TRAP::Utils::Decompress
 				11, 11, 12, 12,
 				13, 13
 			};
-			
+
 		private:
 			std::vector<uint8_t> TableLength; //Length of symbol from lookup table, or max length if secondary lookup needed
 			std::vector<uint16_t> TableValue; //Value of symbol from lookup table, or pointer to secondary table if needed
 
 			/// <summary>
-			/// Get the literal and length code tree of a deflated block with fixed tree, as per the deflate specification.
+			/// Get the literal and length code tree of a deflated block with fixed tree,
+			/// as per the deflate specification.
 			/// </summary>
 			/// <returns>True on success, false otherwise.</returns>
 			bool GenerateFixedLiteralLengthTree();
 
 			/// <summary>
-			/// Get the distance code tree of a deflated block with fixed tree, as specified in the deflate specification.
+			/// Get the distance code tree of a deflated block with fixed tree,
+			/// as specified in the deflate specification.
 			/// </summary>
 			/// <returns>True on success, false otherwise.</returns>
 			bool GenerateFixedDistanceTree();
@@ -291,15 +297,20 @@ namespace TRAP::Utils::Decompress
 			static constexpr uint8_t NumCodeLengthCodes = 19;
 			static constexpr uint8_t FirstBits = 9u;
 			static constexpr uint16_t InvalidSymbol = 65535u;
-			//The order in which "code length alphabet code lengths" are stored, out of this the Huffman Tree of the dynamic Huffman Tree lengths is generated
-			static constexpr std::array<uint32_t, 19> CLCLOrder{ 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
+			//The order in which "code length alphabet code lengths" are stored, out of this the
+			//Huffman Tree of the dynamic Huffman Tree lengths is generated
+			static constexpr std::array<uint32_t, 19> CLCLOrder
+			{
+				16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
+			};
 		};
 
 		static constexpr uint16_t FirstLengthCodeIndex = 257;
 		static constexpr uint16_t LastLengthCodeIndex = 285;
-		
+
 		static bool InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader);
-		static bool InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader, uint32_t btype);
+		static bool InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader,
+		                                uint32_t btype);
 	}
 
 	/// <summary>
@@ -310,7 +321,8 @@ namespace TRAP::Utils::Decompress
 	/// <param name="destination">Destination where to put inflated data to.</param>
 	/// <param name="destinationLength">Destination data length in bytes.</param>
 	/// <returns>True on success, false otherwise.</returns>
-	bool Inflate(const uint8_t* source, std::size_t sourceLength, uint8_t* destination, std::size_t destinationLength);
+	bool Inflate(const uint8_t* source, std::size_t sourceLength, uint8_t* destination,
+	             std::size_t destinationLength);
 }
 
 #endif /*_TRAP_INFLATE_H_*/

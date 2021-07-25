@@ -11,21 +11,25 @@
 #include "ResourceLoader.h"
 #include "Objects/CommandPool.h"
 #include "Objects/Queue.h"
+#include "Objects/Sampler.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
-std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
+std::unordered_map<TRAP::Window*,
+                   TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
 std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
-std::array<TRAP::Ref<TRAP::Graphics::CommandPool>, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
-std::array<TRAP::Graphics::CommandBuffer*, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
+std::array<TRAP::Ref<TRAP::Graphics::CommandPool>,
+           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
+std::array<TRAP::Graphics::CommandBuffer*,
+           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -80,6 +84,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 		s_perWindowDataMap.clear();
 	}
 
+	TRAP::Graphics::Sampler::ClearCache();
+
 	for(uint32_t i = ImageCount; i > 0; i--)
 	{
 		s_computeCommandPools[i - 1]->FreeCommandBuffer(s_computeCommandBuffers[i - 1]);
@@ -126,8 +132,8 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-		"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-		Utils::Dialogs::Style::Error,
+		                             "TRAP was unable to detect a compatible RenderAPI!"
+									 "\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 }
@@ -136,34 +142,33 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 {
-	if (api != s_RenderAPI)
+	if(api == s_RenderAPI)
+		return;
+
+	if (api == RenderAPI::Vulkan)
 	{
-		if (api == RenderAPI::Vulkan)
+		if (s_Renderer->IsVulkanCapable())
 		{
-			if (s_Renderer->IsVulkanCapable())
-			{
-				TP_WARN(Log::RendererPrefix, "Switching RenderAPI to Vulkan");
-				s_RenderAPI = RenderAPI::Vulkan;
+			TP_WARN(Log::RendererPrefix, "Switching RenderAPI to Vulkan");
+			s_RenderAPI = RenderAPI::Vulkan;
 
-				return;
-			}
+			return;
+		}
 
-			TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
-			
-			TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-				"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-				Utils::Dialogs::Style::Error,
-				Utils::Dialogs::Buttons::Quit);
-			TRAP::Application::Shutdown();
-		}
-		else
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-				"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-				Utils::Dialogs::Style::Error,
-				Utils::Dialogs::Buttons::Quit);
-			TRAP::Application::Shutdown();
-		}
+		TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
+
+		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
+			                             "TRAP was unable to detect a compatible RenderAPI!\n"
+										 "Please check your GPU driver!", Utils::Dialogs::Style::Error,
+			                             Utils::Dialogs::Buttons::Quit);
+		TRAP::Application::Shutdown();
+	}
+	else
+	{
+		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found", "TRAP was unable to detect a compatible "
+		                                 "RenderAPI!\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
+			                             Utils::Dialogs::Buttons::Quit);
+		TRAP::Application::Shutdown();
 	}
 }
 
@@ -219,86 +224,91 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RootSignature;
+	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
+	(
+		s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline
+	).RootSignature;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
-	if (s_isVulkanCapableFirstTest)
+	if(!s_isVulkanCapableFirstTest)
+		return s_isVulkanCapable;
+
+	TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+	TP_INFO(Log::RendererVulkanPrefix, "Running Vulkan Capability Tester");
+
+	s_isVulkanCapableFirstTest = false;
+
+	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
-		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-		TP_INFO(Log::RendererVulkanPrefix, "Running Vulkan Capability Tester");
-		
-		s_isVulkanCapableFirstTest = false;
-		
-		if (INTERNAL::WindowingAPI::VulkanSupported())
+		if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
 		{
-			if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
-			{
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Instance version Test!");
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
-				TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-				s_isVulkanCapable = false;
-				return s_isVulkanCapable;
-			}
-			
-			//Instance Extensions
-			std::vector<std::string> instanceExtensions{};
-			const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-			if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) || !API::VulkanInstance::IsExtensionSupported(reqExt[1]))
-			{
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
-				TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-				s_isVulkanCapable = false;
-				return s_isVulkanCapable;
-			}
-			instanceExtensions.push_back(reqExt[0]);
-			instanceExtensions.push_back(reqExt[1]);
-
-			//Create Instance
-			VkInstance instance;
-			std::vector<const char*> extensions(instanceExtensions.size());
-			for (uint32_t i = 0; i < instanceExtensions.size(); i++)
-				extensions[i] = instanceExtensions[i].c_str();
-			const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
-			VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
-			VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));			
-			if (instance)
-			{
-				VkLoadInstance(instance);
-
-				//Physical Device
-				const auto& physicalDevices = API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(instance);
-				if(physicalDevices.empty())
-				{
-					s_isVulkanCapable = false;
-					TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to find a suitable GPU meeting all requirements!");
-				}
-			}
-			else
-			{
-				s_isVulkanCapable = false;
-				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan Instance!");
-			}
-		}
-		else
-			s_isVulkanCapable = false;
-
-		if (s_isVulkanCapable)
-		{
-			TP_INFO(Log::RendererVulkanPrefix, "Passed Vulkan Capability Tester!");
-			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-		}
-		else
-		{
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Instance version Test!");
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+			s_isVulkanCapable = false;
+			return s_isVulkanCapable;
+		}
+
+		//Instance Extensions
+		std::vector<std::string> instanceExtensions{};
+		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
+		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
+			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
+		{
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+			s_isVulkanCapable = false;
+			return s_isVulkanCapable;
+		}
+		instanceExtensions.push_back(reqExt[0]);
+		instanceExtensions.push_back(reqExt[1]);
+
+		//Create Instance
+		VkInstance instance;
+		std::vector<const char*> extensions(instanceExtensions.size());
+		for (uint32_t i = 0; i < instanceExtensions.size(); i++)
+			extensions[i] = instanceExtensions[i].c_str();
+		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
+		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
+		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
+		if (instance)
+		{
+			VkLoadInstance(instance);
+
+			//Physical Device
+			const auto& physicalDevices = API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(instance);
+			if(physicalDevices.empty())
+			{
+				s_isVulkanCapable = false;
+				TP_CRITICAL(Log::RendererVulkanPrefix,
+							"Failed to find a suitable GPU meeting all requirements!");
+			}
+		}
+		else
+		{
+			s_isVulkanCapable = false;
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan Instance!");
 		}
 	}
-	
+	else
+		s_isVulkanCapable = false;
+
+	if (s_isVulkanCapable)
+	{
+		TP_INFO(Log::RendererVulkanPrefix, "Passed Vulkan Capability Tester!");
+		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+	}
+	else
+	{
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+	}
+
 	return s_isVulkanCapable;
 }
 
@@ -318,4 +328,26 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 		GraphicCommandBuffers[i - 1] = nullptr;
 		GraphicCommandPools[i - 1].reset();
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const
+{
+	//Deep equality
+	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
+		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
+		   this->MipLodBias == s.MipLodBias && this->MaxAnisotropy == s.MaxAnisotropy &&
+		   this->CompareFunc == s.CompareFunc && this->SamplerConversionDesc == s.SamplerConversionDesc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const
+{
+	//Deep equality
+	return this->Format == s.Format && this->Model == s.Model && this->Range == s.Range &&
+	       this->ChromaOffsetX == s.ChromaOffsetX && this->ChromaOffsetY == s.ChromaOffsetY &&
+		   this->ChromaFilter == s.ChromaFilter &&
+		   this->ForceExplicitReconstruction == s.ForceExplicitReconstruction;
 }

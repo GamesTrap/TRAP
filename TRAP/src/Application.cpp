@@ -22,7 +22,6 @@
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 std::mutex TRAP::Application::s_hotReloadingMutex;
 
-//-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::Application(const std::string& gameName)
 	: m_timer(std::make_unique<Utils::Timer>()),
@@ -32,14 +31,15 @@ TRAP::Application::Application(const std::string& gameName)
 	  m_tickRate(100),
 	  m_timeScale(1.0f),
 	  m_gameName(gameName),
-	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) : std::thread::hardware_concurrency()),
+	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
+	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP Modules...");
 
-	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
+	TRAP_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 	m_mainThreadID = std::this_thread::get_id();
 
@@ -48,9 +48,11 @@ TRAP::Application::Application(const std::string& gameName)
 	//TODO Future remove when Wayland Windows are implemented
 	if (TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Wayland)
 	{
-        TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!", "Wayland is currently not supported by TRAP! Please use X11 instead",
-            TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP! Please use X11 instead");
+        TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!",
+		                                 "Wayland is currently not supported by TRAP! Please use X11 instead",
+                                         TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::EngineLinuxWaylandPrefix,
+		            "Wayland is currently not supported by TRAP! Please use X11 instead");
 		exit(-1);
 	}
 
@@ -90,9 +92,9 @@ TRAP::Application::Application(const std::string& gameName)
 		{
 			//All RenderAPIs are unsupported
 			TRAP::Utils::Dialogs::ShowMsgBox("Incompatible Device",
-				"Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
-				Utils::Dialogs::Style::Error,
-				Utils::Dialogs::Buttons::Quit);
+				"Every RenderAPI that TRAP Engine uses is unsupported on your device!\n"
+				"Does your system meet the minimum system requirements for running TRAP Engine?",
+				Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 			exit(-1);
 		}
 	}
@@ -131,14 +133,17 @@ TRAP::Application::Application(const std::string& gameName)
 
 	//Update Viewport
 	int32_t w, h;
-	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(m_window->GetInternalWindow()), w, h);
+	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
+		(
+			m_window->GetInternalWindow()
+		), w, h);
 	Graphics::RenderCommand::SetViewport(0, 0, static_cast<uint32_t>(w), static_cast<uint32_t>(h));
-	
+
 	//Always added as a fallback shader
 	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
 	//Always added as a fallback texture
-	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create(Graphics::TextureUsage::Static));
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create(Graphics::TextureUsage::Static));
 
 	//Initialize Renderer
 	Graphics::Renderer::Init();
@@ -257,10 +262,13 @@ void TRAP::Application::Run()
 			Graphics::RenderCommand::Present(m_window);
 		TRAP::Window::OnUpdate();
 
-		Graphics::Texture2D::UpdateLoadingTextures();
-
 		if (!m_hotReloadingThread && (VFS::GetHotShaderReloading() || VFS::GetHotTextureReloading()))
-			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading, std::ref(m_hotReloadingShaderPaths), std::ref(m_hotReloadingTexturePaths), std::ref(m_running));
+		{
+			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading,
+			                                                    std::ref(m_hotReloadingShaderPaths),
+																std::ref(m_hotReloadingTexturePaths),
+																std::ref(m_running));
+		}
 		UpdateHotReloading();
 
 		if (m_newRenderAPI != Graphics::RenderAPI::NONE && m_newRenderAPI != Graphics::RendererAPI::GetRenderAPI())
@@ -285,22 +293,40 @@ void TRAP::Application::OnEvent(Events::Event& e)
 	TP_PROFILE_FUNCTION();
 
 	Events::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event) {return OnWindowClose(event); });
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& event) {return OnFrameBufferResize(event); });
-	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& event) {return OnKeyPress(event); });
-	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& event) {return OnWindowFocus(event); });
-	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& event) {return OnWindowLostFocus(event); });
-	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& event) {return OnWindowMinimize(event); });
-	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& event) {return OnWindowRestore(event); });
-
-	if (m_layerStack)
-	{
-		for (auto it = m_layerStack->rbegin(); it != m_layerStack->rend(); ++it)
+	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event)
 		{
-			if (e.Handled)
-				break;
-			(*it)->OnEvent(e);
-		}
+			return OnWindowClose(event);
+		});
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& event)
+		{
+			return OnFrameBufferResize(event);
+		});
+	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& event) {return OnKeyPress(event); });
+	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& event)
+		{
+			return OnWindowFocus(event);
+		});
+	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& event)
+		{
+			return OnWindowLostFocus(event);
+		});
+	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& event)
+		{
+			return OnWindowMinimize(event);
+		});
+	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& event)
+		{
+			return OnWindowRestore(event);
+		});
+
+	if(!m_layerStack)
+		return;
+
+	for (auto it = m_layerStack->rbegin(); it != m_layerStack->rend(); ++it)
+	{
+		if (e.Handled)
+			break;
+		(*it)->OnEvent(e);
 	}
 }
 
@@ -458,21 +484,21 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
-	
+
 	Graphics::RendererAPI::SwitchRenderAPI(renderAPI);
 
 	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	Graphics::Renderer::Shutdown();
 	Graphics::RendererAPI::Shutdown();
-	
+
 	Graphics::RendererAPI::Init(m_gameName);
 	m_window->SetTitle(m_window->GetTitle());
 	//Always added as a fallback shader
 	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);
 	//Always added as a fallback texture
-	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create(Graphics::TextureUsage::Static));
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create(Graphics::TextureUsage::Static));
 	//Initialize Renderer
 	Graphics::Renderer::Init();
 
@@ -505,16 +531,17 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 
 bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 {
-	if (Window::GetActiveWindows() == 1)
+	if(Window::GetActiveWindows() != 1)
+		return false;
+
+	if ((e.GetKey() == Input::Key::Enter || e.GetKey() == Input::Key::KP_Enter) &&
+	    Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
 	{
-		if ((e.GetKey() == Input::Key::Enter || e.GetKey() == Input::Key::KP_Enter) && Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
-		{
-			if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
-				m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
-				m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
-			else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
-				m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
-		}
+		if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
+			m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
+			m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
+		else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
+			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
 	}
 
 	return false;
@@ -560,7 +587,8 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& run)
+void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures,
+                                            const bool& run)
 {
 	while (run)
 	{
@@ -608,7 +636,8 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 					return;
 
 				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-				if(std::any_of(Image::SupportedImageFormatSuffixes.begin(), Image::SupportedImageFormatSuffixes.end(), [suffix](const std::string& sfx)
+				if(std::any_of(Image::SupportedImageFormatSuffixes.begin(),
+				               Image::SupportedImageFormatSuffixes.end(), [suffix](const std::string& sfx)
 				{
 					return suffix == sfx;
 				}))

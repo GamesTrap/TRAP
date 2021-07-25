@@ -16,11 +16,11 @@ namespace TRAP::Graphics::API
 
 		VkPipeline& GetVkPipeline();
 		RendererAPI::PipelineType GetPipelineType() const;
-		
+
 	private:
 		void AddComputePipeline(const RendererAPI::PipelineDesc& desc);
 		void AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
-		
+
 		VkPipeline m_vkPipeline;
 		RendererAPI::PipelineType m_type;
 		//In DX12 this information is stored in ID3D12StateObject.

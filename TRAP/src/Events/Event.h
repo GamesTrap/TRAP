@@ -8,8 +8,10 @@
 namespace TRAP::Events
 {
 	//TODO
-	//Events in TRAP are currently blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there.
-	//For the future, a better strategy might be to buffer events in an event bus and process them during the "event" part of the update stage.	
+	//Events in TRAP are currently blocking, meaning when an event occurs it immediately gets
+	//dispatched and must be dealt with right then and there.
+	//For the future, a better strategy might be to buffer events in an event bus and process
+	//them during the "event" part of the update stage.
 
 	/// <summary>
 	/// Different event types.
@@ -17,7 +19,8 @@ namespace TRAP::Events
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowResize, WindowMinimize, WindowMaximize, WindowRestore, WindowFocus, WindowLostFocus, WindowMove, WindowDrop, WindowContentScale, FrameBufferResize,
+		WindowClose, WindowResize, WindowMinimize, WindowMaximize, WindowRestore, WindowFocus, WindowLostFocus,
+		WindowMove, WindowDrop, WindowContentScale, FrameBufferResize,
 		AppTick, AppUpdate, AppRender,
 		KeyPress, KeyRelease, KeyType, KeyLayout,
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
@@ -132,14 +135,12 @@ namespace TRAP::Events
 	template <typename T, typename F>
 	bool EventDispatcher::Dispatch(const F& func)
 	{
-		if (m_event.GetEventType() == T::GetStaticType())
-		{
-			m_event.Handled |= func(static_cast<T&>(m_event));
+		if (m_event.GetEventType() != T::GetStaticType())
+			return false;
 
-			return true;
-		}
+		m_event.Handled |= func(static_cast<T&>(m_event));
 
-		return false;
+		return true;
 	}
 
 }

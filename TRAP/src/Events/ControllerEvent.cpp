@@ -17,7 +17,7 @@ TRAP::Events::EventCategory TRAP::Events::ControllerEvent::GetCategoryFlags() co
 
 TRAP::Events::ControllerEvent::ControllerEvent(const Input::Controller controller)
 	: m_controller(controller)
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -26,7 +26,7 @@ TRAP::Events::ControllerEvent::ControllerEvent(const Input::Controller controlle
 
 TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Input::Controller controller)
 	: ControllerEvent(controller)
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -29,28 +29,45 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketImplWinAPI.h"
 
+#include "PlatformDetection.h"
+
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
-sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const uint32_t address, const uint16_t port)
+sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
 	sockaddr_in addr{};
 	std::memset(&addr, 0, sizeof(addr));
-	addr.sin_addr.s_addr = htonl(address);
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+	{
+		TRAP::Utils::Memory::SwapBytes(address);
+		TRAP::Utils::Memory::SwapBytes(port);
+	}
+
+	addr.sin_addr.s_addr = address;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
+	addr.sin_port = port;
 
 	return addr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address, const uint16_t port)
+sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
+                                                                uint16_t port)
 {
 	sockaddr_in6 addr{};
 	std::memset(&addr, 0, sizeof(addr));
 	std::memcpy(addr.sin6_addr.u.Byte, address.data(), address.size());
 	addr.sin6_family = AF_INET6;
-	addr.sin6_port = htons(port);
+
+	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+		TRAP::Utils::Memory::SwapBytes(port);
+
+	addr.sin6_port = port;
 
 	return addr;
 }
@@ -96,7 +113,7 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 
 	case WSAEISCONN:
 		return TRAP::Network::Socket::Status::Done; //When connecting a non-blocking socket
-		
+
 	default:
 		return TRAP::Network::Socket::Status::Error;
 	}

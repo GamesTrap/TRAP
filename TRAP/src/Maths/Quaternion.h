@@ -53,7 +53,7 @@ namespace TRAP::Math
 		/// Default Move Assignment Operator.
 		/// </summary>
 		constexpr tQuaternion<T>& operator=(tQuaternion&&) = default;
-		
+
 		//Implementation detail
 		typedef T valueType;
 		typedef tQuaternion<T> type;
@@ -82,7 +82,7 @@ namespace TRAP::Math
 		constexpr tQuaternion(T w, T x, T y, T z);
 
 		//Conversion constructors
-		
+
 		template<typename U>
 		constexpr explicit tQuaternion(const tQuaternion<T>& q);
 
@@ -101,7 +101,7 @@ namespace TRAP::Math
 		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
 		constexpr explicit tQuaternion(const Vec<3, T>& eulerAnglesInRadians);
 		explicit tQuaternion(const Mat<3, 3, T>& m);
-		explicit tQuaternion(const Mat<4, 4, T>& m);		
+		explicit tQuaternion(const Mat<4, 4, T>& m);
 
 		//Unary arithmetic operators
 		constexpr tQuaternion<T>& operator=(const tQuaternion<T>& q) = default;
@@ -132,7 +132,7 @@ namespace TRAP::Math
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Unary bit operators
-	
+
 	template<typename T>
 	constexpr tQuaternion<T> operator+(const tQuaternion<T>& q);
 
@@ -141,7 +141,7 @@ namespace TRAP::Math
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Binary operators
-	
+
 	template<typename T>
 	constexpr tQuaternion<T> operator+(const tQuaternion<T>& q, const tQuaternion<T>& p);
 
@@ -174,7 +174,7 @@ namespace TRAP::Math
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Boolean operators
-	
+
 	template<typename T>
 	constexpr bool operator==(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
 
@@ -187,13 +187,13 @@ namespace TRAP::Math
 template <typename T>
 constexpr TRAP::Math::tQuaternion<T>::tQuaternion(T s, const Vec<3, T>& v)
 	: x(v.x), y(v.y), z(v.z), w(s)
-{	
+{
 }
 
 template <typename T>
 constexpr TRAP::Math::tQuaternion<T>::tQuaternion(T w, T x, T y, T z)
 	: x(x), y(y), z(z), w(w)
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -203,7 +203,7 @@ template <typename T>
 template <typename U>
 constexpr TRAP::Math::tQuaternion<T>::tQuaternion(const tQuaternion<T>& q)
 	: x(static_cast<T>(q.x)), y(static_cast<T>(q.y)), z(static_cast<T>(q.z)), w(static_cast<T>(q.w))
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -293,7 +293,7 @@ template <typename U>
 constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator+=(const tQuaternion<U>& q)
 {
 	const tQuaternion<T> p(q);
-	
+
 	return (*this = tQuaternion<T>(this->w + p.w, this->x + p.x, this->y + p.y, this->z + p.z));
 }
 

@@ -2,24 +2,25 @@
 #define _TRAP_RESOURCELOADER_H_
 
 #include "RendererAPI.h"
-#include "Vulkan/Objects/VulkanTexture.h"
 #include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {
 	class CommandPool;
+	class TextureBase;
 }
 
 namespace TRAP::Graphics::API
 {
 	typedef uint64_t SyncToken;
-	class ResourceLoader
+	class ResourceLoader //TODO Maybe use ThreadPool for more parallelization?!
 	{
 	public:
 		explicit ResourceLoader(const RendererAPI::ResourceLoaderDesc* desc = nullptr);
 		~ResourceLoader();
 
-		//Adding and updating resources can be done using a AddResource or BeginUpdateResource/EndUpdateResource pair.
+		//Adding and updating resources can be done using a AddResource or BeginUpdateResource/EndUpdateResource
+		//pair.
 		//If AddResource(BufferLoadDesc) is called with a data size larger than the ResourceLoader's
 		//staging buffer, the ResourceLoader will perform multiple copies/flushes rather than failing the copy.
 
@@ -48,11 +49,11 @@ namespace TRAP::Graphics::API
 		SyncToken GetLastTokenCompleted() const;
 		bool IsTokenCompleted(const SyncToken* token) const;
 		void WaitForToken(const SyncToken* token);
-	
+
 	private:
 		struct TextureUpdateDescInternal
 		{
-			TRAP::Ref<TRAP::Graphics::API::VulkanTexture> Texture = nullptr; //TODO Replace with abstraction
+			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
 			RendererAPI::MappedMemoryRange Range{};
 			uint32_t BaseMipLevel = 0;
 			uint32_t MipLevels = 0;
@@ -64,20 +65,25 @@ namespace TRAP::Graphics::API
 
 		static RendererAPI::ResourceLoaderDesc DefaultResourceLoaderDesc;
 		static void StreamerThreadFunc(ResourceLoader* loader);
-		static uint32_t UtilGetTextureSubresourceAlignment(RendererAPI::ImageFormat fmt = RendererAPI::ImageFormat::Undefined);
-		static uint32_t UtilGetSurfaceSize(RendererAPI::ImageFormat fmt, uint32_t width, uint32_t height, uint32_t depth,
-			uint32_t rowStride, uint32_t sliceStride, uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer, uint32_t arrayLayers);
-		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, RendererAPI::ImageFormat fmt, uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
+		static uint32_t UtilGetTextureRowAlignment();
+		static uint32_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined);
+		static uint32_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
+		                                   uint32_t depth, uint32_t rowStride, uint32_t sliceStride,
+										   uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
+										   uint32_t arrayLayers);
+		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, TRAP::Graphics::API::ImageFormat fmt,
+		                               uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
 		static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
 		void QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer, RendererAPI::ResourceState state, SyncToken* token);
 		void QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc, SyncToken* token);
 		void QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc, SyncToken* token);
 		void QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate, SyncToken* token);
-		void QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& texture, RendererAPI::ResourceState state, SyncToken* token);
-		
+		void QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                         RendererAPI::ResourceState state, SyncToken* token);
+
 		RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
 		void FreeAllUploadMemory();
-		
+
 		void SetupCopyEngine();
 		void CleanupCopyEngine();
 		bool WaitCopyEngineSet(std::size_t activeSet, bool wait);
@@ -89,6 +95,8 @@ namespace TRAP::Graphics::API
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
 
+		static void VulkanGenerateMipMaps(TRAP::Ref<TRAP::Graphics::TextureBase> texture, CommandBuffer* cmd);
+
 		enum class UploadFunctionResult
 		{
 			Completed,
@@ -98,20 +106,18 @@ namespace TRAP::Graphics::API
 
 		enum class MappedRangeFlag
 		{
-			UnMapBuffer = (1 << 0),
-			TempBuffer = (1 << 1)
+			UnMapBuffer = BIT(0),
+			TempBuffer = BIT(1)
 		};
-		
-		UploadFunctionResult UpdateBuffer(std::size_t activeSet, const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
-		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6>* const img);
+
+		UploadFunctionResult UpdateBuffer(std::size_t activeSet,
+		                                  const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
+		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc,
+		                                   std::array<TRAP::Scope<TRAP::Image>, 6>* const img);
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
-		
-		template<typename T>
-		std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image,
-			uint32_t faceWidth, uint32_t faceHeight);
 
 		RendererAPI::ResourceLoaderDesc m_desc;
-		
+
 		volatile int32_t m_run;
 		std::thread m_thread;
 
@@ -140,7 +146,9 @@ namespace TRAP::Graphics::API
 			uint64_t WaitIndex = 0;
 			TRAP::Ref<Buffer> UploadBuffer = nullptr;
 			TRAP::Scope<TRAP::Image> Image = nullptr;
-			std::variant<RendererAPI::BufferUpdateDesc, TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal, RendererAPI::TextureLoadDesc, RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
+			std::variant<RendererAPI::BufferUpdateDesc,
+			             TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal,
+						 RendererAPI::TextureLoadDesc, RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
 		};
 		std::vector<UpdateRequest> m_requestQueue;
 

@@ -86,10 +86,11 @@ namespace TRAP::INTERNAL
 		struct NextChunk
 		{
 			uint32_t Length = 0;
-			std::array<uint8_t, 4> MagicNumber{};
+			std::string MagicNumber{};
 		};
 
-		static bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data, AlreadyLoaded& alreadyLoaded, bool needSwap);
+		static bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
+		                         AlreadyLoaded& alreadyLoaded, bool needSwap);
 
 		struct IHDRChunk
 		{
@@ -137,12 +138,14 @@ namespace TRAP::INTERNAL
 		std::vector<uint16_t> m_data2Byte;
 
 		static bool DecompressData(uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength);
-		static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon, std::size_t byteWidth, uint8_t filterType, std::size_t length);
+		static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon,
+		                             std::size_t byteWidth, uint8_t filterType, std::size_t length);
 		static bool UnFilter(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel);
 		static uint8_t PaethPredictor(uint16_t a, uint16_t b, uint16_t c);
 		static std::size_t GetRawSizeIDAT(uint32_t width, uint32_t height, uint32_t bitsPerPixel);
 		static std::size_t GetRawSize(uint32_t width, uint32_t height, uint32_t bitsPerPixel);
-		static bool PostProcessScanlines(uint8_t* out, uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel, uint8_t interlaceMethod);
+		static bool PostProcessScanlines(uint8_t* out, uint8_t* in, uint32_t width, uint32_t height,
+		                                 uint32_t bitsPerPixel, uint8_t interlaceMethod);
 		static void Adam7GetPassValues(std::array<uint32_t, 7>& passW,
 		                               std::array<uint32_t, 7>& passH,
 		                               std::array<std::size_t, 8>& filterPassStart,
@@ -151,9 +154,11 @@ namespace TRAP::INTERNAL
 		                               uint32_t width,
 		                               uint32_t height,
 		                               uint32_t bitsPerPixel);
-		static void Adam7DeInterlace(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		static void Adam7DeInterlace(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height,
+		                             uint32_t bitsPerPixel);
 		static std::vector<uint16_t> ConvertTo2Byte(std::vector<uint8_t>& raw);
-		static std::vector<uint8_t> ResolveIndexed(std::vector<uint8_t>& raw, uint32_t width, uint32_t height, const Data& data);
+		static std::vector<uint8_t> ResolveIndexed(std::vector<uint8_t>& raw, uint32_t width, uint32_t height,
+		                                           const Data& data);
 	};
 }
 

@@ -44,6 +44,20 @@ uint32_t TRAP::Image::GetBytesPerPixel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Image::GetBitsPerChannel() const
+{
+	return m_bitsPerPixel / static_cast<uint32_t>(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Image::GetBytesPerChannel() const
+{
+	return GetBytesPerPixel() / static_cast<uint32_t>(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Image::GetWidth() const
 {
 	return m_width;
@@ -89,6 +103,13 @@ bool TRAP::Image::IsImageColored() const
 bool TRAP::Image::IsHDR() const
 {
 	return m_isHDR;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::IsLDR() const
+{
+	return !m_isHDR;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -281,4 +302,109 @@ bool TRAP::Image::IsSupportedImageFile(const std::string& filepath)
 	{
 		return fileFormat == suffix;
 	});
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Scope<Image>& img)
+{
+	if(!img)
+		return nullptr;
+
+	Scope<Image> result;
+
+	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
+	{
+		const std::vector<float> flipped = FlipX(img->GetWidth(), img->GetHeight(),
+		                                         img->GetColorFormat(),
+												 static_cast<const float*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+	}
+	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
+	{
+		const std::vector<uint16_t> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
+		                                            static_cast<const uint16_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+	}
+	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
+	{
+		const std::vector<uint8_t> flipped = FlipX(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
+		                                           static_cast<const uint8_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Scope<Image>& img)
+{
+	if (!img)
+		return nullptr;
+
+	Scope<Image> result;
+
+	if (img->IsHDR() && img->GetBytesPerChannel() == 4)
+	{
+		const std::vector<float> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
+		                                         static_cast<const float*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+	}
+	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
+	{
+		const std::vector<uint16_t> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
+		                                            static_cast<const uint16_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+	}
+	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
+	{
+		const std::vector<uint8_t> flipped = FlipY(img->GetWidth(), img->GetHeight(), img->GetColorFormat(),
+		                                           static_cast<const uint8_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), flipped);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Scope<Image>& img)
+{
+	if(!img)
+		return nullptr;
+
+	Scope<Image> result;
+
+	if(img->IsHDR() && img->GetBytesPerChannel() == 4)
+	{
+		const std::vector<float> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
+															  img->GetColorFormat(),
+															  static_cast<const float*>(img->GetPixelData()));
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, converted);
+	}
+	else if (img->IsLDR() && img->GetBytesPerChannel() == 2)
+	{
+		const std::vector<uint16_t> converted = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
+		                                                         img->GetColorFormat(),
+		                                                         static_cast<const uint16_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, converted);
+	}
+	else /*if(img->IsLDR() && img->GetBytesPerChannel() == 1)*/
+	{
+		const std::vector<uint8_t> flipped = ConvertRGBToRGBA(img->GetWidth(), img->GetHeight(),
+		                                                      img->GetColorFormat(),
+		                                                      static_cast<const uint8_t*>(img->GetPixelData()));
+
+		result = LoadFromMemory(img->GetWidth(), img->GetHeight(), ColorFormat::RGBA, flipped);
+	}
+
+	return result;
 }

@@ -2,64 +2,32 @@
 #include "UniformBuffer.h"
 
 #include "Application.h"
-#include "BufferLayout.h"
+#include "VertexBufferLayout.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
 //TODO Replace BufferUsage with (Descriptor)UpdateFrequency ?! This would resolve issue in Use function
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, const uint64_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name,
+                                                                                 const uint64_t size,
+																				 const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
-	buffer->m_name = name;
-	buffer->m_bufferUsage = usage;
-	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
-	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = (usage == BufferUsage::Static) ? RendererAPI::BufferCreationFlags::None : RendererAPI::BufferCreationFlags::PersistentMap;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
-	desc.Desc.Size = size;
-
-	for (uint32_t i = 0; i < buffer->m_uniformBuffers.size(); ++i)
-	{
-		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
-		buffer->m_uniformBuffers[i] = desc.Buffer;
-	}
-
-	return buffer;
+	return Init(name, nullptr, size, usage);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, void* data, const uint64_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name,
+                                                                                 void* data,
+																				 const uint64_t size,
+																				 const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
-	buffer->m_name = name;
-	buffer->m_bufferUsage = usage;
-	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
-	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
-
-	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = (usage == BufferUsage::Static) ? RendererAPI::BufferCreationFlags::None : RendererAPI::BufferCreationFlags::PersistentMap;
-	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
-	desc.Desc.Size = size;
-	desc.Data = data;
-
-	for(uint32_t i = 0; i < buffer->m_uniformBuffers.size(); ++i)
-	{
-		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
-		buffer->m_uniformBuffers[i] = desc.Buffer;
-	}
-
-	return buffer;
+	return Init(name, data, size, usage);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -99,42 +67,9 @@ const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//TODO REMOVE
-// void TRAP::Graphics::UniformBuffer::Use(Shader* shader) //TODO Maybe replace with Shader->UseUBO(UBO) ?!
-// {
-// 	TRAP_ASSERT(shader);
-
-// 	//TODO Find out in which DescriptorSet (set = X) our UBO is
-// 	//Currently assumes "UpdateFreqNone" for Static & "UpdateFreqPerFrame" for Dynamic
-// 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-// 	params[0].Name = m_name.c_str();
-// 	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
-
-// 	//TODO Only needs to be bound once!
-// 	if(m_first)
-// 	{
-// 		m_first = false;
-
-// 		if(m_bufferUsage == BufferUsage::Static)
-// 		{
-// 			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_uniformBuffers[0].get()};
-// 			shader->GetDescriptorSets().StaticDescriptors->Update(0, params);
-// 		}
-// 		else
-// 		{
-// 			for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-// 			{
-// 				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_uniformBuffers[i].get()};
-// 				shader->GetDescriptorSets().PerFrameDescriptors->Update(i, params);
-// 			}
-// 		}
-// 	}
-// }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::UniformBuffer::SetData(const void* data, const uint64_t size, const uint64_t offset)
 {
+	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize());
 
 	for(uint32_t i = 0; i < m_uniformBuffers.size(); ++i)
@@ -175,4 +110,34 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 const std::string& TRAP::Graphics::UniformBuffer::GetName() const
 {
 	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const std::string& name, void* data,
+                                                                               const uint64_t size,
+																			   const BufferUsage usage)
+{
+	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
+	buffer->m_name = name;
+	buffer->m_bufferUsage = usage;
+	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
+	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
+
+	RendererAPI::BufferLoadDesc desc{};
+	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                         RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.Flags = (usage == BufferUsage::Static) ? RendererAPI::BufferCreationFlags::None :
+	                                                   RendererAPI::BufferCreationFlags::PersistentMap;
+	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
+	desc.Desc.Size = size;
+	desc.Data = data;
+
+	for(uint32_t i = 0; i < buffer->m_uniformBuffers.size(); ++i)
+	{
+		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
+		buffer->m_uniformBuffers[i] = desc.Buffer;
+	}
+
+	return buffer;
 }

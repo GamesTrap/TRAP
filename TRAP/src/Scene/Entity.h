@@ -40,10 +40,10 @@ namespace TRAP
 		T& GetComponent()
 		{
 			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
-			
+
 			return m_scene->m_registry.get<T>(m_entityHandle);
 		}
-		
+
 		template<typename T>
 		bool HasComponent()
 		{
@@ -64,7 +64,7 @@ namespace TRAP
 
 		bool operator==(Entity other) const;
 		bool operator!=(Entity other) const;
-		
+
 	private:
 		entt::entity m_entityHandle{ entt::null };
 		Scene* m_scene = nullptr;

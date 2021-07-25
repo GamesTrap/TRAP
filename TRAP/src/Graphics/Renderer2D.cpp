@@ -18,21 +18,21 @@ namespace TRAP::Graphics
 		Math::Vec2 TexCoord;
 		float TexIndex;
 	};
-	
+
 	struct Renderer2DData
 	{
 		static constexpr uint32_t MaxQuads = 20000;
 		static constexpr uint32_t MaxVertices = MaxQuads * 4;
 		static constexpr uint32_t MaxIndices = MaxQuads * 6;
 		static constexpr uint32_t MaxTextureSlots = 32; //TODO: RenderCaps (OpenGL already has GetMaxTextureUnits())
-		
+
 		//Scope<VertexArray> QuadVertexArray;
 		//Scope<VertexBuffer> QuadVertexBuffer;
 		Scope<Shader> TextureShader;
 		Scope<Texture2D> WhiteTexture;
 
 		Scope<std::array<QuadVertex, MaxVertices>> QuadVertices = MakeScope<std::array<QuadVertex, MaxVertices>>();
-		
+
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
@@ -43,7 +43,7 @@ namespace TRAP::Graphics
 		std::array<Math::Vec4, 4> QuadVertexPositions{};
 
 		Renderer2D::Statistics Stats;
-		
+
 		Scope<UniformBuffer> CameraUniformBuffer;
 		struct UniformCamera
 		{
@@ -64,9 +64,10 @@ void TRAP::Graphics::Renderer2D::Init()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
-	
+
 	/*s_data.QuadVertexArray = VertexArray::Create();
-	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex), BufferUsage::Dynamic);
+	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex),
+	                                               BufferUsage::Dynamic);
 	s_data.QuadVertexBuffer->SetLayout
 	({
 		{ ShaderDataType::Float3, "Position" },
@@ -77,14 +78,14 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data.QuadVertexArray->SetVertexBuffer(s_data.QuadVertexBuffer);
 
 	s_data.QuadVertexBufferBase = (*s_data.QuadVertices).data();
-	
+
 	Scope<std::array<uint32_t, Renderer2DData::MaxIndices>> quadIndices = MakeScope<std::array<uint32_t, Renderer2DData::MaxIndices>>();
 	for(uint32_t offset = 0, i = 0; i < Renderer2DData::MaxIndices; i += 6)
 	{
 		(*quadIndices)[i + 0] = offset + 0;
 		(*quadIndices)[i + 1] = offset + 1;
 		(*quadIndices)[i + 2] = offset + 2;
-		
+
 		(*quadIndices)[i + 3] = offset + 2;
 		(*quadIndices)[i + 4] = offset + 3;
 		(*quadIndices)[i + 5] = offset + 0;
@@ -95,11 +96,13 @@ void TRAP::Graphics::Renderer2D::Init()
 	Scope<IndexBuffer> quadIndexBuffer = IndexBuffer::Create((*quadIndices).data(), Renderer2DData::MaxIndices);
 	s_data.QuadVertexArray->SetIndexBuffer(quadIndexBuffer);
 	quadIndices.reset();
-	
-	s_data.CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data.UniformCamera, sizeof(Renderer2DData::UniformCamera), BufferUsage::Stream);
+
+	s_data.CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data.UniformCamera,
+	                                                   sizeof(Renderer2DData::UniformCamera), BufferUsage::Stream);
 
 	s_data.TextureShader = Shader::CreateFromSource("Renderer2D", Embed::Renderer2DShader);
-	const Scope<Image> whiteImage = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA, std::vector<uint8_t>{255, 255, 255, 255});
+	const Scope<Image> whiteImage = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA,
+	                                                      std::vector<uint8_t>{255, 255, 255, 255});
 	s_data.WhiteTexture = Texture2D::CreateFromImage("Renderer2DWhite", whiteImage);
 
 	std::array<int32_t, Renderer2DData::MaxTextureSlots> samplers{};
@@ -177,7 +180,7 @@ void TRAP::Graphics::Renderer2D::Flush()
 {
 	/*if (s_data.QuadIndexCount == 0)
 		return; //Nothing to render
-	
+
 	//Update Camera
 	s_data.CameraUniformBuffer->UpdateData(&s_data.UniformCamera);
 	s_data.CameraUniformBuffer->Bind(0);
@@ -192,7 +195,7 @@ void TRAP::Graphics::Renderer2D::Flush()
 	//Bind textures
 	for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++)
 		s_data.TextureSlots[i]->Bind(i);
-	
+
 	RenderCommand::DrawIndexed(s_data.QuadVertexArray, s_data.QuadIndexCount);
 
 	s_data.Stats.DrawCalls++;*/
@@ -232,13 +235,15 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Scop
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
+                                          const Scope<Texture2D>& texture)
 {
 	TP_PROFILE_FUNCTION();
 
 	/*Math::Mat4 transformation;
 	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
-		transformation = Math::Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
+		transformation = Math::Translate(transform.Position) *
+		                 Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 
@@ -247,7 +252,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color, const Scope<Texture2D>& texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
+                                          const Scope<Texture2D>& texture)
 {
 	/*constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}} };
@@ -279,7 +285,7 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& textur
 
 	if (!texture)
 		return textureIndex;
-	
+
 	for (uint32_t i = 1; i < s_data.TextureSlotIndex; i++)
 	{
 		if (s_data.TextureSlots[i] == texture.get())
@@ -293,7 +299,7 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& textur
 	{
 		if (s_data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 			NextBatch();
-		
+
 		textureIndex = static_cast<float>(s_data.TextureSlotIndex);
 		s_data.TextureSlots[s_data.TextureSlotIndex] = texture.get();
 		s_data.TextureSlotIndex++;

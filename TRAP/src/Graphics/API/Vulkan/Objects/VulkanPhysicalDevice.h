@@ -9,14 +9,14 @@ namespace TRAP::Graphics::API
 	class VulkanPhysicalDevice
 	{
 	public:
-		VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance>& instance, 
+		VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance>& instance,
 			                 const std::array<uint8_t, 16>& physicalDeviceUUID);
 		~VulkanPhysicalDevice();
 		VulkanPhysicalDevice(const VulkanPhysicalDevice&) = default;
 		VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) = default;
 		VulkanPhysicalDevice(VulkanPhysicalDevice&&) = default;
 		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) = default;
-		
+
 		VkPhysicalDevice& GetVkPhysicalDevice();
 		const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const;
 		const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const;
@@ -31,31 +31,29 @@ namespace TRAP::Graphics::API
 		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const;
 		bool IsExtensionSupported(const std::string& extension);
 		uint32_t GetMemoryType(uint32_t typeBits, VkMemoryPropertyFlags properties) const;
-		
+
 		const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
-		
+
 		const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const;
 
 		void RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
-		
-		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(
-			const TRAP::Ref<VulkanInstance>& instance);
+
+		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance);
 
 		static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
-			const std::array<uint8_t, 16>& physicalDeviceUUID);
+			                                              const std::array<uint8_t, 16>& physicalDeviceUUID);
 
-		
+
 	private:
 		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();
-		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(
-			const VkInstance& instance);
-		
+		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(const VkInstance& instance);
+
 		static std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(const VkInstance& instance);
 
 		static void RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices);
-		
+
 		void LoadAllPhysicalDeviceExtensions();
-		
+
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;
 		VkPhysicalDeviceSubgroupProperties m_physicalDeviceSubgroupProperties;

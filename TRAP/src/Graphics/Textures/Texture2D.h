@@ -2,32 +2,33 @@
 #define _TRAP_TEXTURE2D_H_
 
 #include "Texture.h"
+#include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {
 	class Texture2D : public Texture
 	{
 	public:
-		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> CreateFromFile(std::string_view filepath, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, Image::ColorFormat format, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> Create(TextureParameters parameters = TextureParameters());
+		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath,
+		                                       TextureUsage usage);
+		static Scope<Texture2D> CreateFromFile(std::string_view filepath, TextureUsage usage);
+		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img,
+		                                        TextureUsage usage);
+		static Scope<Texture2D> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel,
+		                                    Image::ColorFormat format, TextureUsage usage);
+		static Scope<Texture2D> Create(TextureUsage usage); //Fallback Texture
 
+		uint32_t GetDepth() const override;
+		uint32_t GetArraySize() const override;
 		const std::string& GetFilePath() const;
 
-		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
+		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
 
-		static void UpdateLoadingTextures();
-		
+		~Texture2D() = default;
 	protected:
 		Texture2D();
-		
-		static uint32_t s_maxTextureSize;
 
 		std::string m_filepath;
-
-		static std::vector<std::pair<Texture2D*, std::future<Scope<Image>>>> m_loadingTextures;
 	};
 }
 

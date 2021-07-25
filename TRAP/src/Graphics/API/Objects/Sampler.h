@@ -9,13 +9,37 @@ namespace TRAP::Graphics
 	{
 	public:
 		static TRAP::Ref<Sampler> Create(const RendererAPI::SamplerDesc& desc);
-		
+
 		virtual ~Sampler() = default;
-	
+
+		RendererAPI::FilterType GetMinFilter() const;
+		RendererAPI::FilterType GetMagFilter() const;
+		RendererAPI::MipMapMode GetMipMapMode() const;
+		RendererAPI::AddressMode GetAddressU() const;
+		RendererAPI::AddressMode GetAddressV() const;
+		RendererAPI::AddressMode GetAddressW() const;
+		float GetMipLodBias() const;
+		float GetMaxAnisotropy() const;
+		RendererAPI::CompareMode GetCompareFunc() const;
+
+		static void ClearCache();
+
 	protected:
 		Sampler() = default;
-		
-		//No Graphic API independent data
+
+	private:
+		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
+
+		RendererAPI::SamplerDesc m_samplerDesc;
+	};
+}
+
+namespace std
+{
+	template <>
+ 	struct hash<TRAP::Graphics::RendererAPI::SamplerDesc>
+	{
+		std::size_t operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept;
 	};
 }
 

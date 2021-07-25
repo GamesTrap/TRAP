@@ -30,6 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define _TRAP_NETWORK_SOCKETHANDLE_H_
 
 #include <cstdint>
+#include "Core/PlatformDetection.h"
 
 namespace TRAP::Network
 {

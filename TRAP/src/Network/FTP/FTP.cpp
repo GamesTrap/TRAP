@@ -90,13 +90,13 @@ const std::string& TRAP::Network::FTP::Response::GetMessage() const
 TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& response)
 	: Response(response)
 {
-	if(IsOK())
-	{
-		//Extract the directory from the server response
-		const std::string::size_type begin = GetMessage().find('"', 0);
-		const std::string::size_type end = GetMessage().find('"', begin + 1);
-		m_directory = GetMessage().substr(begin + 1, end - begin - 1);
-	}
+	if(!IsOK())
+		return;
+
+	//Extract the directory from the server response
+	const std::string::size_type begin = GetMessage().find('"', 0);
+	const std::string::size_type end = GetMessage().find('"', begin + 1);
+	m_directory = GetMessage().substr(begin + 1, end - begin - 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -111,15 +111,15 @@ const std::string& TRAP::Network::FTP::DirectoryResponse::GetDirectory() const
 TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, const std::string& data)
 	: Response(response)
 {
-	if(IsOK())
+	if(!IsOK())
+		return;
+
+	//Fill the array of strings
+	std::string::size_type lastPos = 0;
+	for(std::string::size_type pos = data.find("\r\n"); pos != std::string::npos; pos = data.find("\r\n", lastPos))
 	{
-		//Fill the array of strings
-		std::string::size_type lastPos = 0;
-		for(std::string::size_type pos = data.find("\r\n"); pos != std::string::npos; pos = data.find("\r\n", lastPos))
-		{
-			m_listing.push_back(data.substr(lastPos, pos - lastPos));
-			lastPos = pos + 2;
-		}
+		m_listing.emplace_back(data.substr(lastPos, pos - lastPos));
+		lastPos = pos + 2;
 	}
 }
 
@@ -139,7 +139,8 @@ TRAP::Network::FTP::~FTP()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& server, const uint16_t port, const Utils::TimeStep timeout)
+TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& server, const uint16_t port,
+                                                         const Utils::TimeStep timeout)
 {
 	//Connect to the server
 	if (m_commandSocket.Connect(server, port, timeout) != Socket::Status::Done)
@@ -266,8 +267,10 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::string& n
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& remoteFile, const std::string& localVirtualOrPhysicalPath, const TransferMode mode)
-{	
+TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& remoteFile,
+                                                          const std::string& localVirtualOrPhysicalPath,
+														  const TransferMode mode)
+{
 	//Open a data channel using the given transfer mode
 	DataChannel data(*this);
 	Response response = data.Open(mode);
@@ -294,7 +297,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FolderPath: ", path, "!");
 				return Response(Response::Status::InvalidFile);
 			}
-			
+
 			//Create the file and truncate it if necessary
 			std::ofstream file((physicalPath.string() + filename).c_str(), std::ios::binary | std::ios::trunc);
 			if (!file)
@@ -320,7 +323,9 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath, TransferMode mode, bool append)
+TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& localVirtualOrPhysicalFile,
+                                                        const std::string& remotePath,
+														TransferMode mode, bool append)
 {
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(localVirtualOrPhysicalFile, physicalPath, true))
@@ -366,7 +371,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& local
 				response = GetResponse();
 			}
 		}
-		
+
 		return response;
 	}
 
@@ -375,7 +380,8 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& local
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& command, const std::string& parameter)
+TRAP::Network::FTP::Response TRAP::Network::FTP::SendCommand(const std::string& command,
+                                                             const std::string& parameter)
 {
 	//Build the command string
 	std::string commandStr;
@@ -474,7 +480,8 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 							message = separator + line;
 
 						//Save the remaining data for the next time GetResponse() is called
-						m_receiveBuffer.assign(buffer.data() + static_cast<std::size_t>(in.tellg()), length - static_cast<std::size_t>(in.tellg()));
+						m_receiveBuffer.assign(buffer.data() + static_cast<std::size_t>(in.tellg()),
+						                       length - static_cast<std::size_t>(in.tellg()));
 
 						//Return the response code and message
 						return Response(static_cast<Response::Status>(code), message);
@@ -483,7 +490,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 					{
 						//The line we just read was actually not a response,
 						//only a new part of the current multiline response
-						
+
 						//Extract the line
 						std::string line;
 						std::getline(in, line);
@@ -534,7 +541,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 
 TRAP::Network::FTP::DataChannel::DataChannel(FTP& owner)
 	: m_ftp(owner)
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -587,7 +594,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 				case TransferMode::EBCDIC:
 					modeStr = 'E';
 					break;
-					
+
 				default:
 					modeStr = "";
 					break;

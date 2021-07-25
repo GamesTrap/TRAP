@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/Socket.h"
 #include "Sockets/TCPSocketIPv6.h"
 #include "Sockets/SocketImpl.h"
+#include "Utils/Utils.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
 	: Socket(Type::TCP)
@@ -43,17 +45,23 @@ TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
 
 uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
-	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
+	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
+		return 0; //We failed to retrieve the port
+
+	//Retrieve information about the local end of the socket
+	sockaddr_in6 address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
-		//Retrieve information about the local end of the socket
-		sockaddr_in6 address{};
-		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin6_port);
+		uint16_t res = address.sin6_port;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(res);
+
+		return res;
 	}
 
-	//We failed to retrieve the port
-	return 0;
+	return 0; //We failed to retrieve the port
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

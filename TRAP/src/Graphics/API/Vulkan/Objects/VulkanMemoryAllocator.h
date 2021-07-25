@@ -15,7 +15,7 @@ namespace TRAP::Graphics::API
 		~VulkanMemoryAllocator();
 
 		VmaAllocator& GetVMAAllocator();
-		
+
 	private:
 		VmaAllocator m_allocator;
 	};

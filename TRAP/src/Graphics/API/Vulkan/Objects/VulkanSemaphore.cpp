@@ -15,7 +15,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Creating Semaphore");
 #endif
-	
+
 	VkSemaphoreCreateInfo info = VulkanInits::SemaphoreCreateInfo();
 	VkCall(vkCreateSemaphore(m_device->GetVkDevice(), &info, nullptr, &m_semaphore));
 }
@@ -24,15 +24,14 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 
 TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
-	if(m_semaphore)
-	{
+	TRAP_ASSERT(m_semaphore);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");
+	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");
 #endif
-		
-		vkDestroySemaphore(m_device->GetVkDevice(), m_semaphore, nullptr);
-		m_semaphore = nullptr;
-	}
+
+	vkDestroySemaphore(m_device->GetVkDevice(), m_semaphore, nullptr);
+	m_semaphore = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

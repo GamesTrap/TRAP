@@ -88,7 +88,8 @@ namespace TRAP::Network
 		/// <param name="remotePort">Port of the remote peer.</param>
 		/// <param name="timeout">Optional maximum time to wait.</param>
 		/// <returns>Status code.</returns>
-		Status Connect(const IPv4Address& remoteAddress, uint16_t remotePort, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		Status Connect(const IPv4Address& remoteAddress, uint16_t remotePort,
+		               Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
 		/// Disconnect the socket from its remote peer.<br>

@@ -9,10 +9,10 @@ TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Cr
 	{
 	case RenderAPI::Vulkan:
 		return TRAP::MakeRef<API::VulkanCommandSignature>(desc);
-		
+
 	case RenderAPI::NONE:
 		return nullptr;
-		
+
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;

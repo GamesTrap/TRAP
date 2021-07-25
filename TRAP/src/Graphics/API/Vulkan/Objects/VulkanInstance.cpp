@@ -72,14 +72,13 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 
 TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
-	if (m_instance)
-	{
-	#ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
-	#endif
-		vkDestroyInstance(m_instance, nullptr);
-		m_instance = nullptr;
-	}
+	TRAP_ASSERT(m_instance);
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
+#endif
+	vkDestroyInstance(m_instance, nullptr);
+	m_instance = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -140,17 +139,20 @@ bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string& la
 	if (s_availableInstanceLayers.empty())
 		LoadAllInstanceLayers();
 
-	const auto result = std::find_if(s_availableInstanceLayers.begin(),
-		                             s_availableInstanceLayers.end(),
-		                             [layer](VkLayerProperties prop) 
-									 { return std::strcmp(prop.layerName, layer.c_str()) == 0; });
+	const auto result = std::find_if(s_availableInstanceLayers.begin(), s_availableInstanceLayers.end(),
+		                             [layer](VkLayerProperties prop)
+		{
+			return std::strcmp(prop.layerName, layer.c_str()) == 0;
+		});
+
 	if (result == s_availableInstanceLayers.end())
 	{
 		if (layer == "VK_LAYER_KHRONOS_validation")
-			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer: \"", layer, "\" is not supported(Vulkan SDK installed?)");
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer: \"", layer,
+			        "\" is not supported(Vulkan SDK installed?)");
 		else
 			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer: \"", layer, "\" is not supported");
-		
+
 		return false;
 	}
 
@@ -171,7 +173,8 @@ bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string
 	if (result == s_availableInstanceExtensions.end())
 	{
 		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
-			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension: \"", extension, "\" is not supported(Vulkan SDK installed?)");
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension: \"", extension,
+			        "\" is not supported(Vulkan SDK installed?)");
 		else
 			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension: \"", extension, "\" is not supported");
 

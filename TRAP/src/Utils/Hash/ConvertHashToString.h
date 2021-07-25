@@ -13,7 +13,11 @@ namespace TRAP::Utils::Hash
 	{
 		std::stringstream ss{};
 		for (const uint8_t& i : hash)
-			ss << std::hex << std::setfill('0') << std::setw(2) << std::nouppercase << static_cast<int>(static_cast<uint8_t>(i));
+		{
+			ss << std::hex << std::setfill('0') << std::setw(2) << std::nouppercase
+			   << static_cast<int>(static_cast<uint8_t>(i));
+		}
+
 		return ss.str();
 	}
 }

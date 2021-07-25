@@ -11,8 +11,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	TP_PROFILE_FUNCTION();
 
 	m_filepath = std::move(filepath);
-
-	TP_DEBUG(Log::ImageTGAPrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImageTGAPrefix, "Loading Image: \"",
+	         Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
@@ -22,313 +22,298 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		return;
 	}
 
-	if (VFS::FileOrFolderExists(physicalPath))
+	if (!VFS::FileOrFolderExists(physicalPath))
+		return;
+
+	std::ifstream file(physicalPath, std::ios::binary);
+	if (!file.is_open())
 	{
-		std::ifstream file(physicalPath, std::ios::binary);
-		if (!file.is_open())
-		{
-			TP_ERROR(Log::ImageTGAPrefix, "Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-			return;
-		}
+		TP_ERROR(Log::ImageTGAPrefix, "Couldn't open FilePath: ", m_filepath, "!");
+		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		return;
+	}
 
-		//Start TGA Loading here
-		struct Header
-		{
-			uint8_t IDLength = 0; //0 = No ImageID
-			uint8_t ColorMapType = 0; //0 = No Color Map | 1 = Has Color Map
-			uint8_t ImageType = 0; //0 = No Data | 1 = Uncompressed ColorMapped | 2 = Uncompressed TrueColor | 3 = Uncompressed BlackWhite | 9 = RunLengthEncoded ColorMapped | 10 = RunLengthEncoded TrueColor | 11 = RunLengthEncoded BlackWhite
-			//ColorMap spec
-			uint16_t ColorMapOffset = 0;
-			uint16_t NumOfColorMaps = 0;
-			uint8_t ColorMapDepth = 0;
-			//Image spec
-			uint16_t XOffset = 0;
-			uint16_t YOffset = 0;
-			uint16_t Width = 0;
-			uint16_t Height = 0;
-			uint8_t BitsPerPixel = 0;
-			uint8_t ImageDescriptor = 0;
-		} header;
+	//Start TGA Loading here
+	Header header{};
 
-		file.read(reinterpret_cast<char*>(&header.IDLength), 1);
-		file.read(reinterpret_cast<char*>(&header.ColorMapType), 1);
-		file.read(reinterpret_cast<char*>(&header.ImageType), 1);
-		file.read(reinterpret_cast<char*>(&header.ColorMapOffset), 2);
-		file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), 2);
-		file.read(reinterpret_cast<char*>(&header.ColorMapDepth), 1);
-		file.read(reinterpret_cast<char*>(&header.XOffset), 2);
-		file.read(reinterpret_cast<char*>(&header.YOffset), 2);
-		file.read(reinterpret_cast<char*>(&header.Width), 2);
-		file.read(reinterpret_cast<char*>(&header.Height), 2);
-		file.read(reinterpret_cast<char*>(&header.BitsPerPixel), 1);
-		file.read(reinterpret_cast<char*>(&header.ImageDescriptor), 1);
+	file.read(reinterpret_cast<char*>(&header.IDLength), 1);
+	file.read(reinterpret_cast<char*>(&header.ColorMapType), 1);
+	file.read(reinterpret_cast<char*>(&header.ImageType), 1);
+	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), 2);
+	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), 2);
+	file.read(reinterpret_cast<char*>(&header.ColorMapDepth), 1);
+	file.read(reinterpret_cast<char*>(&header.XOffset), 2);
+	file.read(reinterpret_cast<char*>(&header.YOffset), 2);
+	file.read(reinterpret_cast<char*>(&header.Width), 2);
+	file.read(reinterpret_cast<char*>(&header.Height), 2);
+	file.read(reinterpret_cast<char*>(&header.BitsPerPixel), 1);
+	file.read(reinterpret_cast<char*>(&header.ImageDescriptor), 1);
 
-		//File uses little-endian
-		//Convert to machines endian
-		if (Utils::GetEndian() != Utils::Endian::Little)
-		{
-			Utils::Memory::SwapBytes(header.ColorMapOffset);
-			Utils::Memory::SwapBytes(header.NumOfColorMaps);
-			Utils::Memory::SwapBytes(header.XOffset);
-			Utils::Memory::SwapBytes(header.YOffset);
-			Utils::Memory::SwapBytes(header.Width);
-			Utils::Memory::SwapBytes(header.Height);
-		}
+	//File uses little-endian
+	//Convert to machines endian
+	if (Utils::GetEndian() != Utils::Endian::Little)
+	{
+		Utils::Memory::SwapBytes(header.ColorMapOffset);
+		Utils::Memory::SwapBytes(header.NumOfColorMaps);
+		Utils::Memory::SwapBytes(header.XOffset);
+		Utils::Memory::SwapBytes(header.YOffset);
+		Utils::Memory::SwapBytes(header.Width);
+		Utils::Memory::SwapBytes(header.Height);
+	}
 
-		struct ColorMapData
-		{
-			std::string ImageID = "";
-			std::vector<uint8_t> ColorMap{};
-			std::vector<uint8_t> ImageData{};
-		} colorMapData;
+	ColorMapData colorMapData{};
 
-		if (header.ImageType == 0)
-		{
-			file.close();
-			TP_ERROR(Log::ImageTGAPrefix, "Image doesn't contain pixel data!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-			return;
-		}
-		if (header.IDLength != 0)
-		{
-			colorMapData.ImageID.resize(header.IDLength);
-			file.read(static_cast<char*>(colorMapData.ImageID.data()), header.IDLength);
-		}
-		if (header.ColorMapType == 1)
-		{
-			colorMapData.ColorMap.resize((header.ColorMapDepth / 8) * header.NumOfColorMaps);
-			if(!file.read(reinterpret_cast<char*>(colorMapData.ColorMap.data()), (header.ColorMapDepth / 8) * header.NumOfColorMaps))
-			{
-				file.close();
-				TP_ERROR(Log::ImageTGAPrefix, "Couldn't load Color Map!");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-		}
-		if(header.BitsPerPixel == 15)
-		{
-			file.close();
-			TP_ERROR(Log::ImageTGAPrefix, "BitsPerPixel 15 is unsupported!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-			return;
-		}
-		bool needXFlip = false;
-		bool needYFlip = false;
-		if ((header.ImageDescriptor & 0x30) == 0x30 || (header.ImageDescriptor & 0x30) == 0x10) //1. If Image is stored Top/Right | 2. If Image is stored Bottom/Right
-			needXFlip = true;
-		if ((header.ImageDescriptor & 0x30) == 0x00 || (header.ImageDescriptor & 0x30) == 0x10) //1. If Image is stored Bottom/Left | 2. If Image is stored Bottom/Right
-			needYFlip = true;
-		if (header.Width < 2 || header.Height < 2)
-		{
-			file.close();
-			TP_ERROR(Log::ImageTGAPrefix, "Image Width/Height is invalid/unsupported!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-			return;
-		}
-		if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
-		{
-			uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
-			file.seekg(0, std::ios::end); //Go to the end of file
-			uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
-			file.seekg(-18, std::ios::end); //Check if there is a footer
-			std::string offsetCheck(16, '\0');
-			file.read(offsetCheck.data(), 16);
-			if (offsetCheck == "TRUEVISION-XFILE")
-				pixelDataSize -= 26; //If a footer was found subtract the 26 bytes from pixelDataSize
-			file.seekg(currentPosition); //Go back to starting position
-			
-			colorMapData.ImageData.resize(pixelDataSize);
-			if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()), pixelDataSize))
-			{
-				file.close();
-				TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-		}
-		else
-		{
-			colorMapData.ImageData.resize(header.Width* header.Height* (header.BitsPerPixel / 8));
-			if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()), header.Width * header.Height * (header.BitsPerPixel / 8)))
-			{
-				file.close();
-				TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-		}
-
+	if (header.ImageType == 0)
+	{
 		file.close();
-
-		m_width = header.Width;
-		m_height = header.Height;
-		m_bitsPerPixel = header.BitsPerPixel;
-		switch (header.ImageType)
+		TP_ERROR(Log::ImageTGAPrefix, "Image doesn't contain pixel data!");
+		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		return;
+	}
+	if (header.IDLength != 0)
+	{
+		colorMapData.ImageID.resize(header.IDLength);
+		file.read(static_cast<char*>(colorMapData.ImageID.data()), header.IDLength);
+	}
+	if (header.ColorMapType == 1)
+	{
+		colorMapData.ColorMap.resize((header.ColorMapDepth / 8) * header.NumOfColorMaps);
+		if(!file.read(reinterpret_cast<char*>(colorMapData.ColorMap.data()),
+		              (header.ColorMapDepth / 8) * header.NumOfColorMaps))
 		{
-		case 1:
-		{
-			if (header.BitsPerPixel > 8)
-			{
-				TP_ERROR(Log::ImageTGAPrefix, "Bad ColorMapped index size: ", header.BitsPerPixel, " bits/pixel");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-			if (header.BitsPerPixel == 8)
-			{
-				m_data = DecodeBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
-				m_bitsPerPixel = header.ColorMapDepth;
-				if(m_bitsPerPixel == 16)
-				{
-					m_colorFormat = ColorFormat::RGB;
-					m_bitsPerPixel = 24;
-				}
-				else if (m_bitsPerPixel == 24)
-					m_colorFormat = ColorFormat::RGB;
-				else if (m_bitsPerPixel == 32)
-					m_colorFormat = ColorFormat::RGBA;
-				break;
-			}
-			break;
-		}
-
-		case 9:
-		{
-			if (header.BitsPerPixel > 8)
-			{
-				TP_ERROR(Log::ImageTGAPrefix, "Bad ColorMapped RLE index size: ", header.BitsPerPixel, " bits/pixel");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-			if (header.BitsPerPixel == 8)
-			{
-				m_data = DecodeRLEBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
-				m_bitsPerPixel = header.ColorMapDepth;
-				if(m_bitsPerPixel == 16)
-				{
-					m_colorFormat = ColorFormat::RGB;
-					m_bitsPerPixel = 24;
-				}
-				if (m_bitsPerPixel == 24)
-					m_colorFormat = ColorFormat::RGB;
-				else if (m_bitsPerPixel == 32)
-					m_colorFormat = ColorFormat::RGBA;
-			}
-			break;
-		}
-
-		case 3:
-		{
-			m_colorFormat = ColorFormat::GrayScale;
-			if (header.BitsPerPixel == 8)
-				m_data = colorMapData.ImageData;
-			if (header.BitsPerPixel > 8)
-			{
-				TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale pixel size: ", header.BitsPerPixel, " bits/pixel");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-			break;
-		}
-
-		case 11:
-		{
-			m_colorFormat = ColorFormat::GrayScale;
-			if (header.BitsPerPixel == 8)
-				m_data = DecodeRLEGrayScale(colorMapData.ImageData, header.Width, header.Height);
-			if (header.BitsPerPixel > 8)
-			{
-				TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-			break;
-		}
-
-		case 2:
-		{
-			switch (header.BitsPerPixel)
-			{
-			case 16:
-			{
-				m_colorFormat = ColorFormat::RGB;
-				m_bitsPerPixel = 24;
-				m_data = ConvertBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
-				break;
-			}
-
-			case 24:
-			{
-				m_colorFormat = ColorFormat::RGB;
-				m_data = ConvertBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
-				break;
-			}
-
-			case 32:
-			{
-				m_colorFormat = ColorFormat::RGBA;
-				m_data = ConvertBGRA32ToRGBA32(colorMapData.ImageData, m_width, m_height);
-				break;
-			}
-
-			default:
-				TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor pixel size: ", header.BitsPerPixel, " bits/pixel");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-			break;
-		}
-
-		case 10:
-		{
-			switch (header.BitsPerPixel)
-			{
-			case 16:
-			{
-				m_colorFormat = ColorFormat::RGB;
-				m_bitsPerPixel = 24;
-				m_data = ConvertRLEBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
-				break;
-			}
-
-			case 24:
-			{
-				m_colorFormat = ColorFormat::RGB;
-				m_data = ConvertRLEBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
-				break;
-			}
-
-			case 32:
-			{
-				m_colorFormat = ColorFormat::RGBA;
-				m_data = ConvertRLEBGRA32ToRGBA(colorMapData.ImageData, m_width, m_height);
-				break;
-			}
-
-			default:
-				TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
-				TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
-				return;
-			}
-			break;
-		}
-
-		case 0: //Shouldn't be reached because of the above check!
-			TP_ERROR(Log::ImageTGAPrefix, "Image doesn't contain pixel data!");
+			file.close();
+			TP_ERROR(Log::ImageTGAPrefix, "Couldn't load Color Map!");
 			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
 			return;
+		}
+	}
+	if(header.BitsPerPixel == 15)
+	{
+		file.close();
+		TP_ERROR(Log::ImageTGAPrefix, "BitsPerPixel 15 is unsupported!");
+		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		return;
+	}
+	bool needXFlip = false;
+	bool needYFlip = false;
+	//1. If Image is stored Top/Right | 2. If Image is stored Bottom/Right
+	if ((header.ImageDescriptor & 0x30) == 0x30 || (header.ImageDescriptor & 0x30) == 0x10)
+		needXFlip = true;
+	//1. If Image is stored Bottom/Left | 2. If Image is stored Bottom/Right
+	if ((header.ImageDescriptor & 0x30) == 0x00 || (header.ImageDescriptor & 0x30) == 0x10)
+		needYFlip = true;
+	if (header.Width < 2 || header.Height < 2)
+	{
+		file.close();
+		TP_ERROR(Log::ImageTGAPrefix, "Image Width/Height is invalid/unsupported!");
+		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		return;
+	}
+	if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
+	{
+		uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
+		file.seekg(0, std::ios::end); //Go to the end of file
+		uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
+		file.seekg(-18, std::ios::end); //Check if there is a footer
+		std::string offsetCheck(16, '\0');
+		file.read(offsetCheck.data(), 16);
+		if (offsetCheck == "TRUEVISION-XFILE")
+			pixelDataSize -= 26; //If a footer was found subtract the 26 bytes from pixelDataSize
+		file.seekg(currentPosition); //Go back to starting position
+
+		colorMapData.ImageData.resize(pixelDataSize);
+		if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()), pixelDataSize))
+		{
+			file.close();
+			TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+	}
+	else
+	{
+		colorMapData.ImageData.resize(header.Width* header.Height* (header.BitsPerPixel / 8));
+		if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()),
+		                                       header.Width * header.Height * (header.BitsPerPixel / 8)))
+		{
+			file.close();
+			TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+	}
+
+	file.close();
+
+	m_width = header.Width;
+	m_height = header.Height;
+	m_bitsPerPixel = header.BitsPerPixel;
+	switch (header.ImageType)
+	{
+	case 1:
+	{
+		if (header.BitsPerPixel > 8)
+		{
+			TP_ERROR(Log::ImageTGAPrefix, "Bad ColorMapped index size: ", header.BitsPerPixel, " bits/pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+		if (header.BitsPerPixel == 8)
+		{
+			m_data = DecodeBGRAMap(colorMapData.ImageData, m_width, m_height,
+			                       header.ColorMapDepth / 8, colorMapData.ColorMap);
+			m_bitsPerPixel = header.ColorMapDepth;
+			if(m_bitsPerPixel == 16)
+			{
+				m_colorFormat = ColorFormat::RGB;
+				m_bitsPerPixel = 24;
+			}
+			else if (m_bitsPerPixel == 24)
+				m_colorFormat = ColorFormat::RGB;
+			else if (m_bitsPerPixel == 32)
+				m_colorFormat = ColorFormat::RGBA;
+			break;
+		}
+		break;
+	}
+
+	case 9:
+	{
+		if (header.BitsPerPixel > 8)
+		{
+			TP_ERROR(Log::ImageTGAPrefix, "Bad ColorMapped RLE index size: ", header.BitsPerPixel, " bits/pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+		if (header.BitsPerPixel == 8)
+		{
+			m_data = DecodeRLEBGRAMap(colorMapData.ImageData, m_width, m_height,
+			                          header.ColorMapDepth / 8, colorMapData.ColorMap);
+			m_bitsPerPixel = header.ColorMapDepth;
+			if(m_bitsPerPixel == 16)
+			{
+				m_colorFormat = ColorFormat::RGB;
+				m_bitsPerPixel = 24;
+			}
+			if (m_bitsPerPixel == 24)
+				m_colorFormat = ColorFormat::RGB;
+			else if (m_bitsPerPixel == 32)
+				m_colorFormat = ColorFormat::RGBA;
+		}
+		break;
+	}
+
+	case 3:
+	{
+		if (header.BitsPerPixel > 8)
+		{
+			TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale pixel size: ", header.BitsPerPixel, " bits/pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+		if (header.BitsPerPixel == 8)
+			m_data = colorMapData.ImageData;
+		m_colorFormat = ColorFormat::GrayScale;
+		break;
+	}
+
+	case 11:
+	{
+		if (header.BitsPerPixel > 8)
+		{
+			TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+		if (header.BitsPerPixel == 8)
+			m_data = DecodeRLEGrayScale(colorMapData.ImageData, header.Width, header.Height);
+		m_colorFormat = ColorFormat::GrayScale;
+		break;
+	}
+
+	case 2:
+	{
+		switch (header.BitsPerPixel)
+		{
+		case 16:
+		{
+			m_colorFormat = ColorFormat::RGB;
+			m_bitsPerPixel = 24;
+			m_data = ConvertBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
+			break;
+		}
+
+		case 24:
+		{
+			m_colorFormat = ColorFormat::RGB;
+			m_data = ConvertBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
+			break;
+		}
+
+		case 32:
+		{
+			m_colorFormat = ColorFormat::RGBA;
+			m_data = ConvertBGRA32ToRGBA32(colorMapData.ImageData, m_width, m_height);
+			break;
+		}
 
 		default:
-			TP_ERROR(Log::ImageTGAPrefix, "Unknown or invalid Image Type!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor pixel size: ", header.BitsPerPixel, " bits/pixel");
 			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
 			return;
 		}
-
-		if (needXFlip)
-			m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
-		if (needYFlip)
-			m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
+		break;
 	}
+
+	case 10:
+	{
+		switch (header.BitsPerPixel)
+		{
+		case 16:
+		{
+			m_colorFormat = ColorFormat::RGB;
+			m_bitsPerPixel = 24;
+			m_data = ConvertRLEBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
+			break;
+		}
+
+		case 24:
+		{
+			m_colorFormat = ColorFormat::RGB;
+			m_data = ConvertRLEBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
+			break;
+		}
+
+		case 32:
+		{
+			m_colorFormat = ColorFormat::RGBA;
+			m_data = ConvertRLEBGRA32ToRGBA(colorMapData.ImageData, m_width, m_height);
+			break;
+		}
+
+		default:
+			TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			return;
+		}
+		break;
+	}
+
+	case 0: //Shouldn't be reached because of the above check!
+		TP_ERROR(Log::ImageTGAPrefix, "Image doesn't contain pixel data!");
+		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		return;
+
+	default:
+		TP_ERROR(Log::ImageTGAPrefix, "Unknown or invalid Image Type!");
+		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		return;
+	}
+
+	if (needXFlip)
+		m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
+	if (needYFlip)
+		m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -347,7 +332,9 @@ uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
+std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width,
+                                                                const uint32_t height, const uint32_t channels,
+																std::vector<uint8_t>& colorMap)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -381,7 +368,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 			else if (channels == 2)
 			{
 				data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
-				data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8;
+				data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2))
+				                & 0xF8;
 				data[index++] = (colorMap[source[i] * channels] << 3) & 0xF8;
 			}
 			else if (channels == 3)
@@ -412,7 +400,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
+                                                                  const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -453,7 +442,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
+                                                                      const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -495,7 +485,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
+                                                                      const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -537,7 +528,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
+                                                                      const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 

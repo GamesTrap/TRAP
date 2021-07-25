@@ -23,7 +23,7 @@ namespace TRAP::Graphics::API
 		VulkanDevice& operator=(VulkanDevice&&) = default;
 
 		VkDevice& GetVkDevice();
-		
+
 		const TRAP::Scope<VulkanPhysicalDevice>& GetPhysicalDevice() const;
 
 		const std::vector<std::string>& GetUsedPhysicalDeviceExtensions() const;
@@ -31,22 +31,23 @@ namespace TRAP::Graphics::API
 		void FindQueueFamilyIndices();
 
 		void WaitIdle() const;
-		
+
 		uint8_t GetGraphicsQueueFamilyIndex() const;
 		uint8_t GetTransferQueueFamilyIndex() const;
 		uint8_t GetComputeQueueFamilyIndex() const;
 		std::array<uint8_t, 3> GetQueueFamilyIndices() const;
-		
+
 		uint8_t GetGraphicsQueueIndex() const;
 		uint8_t GetTransferQueueIndex() const;
 		uint8_t GetComputeQueueIndex() const;
-		
+
 	private:
 		friend VulkanQueue;
-		
+
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, uint8_t& queueFamilyIndex, uint8_t& queueIndex);
-		void FindQueueFamilyIndex(RendererAPI::QueueType type, VkQueueFamilyProperties& queueFamilyProperties, uint8_t& queueFamilyIndex, uint8_t& queueIndex);
-		
+		void FindQueueFamilyIndex(RendererAPI::QueueType type, VkQueueFamilyProperties& queueFamilyProperties,
+		                          uint8_t& queueFamilyIndex, uint8_t& queueIndex);
+
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 
 		std::vector<std::string> m_deviceExtensions;

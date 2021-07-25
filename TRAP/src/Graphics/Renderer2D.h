@@ -8,13 +8,13 @@ namespace TRAP::Graphics
 {
 	class Camera;
 	struct Renderer2DData;
-	
+
 	class Renderer2D
 	{
 	public:
 		static void Init();
 		static void Shutdown();
-		
+
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
 		static void BeginScene(const OrthographicCamera& camera); //Deprecated
 		static void EndScene();
@@ -32,7 +32,8 @@ namespace TRAP::Graphics
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color);
 		static void DrawQuad(const Transform& transform, const Scope<Texture2D>& texture);
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
-		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
+		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
+		                     const Scope<Texture2D>& texture);
 
 		//Stats
 		struct Statistics
@@ -45,10 +46,10 @@ namespace TRAP::Graphics
 		};
 		static Statistics GetStats();
 		static void ResetStats();
-		
+
 	private:
 		static float GetTextureIndex(const Scope<Texture2D>& texture);
-		
+
 		static void StartBatch();
 		static void NextBatch();
 
