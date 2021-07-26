@@ -42,7 +42,7 @@ namespace TRAP::Graphics
 		static TRAP::Scope<IndexBuffer> Init(T* indices, const uint64_t size, const BufferUsage usage);
 
 		template<typename T>
-		void SetDataInternal(T* indices, uint64_t size, uint32_t offset = 0);
+		void SetDataInternal(const T* indices, uint64_t size, uint64_t offset = 0);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer;
 
@@ -97,7 +97,8 @@ inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Ini
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-inline void TRAP::Graphics::IndexBuffer::SetDataInternal(T* indices, uint64_t size, uint32_t offset)
+inline void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64_t size,
+														 const uint64_t offset)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
 	              "Trying to initialize IndexBuffer with wrong indice type!");

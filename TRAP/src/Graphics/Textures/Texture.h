@@ -28,7 +28,7 @@ namespace TRAP::Graphics
 		Texture();
 
 	public:
-		~Texture() = default;
+		virtual ~Texture() = default;
 		Texture(const Texture&) = default;
 		Texture& operator=(const Texture&) = default;
 		Texture(Texture&&) = default;

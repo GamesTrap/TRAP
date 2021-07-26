@@ -29,7 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketImplWinAPI.h"
 
-#include "PlatformDetection.h"
+#include "Core/PlatformDetection.h"
 
 #include "Utils/Utils.h"
 #include "Utils/ByteSwap.h"

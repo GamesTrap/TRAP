@@ -314,7 +314,8 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture, textures.size());
+	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture,
+	                                          static_cast<uint32_t>(textures.size()));
 
 	if(name.empty())
 	{
@@ -329,7 +330,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
 	params[0].Resource = textureBases;
-	params[0].Count = textures.size();
+	params[0].Count = static_cast<uint32_t>(textures.size());
 	if(set == 0) //None
 		GetDescriptorSets().StaticDescriptors->Update(0, params);
 	else if(set == 1) //Per Frame
@@ -375,7 +376,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler, samplers.size());
+	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
+	                                          static_cast<uint32_t>(samplers.size()));
 
 	if(name.empty())
 	{
@@ -386,7 +388,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
 	params[0].Resource = samplers;
-	params[0].Count = samplers.size();
+	params[0].Count = static_cast<uint32_t>(samplers.size());
 	if(set == 0) //None
 		GetDescriptorSets().StaticDescriptors->Update(0, params);
 	else if(set == 1) //Per Frame

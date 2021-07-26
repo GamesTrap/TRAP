@@ -220,6 +220,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForVisibilityNotify(InternalWindow* windo
 			return false;
 	}
 
+	window->Visible = true;
 	return true;
 }
 
@@ -1894,7 +1895,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 	}
 
 	if(window->Monitor)
+	{
+		PlatformSetWindowDecorated(window, window->Decorated);
+		PlatformSetWindowFloating(window, window->Floating);
 		ReleaseMonitor(window);
+	}
 	if(window->BorderlessFullscreen)
 		window->BorderlessFullscreen = false;
 
@@ -2377,8 +2382,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
-			                                            const WindowConfig& WNDConfig,
-			                                            const FrameBufferConfig&)
+			                                            const WindowConfig& WNDConfig)
 {
 	Visual* visual = nullptr;
 	int32_t depth;
@@ -4002,6 +4006,14 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		}
 
 		return;
+	}
+
+	case VisibilityNotify:
+	{
+		if(event.xvisibility.state == VisibilityFullyObscured)
+			window->Visible = false;
+		else
+			window->Visible = true;
 	}
 
 	case DestroyNotify:

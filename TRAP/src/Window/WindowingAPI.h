@@ -551,30 +551,6 @@ namespace TRAP::INTERNAL
 #endif
 
 		/// <summary>
-		/// Framebuffer configuration.
-		/// </summary>
-		struct FrameBufferConfig
-		{
-			int32_t RedBits = 0;
-			int32_t GreenBits = 0;
-			int32_t BlueBits = 0;
-			int32_t AlphaBits = 0;
-			int32_t DepthBits = 0;
-			int32_t StencilBits = 0;
-			int32_t AccumRedBits = 0;
-			int32_t AccumGreenBits = 0;
-			int32_t AccumBlueBits = 0;
-			int32_t AccumAlphaBits = 0;
-			int32_t AuxBuffers = 0;
-			bool Stereo = false;
-			int32_t Samples = 0;
-			bool SRGB = false;
-			bool DoubleBuffer = false;
-			bool Transparent = false;
-			uintptr_t Handle = 0;
-		};
-
-		/// <summary>
 		/// Window configuration.
 		/// </summary>
 		struct WindowConfig
@@ -601,7 +577,6 @@ namespace TRAP::INTERNAL
 
 			struct
 			{
-				FrameBufferConfig FrameBuffer{};
 				WindowConfig Window{};
 			} Hints;
 
@@ -1066,6 +1041,7 @@ namespace TRAP::INTERNAL
 			bool Decorated = true;
 			bool Floating = false;
 			bool ShouldClose = false;
+			bool Visible;
 			bool FocusOnShow = true;
 			bool MousePassthrough = false;
 			bool DragAndDrop = false;
@@ -2498,8 +2474,7 @@ namespace TRAP::INTERNAL
 		static void PlatformShowWindow(InternalWindow* window);
 		static void PlatformFocusWindow(const InternalWindow* window);
 		static bool PlatformCreateWindow(InternalWindow* window,
-			                             const WindowConfig& WNDConfig,
-			                             const FrameBufferConfig& FBConfig);
+			                             const WindowConfig& WNDConfig);
 		static void PlatformSetWindowTitle(const InternalWindow* window, const std::string& title);
 		static bool PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image, int32_t xHotspot,
 		                                 int32_t yHotspot);
@@ -2601,16 +2576,6 @@ namespace TRAP::INTERNAL
 		/// <param name="extensions">Extension to test.</param>
 		/// <returns>True if given string is inside the given extension.</returns>
 		static bool StringInExtensionString(const char* string, const char* extensions);
-		/// <summary>
-		/// Chooses the framebuffer config that best matches the desired one.
-		/// </summary>
-		/// <param name="desired">FrameBufferConfig that is the most wanted to be used.</param>
-		/// <param name="alternatives">
-		/// Alternative FrameBufferConfigs used when the most wanted FrameBufferConfig is not available.
-		/// </param>
-		/// <returns>FrameBufferConfig which should be used.</returns>
-		static const FrameBufferConfig* ChooseFBConfig(const FrameBufferConfig& desired,
-			                                           const std::vector<FrameBufferConfig>& alternatives);
 		/// <summary>
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>
@@ -2950,8 +2915,7 @@ namespace TRAP::INTERNAL
 		/// Creates the TRAP window.
 		/// </summary>
 		static int32_t CreateNativeWindow(InternalWindow* window,
-			const WindowConfig& WNDConfig,
-			const FrameBufferConfig& FBConfig);
+			                              const WindowConfig& WNDConfig);
 		//----------//
 		//Linux(X11)//
 		//----------//

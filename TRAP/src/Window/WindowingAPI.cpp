@@ -110,16 +110,6 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 	s_Data.Hints.Window.Focused = true;
 	s_Data.Hints.Window.FocusOnShow = true;
 	s_Data.Hints.Window.MousePassthrough = false;
-
-	//The default is 24 bits of color, 24 bits of depth and 8 bits of stencil, double buffered
-	s_Data.Hints.FrameBuffer = {};
-	s_Data.Hints.FrameBuffer.RedBits = 8;
-	s_Data.Hints.FrameBuffer.GreenBits = 8;
-	s_Data.Hints.FrameBuffer.BlueBits = 8;
-	s_Data.Hints.FrameBuffer.AlphaBits = 8;
-	s_Data.Hints.FrameBuffer.DepthBits = 24;
-	s_Data.Hints.FrameBuffer.StencilBits = 8;
-	s_Data.Hints.FrameBuffer.DoubleBuffer = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -235,7 +225,6 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 		return nullptr;
 	}
 
-	const FrameBufferConfig FBConfig = s_Data.Hints.FrameBuffer;
 	WindowConfig WNDConfig = s_Data.Hints.Window;
 
 	WNDConfig.Width = width;
@@ -248,9 +237,9 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 
 	window->videoMode.Width = width;
 	window->videoMode.Height = height;
-	window->videoMode.RedBits = FBConfig.RedBits;
-	window->videoMode.GreenBits = FBConfig.GreenBits;
-	window->videoMode.BlueBits = FBConfig.BlueBits;
+	window->videoMode.RedBits = 8;
+	window->videoMode.GreenBits = 8;
+	window->videoMode.BlueBits = 8;
 	window->videoMode.RefreshRate = -1;
 
 	window->Monitor = monitor;
@@ -268,7 +257,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	window->MaxHeight = -1;
 
 	//Open the actual window and create its context
-	if (!PlatformCreateWindow(window.get(), WNDConfig, FBConfig))
+	if (!PlatformCreateWindow(window.get(), WNDConfig))
 	{
 		DestroyWindow(std::move(window));
 		return nullptr;
@@ -632,9 +621,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 	switch(hint)
 	{
 	case Hint::Resizable:
-		if (window->Resizable == value)
-			return;
-
 		window->Resizable = value;
 
 		if (!window->Monitor)
@@ -646,27 +632,18 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 		break;
 
 	case Hint::Decorated:
-		if (window->Decorated == value)
-			return;
-
 		window->Decorated = value;
 		if (!window->Monitor)
 			PlatformSetWindowDecorated(window, value);
 		break;
 
 	case Hint::Floating:
-		if (window->Floating == value)
-			return;
-
 		window->Floating = value;
 		if (!window->Monitor)
 			PlatformSetWindowFloating(window, value);
 		break;
 
 	case Hint::MousePassthrough:
-		if (window->MousePassthrough == value)
-			return;
-
 		window->MousePassthrough = value;
 		PlatformSetWindowMousePassthrough(window, value);
 		break;
@@ -1486,165 +1463,6 @@ bool TRAP::INTERNAL::WindowingAPI::StringInExtensionString(const char* string, c
 	}
 
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Chooses the framebuffer config that best matches the desired one
-const TRAP::INTERNAL::WindowingAPI::FrameBufferConfig* TRAP::INTERNAL::WindowingAPI::ChooseFBConfig(const FrameBufferConfig& desired,
-	                                                                                                const std::vector<FrameBufferConfig>& alternatives)
-{
-	uint32_t missing, leastMissing = UINT_MAX;
-	uint32_t colorDiff, leastColorDiff = UINT_MAX;
-	uint32_t extraDiff, leastExtraDiff = UINT_MAX;
-	const FrameBufferConfig* closest = nullptr;
-
-	for (const auto& alternative : alternatives)
-	{
-		const FrameBufferConfig* current = &alternative;
-
-		if (desired.Stereo != current->Stereo)
-			//Stereo is a hard constraint
-			continue;
-
-		if (desired.DoubleBuffer != current->DoubleBuffer)
-			//Double buffering is a hard constraint
-			continue;
-
-			//Count number of missing buffers
-		{
-			missing = 0;
-
-			if (desired.AlphaBits > 0 && current->AlphaBits == 0)
-				missing++;
-
-			if (desired.DepthBits > 0 && current->DepthBits == 0)
-				missing++;
-
-			if (desired.StencilBits > 0 && current->StencilBits == 0)
-				missing++;
-
-			if (desired.AuxBuffers > 0 && current->AuxBuffers < desired.AuxBuffers)
-				missing += desired.AuxBuffers - current->AuxBuffers;
-
-			if (desired.Samples > 0 && current->Samples == 0)
-			{
-				//Technically, several multisampling buffers could be
-				//involved, but that's a lower level implementation detail and
-				//not important to us here, so we count them as one
-				missing++;
-			}
-
-			if (desired.Transparent != current->Transparent)
-				missing++;
-		}
-
-		//These polynomials make many small channel size differences matter
-		//less than one large channel size difference
-
-		//Calculate color channel size difference value
-		{
-			colorDiff = 0;
-
-			if (desired.RedBits != -1)
-			{
-				colorDiff += (desired.RedBits - current->RedBits) *
-					         (desired.RedBits - current->RedBits);
-			}
-
-			if (desired.GreenBits != -1)
-			{
-				colorDiff += (desired.GreenBits - current->GreenBits) *
-					         (desired.GreenBits - current->GreenBits);
-			}
-
-			if (desired.BlueBits != -1)
-			{
-				colorDiff += (desired.BlueBits - current->BlueBits) *
-					         (desired.BlueBits - current->BlueBits);
-			}
-		}
-
-		//Calculate non-color channel size difference value
-		{
-			extraDiff = 0;
-
-			if (desired.AlphaBits != -1)
-			{
-				extraDiff += (desired.AlphaBits - current->AlphaBits) *
-					         (desired.AlphaBits - current->AlphaBits);
-			}
-
-			if (desired.DepthBits != -1)
-			{
-				extraDiff += (desired.DepthBits - current->DepthBits) *
-					         (desired.DepthBits - current->DepthBits);
-			}
-
-			if (desired.StencilBits != -1)
-			{
-				extraDiff += (desired.StencilBits - current->StencilBits) *
-					         (desired.StencilBits - current->StencilBits);
-			}
-
-			if (desired.AccumRedBits != -1)
-			{
-				extraDiff += (desired.AccumRedBits - current->AccumRedBits) *
-					         (desired.AccumRedBits - current->AccumRedBits);
-			}
-
-			if (desired.AccumGreenBits != -1)
-			{
-				extraDiff += (desired.AccumGreenBits - current->AccumGreenBits) *
-					         (desired.AccumGreenBits - current->AccumGreenBits);
-			}
-
-			if (desired.AccumBlueBits != -1)
-			{
-				extraDiff += (desired.AccumBlueBits - current->AccumBlueBits) *
-					         (desired.AccumBlueBits - current->AccumBlueBits);
-			}
-
-			if (desired.AccumAlphaBits != -1)
-			{
-				extraDiff += (desired.AccumAlphaBits - current->AccumAlphaBits) *
-					         (desired.AccumAlphaBits - current->AccumAlphaBits);
-			}
-
-			if (desired.Samples != -1)
-			{
-				extraDiff += (desired.Samples - current->Samples) *
-					         (desired.Samples - current->Samples);
-			}
-
-			if (desired.SRGB && !current->SRGB)
-				extraDiff++;
-		}
-
-		//Figure out if the current one is better than the best one found so far
-		//Least number of missing buffers is the most important heuristic,
-		//then color buffer size match and lastly size match for other buffers
-
-		if (missing < leastMissing)
-			closest = current;
-		else if (missing == leastMissing)
-		{
-			if ((colorDiff < leastColorDiff) ||
-				(colorDiff == leastColorDiff && extraDiff < leastExtraDiff))
-			{
-				closest = current;
-			}
-		}
-
-		if (current == closest)
-		{
-			leastMissing = missing;
-			leastColorDiff = colorDiff;
-			leastExtraDiff = extraDiff;
-		}
-	}
-
-	return closest;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

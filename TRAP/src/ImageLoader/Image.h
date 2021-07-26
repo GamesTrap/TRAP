@@ -377,7 +377,7 @@ std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_
 	}
 
 	T whitePixelColor;
-	if(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value)
+	if constexpr (std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value)
 		whitePixelColor = std::numeric_limits<T>::max();
 	else
 		whitePixelColor = 1.0f;

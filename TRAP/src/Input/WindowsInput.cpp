@@ -26,7 +26,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-#include "PlatformDetection.h"
+#include "Core/PlatformDetection.h"
 #include "Input/Input.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS

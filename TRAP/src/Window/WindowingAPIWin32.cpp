@@ -27,7 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
-#include "PlatformDetection.h"
+#include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
 #include "Utils/Dialogs/Dialogs.h"
 
@@ -1417,8 +1417,7 @@ DWORD TRAP::INTERNAL::WindowingAPI::GetWindowExStyle(const InternalWindow* windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates the TRAP window
-int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig,
-	                                                     const FrameBufferConfig&)
+int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig)
 {
 	int32_t xPos, yPos, fullWidth, fullHeight;
 	DWORD style = GetWindowStyle(window);
@@ -2108,10 +2107,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window, const WindowConfig& WNDConfig,
-	                                                    const FrameBufferConfig& FBConfig)
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window, const WindowConfig& WNDConfig)
 {
-	if (!CreateNativeWindow(window, WNDConfig, FBConfig))
+	if (!CreateNativeWindow(window, WNDConfig))
 		return false;
 
 	if (window->Monitor)
@@ -2591,7 +2589,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* window)
 {
-	return window->Handle == GetActiveWindow();
+	return window->Handle == GetForegroundWindow();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

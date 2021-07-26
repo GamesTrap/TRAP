@@ -1980,3 +1980,8 @@ SITREP 07/25/2021|21w29a4
     - Updated stable TRAPVK (internal) version ~>60 mins
     - Doxygen excluded ControllerMappings ~<5 mins
     - Better documentation of internal WindowingAPI ~>45 mins
+
+SITREP 07/26/2021|21w30a1
+    - Changed TRAP Engine version to 21w30a1(0.7.62)
+    - Small WindowingAPI fixes ~<30 mins
+    - Fixed MSVC warnings ~<20 mins

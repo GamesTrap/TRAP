@@ -53,13 +53,13 @@ namespace TRAP::Events
 		/// <param name="key">Pressed key.</param>
 		/// <param name="repeatCount">Amount of key press repeats.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
-		KeyPressEvent(Input::Key key, uint16_t repeatCount, TRAP::Window* window);
+		KeyPressEvent(Input::Key key, uint32_t repeatCount, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve tha amount of key press repeats.
 		/// </summary>
 		/// <returns>Repeat count.</returns>
-		uint16_t GetRepeatCount() const;
+		uint32_t GetRepeatCount() const;
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
 		/// </summary>
@@ -89,7 +89,7 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		uint16_t m_repeatCount;
+		uint32_t m_repeatCount;
 		TRAP::Window* m_window;
 	};
 

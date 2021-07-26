@@ -2166,8 +2166,8 @@ constexpr genFIType TRAP::Math::Abs(genFIType x)
 
 		return x >= genFIType(0) ? x : -x;
 	}
-
-	return {};
+	else
+		return {};
 }
 
 template<uint32_t L, typename T>
