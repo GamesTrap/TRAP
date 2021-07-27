@@ -22,8 +22,9 @@ namespace TRAP::Graphics
 		virtual RendererAPI::SampleCount GetSampleCount() const = 0;
 		virtual uint32_t GetSampleQuality() const = 0;
 		virtual TRAP::Graphics::API::ImageFormat GetImageFormat() const = 0;
-		virtual RendererAPI::ClearColor GetClearColor() const = 0;
-		virtual RendererAPI::ClearDepthStencil GetClearDepthStencil() const = 0;
+		virtual TRAP::Math::Vec4 GetClearColor() const = 0;
+		virtual float GetClearDepth() const = 0;
+		virtual uint32_t GetClearStencil() const = 0;
 		virtual RendererAPI::DescriptorType GetDescriptorType() const = 0;
 
 	protected:
@@ -31,8 +32,9 @@ namespace TRAP::Graphics
 
 		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;
 
-		RendererAPI::ClearColor m_clearColor;
-		RendererAPI::ClearDepthStencil m_clearDepthStencil;
+		TRAP::Math::Vec4 m_clearColor;
+		float m_clearDepth;
+		uint32_t m_clearStencil;
 		uint32_t m_arraySize;
 		uint32_t m_depth;
 		uint32_t m_width;

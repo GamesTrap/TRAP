@@ -345,16 +345,16 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		for(uint32_t i = 0; i < renderTargets.size(); ++i)
 		{
-			RendererAPI::ClearColor clearColor = loadActions->ClearColorValues[i];
+			TRAP::Math::Vec4 clearColor = loadActions->ClearColorValues[i];
 			VkClearValue val{};
-			val.color = { {clearColor.R, clearColor.G, clearColor.B, clearColor.A} };
+			val.color = { {clearColor.x, clearColor.y, clearColor.z, clearColor.w} };
 			clearValues.push_back(val);
 		}
 		if(depthStencil)
 		{
 			VkClearValue val{};
-			val.depthStencil = { loadActions->ClearDepthStencil.Depth,
-			                     loadActions->ClearDepthStencil.Stencil };
+			val.depthStencil = { loadActions->ClearDepth,
+			                     loadActions->ClearStencil };
 			clearValues.push_back(val);
 		}
 	}
@@ -918,7 +918,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearColor color, const uint32_t width,
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
 													 const uint32_t height)
 {
 	VkClearRect rect{};
@@ -934,15 +934,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearCol
 	VkClearAttachment attachment{};
 	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.color = { color.R, color.G, color.B, color.A };
+	attachment.clearValue.color = { color.x, color.y, color.z, color.w };
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearDepthStencil depthStencil,
-                                                     const uint32_t width, const uint32_t height)
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t stencil,
+ 												     const uint32_t width, const uint32_t height)
 {
 	VkClearRect rect{};
 	VkRect2D r{};
@@ -955,9 +955,54 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearDep
 	rect.layerCount = 1;
 
 	VkClearAttachment attachment{};
-	attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT; //TODO Split either depth or stencil or both
+	attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.depthStencil = { depthStencil.Depth, depthStencil.Stencil };
+	attachment.clearValue.depthStencil = { depth, stencil };
+
+	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t width, const uint32_t height)
+{
+	VkClearRect rect{};
+	VkRect2D r{};
+	r.offset.x = 0;
+	r.offset.y = 0;
+	r.extent.width = width;
+	r.extent.height = height;
+	rect.rect = r;
+	rect.baseArrayLayer = 0;
+	rect.layerCount = 1;
+
+	VkClearAttachment attachment{};
+	attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+	attachment.colorAttachment = 0;
+	attachment.clearValue.depthStencil = { depth, 0 };
+
+	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, const uint32_t width,
+                                                     const uint32_t height)
+{
+	VkClearRect rect{};
+	VkRect2D r{};
+	r.offset.x = 0;
+	r.offset.y = 0;
+	r.extent.width = width;
+	r.extent.height = height;
+	rect.rect = r;
+	rect.baseArrayLayer = 0;
+	rect.layerCount = 1;
+
+	VkClearAttachment attachment{};
+	attachment.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+	attachment.colorAttachment = 0;
+	attachment.clearValue.depthStencil = { 1.0f, stencil };
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }

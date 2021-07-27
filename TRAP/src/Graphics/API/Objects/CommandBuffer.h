@@ -81,8 +81,10 @@ namespace TRAP::Graphics
 
 		virtual void SetStencilReferenceValue(uint32_t val) const = 0;
 
-		virtual void Clear(RendererAPI::ClearColor color, uint32_t width, uint32_t height) = 0;
-		virtual void Clear(RendererAPI::ClearDepthStencil depthStencil, uint32_t width, uint32_t height) = 0;
+		virtual void Clear(TRAP::Math::Vec4 color, uint32_t width, uint32_t height) = 0;
+		virtual void Clear(float depth, uint32_t stencil, uint32_t width, uint32_t height) = 0;
+		virtual void Clear(float depth, uint32_t width, uint32_t height) = 0;
+		virtual void Clear(uint32_t stencil, uint32_t width, uint32_t height) = 0;
 
 	protected:
 		CommandBuffer();

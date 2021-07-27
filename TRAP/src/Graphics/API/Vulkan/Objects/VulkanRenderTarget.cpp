@@ -27,7 +27,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	m_sampleQuality = desc.SampleQuality;
 	m_format = desc.Format;
 	m_clearColor = desc.ClearColor;
-	m_clearDepthStencil = desc.ClearDepthStencil;
+	m_clearDepth = desc.ClearDepth;
+	m_clearStencil = desc.ClearStencil;
 	m_descriptors = desc.Descriptors;
 
 	TRAP_ASSERT(m_device, "device is nullptr");
@@ -65,7 +66,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	textureDesc.SampleQuality = desc.SampleQuality;
 	textureDesc.Format = desc.Format;
 	textureDesc.ClearColor = desc.ClearColor;
-	textureDesc.ClearDepthStencil = desc.ClearDepthStencil;
+	textureDesc.ClearDepth = desc.ClearDepth;
+	textureDesc.ClearStencil = desc.ClearStencil;
 	textureDesc.NativeHandle = desc.NativeHandle;
 
 	if (!isDepth)
@@ -239,16 +241,23 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanRenderTarget::GetIma
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ClearColor TRAP::Graphics::API::VulkanRenderTarget::GetClearColor() const
+TRAP::Math::Vec4 TRAP::Graphics::API::VulkanRenderTarget::GetClearColor() const
 {
 	return m_clearColor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ClearDepthStencil TRAP::Graphics::API::VulkanRenderTarget::GetClearDepthStencil() const
+float TRAP::Graphics::API::VulkanRenderTarget::GetClearDepth() const
 {
-	return m_clearDepthStencil;
+	return m_clearDepth;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetClearStencil() const
+{
+	return m_clearStencil;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

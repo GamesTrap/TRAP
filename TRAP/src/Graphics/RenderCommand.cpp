@@ -26,9 +26,16 @@ void TRAP::Graphics::RenderCommand::SetClearColor(const Math::Vec4& color)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetClearDepthStencil(const float depth, const uint32_t stencil)
+void TRAP::Graphics::RenderCommand::SetClearDepth(const float depth)
 {
-	RendererAPI::GetRenderer()->SetClearDepthStencil(depth, stencil);
+	RendererAPI::GetRenderer()->SetClearDepth(depth);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetClearStencil(const uint32_t stencil)
+{
+	RendererAPI::GetRenderer()->SetClearStencil(stencil);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

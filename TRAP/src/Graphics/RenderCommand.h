@@ -83,7 +83,8 @@ namespace TRAP::Graphics
 		static void Present(const Scope<Window>& window);
 
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
-		static void SetClearDepthStencil(float depth = 1.0f, uint32_t stencil = 0); //TODO Split up
+		static void SetClearDepth(float depth = 1.0f);
+		static void SetClearStencil(uint32_t stencil = 0);
 		static void SetDepthTesting(bool enabled);
 		static void SetDepthMasking(bool enabled);
 		static void SetDepthFunction(RendererFunction function = RendererFunction::Less);

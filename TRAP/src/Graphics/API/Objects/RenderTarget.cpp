@@ -6,7 +6,8 @@
 TRAP::Graphics::RenderTarget::RenderTarget()
 	: m_texture(nullptr),
 	  m_clearColor(),
-	  m_clearDepthStencil(),
+	  m_clearDepth(1.0f),
+	  m_clearStencil(0),
 	  m_arraySize(),
 	  m_depth(),
 	  m_width(),
