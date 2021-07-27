@@ -7,7 +7,7 @@
 
 void TRAP::Graphics::RenderCommand::Clear(const RendererBufferType buffer)
 {
-	//RendererAPI::GetRenderer()->Clear(buffer);
+	RendererAPI::GetRenderer()->Clear(buffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -22,6 +22,13 @@ void TRAP::Graphics::RenderCommand::Present(const Scope<Window>& window)
 void TRAP::Graphics::RenderCommand::SetClearColor(const Math::Vec4& color)
 {
 	RendererAPI::GetRenderer()->SetClearColor(color);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetClearDepthStencil(const float depth, const uint32_t stencil)
+{
+	RendererAPI::GetRenderer()->SetClearDepthStencil(depth, stencil);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

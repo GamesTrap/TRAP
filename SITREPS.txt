@@ -1985,3 +1985,7 @@ SITREP 07/26/2021|21w30a1
     - Changed TRAP Engine version to 21w30a1(0.7.62)
     - Small WindowingAPI fixes ~<30 mins
     - Fixed MSVC warnings ~<20 mins
+
+SITREP 07/28/2021|21w30a2
+    - Changed TRAP Engine version to 21w30a2(0.7.63)
+    - Cleaned up RendererAPI::Clear functions (1/2) ~>15 mins

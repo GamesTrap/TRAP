@@ -9,7 +9,6 @@ namespace TRAP
 	class Image;
 }
 
-
 namespace TRAP::Graphics
 {
 	class TextureBase;

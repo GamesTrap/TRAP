@@ -955,7 +955,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearDep
 	rect.layerCount = 1;
 
 	VkClearAttachment attachment{};
-	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT; //TODO Split either depth or stencil or both
 	attachment.colorAttachment = 0;
 	attachment.clearValue.depthStencil = { depthStencil.Depth, depthStencil.Stencil };
 

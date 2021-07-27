@@ -40,7 +40,6 @@ namespace TRAP::Graphics
 	enum class RendererBlendFunction;
 	enum class RendererFrontFace;
 	enum class RendererFunction;
-	enum class RendererBufferType;
 }
 
 namespace TRAP::Graphics::API
@@ -74,6 +73,7 @@ namespace TRAP::Graphics
 		enum class BlendConstant;
 		enum class ClearFlags;
 		enum class IndexType;
+		enum class ClearBufferType;
 		struct ClearColor;
 		struct ClearDepthStencil;
 	protected:
@@ -132,8 +132,7 @@ namespace TRAP::Graphics
 			                          BlendConstant destinationRGB, BlendConstant destinationAlpha,
 									  Window* window = nullptr) = 0;
 
-		virtual void Clear(ClearColor color, Window* window = nullptr) = 0;
-		virtual void Clear(ClearDepthStencil depthStencil, Window* window = nullptr) = 0;
+		virtual void Clear(ClearBufferType clearType, Window* window = nullptr) = 0;
 
 		//CommandBuffer Stuff
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth = 0.0f,
@@ -376,6 +375,18 @@ namespace TRAP::Graphics
 			ESRAM = BIT(3),
 			//Flag to specify not to allocate descriptors for the resource
 			NoDescriptorViewCreation = BIT(4)
+		};
+
+		enum class ClearBufferType
+		{
+			NONE = 0,
+			Color = BIT(0),
+			Depth = BIT(1),
+			Stencil = BIT(2),
+			Color_Depth = Color | Depth,
+			Color_Stencil = Color | Stencil,
+			Color_Depth_Stencil = Color | Stencil | Depth,
+			Depth_Stencil = Depth | Stencil
 		};
 
 		enum class IndirectArgumentType
@@ -1389,5 +1400,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

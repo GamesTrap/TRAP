@@ -308,9 +308,9 @@ namespace TRAP::Utils::Decompress
 		static constexpr uint16_t FirstLengthCodeIndex = 257;
 		static constexpr uint16_t LastLengthCodeIndex = 285;
 
-		static bool InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader);
-		static bool InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader,
-		                                uint32_t btype);
+		bool InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader);
+		bool InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader,
+		                         uint32_t btype);
 	}
 
 	/// <summary>

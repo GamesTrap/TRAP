@@ -68,8 +68,7 @@ namespace TRAP::Graphics::API
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
 							  Window* window = nullptr) override;
 
-		void Clear(ClearColor color, Window* window = nullptr) override;
-		void Clear(ClearDepthStencil depthStencil, Window* window = nullptr) override;
+		void Clear(ClearBufferType clearType, Window* window = nullptr) override;
 
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth = 0.0f,
 		                 float maxDepth = 1.0f, Window* window = nullptr) override;

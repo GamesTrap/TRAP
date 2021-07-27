@@ -622,7 +622,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearColor color, Window* window)
+void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType, Window* window)
 {
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
@@ -630,20 +630,25 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearColor color, Window* 
 	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
 
-	data->GraphicCommandBuffers[data->ImageIndex]->Clear(color, renderTarget->GetWidth(), renderTarget->GetHeight());
-}
+	if(static_cast<uint32_t>(clearType & ClearBufferType::Color) != 0)
+	{
+		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearColor, renderTarget->GetWidth(),
+		                                                     renderTarget->GetHeight());
+	}
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearDepthStencil depthStencil, Window* window)
-{
-	if (!window)
-		window = TRAP::Application::GetWindow().get();
-
-	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
-	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
-
-	data->GraphicCommandBuffers[data->ImageIndex]->Clear(depthStencil, renderTarget->GetWidth(), renderTarget->GetHeight());
+	if(static_cast<uint32_t>(clearType & ClearBufferType::Depth_Stencil) != 0)
+	{
+		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepthStencil, renderTarget->GetWidth(),
+		                                                     renderTarget->GetHeight());
+	}
+	else if(static_cast<uint32_t>(clearType & ClearBufferType::Depth) != 0)
+	{
+		//TODO
+	}
+	else if(static_cast<uint32_t>(clearType & ClearBufferType::Stencil) != 0)
+	{
+		//TODO
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
