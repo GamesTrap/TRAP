@@ -33,13 +33,6 @@ namespace TRAP::Graphics
 	class Sampler;
 	class RenderTarget;
 	class TextureBase;
-	enum class RendererCullMode;
-	enum class RendererOperation;
-	enum class RendererFaceMode;
-	enum class RendererBlendEquation;
-	enum class RendererBlendFunction;
-	enum class RendererFrontFace;
-	enum class RendererFunction;
 }
 
 namespace TRAP::Graphics::API

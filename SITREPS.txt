@@ -1990,3 +1990,8 @@ SITREP 07/28/2021|21w30a2
     - Changed TRAP Engine version to 21w30a2(0.7.63)
     - Cleaned up RendererAPI::Clear functions (1/2) ~>15 mins
     - Cleaned up RendererAPI::Clear functions (2/2) ~<40 mins
+
+SITREP 07/29/2021|21w30a3
+    - Changed TRAP Engine version to 21w30a3(0.7.64)
+    - RendererAPI Removed unused forward declarations ~<5 mins
+    - VulkanCommon Commented some unused functions out ~<5 mins
