@@ -651,17 +651,21 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 		                                                     renderTarget->GetHeight());
 	}
 
-	if(static_cast<uint32_t>(clearType & ClearBufferType::Depth_Stencil) != 0)
+	if(static_cast<uint32_t>(clearType & ClearBufferType::Depth_Stencil) != 0 &&
+	   TRAP::Graphics::API::ImageFormatIsDepthAndStencil(renderTarget->GetImageFormat()))
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepth, data->ClearStencil,
 															 renderTarget->GetWidth(), renderTarget->GetHeight());
 	}
-	else if(static_cast<uint32_t>(clearType & ClearBufferType::Depth) != 0)
+	else if(static_cast<uint32_t>(clearType & ClearBufferType::Depth) != 0 &&
+	        (TRAP::Graphics::API::ImageFormatIsDepthAndStencil(renderTarget->GetImageFormat()) ||
+			 TRAP::Graphics::API::ImageFormatIsDepthOnly(renderTarget->GetImageFormat())))
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearDepth, renderTarget->GetWidth(),
 															 renderTarget->GetHeight());
 	}
-	else if(static_cast<uint32_t>(clearType & ClearBufferType::Stencil) != 0)
+	else if(static_cast<uint32_t>(clearType & ClearBufferType::Stencil) != 0 &&
+	        TRAP::Graphics::API::ImageFormatHasStencil(renderTarget->GetImageFormat()))
 	{
 		data->GraphicCommandBuffers[data->ImageIndex]->Clear(data->ClearStencil, renderTarget->GetWidth(),
 		 													 renderTarget->GetHeight());
@@ -1473,7 +1477,7 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 
 	if(pipelineIt != s_pipelines.end())
 		return pipelineIt->second;
-	
+
 	const auto cacheIt = s_pipelineCaches.find(hash);
 
 	if (cacheIt == s_pipelineCaches.end())

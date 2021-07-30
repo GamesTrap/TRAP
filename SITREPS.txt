@@ -2002,4 +2002,8 @@ SITREP 07/30/2021|21w30a4
     - Replaced BufferUsage with (RendererAPI::Descriptor)UpdateFrequency ~<20 mins
     - GPUSettings Added fillModeNonSolid ~<5 mins
     - Reimplemented RenderCommand ~>30 mins
-    - RenderCommand Added optional Window* for multiple Windows support ~<20 mins
+    - RenderCommand Added optional Window* for multiple Window support ~<20 mins
+
+SITREP 07/31/2021|21w30a5
+    - Changed TRAP Engine version to 21w30a5(0.7.66)
+    - RendererAPI Clear Added checks against invalid use ~<20 mins
