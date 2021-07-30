@@ -10,13 +10,12 @@ public:
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
-	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	static void SetIcon(const TRAP::Scope<TRAP::Window>& window, int32_t iconColor);
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
-	
+
 	static std::array<std::string, 16> s_iconStrings;
 	static std::array<std::array<uint8_t, 4>, 5> s_iconColors;
 	static int32_t s_cursorIconColor;

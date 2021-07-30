@@ -13,13 +13,14 @@ VulkanIcoSphereTests::VulkanIcoSphereTests()
 
 void VulkanIcoSphereTests::OnAttach()
 {
-	TRAP::VFS::SetHotShaderReloading(true);
-	TRAP::VFS::MountShaders("Assets/Shaders");
-
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
+	TRAP::VFS::MountShaders("Assets/Shaders");
+
+	//Load Icosphere vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
-		static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::UpdateFrequency::None);
+		                                                  static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) *
+														  sizeof(float), TRAP::Graphics::UpdateFrequency::None);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -29,20 +30,26 @@ void VulkanIcoSphereTests::OnAttach()
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_icosphereIndices.data(), static_cast<uint32_t>(m_icosphereIndices.size()) * sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
+	//Load Icosphere indices
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_icosphereIndices.data(),
+	                                                    static_cast<uint32_t>(m_icosphereIndices.size()) *
+														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
 	m_indexBuffer->AwaitLoading();
-	m_vertexBuffer->Use();
 
-	m_cameraUBO = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader")->GetUniformBuffer(1, 0);
+	//Retrieve Camera UniformBuffer
+	m_cameraUBO = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest",
+	                                                      "/shaders/icosphere.shader")->GetUniformBuffer(1, 0);
 
+	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
 	//Camera setup
 	m_camera.SetPerspective(TRAP::Math::Radians(m_FOV), 0.01f, 1000.0f);
-	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(), TRAP::Application::GetWindow()->GetHeight());
+	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
+	                         TRAP::Application::GetWindow()->GetHeight());
 	m_cameraTransform.Position = TRAP::Math::Vec3(0.0f, 0.0f, 8.0f);
-	//Camera setup
 
+	//Enable depth testing because this is 3D stuff
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetDepthTesting(true);
 }
 
@@ -79,15 +86,17 @@ void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		CameraUBOData camera{};
 		camera.Projection = m_camera.GetProjectionMatrix();
 		camera.View = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
-		camera.Model = TRAP::Math::Rotate(TRAP::Math::Radians(m_rotationSpeed * TRAP::Application::GetTime()), TRAP::Math::Vec3(1.0f, 1.0f, 1.0f));
+		camera.Model = TRAP::Math::Rotate(TRAP::Math::Radians(m_rotationSpeed * TRAP::Application::GetTime()),
+		                                  TRAP::Math::Vec3(1.0f, 1.0f, 1.0f));
 
 		m_cameraUBO->SetData(&camera, sizeof(CameraUBOData));
 	}
 
 	TRAP::Graphics::ShaderManager::Get("VKIcoSphereTest")->Use();
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(m_icosphereIndices.size());
+	TRAP::Graphics::RenderCommand::DrawIndexed(m_icosphereIndices.size());
 
+	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
 		TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
@@ -103,7 +112,11 @@ void VulkanIcoSphereTests::OnImGuiRender()
 	float fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
 	TRAP::Math::Vec3 pos = m_cameraTransform.Position;
 
-	ImGui::Begin("Vulkan IcoSphere Test");
+	ImGui::Begin("Vulkan IcoSphere Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                               ImGuiWindowFlags_AlwaysAutoResize |
+												   ImGuiWindowFlags_NoSavedSettings |
+												   ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
 	if(ImGui::SliderFloat("Camera FoV", &fov, 45.0f, 100.0f))
@@ -119,7 +132,10 @@ void VulkanIcoSphereTests::OnImGuiRender()
 void VulkanIcoSphereTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

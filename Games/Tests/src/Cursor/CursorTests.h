@@ -15,11 +15,11 @@ public:
 
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
-	
+
 private:
 	float Star(int32_t x, int32_t y, float t) const;
 	TRAP::Scope<TRAP::Image> CreateCursorFrame(float t) const;
-	
+
 	float m_cursorX;
 	float m_cursorY;
 	bool m_animateCursor;

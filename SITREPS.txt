@@ -2006,4 +2006,6 @@ SITREP 07/30/2021|21w30a4
 
 SITREP 07/31/2021|21w30a5
     - Changed TRAP Engine version to 21w30a5(0.7.66)
-    - RendererAPI Clear Added checks against invalid use ~<20 mins
+    - RendererAPI Added checks against invalid use of Clear function ~<20 mins
+    - Updated all Test programs ~<30 mins
+    - Validated functionality of every Test program (except ImageLoader as it needs Renderer2D) ~<30 mins

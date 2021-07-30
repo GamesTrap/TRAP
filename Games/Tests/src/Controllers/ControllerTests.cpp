@@ -16,22 +16,32 @@ void ControllerTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Controllers");
 
-	for(uint32_t controller = static_cast<uint32_t>(TRAP::Input::Controller::One); controller <= static_cast<uint32_t>(TRAP::Input::Controller::Sixteen); controller++)
+	for(uint32_t controller = static_cast<uint32_t>(TRAP::Input::Controller::One);
+	    controller <= static_cast<uint32_t>(TRAP::Input::Controller::Sixteen); controller++)
+	{
 		if (TRAP::Input::IsControllerConnected(static_cast<TRAP::Input::Controller>(controller)))
 			s_controllers.push_back(static_cast<TRAP::Input::Controller>(controller));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void ControllerTests::OnImGuiRender()
 {
-	ImGui::Begin("Controllers", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs);
+	ImGui::Begin("Controllers", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
+	                                     ImGuiWindowFlags_NoNavInputs);
 	if (!s_controllers.empty())
 	{
 		ImGui::Checkbox("DPad Buttons", &s_dpadButtons);
 		for (const TRAP::Input::Controller& controller : s_controllers)
-			if (ImGui::Button((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " + TRAP::Input::GetControllerName(controller)).c_str()))
-				ImGui::SetWindowFocus((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " + TRAP::Input::GetControllerName(controller)).c_str());
+		{
+			if (ImGui::Button((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
+			                   TRAP::Input::GetControllerName(controller)).c_str()))
+			{
+				ImGui::SetWindowFocus((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
+				                       TRAP::Input::GetControllerName(controller)).c_str());
+			}
+		}
 	}
 	else
 		ImGui::Text("No Controllers Connected!");
@@ -42,8 +52,10 @@ void ControllerTests::OnImGuiRender()
 		std::vector<float> axes = TRAP::Input::GetAllControllerAxes(controller);
 		std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
 		std::vector<TRAP::Input::ControllerDPad> dpad = TRAP::Input::GetAllControllerDPads(controller);
-		
-		ImGui::Begin((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " + TRAP::Input::GetControllerName(controller)).c_str(), nullptr, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNavInputs);
+
+		ImGui::Begin((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
+		              TRAP::Input::GetControllerName(controller)).c_str(), nullptr,
+					 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNavInputs);
 		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());
 		ImGui::NewLine();
 		ImGui::Text("Controller State");
@@ -69,10 +81,10 @@ void ControllerTests::OnImGuiRender()
 			if (i % 2 == 0)
 				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
 		}
-		
+
 		if (!buttons.empty())
 			ImGui::NewLine();
-		
+
 		if (TRAP::Input::IsControllerGamepad(controller))
 		{
 			ImGui::NewLine();
@@ -82,8 +94,10 @@ void ControllerTests::OnImGuiRender()
 			float leftY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Y);
 			float rightX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_X);
 			float rightY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_Y);
-			float leftTrigger = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Trigger);
-			float rightTrigger = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_Trigger);
+			float leftTrigger = TRAP::Input::GetControllerAxis(controller,
+															   TRAP::Input::ControllerAxis::Left_Trigger);
+			float rightTrigger = TRAP::Input::GetControllerAxis(controller,
+			                                                    TRAP::Input::ControllerAxis::Right_Trigger);
 
 			ImGui::SliderFloat("Left X", &leftX, -1.0f, 1.0f);
 			ImGui::SliderFloat("Left Y", &leftY, -1.0f, 1.0f);
@@ -97,7 +111,8 @@ void ControllerTests::OnImGuiRender()
 			bool x = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::X);
 			bool y = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Y);
 			bool lb = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Left_Bumper);
-			bool rb = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Right_Bumper);
+			bool rb = TRAP::Input::IsControllerButtonPressed(controller,
+															 TRAP::Input::ControllerButton::Right_Bumper);
 			bool back = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Back);
 			bool start = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Start);
 			bool lt = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Left_Thumb);
@@ -142,22 +157,21 @@ void ControllerTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ControllerTests::OnUpdate(const TRAP::Utils::TimeStep&)
-{
-	//Render
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color);
-
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ControllerTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>([this](TRAP::Events::ControllerConnectEvent& e) { return OnControllerConnect(e); });
-	dispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>([this](TRAP::Events::ControllerDisconnectEvent& e) { return OnControllerDisconnect(e); });
-	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>([this](TRAP::Events::WindowDropEvent& e) { return OnWindowDrop(e); });
+	dispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>([this](TRAP::Events::ControllerConnectEvent& e)
+	{
+		return OnControllerConnect(e);
+	});
+	dispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>([this](TRAP::Events::ControllerDisconnectEvent& e)
+	{
+		return OnControllerDisconnect(e);
+	});
+	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>([this](TRAP::Events::WindowDropEvent& e)
+	{
+		return OnWindowDrop(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -165,7 +179,7 @@ void ControllerTests::OnEvent(TRAP::Events::Event& event)
 bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event)
 {
 	s_controllers.push_back(event.GetController());
-	
+
 	if (!TRAP::Application::GetWindow()->IsFocused())
 		TRAP::Application::GetWindow()->RequestAttention();
 
@@ -184,7 +198,7 @@ bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisco
 			break;
 		}
 	}
-	
+
 	if (!TRAP::Application::GetWindow()->IsFocused())
 		TRAP::Application::GetWindow()->RequestAttention();
 
@@ -196,7 +210,7 @@ bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisco
 bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
 {
 	std::vector<std::string> paths = event.GetPaths();
-	
+
 	for (const std::string& path : paths)
 	{
 		std::string data = TRAP::VFS::ReadTextFile(path);

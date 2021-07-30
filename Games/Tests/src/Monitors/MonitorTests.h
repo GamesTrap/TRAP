@@ -10,8 +10,7 @@ public:
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
-	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
-	
+
 private:
 	static int32_t Euclid(int32_t a, int32_t b);
 	static std::string FormatMode(const TRAP::Monitor::VideoMode& mode);

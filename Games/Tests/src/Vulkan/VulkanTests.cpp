@@ -23,12 +23,14 @@ VulkanTests::VulkanTests()
 
 void VulkanTests::OnAttach()
 {
-	TRAP::VFS::SetHotShaderReloading(true);
-	TRAP::VFS::MountShaders("Assets/Shaders");
-
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::UpdateFrequency::PerFrame);
+	TRAP::VFS::MountShaders("Assets/Shaders");
+
+	//Load Triangle vertices (with enough space for a quad)
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
+	                                                      static_cast<uint32_t>(m_quadVertices.size()) *
+														  sizeof(float), TRAP::Graphics::UpdateFrequency::PerFrame);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -38,20 +40,25 @@ void VulkanTests::OnAttach()
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::PerFrame);
+	//Load Triangle indices (with enough space for a quad)
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(),
+	                                                    static_cast<uint32_t>(m_quadIndices.size()) *
+														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::PerFrame);
 	m_indexBuffer->AwaitLoading();
-	m_vertexBuffer->Use();
+	m_indexBuffer->Use();
 
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	const TRAP::Scope<TRAP::Graphics::Shader>& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
+	const auto& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader",
+	 																	  &macros);
 
 	m_sizeMultiplicatorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 0);
 	m_colorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 1);
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
+	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
 
@@ -68,9 +75,9 @@ void VulkanTests::OnDetach()
 void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
+		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
 	else
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
+		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
 
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
@@ -81,18 +88,23 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 	if(!m_quad)
 	{
-		m_vertexBuffer->SetData(m_triangleVertices.data(), static_cast<uint32_t>(m_triangleVertices.size()) * sizeof(float));
+		m_vertexBuffer->SetData(m_triangleVertices.data(), static_cast<uint32_t>(m_triangleVertices.size()) *
+		                        sizeof(float));
 		if (m_indexed)
-			m_indexBuffer->SetData(m_triangleIndices.data(), static_cast<uint32_t>(m_triangleIndices.size()) * sizeof(uint16_t));
+			m_indexBuffer->SetData(m_triangleIndices.data(), static_cast<uint32_t>(m_triangleIndices.size()) *
+			                       sizeof(uint16_t));
 	}
 	else
 	{
 		if(!m_indexed)
-			m_vertexBuffer->SetData(m_quadVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float));
+			m_vertexBuffer->SetData(m_quadVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) *
+			                        sizeof(float));
 		else
 		{
-			m_vertexBuffer->SetData(m_quadVerticesIndexed.data(), static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float));
-			m_indexBuffer->SetData(m_quadIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t));
+			m_vertexBuffer->SetData(m_quadVerticesIndexed.data(),
+			                        static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float));
+			m_indexBuffer->SetData(m_quadIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) *
+			                       sizeof(uint16_t));
 			const TRAP::Graphics::VertexBufferLayout layout =
 			{
 				{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -112,7 +124,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	{
 		if(m_colorTimer.Elapsed() > 2.5f)
 		{
-			for(uint32_t i = 0; i < m_colorData.Color.Length(); ++i)
+			for(uint32_t i = 0; i < static_cast<uint32_t>(m_colorData.Color.Length()); ++i)
 				m_colorData.Color[i] = TRAP::Utils::Random::Get(0.0f, 1.0f);
 
 			m_colorTimer.Reset();
@@ -120,7 +132,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 		TRAP::Graphics::ShaderManager::Get("VKTestPushConstant")->Use();
 
-		TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstants("ColorRootConstant", &m_colorData);
+		TRAP::Graphics::RenderCommand::SetPushConstants("ColorRootConstant", &m_colorData);
 	}
 	else if(m_pushConstantOrUBO == 2)
 	{
@@ -156,10 +168,11 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
 
 	if(!m_indexed)
-		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);
+		TRAP::Graphics::RenderCommand::Draw(m_quad ? 6 : 3);
 	else
-		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(m_quad ? 6 : 3);
+		TRAP::Graphics::RenderCommand::DrawIndexed(m_quad ? 6 : 3);
 
+	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
 		TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
@@ -172,7 +185,10 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 void VulkanTests::OnImGuiRender()
 {
-	ImGui::Begin("Vulkan Test");
+	ImGui::Begin("Vulkan Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+										 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
 	ImGui::Text("Geometry (F2): %s", m_quad ? "Quad" : "Triangle");
 	ImGui::Text("Indexed Drawing (F3): %s", m_indexed ? "Enabled" : "Disabled");
@@ -191,7 +207,10 @@ void VulkanTests::OnImGuiRender()
 void VulkanTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

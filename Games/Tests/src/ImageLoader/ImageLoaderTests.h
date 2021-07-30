@@ -17,7 +17,7 @@ public:
 
 private:
 	TRAP::Graphics::OrthographicCamera m_camera;
-	
+
 	bool m_png;
 	bool m_tga;
 	bool m_bmp;

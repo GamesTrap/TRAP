@@ -9,8 +9,9 @@ public:
 	OpacityTests();
 
 	void OnImGuiRender() override;
-	void OnAttach() override;
-	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
+	void OnAttach() override;void OnEvent(TRAP::Events::Event& event) override;
+
+	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 
 private:
 	float m_opacity = 1.0f;

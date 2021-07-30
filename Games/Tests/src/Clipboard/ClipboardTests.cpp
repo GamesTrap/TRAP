@@ -16,7 +16,10 @@ void ClipboardTests::OnAttach()
 
 void ClipboardTests::OnImGuiRender()
 {
-	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
+	                                   ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+									   ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press CTRL+C to copy example text from engine");
 	ImGui::Text("Press CTRL+V to paste clipboard contents to the engine");
@@ -30,19 +33,13 @@ void ClipboardTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ClipboardTests::OnUpdate(const TRAP::Utils::TimeStep&)
-{
-	//Render
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void ClipboardTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,8 +63,8 @@ bool ClipboardTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 				TP_INFO("[Clipboard] Clipboard contains: \"", m_clipboard, "\"");
 			else
 				TP_INFO("[Clipboard] Clipboard does not contain a string!");
-		}			
-		
+		}
+
 		break;
 	}
 
@@ -76,14 +73,14 @@ bool ClipboardTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control))
 		{
-			const std::string clipboard = "Hello TRAP World!";
+			const std::string clipboard = "Hello TRAP!";
 			TRAP::Input::SetClipboard(clipboard);
 			TP_INFO("[Clipboard] Setting clipboard to \"", clipboard, "\"!");
 		}
-		
+
 		break;
 	}
-		
+
 	default:
 		break;
 	}

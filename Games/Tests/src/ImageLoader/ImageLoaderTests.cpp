@@ -2,12 +2,11 @@
 
 ImageLoaderTests::ImageLoaderTests()
 	: Layer("ImageLoader"),
-      m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
-	           static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()),
-	           -1.0f,
-	           1.0f,
-	           -1.0f,
-	           1.0f),
+      m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
+	             static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
+	           static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
+			   static_cast<float>(TRAP::Application::GetWindow()->GetHeight()),
+	           -1.0f, 1.0f, -1.0f, 1.0f),
       m_png(false),
       m_tga(true),
       m_bmp(false),
@@ -20,7 +19,10 @@ ImageLoaderTests::ImageLoaderTests()
 
 void ImageLoaderTests::OnImGuiRender()
 {
-	ImGui::Begin("Images", nullptr);
+	ImGui::Begin("Images", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+									ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
 	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance)");
 	if(m_tga)
 	{
@@ -117,13 +119,16 @@ void ImageLoaderTests::OnAttach()
 
 	//BMP
 	TRAP::Graphics::TextureManager::Load("BMPTest8BPPGrayscale", "/Textures/BMP/Test8BPPGrayscale.bmp");
-	TRAP::Graphics::TextureManager::Load("BMPTest8BPPGrayscaleReversed", "/Textures/BMP/Test8BPPGrayscaleReversed.bmp");
+	TRAP::Graphics::TextureManager::Load("BMPTest8BPPGrayscaleReversed",
+	                                     "/Textures/BMP/Test8BPPGrayscaleReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest8BPPGrayscaleRLE", "/Textures/BMP/Test8BPPGrayscaleRLE.bmp");
-	TRAP::Graphics::TextureManager::Load("BMPTest8BPPGrayscaleRLEReversed", "/Textures/BMP/Test8BPPGrayscaleRLEReversed.bmp");
+	TRAP::Graphics::TextureManager::Load("BMPTest8BPPGrayscaleRLEReversed",
+	                                     "/Textures/BMP/Test8BPPGrayscaleRLEReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest8BPPPalette", "/Textures/BMP/Test8BPPPalette.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest8BPPPaletteReversed", "/Textures/BMP/Test8BPPPaletteReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest8BPPPaletteRLE", "/Textures/BMP/Test8BPPPaletteRLE.bmp");
-	TRAP::Graphics::TextureManager::Load("BMPTest8BPPPaletteRLEReversed", "/Textures/BMP/Test8BPPPaletteRLEReversed.bmp");
+	TRAP::Graphics::TextureManager::Load("BMPTest8BPPPaletteRLEReversed",
+	                                     "/Textures/BMP/Test8BPPPaletteRLEReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest16BPP", "/Textures/BMP/Test16BPP.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest16BPPReversed", "/Textures/BMP/Test16BPPReversed.bmp");
 	TRAP::Graphics::TextureManager::Load("BMPTest24BPP", "/Textures/BMP/Test24BPP.bmp");
@@ -133,13 +138,19 @@ void ImageLoaderTests::OnAttach()
 
 	//PNG
 	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleBig", "/Textures/PNG/Test8BPPGrayscaleBig.png");
-	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleBigInterlaced", "/Textures/PNG/Test8BPPGrayscaleBigInterlaced.png");
-	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleSmaller", "/Textures/PNG/Test8BPPGrayscaleSmaller.png");
-	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleSmallest", "/Textures/PNG/Test8BPPGrayscaleSmallest.png");
+	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleBigInterlaced",
+	                                     "/Textures/PNG/Test8BPPGrayscaleBigInterlaced.png");
+	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleSmaller",
+	                                     "/Textures/PNG/Test8BPPGrayscaleSmaller.png");
+	TRAP::Graphics::TextureManager::Load("PNGTest8BPPGrayscaleSmallest",
+	                                     "/Textures/PNG/Test8BPPGrayscaleSmallest.png");
 	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleBig", "/Textures/PNG/Test16BPPGrayscaleBig.png");
-	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleBigInterlaced", "/Textures/PNG/Test16BPPGrayscaleBigInterlaced.png");
-	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleSmaller", "/Textures/PNG/Test16BPPGrayscaleSmaller.png");
-	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleSmallest", "/Textures/PNG/Test16BPPGrayscaleSmallest.png");
+	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleBigInterlaced",
+	                                     "/Textures/PNG/Test16BPPGrayscaleBigInterlaced.png");
+	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleSmaller",
+	                                     "/Textures/PNG/Test16BPPGrayscaleSmaller.png");
+	TRAP::Graphics::TextureManager::Load("PNGTest16BPPGrayscaleSmallest",
+	                                     "/Textures/PNG/Test16BPPGrayscaleSmallest.png");
 	TRAP::Graphics::TextureManager::Load("PNGTest24BPPBig", "/Textures/PNG/Test24BPPBig.png");
 	TRAP::Graphics::TextureManager::Load("PNGTest24BPPBigInterlaced", "/Textures/PNG/Test24BPPBigInterlaced.png");
 	TRAP::Graphics::TextureManager::Load("PNGTest24BPPSmaller", "/Textures/PNG/Test24BPPSmaller.png");
@@ -149,7 +160,8 @@ void ImageLoaderTests::OnAttach()
 	TRAP::Graphics::TextureManager::Load("PNGTest48BPPSmaller", "/Textures/PNG/Test48BPPSmaller.png");
 	TRAP::Graphics::TextureManager::Load("PNGTest48BPPSmallest", "/Textures/PNG/Test48BPPSmallest.png");
 	TRAP::Graphics::TextureManager::Load("PNGTestPaletteBig", "/Textures/PNG/TestPaletteBig.png");
-	TRAP::Graphics::TextureManager::Load("PNGTestPaletteBigInterlaced", "/Textures/PNG/TestPaletteBigInterlaced.png");
+	TRAP::Graphics::TextureManager::Load("PNGTestPaletteBigInterlaced",
+	                                     "/Textures/PNG/TestPaletteBigInterlaced.png");
 	TRAP::Graphics::TextureManager::Load("PNGTestPaletteSmaller", "/Textures/PNG/TestPaletteSmaller.png");
 	TRAP::Graphics::TextureManager::Load("PNGTestPaletteSmallest", "/Textures/PNG/TestPaletteSmallest.png");
 
@@ -164,7 +176,9 @@ void ImageLoaderTests::OnAttach()
 	//Radiance
 	TRAP::Graphics::TextureManager::Load("RadianceTestHDR", "/Textures/Radiance/TestHDR.hdr");
 
-	TP_TRACE("Initializing of all TRAP::Images took: ", loadingTimer.ElapsedMilliseconds(), "ms!");
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+
+	TP_TRACE("Initializing of all Textures took: ", loadingTimer.ElapsedMilliseconds(), "ms!");
 
 	TRAP::Graphics::RenderCommand::SetClearColor();
 }
@@ -173,78 +187,125 @@ void ImageLoaderTests::OnAttach()
 
 void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
-
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
 	if(m_tga)
 	{
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATest16BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATest16BPPRLE"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATest24BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATest24BPPRLE"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATest32BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATest32BPPRLE"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATestGrayscale"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("TGATestPalette"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATest16BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATest16BPPRLE"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATest24BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATest24BPPRLE"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATest32BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATest32BPPRLE"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATestGrayscale"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("TGATestPalette"));
 	}
 	else if(m_png)
 	{
 		//First Row
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleBig"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleBigInterlaced"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleSmaller"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleSmallest"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleBig"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleBigInterlaced"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleSmaller"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleSmallest"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPBig"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPBigInterlaced"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleBig"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleBigInterlaced"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleSmaller"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest8BPPGrayscaleSmallest"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleBig"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleBigInterlaced"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleSmaller"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest16BPPGrayscaleSmallest"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPBig"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPBigInterlaced"));
 
 		//Second Row
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPSmaller"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPSmallest"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPBig"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPBigInterlaced"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPSmaller"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPSmallest"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteBig"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteBigInterlaced"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteSmaller"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteSmallest"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPSmaller"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest24BPPSmallest"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPBig"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPBigInterlaced"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPSmaller"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTest48BPPSmallest"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteBig"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteBigInterlaced"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteSmaller"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+											 TRAP::Graphics::TextureManager::Get2D("PNGTestPaletteSmallest"));
 	}
 	else if(m_bmp)
 	{
 		//First Row
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscale"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscaleReversed"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscaleRLE"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscaleRLEReversed"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPalette"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPaletteReversed"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPaletteRLE"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPaletteRLEReversed"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest16BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest16BPPReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscale"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscaleReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscaleRLE"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPGrayscaleRLEReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPalette"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPaletteReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPaletteRLE"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest8BPPPaletteRLEReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest16BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest16BPPReversed"));
 
 		//Second Row
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest24BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest24BPPReversed"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest32BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("BMPTest32BPPReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest24BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest24BPPReversed"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest32BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("BMPTest32BPPReversed"));
 	}
 	else if(m_pm)
 	{
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTest8BPPGrayscale"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTest16BPPGrayscale"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTest24BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTest48BPP"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTestGrayscaleHDR"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTestHDR"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest8BPPGrayscale"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest16BPPGrayscale"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest24BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTest48BPP"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTestGrayscaleHDR"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("PMTestHDR"));
 	}
 	else if(m_radiance)
 	{
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("RadianceTestHDR"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("RadianceTestHDR"));
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 }
@@ -254,8 +315,14 @@ void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep&)
 void ImageLoaderTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) {return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e)
+	{
+		return OnFrameBufferResize(e);
+	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -273,6 +340,12 @@ bool ImageLoaderTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent&
 
 bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
+	if(event.GetKey() == TRAP::Input::Key::Escape)
+	{
+		TRAP::Application::Shutdown();
+		return true;
+	}
+
 	if (event.GetKey() == TRAP::Input::Key::One ||
 		event.GetKey() == TRAP::Input::Key::Two ||
 		event.GetKey() == TRAP::Input::Key::Three ||

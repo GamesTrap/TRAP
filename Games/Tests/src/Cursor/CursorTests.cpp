@@ -53,7 +53,9 @@ CursorTests::CursorTests()
 
 void CursorTests::OnImGuiRender()
 {
-	ImGui::Begin("CursorTest", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Begin("CursorTest", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                    ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
+										ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press A to enable/disable Cursor animation");
 	ImGui::Text("Press N to set Cursor mode to normal");
@@ -82,10 +84,6 @@ void CursorTests::OnAttach()
 
 void CursorTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
-	//Render
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color);
-
 	if (m_animateCursor)
 	{
 		const int32_t i = static_cast<int32_t>(TRAP::Application::GetTime() * 30.0f) % 60;
@@ -105,157 +103,164 @@ void CursorTests::OnUpdate(const TRAP::Utils::TimeStep&)
 void CursorTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
-	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>([this](TRAP::Events::MouseMoveEvent& e) { return OnMouseMove(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
+	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>([this](TRAP::Events::MouseMoveEvent& e)
+	{
+		return OnMouseMove(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if (event.GetRepeatCount() == 0)
+	if(event.GetRepeatCount() > 0)
+		return true;
+
+	switch (event.GetKey())
 	{
-		switch (event.GetKey())
-		{
-		case TRAP::Input::Key::A:
-		{
-			m_animateCursor = !m_animateCursor;
-			if (!m_animateCursor)
-				TRAP::Application::GetWindow()->SetCursorType(TRAP::Window::CursorType::Arrow);
-
-			break;
-		}
-
-		case TRAP::Input::Key::Escape:
-		{
-			if (TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Disabled)
-				TRAP::Application::Shutdown();
-
-			break;
-		}
-
-		case TRAP::Input::Key::N:
-		{
-			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
-			m_cursorX = TRAP::Input::GetMouseX();
-			m_cursorY = TRAP::Input::GetMouseY();
-			TP_INFO("[Cursor] Cursor is normal");
-
-			break;
-		}
-
-		case TRAP::Input::Key::D:
-		{
-			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Disabled);
-			TP_INFO("[Cursor] Cursor is disabled");
-
-			break;
-		}
-
-		case TRAP::Input::Key::H:
-		{
-			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Hidden);
-			TP_INFO("[Cursor] Cursor is hidden");
-
-			break;
-		}
-
-		case TRAP::Input::Key::C:
-		{
-			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Captured);
-			TP_INFO("[Cursor] Cursor is captured");
-
-			break;
-		}
-
-		case TRAP::Input::Key::R:
-		{
-			if (!TRAP::Input::IsRawMouseInputSupported())
-				break;
-
-			if (TRAP::Application::GetWindow()->GetRawMouseInput())
-			{
-				TRAP::Application::GetWindow()->SetRawMouseInput(false);
-				TP_INFO("[Cursor] Raw Input disabled");
-			}
-			else
-			{
-				TRAP::Application::GetWindow()->SetRawMouseInput(true);
-				TP_INFO("[Cursor] Raw Input enabled");
-			}
-
-			break;
-		}
-
-		case TRAP::Input::Key::P:
-		{
-			float x = TRAP::Input::GetMouseX();
-			float y = TRAP::Input::GetMouseY();
-
-			TP_INFO("[Cursor] Query before set: ", x, " ", y, " (", x - m_cursorX, " ", y - m_cursorY, ")");
-			m_cursorX = x;
-			m_cursorY = y;
-
-			TRAP::Input::SetMousePosition(m_cursorX, m_cursorY);
-			x = TRAP::Input::GetMouseX();
-			y = TRAP::Input::GetMouseY();
-
-			TP_INFO("[Cursor] Query after set: ", x, " ", y, " (", x - m_cursorX, " ", y - m_cursorY, ")");
-			m_cursorX = x;
-			m_cursorY = y;
-
-			break;
-		}
-
-		case TRAP::Input::Key::Up:
-		{
-			TRAP::Input::SetMousePosition(0, 0);
-			m_cursorX = TRAP::Input::GetMouseX();
-			m_cursorY = TRAP::Input::GetMouseY();
-
-			break;
-		}
-
-		case TRAP::Input::Key::Down:
-		{
-			const int32_t width = TRAP::Application::GetWindow()->GetWidth();
-			const int32_t height = TRAP::Application::GetWindow()->GetHeight();
-			TRAP::Input::SetMousePosition(static_cast<float>(width) - 1.0f, static_cast<float>(height) - 1.0f);
-			m_cursorX = TRAP::Input::GetMouseX();
-			m_cursorY = TRAP::Input::GetMouseY();
-
-			break;
-		}
-
-		case TRAP::Input::Key::Zero:
-		{
+	case TRAP::Input::Key::A:
+	{
+		m_animateCursor = !m_animateCursor;
+		if (!m_animateCursor)
 			TRAP::Application::GetWindow()->SetCursorType(TRAP::Window::CursorType::Arrow);
-			break;
-		}
 
-		case TRAP::Input::Key::One:
-		case TRAP::Input::Key::Two:
-		case TRAP::Input::Key::Three:
-		case TRAP::Input::Key::Four:
-		case TRAP::Input::Key::Five:
-		case TRAP::Input::Key::Six:
-		case TRAP::Input::Key::Seven:
-		case TRAP::Input::Key::Eight:
-		case TRAP::Input::Key::Nine:
+		break;
+	}
+
+	case TRAP::Input::Key::Escape:
+	{
+		if (TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Disabled)
+			TRAP::Application::Shutdown();
+
+		break;
+	}
+
+	case TRAP::Input::Key::N:
+	{
+		TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
+		m_cursorX = TRAP::Input::GetMouseX();
+		m_cursorY = TRAP::Input::GetMouseY();
+		TP_INFO("[Cursor] Cursor is normal");
+
+		break;
+	}
+
+	case TRAP::Input::Key::D:
+	{
+		TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Disabled);
+		TP_INFO("[Cursor] Cursor is disabled");
+
+		break;
+	}
+
+	case TRAP::Input::Key::H:
+	{
+		TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Hidden);
+		TP_INFO("[Cursor] Cursor is hidden");
+
+		break;
+	}
+
+	case TRAP::Input::Key::C:
+	{
+		TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Captured);
+		TP_INFO("[Cursor] Cursor is captured");
+
+		break;
+	}
+
+	case TRAP::Input::Key::R:
+	{
+		if (!TRAP::Input::IsRawMouseInputSupported())
+			break;
+
+		if (TRAP::Application::GetWindow()->GetRawMouseInput())
 		{
-			int32_t index = static_cast<int32_t>(event.GetKey()) - static_cast<int32_t>(TRAP::Input::Key::One);
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
-				index += 9;
-
-			if (index <= static_cast<int32_t>(TRAP::Window::CursorType::NotAllowed))
-				TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
-
-			break;
+			TRAP::Application::GetWindow()->SetRawMouseInput(false);
+			TP_INFO("[Cursor] Raw Input disabled");
+		}
+		else
+		{
+			TRAP::Application::GetWindow()->SetRawMouseInput(true);
+			TP_INFO("[Cursor] Raw Input enabled");
 		}
 
-		default:
-			break;
-		}
+		break;
+	}
+
+	case TRAP::Input::Key::P:
+	{
+		float x = TRAP::Input::GetMouseX();
+		float y = TRAP::Input::GetMouseY();
+
+		TP_INFO("[Cursor] Query before set: ", x, " ", y, " (", x - m_cursorX, " ", y - m_cursorY, ")");
+		m_cursorX = x;
+		m_cursorY = y;
+
+		TRAP::Input::SetMousePosition(m_cursorX, m_cursorY);
+		x = TRAP::Input::GetMouseX();
+		y = TRAP::Input::GetMouseY();
+
+		TP_INFO("[Cursor] Query after set: ", x, " ", y, " (", x - m_cursorX, " ", y - m_cursorY, ")");
+		m_cursorX = x;
+		m_cursorY = y;
+
+		break;
+	}
+
+	case TRAP::Input::Key::Up:
+	{
+		TRAP::Input::SetMousePosition(0, 0);
+		m_cursorX = TRAP::Input::GetMouseX();
+		m_cursorY = TRAP::Input::GetMouseY();
+
+		break;
+	}
+
+	case TRAP::Input::Key::Down:
+	{
+		const int32_t width = TRAP::Application::GetWindow()->GetWidth();
+		const int32_t height = TRAP::Application::GetWindow()->GetHeight();
+		TRAP::Input::SetMousePosition(static_cast<float>(width) - 1.0f, static_cast<float>(height) - 1.0f);
+		m_cursorX = TRAP::Input::GetMouseX();
+		m_cursorY = TRAP::Input::GetMouseY();
+
+		break;
+	}
+
+	case TRAP::Input::Key::Zero:
+	{
+		TRAP::Application::GetWindow()->SetCursorType(TRAP::Window::CursorType::Arrow);
+		break;
+	}
+
+	case TRAP::Input::Key::One:
+	case TRAP::Input::Key::Two:
+	case TRAP::Input::Key::Three:
+	case TRAP::Input::Key::Four:
+	case TRAP::Input::Key::Five:
+	case TRAP::Input::Key::Six:
+	case TRAP::Input::Key::Seven:
+	case TRAP::Input::Key::Eight:
+	case TRAP::Input::Key::Nine:
+	{
+		int32_t index = static_cast<int32_t>(event.GetKey()) - static_cast<int32_t>(TRAP::Input::Key::One);
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) ||
+			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
+			index += 9;
+
+		if (index <= static_cast<int32_t>(TRAP::Window::CursorType::NotAllowed))
+			TRAP::Application::GetWindow()->SetCursorType(static_cast<TRAP::Window::CursorType>(index));
+
+		break;
+	}
+
+	default:
+		break;
 	}
 
 	return true;
@@ -265,8 +270,9 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 bool CursorTests::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
 {
-	TP_INFO("[Cursor] Position: ", event.GetX(), " ", event.GetY(), " (", event.GetX() - m_cursorX, " ", event.GetY() - m_cursorY, ")");
-	
+	TP_INFO("[Cursor] Position: ", event.GetX(), " ", event.GetY(), " (", event.GetX() - m_cursorX, " ",
+	        event.GetY() - m_cursorY, ")");
+
 	m_cursorX = event.GetX();
 	m_cursorY = event.GetY();
 

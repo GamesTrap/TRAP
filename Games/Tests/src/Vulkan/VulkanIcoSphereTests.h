@@ -20,9 +20,6 @@ private:
 
 	TRAP::Utils::Timer m_fpsTimer;
 
-	///////////////////////////////////////////////
-
-
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
 	std::array<float, 12 * 6> m_icoSphereVerticesIndexed
 	{

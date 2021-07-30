@@ -9,7 +9,9 @@ OpacityTests::OpacityTests()
 
 void OpacityTests::OnImGuiRender()
 {
-	ImGui::Begin("Opacity", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs);
+	ImGui::Begin("Opacity", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs);
+	ImGui::Text("Press ESC to close");
 	if(ImGui::SliderFloat("Opacity", &m_opacity, 0.0f, 1.0f))
 		TRAP::Application::GetWindow()->SetOpacity(m_opacity);
 	ImGui::End();
@@ -24,9 +26,24 @@ void OpacityTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void OpacityTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void OpacityTests::OnEvent(TRAP::Events::Event& event)
 {
-	//Render
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color);
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool OpacityTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+{
+	if(event.GetKey() == TRAP::Input::Key::Escape)
+	{
+		TRAP::Application::Shutdown();
+		return true;
+	}
+
+	return true;
 }

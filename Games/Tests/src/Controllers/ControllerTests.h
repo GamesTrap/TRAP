@@ -10,7 +10,6 @@ public:
 
 	void OnAttach() override;
 	void OnImGuiRender() override;
-	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
@@ -19,7 +18,7 @@ private:
 	bool OnWindowDrop(const TRAP::Events::WindowDropEvent& event);
 
 	static std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad);
-	
+
 	static std::vector<TRAP::Input::Controller> s_controllers;
 	static bool s_dpadButtons;
 };

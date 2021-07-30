@@ -22,10 +22,9 @@ VulkanMultiWindowTests::VulkanMultiWindowTests()
 
 void VulkanMultiWindowTests::OnAttach()
 {
-	TRAP::VFS::SetHotShaderReloading(true);
-	TRAP::VFS::MountShaders("Assets/Shaders");
-
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test 1");
+
+	TRAP::VFS::MountShaders("Assets/Shaders");
 
 	//Create second Window
 	TRAP::WindowProps windowProps
@@ -53,7 +52,10 @@ void VulkanMultiWindowTests::OnAttach()
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
 
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_triangleVertices.size()) * sizeof(float), TRAP::Graphics::UpdateFrequency::None);
+	//Load Triangle vertices
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
+	                                                      static_cast<uint32_t>(m_triangleVertices.size()) *
+														  sizeof(float), TRAP::Graphics::UpdateFrequency::None);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -63,19 +65,24 @@ void VulkanMultiWindowTests::OnAttach()
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(), static_cast<uint32_t>(m_triangleIndices.size()) * sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
+	//Load Triangle indices
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(),
+	                                                    static_cast<uint32_t>(m_triangleIndices.size()) *
+														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	const TRAP::Scope<TRAP::Graphics::Shader>& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
+	const auto& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader",
+	                                                                      &macros);
 
 	m_sizeMultiplicatorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 0);
 	m_colorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 1);
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
+	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
 
@@ -98,9 +105,9 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	if(m_window)
 	{
 		if(m_wireFrameSecondWindow)
-			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line, m_window.get());
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line, m_window.get());
 		else
-			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid, m_window.get());
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid, m_window.get());
 
 		m_vertexBuffer->Use(m_window.get());
 		m_indexBuffer->Use(m_window.get());
@@ -137,7 +144,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		else
 			TRAP::Graphics::ShaderManager::Get("VKTest")->Use(m_window.get());
 
-		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(3, 0, 0, m_window.get());
+		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, m_window.get());
 
 		//Secondary Windows need to explicitly present its content
 		TRAP::Graphics::RenderCommand::Present(m_window.get());
@@ -146,18 +153,19 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Main Window OnUpdate
 	{
 		if(m_wireFrameMainWindow)
-			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
 		else
-			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
+			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
 
 		m_vertexBuffer->Use();
 		m_indexBuffer->Use();
 
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
 
-		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(3);
+		TRAP::Graphics::RenderCommand::DrawIndexed(3);
 	}
 
+	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
 		TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
@@ -170,7 +178,11 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 void VulkanMultiWindowTests::OnImGuiRender()
 {
-	ImGui::Begin("Vulkan Multi-Window Test");
+	ImGui::Begin("Vulkan Multi-Window Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                                  ImGuiWindowFlags_AlwaysAutoResize |
+													  ImGuiWindowFlags_NoSavedSettings |
+										              ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
 	ImGui::Text("Main-Window WireFrame (F1): %s", m_wireFrameMainWindow ? "Enabled" : "Disabled");
 	ImGui::Text("Secondary-Window WireFrame (F2): %s", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
 	ImGui::Text("UBO (F3): %s", m_useUBO ? "Enabled" : "Disabled");
@@ -182,8 +194,14 @@ void VulkanMultiWindowTests::OnImGuiRender()
 void VulkanMultiWindowTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e) { return OnWindowClose(e); });
-	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e)
+	{
+		return OnWindowClose(e);
+	});
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
+	{
+		return OnKeyPress(e);
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -208,7 +226,8 @@ bool VulkanMultiWindowTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	if (e.GetKey() == TRAP::Input::Key::F2)
 	{
 		m_wireFrameSecondWindow = !m_wireFrameSecondWindow;
-		TP_TRACE("[VulkanMultiWindowTests] Secondary-Window WireFrame: ", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
+		TP_TRACE("[VulkanMultiWindowTests] Secondary-Window WireFrame: ", m_wireFrameSecondWindow ? "Enabled" :
+		 																							"Disabled");
 	}
 	if(e.GetKey() == TRAP::Input::Key::F3)
 	{

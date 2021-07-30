@@ -10,13 +10,12 @@ public:
 
 	void OnImGuiRender() override;
 	void OnAttach() override;
-	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	bool OnDrop(TRAP::Events::WindowDropEvent& event);
-	
+
 	bool m_dragAndDrop;
 	std::vector<std::string> m_dropData;
 };

@@ -8,8 +8,11 @@ class TitleTests final : public TRAP::Layer
 public:
 	TitleTests();
 
+	void OnImGuiRender() override;
 	void OnAttach() override;
-	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
+	void OnEvent(TRAP::Events::Event& event) override;
+
+	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 };
 
 #endif /*_GAMESTRAP_TITLETESTS_H_*/
