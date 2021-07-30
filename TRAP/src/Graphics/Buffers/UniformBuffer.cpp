@@ -8,14 +8,13 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
-//TODO Replace BufferUsage with (Descriptor)UpdateFrequency ?! This would resolve issue in Use function
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name,
                                                                                  const uint64_t size,
-																				 const BufferUsage usage)
+																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(name, nullptr, size, usage);
+	return Init(name, nullptr, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -23,17 +22,17 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name,
                                                                                  void* data,
 																				 const uint64_t size,
-																				 const BufferUsage usage)
+																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(name, data, size, usage);
+	return Init(name, data, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::UniformBuffer::UniformBuffer()
-	: m_uniformBuffers(), m_tokens(), m_bufferUsage(BufferUsage::Static)
+	: m_uniformBuffers(), m_tokens()
 {
 }
 
@@ -53,9 +52,11 @@ uint64_t TRAP::Graphics::UniformBuffer::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::BufferUsage TRAP::Graphics::UniformBuffer::GetBufferUsage() const
+TRAP::Graphics::UpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequency() const
 {
-	return m_bufferUsage;
+	//TODO What about PerBatch & PerDraw
+	return (m_uniformBuffers[0]->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::None :
+	                                                                                              UpdateFrequency::PerFrame;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,19 +117,19 @@ const std::string& TRAP::Graphics::UniformBuffer::GetName() const
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const std::string& name, void* data,
                                                                                const uint64_t size,
-																			   const BufferUsage usage)
+																			   const UpdateFrequency updateFrequency)
 {
+	//TODO What about PerBatch & PerDraw
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
-	buffer->m_bufferUsage = usage;
-	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
-	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
+	buffer->m_tokens.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
+	buffer->m_uniformBuffers.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
 
 	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                         RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = (usage == BufferUsage::Static) ? RendererAPI::BufferCreationFlags::None :
-	                                                   RendererAPI::BufferCreationFlags::PersistentMap;
+	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.Flags = (updateFrequency != UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::PersistentMap :
+																   RendererAPI::BufferCreationFlags::None;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
 	desc.Desc.Size = size;
 	desc.Data = data;

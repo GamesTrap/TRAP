@@ -6,21 +6,21 @@
 #include "Graphics/API/Objects/Buffer.h"
 
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, const uint64_t size,
-                                                                               const BufferUsage usage)
+                                                                               const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(vertices, size, usage);
+	return Init(vertices, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size,
-                                                                               const BufferUsage usage)
+                                                                               const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(nullptr, size, usage);
+	return Init(nullptr, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -67,10 +67,11 @@ uint64_t TRAP::Graphics::VertexBuffer::GetCount() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::BufferUsage TRAP::Graphics::VertexBuffer::GetBufferUsage() const
+TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const
 {
-	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? BufferUsage::Static :
-	                                                                                         BufferUsage::Dynamic;
+	//TODO What about PerBatch & PerDraw
+	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::None :
+	                                                                                         UpdateFrequency::PerFrame;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,17 +113,17 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(float* vertices, const uint64_t size,
- 																		     const BufferUsage usage)
+ 																		     const UpdateFrequency updateFrequency)
 {
 	TRAP::Scope<VertexBuffer> buffer = TRAP::Scope<VertexBuffer>(new VertexBuffer());
 
 	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                         RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::VertexBuffer;
 	desc.Desc.Size = size;
-	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap :
-	                                                    RendererAPI::BufferCreationFlags::None;
+	desc.Desc.Flags = (updateFrequency != UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::PersistentMap :
+	                                                               RendererAPI::BufferCreationFlags::None;
 	desc.Data = vertices;
 
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);

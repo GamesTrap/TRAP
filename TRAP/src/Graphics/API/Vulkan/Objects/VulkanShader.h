@@ -31,6 +31,7 @@ namespace TRAP::Graphics::API
 
 	private:
 		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint32_t size = 1);
+		void BindUniformBuffers();
 
 		TRAP::Ref<VulkanDevice> m_device;
 

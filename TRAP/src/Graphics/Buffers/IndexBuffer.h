@@ -2,12 +2,11 @@
 #define _TRAP_INDEXBUFFER_H_
 
 #include "Graphics/API/ResourceLoader.h"
-#include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/API/Objects/Buffer.h"
 
 namespace TRAP::Graphics
 {
-	enum class BufferUsage;
+	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
 
 	class IndexBuffer
 	{
@@ -23,7 +22,7 @@ namespace TRAP::Graphics
 
 		uint64_t GetCount() const;
 		uint64_t GetSize() const;
-		BufferUsage GetBufferUsage() const;
+		UpdateFrequency GetUpdateFrequency() const;
 
 		void Use(Window* window = nullptr) const;
 
@@ -33,13 +32,13 @@ namespace TRAP::Graphics
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
-		static Scope<IndexBuffer> Create(uint16_t* indices, uint64_t size, BufferUsage usage);
-		static Scope<IndexBuffer> Create(uint32_t* indices, uint64_t size, BufferUsage usage);
-		static Scope<IndexBuffer> Create(uint64_t size, BufferUsage usage);
+		static Scope<IndexBuffer> Create(uint16_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<IndexBuffer> Create(uint32_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<IndexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
 		template<typename T>
-		static TRAP::Scope<IndexBuffer> Init(T* indices, const uint64_t size, const BufferUsage usage);
+		static TRAP::Scope<IndexBuffer> Init(T* indices, const uint64_t size, const UpdateFrequency updateFrequency);
 
 		template<typename T>
 		void SetDataInternal(const T* indices, uint64_t size, uint64_t offset = 0);
@@ -56,7 +55,7 @@ namespace TRAP::Graphics
 
 template<typename T>
 inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(T* indices, const uint64_t size,
-                                                                                  const BufferUsage usage)
+                                                                                  const UpdateFrequency updateFrequency)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
 	              "Trying to initialize IndexBuffer with wrong indice type!");
@@ -64,12 +63,12 @@ inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Ini
 	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer());
 
 	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                         RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::IndexBuffer;
 	desc.Desc.Size = size;
-	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap :
-	                                                    RendererAPI::BufferCreationFlags::None;
+	desc.Desc.Flags = (updateFrequency != UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::PersistentMap :
+	                                                               RendererAPI::BufferCreationFlags::None;
 	desc.Data = indices;
 
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);

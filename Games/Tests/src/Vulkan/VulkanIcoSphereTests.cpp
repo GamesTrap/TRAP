@@ -19,7 +19,7 @@ void VulkanIcoSphereTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
-		static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Static);
+		static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::UpdateFrequency::None);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -29,7 +29,7 @@ void VulkanIcoSphereTests::OnAttach()
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_icosphereIndices.data(), static_cast<uint32_t>(m_icosphereIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Static);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_icosphereIndices.data(), static_cast<uint32_t>(m_icosphereIndices.size()) * sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
 	m_indexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 

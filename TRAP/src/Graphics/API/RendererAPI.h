@@ -15,7 +15,6 @@ namespace TRAP
 
 namespace TRAP::Graphics
 {
-	enum class BufferUsage;
 	class VertexBufferLayout;
 	class CommandPool;
 	class DescriptorPool;

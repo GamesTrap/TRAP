@@ -10,7 +10,7 @@ namespace TRAP
 
 namespace TRAP::Graphics
 {
-	enum class BufferUsage;
+	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
 
 	class UniformBuffer
 	{
@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 		~UniformBuffer();
 
 		uint64_t GetSize() const;
-		BufferUsage GetBufferUsage() const;
+		UpdateFrequency GetUpdateFrequency() const;
 		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const;
 
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
@@ -35,17 +35,15 @@ namespace TRAP::Graphics
 
 		const std::string& GetName() const;
 
-		static Scope<UniformBuffer> Create(const std::string& name, uint64_t size, BufferUsage usage);
-		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, BufferUsage usage);
+		static Scope<UniformBuffer> Create(const std::string& name, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
-		static Scope<UniformBuffer> Init(const std::string& name, void* data, uint64_t size, BufferUsage usage);
+		static Scope<UniformBuffer> Init(const std::string& name, void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
 		std::vector<API::SyncToken> m_tokens;
-
-		BufferUsage m_bufferUsage;
 
 		std::string m_name;
 

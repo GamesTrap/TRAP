@@ -5,31 +5,31 @@
 #include "VertexBufferLayout.h"
 
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, const uint64_t size,
-                                                                             const BufferUsage usage)
+                                                                             const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init<uint32_t>(indices, size, usage);
+	return Init<uint32_t>(indices, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint16_t* indices, const uint64_t size,
-                                                                             const BufferUsage usage)
+                                                                             const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init<uint16_t>(indices, size, usage);
+	return Init<uint16_t>(indices, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
-                                                                             const BufferUsage usage)
+                                                                             const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init<uint16_t>(nullptr, size, usage); //uint16_t get ignored
+	return Init<uint16_t>(nullptr, size, updateFrequency); //uint16_t gets ignored
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -63,10 +63,10 @@ uint64_t TRAP::Graphics::IndexBuffer::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::BufferUsage TRAP::Graphics::IndexBuffer::GetBufferUsage() const
+TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency() const
 {
-	return (m_indexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? BufferUsage::Static :
-	                                                                                        BufferUsage::Dynamic;
+	return (m_indexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::None :
+	                                                                                        UpdateFrequency::PerFrame;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

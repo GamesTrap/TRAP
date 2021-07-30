@@ -1,6 +1,8 @@
 #ifndef _TRAP_VERTEXBUFFERLAYOUT_H_
 #define _TRAP_VERTEXBUFFERLAYOUT_H_
 
+#include "Graphics/API/RendererAPI.h"
+
 namespace TRAP::Graphics
 {
 	enum class ShaderDataType
@@ -12,11 +14,7 @@ namespace TRAP::Graphics
 		Bool
 	};
 
-	enum class BufferUsage
-	{
-		Static,
-		Dynamic,
-	};
+	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
 
 	uint32_t ShaderDataTypeSize(ShaderDataType type);
 

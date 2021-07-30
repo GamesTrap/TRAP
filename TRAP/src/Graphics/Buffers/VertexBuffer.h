@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 		void SetLayout(const VertexBufferLayout& layout);
 		uint64_t GetSize() const;
 		uint64_t GetCount() const;
-		BufferUsage GetBufferUsage() const;
+		UpdateFrequency GetUpdateFrequency() const;
 
 		void SetData(float* data, uint64_t size, uint64_t offset = 0);
 
@@ -33,11 +33,11 @@ namespace TRAP::Graphics
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
-		static Scope<VertexBuffer> Create(float* vertices, uint64_t size, BufferUsage usage);
-		static Scope<VertexBuffer> Create(uint64_t size, BufferUsage usage);
+		static Scope<VertexBuffer> Create(float* vertices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<VertexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
-		static Scope<VertexBuffer> Init(float* vertices, uint64_t size, BufferUsage usage);
+		static Scope<VertexBuffer> Init(float* vertices, uint64_t size, UpdateFrequency updateFrequency);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer;
 

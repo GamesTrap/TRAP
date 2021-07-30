@@ -28,7 +28,7 @@ void VulkanTests::OnAttach()
 
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
-	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::UpdateFrequency::PerFrame);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -38,7 +38,7 @@ void VulkanTests::OnAttach()
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Dynamic);
+	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::PerFrame);
 	m_indexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 

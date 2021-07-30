@@ -24,7 +24,7 @@ void VulkanTextureTests::OnAttach()
     TRAP::VFS::MountTextures("Assets/Textures");
 
     //Setup VertexBuffer and BufferLayout
-    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(), static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Static);
+    m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(), static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float), TRAP::Graphics::UpdateFrequency::None);
     const TRAP::Graphics::VertexBufferLayout layout =
     {
         { TRAP::Graphics::ShaderDataType::Float3, "Pos" },
@@ -34,7 +34,7 @@ void VulkanTextureTests::OnAttach()
     m_vertexBuffer->AwaitLoading();
 
     //Setup IndexBuffer
-    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(), static_cast<uint16_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Static);
+    m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(), static_cast<uint16_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
     m_indexBuffer->AwaitLoading();
 
     //Load Images
