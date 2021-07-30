@@ -3,18 +3,30 @@
 
 #include "Application.h"
 
+void TRAP::Graphics::RenderCommand::Present(const Scope<Window>& window)
+{
+	RendererAPI::GetRenderer()->Present(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetVSync(const bool vsync)
+{
+	RendererAPI::GetRenderer()->SetVSync(vsync);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RenderCommand::GetVSync()
+{
+	return RendererAPI::GetRenderer()->GetVSync();
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::Clear(const RendererBufferType buffer)
 {
 	RendererAPI::GetRenderer()->Clear(buffer);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::RenderCommand::Present(const Scope<Window>& window)
-{
-	RendererAPI::GetRenderer()->Present(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -47,23 +59,37 @@ void TRAP::Graphics::RenderCommand::SetDepthTesting(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetDepthMasking(const bool enabled)
+void TRAP::Graphics::RenderCommand::SetDepthWriting(const bool enabled)
 {
 	RendererAPI::GetRenderer()->SetDepthWriting(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetDepthFunction(const RendererFunction function)
+void TRAP::Graphics::RenderCommand::SetDepthFunction(const CompareMode compareMode)
 {
-	//RendererAPI::GetRenderer()->SetDepthFunction(function);
+	RendererAPI::GetRenderer()->SetDepthFunction(compareMode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetBlend(const bool enabled)
+void TRAP::Graphics::RenderCommand::SetDepthFail(const StencilOperation front, const StencilOperation back)
 {
-	//RendererAPI::GetRenderer()->SetBlend(enabled);
+	RendererAPI::GetRenderer()->SetDepthFail(front, back);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetDepthBias(const int32_t bias)
+{
+	RendererAPI::GetRenderer()->SetDepthBias(bias);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetDepthBiasSlopeFactor(const float slopeFactor)
+{
+	RendererAPI::GetRenderer()->SetDepthBiasSlopeFactor(slopeFactor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -75,73 +101,74 @@ void TRAP::Graphics::RenderCommand::SetStencilTesting(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetStencilMasking(const uint32_t mask)
+void TRAP::Graphics::RenderCommand::SetStencilFail(const StencilOperation front, const StencilOperation back)
 {
-	//RendererAPI::GetRenderer()->SetStencilMasking(mask);
+	RendererAPI::GetRenderer()->SetStencilFail(front, back);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetStencilMaskingSeparate(const RendererFaceMode face, const uint32_t mask)
+void TRAP::Graphics::RenderCommand::SetStencilPass(const StencilOperation front, const StencilOperation back)
 {
-	//RendererAPI::GetRenderer()->SetStencilMaskingSeparate(face, mask);
+	RendererAPI::GetRenderer()->SetStencilPass(front, back);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetStencilFunction(const RendererFunction function, const int32_t reference,
-                                                       const uint32_t mask)
+void TRAP::Graphics::RenderCommand::SetStencilFunction(const CompareMode front, const CompareMode back)
 {
-	//RendererAPI::GetRenderer()->SetStencilFunction(function, reference, mask);
+	RendererAPI::GetRenderer()->SetStencilFunction(front, back);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetStencilFunctionSeparate(const RendererFaceMode face,
-                                                               const RendererFunction function,
-															   const int32_t reference, const uint32_t mask)
+void TRAP::Graphics::RenderCommand::SetStencilMask(const uint8_t read, const uint8_t write)
 {
-	//RendererAPI::GetRenderer()->SetStencilFunctionSeparate(face, function, reference, mask);
+	RendererAPI::GetRenderer()->SetStencilMask(read, write);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetStencilOperation(const RendererOperation stencilFail,
-                                                        const RendererOperation depthFail,
-														const RendererOperation pass)
+void TRAP::Graphics::RenderCommand::SetCullMode(const CullMode cullMode)
 {
-	//RendererAPI::GetRenderer()->SetStencilOperation(stencilFail, depthFail, pass);
+	RendererAPI::GetRenderer()->SetCullMode(cullMode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetStencilOperationSeparate(const RendererFaceMode face,
-                                                                const RendererOperation stencilFail,
-																const RendererOperation depthFail,
-																const RendererOperation pass)
+void TRAP::Graphics::RenderCommand::SetFillMode(const FillMode fillMode)
 {
-	//RendererAPI::GetRenderer()->SetStencilOperationSeparate(face, stencilFail, depthFail, pass);
+	RendererAPI::GetRenderer()->SetFillMode(fillMode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetCull(const bool enabled)
+void TRAP::Graphics::RenderCommand::SetPrimitiveTopology(const PrimitiveTopology topology)
 {
-	//RendererAPI::GetRenderer()->SetCull(enabled);
+	RendererAPI::GetRenderer()->SetPrimitiveTopology(topology);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetFrontFace(const RendererFrontFace frontFace)
+void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face)
 {
-	//RendererAPI::GetRenderer()->SetFrontFace(frontFace);
+	RendererAPI::GetRenderer()->SetFrontFace(face);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetWireFrame(const bool enabled)
+void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha)
 {
-	//RendererAPI::GetRenderer()->SetWireFrame(enabled);
+	RendererAPI::GetRenderer()->SetBlendMode(modeRGB, modeAlpha);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceRGB, const BlendConstant sourceAlpha,
+	  												 const BlendConstant destinationRGB,
+													 const BlendConstant destinationAlpha)
+{
+	RendererAPI::GetRenderer()->SetBlendConstant(sourceRGB, sourceAlpha, destinationRGB, destinationAlpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -154,58 +181,30 @@ void TRAP::Graphics::RenderCommand::SetViewport(const uint32_t x, const uint32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetBlendFunction(const RendererBlendFunction source,
-                                                     const RendererBlendFunction destination)
+void TRAP::Graphics::RenderCommand::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
+											   const uint32_t height)
 {
-	//RendererAPI::GetRenderer()->SetBlendFunction(source, destination);
+	RendererAPI::GetRenderer()->SetScissor(x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetBlendFunctionSeparate(const RendererBlendFunction sourceRGB,
-															 const RendererBlendFunction sourceAlpha,
-															 const RendererBlendFunction destinationRGB,
-															 const RendererBlendFunction destinationAlpha)
+void TRAP::Graphics::RenderCommand::Draw(const uint32_t vertexCount, const uint32_t firstVertex)
 {
-	//RendererAPI::GetRenderer()->SetBlendFunctionSeparate(sourceRGB, sourceAlpha, destinationRGB, destinationAlpha);
+	RendererAPI::GetRenderer()->Draw(vertexCount, firstVertex);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetBlendEquation(const RendererBlendEquation blendEquation)
+void TRAP::Graphics::RenderCommand::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
+												const uint32_t firstVertex)
 {
-	//RendererAPI::GetRenderer()->SetBlendEquation(blendEquation);
+	RendererAPI::GetRenderer()->DrawIndexed(indexCount, firstIndex, firstVertex);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetBlendEquationSeparate(const RendererBlendEquation blendEquationRGB,
-                                                             const RendererBlendEquation blendEquationAlpha)
+void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data)
 {
-	//RendererAPI::GetRenderer()->SetBlendEquationSeparate(blendEquationRGB, blendEquationAlpha);
+	RendererAPI::GetRenderer()->BindPushConstants(name, data);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::RenderCommand::SetCullMode(const RendererCullMode cullMode)
-{
-	//RendererAPI::GetRenderer()->SetCullMode(cullMode);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/*void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const uint32_t indexCount)
-{
-	Application::AddSingleDrawCall();
-
-	RendererAPI::GetRenderer()->DrawIndexed(vertexArray, indexCount);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertexArray)
-{
-	Application::AddSingleDrawCall();
-
-	RendererAPI::GetRenderer()->Draw(vertexArray);
-}*/

@@ -2000,3 +2000,5 @@ SITREP 07/30/2021|21w30a4
     - Changed TRAP Engine version to 21w30a4(0.7.65)
     - Removed unused TextureUsage enum ~<15 mins
     - Replaced BufferUsage with (RendererAPI::Descriptor)UpdateFrequency ~<20 mins
+    - GPUSettings Added fillModeNonSolid ~<5 mins
+    - Reimplemented RenderCommand ~>30 mins

@@ -121,6 +121,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxAnisotropy = m_physicalDeviceProperties.limits.maxSamplerAnisotropy;
 	RendererAPI::GPUSettings.MaxImageDimension2D = m_physicalDeviceProperties.limits.maxImageDimension2D;
 	RendererAPI::GPUSettings.MaxImageDimensionCube = m_physicalDeviceProperties.limits.maxImageDimensionCube;
+	RendererAPI::GPUSettings.FillModeNonSolid = m_physicalDeviceFeatures.fillModeNonSolid;
 
 	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
 	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;
@@ -687,6 +688,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 			        "\" Failed Tessellation Shader Test!");
 
+		//Optionally: Check if device support fill mode non solid
+		if (devFeatures.fillModeNonSolid)
+			score += 250;
+		else
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
+			        "\" Failed fillModeNonSolid Test!");
+
 		//Optionally: Check if Surface has optimal surface format
 		bool optimalFormat = false;
 		for (auto& format : surfaceFormats)
@@ -720,12 +728,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		//Optionally: Check 2D & Cube Image Max Size
 		score += devProps.limits.maxImageDimension2D;
 		score += devProps.limits.maxImageDimensionCube;
-
-		//Optionally: Check if WireFrame is supported
-		if (devFeatures.fillModeNonSolid)
-			score += 500;
-		else
-			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed WireFrame Test!");
 
 		//Optionally: Check if Anisotropic Filtering is supported
 		if (devFeatures.samplerAnisotropy)

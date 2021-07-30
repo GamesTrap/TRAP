@@ -561,6 +561,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, Windo
 
 void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, Window* window)
 {
+	if(mode != FillMode::Solid && !GPUSettings.FillModeNonSolid)
+		return;
+
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 

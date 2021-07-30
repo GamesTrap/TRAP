@@ -143,9 +143,6 @@ namespace TRAP::Graphics
 		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
 		                                      Window* window = nullptr) = 0;
 
-		//virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
-		//virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
-
 		virtual const std::string& GetTitle() const = 0;
 
 		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() = 0;
@@ -558,7 +555,8 @@ namespace TRAP::Graphics
 		enum class FillMode
 		{
 			Solid,
-			WireFrame,
+			Line,
+			Point,
 
 			MAX_FILL_MODES
 		};
@@ -1310,6 +1308,7 @@ namespace TRAP::Graphics
 			float MaxAnisotropy;
 			uint32_t MaxImageDimension2D;
 			uint32_t MaxImageDimensionCube;
+			bool FillModeNonSolid;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered

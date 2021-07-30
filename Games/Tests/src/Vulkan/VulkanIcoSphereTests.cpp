@@ -61,7 +61,7 @@ void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
 	{
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);
+		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::None);
 	}
 	else

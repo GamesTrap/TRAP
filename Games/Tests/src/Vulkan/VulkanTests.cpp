@@ -68,7 +68,7 @@ void VulkanTests::OnDetach()
 void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);
+		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
 	else
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
 

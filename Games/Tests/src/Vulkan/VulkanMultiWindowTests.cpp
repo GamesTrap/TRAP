@@ -98,7 +98,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	if(m_window)
 	{
 		if(m_wireFrameSecondWindow)
-			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame, m_window.get());
+			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line, m_window.get());
 		else
 			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid, m_window.get());
 
@@ -146,7 +146,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Main Window OnUpdate
 	{
 		if(m_wireFrameMainWindow)
-			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);
+			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
 		else
 			TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
 
