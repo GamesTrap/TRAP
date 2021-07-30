@@ -71,7 +71,7 @@ void IconTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color);
+	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

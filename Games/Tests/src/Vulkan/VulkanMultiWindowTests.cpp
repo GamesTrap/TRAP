@@ -140,7 +140,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(3, 0, 0, m_window.get());
 
 		//Secondary Windows need to explicitly present its content
-		TRAP::Graphics::RenderCommand::Present(m_window);
+		TRAP::Graphics::RenderCommand::Present(m_window.get());
 	}
 
 	//Main Window OnUpdate

@@ -173,7 +173,7 @@ void ImageLoaderTests::OnAttach()
 
 void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
+	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
 
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
 	if(m_tga)

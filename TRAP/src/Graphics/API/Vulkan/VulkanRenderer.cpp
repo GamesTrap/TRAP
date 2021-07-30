@@ -329,9 +329,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameNa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
+void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 {
-	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window.get()];
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
 	EndGraphicRecording(p);
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!

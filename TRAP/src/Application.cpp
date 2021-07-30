@@ -259,7 +259,7 @@ void TRAP::Application::Run()
 		ImGuiLayer::End();
 
 		if (!m_minimized)
-			Graphics::RenderCommand::Present(m_window);
+			Graphics::RenderCommand::Present(m_window.get());
 		TRAP::Window::OnUpdate();
 
 		if (!m_hotReloadingThread && (VFS::GetHotShaderReloading() || VFS::GetHotTextureReloading()))

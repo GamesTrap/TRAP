@@ -51,7 +51,7 @@ void MonitorTests::OnImGuiRender()
 
 void MonitorTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
+	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

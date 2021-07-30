@@ -90,7 +90,7 @@ namespace TRAP::Graphics
 
 		virtual void InitInternal(const std::string& gameName) = 0;
 
-		virtual void Present(const Scope<Window>& window) = 0;
+		virtual void Present(Window* window) = 0;
 
 		virtual void SetVSync(bool vsync, Window* window = nullptr) = 0;
 		virtual bool GetVSync(Window* window = nullptr) = 0;

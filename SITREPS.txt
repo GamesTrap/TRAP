@@ -2002,3 +2002,4 @@ SITREP 07/30/2021|21w30a4
     - Replaced BufferUsage with (RendererAPI::Descriptor)UpdateFrequency ~<20 mins
     - GPUSettings Added fillModeNonSolid ~<5 mins
     - Reimplemented RenderCommand ~>30 mins
+    - RenderCommand Added optional Window* for multiple Windows support ~<20 mins

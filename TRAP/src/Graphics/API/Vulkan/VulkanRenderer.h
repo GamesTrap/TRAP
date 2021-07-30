@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 
 		void InitInternal(const std::string& gameName) override;
 
-		void Present(const Scope<Window>& window) override;
+		void Present(Window* window) override;
 
 		void SetVSync(bool vsync, Window* window = nullptr) override;
 
@@ -88,9 +88,6 @@ namespace TRAP::Graphics::API
 		void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) override;
 		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
 		                              Window* window = nullptr) override;
-
-		//void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
-		//void Draw(const Scope<VertexArray>& vertexArray) override;
 
 		const std::string& GetTitle() const override;
 		bool GetVSync(Window* window = nullptr) override;
