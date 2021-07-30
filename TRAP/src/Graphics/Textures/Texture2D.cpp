@@ -7,15 +7,14 @@
 #include "TextureBase.h"
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name,
-	                                                                             const std::string_view filepath,
-																				 const TextureUsage usage)
+	                                                                             const std::string_view filepath)
 {
 	TP_PROFILE_FUNCTION();
 
 	if(name.empty())
 	{
 		TP_WARN(Log::Texture2DPrefix, "Name is empty! Using Filename as Texture2D Name!");
-		return CreateFromFile(filepath, usage);
+		return CreateFromFile(filepath);
 	}
 
 	switch(RendererAPI::GetRenderAPI())
@@ -34,7 +33,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		texture->m_name = name;
 		texture->m_filepath = filepath;
 		texture->m_textureType = TextureType::Texture2D;
-		texture->m_textureUsage = usage;
 
 		return texture;
 	}
@@ -50,8 +48,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath,
-	                                                                             const TextureUsage usage)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -73,7 +70,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		texture->m_name = name;
 		texture->m_filepath = filepath;
 		texture->m_textureType = TextureType::Texture2D;
-		texture->m_textureUsage = usage;
 
 		return texture;
 	}
@@ -90,8 +86,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImage(const std::string& name,
-	                                                                              const Scope<Image>& img,
-																				  const TextureUsage usage)
+	                                                                              const Scope<Image>& img)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
 
@@ -131,7 +126,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 		texture->m_name = name;
 		texture->m_filepath = useImg->GetFilePath();
 		texture->m_textureType = TextureType::Texture2D;
-		texture->m_textureUsage = usage;
 
 		//Wait for texture to be ready
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
@@ -169,8 +163,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height,
 	                                                                          uint32_t bitsPerPixel,
-																			  Image::ColorFormat format,
-																			  const TextureUsage usage)
+																			  Image::ColorFormat format)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -196,7 +189,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 		texture->m_textureType = TextureType::Texture2D;
-		texture->m_textureUsage = usage;
 
 		return texture;
 	}
@@ -212,9 +204,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(const TextureUsage usage)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create()
 {
-	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback(), usage);
+	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

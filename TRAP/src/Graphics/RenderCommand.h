@@ -76,7 +76,7 @@ namespace TRAP::Graphics
 		Decrement_And_Clamp,
 	};
 
-	class RenderCommand
+	class RenderCommand //TODO Add Window* to each function
 	{
 	public:
 		static void Clear(RendererBufferType buffer);

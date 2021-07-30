@@ -9,14 +9,12 @@ namespace TRAP::Graphics
 	class Texture2D : public Texture
 	{
 	public:
-		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath,
-		                                       TextureUsage usage);
-		static Scope<Texture2D> CreateFromFile(std::string_view filepath, TextureUsage usage);
-		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img,
-		                                        TextureUsage usage);
+		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath);
+		static Scope<Texture2D> CreateFromFile(std::string_view filepath);
+		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img);
 		static Scope<Texture2D> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel,
-		                                    Image::ColorFormat format, TextureUsage usage);
-		static Scope<Texture2D> Create(TextureUsage usage); //Fallback Texture
+		                                    Image::ColorFormat format);
+		static Scope<Texture2D> Create(); //Fallback Texture
 
 		uint32_t GetDepth() const override;
 		uint32_t GetArraySize() const override;

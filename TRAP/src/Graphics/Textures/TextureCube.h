@@ -12,16 +12,14 @@ namespace TRAP::Graphics
 	{
 	public:
 		static Scope<TextureCube> CreateFromFiles(const std::string& name,
-		                                          const std::array<std::string, 6>& filepaths, TextureUsage usage);
+		                                          const std::array<std::string, 6>& filepaths);
 		static Scope<TextureCube> CreateFromFile(const std::string& name, const std::string& filepath,
-		                                         TextureCubeFormat format, TextureUsage usage);
-		static Scope<TextureCube> CreateFromFile(const std::string& filepath, TextureCubeFormat format,
-		                                         TextureUsage usage);
+		                                         TextureCubeFormat format);
+		static Scope<TextureCube> CreateFromFile(const std::string& filepath, TextureCubeFormat format);
 		static Scope<TextureCube> CreateFromImage(const std::string& name, const Scope<Image>& img,
-		                                          TextureCubeFormat format, TextureUsage usage);
-		static Scope<TextureCube> CreateFromImages(const std::string& name, const std::array<Scope<Image>, 6>& imgs,
-		                                           TextureUsage usage);
-		static Scope<TextureCube> Create(TextureUsage usage); //Fallback Texture
+		                                          TextureCubeFormat format);
+		static Scope<TextureCube> CreateFromImages(const std::string& name, const std::array<Scope<Image>, 6>& imgs);
+		static Scope<TextureCube> Create(); //Fallback Texture
 
 		std::array<std::string, 6> GetFilePaths() const;
 		TextureCubeFormat GetTextureCubeFormat() const;

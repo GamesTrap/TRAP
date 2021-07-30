@@ -42,7 +42,7 @@ void VulkanTextureTests::OnAttach()
     m_vulkanLogoTransparent = TRAP::Image::LoadFromFile("/Textures/vulkanlogoTransparent.png");
 
     //Load Texture
-    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", m_vulkanLogo, TRAP::Graphics::TextureUsage::Static).get();
+    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", m_vulkanLogo).get();
     m_texture->AwaitLoading();
     m_maxMipLevel = m_texture->GetMipLevels();
 

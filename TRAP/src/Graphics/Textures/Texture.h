@@ -19,8 +19,6 @@ namespace TRAP::Graphics
 		TextureCube
 	};
 
-	using TextureUsage = BufferUsage;
-
 	class Texture
 	{
 	protected:
@@ -40,7 +38,6 @@ namespace TRAP::Graphics
 		virtual uint32_t GetDepth() const = 0;
 		virtual uint32_t GetArraySize() const = 0;
 		uint32_t GetMipLevels() const;
-		TextureUsage GetTextureUsage() const;
 		Image::ColorFormat GetColorFormat() const;
 		uint32_t GetBitsPerChannel() const;
 		uint32_t GetBytesPerChannel() const;
@@ -68,7 +65,6 @@ namespace TRAP::Graphics
 
 		std::string m_name;
 		TextureType m_textureType;
-		TextureUsage m_textureUsage;
 		API::SyncToken m_syncToken;
 
 		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;

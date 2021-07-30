@@ -1995,3 +1995,7 @@ SITREP 07/29/2021|21w30a3
     - Changed TRAP Engine version to 21w30a3(0.7.64)
     - RendererAPI Removed unused forward declarations ~<5 mins
     - VulkanCommon Commented some unused functions out ~<5 mins
+
+SITREP 07/30/2021|21w30a4
+    - Changed TRAP Engine version to 21w30a4(0.7.65)
+    - Removed unused TextureUsage enum ~<15 mins

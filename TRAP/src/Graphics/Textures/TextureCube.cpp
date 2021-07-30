@@ -7,8 +7,7 @@
 #include "TextureBase.h"
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name,
-	                                                                                  const std::array<std::string, 6>& filepaths,
-																					  const TextureUsage usage)
+	                                                                                  const std::array<std::string, 6>& filepaths)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -36,7 +35,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		texture->m_filepaths = filepaths;
 		texture->m_textureFormat = TextureCubeFormat::MultiFile;
 		texture->m_textureType = TextureType::TextureCube;
-		texture->m_textureUsage = usage;
 
 		return texture;
 	}
@@ -54,8 +52,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::string& name,
 	                                                                                 const std::string& filepath,
-																					 const TextureCubeFormat format,
-																					 const TextureUsage usage)
+																					 const TextureCubeFormat format)
 {
 	TRAP_ASSERT(format != TextureCubeFormat::MultiFile,
 	            "CreateFromFile can not be used with TextureCubeFormat::MultiFile!");
@@ -65,7 +62,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	if(name.empty())
 	{
 		TP_WARN(Log::TextureCubePrefix, "Name is empty! Using Filename as TextureCube Name!");
-		return CreateFromFile(filepath, format, usage);
+		return CreateFromFile(filepath, format);
 	}
 
 	switch (RendererAPI::GetRenderAPI())
@@ -88,7 +85,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		texture->m_filepaths[0] = filepath;
 		texture->m_textureFormat = format;
 		texture->m_textureType = TextureType::TextureCube;
-		texture->m_textureUsage = usage;
 
 		return texture;
 	}
@@ -105,8 +101,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::string& filepath,
-	                                                                                 const TextureCubeFormat format,
-																					 const TextureUsage usage)
+	                                                                                 const TextureCubeFormat format)
 {
 	TRAP_ASSERT(format != TextureCubeFormat::MultiFile,
 	            "CreateFromFile can not be used with TextureCubeFormat::MultiFile!");
@@ -135,7 +130,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		texture->m_filepaths[0] = filepath;
 		texture->m_textureFormat = format;
 		texture->m_textureType = TextureType::TextureCube;
-		texture->m_textureUsage = usage;
 
 		return texture;
 	}
@@ -153,8 +147,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromImage(const std::string& name,
 	                                                                                  const Scope<Image>& img,
-																					  const TextureCubeFormat format,
-																					  const TextureUsage usage)
+																					  const TextureCubeFormat format)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
 	TRAP_ASSERT(format != TextureCubeFormat::MultiFile,
@@ -212,7 +205,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		texture->m_textureFormat = format;
 		texture->m_filepaths[0] = useImg->GetFilePath();
 		texture->m_textureType = TextureType::TextureCube;
-		texture->m_textureUsage = usage;
 
 		//Wait for texture to be ready
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
@@ -257,8 +249,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromImages(const std::string& name,
-	                                                                                   const std::array<Scope<Image>, 6>& imgs,
-																					   const TextureUsage usage)
+	                                                                                   const std::array<Scope<Image>, 6>& imgs)
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
 	                        [](const Scope<Image>& img) { return img.get() == nullptr; }), "An Image is nullptr!");
@@ -320,7 +311,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		for(uint32_t i = 0; i < imgs.size(); ++i)
 			texture->m_filepaths[i] = useImgs[i]->GetFilePath();
 		texture->m_textureType = TextureType::TextureCube;
-		texture->m_textureUsage = usage;
 
 		//Wait for texture to be ready
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
@@ -360,13 +350,13 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(const TextureUsage usage)
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create()
 {
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
 	for(uint32_t i = 0; i < imgs.size(); ++i)
 		imgs[i] = TRAP::Image::LoadFallback();
 
-	return CreateFromImages("FallbackCube", imgs, usage);
+	return CreateFromImages("FallbackCube", imgs);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

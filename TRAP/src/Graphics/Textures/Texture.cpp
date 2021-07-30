@@ -5,7 +5,6 @@
 
 TRAP::Graphics::Texture::Texture()
 	: m_textureType(TextureType::Texture2D),
-	  m_textureUsage(TextureUsage::Static),
 	  m_syncToken(),
 	  m_texture(nullptr)
 {
@@ -44,13 +43,6 @@ uint32_t TRAP::Graphics::Texture::GetHeight() const
 uint32_t TRAP::Graphics::Texture::GetMipLevels() const
 {
 	return m_texture->GetMipLevels();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::TextureUsage TRAP::Graphics::Texture::GetTextureUsage() const
-{
-	return m_textureUsage;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
