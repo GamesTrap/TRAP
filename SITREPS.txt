@@ -2009,3 +2009,5 @@ SITREP 07/31/2021|21w30a5
     - RendererAPI Added checks against invalid use of Clear function ~<20 mins
     - Updated all Test programs ~<30 mins
     - Validated functionality of every Test program (except ImageLoader as it needs Renderer2D) ~<30 mins
+    - Sandbox Updated SandboxLayer (missing Camera) ~<30 mins
+    - TRAP.h Added Utils.h ~<5 mins

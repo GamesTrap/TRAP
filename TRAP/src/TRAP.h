@@ -40,6 +40,7 @@
 //-----------------------
 
 //----UTILS--------------
+#include "../src/Utils/Utils.h"
 #include "../src/Utils/Dialogs/Dialogs.h"
 #include "../src/Utils/Time/TimeStep.h"
 #include "../src/Utils/Time/Timer.h"

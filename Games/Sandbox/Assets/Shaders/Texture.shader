@@ -7,11 +7,11 @@ layout(location = 2) in vec2 UV;
 layout(location = 3) out vec4 vColor;
 layout(location = 4) out vec2 vUV;
 
-layout(std140, binding = 0) uniform MatrixBuffer
+layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
 {
-	mat4 sys_ProjectionMatrix;
-	mat4 sys_ViewMatrix;
-	mat4 sys_ModelMatrix;
+	uniform mat4 sys_ProjectionMatrix;
+	uniform mat4 sys_ViewMatrix;
+	uniform mat4 sys_ModelMatrix;
 } Matrices;
 
 void main()
@@ -27,9 +27,10 @@ layout(location = 0) out vec4 FragColor;
 layout(location = 3) in vec4 vColor;
 layout(location = 4) in vec2 vUV;
 
-layout(binding = 0) uniform sampler2D Texture;
+layout(UpdateFreqNone, binding = 0) uniform texture2D Texture;
+layout(UpdateFreqNone, binding = 1) uniform sampler Sampler;
 
 void main()
 {
-	FragColor = texture(Texture, vUV);
+	FragColor = texture(sampler2D(Texture, Sampler), vUV);
 }

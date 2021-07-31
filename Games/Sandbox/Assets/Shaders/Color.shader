@@ -1,15 +1,14 @@
-#language glsl
 #shader vertex
 layout(location = 0) in vec3 Position;
 layout(location = 1) in vec4 Color;
 
 layout(location = 2) out vec4 vColor;
 
-layout(std140, binding = 0) uniform MatrixBuffer
+layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
 {
-	mat4 sys_ProjectionMatrix;
-	mat4 sys_ViewMatrix;
-	mat4 sys_ModelMatrix;
+	uniform mat4 sys_ProjectionMatrix;
+	uniform mat4 sys_ViewMatrix;
+	uniform mat4 sys_ModelMatrix;
 } Matrices;
 
 void main()
