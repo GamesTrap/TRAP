@@ -13,7 +13,7 @@ TRAPEditorLayer::TRAPEditorLayer()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAPEditorLayer::OnImGuiRender()
-{	
+{
 	static bool dockspaceOpen = true;
 	static bool optFullscreenPersistent = true;
 	const bool optFullscreen = optFullscreenPersistent;
@@ -82,7 +82,7 @@ void TRAPEditorLayer::OnImGuiRender()
 				SaveSceneAs();
 
 			ImGui::Separator();
-			
+
 			if (ImGui::MenuItem("Exit"))
 				TRAP::Application::Shutdown();
 			ImGui::EndMenu();
@@ -92,10 +92,10 @@ void TRAPEditorLayer::OnImGuiRender()
 	}
 
 	m_sceneGraphPanel.OnImGuiRender();
-	
+
 	ImGui::Begin("Settings");
-	ImGui::Text("CPU: %ix %s", TRAP::Application::GetCPUInfo().LogicalCores, TRAP::Application::GetCPUInfo().Model.c_str());
-	ImGui::Text("GPU: %s", TRAP::Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
+	ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
+	ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
 	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
 	ImGui::Separator();
@@ -105,19 +105,19 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Quads: %u", stats.QuadCount);
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
-	
+
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 	ImGui::Begin("Viewport");
-	
+
 	m_viewportFocused = ImGui::IsWindowFocused();
 	m_viewportHovered = ImGui::IsWindowHovered();
 	TRAP::Application::GetImGuiLayer().BlockEvents(!m_viewportFocused || !m_viewportHovered);
-	
+
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-	
+
 	const uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
 	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 	ImGui::End();
@@ -210,14 +210,11 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 	}
-	
+
 	TRAP::Graphics::Renderer2D::ResetStats();
 	//Framebuffer
 	m_frameBuffer->Bind();
-	//Setup
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
-	
+
 	//Update Scene
 	m_activeScene->OnUpdate(deltaTime);
 
@@ -256,15 +253,15 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	{
 		if (ctrlPressed)
 			NewScene();
-		
+
 		break;
 	}
-		
+
 	case TRAP::Input::Key::O:
 	{
 		if (ctrlPressed)
 			OpenScene();
-		
+
 		break;
 	}
 
@@ -277,11 +274,11 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 		break;
 	}
-		
+
 	default:
 		break;
 	}
-	
+
 	return false;
 }
 

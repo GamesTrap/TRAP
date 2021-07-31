@@ -46,7 +46,7 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 
 		ImGui::EndPopup();
 	}
-	
+
 	ImGui::End();
 
 	m_propertiesPanel.OnImGuiRender();

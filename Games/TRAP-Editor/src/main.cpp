@@ -5,7 +5,8 @@
 class TRAPEditor final : public TRAP::Application
 {
 public:
-	TRAPEditor()
+	TRAPEditor(const std::string& gameName)
+		: Application(gameName)
 	{
 		PushLayer(std::make_unique<TRAPEditorLayer>());
 	}
@@ -13,5 +14,5 @@ public:
 
 std::unique_ptr<TRAP::Application> TRAP::CreateApplication()
 {
-	return std::make_unique<TRAPEditor>();
+	return std::make_unique<TRAPEditor>("TRAP-Editor");
 }

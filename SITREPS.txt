@@ -2015,3 +2015,5 @@ SITREP 07/31/2021|21w30a5
     - Decoupled UniformBuffer from Shader ~<45 mins
     - Shader Added UseUBO function ~<20 mins
     - Updated VukanTest programs ~<30 mins
+    - Tests3D Partially updated ~<30 mins
+    - Fixed crash in Texture2D::CreateEmpty ~<5 mins

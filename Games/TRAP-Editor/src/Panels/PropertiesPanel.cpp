@@ -13,9 +13,9 @@ static void DrawVec3Control(const std::string& label,
 {
 	ImGuiIO& io = ImGui::GetIO();
 	const auto boldFont = io.Fonts->Fonts[0];
-	
+
 	ImGui::PushID(label.c_str());
-	
+
 	ImGui::Columns(2);
 	ImGui::SetColumnWidth(0, columnWidth);
 	ImGui::Text("%s", label.c_str());
@@ -69,7 +69,7 @@ static void DrawVec3Control(const std::string& label,
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
-	
+
 	ImGui::Columns(1);
 
 	ImGui::PopID();
@@ -131,7 +131,7 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 
 	ImGui::SameLine();
 	ImGui::PushItemWidth(-1);
-	
+
 	if (ImGui::Button("Add Component"))
 		ImGui::OpenPopup("AddComponent");
 
@@ -154,7 +154,7 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 				ImGui::CloseCurrentPopup();
 			}
 		}
-		
+
 		ImGui::EndPopup();
 	}
 
@@ -255,7 +255,7 @@ void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entit
 {
 	constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
 		ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
-	
+
 	if (entity.HasComponent<T>())
 	{
 		auto& component = entity.GetComponent<T>();
@@ -269,7 +269,7 @@ void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entit
 		ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 		if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
 			ImGui::OpenPopup("ComponentSettings");
-		
+
 		bool removeComponent = false;
 		if (ImGui::BeginPopup("ComponentSettings"))
 		{

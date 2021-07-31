@@ -177,15 +177,18 @@ void Cube3D::OnAttach()
     m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
                              TRAP::Application::GetWindow()->GetHeight());
 
+    //Load diffuse reflection UniformBuffer
     const TRAP::Math::Mat4 inverseView = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
     m_diffuseReflectionDataBuffer.LightPosition = inverseView * m_lightPosition;
     m_diffuseReflectionDataBuffer.LightSourceIntensity = { 1.0f, 1.0f, 1.0f };
     m_diffuseReflectionDataBuffer.DiffuseReflectivity = { 0.9f, 0.5f, 0.3f };
-    m_diffuseReflectionUniformBuffer = TRAP::Graphics::UniformBuffer::Create("DataBuffer",
-                                                                             &m_diffuseReflectionDataBuffer,
+    m_diffuseReflectionUniformBuffer = TRAP::Graphics::UniformBuffer::Create(&m_diffuseReflectionDataBuffer,
                                                                              sizeof(DiffuseReflectionDataBuffer),
-                                                                             TRAP::Graphics::BufferUsage::Dynamic);
+                                                                             TRAP::Graphics::UpdateFrequency::PerFrame);
+    m_diffuseReflectionUniformBuffer->AwaitLoading();
+    TRAP::Graphics::ShaderManager::Get("Diffuse Reflection")->UseUBO(1, m_diffuseReflectionUniformBuffer.get());
 
+    //Load phong lightning UniformBuffer
     m_phongLightningDataBuffer.LightPosition = inverseView * m_lightPosition;
     m_phongLightningDataBuffer.LightLa = { 0.4f, 0.4f, 0.4f };
     m_phongLightningDataBuffer.LightLd = { 1.0f, 1.0f, 1.0f };
@@ -194,9 +197,14 @@ void Cube3D::OnAttach()
     m_phongLightningDataBuffer.MaterialKd = { 0.9f, 0.5f, 0.3f };
     m_phongLightningDataBuffer.MaterialKs = { 0.8f, 0.8f, 0.8f };
     m_phongLightningDataBuffer.MaterialShininess = 100.0f;
-    m_phongLightningUniformBuffer = TRAP::Graphics::UniformBuffer::Create("DataBuffer", &m_phongLightningDataBuffer,
+    m_phongLightningUniformBuffer = TRAP::Graphics::UniformBuffer::Create(&m_phongLightningDataBuffer,
                                                                           sizeof(PhongLightningDataBuffer),
-                                                                          TRAP::Graphics::BufferUsage::Dynamic);
+                                                                          TRAP::Graphics::UpdateFrequency::PerFrame);
+    m_phongLightningUniformBuffer->AwaitLoading();
+    TRAP::Graphics::ShaderManager::Get("Phong Lightning")->UseUBO(1, m_phongLightningUniformBuffer.get());
+
+    //Wait for all pending resources (just in case)
+    TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
     TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::Back);
     TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);
@@ -279,7 +287,8 @@ void Cube3D::OnImGuiRender()
 		{
             m_diffuseReflectionDataBuffer.DiffuseReflectivity = diffuseReflectionDataBuffer.DiffuseReflectivity;
             m_diffuseReflectionDataBuffer.LightSourceIntensity = diffuseReflectionDataBuffer.LightSourceIntensity;
-            m_diffuseReflectionUniformBuffer->UpdateData(&m_diffuseReflectionDataBuffer);
+            m_diffuseReflectionUniformBuffer->SetData(&m_diffuseReflectionDataBuffer,
+                                                      sizeof(DiffuseReflectionDataBuffer));
 		}
 	}
 	else if (m_shaderNames[m_currentShader] == "Phong Lightning")
@@ -314,7 +323,8 @@ void Cube3D::OnImGuiRender()
             m_phongLightningDataBuffer.MaterialKd = phongLightningDataBuffer.MaterialKd;
             m_phongLightningDataBuffer.MaterialKs = phongLightningDataBuffer.MaterialKs;
             m_phongLightningDataBuffer.MaterialShininess = phongLightningDataBuffer.MaterialShininess;
-            m_phongLightningUniformBuffer->UpdateData(&m_phongLightningDataBuffer);
+            m_phongLightningUniformBuffer->SetData(&m_phongLightningDataBuffer,
+                                                   sizeof(PhongLightningDataBuffer));
 		}
     }
     ImGui::Text("Press F1 to switch Shaders");
@@ -347,8 +357,8 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         {
             m_diffuseReflectionDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) *
                                                           m_lightPosition;
-            m_diffuseReflectionUniformBuffer->UpdateSubData(&m_diffuseReflectionDataBuffer.LightPosition,
-                                                            sizeof(TRAP::Math::Vec4), 0); //Update Camera
+            m_diffuseReflectionUniformBuffer->SetData(&m_diffuseReflectionDataBuffer,
+                                                      sizeof(DiffuseReflectionDataBuffer)); //Update Camera
 
             TRAP::Graphics::ShaderManager::Get(m_shaderNames[0])->Use();
             m_cubeVertexBuffer->Use();
@@ -363,8 +373,8 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         {
             m_phongLightningDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) *
                                                        m_lightPosition;
-            m_phongLightningUniformBuffer->UpdateSubData(&m_phongLightningDataBuffer.LightPosition,
-                                                         sizeof(TRAP::Math::Vec4), 0); //Update Camera
+            m_phongLightningUniformBuffer->SetData(&m_phongLightningDataBuffer,
+                                                   sizeof(PhongLightningDataBuffer)); //Update Camera
             TRAP::Graphics::ShaderManager::Get(m_shaderNames[0])->Use();
             m_cubeVertexBuffer->Use();
             m_cubeIndexBuffer->Use();

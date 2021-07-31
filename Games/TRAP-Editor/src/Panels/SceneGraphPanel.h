@@ -20,7 +20,7 @@ namespace TRAP
 		void OnImGuiRender();
 	private:
 		void DrawEntityNode(Entity entity);
-		
+
 		Ref<Scene> m_context;
 		Entity m_selectionContext;
 		PropertiesPanel m_propertiesPanel;

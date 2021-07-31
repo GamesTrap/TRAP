@@ -184,6 +184,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 		desc.Desc->Height = height;
 		desc.Desc->Format = imageFormat;
 		desc.Desc->Descriptors = RendererAPI::DescriptorType::Texture;
+		desc.Desc->StartState = RendererAPI::ResourceState::Common;
 		desc.IsCubemap = false;
 		desc.Texture = &texture->m_texture;
 

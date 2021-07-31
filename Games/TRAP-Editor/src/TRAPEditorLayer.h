@@ -15,16 +15,16 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnTick() override;
 	void OnEvent(TRAP::Events::Event& event) override;
-	
+
 private:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	void NewScene();
 	void OpenScene();
 	void SaveScene();
 	void SaveSceneAs();
-	
+
 	//TRAP::Graphics::OrthographicCameraController m_cameraController;
-	
+
 	TRAP::Scope<TRAP::Graphics::FrameBuffer> m_frameBuffer;
 	TRAP::Math::Vec2 m_viewportSize;
 	bool m_viewportFocused;
