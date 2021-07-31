@@ -34,8 +34,8 @@ public:
 		//PushLayer(TRAP::MakeScope<TitleTests>());
 		//PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
 		//PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
-		//PushLayer(TRAP::MakeScope<VulkanTests>());
-		PushLayer(TRAP::MakeScope<VulkanTextureTests>());
+		PushLayer(TRAP::MakeScope<VulkanTests>());
+		//PushLayer(TRAP::MakeScope<VulkanTextureTests>());
 		//PushLayer(TRAP::MakeScope<WindowStateTests>());
 	}
 };

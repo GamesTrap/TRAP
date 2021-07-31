@@ -71,7 +71,7 @@ private:
 	bool m_wireFrame;
 	bool m_vsync;
 
-	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_cameraUBO;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_cameraUBO;
 
 	struct CameraUBOData
 	{

@@ -47,16 +47,21 @@ void VulkanTests::OnAttach()
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
+	//Load UniformBuffers
+	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(SizeMultiplicatorData),
+																			 TRAP::Graphics::UpdateFrequency::PerFrame);
+	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(ColorData),
+																 TRAP::Graphics::UpdateFrequency::PerFrame);
+	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
+	m_colorUniformBuffer->AwaitLoading();
+
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
 	const auto& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader",
 	 																	  &macros);
-
-	m_sizeMultiplicatorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 0);
-	m_colorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 1);
-	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
-	m_colorUniformBuffer->AwaitLoading();
+	vkTestUBOShader->UseUBO(0, m_sizeMultiplicatorUniformBuffer.get());
+	vkTestUBOShader->UseUBO(1, m_colorUniformBuffer.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -66,6 +71,8 @@ void VulkanTests::OnAttach()
 
 void VulkanTests::OnDetach()
 {
+	m_colorUniformBuffer.reset();
+	m_sizeMultiplicatorUniformBuffer.reset();
 	m_indexBuffer.reset();
 	m_vertexBuffer.reset();
 }
@@ -160,7 +167,6 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 		m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
 		m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
-
 
 		TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use();
 	}

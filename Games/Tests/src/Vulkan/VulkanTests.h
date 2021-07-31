@@ -20,8 +20,6 @@ private:
 
 	TRAP::Utils::Timer m_fpsTimer;
 
-	///////////////////////////////////////////////
-
 
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
 	std::array<float, 18> m_triangleVertices
@@ -78,8 +76,8 @@ private:
 	TRAP::Utils::Timer m_colorTimer;
 	TRAP::Utils::Timer m_vertexTimer;
 
-	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
-	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

@@ -35,10 +35,16 @@ void VulkanIcoSphereTests::OnAttach()
 	                                                    static_cast<uint32_t>(m_icosphereIndices.size()) *
 														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
 	m_indexBuffer->AwaitLoading();
+	m_indexBuffer->Use();
 
-	//Retrieve Camera UniformBuffer
-	m_cameraUBO = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest",
-	                                                      "/shaders/icosphere.shader")->GetUniformBuffer(1, 0);
+	//Load Camera UniformBuffer
+	m_cameraUBO = TRAP::Graphics::UniformBuffer::Create(sizeof(CameraUBOData),
+	                                                    TRAP::Graphics::UpdateFrequency::PerFrame);
+	m_cameraUBO->AwaitLoading();
+
+	//Load Shader
+	const auto& shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader");
+	shader->UseUBO(0, m_cameraUBO.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
