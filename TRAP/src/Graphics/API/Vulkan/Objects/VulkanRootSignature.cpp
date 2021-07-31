@@ -216,7 +216,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			layouts[setIndex].Bindings.push_back(binding);
 		}
-		else //If descriptor is a push constant, add it to the push constant array
+		else //If descriptor is a push/root constant, add it to the push constant array
 		{
 			TP_INFO("Descriptor (", descInfo.Name, "): User specified Push Constant");
 

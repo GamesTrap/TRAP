@@ -28,10 +28,10 @@ namespace TRAP::Graphics::API
 		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) override;
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) override;
+		void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer) override;
 
 	private:
 		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint32_t size = 1);
-		void BindUniformBuffers();
 
 		TRAP::Ref<VulkanDevice> m_device;
 
@@ -41,7 +41,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection;
 		std::vector<std::string> m_entryNames;
 
-		bool m_firstUBOBind;
+		std::vector<TRAP::Graphics::UniformBuffer*> m_boundUBOs;
 	};
 }
 

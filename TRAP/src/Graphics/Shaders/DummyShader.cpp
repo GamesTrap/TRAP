@@ -43,3 +43,9 @@ void TRAP::Graphics::DummyShader::UseSamplers(const uint32_t, const uint32_t,
                                               const std::vector<TRAP::Graphics::Sampler*>&)
 {
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::DummyShader::UseUBO(const uint32_t, TRAP::Graphics::UniformBuffer* const)
+{
+}

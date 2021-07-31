@@ -17,8 +17,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_firstUBOBind(true)
+	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	m_name = name;
 
@@ -165,13 +164,17 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 	}
 
-	for(const auto& resource : m_reflection->ShaderResources)
+	//Allocate enough space for all possible UBOs in the shader
+	uint32_t UBOCount = 0;
+	for(const auto& res : m_reflection->ShaderResources)
 	{
-		//TODO What about PerBatch & PerDraw
-		if(resource.Type == RendererAPI::DescriptorType::UniformBuffer)
-			m_UBOs[resource.Set][resource.Reg] = UniformBuffer::Create(resource.Name, resource.Size,
-																	   static_cast<UpdateFrequency>(resource.Set));
+		if(res.Type == TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer)
+		{
+			++UBOCount;
+			break;
+		}
 	}
+	m_boundUBOs.reserve(UBOCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -241,9 +244,6 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames
 void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 {
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->BindShader(this, window);
-
-	if(m_firstUBOBind)
-		BindUniformBuffers();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -368,6 +368,45 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer)
+{
+	if(std::find(m_boundUBOs.begin(), m_boundUBOs.end(), uniformBuffer) != m_boundUBOs.end())
+		return; //Already bound
+
+	std::string name = RetrieveDescriptorName(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()),
+	  										  binding,
+											  TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
+											  uniformBuffer->GetSize());
+
+	if(name.empty()) //Unable to find UBO @ with set, binding & size
+	{
+		TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
+		return;
+	}
+
+	//Bind UBO
+	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
+	params[0].Name = name.c_str();
+	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
+
+	//TODO What about PerBatch & PerDraw
+	if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 0) //== UpdateFrequency::None
+	{
+		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[0].get()};
+		GetDescriptorSets().StaticDescriptors->Update(0, params);
+	}
+	else if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 1) //== UpdateFrequency::PerFrame
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[i].get()};
+			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
 																	  RendererAPI::DescriptorType type,
 																	  const uint32_t size)
@@ -379,39 +418,4 @@ std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint
 	}
 
 	return "";
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::BindUniformBuffers()
-{
-	//OPTIMIZE Use index into root signature instead of name
-
-	for(const auto& [set, UBOs] : m_UBOs)
-	{
-		for(const auto& [binding, buffer] : UBOs)
-		{
-			//Bind UBO
-			std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-			params[0].Name = buffer->GetName().c_str();
-			params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
-
-			//TODO What about PerBatch & PerDraw
-			if(set == 0) //== UpdateFrequency::None
-			{
-				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer->GetUBOs()[0].get()};
-				GetDescriptorSets().StaticDescriptors->Update(0, params);
-			}
-			else if(set == 1) //== UpdateFrequency::PerFrame
-			{
-				for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-				{
-					params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer->GetUBOs()[i].get()};
-					GetDescriptorSets().PerFrameDescriptors->Update(i, params);
-				}
-			}
-		}
-	}
-
-	m_firstUBOBind = false;
 }

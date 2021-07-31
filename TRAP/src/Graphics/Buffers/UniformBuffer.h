@@ -33,19 +33,15 @@ namespace TRAP::Graphics
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
-		const std::string& GetName() const;
-
-		static Scope<UniformBuffer> Create(const std::string& name, uint64_t size, UpdateFrequency updateFrequency);
-		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<UniformBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<UniformBuffer> Create(void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
-		static Scope<UniformBuffer> Init(const std::string& name, void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<UniformBuffer> Init(void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
 		std::vector<API::SyncToken> m_tokens;
-
-		std::string m_name;
 
 		bool m_first = true;
 	};

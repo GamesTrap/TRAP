@@ -62,18 +62,6 @@ const TRAP::Graphics::Shader::DescriptorSets& TRAP::Graphics::Shader::GetDescrip
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Shader::GetUniformBuffer(const uint32_t set,
-                                                                                  const uint32_t binding)
-{
-	//Check if set & binding exist in map
-	if (!m_UBOs.count(set) || !m_UBOs[set].count(binding))
-		return nullptr;
-
-	return m_UBOs[set][binding];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
                                                                            const std::string& filePath,
 																		   const std::vector<Macro>* userMacros)

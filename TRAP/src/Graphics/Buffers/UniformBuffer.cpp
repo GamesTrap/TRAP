@@ -8,25 +8,23 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name,
-                                                                                 const uint64_t size,
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(name, nullptr, size, updateFrequency);
+	return Init(nullptr, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name,
-                                                                                 void* data,
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(void* data,
 																				 const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(name, data, size, updateFrequency);
+	return Init(data, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,20 +106,11 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::UniformBuffer::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const std::string& name, void* data,
-                                                                               const uint64_t size,
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(void* data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
 	//TODO What about PerBatch & PerDraw
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
-	buffer->m_name = name;
 	buffer->m_tokens.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
 	buffer->m_uniformBuffers.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
 
