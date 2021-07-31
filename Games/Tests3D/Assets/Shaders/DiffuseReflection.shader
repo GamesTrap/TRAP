@@ -5,29 +5,30 @@ layout(location = 3) in vec3 Normal;
 
 layout(location = 0) out vec3 LightIntensity;
 
-layout(std140, binding = 0) uniform MatrixBuffer
-{
-    mat4 sys_ProjectionMatrix;
-    mat4 sys_ViewMatrix;
-    mat4 sys_ModelMatrix;
-} Matrices;
+// layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
+// {
+//     uniform mat4 sys_ProjectionMatrix;
+//     uniform mat4 sys_ViewMatrix;
+//     uniform mat4 sys_ModelMatrix;
+// } Matrices;
 
-layout(std140, binding = 1) uniform DataBuffer
+layout(std140, UpdateFreqPerFrame, binding = 1) uniform DataBuffer
 {
-    vec4 LightPosition;
-    vec3 Ld;
-    vec3 Kd;
+    uniform vec4 LightPosition;
+    uniform vec3 Ld;
+    uniform vec3 Kd;
 } Data;
 
 void main()
 {
-    vec3 tnorm = normalize(mat3(Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix) * Normal);
-    vec4 cameraCoords = Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
-    vec3 s = normalize(vec3(Data.LightPosition - cameraCoords));
+    // vec3 tnorm = normalize(mat3(Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix) * Normal);
+    // vec4 cameraCoords = Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
+    // vec3 s = normalize(vec3(Data.LightPosition - cameraCoords));
 
-    LightIntensity = Data.Ld * Data.Kd * max(dot(s, tnorm), 0.0f);
+    // LightIntensity = Data.Ld * Data.Kd * max(dot(s, tnorm), 0.0f);
 
-    gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
+    //gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
+    gl_Position = vec4(Position, 1.0f);
 }
 
 #shader fragment

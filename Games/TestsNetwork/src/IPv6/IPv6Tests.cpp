@@ -5,24 +5,32 @@ IPv6Tests::IPv6Tests()
 {
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 void IPv6Tests::OnAttach()
 {
 	m_ipv6Thread = TRAP::MakeScope<std::thread>(IPv6);
 	m_ipv6Thread->detach();
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 void IPv6Tests::OnDetach()
 {
 	m_ipv6Thread.reset();
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 void IPv6Tests::IPv6()
 {
 	//Print out the local IP
-	std::cout << "[EXPERIMENTAL][Network][IPv6] Local Address: " << TRAP::Network::IPv6Address::GetLocalAddress() << std::endl;
+	std::cout << "[EXPERIMENTAL][Network][IPv6] Local Address: " <<
+	             TRAP::Network::IPv6Address::GetLocalAddress() << std::endl;
 	//Print out the public IP
-	std::cout << "[EXPERIMENTAL][Network][IPv6] Public Address: " << TRAP::Network::IPv6Address::GetPublicAddress() << std::endl;
-	
+	std::cout << "[EXPERIMENTAL][Network][IPv6] Public Address: " <<
+	             TRAP::Network::IPv6Address::GetPublicAddress() << std::endl;
+
 	//Ask for the server address
 	TRAP::Network::IPv6Address server;
 	do

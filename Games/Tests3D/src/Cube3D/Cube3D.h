@@ -17,10 +17,13 @@ public:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
 	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
-	
+
 private:
-	TRAP::Scope<TRAP::Graphics::VertexArray> m_cubeVertexArray;
-	TRAP::Scope<TRAP::Graphics::VertexArray> m_skyBoxVertexArray;
+	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_cubeVertexBuffer;
+	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_cubeIndexBuffer;
+	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_skyBoxVertexBuffer;
+
+	TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
 
 	struct DiffuseReflectionDataBuffer
 	{
@@ -30,7 +33,7 @@ private:
 		TRAP::Math::Vec3 DiffuseReflectivity;
 	} m_diffuseReflectionDataBuffer;
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_diffuseReflectionUniformBuffer;
-	
+
 	struct PhongLightningDataBuffer
 	{
 		TRAP::Math::Vec4 LightPosition;
@@ -49,7 +52,7 @@ private:
 	} m_phongLightningDataBuffer;
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_phongLightningUniformBuffer;
 	TRAP::Math::Vec4 m_lightPosition = TRAP::Math::Vec4(5.0f, 5.0f, 2.0f, 1.0f);
-	
+
 	TRAP::Math::Vec3 m_cubePosition;
 	TRAP::Math::Vec3 m_cubeRotation;
 	TRAP::Math::Vec3 m_cubeScale;

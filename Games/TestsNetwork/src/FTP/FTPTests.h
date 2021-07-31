@@ -13,7 +13,7 @@ public:
 
 private:
 	static void FTP();
-	
+
 	TRAP::Scope<std::thread> m_ftpThread;
 };
 

@@ -5,7 +5,8 @@
 class Tests3D final : public TRAP::Application
 {
 public:
-	Tests3D()
+	Tests3D(const std::string& gameName)
+		: Application(gameName)
 	{
 		PushLayer(TRAP::MakeScope<Cube3D>());
 	}
@@ -13,5 +14,5 @@ public:
 
 std::unique_ptr<TRAP::Application> TRAP::CreateApplication()
 {
-	return std::make_unique<Tests3D>();
+	return std::make_unique<Tests3D>("Tests3D");
 }

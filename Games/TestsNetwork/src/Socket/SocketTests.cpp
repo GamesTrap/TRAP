@@ -95,7 +95,8 @@ void SocketTests::RunTCPServerIPv4(const uint16_t port)
 	//Listen to the given port for incoming connections
 	if (listener.Listen(port) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][TCP][IPv4] Server is listening to port " << port << ", waiting for connections... " << std::endl;
+	std::cout << "[Network][Sockets][TCP][IPv4] Server is listening to port " << port <<
+	             ", waiting for connections... " << std::endl;
 
 	//Wait for a connection
 	TRAP::Network::TCPSocket socket;
@@ -114,7 +115,8 @@ void SocketTests::RunTCPServerIPv4(const uint16_t port)
 	std::size_t received;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][TCP][IPv4] Answer received from the client: \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][TCP][IPv4] Answer received from the client: \"" << in.data() << "\"" <<
+	             std::endl;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -142,9 +144,10 @@ void SocketTests::RunTCPClientIPv4(const uint16_t port)
 	std::size_t received;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][TCP][IPv4] Message received from the server: \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][TCP][IPv4] Message received from the server: \"" << in.data() << "\"" <<
+	             std::endl;
 
-		//Send an answer to the server
+	//Send an answer to the server
 	const char out[] = "Hi, I'm a client";
 	if (socket.Send(out, sizeof(out)) != TRAP::Network::Socket::Status::Done)
 		return;
@@ -161,7 +164,8 @@ void SocketTests::RunUDPServerIPv4(const uint16_t port)
 	//Listen to messages on the specified port
 	if (socket.Bind(port) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][UDP][IPv4] Server is listening to port " << port << ", waiting for a message... " << std::endl;
+	std::cout << "[Network][Sockets][UDP][IPv4] Server is listening to port " << port <<
+	             ", waiting for a message... " << std::endl;
 
 	//Wait for a message
 	std::array<char, 128> in{};
@@ -170,7 +174,8 @@ void SocketTests::RunUDPServerIPv4(const uint16_t port)
 	uint16_t senderPort;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][UDP][IPv4] Message received from client " << sender << ": \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][UDP][IPv4] Message received from client " << sender << ": \"" <<
+	             in.data() << "\"" << std::endl;
 
 	//Send an answer to the client
 	const char out[] = "Hi, I'm the server";
@@ -207,7 +212,8 @@ void SocketTests::RunUDPClientIPv4(const uint16_t port)
 	uint16_t senderPort;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][UDP][IPv4] Message received from " << sender << ": \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][UDP][IPv4] Message received from " << sender << ": \"" << in.data() <<
+	             "\"" << std::endl;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -222,7 +228,8 @@ void SocketTests::RunTCPServerIPv6(const uint16_t port)
 	//Listen to the given port for incoming connections
 	if (listener.Listen(port) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][TCP][IPv6] Server is listening to port " << port << ", waiting for connections... " << std::endl;
+	std::cout << "[Network][Sockets][TCP][IPv6] Server is listening to port " << port <<
+	             ", waiting for connections... " << std::endl;
 
 	//Wait for a connection
 	TRAP::Network::TCPSocketIPv6 socket;
@@ -241,7 +248,8 @@ void SocketTests::RunTCPServerIPv6(const uint16_t port)
 	std::size_t received;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][TCP][IPv6] Answer received from the client: \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][TCP][IPv6] Answer received from the client: \"" << in.data() <<
+	             "\"" << std::endl;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -269,7 +277,8 @@ void SocketTests::RunTCPClientIPv6(const uint16_t port)
 	std::size_t received;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][TCP][IPv6] Message received from the server: \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][TCP][IPv6] Message received from the server: \"" << in.data() <<
+	             "\"" << std::endl;
 
 	//Send an answer to the server
 	const char out[] = "Hi, I'm a client";
@@ -288,7 +297,8 @@ void SocketTests::RunUDPServerIPv6(const uint16_t port)
 	//Listen to messages on the specified port
 	if (socket.Bind(port) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][UDP][IPv6] Server is listening to port " << port << ", waiting for a message... " << std::endl;
+	std::cout << "[Network][Sockets][UDP][IPv6] Server is listening to port " << port <<
+	             ", waiting for a message... " << std::endl;
 
 	//Wait for a message
 	std::array<char, 128> in{};
@@ -297,7 +307,8 @@ void SocketTests::RunUDPServerIPv6(const uint16_t port)
 	uint16_t senderPort;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][UDP][IPv6] Message received from client " << sender << ": \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][UDP][IPv6] Message received from client " << sender << ": \"" <<
+	             in.data() << "\"" << std::endl;
 
 	//Send an answer to the client
 	const char out[] = "Hi, I'm the server";
@@ -334,5 +345,6 @@ void SocketTests::RunUDPClientIPv6(const uint16_t port)
 	uint16_t senderPort;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
-	std::cout << "[Network][Sockets][UDP][IPv6] Message received from " << sender << ": \"" << in.data() << "\"" << std::endl;
+	std::cout << "[Network][Sockets][UDP][IPv6] Message received from " << sender << ": \"" << in.data() <<
+	             "\"" << std::endl;
 }

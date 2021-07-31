@@ -13,7 +13,7 @@ public:
 
 private:
 	static void IPv6();
-	
+
 	TRAP::Scope<std::thread> m_ipv6Thread;
 };
 

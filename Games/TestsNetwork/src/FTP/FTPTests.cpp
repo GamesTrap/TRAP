@@ -185,7 +185,7 @@ void FTPTests::FTP()
 			//Disconnect
 			break;
 		}
-			
+
 		default:
 			//Wrong choice
 			std::cout << "[Network][FTP] Invalid choice!" << std::endl;
