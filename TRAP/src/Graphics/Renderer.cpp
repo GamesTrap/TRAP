@@ -2,10 +2,13 @@
 #include "Renderer.h"
 
 #include "Buffers/VertexBufferLayout.h"
+#include "Buffers/VertexBuffer.h"
+#include "Buffers/IndexBuffer.h"
 #include "Cameras/Camera.h"
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Renderer2D.h"
+#include "Graphics/RenderCommand.h"
 
 TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = MakeScope<SceneData>();
 
@@ -18,6 +21,9 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBu
 void TRAP::Graphics::Renderer::Init()
 {
 	TP_PROFILE_FUNCTION();
+
+	s_uniformBuffer = TRAP::Graphics::UniformBuffer::Create(s_sceneData.get(), sizeof(SceneData),
+															TRAP::Graphics::UpdateFrequency::PerFrame);
 
 	Renderer2D::Init();
 }
@@ -93,31 +99,44 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray,
-                                        const Math::Mat4& transform)
+void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer, const Math::Mat4& transform)
 {
 	TP_PROFILE_FUNCTION();
 
 	s_sceneData->m_modelMatrix = transform;
 	if(shader)
 	{
-		//shader->Bind();
-		if (!s_uniformBuffer)
-			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData),
-			                                        BufferUsage::Stream);
-		else
-		{
-			s_uniformBuffer->UpdateData(s_sceneData.get());
-			s_uniformBuffer->Bind(0);
-		}
+		s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
+		s_uniformBuffer->AwaitLoading();
+		shader->UseUBO(0, s_uniformBuffer.get());
+		shader->Use();
 	}
 
-	//vertexArray->Bind();
-	//if (vertexArray->GetIndexBuffer())
-		//RenderCommand::DrawIndexed(vertexArray, 0);
-	//else
-		//RenderCommand::Draw(vertexArray);
-}*/
+	vertexBuffer->Use();
+	RenderCommand::Draw(vertexBuffer->GetCount());
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer,
+									  const Math::Mat4& transform)
+{
+	TP_PROFILE_FUNCTION();
+
+	s_sceneData->m_modelMatrix = transform;
+	if(shader)
+	{
+		s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
+		s_uniformBuffer->AwaitLoading();
+		shader->UseUBO(0, s_uniformBuffer.get());
+		shader->Use();
+	}
+
+	vertexBuffer->Use();
+	indexBuffer->Use();
+	RenderCommand::DrawIndexed(indexBuffer->GetCount());
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

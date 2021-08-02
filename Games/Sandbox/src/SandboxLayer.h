@@ -37,7 +37,8 @@ public:
 
 		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
 		                                    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoNav);
-		ImGui::Checkbox("Indexed Drawing", &m_indexedDrawing);
+		ImGui::Checkbox("WireFrame (F1)", &m_wireFrame);
+		ImGui::Checkbox("Indexed Drawing (F2)", &m_indexedDrawing);
 		ImGui::End();
 	}
 
@@ -129,11 +130,11 @@ public:
 		//Wait for all pending resources (just in case)
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
+		//Bind Shader & Resources
 		m_indexedVertexBuffer->Use();
 		m_indexBuffer->Use();
 		m_shader->UseTexture(0, 0, m_texture);
 		m_shader->UseSampler(0, 1, m_sampler.get());
-
 		m_shader->Use();
 	}
 
@@ -164,24 +165,18 @@ public:
 		else
 			TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
 
-		//TODO Camera is disabled in shader because the uniforms arent getting set currently
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			float time = TRAP::Application::GetTime();
 			if (m_indexedDrawing)
 			{
-				m_indexedVertexBuffer->Use();
-				m_indexBuffer->Use();
-				m_shader->Use();
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", &time);
-				TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
+				TRAP::Graphics::Renderer::Submit(m_shader, m_indexedVertexBuffer.get(), m_indexBuffer.get());
 			}
 			else
 			{
-				m_vertexBuffer->Use();
-				m_shader->Use();
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", &time);
-				TRAP::Graphics::RenderCommand::Draw(6);
+				TRAP::Graphics::Renderer::Submit(m_shader, m_vertexBuffer.get());
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -230,11 +225,10 @@ public:
 		if (event.GetKey() == TRAP::Input::Key::F7) //Make Window Exclusive Fullscreen
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
 
-		if (event.GetKey() == TRAP::Input::Key::F10) //Enable/Disable WireFrame Mode
+		if (event.GetKey() == TRAP::Input::Key::F1) //Enable/Disable WireFrame Mode
 			m_wireFrame = !m_wireFrame;
-
-		if (event.GetKey() == TRAP::Input::Key::F11)
-			TRAP::Utils::Dialogs::ShowMsgBox("Just a prank bro!", "Critical Error");
+		if (event.GetKey() == TRAP::Input::Key::F2) //Enable/Disable Indexed drawing
+			m_indexedDrawing = !m_indexedDrawing;
 
 		return true;
 	}

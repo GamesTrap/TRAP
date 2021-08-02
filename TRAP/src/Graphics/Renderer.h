@@ -1,17 +1,17 @@
 #ifndef _TRAP_RENDERER_H_
 #define _TRAP_RENDERER_H_
 
-#include "Buffers/UniformBuffer.h"
 #include "Application.h"
-#include "RenderCommand.h"
 
 namespace TRAP::Graphics
 {
-	class OrthographicCamera;
+	class OrthographicCamera; //TODO Remove when BeginSecene(OrthographicCamera) gets removed
 	class Shader;
+	class VertexBuffer;
+	class IndexBuffer;
+	class UniformBuffer;
 
 	class Camera;
-
 	class Renderer
 	{
 	public:
@@ -25,11 +25,15 @@ namespace TRAP::Graphics
 
 		static void SetTickRate(uint32_t tickRate);
 
-		static void BeginScene(const OrthographicCamera& camera); //Deprecated
+		[[deprecated("Use BeginScene(Camera, Mat4) instead!")]]
+		static void BeginScene(const OrthographicCamera& camera);
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
 		static void EndScene();
 
-		//static void Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4(1.0f));
+		static void Submit(Shader* shader, VertexBuffer* vertexBuffer,
+						   const Math::Mat4& transform = Math::Mat4(1.0f));
+		static void Submit(Shader* shader, VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer,
+						   const Math::Mat4& transform = Math::Mat4(1.0f));
 
 		static void Shutdown();
 

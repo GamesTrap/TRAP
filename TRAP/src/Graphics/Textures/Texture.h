@@ -62,6 +62,8 @@ namespace TRAP::Graphics
 		static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
 		static Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat);
 		static uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat);
+		static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Scope<TRAP::Image>& img);
+		static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Scope<TRAP::Image>& img);
 
 		std::string m_name;
 		TextureType m_textureType;
@@ -178,10 +180,28 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 
 	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
 
-	for(uint32_t i = 0; i < images.size(); ++i)
-		images[i] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[i]);
+	//Load Images in correct order
+	if(cxLimit == 4 && cyLimit == 3)
+	{
+		images[0] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[3]); //+X
+		images[1] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[1]); //-X
+		images[2] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[0]); //+Y
+		images[3] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[5]); //-Y
+		images[4] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[2]); //+Z
+		images[5] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[4]); //-Z
+	}
+	else
+	{
+		images[0] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[2]); //+X
+		images[1] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[5]); //-X
+		images[2] = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[0])); //+Y
+		images[3] = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[4])); //-Y
+		images[4] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[1]); //+Z
+		images[5] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[3]); //-Z
+	}
 
 	return images;
 }
+
 
 #endif /*_TRAP_TEXTURE_H_*/

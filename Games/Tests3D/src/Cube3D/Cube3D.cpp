@@ -45,35 +45,35 @@ void Cube3D::OnAttach()
     std::array<float, 11 * 24> cubeVertices
     {
         //Positions             //Colors             //Textures      //Normals
-        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f,     0.0f,  0.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,    1.0f, 0.0f, 0.0f,    0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,    1.0f, 1.0f, 0.0f,    0.0f, 1.0f,     0.0f,  0.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,    1.0f, 1.0f,     0.0f,  0.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 1.0f,     0.0f,  0.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,    1.0f, 0.0f, 0.0f,    0.0f, 1.0f,     0.0f,  0.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,    1.0f, 1.0f, 0.0f,    0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f,     0.0f,  0.0f, -1.0f,
 
-        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f,     0.0f,  0.0f,  1.0f,
-         1.0f, -1.0f,  1.0f,    1.0f, 0.0f, 1.0f,    1.0f, 0.0f,     0.0f,  0.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,     0.0f,  0.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f,     0.0f,  0.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 1.0f,     0.0f,  0.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,    1.0f, 0.0f, 1.0f,    1.0f, 1.0f,     0.0f,  0.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,     0.0f,  0.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f,     0.0f,  0.0f,  1.0f,
 
-        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f,    -1.0f,  0.0f,  0.0f,
-        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    0.0f, 0.0f,    -1.0f,  0.0f,  0.0f,
-        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f, 1.0f,    1.0f, 0.0f,    -1.0f,  0.0f,  0.0f,
-        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f,    -1.0f,  0.0f,  0.0f,
+        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 0.0f,    -1.0f,  0.0f,  0.0f,
+        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    0.0f, 1.0f,    -1.0f,  0.0f,  0.0f,
+        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f, 1.0f,    1.0f, 1.0f,    -1.0f,  0.0f,  0.0f,
+        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    1.0f, 0.0f,    -1.0f,  0.0f,  0.0f,
 
-         1.0f, -1.0f, -1.0f,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f,     1.0f,  0.0f,  0.0f,
-         1.0f,  1.0f, -1.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f,     1.0f,  0.0f,  0.0f,
-         1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f,     1.0f,  0.0f,  0.0f,
-         1.0f, -1.0f,  1.0f,    1.0f, 0.0f, 1.0f,    0.0f, 0.0f,     1.0f,  0.0f,  0.0f,
+         1.0f, -1.0f, -1.0f,    1.0f, 0.0f, 0.0f,    1.0f, 1.0f,     1.0f,  0.0f,  0.0f,
+         1.0f,  1.0f, -1.0f,    1.0f, 1.0f, 0.0f,    1.0f, 0.0f,     1.0f,  0.0f,  0.0f,
+         1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,     1.0f,  0.0f,  0.0f,
+         1.0f, -1.0f,  1.0f,    1.0f, 0.0f, 1.0f,    0.0f, 1.0f,     1.0f,  0.0f,  0.0f,
 
-        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    0.0f, 0.0f,     0.0f, -1.0f,  0.0f,
-         1.0f, -1.0f, -1.0f,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f,     0.0f, -1.0f,  0.0f,
-         1.0f, -1.0f,  1.0f,    1.0f, 0.0f, 1.0f,    1.0f, 1.0f,     0.0f, -1.0f,  0.0f,
-        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 1.0f,     0.0f, -1.0f,  0.0f,
+        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    0.0f, 1.0f,     0.0f, -1.0f,  0.0f,
+         1.0f, -1.0f, -1.0f,    1.0f, 0.0f, 0.0f,    1.0f, 1.0f,     0.0f, -1.0f,  0.0f,
+         1.0f, -1.0f,  1.0f,    1.0f, 0.0f, 1.0f,    1.0f, 0.0f,     0.0f, -1.0f,  0.0f,
+        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f,     0.0f, -1.0f,  0.0f,
 
-         1.0f,  1.0f, -1.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f,     0.0f,  1.0f,  0.0f,
-        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f,     0.0f,  1.0f,  0.0f,
-        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f,     0.0f,  1.0f,  0.0f,
-         1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,     0.0f,  1.0f,  0.0f
+         1.0f,  1.0f, -1.0f,    1.0f, 1.0f, 0.0f,    1.0f, 0.0f,     0.0f,  1.0f,  0.0f,
+        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 0.0f,     0.0f,  1.0f,  0.0f,
+        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f,     0.0f,  1.0f,  0.0f,
+         1.0f,  1.0f,  1.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,     0.0f,  1.0f,  0.0f
     };
     std::array<uint16_t, 36> cubeIndices
     {
@@ -167,9 +167,12 @@ void Cube3D::OnAttach()
     m_skyBoxVertexBuffer->SetLayout(skyBoxLayout);
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-    samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-    samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
+    samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::ClampToBorder;
+    samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::ClampToBorder;
+    samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::ClampToBorder;
+    samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
+    samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
+    samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 	//Camera setup
@@ -180,7 +183,7 @@ void Cube3D::OnAttach()
     //Load diffuse reflection UniformBuffer
     const TRAP::Math::Mat4 inverseView = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
     m_diffuseReflectionDataBuffer.LightPosition = inverseView * m_lightPosition;
-    m_diffuseReflectionDataBuffer.LightSourceIntensity = { 1.0f, 1.0f, 1.0f };
+    m_diffuseReflectionDataBuffer.LightSourceIntensity = { 1.0f, 1.0f, 1.0f, };
     m_diffuseReflectionDataBuffer.DiffuseReflectivity = { 0.9f, 0.5f, 0.3f };
     m_diffuseReflectionUniformBuffer = TRAP::Graphics::UniformBuffer::Create(&m_diffuseReflectionDataBuffer,
                                                                              sizeof(DiffuseReflectionDataBuffer),
@@ -206,12 +209,13 @@ void Cube3D::OnAttach()
     //Wait for all pending resources (just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
+    //Bind Textures
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid").get());
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
+    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox").get());
+    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
+
     TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::Back);
-    TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);
-    TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
-                                                    TRAP::Graphics::BlendConstant::OneMinusSrcAlpha,
-                                                    TRAP::Graphics::BlendConstant::One,
-                                                    TRAP::Graphics::BlendConstant::Zero);
     TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 }
 
@@ -219,6 +223,8 @@ void Cube3D::OnAttach()
 
 void Cube3D::OnDetach()
 {
+    m_phongLightningUniformBuffer.reset();
+    m_diffuseReflectionUniformBuffer.reset();
     m_textureSampler.reset();
     m_skyBoxVertexBuffer.reset();
     m_cubeIndexBuffer.reset();
@@ -287,8 +293,6 @@ void Cube3D::OnImGuiRender()
 		{
             m_diffuseReflectionDataBuffer.DiffuseReflectivity = diffuseReflectionDataBuffer.DiffuseReflectivity;
             m_diffuseReflectionDataBuffer.LightSourceIntensity = diffuseReflectionDataBuffer.LightSourceIntensity;
-            m_diffuseReflectionUniformBuffer->SetData(&m_diffuseReflectionDataBuffer,
-                                                      sizeof(DiffuseReflectionDataBuffer));
 		}
 	}
 	else if (m_shaderNames[m_currentShader] == "Phong Lightning")
@@ -323,8 +327,6 @@ void Cube3D::OnImGuiRender()
             m_phongLightningDataBuffer.MaterialKd = phongLightningDataBuffer.MaterialKd;
             m_phongLightningDataBuffer.MaterialKs = phongLightningDataBuffer.MaterialKs;
             m_phongLightningDataBuffer.MaterialShininess = phongLightningDataBuffer.MaterialShininess;
-            m_phongLightningUniformBuffer->SetData(&m_phongLightningDataBuffer,
-                                                   sizeof(PhongLightningDataBuffer));
 		}
     }
     ImGui::Text("Press F1 to switch Shaders");
@@ -358,38 +360,31 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_diffuseReflectionDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) *
                                                           m_lightPosition;
             m_diffuseReflectionUniformBuffer->SetData(&m_diffuseReflectionDataBuffer,
-                                                      sizeof(DiffuseReflectionDataBuffer)); //Update Camera
+                                                      sizeof(DiffuseReflectionDataBuffer));
+            m_diffuseReflectionUniformBuffer->AwaitLoading();
 
-            TRAP::Graphics::ShaderManager::Get(m_shaderNames[0])->Use();
-            m_cubeVertexBuffer->Use();
-            m_cubeIndexBuffer->Use();
-            TRAP::Graphics::RenderCommand::DrawIndexed(m_cubeIndexBuffer->GetCount());
-            // TRAP::Graphics::Renderer::Submit(,
-            //     m_cubeVertexArray,
-            //     TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
-            //     TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
+            //BUG Flickering when Two or more draw calls are made via TRAP::GraphicS::Renderer::Submit?!
+            // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
+            //                                  m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
+            //                                  TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
+            //                                  TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
         }
         else if (m_shaderNames[m_currentShader] == "Phong Lightning")
         {
             m_phongLightningDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) *
                                                        m_lightPosition;
             m_phongLightningUniformBuffer->SetData(&m_phongLightningDataBuffer,
-                                                   sizeof(PhongLightningDataBuffer)); //Update Camera
-            TRAP::Graphics::ShaderManager::Get(m_shaderNames[0])->Use();
-            m_cubeVertexBuffer->Use();
-            m_cubeIndexBuffer->Use();
-            TRAP::Graphics::RenderCommand::DrawIndexed(m_cubeIndexBuffer->GetCount());
-            // TRAP::Graphics::Renderer::Submit(,
-            //     m_cubeVertexArray,
-            //     TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
-            //     TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
+                                                   sizeof(PhongLightningDataBuffer));
+            m_phongLightningUniformBuffer->AwaitLoading();
+
+            // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
+            //                                  m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
+            //                                  TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
+            //                                  TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
         }
-        TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader])->Use();
-        TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader])->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid").get());
-        TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader])->UseSampler(0, 1, m_textureSampler.get());
-        TRAP::Graphics::RenderCommand::DrawIndexed(m_cubeIndexBuffer->GetCount());
-        // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]),
-        //                                  m_cubeVertexArray,
+
+        // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]).get(),
+        //                                  m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
         //                                  TRAP::Math::Translate(m_cubePosition) *
         //                                  TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.z), { 0.0f, 0.0f, 1.0f }) *
         //                                  TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.y), { 0.0f, 1.0f, 0.0f }) *
@@ -399,12 +394,10 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     	if(m_drawSkyBox)
     	{
             TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::LessOrEqual);
-            TRAP::Graphics::ShaderManager::Get("SkyBox")->Use();
-            TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox").get());
-            TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
-            m_skyBoxVertexBuffer->Use();
-            TRAP::Graphics::RenderCommand::Draw(m_skyBoxVertexBuffer->GetCount());
-            //TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox"), m_skyBoxVertexArray);
+
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox").get(),
+                                             m_skyBoxVertexBuffer.get());
+
             TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Less);
     	}
 	}
@@ -433,7 +426,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift))
         m_cameraTransform.Position.y -= m_translationSpeed * deltaTime;
 
-    //Update FPS & FrameTIme history
+    //Update FPS & FrameTime history
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
         m_titleTimer.Reset();

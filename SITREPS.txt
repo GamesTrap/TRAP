@@ -2017,3 +2017,14 @@ SITREP 07/31/2021|21w30a5
     - Updated VukanTest programs ~<30 mins
     - Tests3D Partially updated ~<30 mins
     - Fixed crash in Texture2D::CreateEmpty ~<5 mins
+
+SITREP 08/01/2021|21w30a6
+    - Changed TRAP Engine version to 21w30a6(0.7.67)
+    - Reimplemented Renderer Submit function ~<15 mins
+    - Updated SandboxLayer (fully working) ~<20 mins
+    - Tests3D Fixed Cube UV coordinates ~<20 mins
+    - Texture Fixed wrong Cubemap layer ordering ~<20 mins
+
+SITREP 08/02/2021|21w31a1
+    - Changed TRAP Engine version to 21w31a1(0.7.68)
+    - Texture Added Rotation functions for vertical cross cubemaps ~>60 mins

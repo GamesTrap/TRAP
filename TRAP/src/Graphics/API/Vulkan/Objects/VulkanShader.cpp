@@ -403,6 +403,8 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Gra
 			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
 		}
 	}
+
+	m_boundUBOs.push_back(uniformBuffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

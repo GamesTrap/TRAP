@@ -755,7 +755,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 
-		if(gpd.ShaderProgram == shader)
+		if(gpd.ShaderProgram == shader) //TODO Shouldn't it just return?!
 		{
 			data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 			data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);

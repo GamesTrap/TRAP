@@ -5,12 +5,12 @@ layout(location = 3) in vec3 Normal;
 
 layout(location = 0) out vec3 LightIntensity;
 
-// layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
-// {
-// 	uniform mat4 sys_ProjectionMatrix;
-// 	uniform mat4 sys_ViewMatrix;
-// 	uniform mat4 sys_ModelMatrix;
-// } Matrices;
+layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
+{
+	uniform mat4 sys_ProjectionMatrix;
+	uniform mat4 sys_ViewMatrix;
+	uniform mat4 sys_ModelMatrix;
+} Matrices;
 
 layout(std140, UpdateFreqPerFrame, binding = 1) uniform DataBuffer
 {
@@ -51,14 +51,13 @@ vec3 PhongModel(vec3 position, vec3 normal)
 void main()
 {
     //Get the position and normal in camera space
-    // vec3 cameraNormal, cameraPosition;
-    // GetCameraSpace(cameraNormal, cameraPosition);
+    vec3 cameraNormal, cameraPosition;
+    GetCameraSpace(cameraNormal, cameraPosition);
 
     //Evaluate the reflection model
-    //LightIntensity = PhongModel(cameraPosition, cameraNormal);
+    LightIntensity = PhongModel(cameraPosition, cameraNormal);
 
-	//gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
-	gl_Position = vec4(Position, 1.0f);
+	gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
 }
 
 #shader fragment
