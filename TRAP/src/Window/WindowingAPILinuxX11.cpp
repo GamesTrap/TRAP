@@ -1151,7 +1151,7 @@ bool TRAP::INTERNAL::WindowingAPI::IsVisualTransparentX11(Visual* visual)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Create the X11 window (and its colormap)
-bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig,
+bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, WindowConfig& WNDConfig,
                                                       Visual* visual, int32_t depth)
 {
 	int32_t width = WNDConfig.Width;
@@ -1268,8 +1268,8 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 
 		if(!WNDConfig.Title.empty())
 		{
-			hint->res_name = const_cast<char*>(WNDConfig.Title.c_str());
-			hint->res_class = const_cast<char*>(WNDConfig.Title.c_str());
+			hint->res_name = WNDConfig.Title.data();
+			hint->res_class = WNDConfig.Title.data();
 		}
 		else
 		{
@@ -2382,7 +2382,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
-			                                            const WindowConfig& WNDConfig)
+			                                            WindowConfig& WNDConfig)
 {
 	Visual* visual = nullptr;
 	int32_t depth;
@@ -2412,7 +2412,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, std::string& title)
 {
 	if (s_Data.XLIB.UTF8)
 	{
@@ -2452,8 +2452,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 
 		if(!title.empty())
 		{
-			hint->res_name = const_cast<char*>(title.c_str());
-			hint->res_class = const_cast<char*>(title.c_str());
+			hint->res_name = title.data();
+			hint->res_class = title.data();
 		}
 		else
 		{

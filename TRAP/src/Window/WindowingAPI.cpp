@@ -292,7 +292,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, std::string& title)
 {
 	TRAP_ASSERT(window, "[Window] window is nullptr!");
 

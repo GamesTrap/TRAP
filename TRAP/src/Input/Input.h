@@ -704,7 +704,7 @@ namespace TRAP
 			DIDFT_ABSAXIS,
 			sizeof(DIJOYSTATE2),
 			static_cast<DWORD>(TRAPObjectDataFormats.size()),
-			const_cast<DIOBJECTDATAFORMAT*>(TRAPObjectDataFormats.data())
+			TRAPObjectDataFormats.data()
 		};
 		typedef HRESULT(WINAPI* PFN_DirectInput8Create)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
 		struct DInput8

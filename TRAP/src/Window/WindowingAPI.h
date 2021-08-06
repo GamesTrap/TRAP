@@ -1335,7 +1335,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">InternalWindow whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the Window.</param>
-		static void SetWindowTitle(const InternalWindow* window, const std::string& title);
+		static void SetWindowTitle(const InternalWindow* window, std::string& title);
 		/// <summary>
 		/// This function retrieves the content scale for the specified monitor.
 		/// The content scale is the ratio between the current DPI and the platform's default DPI.
@@ -2474,8 +2474,8 @@ namespace TRAP::INTERNAL
 		static void PlatformShowWindow(InternalWindow* window);
 		static void PlatformFocusWindow(const InternalWindow* window);
 		static bool PlatformCreateWindow(InternalWindow* window,
-			                             const WindowConfig& WNDConfig);
-		static void PlatformSetWindowTitle(const InternalWindow* window, const std::string& title);
+			                             WindowConfig& WNDConfig);
+		static void PlatformSetWindowTitle(const InternalWindow* window, std::string& title);
 		static bool PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image, int32_t xHotspot,
 		                                 int32_t yHotspot);
 		static bool PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& type);
@@ -3027,7 +3027,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Create the X11 window (and its colormap).
 		/// </summary>
-		static bool CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig, Visual* visual,
+		static bool CreateNativeWindow(InternalWindow* window, WindowConfig& WNDConfig, Visual* visual,
 		                               int32_t depth);
 		/// <summary>
 		/// Creates a native cursor object from the specified image and hotspot.

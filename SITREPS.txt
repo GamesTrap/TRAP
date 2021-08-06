@@ -13,7 +13,7 @@ SITREP 05/09/2019|19w19b2
     - Started Adding TP_RENDERER_ASSERT back to VKRenderer ~10 mins
 
 SITREP 05/10/2019|19w19b3a
-    - Changed TRAP Engine version to 19w19b3(0.2.55) 
+    - Changed TRAP Engine version to 19w19b3(0.2.55)
     - Reported Bug #1 Destruction of Context before VkImageViews could be cleaned up by Renderer Destructor
     - Added more TP_RENDERER_ASSERT back to VKRenderer ~10 mins
 
@@ -23,7 +23,7 @@ SITREP 05/14/2019|19w20a
 
 SITREP 05/15/2019|19w20a1
     - Finished adding TP_RENDERER_ASSERT back to VKRenderer ~<10 mins
-    - Changed TRAP Engine version to 19w20a1(0.2.56) 
+    - Changed TRAP Engine version to 19w20a1(0.2.56)
 
 SITREP 05/16/2019|19w20b2
     - Fixed Bug #1 replaced VKContext* Get() with shared_ptr<VKContext> Get() ~15 mins
@@ -266,7 +266,7 @@ SITREP 08/04/2019|19w31a7
 
 SITREP 08/05/2019|19w32a1
     - Changed TRAP Engine version to 19w32a1(0.5.10)
-    - Finished TGA Image Loader ~>60 mins 
+    - Finished TGA Image Loader ~>60 mins
 
 SITREP 08/11/2019|19w32a2
     - Changed TRAP Engine version to 19w32a2(0.5.11)
@@ -299,7 +299,7 @@ SITREP 08/21/2019|19w34a3
 
 SITREP 08/22/2019|19w34a4
     - Changed TRAP Engine version to 19w34a4(0.5.17)
-    - Removed support for Non-Opaque Uniforms in GLSL Shaders(Use UBOs instead) ~>45 mins 
+    - Removed support for Non-Opaque Uniforms in GLSL Shaders(Use UBOs instead) ~>45 mins
     - Added support for custom window icon with TRAP::Image ~>20 mins
     - Simplified Compile function from OpenGLShader ~>30 mins
     - Added support for 16BPP Indexed (RLE) TGA Image Files ~>45 mins
@@ -330,7 +330,7 @@ SITREP 08/28/2019|19w35a2
 SITREP 08/29/2019|19w35a3
     - Changed TRAP Engine version to 19w35a3(0.5.23)
     - Vulkan Added incomplete graphics pipeline ~>65 mins
-    - Added TextureCube Base class ~>30 mins    
+    - Added TextureCube Base class ~>30 mins
 
 SITREP 09/02/2019|19w36a1
     - Changed TRAP Engine version to 19w36a1(0.5.24)
