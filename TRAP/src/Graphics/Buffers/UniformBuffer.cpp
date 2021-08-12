@@ -110,6 +110,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(v
 																			   const UpdateFrequency updateFrequency)
 {
 	//TODO What about PerBatch & PerDraw
+	//PerBatch & PerDraw are dynamic UBOs
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_tokens.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
 	buffer->m_uniformBuffers.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);

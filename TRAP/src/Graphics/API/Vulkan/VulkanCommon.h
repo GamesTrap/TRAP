@@ -11,14 +11,6 @@ namespace TRAP::Graphics::API
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
 	VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);
 
-	//TODO Remove
-	// VkBlendOp RendererBlendEquationToVkBlendOp(RendererBlendEquation blendEquation);
-	// VkBlendFactor RendererBlendFunctionToVkBlendFactor(RendererBlendFunction blendFunction);
-	// VkCompareOp RendererFunctionToVkCompareOp(RendererFunction func);
-	// VkStencilOp RendererOperationToVkStencilOp(RendererOperation op);
-	// VkCullModeFlagBits RendererCullModeToVkCullModeFlagBits(RendererCullMode cullMode);
-	// VkFrontFace RendererFrontFaceToVkFrontFace(RendererFrontFace frontFace);
-
 	VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount);
 	VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat);
 	VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);

@@ -2034,11 +2034,16 @@ SITREP 08/07/2021|21w31a2
     - WindowingAPI Removed const_casts ~<10 mins
 
 SITREP 08/12/2021|21w32a1
-    - Changed TRAP Engine version to 21w31a2(0.7.70)
+    - Changed TRAP Engine version to 21w32a1(0.7.70)
     - Renderer Removed ModelMatrix from per frame SceneData UBO ~<10 mins
-    - Now using push constants for per frame model matrices (To be changed) ~<20 mins
+    - Now using push constants for per draw model matrices (To be changed) ~<20 mins
     - Updated Sandbox/Tests/Tests3D Shaders ~<20 mins
     - Fixed wrong result in VertexBuffer::GetCount ~<5 mins
     - Removed 64 VertexBuffer limit (now device capped) ~<5 mins
     - Invalid BindPushConstants calls are now ignored ~<5 mins
     - Tests3D Fixed Skybox rendering ~<10 mins
+
+SITREP 08/13/2021|21w32a2
+    - Changed TRAP Engine version to 21w32a2(0.7.71)
+    - VulkanCommon Removed old functions ~<5 mins
+    - Renderer Optimized Submit functions ~<5 mins

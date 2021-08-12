@@ -78,6 +78,8 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
+	s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
+	s_uniformBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -88,6 +90,8 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = Math::Inverse(transform);
+	s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
+	s_uniformBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -101,20 +105,19 @@ void TRAP::Graphics::Renderer::EndScene()
 
 void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer, const Math::Mat4& transform)
 {
+	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
+
 	TP_PROFILE_FUNCTION();
 
 	//s_sceneData->m_modelMatrix = transform;
 
-	//TODO ASSERT if any is nullptr
 	vertexBuffer->Use();
 	if(shader)
 	{
-		s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
-		s_uniformBuffer->AwaitLoading();
 		shader->Use();
 		shader->UseUBO(0, s_uniformBuffer.get());
-		TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	}
+	TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 
 	RenderCommand::Draw(vertexBuffer->GetCount());
 }
@@ -124,20 +127,20 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer,
 									  const Math::Mat4& transform)
 {
+	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
+	TRAP_ASSERT(indexBuffer, "IndexBuffer is nullptr!");
+
 	TP_PROFILE_FUNCTION();
 
 	//s_sceneData->m_modelMatrix = transform;
 
-	//TODO ASSERT If any is nullptr
 	vertexBuffer->Use();
 	if(shader)
 	{
-		s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
-		s_uniformBuffer->AwaitLoading();
 		shader->Use();
 		shader->UseUBO(0, s_uniformBuffer.get());
-		TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	}
+	TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	indexBuffer->Use();
 
 	RenderCommand::DrawIndexed(indexBuffer->GetCount());

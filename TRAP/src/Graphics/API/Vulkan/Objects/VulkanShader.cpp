@@ -145,7 +145,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 		)->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::None)] != VK_NULL_HANDLE)
 	{
 		RendererAPI::DescriptorSetDesc setDesc{};
-		setDesc.MaxSets = 1; //TODO What does this do?
+		setDesc.MaxSets = 1;
 		setDesc.RootSignature = m_rootSignature;
 		setDesc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::None;
 		m_descriptorSets.StaticDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
@@ -158,7 +158,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 		)->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::PerFrame)] != VK_NULL_HANDLE)
 	{
 		RendererAPI::DescriptorSetDesc setDesc{};
-		setDesc.MaxSets = RendererAPI::ImageCount; //TODO What does this do?
+		setDesc.MaxSets = RendererAPI::ImageCount;
 		setDesc.RootSignature = m_rootSignature;
 		setDesc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerFrame;
 		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
@@ -390,6 +390,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Gra
 	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
 
 	//TODO What about PerBatch & PerDraw
+	//PerBatch & PerDraw will be Dynamic UBOs
 	if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 0) //== UpdateFrequency::None
 	{
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[0].get()};

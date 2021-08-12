@@ -1235,7 +1235,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		{
 			//TODO
 			//load image
-			//TODO what now?
+			//what now?
 			//set texturedesc
 			//arraysize = 6 ?!
 			//descriptors texture, cubemap
