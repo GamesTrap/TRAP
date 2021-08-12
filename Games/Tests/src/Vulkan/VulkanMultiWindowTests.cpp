@@ -50,7 +50,7 @@ void VulkanMultiWindowTests::OnAttach()
 	};
 	m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
+	TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, m_window.get());
 
 	//Load Triangle vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
@@ -169,9 +169,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 		m_vertexBuffer->Use();
 		m_indexBuffer->Use();
-
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
-
 		TRAP::Graphics::RenderCommand::DrawIndexed(3);
 	}
 

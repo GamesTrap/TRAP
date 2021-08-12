@@ -122,10 +122,10 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		}
 	}
 
-	m_indexBuffer->AwaitLoading();
-	m_indexBuffer->Use();
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
+	m_indexBuffer->AwaitLoading();
+	m_indexBuffer->Use();
 
 	if(m_pushConstantOrUBO == 1)
 	{

@@ -5,7 +5,8 @@ VulkanIcoSphereTests::VulkanIcoSphereTests()
 	  m_wireFrame(false),
 	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
 	  m_FOV(45.0f),
-	  m_rotationSpeed(20.0f)
+	  m_rotationSpeed(20.0f),
+	  m_shader(nullptr)
 {
 }
 
@@ -43,8 +44,8 @@ void VulkanIcoSphereTests::OnAttach()
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader
-	const auto& shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader");
-	shader->UseUBO(0, m_cameraUBO.get());
+	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader").get();
+	m_shader->UseUBO(0, m_cameraUBO.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -56,7 +57,7 @@ void VulkanIcoSphereTests::OnAttach()
 	m_cameraTransform.Position = TRAP::Math::Vec3(0.0f, 0.0f, 8.0f);
 
 	//Enable depth testing because this is 3D stuff
-	TRAP::Graphics::RendererAPI::GetRenderer()->SetDepthTesting(true);
+	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -74,21 +75,17 @@ void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
 	{
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::None);
+		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line);
+		TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None);
 	}
 	else
 	{
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::Back);
+		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
+		TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::Back);
 	}
-
-	m_indexBuffer->Use();
-	m_vertexBuffer->Use();
 
 	//Camera UBO
 	{
-
 		CameraUBOData camera{};
 		camera.Projection = m_camera.GetProjectionMatrix();
 		camera.View = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
@@ -98,8 +95,9 @@ void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		m_cameraUBO->SetData(&camera, sizeof(CameraUBOData));
 	}
 
-	TRAP::Graphics::ShaderManager::Get("VKIcoSphereTest")->Use();
-
+	m_vertexBuffer->Use();
+	m_indexBuffer->Use();
+	m_shader->Use();
 	TRAP::Graphics::RenderCommand::DrawIndexed(m_icosphereIndices.size());
 
 	//Simple performance metrics

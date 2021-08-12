@@ -571,7 +571,6 @@ TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSign
 	if (it != m_descriptorNameToIndexMap->Map.end())
 		return &m_descriptors[it->second];
 
-	TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Invalid descriptor param ", resName);
 	return nullptr;
 }
 

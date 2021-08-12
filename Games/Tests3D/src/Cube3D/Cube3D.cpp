@@ -97,7 +97,7 @@ void Cube3D::OnAttach()
     };
     m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(cubeVertices.data(),
                                                               static_cast<uint32_t>(cubeVertices.size()) *
-                                                              sizeof(uint32_t),
+                                                              sizeof(float),
                                                               TRAP::Graphics::UpdateFrequency::None);
     m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(cubeIndices.data(),
                                                             static_cast<uint32_t>(cubeIndices.size()) *
@@ -158,7 +158,7 @@ void Cube3D::OnAttach()
     };
     m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(skyBoxVertices.data(),
                                                                 static_cast<uint32_t>(skyBoxVertices.size()) *
-                                                                sizeof(uint32_t),
+                                                                sizeof(float),
                                                                 TRAP::Graphics::UpdateFrequency::None);
     const TRAP::Graphics::VertexBufferLayout skyBoxLayout =
     {
@@ -167,9 +167,9 @@ void Cube3D::OnAttach()
     m_skyBoxVertexBuffer->SetLayout(skyBoxLayout);
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::ClampToBorder;
-    samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::ClampToBorder;
-    samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::ClampToBorder;
+    samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge;
+    samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge;
+    samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge;
     samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
     samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
     samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
@@ -215,8 +215,8 @@ void Cube3D::OnAttach()
     TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox").get());
     TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
 
-    TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::Back);
     TRAP::Graphics::RenderCommand::SetDepthTesting(true);
+    TRAP::Graphics::RenderCommand::SetDepthWriting(true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -350,11 +350,18 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     {
         TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::Back);
-
     }
 
     TRAP::Graphics::Renderer::BeginScene(m_camera, m_cameraTransform.GetTransform());
 	{
+        if(m_drawSkyBox)
+    	{
+            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::LessOrEqual);
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox").get(),
+                                             m_skyBoxVertexBuffer.get());
+            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Less);
+    	}
+
         if (m_shaderNames[m_currentShader] == "Diffuse Reflection")
         {
             m_diffuseReflectionDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) *
@@ -363,11 +370,10 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
                                                       sizeof(DiffuseReflectionDataBuffer));
             m_diffuseReflectionUniformBuffer->AwaitLoading();
 
-            //BUG Flickering when Two or more draw calls are made via TRAP::GraphicS::Renderer::Submit?!
-            // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
-            //                                  m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
-            //                                  TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
-            //                                  TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
+                                             m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
+                                             TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
+                                             TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
         }
         else if (m_shaderNames[m_currentShader] == "Phong Lightning")
         {
@@ -377,29 +383,19 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
                                                    sizeof(PhongLightningDataBuffer));
             m_phongLightningUniformBuffer->AwaitLoading();
 
-            // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
-            //                                  m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
-            //                                  TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
-            //                                  TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
+                                             m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
+                                             TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
+                                             TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
         }
 
-        // TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]).get(),
-        //                                  m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
-        //                                  TRAP::Math::Translate(m_cubePosition) *
-        //                                  TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.z), { 0.0f, 0.0f, 1.0f }) *
-        //                                  TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.y), { 0.0f, 1.0f, 0.0f }) *
-        //                                  TRAP::Math::Rotate(TRAP::Math::Radians(m_cubeRotation.x), {1.0f, 0.0f, 0.0f}) *
-        //                                  TRAP::Math::Scale(m_cubeScale));
-
-    	if(m_drawSkyBox)
-    	{
-            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::LessOrEqual);
-
-            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox").get(),
-                                             m_skyBoxVertexBuffer.get());
-
-            TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Less);
-    	}
+        TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]).get(),
+                                         m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
+                                         TRAP::Math::Translate(m_cubePosition) *
+                                         TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.z), { 0.0f, 0.0f, 1.0f }) *
+                                         TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.y), { 0.0f, 1.0f, 0.0f }) *
+                                         TRAP::Math::Rotate(TRAP::Math::Radians(m_cubeRotation.x), {1.0f, 0.0f, 0.0f}) *
+                                         TRAP::Math::Scale(m_cubeScale));
 	}
     TRAP::Graphics::Renderer::EndScene();
 

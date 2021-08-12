@@ -83,6 +83,8 @@ private:
 	float m_rotationSpeed;
 	TRAP::SceneCamera m_camera;
 	TRAP::TransformComponent m_cameraTransform;
+
+	TRAP::Graphics::Shader* m_shader;
 };
 
 #endif /*_GAMESTRAP_VULKANICOSPHERETESTS_H_*/

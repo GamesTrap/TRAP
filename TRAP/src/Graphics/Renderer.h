@@ -44,7 +44,7 @@ namespace TRAP::Graphics
 
 			Math::Mat4 m_projectionMatrix;
 			Math::Mat4 m_viewMatrix;
-			Math::Mat4 m_modelMatrix;
+			//Math::Mat4 m_modelMatrix;
 		};
 
 		static Scope<SceneData> s_sceneData;

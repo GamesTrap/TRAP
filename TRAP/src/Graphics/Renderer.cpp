@@ -103,19 +103,21 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 {
 	TP_PROFILE_FUNCTION();
 
-	s_sceneData->m_modelMatrix = transform;
+	//s_sceneData->m_modelMatrix = transform;
+
+	//TODO ASSERT if any is nullptr
+	vertexBuffer->Use();
 	if(shader)
 	{
 		s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
 		s_uniformBuffer->AwaitLoading();
-		shader->UseUBO(0, s_uniformBuffer.get());
 		shader->Use();
+		shader->UseUBO(0, s_uniformBuffer.get());
+		TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	}
 
-	vertexBuffer->Use();
 	RenderCommand::Draw(vertexBuffer->GetCount());
 }
-
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -124,17 +126,20 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 {
 	TP_PROFILE_FUNCTION();
 
-	s_sceneData->m_modelMatrix = transform;
+	//s_sceneData->m_modelMatrix = transform;
+
+	//TODO ASSERT If any is nullptr
+	vertexBuffer->Use();
 	if(shader)
 	{
 		s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
 		s_uniformBuffer->AwaitLoading();
-		shader->UseUBO(0, s_uniformBuffer.get());
 		shader->Use();
+		shader->UseUBO(0, s_uniformBuffer.get());
+		TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	}
-
-	vertexBuffer->Use();
 	indexBuffer->Use();
+
 	RenderCommand::DrawIndexed(indexBuffer->GetCount());
 }
 
@@ -153,6 +158,6 @@ void TRAP::Graphics::Renderer::Shutdown()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Renderer::SceneData::SceneData()
-	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f), m_modelMatrix(0.0f)
+	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)//, m_modelMatrix(0.0f)
 {
 }

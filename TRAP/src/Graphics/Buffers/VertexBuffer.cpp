@@ -62,7 +62,7 @@ uint64_t TRAP::Graphics::VertexBuffer::GetSize() const
 
 uint64_t TRAP::Graphics::VertexBuffer::GetCount() const
 {
-	return m_vertexBuffer->GetSize() / sizeof(float);
+	return m_vertexBuffer->GetSize() / m_bufferLayout.GetStride();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

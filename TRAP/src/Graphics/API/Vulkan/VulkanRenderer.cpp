@@ -64,7 +64,7 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Defa
 );
 VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultDepthDesc = UtilToDepthDesc
 (
-	{ false, false, CompareMode::LessOrEqual, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always,
+	{ false, false, CompareMode::Less, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always,
 	  {}, {}, {} }
 );
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc
@@ -1323,7 +1323,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);
 
 	DepthStateDesc depthStateDesc{};
-	depthStateDesc.DepthFunc = CompareMode::LessOrEqual;
+	depthStateDesc.DepthFunc = CompareMode::Less;
 	depthStateDesc.DepthTest = false;
 	depthStateDesc.DepthWrite = false;
 	depthStateDesc.StencilBackFunc = CompareMode::Always;

@@ -85,7 +85,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 	VulkanRootSignature* rSig = dynamic_cast<VulkanRootSignature*>(rootSignature.get());
 
 	const RendererAPI::DescriptorInfo* desc = rSig->GetDescriptor(name);
-	TRAP_ASSERT(desc);
+
+	if(!desc)
+		return;
+	//TRAP_ASSERT(desc);
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant);
 
 	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants);
@@ -102,7 +105,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 	TRAP_ASSERT(paramIndex < rootSignature->GetDescriptorCount());
 
 	const RendererAPI::DescriptorInfo* desc = &rootSignature->GetDescriptors()[paramIndex];
-	TRAP_ASSERT(desc);
+
+	if(!desc)
+		return;
+	//TRAP_ASSERT(desc);
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant);
 
 	vkCmdPushConstants(m_vkCommandBuffer,
@@ -174,11 +180,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 	const uint32_t cappedBufferCount = buffers.size() > maxBuffers ? maxBuffers :
 	                                                                 static_cast<uint32_t>(buffers.size());
 
-	//No upper bound for this, so use 64 for now
-	TRAP_ASSERT(cappedBufferCount < 64);
-
-	std::array<VkBuffer, 64> vkBuffers{};
-	std::array<VkDeviceSize, 64> vkOffsets{};
+	//Capped the number of buffers to the maximum allowed by the device
+	std::vector<VkBuffer> vkBuffers(cappedBufferCount);
+	std::vector<VkDeviceSize> vkOffsets(cappedBufferCount);
 
 	for(uint32_t i = 0; i < cappedBufferCount; ++i)
 	{
