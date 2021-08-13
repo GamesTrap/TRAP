@@ -29,6 +29,12 @@ The above license only applies to some of the Controller specific parts of this 
 #include "TRAPPCH.h"
 #include "Input.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+#define TRAP_BUILD_WIN32_MAPPINGS
+#elif defined(TRAP_PLATFORM_LINUX)
+#define TRAP_BUILD_LINUX_MAPPINGS
+#endif
+
 #include "Application.h"
 #include "ControllerMappings.h"
 #include "Utils/String/String.h"
@@ -636,11 +642,11 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		TP_ERROR(Log::InputControllerPrefix, "Map is empty!");
 		return false;
 	}
-	if (splittedString.size() > 25)
-	{
-		TP_ERROR(Log::InputControllerPrefix, "Map has too many elements! There must be less than 24 elements!");
-		return false;
-	}
+	// if (splittedString.size() > 25)
+	// {
+	// 	TP_ERROR(Log::InputControllerPrefix, "Map has too many elements! There must be less than 24 elements!");
+	// 	return false;
+	// }
 
 	if(splittedString[0].size() != 32)
 	{
@@ -653,7 +659,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		TP_ERROR(Log::InputControllerPrefix, "Mapping GUID can't be empty!");
 		return false;
 	}
-	mapping.guid = splittedString[0];
+	mapping.guid = Utils::String::ToLower(splittedString[0]);
 
 	if(splittedString[1].empty())
 	{
@@ -685,7 +691,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 
 		for (const auto& c : splittedField[0])
 		{
-			if(c == '+' || c == '-')
+			if(c == '+' || c == '-') //TODO
 			{
 				TP_WARN(Log::InputControllerPrefix, "Controller Mapping output modifiers WIP! Mapping: ",
 				        splittedString[1]);
@@ -764,8 +770,6 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		i++;
 	}
 
-	mapping.guid = Utils::String::ToLower(mapping.guid);
-
 	UpdateControllerGUID(mapping.guid);
 
 	return true;
@@ -778,7 +782,7 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 {
 	for (auto& Mapping : s_mappings)
 	{
-		if(Mapping.guid == guid)
+		if(Mapping.guid == std::string(guid))
 			return &Mapping;
 	}
 

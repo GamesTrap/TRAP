@@ -30,6 +30,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_LINUX
 
+#define TRAP_BUILD_LINUX_MAPPINGS
+
 #include "Events/ControllerEvent.h"
 #include "Window/WindowingAPI.h"
 #include "ControllerMappings.h"
@@ -228,7 +230,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		name = "Unknown";
 
 	std::string guid;
-	guid.resize(33);
+	guid.resize(32);
 	//Generate a controller GUID that matches the SDL 2.0.5+ one
 	if(ID.vendor && ID.product && ID.version)
 	{

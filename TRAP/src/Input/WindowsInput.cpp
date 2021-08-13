@@ -31,6 +31,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
+#define TRAP_BUILD_WIN32_MAPPINGS
+
 #include "Events/ControllerEvent.h"
 #include "ControllerMappings.h"
 
@@ -142,7 +144,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 		{
 			uint32_t cID;
 			std::string guid;
-			guid.resize(33);
+			guid.resize(32);
 			XINPUT_CAPABILITIES xic;
 
 			for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)

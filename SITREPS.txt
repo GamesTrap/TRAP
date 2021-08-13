@@ -2047,3 +2047,5 @@ SITREP 08/13/2021|21w32a2
     - Changed TRAP Engine version to 21w32a2(0.7.71)
     - VulkanCommon Removed old functions ~<5 mins
     - Renderer Optimized Submit functions ~<5 mins
+    - Made ControllerMappings OS dependent on compilation ~<10 mins
+    - Input Controller fixed mismatching guid sizes ~<10 mins

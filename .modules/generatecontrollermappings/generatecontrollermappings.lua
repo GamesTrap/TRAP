@@ -55,15 +55,21 @@ newaction
             local matchesRegex = string.match(line, "^[0-9a-fA-F].*$");
 
             if(not(ioscheck) and not(androidcheck) and not(macosxcheck) and matchesRegex) then
-                instr = instr:gsub("@TRAP_CONTROLLER_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_CONTROLLER_MAPPINGS@")
+                -- instr = instr:gsub("@TRAP_CONTROLLER_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_CONTROLLER_MAPPINGS@")
+                if (string.contains(line, "platform:Windows")) then
+                    instr = instr:gsub("@TRAP_WIN32_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_WIN32_MAPPINGS@")
+                elseif (string.contains(line, "platform:Linux")) then
+                    instr = instr:gsub("@TRAP_LINUX_MAPPINGS@", "\t\t\"" .. line .. "\",\n@TRAP_LINUX_MAPPINGS@")
+                end
             end
         end
 
-        -- Close mapping file
+        -- Remove SDL mapping file
         os.remove(sourcePath)
 
-        -- Remove last @TRAP_CONTROLLER_MAPPINGS@
-        instr = instr:gsub("@TRAP_CONTROLLER_MAPPINGS@", "")
+        -- Remove last @TRAP_WIN32_MAPPINGS@ & @TRAP_LINUX_MAPPINGS@
+        instr = instr:gsub("@TRAP_WIN32_MAPPINGS@", "")
+        instr = instr:gsub("@TRAP_LINUX_MAPPINGS@", "")
 
         -- Set timestamp
         local timestamp = os.date("%Y-%m-%d");

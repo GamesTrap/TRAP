@@ -616,6 +616,7 @@ namespace TRAP
 		static void UpdateControllerGUID(std::string& guid);
 
 #ifdef TRAP_PLATFORM_WINDOWS
+#define TRAP_BUILD_WIN32_MAPPINGS
 		static constexpr std::string_view MappingName = "Windows";
 		///////////////
 		//DirectInput//
@@ -770,6 +771,7 @@ namespace TRAP
 			int32_t PoVCount = 0;
 		};
 #elif defined(TRAP_PLATFORM_LINUX)
+#define TRAP_BUILD_LINUX_MAPPINGS
 		static constexpr std::string_view MappingName = "Linux";
 		struct ControllerInternal;
 		static bool OpenControllerDeviceLinux(const std::string& path);
