@@ -637,3 +637,17 @@ std::string TRAP::VFS::GetTempFolderPath()
 
 	return tempFolderPath;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::VFS::GetCurrentFolder()
+{
+	std::string currentFolderPath = std::filesystem::current_path().string();
+
+#ifdef TRAP_PLATFORM_LINUX
+	if (!currentFolderPath.empty() && currentFolderPath[currentFolderPath.size() - 1] != '/')
+		currentFolderPath += '/';
+#endif
+
+	return currentFolderPath;
+}

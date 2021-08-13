@@ -266,6 +266,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Path to the temp folder.</returns>
 		static std::string GetTempFolderPath();
+		/// <summary>
+		/// Get the path to the current working folder.
+		/// </summary>
+		/// <returns>Path to the current working folder.</returns>
+		static std::string GetCurrentFolder();
 
 	private:
 		/// <summary>

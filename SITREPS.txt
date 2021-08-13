@@ -2049,3 +2049,4 @@ SITREP 08/13/2021|21w32a2
     - Renderer Optimized Submit functions ~<5 mins
     - Made ControllerMappings OS dependent on compilation ~<10 mins
     - Input Controller fixed mismatching guid sizes ~<10 mins
+    - VFS Added GetCurrentFolder function ~<5 mins
