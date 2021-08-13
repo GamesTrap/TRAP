@@ -42,9 +42,6 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 bool TRAP::Input::InitController()
 {
-	for (uint32_t i = 0; i < TRAP::Embed::ControllerMappings.size(); i++)
-		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]);
-
 	const char* dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);

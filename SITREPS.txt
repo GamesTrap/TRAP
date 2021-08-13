@@ -2050,3 +2050,4 @@ SITREP 08/13/2021|21w32a2
     - Made ControllerMappings OS dependent on compilation ~<10 mins
     - Input Controller fixed mismatching guid sizes ~<10 mins
     - VFS Added GetCurrentFolder function ~<5 mins
+    - Input changed how Controller Mappings are initialized ~<10 mins

@@ -879,6 +879,10 @@ namespace TRAP
 		static std::vector<Mapping> s_mappings;
 
 		/// <summary>
+		/// Initializes Controller Mappings.
+		/// </summary>
+		static void InitControllerMappings();
+		/// <summary>
 		/// Parse a string to a Mapping.
 		/// </summary>
 		/// <param name="mapping">Output variable for the new Mapping.</param>

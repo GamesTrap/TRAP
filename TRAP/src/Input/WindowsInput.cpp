@@ -102,9 +102,6 @@ bool TRAP::Input::InitController()
 		}
 	}
 
-	for (const auto& map : Embed::ControllerMappings)
-		UpdateControllerMappings(map);
-
 	DetectControllerConnectionWin32();
 
 	return true;

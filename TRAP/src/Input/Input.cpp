@@ -54,7 +54,7 @@ void TRAP::Input::Init()
 
 	TP_DEBUG(Log::InputPrefix, "Initializing");
 
-	s_mappings.reserve(Embed::ControllerMappings.size());
+	InitControllerMappings();
 
 	if(!InitController())
 		TP_ERROR(Log::InputControllerPrefix, "Failed to initialize Controller support!");
@@ -773,6 +773,16 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 	UpdateControllerGUID(mapping.guid);
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::InitControllerMappings()
+{
+	s_mappings.resize(Embed::ControllerMappings.size());
+
+	for(uint32_t i = 0; i < Embed::ControllerMappings.size(); ++i)
+		ParseMapping(s_mappings[i], Embed::ControllerMappings[i]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
