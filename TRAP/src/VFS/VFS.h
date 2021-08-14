@@ -270,7 +270,12 @@ namespace TRAP
 		/// Get the path to the current working folder.
 		/// </summary>
 		/// <returns>Path to the current working folder.</returns>
-		static std::string GetCurrentFolder();
+		static std::string GetCurrentFolderPath();
+		/// <summary>
+		/// Get the path to the users documents folder.
+		/// </summary>
+		/// <returns>Path to the users documents folder.</returns>
+		static std::string GetDocumentsFolderPath();
 
 	private:
 		/// <summary>

@@ -142,6 +142,8 @@
 #include <Dbt.h>
 #include <dwmapi.h>
 #include <imm.h>
+#include <KnownFolders.h>
+#include <ShlObj_core.h>
 //DirectX
 //XInput
 #include <Xinput.h>

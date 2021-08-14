@@ -1989,11 +1989,6 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 {
-	//To make SetForegroundWindow work as we want, we need to fiddle with the FOREGROUNDLOCKTIMEOUT system settings
-	//(we do this as early as possible in the hope of still being the foreground process)
-	SystemParametersInfoW(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, &s_Data.ForegroundLockTimeout, 0);
-	SystemParametersInfoW(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, UIntToPtr(0), SPIF_SENDCHANGE);
-
 	if (!LoadLibraries())
 		return false;
 
@@ -2056,9 +2051,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 		::DestroyWindow(s_Data.HelperWindowHandle);
 
 	UnregisterWindowClassWin32();
-
-	//Restore previous foreground lock timeout system setting
-	SystemParametersInfoW(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, UIntToPtr(s_Data.ForegroundLockTimeout), SPIF_SENDCHANGE);
 
 	s_Data.ClipboardString = {};
 	s_Data.RawInput = {};

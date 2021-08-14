@@ -2051,3 +2051,9 @@ SITREP 08/13/2021|21w32a2
     - Input Controller fixed mismatching guid sizes ~<10 mins
     - VFS Added GetCurrentFolder function ~<5 mins
     - Input changed how Controller Mappings are initialized ~<10 mins
+
+SITREP 08/14/2021|21w32a3
+    - Changed TRAP Engine version to 21w32a3(0.7.72)
+    - VFS Renamed GetCurrentFolder to GetCurrentFolderPath (API consistency) ~<5 mins
+    - VFS Added GetDocumentsFolderPath function ~<20 mins
+    - WindowingAPI Removed foreground lock timeout ~<10 mins

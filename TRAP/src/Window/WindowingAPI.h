@@ -619,7 +619,6 @@ namespace TRAP::INTERNAL
 			std::array<Input::Key, 512> KeyCodes{};
 			HWND HelperWindowHandle = nullptr;
 			HDEVNOTIFY DeviceNotificationHandle = nullptr;
-			DWORD ForegroundLockTimeout = 0;
 			int32_t AcquiredMonitorCount = 0;
 			std::vector<RAWINPUT> RawInput{};
 			int32_t RawInputSize = 0;

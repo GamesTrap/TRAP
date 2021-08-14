@@ -631,8 +631,11 @@ std::string TRAP::VFS::GetTempFolderPath()
 	std::string tempFolderPath = std::filesystem::temp_directory_path().string();
 
 #ifdef TRAP_PLATFORM_LINUX
-	if(!tempFolderPath.empty() && tempFolderPath[tempFolderPath.size() - 1] != '/')
+	if (!tempFolderPath.empty() && tempFolderPath[tempFolderPath.size() - 1] != '/')
 		tempFolderPath += '/';
+#elif defined(TRAP_PLATFORM_WINDOWS)
+	if (!tempFolderPath.empty() && tempFolderPath[tempFolderPath.size() - 1] != '\\')
+		tempFolderPath += '\\';
 #endif
 
 	return tempFolderPath;
@@ -640,14 +643,56 @@ std::string TRAP::VFS::GetTempFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::VFS::GetCurrentFolder()
+std::string TRAP::VFS::GetCurrentFolderPath()
 {
 	std::string currentFolderPath = std::filesystem::current_path().string();
 
 #ifdef TRAP_PLATFORM_LINUX
 	if (!currentFolderPath.empty() && currentFolderPath[currentFolderPath.size() - 1] != '/')
 		currentFolderPath += '/';
+#elif defined(TRAP_PLATFORM_WINDOWS)
+	if (!currentFolderPath.empty() && currentFolderPath[currentFolderPath.size() - 1] != '\\')
+		currentFolderPath += '\\';
 #endif
 
 	return currentFolderPath;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::VFS::GetDocumentsFolderPath()
+{
+	std::string folderPath{};
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	PWSTR path = nullptr;
+	if(SHGetKnownFolderPath(FOLDERID_Documents, 0, nullptr, &path) != S_OK)
+		return "";
+
+	const int32_t count = WideCharToMultiByte(CP_UTF8, 0, path, -1, nullptr, 0, nullptr, nullptr);
+	if (!count)
+		return {};
+
+	folderPath.resize(count);
+
+	if (!WideCharToMultiByte(CP_UTF8, 0, path, -1, folderPath.data(), static_cast<int32_t>(folderPath.size()), nullptr, nullptr))
+		return {};
+
+	CoTaskMemFree(path);
+#elif defined(TRAP_PLATFORM_LINUX)
+	folderPath = std::string(getenv("HOME")) + "/documents";
+
+	if(!std::filesystem::exists(folderPath))
+		return "";
+#endif
+
+#ifdef TRAP_PLATFORM_LINUX
+	if (!folderPath.empty() && folderPath[folderPath.size() - 1] != '/')
+		folderPath += '/';
+#elif defined(TRAP_PLATFORM_WINDOWS)
+	if (!folderPath.empty() && folderPath[folderPath.size() - 1] != '\\')
+		folderPath += '\\';
+#endif
+
+	return folderPath;
 }
