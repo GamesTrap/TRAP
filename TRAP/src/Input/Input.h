@@ -541,11 +541,17 @@ namespace TRAP
 		/// <param name="map">Controller mapping to update or add.</param>
 		static void UpdateControllerMappings(std::string_view map);
 
-	private:
 		/// <summary>
 		/// Describes a callback function which gets called when an Input Event occurs.
 		/// </summary>
 		using EventCallbackFn = std::function<void(Events::Event&)>;
+
+		/// <summary>
+		/// Get the function to call when an Input Event occurred.
+		/// </summary>
+		/// <returns>EventCallbackFn.</returns>
+		static EventCallbackFn GetEventCallback();
+	private:
 		/// <summary>
 		/// Set the function to call when an Input Event occurred.
 		/// </summary>

@@ -1726,14 +1726,14 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, cons
 //Notifies shared code that a the keyboard layout has changed
 void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 {
-	if(!TRAP::Input::s_eventCallback)
+	if(!TRAP::Input::GetEventCallback())
 		return;
 
 	//This function is not window specific because you can only have 1 keyboard layout selected and not multiple!
 	//So apply this globally
 	//This event gets redirected to the TRAP::Input callback
 	TRAP::Events::KeyLayoutEvent event(TRAP::Input::GetKeyboardLayoutName());
-	TRAP::Input::s_eventCallback(event);
+	TRAP::Input::GetEventCallback()(event);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
