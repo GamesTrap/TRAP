@@ -58,6 +58,7 @@ void ControllerTests::OnImGuiRender()
 					 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNavInputs);
 		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());
 		ImGui::NewLine();
+		ImGui::Text("Controller Battery Status: %s", GetBatteryStatus(controller).c_str());
 		ImGui::Text("Controller State");
 		for(const float axis : axes)
 		{
@@ -117,6 +118,7 @@ void ControllerTests::OnImGuiRender()
 			bool start = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Start);
 			bool lt = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Left_Thumb);
 			bool rt = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Right_Thumb);
+			bool guide = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Guide);
 
 			ImGui::Checkbox("A", &a);
 			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
@@ -133,6 +135,7 @@ void ControllerTests::OnImGuiRender()
 			ImGui::Checkbox("Left Thumb", &lt);
 			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
 			ImGui::Checkbox("Right Thumb", &rt);
+			ImGui::Checkbox("Guide", &guide);
 
 			TRAP::Input::ControllerDPad dpad = TRAP::Input::GetControllerDPad(controller, 0);
 			std::string dpadText = "DPad: " + GetDPadDirection(dpad);
@@ -253,6 +256,34 @@ std::string ControllerTests::GetDPadDirection(const TRAP::Input::ControllerDPad&
 
 	case TRAP::Input::ControllerDPad::Left_Down:
 		return "Left Down";
+
+	default:
+		return "";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string ControllerTests::GetBatteryStatus(const TRAP::Input::Controller controller)
+{
+	TRAP::Input::ControllerBatteryStatus battery = TRAP::Input::GetControllerBatteryStatus(controller);
+
+	switch(battery)
+	{
+	case TRAP::Input::ControllerBatteryStatus::Wired:
+		return "Wired";
+
+	case TRAP::Input::ControllerBatteryStatus::Empty:
+		return "Empty";
+
+	case TRAP::Input::ControllerBatteryStatus::Low:
+		return "Low";
+
+	case TRAP::Input::ControllerBatteryStatus::Medium:
+		return "Medium";
+
+	case TRAP::Input::ControllerBatteryStatus::Full:
+		return "Full";
 
 	default:
 		return "";

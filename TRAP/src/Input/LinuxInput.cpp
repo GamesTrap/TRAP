@@ -177,6 +177,13 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller controller)
+{
+	return ControllerBatteryStatus::Wired;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Attempt to open the specified controller device
 bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 {

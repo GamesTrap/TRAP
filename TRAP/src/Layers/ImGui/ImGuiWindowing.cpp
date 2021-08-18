@@ -409,7 +409,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateGamepads()
 		std::vector<bool> buttons = Input::GetAllControllerButtons(Input::Controller::One);
 		auto MAP_BUTTON = [buttons, &io](const uint32_t NAV_NO, const uint32_t BUTTON_NO) -> void
 		{
-			if (buttons.size() > BUTTON_NO&& buttons[BUTTON_NO])
+			if (buttons.size() > BUTTON_NO && buttons[BUTTON_NO])
 				io.NavInputs[NAV_NO] = 1.0f;
 		};
 		auto MAP_ANALOG = [axes, &io](const uint32_t NAV_NO,

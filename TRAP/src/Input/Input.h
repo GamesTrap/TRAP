@@ -294,15 +294,28 @@ namespace TRAP
 		enum class ControllerDPad
 		{
 			Centered   = 0,
-			Up         = 1,
-			Right      = 2,
-			Down       = 4,
-			Left       = 8,
+			Up         = BIT(0),
+			Right      = BIT(1),
+			Down       = BIT(2),
+			Left       = BIT(3),
 			Right_Up   = Right | Up,
 			Right_Down = Right | Down,
 			Left_Up    = Left | Up,
 			Left_Down  = Left | Down
 		};
+
+		/// <summary>
+		/// Controller Battery status.
+		/// </summary>
+		enum class ControllerBatteryStatus
+		{
+			Wired = 0,
+			Empty,
+			Low,
+			Medium,
+			Full
+		};
+
 		/// <summary>
 		/// Check if a button on the keyboard is pressed.
 		/// </summary>
@@ -400,6 +413,15 @@ namespace TRAP
 		/// <param name="dpad">DPad to check.</param>
 		/// <returns>State of DPad.</returns>
 		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
+		/// <summary>
+		/// Retrieve the battery status of the specified Controller.<br>
+		/// <br>
+		/// Note: This function is only available on Windows using XInput.
+		///       On unsupported platforms & APIs, it will always return ControllerBatteryStatus::Wired.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <returns>Stats of controller's battery.</returns>
+		static ControllerBatteryStatus GetControllerBatteryStatus(Controller controller);
 
 		/// <summary>
 		/// Retrieve whether the specified ControllerButton from the provided Controller is pressed or not.
@@ -604,6 +626,10 @@ namespace TRAP
 		/// </summary>
 		static void SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor);
 		/// <summary>
+		/// OS-dependent function for Controller battery status.
+		/// </summary>
+		static ControllerBatteryStatus GetControllerBatteryStatusInternal(Controller controller);
+		/// <summary>
 		/// OS-dependent function for Controller polling.
 		/// </summary>
 		/// <param name="controller">Controller to poll.</param>
@@ -735,9 +761,35 @@ namespace TRAP
 		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT = 0x08;
 		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_ARCADE_PAD = 0x13;
 		static constexpr uint32_t TRAP_XUSER_MAX_COUNT = 4;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_UP = 0x0001;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_DOWN = 0x0002;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_LEFT = 0x0004;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_DPAD_RIGHT = 0x0008;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_START = 0x0010;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_BACK = 0x0020;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_LEFT_THUMB = 0x0040;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_LEFT_SHOULDER = 0x0100;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_A = 0x1000;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_B = 0x2000;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_X = 0x4000;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_Y = 0x8000;
+		static constexpr uint32_t TRAP_XINPUT_GAMEPAD_GUIDE = 0x0400;
+		static constexpr uint32_t TRAP_XINPUT_DEVTYPE_GAMEPAD = 0x00;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_DISCONNECTED = 0x00;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_WIRED = 0x01;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_ALKALINE = 0x02;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_NIMH = 0x03;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_TYPE_UNKNOWN = 0xFF;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_EMPTY = 0x00;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_LOW = 0x01;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_MEDIUM = 0x02;
+		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_FULL = 0x03;
 		typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
 		typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);
 		typedef DWORD(WINAPI* PFN_XInputSetState)(DWORD, XINPUT_VIBRATION*);
+		typedef DWORD(WINAPI* PFN_XInputGetBatteryInformation)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
 		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
 		static int CompareControllerObjects(const void* first, const void* second);
 		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
@@ -749,6 +801,8 @@ namespace TRAP
 			PFN_XInputGetCapabilities GetCapabilities{};
 			PFN_XInputGetState GetState{};
 			PFN_XInputSetState SetState{};
+			PFN_XInputGetBatteryInformation GetBatteryInformation{};
+			bool HasGuideButton = false;
 		} inline static s_xinput{};
 
 		struct Object

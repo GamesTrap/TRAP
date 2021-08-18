@@ -18,6 +18,7 @@ private:
 	bool OnWindowDrop(const TRAP::Events::WindowDropEvent& event);
 
 	static std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad);
+	static std::string GetBatteryStatus(TRAP::Input::Controller controller);
 
 	static std::vector<TRAP::Input::Controller> s_controllers;
 	static bool s_dpadButtons;

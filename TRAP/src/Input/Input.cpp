@@ -415,6 +415,21 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Controller controller)
+{
+	TP_PROFILE_FUNCTION();
+
+	if(!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+		return ControllerBatteryStatus::Wired;
+
+	if(!PollController(controller, PollMode::Presence))
+		return ControllerBatteryStatus::Wired;
+
+	return GetControllerBatteryStatusInternal(controller);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Input::SetMousePosition(const float x, const float y)
 {
 	TP_PROFILE_FUNCTION();
@@ -513,6 +528,13 @@ void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 		if(s_controllerInternal[cID].Connected)
 			con->mapping = FindValidMapping(con);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Input::EventCallbackFn TRAP::Input::GetEventCallback()
+{
+	return s_eventCallback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -2057,3 +2057,10 @@ SITREP 08/14/2021|21w32a3
     - VFS Renamed GetCurrentFolder to GetCurrentFolderPath (API consistency) ~<5 mins
     - VFS Added GetDocumentsFolderPath function ~<20 mins
     - WindowingAPI Removed foreground lock timeout ~<10 mins
+
+SITREP 08/19/2021|21w33a1
+    - Changed TRAP Engine version to 21w33a1(0.7.73)
+    - Input Added GetControllerBatteryStatus (for XInput) ~<20 mins
+    - Input Controller Added support for Guide Button (Thanks M$ for making this so complicated) ~<20 mins
+    - Input Controller Fixed some bugs in Windows backend ~<20 mins
+    - Tests Controller Added Battery & Guide Button support ~<10 mins

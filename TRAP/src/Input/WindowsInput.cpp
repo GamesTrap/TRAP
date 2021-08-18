@@ -85,11 +85,23 @@ bool TRAP::Input::InitController()
 							"XInputGetCapabilities"
 						)
 					);
-					s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
-					                                                                        "XInputGetState"));
-					s_xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(s_xinput.Instance,
-					                                                                        "XInputSetState"));
 
+					//Ordinal 100 is the same as XInputGetState, except it doesn't dummy out the guide button info.
+					//Try loading it and fall back if needed.
+					s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
+					                                                                        reinterpret_cast<LPCSTR>(100)));
+					if (s_xinput.GetState)
+						s_xinput.HasGuideButton = true;
+					else
+						s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
+																								"XInputGetState"));
+					s_xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(s_xinput.Instance,
+																							"XInputSetState"));
+
+					s_xinput.GetBatteryInformation = reinterpret_cast<PFN_XInputGetBatteryInformation>
+						(
+							GetProcAddress(s_xinput.Instance, "XInputGetBatteryInformation")
+						);
 					break;
 				}
 			}
@@ -141,18 +153,18 @@ void TRAP::Input::DetectControllerConnectionWin32()
 		{
 			uint32_t cID;
 			std::string guid;
-			guid.resize(32);
+			guid.resize(33);
 			XINPUT_CAPABILITIES xic;
 
 			for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 			{
-				if (s_controllerInternal[cID].Connected &&
+				if (!s_controllerInternal[cID].Connected &&
 					s_controllerInternal[cID].WinCon.Device == nullptr &&
 					s_controllerInternal[cID].WinCon.Index == index)
 					break;
 			}
 
-			if (cID <= static_cast<uint32_t>(Controller::Sixteen))
+			if (cID > static_cast<uint32_t>(Controller::Sixteen))
 				continue;
 
 			if (s_xinput.GetCapabilities(index, 0, &xic) != ERROR_SUCCESS)
@@ -161,8 +173,9 @@ void TRAP::Input::DetectControllerConnectionWin32()
 			//Generate a Controller GUID that matches the SDL 2.0.5+ one
 			sprintf_s(guid.data(), guid.size(), "78696e707574%02x000000000000000000",
 				      xic.SubType & 0xFF);
+			guid.pop_back();
 
-			ControllerInternal* con = AddInternalController(GetDeviceDescription(&xic), guid, 6, 10, 1);
+			ControllerInternal* con = AddInternalController(GetDeviceDescription(&xic), guid, 6, 11, 1);
 			if (!con)
 				continue;
 
@@ -213,6 +226,34 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		TP_ERROR(Log::InputControllerXInputPrefix, "ID: ", static_cast<uint32_t>(controller), " Error: ",
 					result, " while setting vibration!");
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller controller)
+{
+	if(!s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
+		return ControllerBatteryStatus::Wired;
+
+	XINPUT_BATTERY_INFORMATION batteryInformation{};
+	s_xinput.GetBatteryInformation(static_cast<DWORD>(controller), TRAP_XINPUT_DEVTYPE_GAMEPAD, &batteryInformation);
+
+	if(batteryInformation.BatteryType == TRAP_XINPUT_BATTERY_TYPE_WIRED)
+		return ControllerBatteryStatus::Wired;
+	if(batteryInformation.BatteryType == TRAP_XINPUT_BATTERY_TYPE_ALKALINE ||
+       batteryInformation.BatteryLevel == TRAP_XINPUT_BATTERY_TYPE_NIMH)
+	{
+		if(batteryInformation.BatteryLevel == TRAP_XINPUT_BATTERY_LEVEL_EMPTY)
+			return ControllerBatteryStatus::Empty;
+		if(batteryInformation.BatteryLevel == TRAP_XINPUT_BATTERY_LEVEL_LOW)
+			return ControllerBatteryStatus::Low;
+		if(batteryInformation.BatteryLevel == TRAP_XINPUT_BATTERY_LEVEL_MEDIUM)
+			return ControllerBatteryStatus::Medium;
+		/*if(batteryInformation.BatteryLevel == TRAP_XINPUT_BATTERY_LEVEL_FULL)*/
+		return ControllerBatteryStatus::Full;
+	}
+
+	return ControllerBatteryStatus::Wired;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -301,18 +342,18 @@ bool TRAP::Input::PollController(Controller controller, const PollMode mode)
 	{
 		uint32_t dpad = 0;
 		XINPUT_STATE xis;
-		const std::array<WORD, 10> buttons =
+		constexpr std::array<WORD, 10> buttons =
 		{
-			XINPUT_GAMEPAD_A,
-			XINPUT_GAMEPAD_B,
-			XINPUT_GAMEPAD_X,
-			XINPUT_GAMEPAD_Y,
-			XINPUT_GAMEPAD_LEFT_SHOULDER,
-			XINPUT_GAMEPAD_RIGHT_SHOULDER,
-			XINPUT_GAMEPAD_BACK,
-			XINPUT_GAMEPAD_START,
-			XINPUT_GAMEPAD_LEFT_THUMB,
-			XINPUT_GAMEPAD_RIGHT_THUMB
+			TRAP_XINPUT_GAMEPAD_A,
+			TRAP_XINPUT_GAMEPAD_B,
+			TRAP_XINPUT_GAMEPAD_X,
+			TRAP_XINPUT_GAMEPAD_Y,
+			TRAP_XINPUT_GAMEPAD_LEFT_SHOULDER,
+			TRAP_XINPUT_GAMEPAD_RIGHT_SHOULDER,
+			TRAP_XINPUT_GAMEPAD_BACK,
+			TRAP_XINPUT_GAMEPAD_START,
+			TRAP_XINPUT_GAMEPAD_LEFT_THUMB,
+			TRAP_XINPUT_GAMEPAD_RIGHT_THUMB
 		};
 
 		const DWORD result = s_xinput.GetState(con->WinCon.Index, &xis);
@@ -334,19 +375,26 @@ bool TRAP::Input::PollController(Controller controller, const PollMode mode)
 		InternalInputControllerAxis(con, 4, xis.Gamepad.bLeftTrigger / 127.5f - 1.f);
 		InternalInputControllerAxis(con, 5, xis.Gamepad.bRightTrigger / 127.5f - 1.f);
 
-		for(uint32_t i = 0; i < 10; i++)
+		for(uint32_t i = 0; i < buttons.size(); i++)
 		{
 			const bool value = (xis.Gamepad.wButtons & buttons[i]) ? true : false;
 			InternalInputControllerButton(con, i, value);
 		}
 
-		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
+		//Guide button is never reported in caps
+		if(s_xinput.HasGuideButton)
+		{
+			const bool value = (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_GUIDE) ? true : false;
+			InternalInputControllerButton(con, 10, value);
+		}
+
+		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_UP)
 			dpad |= static_cast<uint32_t>(ControllerDPad::Up);
-		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
+		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_RIGHT)
 			dpad |= static_cast<uint32_t>(ControllerDPad::Right);
-		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
+		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_DOWN)
 			dpad |= static_cast<uint32_t>(ControllerDPad::Down);
-		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
+		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_LEFT)
 			dpad |= static_cast<uint32_t>(ControllerDPad::Left);
 
 		InternalInputControllerDPad(con, 0, static_cast<uint8_t>(dpad));
