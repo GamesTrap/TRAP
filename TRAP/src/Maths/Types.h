@@ -18,6 +18,10 @@ namespace TRAP::Math
 	using Vec2d   = Vec<2, double>;
 	using Vec2i   = Vec<2, int32_t>;
 	using Vec2ui  = Vec<2, uint32_t>;
+	using Vec2ui8  = Vec<2, uint8_t>;
+	using Vec2ui16  = Vec<2, uint16_t>;
+	using Vec2ui32  = Vec<2, uint32_t>;
+	using Vec2ui64  = Vec<2, uint64_t>;
 	using Vec2i8  = Vec<2, int8_t>;
 	using Vec2i16 = Vec<2, int16_t>;
 	using Vec2i32 = Vec<2, int32_t>;
@@ -29,6 +33,10 @@ namespace TRAP::Math
 	using Vec3d   = Vec<3, double>;
 	using Vec3i   = Vec<3, int32_t>;
 	using Vec3ui  = Vec<3, uint32_t>;
+	using Vec3ui8  = Vec<3, uint8_t>;
+	using Vec3ui16  = Vec<3, uint16_t>;
+	using Vec3ui32  = Vec<3, uint32_t>;
+	using Vec3ui64  = Vec<3, uint64_t>;
 	using Vec3i8  = Vec<3, int8_t>;
 	using Vec3i16 = Vec<3, int16_t>;
 	using Vec3i32 = Vec<3, int32_t>;
@@ -40,6 +48,10 @@ namespace TRAP::Math
 	using Vec4d   = Vec<4, double>;
 	using Vec4i   = Vec<4, int32_t>;
 	using Vec4ui  = Vec<4, uint32_t>;
+	using Vec4ui8  = Vec<4, uint8_t>;
+	using Vec4ui16  = Vec<4, uint16_t>;
+	using Vec4ui32  = Vec<4, uint32_t>;
+	using Vec4ui64  = Vec<4, uint64_t>;
 	using Vec4i8  = Vec<4, int8_t>;
 	using Vec4i16 = Vec<4, int16_t>;
 	using Vec4i32 = Vec<4, int32_t>;
@@ -56,7 +68,7 @@ namespace TRAP::Math
 
 	using Quaternion = tQuaternion<float>;
 	using Quaternionf = tQuaternion<float>;
-	using Quaterniond = tQuaternion<double>;	
+	using Quaterniond = tQuaternion<double>;
 }
 
 #endif /*_TRAP_TYPES_H_*/

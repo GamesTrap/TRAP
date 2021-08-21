@@ -2064,3 +2064,8 @@ SITREP 08/19/2021|21w33a1
     - Input Controller Added support for Guide Button (Thanks M$ for making this so complicated) ~<20 mins
     - Input Controller Fixed some bugs in Windows backend ~<20 mins
     - Tests Controller Added Battery & Guide Button support ~<10 mins
+
+SITREP 08/21/2021|21w33a2
+    - Changed TRAP Engine version to 21w33a2(0.7.74)
+    - WindowingAPI X11 Fixed a small bug ~<5 mins
+    - Math Added unsigned integer typedefs ~<5 mins

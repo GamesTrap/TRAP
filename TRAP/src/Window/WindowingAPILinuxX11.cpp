@@ -2773,11 +2773,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 				if(states[i] == s_Data.NET_WM_STATE_ABOVE)
 					break;
 
-			if(i < count)
-				return;
+			if(i == count)
+			{
+				s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32,
+										   PropModeAppend, reinterpret_cast<uint8_t*>(&s_Data.NET_WM_STATE_ABOVE), 1);
+			}
 
-			s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32,
-			                           PropModeAppend, reinterpret_cast<uint8_t*>(&s_Data.NET_WM_STATE_ABOVE), 1);
 		}
 		else if(states)
 		{
@@ -2785,14 +2786,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 				if(states[i] == s_Data.NET_WM_STATE_ABOVE)
 					break;
 
-			if(i == count)
-				return;
+			if(i < count)
+			{
+				states[i] = states[count - 1];
+				count--;
 
-			states[i] = states[count - 1];
-			count--;
-
-			s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32,
-			                           PropModeReplace, reinterpret_cast<uint8_t*>(states), count);
+				s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32,
+										   PropModeReplace, reinterpret_cast<uint8_t*>(states), count);
+			}
 		}
 
 		if(states)
