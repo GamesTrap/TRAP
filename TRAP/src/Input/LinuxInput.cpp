@@ -177,7 +177,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller controller)
+TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller)
 {
 	return ControllerBatteryStatus::Wired;
 }

@@ -2069,3 +2069,8 @@ SITREP 08/21/2021|21w33a2
     - Changed TRAP Engine version to 21w33a2(0.7.74)
     - WindowingAPI X11 Fixed a small bug ~<5 mins
     - Math Added unsigned integer typedefs ~<5 mins
+
+SITREP 08/22/2021|21w34a1
+    - Changed TRAP Engine version to 21w34a1(0.7.75)
+    - Added alias for Sampler related stuff in TRAP::Graphics namespace ~<10 mins
+    - Updated Tests & Tests3D using new TRAP::Graphics alias for Sampler

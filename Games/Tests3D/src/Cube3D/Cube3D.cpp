@@ -166,13 +166,13 @@ void Cube3D::OnAttach()
     };
     m_skyBoxVertexBuffer->SetLayout(skyBoxLayout);
 
-    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge;
-    samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge;
-    samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::ClampToEdge;
-    samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
-    samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
-    samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
+    TRAP::Graphics::SamplerDesc samplerDesc{};
+    samplerDesc.AddressU = TRAP::Graphics::AddressMode::ClampToEdge;
+    samplerDesc.AddressV = TRAP::Graphics::AddressMode::ClampToEdge;
+    samplerDesc.AddressW = TRAP::Graphics::AddressMode::ClampToEdge;
+    samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
+    samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
+    samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 	//Camera setup

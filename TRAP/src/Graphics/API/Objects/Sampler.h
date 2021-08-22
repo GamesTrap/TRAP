@@ -5,22 +5,28 @@
 
 namespace TRAP::Graphics
 {
+	using SamplerDesc = TRAP::Graphics::RendererAPI::SamplerDesc;
+	using FilterType = TRAP::Graphics::RendererAPI::FilterType;
+	using AddressMode = TRAP::Graphics::RendererAPI::AddressMode;
+	using CompareMode = TRAP::Graphics::RendererAPI::CompareMode;
+	using MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode;
+
 	class Sampler
 	{
 	public:
-		static TRAP::Ref<Sampler> Create(const RendererAPI::SamplerDesc& desc);
+		static TRAP::Ref<Sampler> Create(const SamplerDesc& desc);
 
 		virtual ~Sampler() = default;
 
-		RendererAPI::FilterType GetMinFilter() const;
-		RendererAPI::FilterType GetMagFilter() const;
-		RendererAPI::MipMapMode GetMipMapMode() const;
-		RendererAPI::AddressMode GetAddressU() const;
-		RendererAPI::AddressMode GetAddressV() const;
-		RendererAPI::AddressMode GetAddressW() const;
+		FilterType GetMinFilter() const;
+		FilterType GetMagFilter() const;
+		MipMapMode GetMipMapMode() const;
+		AddressMode GetAddressU() const;
+		AddressMode GetAddressV() const;
+		AddressMode GetAddressW() const;
 		float GetMipLodBias() const;
 		float GetMaxAnisotropy() const;
-		RendererAPI::CompareMode GetCompareFunc() const;
+		CompareMode GetCompareFunc() const;
 
 		static void ClearCache();
 
@@ -28,9 +34,9 @@ namespace TRAP::Graphics
 		Sampler() = default;
 
 	private:
-		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
+		static std::unordered_map<SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
 
-		RendererAPI::SamplerDesc m_samplerDesc;
+		SamplerDesc m_samplerDesc;
 	};
 }
 

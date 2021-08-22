@@ -115,10 +115,10 @@ public:
 		m_vertexBuffer->AwaitLoading();
 		m_vertexBuffer->SetLayout(layout);
 
-		TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-		samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-		samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-		samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
+		TRAP::Graphics::SamplerDesc samplerDesc{};
+		samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
+		samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
+		samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
 		m_sampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 		TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);

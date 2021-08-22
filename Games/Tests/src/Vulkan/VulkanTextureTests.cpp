@@ -56,16 +56,16 @@ void VulkanTextureTests::OnAttach()
     m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "/shaders/testtextureseperate.shader",
                                                        &macros).get();
 
-    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
-	samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
+    TRAP::Graphics::SamplerDesc samplerDesc{};
+    samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
+	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
+	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
+	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
+	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MaxAnisotropy = 0.0f;
-	samplerDesc.CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Never;
+	samplerDesc.CompareFunc = TRAP::Graphics::CompareMode::Never;
 	samplerDesc.MipLodBias = 0.0f;
-	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
+	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)

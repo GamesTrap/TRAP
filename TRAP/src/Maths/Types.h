@@ -12,7 +12,7 @@ namespace TRAP::Math
 	template <typename T> using tVec4 = Vec<4, T>;
 	template <typename T> using tMat3 = Mat<3, 3, T>;
 	template <typename T> using tMat4 = Mat<4, 4, T>;
-	
+
 	using Vec2    = Vec<2, float>;
 	using Vec2f   = Vec<2, float>;
 	using Vec2d   = Vec<2, double>;

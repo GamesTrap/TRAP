@@ -4,11 +4,11 @@
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "Utils/Utils.h"
 
-std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
+std::unordered_map<TRAP::Graphics::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const RendererAPI::SamplerDesc& desc)
+TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const SamplerDesc& desc)
 {
 	//Try to use cached Sampler
 	if(s_cachedSamplers.find(desc) != s_cachedSamplers.end())
@@ -40,42 +40,42 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Rendere
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::FilterType TRAP::Graphics::Sampler::GetMinFilter() const
+TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const
 {
 	return m_samplerDesc.MinFilter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::FilterType TRAP::Graphics::Sampler::GetMagFilter() const
+TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const
 {
 	return m_samplerDesc.MagFilter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const
+TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const
 {
 	return m_samplerDesc.MipMapMode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::AddressMode TRAP::Graphics::Sampler::GetAddressU() const
+TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const
 {
 	return m_samplerDesc.AddressU;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::AddressMode TRAP::Graphics::Sampler::GetAddressV() const
+TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const
 {
 	return m_samplerDesc.AddressV;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::AddressMode TRAP::Graphics::Sampler::GetAddressW() const
+TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const
 {
 	return m_samplerDesc.AddressW;
 }
@@ -96,7 +96,7 @@ float TRAP::Graphics::Sampler::GetMaxAnisotropy() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const
+TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const
 {
 	return m_samplerDesc.CompareFunc;
 }
