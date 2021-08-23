@@ -44,6 +44,7 @@ namespace TRAP::Graphics
 		std::vector<API::SyncToken> m_tokens;
 
 		bool m_first = true;
+		UpdateFrequency m_updateFrequency;
 	};
 }
 

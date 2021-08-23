@@ -164,6 +164,32 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 	}
 
+	//Per Batch Descriptors
+	if(dynamic_cast<VulkanRootSignature*>
+		(
+			m_rootSignature.get()
+		)->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::PerBatch)] != VK_NULL_HANDLE)
+	{
+		RendererAPI::DescriptorSetDesc setDesc{};
+		setDesc.MaxSets = RendererAPI::ImageCount;
+		setDesc.RootSignature = m_rootSignature;
+		setDesc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerBatch;
+		m_descriptorSets.PerBatchDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
+	}
+
+	//Per Draw Descriptors
+	if(dynamic_cast<VulkanRootSignature*>
+		(
+			m_rootSignature.get()
+		)->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::PerDraw)] != VK_NULL_HANDLE)
+	{
+		RendererAPI::DescriptorSetDesc setDesc{};
+		setDesc.MaxSets = RendererAPI::ImageCount;
+		setDesc.RootSignature = m_rootSignature;
+		setDesc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerDraw;
+		m_descriptorSets.PerDrawDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
+	}
+
 	//Allocate enough space for all possible UBOs in the shader
 	uint32_t UBOCount = 0;
 	for(const auto& res : m_reflection->ShaderResources)
@@ -272,6 +298,16 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
 			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
 	}
+	else if(set == 2) //Per Batch
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerBatchDescriptors->Update(i, params);
+	}
+	else if(set == 3) //Per Draw
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerDrawDescriptors->Update(i, params);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -306,6 +342,16 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
 			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
 	}
+	else if(set == 2) //Per Batch
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerBatchDescriptors->Update(i, params);
+	}
+	else if(set == 3) //Per Draw
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerDrawDescriptors->Update(i, params);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -333,6 +379,16 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 	{
 		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
 			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
+	}
+	else if(set == 2) //Per Batch
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerBatchDescriptors->Update(i, params);
+	}
+	else if(set == 3) //Per Draw
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerDrawDescriptors->Update(i, params);
 	}
 }
 
@@ -364,6 +420,16 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
 			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
 	}
+	else if(set == 2) //Per Batch
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerBatchDescriptors->Update(i, params);
+	}
+	else if(set == 3) //Per Draw
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerDrawDescriptors->Update(i, params);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -389,8 +455,6 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Gra
 	params[0].Name = name.c_str();
 	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
 
-	//TODO What about PerBatch & PerDraw
-	//PerBatch & PerDraw will be Dynamic UBOs
 	if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 0) //== UpdateFrequency::None
 	{
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[0].get()};
@@ -402,6 +466,22 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Gra
 		{
 			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[i].get()};
 			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
+		}
+	}
+	else if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 2) //== UpdateFrequency::PerBatch
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[i].get()};
+			GetDescriptorSets().PerBatchDescriptors->Update(i, params);
+		}
+	}
+	else if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 3) //== UpdateFrequency::PerDraw
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[i].get()};
+			GetDescriptorSets().PerDrawDescriptors->Update(i, params);
 		}
 	}
 

@@ -43,7 +43,7 @@ private:
 
     TRAP::Graphics::Shader* m_shader;
     TRAP::Graphics::Texture* m_texture;
-TRAP::Scope<TRAP::Image> m_vulkanLogo;
+    TRAP::Scope<TRAP::Image> m_vulkanLogo;
     TRAP::Scope<TRAP::Image> m_vulkanLogoTransparent;
 };
 

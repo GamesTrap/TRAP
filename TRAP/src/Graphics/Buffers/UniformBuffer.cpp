@@ -30,7 +30,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
-	: m_uniformBuffers(), m_tokens()
+	: m_uniformBuffers(), m_tokens(), m_updateFrequency(updateFrequency)
 {
 	m_tokens.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
 	m_uniformBuffers.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
@@ -54,9 +54,7 @@ uint64_t TRAP::Graphics::UniformBuffer::GetSize() const
 
 TRAP::Graphics::UpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequency() const
 {
-	//TODO What about PerBatch & PerDraw
-	return (m_uniformBuffers[0]->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::None :
-	                                                                                              UpdateFrequency::PerFrame;
+	return m_updateFrequency;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -111,15 +109,13 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(void* data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
-	//TODO What about PerBatch & PerDraw
-	//PerBatch & PerDraw are dynamic UBOs
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));
 
 	RendererAPI::BufferLoadDesc desc{};
 	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
 	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = (updateFrequency != UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::PersistentMap :
-																   RendererAPI::BufferCreationFlags::None;
+	desc.Desc.Flags = (updateFrequency == UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::None :
+																   RendererAPI::BufferCreationFlags::PersistentMap;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
 	desc.Desc.Size = size;
 	desc.Data = data;

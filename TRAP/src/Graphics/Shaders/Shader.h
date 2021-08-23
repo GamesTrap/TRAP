@@ -20,8 +20,8 @@ namespace TRAP::Graphics
 		{
 			DescriptorSet* StaticDescriptors;
 			DescriptorSet* PerFrameDescriptors;
-			//TODO Per Batch Descriptors
-			//TODO Per Draw Descriptors
+			DescriptorSet* PerBatchDescriptors;
+			DescriptorSet* PerDrawDescriptors;
 		};
 
 	protected:
