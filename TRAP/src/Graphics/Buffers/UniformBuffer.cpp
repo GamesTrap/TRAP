@@ -29,9 +29,11 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::UniformBuffer::UniformBuffer()
+TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
 	: m_uniformBuffers(), m_tokens()
 {
+	m_tokens.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
+	m_uniformBuffers.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -111,9 +113,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(v
 {
 	//TODO What about PerBatch & PerDraw
 	//PerBatch & PerDraw are dynamic UBOs
-	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
-	buffer->m_tokens.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
-	buffer->m_uniformBuffers.resize(updateFrequency == UpdateFrequency::None ? 1 : RendererAPI::ImageCount);
+	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));
 
 	RendererAPI::BufferLoadDesc desc{};
 	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :

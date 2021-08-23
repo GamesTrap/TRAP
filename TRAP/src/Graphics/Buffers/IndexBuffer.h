@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 	class IndexBuffer
 	{
 	protected:
-		IndexBuffer();
+		IndexBuffer(RendererAPI::IndexType indexType);
 		IndexBuffer(const IndexBuffer&) = default;
 		IndexBuffer& operator=(const IndexBuffer&) = default;
 		IndexBuffer(IndexBuffer&&) = default;
@@ -60,7 +60,23 @@ inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Ini
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
 	              "Trying to initialize IndexBuffer with wrong indice type!");
 
-	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer());
+	RendererAPI::IndexType indexType;
+	if(indices)
+	{
+		if constexpr(std::is_same_v<T, uint16_t>)
+			indexType = RendererAPI::IndexType::UInt16;
+		else if constexpr(std::is_same_v<T, uint32_t>)
+			indexType = RendererAPI::IndexType::UInt32;
+	}
+	else
+	{
+		if(size / sizeof(uint16_t) < std::numeric_limits<uint16_t>::max())
+			indexType = RendererAPI::IndexType::UInt16;
+		else
+			indexType = RendererAPI::IndexType::UInt32;
+	}
+
+	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer(indexType));
 
 	RendererAPI::BufferLoadDesc desc{};
 	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
@@ -72,21 +88,6 @@ inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Ini
 	desc.Data = indices;
 
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
-
-	if(indices)
-	{
-		if constexpr(std::is_same_v<T, uint16_t>)
-			buffer->m_indexType = RendererAPI::IndexType::UInt16;
-		else if constexpr(std::is_same_v<T, uint32_t>)
-			buffer->m_indexType = RendererAPI::IndexType::UInt32;
-	}
-	else
-	{
-		if(size / sizeof(uint16_t) < std::numeric_limits<uint16_t>::max())
-			buffer->m_indexType = RendererAPI::IndexType::UInt16;
-		else
-			buffer->m_indexType = RendererAPI::IndexType::UInt32;
-	}
 
 	buffer->m_indexBuffer = desc.Buffer;
 

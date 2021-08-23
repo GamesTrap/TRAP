@@ -34,8 +34,8 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::IndexBuffer::IndexBuffer()
-	: m_indexBuffer(nullptr), m_token(), m_indexType(RendererAPI::IndexType::UInt32)
+TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType)
+	: m_indexBuffer(nullptr), m_token(), m_indexType(indexType)
 {
 }
 

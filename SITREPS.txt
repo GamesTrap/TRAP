@@ -2073,4 +2073,4 @@ SITREP 08/21/2021|21w33a2
 SITREP 08/22/2021|21w34a1
     - Changed TRAP Engine version to 21w34a1(0.7.75)
     - Added alias for Sampler related stuff in TRAP::Graphics namespace ~<10 mins
-    - Updated Tests & Tests3D using new TRAP::Graphics alias for Sampler
+    - Updated Tests & Tests3D using new TRAP::Graphics alias for Sampler ~<5 mins
