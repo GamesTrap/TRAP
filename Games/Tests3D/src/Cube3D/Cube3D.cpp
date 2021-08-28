@@ -38,7 +38,7 @@ void Cube3D::OnAttach()
 
 	//Mount & Load Texture(s)
 	TRAP::VFS::MountTextures("Assets/Textures");
-    TRAP::Graphics::TextureManager::Load("SkyBox", "/textures/SkyboxCubic.png", TRAP::Graphics::InputFormat::Horizontal_Cross);
+    TRAP::Graphics::TextureManager::Load("SkyBox", "/textures/SkyBoxCubic.png", TRAP::Graphics::InputFormat::Horizontal_Cross);
     TRAP::Graphics::TextureManager::Load("UVGrid", "/textures/UVGrid.png");
 
 	//Cube

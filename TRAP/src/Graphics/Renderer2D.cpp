@@ -237,10 +237,11 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 	TP_PROFILE_FUNCTION();
 
 	Math::Mat4 transformation;
-	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
-		transformation = Math::Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
-	else
+
+	if (Math::FMod(transform.Rotation, 360.0f) == Math::Vec3{0.0f, 0.0f, 0.0f})
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
+	else
+		transformation = Math::Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 
 	DrawQuad(transformation, color, texture);
 }
