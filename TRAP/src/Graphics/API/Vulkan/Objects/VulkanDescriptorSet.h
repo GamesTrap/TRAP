@@ -27,8 +27,8 @@ namespace TRAP::Graphics::API
 		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 		                    TRAP::Ref<VulkanRootSignature> rootSignature,
 		                    std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData,
-		                    std::vector<VulkanRenderer::SizeOffset> dynamicSizeOffsets, uint32_t maxSets,
-							uint8_t dynamicOffsetCount, RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
+							RendererAPI::DescriptorUpdateFrequency updateFrequency);
 
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
 		TRAP::Ref<VulkanRootSignature> m_rootSignature;

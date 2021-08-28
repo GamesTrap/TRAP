@@ -114,6 +114,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	}
 
 	RendererAPI::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
+	RendererAPI::GPUSettings.MaxUniformBufferRange = static_cast<uint32_t>(m_physicalDeviceProperties.limits.maxUniformBufferRange);
 	RendererAPI::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
 	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
 	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;

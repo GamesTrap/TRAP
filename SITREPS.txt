@@ -2075,3 +2075,13 @@ SITREP 08/23/2021|21w34a1
     - Added alias for Sampler related stuff in TRAP::Graphics namespace ~<10 mins
     - Updated Tests & Tests3D using new TRAP::Graphics alias for Sampler ~<5 mins
     - Added PerBatch and PerDraw stuff ~<20 mins
+
+SITREP 08/28/2021|21w34a2
+    - Changed TRAP Engine version to 21w34a2(0.7.76)
+    - RendererAPI GPUSettings Added MaxUniformBufferRange value ~<10 mins
+    - VulkanDescriptorSet Changed/Simplified constructor ~<10 mins
+    - VulkanShader Extended UseUBO to support dynamic UBOs ~<20 mins
+    - VulkanRenderer Added PerBatch and PerDraw support ~<10 mins
+    - Renderer Removed PushConstant usage ~<10 mins
+    - Renderer Now uses a dynamic UBO for sending model matrices (currently limited to MaxUniformBufferRange drawcalls per frame) ~<20 mins
+    - Tests3D Updated Shaders, now using dynamic UBO ~<15 mins

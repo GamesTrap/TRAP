@@ -171,7 +171,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			//If a user specified a uniform buffer to be used as a dynamic uniform buffer change its type to
 			//VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC
 			//Also log a message for debugging purpose
-			if(name.find("rootcbv") != std::string::npos)
+			if(name.find("rootcbv") != std::string::npos || name.find("dynamic") != std::string::npos)
 			{
 				if(descInfo.Size == 1)
 				{

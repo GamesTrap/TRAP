@@ -28,7 +28,7 @@ namespace TRAP::Graphics::API
 		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) override;
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) override;
-		void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer) override;
+		void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer, uint64_t size = 0, uint64_t offset = 0) override;
 
 	private:
 		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint32_t size = 1);
@@ -42,6 +42,8 @@ namespace TRAP::Graphics::API
 		std::vector<std::string> m_entryNames;
 
 		std::vector<TRAP::Graphics::UniformBuffer*> m_boundUBOs;
+
+		bool m_firstUBOError;
 	};
 }
 

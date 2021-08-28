@@ -1295,6 +1295,7 @@ namespace TRAP::Graphics
 		inline static struct GPUSettings
 		{
 			uint32_t UniformBufferAlignment;
+			uint32_t MaxUniformBufferRange;
 			uint32_t UploadBufferTextureAlignment;
 			uint32_t UploadBufferTextureRowAlignment;
 			uint32_t MaxVertexInputBindings;

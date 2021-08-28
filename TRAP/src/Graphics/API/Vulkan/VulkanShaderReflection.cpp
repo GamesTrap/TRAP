@@ -4,6 +4,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/SPIRVTools.h"
+#include "Utils/String/String.h"
 
 std::array<TRAP::Graphics::RendererAPI::DescriptorType,
            static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
@@ -159,7 +160,12 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 				resources[j].Type = SPIRVToDescriptorType[static_cast<uint32_t>(resource.Type)];
 				resources[j].Set = resource.Set;
 				resources[j].Reg = resource.Binding;
-				resources[j].Size = resource.Size;
+				std::string lowerName = Utils::String::ToLower(resource.Name);
+				if(lowerName.find("rootcbv") == std::string::npos &&
+				   lowerName.find("dynamic") == std::string::npos)
+					resources[j].Size = resource.Size;
+				else
+					resources[j].Size = 1;
 				resources[j].UsedStages = shaderStage;
 
 				resources[j].Name = resource.Name;

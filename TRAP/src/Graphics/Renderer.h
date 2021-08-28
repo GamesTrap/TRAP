@@ -49,6 +49,10 @@ namespace TRAP::Graphics
 
 		static Scope<SceneData> s_sceneData;
 		static Scope<UniformBuffer> s_uniformBuffer;
+		static Scope<UniformBuffer> s_modelUniformBuffer;
+
+		static uint32_t s_maxDrawCalls;
+		static uint32_t s_currentDrawCalls;
 	};
 }
 

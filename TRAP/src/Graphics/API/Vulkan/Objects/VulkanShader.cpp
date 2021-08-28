@@ -17,7 +17,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
+	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_firstUBOError(true)
 {
 	m_name = name;
 
@@ -434,7 +435,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer)
+void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
+											   const uint64_t size,  const uint64_t offset)
 {
 	if(std::find(m_boundUBOs.begin(), m_boundUBOs.end(), uniformBuffer) != m_boundUBOs.end())
 		return; //Already bound
@@ -443,17 +445,39 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t binding, TRAP::Gra
 	  										  binding,
 											  TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
 											  uniformBuffer->GetSize());
+	bool isDynamicUBO = false;
+	if(name.empty()) //Try again as this might be a dynamic UBO
+	{
+		name = RetrieveDescriptorName(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()),
+									  binding,
+									  TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
+									  1);
+		if(!name.empty())
+			isDynamicUBO = true;
+	}
 
 	if(name.empty()) //Unable to find UBO @ with set, binding & size
 	{
-		TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
+		if(m_firstUBOError)
+		{
+			TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
+			m_firstUBOError = false;
+		}
 		return;
 	}
 
 	//Bind UBO
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
-	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
+	if(isDynamicUBO)
+	{
+		TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset off{};
+		off.Offsets.emplace_back(offset);
+		off.Sizes.emplace_back(size);
+		params[0].Offset = off;
+	}
+	else
+		params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
 
 	if(static_cast<uint32_t>(uniformBuffer->GetUpdateFrequency()) == 0) //== UpdateFrequency::None
 	{

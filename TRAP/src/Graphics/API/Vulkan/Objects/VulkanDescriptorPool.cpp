@@ -142,8 +142,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 	}
 
 	m_descriptorSets.emplace_back(new VulkanDescriptorSet(m_device, handles, rootSignature, updateData,
-	                                                      dynamicSizeOffsets, maxSets, dynamicOffsetCount,
-														  updateFreq));
+	                                                      maxSets, dynamicOffsetCount, updateFreq));
 
 	return m_descriptorSets.back().get();
 }

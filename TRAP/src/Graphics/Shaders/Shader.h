@@ -49,7 +49,8 @@ namespace TRAP::Graphics
 		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) = 0;
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) = 0;
-		virtual void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer) = 0;
+		virtual void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
+							uint64_t size = 0, uint64_t offset = 0) = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath,
 		                                    const std::vector<Macro>* userMacros = nullptr);

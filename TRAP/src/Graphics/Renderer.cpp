@@ -15,6 +15,9 @@ TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sce
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBuffer = nullptr;
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_modelUniformBuffer = nullptr;
+uint32_t TRAP::Graphics::Renderer::s_maxDrawCalls = 0;
+uint32_t TRAP::Graphics::Renderer::s_currentDrawCalls = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -22,8 +25,14 @@ void TRAP::Graphics::Renderer::Init()
 {
 	TP_PROFILE_FUNCTION();
 
+	s_maxDrawCalls = RendererAPI::GPUSettings.MaxUniformBufferRange /
+	                 (sizeof(Math::Mat4) + (RendererAPI::GPUSettings.UniformBufferAlignment -
+					                        sizeof(Math::Mat4)));
+
 	s_uniformBuffer = TRAP::Graphics::UniformBuffer::Create(s_sceneData.get(), sizeof(SceneData),
 															TRAP::Graphics::UpdateFrequency::PerFrame);
+	s_modelUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(TRAP::Math::Mat4) * s_maxDrawCalls,
+	                                                             TRAP::Graphics::UpdateFrequency::PerDraw);
 
 	Renderer2D::Init();
 }
@@ -88,6 +97,8 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 {
 	TP_PROFILE_FUNCTION();
 
+	s_currentDrawCalls = 0;
+
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = Math::Inverse(transform);
 	s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
@@ -109,17 +120,30 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 
 	TP_PROFILE_FUNCTION();
 
+	if(s_currentDrawCalls >= s_maxDrawCalls)
+		return;
+
 	//s_sceneData->m_modelMatrix = transform;
+	s_modelUniformBuffer->SetData(&transform, sizeof(Math::Mat4),
+	                              s_currentDrawCalls * (sizeof(Math::Mat4) +
+								                        (RendererAPI::GPUSettings.UniformBufferAlignment -
+														 sizeof(Math::Mat4))));
+	s_modelUniformBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->Use();
+		shader->UseUBO(0, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
+		               s_currentDrawCalls * (sizeof(Math::Mat4) +
+					                         (RendererAPI::GPUSettings.UniformBufferAlignment -
+											  sizeof(Math::Mat4))));
 		shader->UseUBO(0, s_uniformBuffer.get());
+		shader->Use();
 	}
-	TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
+	//TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 
 	RenderCommand::Draw(vertexBuffer->GetCount());
+	++s_currentDrawCalls;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -132,18 +156,31 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 
 	TP_PROFILE_FUNCTION();
 
+	if(s_currentDrawCalls >= s_maxDrawCalls)
+		return;
+
 	//s_sceneData->m_modelMatrix = transform;
+	s_modelUniformBuffer->SetData(&transform, sizeof(Math::Mat4),
+	                              s_currentDrawCalls * (sizeof(Math::Mat4) +
+								                        (RendererAPI::GPUSettings.UniformBufferAlignment -
+														 sizeof(Math::Mat4))));
+	s_modelUniformBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->Use();
+		shader->UseUBO(0, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
+		               s_currentDrawCalls * (sizeof(Math::Mat4) +
+					                         (RendererAPI::GPUSettings.UniformBufferAlignment -
+											  sizeof(Math::Mat4))));
 		shader->UseUBO(0, s_uniformBuffer.get());
+		shader->Use();
 	}
-	TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
+	//TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	indexBuffer->Use();
 
 	RenderCommand::DrawIndexed(indexBuffer->GetCount());
+	++s_currentDrawCalls;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -156,6 +193,9 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 	if(s_uniformBuffer)
 		s_uniformBuffer.reset();
+
+	if(s_modelUniformBuffer)
+	   s_modelUniformBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -770,6 +770,16 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
 				                                                                 *(shader->GetDescriptorSets().PerFrameDescriptors));
 
+			//Bind Per Batch Descriptors
+			if(shader->GetDescriptorSets().PerBatchDescriptors)
+				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
+				                                                                 *(shader->GetDescriptorSets().PerBatchDescriptors));
+
+			//Bind Per Draw Descriptors
+			if(shader->GetDescriptorSets().PerDrawDescriptors)
+				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
+				                                                                 *(shader->GetDescriptorSets().PerDrawDescriptors));
+
 			return;
 		}
 
@@ -789,6 +799,16 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		if(shader->GetDescriptorSets().PerFrameDescriptors)
 			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
 			                                                                 *(shader->GetDescriptorSets().PerFrameDescriptors));
+
+		//Bind Per Batch Descriptors
+		if(shader->GetDescriptorSets().PerBatchDescriptors)
+			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
+																			 *(shader->GetDescriptorSets().PerBatchDescriptors));
+
+		//Bind Per Draw Descriptors
+		if(shader->GetDescriptorSets().PerDrawDescriptors)
+			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
+																			 *(shader->GetDescriptorSets().PerDrawDescriptors));
 	}
 }
 
