@@ -334,7 +334,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 	   !static_cast<uint32_t>(desc.Desc.StartState) && !update)
 	{
 		desc.Desc.StartState = UtilDetermineResourceStartState(desc.Desc);
-		TP_WARN(Log::RendererVulkanBufferPrefix, "Buffer start state not provided. Determined the start state as (",
+		TP_WARN(Log::RendererBufferPrefix, "Buffer start state not provided. Determined the start state as (",
 		        static_cast<uint32_t>(desc.Desc.StartState), ") based on the provided BufferDesc");
 	}
 
@@ -796,7 +796,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 		resourceSet.Fence.reset();
 
 		if (!resourceSet.TempBuffers.empty())
-			TP_INFO(Log::RendererVulkanBufferPrefix, "A temporary buffer was not cleaned up ", i);
+			TP_WARN(Log::RendererBufferPrefix, "A temporary buffer was not cleaned up ", i);
 
 		resourceSet.TempBuffers.clear();
 	}

@@ -37,7 +37,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	m_numDescriptorSets = numDescriptorSets;
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif
 
@@ -61,7 +61,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
 	TRAP_ASSERT(!m_descriptorPools.empty());
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
 #endif
 	for(VkDescriptorPool& pool : m_descriptorPools)

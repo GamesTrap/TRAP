@@ -22,7 +22,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");
 #endif
 
@@ -44,7 +44,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 {
 	TRAP_ASSERT(m_vkQueue);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Destroying Queue");
 #endif
 

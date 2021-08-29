@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	TRAP_ASSERT(m_device, "device is nullptr");
 	TRAP_ASSERT(m_VMA, "VMA is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");
 #endif
 
@@ -112,7 +112,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 {
 	TRAP_ASSERT(m_vkBuffer);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Destroying Buffer");
 #endif
 

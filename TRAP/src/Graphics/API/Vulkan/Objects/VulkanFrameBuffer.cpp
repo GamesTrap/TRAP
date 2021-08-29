@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");
 #endif
 
@@ -124,7 +124,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 {
 	TRAP_ASSERT(m_framebuffer);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Destroying FrameBuffer");
 #endif
 	vkDestroyFramebuffer(m_device->GetVkDevice(), m_framebuffer, nullptr);

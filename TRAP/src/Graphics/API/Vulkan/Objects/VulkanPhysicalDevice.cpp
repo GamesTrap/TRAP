@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 		return;
 	}
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Creating PhysicalDevice");
 #endif
 
@@ -155,7 +155,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
 	TRAP_ASSERT(m_physicalDevice);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");
 #endif
 	m_physicalDevice = nullptr;

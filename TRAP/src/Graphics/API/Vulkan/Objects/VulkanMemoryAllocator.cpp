@@ -14,7 +14,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 	TRAP_ASSERT(device, "device is nullptr");
 	TRAP_ASSERT(instance, "instance is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
 #endif
 
@@ -56,7 +56,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 {
 	TRAP_ASSERT(m_allocator);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Destroying Allocator");
 #endif
 	vmaDestroyAllocator(m_allocator);

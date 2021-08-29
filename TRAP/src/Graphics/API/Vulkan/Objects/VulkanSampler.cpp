@@ -15,7 +15,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");
 #endif
 
@@ -85,7 +85,7 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 {
 	TRAP_ASSERT(m_vkSampler);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Destroying Sampler");
 #endif
 

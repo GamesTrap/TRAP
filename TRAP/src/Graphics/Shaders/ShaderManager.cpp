@@ -207,7 +207,9 @@ void TRAP::Graphics::ShaderManager::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderManagerPrefix, "Destroying Shaders");
+#endif
 	Clean();
 }
 

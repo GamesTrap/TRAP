@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Creating Semaphore");
 #endif
 
@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
 	TRAP_ASSERT(m_semaphore);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");
 #endif
 

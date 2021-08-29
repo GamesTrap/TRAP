@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 	TRAP_ASSERT(m_device, "device is nullptr");
 	TRAP_ASSERT(m_queue, "queue is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");
 #endif
 
@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 		m_commandBuffer.reset();
 	m_commandBuffers.clear();
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Destroying CommandPool");
 #endif
 

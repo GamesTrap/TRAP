@@ -1243,7 +1243,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Creating DefaultResources");
 #endif
 
@@ -1390,7 +1390,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying DefaultResources");
 #endif
 
@@ -1509,13 +1509,17 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 
 	desc.Cache = s_pipelineCaches[hash];
 
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
+#endif
 	TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
 	{
 		//Lock while inserting new Pipeline
 		std::lock_guard<std::mutex> lock(s_pipelineMutex);
 		s_pipelines.insert({ hash, std::move(pipeline) });
 	}
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
+#endif
 	return s_pipelines[hash];
 }

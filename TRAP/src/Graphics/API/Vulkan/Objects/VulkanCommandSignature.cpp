@@ -4,7 +4,7 @@
 TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc)
 	: m_drawType(), m_stride()
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
 #endif
 
@@ -28,7 +28,7 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 			break;
 
 		default:
-			TP_ERROR(false, "Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
+			TRAP_ASSERT(false, "Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
 			         "at this point!");
 			break;
 		}
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 
 TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
 #endif
 

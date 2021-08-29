@@ -395,7 +395,9 @@ void TRAP::Graphics::TextureManager::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::TextureManagerPrefix, "Destroying Textures");
+#endif
 	Clean();
 }
 

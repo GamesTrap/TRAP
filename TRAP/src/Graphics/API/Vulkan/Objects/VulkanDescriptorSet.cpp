@@ -11,7 +11,7 @@
 
 TRAP::Graphics::API::VulkanDescriptorSet::~VulkanDescriptorSet()
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorSetPrefix, "Destroying DescriptorSet");
 #endif
 }
@@ -35,7 +35,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 {
 	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorSetPrefix, "Creating DescriptorSet");
 #endif
 }

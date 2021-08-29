@@ -41,7 +41,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 {
 	if(stageCount == 0)
 	{
-		TP_ERROR(Log::RendererVulkanShaderPrefix, "Parameter 'stageCount' is 0");
+		TP_ERROR(Log::ShaderPrefix, "Parameter 'stageCount' is 0");
 		return nullptr;
 	}
 
@@ -51,7 +51,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	{
 		if(static_cast<uint32_t>(combinedShaderStages & reflection[i].ShaderStage) != 0)
 		{
-			TP_ERROR(Log::RendererVulkanShaderPrefix,
+			TP_ERROR(Log::ShaderPrefix,
 			         "Duplicate shader stage was detected in shader reflection array.");
 			return nullptr;
 		}

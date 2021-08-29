@@ -2085,3 +2085,7 @@ SITREP 08/28/2021|21w34a2
     - Renderer Removed PushConstant usage ~<10 mins
     - Renderer Now uses a dynamic UBO for sending model matrices (currently limited to MaxUniformBufferRange drawcalls per frame) ~<20 mins
     - Tests3D Updated Shaders, now using dynamic UBO ~<15 mins
+
+SITREP 08/29/2021|21w34a3
+    - Changed TRAP Engine version to 21w34a3(0.7.77)
+    - Made ENABLE_GRAPHICS_DEBUG and VERBOSE_GRAPHICS_DEBUG more useful ~<20 mins

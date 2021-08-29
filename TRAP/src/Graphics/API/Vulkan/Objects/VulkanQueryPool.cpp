@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 	TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice();
 	TRAP_ASSERT(device);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Creating QueryPool");
 #endif
 
@@ -30,7 +30,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 {
 	TRAP_ASSERT(m_vkQueryPool);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Destroying QueryPool");
 #endif
 

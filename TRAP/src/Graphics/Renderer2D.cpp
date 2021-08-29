@@ -63,7 +63,9 @@ void TRAP::Graphics::Renderer2D::Init()
 {
 	TP_PROFILE_FUNCTION();
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
+#endif
 
 	/*s_data.QuadVertexArray = VertexArray::Create();
 	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex),
@@ -126,7 +128,9 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
+#endif
 	/*s_data.CameraUniformBuffer.reset();
 	s_data.TextureShader.reset();
 	s_data.WhiteTexture.reset();

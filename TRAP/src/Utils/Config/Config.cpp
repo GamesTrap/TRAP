@@ -17,7 +17,7 @@ TRAP::Utils::Config::Config()
 bool TRAP::Utils::Config::LoadFromFile(const std::string_view file)
 {
 	TP_PROFILE_FUNCTION();
-	
+
 	m_data.clear();
 
 	//Load
@@ -55,9 +55,9 @@ bool TRAP::Utils::Config::SaveToFile(const std::string_view file)
 
 	if(!m_isChanged)
 		return true;
-	
+
 	m_isChanged = false;
-	
+
 	//Write
 	std::vector<std::pair<std::string, std::string>> fileContents;
 
@@ -124,7 +124,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::string_view file)
 bool TRAP::Utils::Config::IsChanged() const
 {
 	TP_PROFILE_FUNCTION();
-	
+
 	return m_isChanged;
 }
 
@@ -146,7 +146,7 @@ void TRAP::Utils::Config::Print() const
 //containing the key and the value.
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
 std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view& line) const
-{	
+{
 	if (!line.empty() && line[0] != '#')
 	{
 		std::size_t index = 0;

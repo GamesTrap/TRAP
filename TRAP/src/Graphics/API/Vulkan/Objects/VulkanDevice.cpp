@@ -21,7 +21,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 {
 	TRAP_ASSERT(m_physicalDevice, "physicalDevice is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
 #endif
 
@@ -126,7 +126,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
 	TRAP_ASSERT(m_device);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif
 	vkDestroyDevice(m_device, nullptr);
@@ -159,17 +159,17 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysic
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 {
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
 	         static_cast<uint32_t>(m_graphicsQueueFamilyIndex));
 #endif
 	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, m_computeQueueFamilyIndex, m_computeQueueIndex);
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ",
 	         static_cast<uint32_t>(m_computeQueueFamilyIndex));
 #endif
 	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, m_transferQueueFamilyIndex, m_transferQueueIndex);
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ",
 	         static_cast<uint32_t>(m_transferQueueFamilyIndex));
 #endif

@@ -22,7 +22,9 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 
 		result->m_samplerDesc = desc;
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::SamplerPrefix, "Caching Sampler");
+#endif
 		s_cachedSamplers[desc] = result;
 
 		return result;

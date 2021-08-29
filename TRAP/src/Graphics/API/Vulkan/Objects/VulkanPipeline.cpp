@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 {
 	TRAP_ASSERT(m_device);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Creating Pipeline");
 #endif
 
@@ -57,7 +57,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(m_vkPipeline);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
 #endif
 

@@ -24,7 +24,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader: \"", m_name, "\"");
 #endif
 
@@ -208,7 +208,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Destroying Shader: \"", m_name, "\"");
 #endif
 

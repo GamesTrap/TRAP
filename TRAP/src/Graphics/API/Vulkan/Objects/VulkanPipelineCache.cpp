@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 {
 	TRAP_ASSERT(m_device);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
 #endif
 
@@ -28,7 +28,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
 	TRAP_ASSERT(m_cache);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Destroying PipelineCache");
 #endif
 

@@ -110,8 +110,6 @@ namespace TRAP::Utils
 		void Print() const;
 
 	private:
-		//Return the string in the type of T
-
 		/// <summary>
 		/// Convert a string to the given type.
 		/// </summary>

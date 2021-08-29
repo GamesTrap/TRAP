@@ -20,7 +20,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Creating RenderPass");
 #endif
 
@@ -110,7 +110,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
 	TRAP_ASSERT(m_renderPass);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");
 #endif
 	vkDestroyRenderPass(m_device->GetVkDevice(), m_renderPass, nullptr);

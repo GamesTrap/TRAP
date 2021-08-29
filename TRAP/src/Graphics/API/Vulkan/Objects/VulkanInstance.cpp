@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 			m_instanceExtensions.erase(m_instanceExtensions.begin() + i);
 	}
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");
 #endif
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -74,7 +74,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
 	TRAP_ASSERT(m_instance);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
 #endif
 	vkDestroyInstance(m_instance, nullptr);

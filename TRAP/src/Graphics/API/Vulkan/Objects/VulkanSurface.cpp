@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 	TRAP_ASSERT(device, "device is nullptr");
 	TRAP_ASSERT(window, "window is nullptr");
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
 #endif
 
@@ -48,7 +48,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
 	TRAP_ASSERT(m_surface);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");
 #endif
 

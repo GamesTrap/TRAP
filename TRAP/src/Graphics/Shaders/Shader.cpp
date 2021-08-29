@@ -726,7 +726,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 		{
 		case 0:
 		{
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Vertex Shader");
+		#endif
 			glslShaders[0] = PreProcessGLSLForConversion(shaders[0].data(), RendererAPI::ShaderStage::Vertex,
 															preProcessedSource);
 			if (preProcessedSource.empty())
@@ -735,15 +737,21 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 			const char* preProcessedCStr = preProcessedSource.c_str();
 			glslShaders[0]->setStrings(&preProcessedCStr, 1);
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Vertex Shader");
+		#endif
 			if (!ParseGLSLang(glslShaders[0].get()))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Vertex Shader");
+		#endif
 			if (!LinkGLSLang(glslShaders[0].get(), program))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
 			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[0].get(),
 																RendererAPI::ShaderStage::Vertex, program);
 
@@ -753,7 +761,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 		case 1:
 		{
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing TessellationControl Shader");
+		#endif
 			glslShaders[1] = PreProcessGLSLForConversion(shaders[1].data(),
 															RendererAPI::ShaderStage::TessellationControl,
 															preProcessedSource);
@@ -763,15 +773,21 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 			const char* preProcessedCStr = preProcessedSource.c_str();
 			glslShaders[1]->setStrings(&preProcessedCStr, 1);
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing TessellationControl Shader");
+		#endif
 			if (!ParseGLSLang(glslShaders[1].get()))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking TessellationControl Shader");
+		#endif
 			if (!LinkGLSLang(glslShaders[1].get(), program))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
 			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[1].get(),
 																RendererAPI::ShaderStage::TessellationControl,
 																program);
@@ -782,7 +798,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 		case 2:
 		{
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing TessellationEvaluation Shader");
+		#endif
 			glslShaders[2] = PreProcessGLSLForConversion(shaders[2].data(),
 															RendererAPI::ShaderStage::TessellationEvaluation,
 															preProcessedSource);
@@ -792,15 +810,21 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 			const char* preProcessedCStr = preProcessedSource.c_str();
 			glslShaders[2]->setStrings(&preProcessedCStr, 1);
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing TessellationEvaluation Shader");
+		#endif
 			if (!ParseGLSLang(glslShaders[2].get()))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking TessellationEvaluation Shader");
+		#endif
 			if (!LinkGLSLang(glslShaders[2].get(), program))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
 			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[2].get(),
 																RendererAPI::ShaderStage::TessellationEvaluation,
 																program);
@@ -811,7 +835,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 		case 3:
 		{
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Geometry Shader");
+		#endif
 			glslShaders[3] = PreProcessGLSLForConversion(shaders[3].data(), RendererAPI::ShaderStage::Geometry,
 															preProcessedSource);
 			if (preProcessedSource.empty())
@@ -820,15 +846,21 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 			const char* preProcessedCStr = preProcessedSource.c_str();
 			glslShaders[3]->setStrings(&preProcessedCStr, 1);
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Geometry Shader");
+		#endif
 			if (!ParseGLSLang(glslShaders[3].get()))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Geometry Shader");
+		#endif
 			if (!LinkGLSLang(glslShaders[3].get(), program))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
 			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[3].get(),
 																RendererAPI::ShaderStage::Geometry, program);
 
@@ -838,7 +870,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 		case 4:
 		{
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Fragment Shader");
+		#endif
 			glslShaders[4] = PreProcessGLSLForConversion(shaders[4].data(),
 															RendererAPI::ShaderStage::Fragment, preProcessedSource);
 			if (preProcessedSource.empty())
@@ -847,15 +881,21 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 			const char* preProcessedCStr = preProcessedSource.c_str();
 			glslShaders[4]->setStrings(&preProcessedCStr, 1);
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Fragment Shader");
+		#endif
 			if (!ParseGLSLang(glslShaders[4].get()))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Fragment Shader");
+		#endif
 			if (!LinkGLSLang(glslShaders[4].get(), program))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
 			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[4].get(),
 																RendererAPI::ShaderStage::Fragment, program);
 
@@ -865,7 +905,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 		case 5:
 		{
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Compute Shader");
+		#endif
 			glslShaders[5] = PreProcessGLSLForConversion(shaders[5].data(),
 															RendererAPI::ShaderStage::Compute, preProcessedSource);
 			if (preProcessedSource.empty())
@@ -874,15 +916,21 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 			const char* preProcessedCStr = preProcessedSource.c_str();
 			glslShaders[5]->setStrings(&preProcessedCStr, 1);
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Compute Shader");
+		#endif
 			if (!ParseGLSLang(glslShaders[5].get()))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Compute Shader");
+		#endif
 			if (!LinkGLSLang(glslShaders[5].get(), program))
 				return{};
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
 			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[5].get(),
 																RendererAPI::ShaderStage::Compute,
 																program);
@@ -974,7 +1022,10 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* s
 
 TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(const std::vector<uint32_t>& SPIRV)
 {
+#ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
+#endif
+
 	RendererAPI::BinaryShaderDesc desc{};
 	uint32_t index = 0;
 	const uint32_t SPIRVSubShaderCount = SPIRV[index++];

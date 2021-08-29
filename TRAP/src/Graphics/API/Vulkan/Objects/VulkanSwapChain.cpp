@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
 #endif
 
@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
 	TRAP_ASSERT(m_swapChain);
 
-#ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
 #endif
 

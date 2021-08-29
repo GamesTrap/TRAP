@@ -128,7 +128,7 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 		s_RenderAPI = RenderAPI::Vulkan;
 		return;
 	}
-	TP_DEBUG(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
+	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
