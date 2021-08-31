@@ -85,6 +85,8 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
 	TP_PROFILE_FUNCTION();
 
+	s_currentDrawCalls = 0;
+
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
 	s_uniformBuffer->SetData(s_sceneData.get(), sizeof(SceneData));
@@ -140,7 +142,6 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 		shader->UseUBO(0, s_uniformBuffer.get());
 		shader->Use();
 	}
-	//TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 
 	RenderCommand::Draw(vertexBuffer->GetCount());
 	++s_currentDrawCalls;
@@ -176,7 +177,6 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 		shader->UseUBO(0, s_uniformBuffer.get());
 		shader->Use();
 	}
-	//TRAP::Graphics::RenderCommand::SetPushConstants("ModelRootConstant", &transform);
 	indexBuffer->Use();
 
 	RenderCommand::DrawIndexed(indexBuffer->GetCount());

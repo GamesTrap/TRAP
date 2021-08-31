@@ -2089,3 +2089,8 @@ SITREP 08/28/2021|21w34a2
 SITREP 08/29/2021|21w34a3
     - Changed TRAP Engine version to 21w34a3(0.7.77)
     - Made ENABLE_GRAPHICS_DEBUG and VERBOSE_GRAPHICS_DEBUG more useful ~<20 mins
+
+SITREP 08/31/2021|21w35a1
+    - Changed TRAP Engine version to 21w35a1(0.7.78)
+    - Renderer Added missing draw call reset ~<5 mins
+    - Sandbox Updated Shaders using new Renderer UBO ~<10 mins
