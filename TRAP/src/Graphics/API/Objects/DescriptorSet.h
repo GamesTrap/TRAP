@@ -8,12 +8,12 @@ namespace TRAP::Graphics
 	class DescriptorSet
 	{
 	public:
-		virtual ~DescriptorSet() = default;
+		virtual ~DescriptorSet();
 
 		virtual void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) = 0;
 
 	protected:
-		DescriptorSet() = default;
+		DescriptorSet();
 	};
 }
 

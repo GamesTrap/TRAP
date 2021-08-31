@@ -4,6 +4,24 @@
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 #include "VFS/VFS.h"
 
+TRAP::Graphics::PipelineCache::PipelineCache()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::PipelineCache::~PipelineCache()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheDesc& desc)
 {
 	switch(RendererAPI::GetRenderAPI())

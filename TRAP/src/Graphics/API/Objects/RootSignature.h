@@ -9,7 +9,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
 
-		virtual ~RootSignature() = default;
+		virtual ~RootSignature();
 
 		virtual RendererAPI::PipelineType GetPipelineType() const = 0;
 		virtual uint32_t GetDescriptorCount() const = 0;

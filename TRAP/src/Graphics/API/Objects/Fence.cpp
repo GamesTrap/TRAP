@@ -23,7 +23,20 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 
 TRAP::Graphics::Fence::Fence()
 	: m_submitted(false)
-{}
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Fence::~Fence()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

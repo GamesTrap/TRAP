@@ -9,7 +9,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Buffer> Create(const RendererAPI::BufferDesc& desc);
 
-		virtual ~Buffer() = default;
+		virtual ~Buffer();
 
 		virtual uint64_t GetSize() const = 0;
 		virtual RendererAPI::DescriptorType GetDescriptors() const = 0;

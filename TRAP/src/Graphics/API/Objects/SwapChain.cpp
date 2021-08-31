@@ -37,8 +37,21 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapch
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::SwapChain::SwapChain()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSwapChainPrefix, "Creating SwapChain");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::SwapChain::~SwapChain()
 {
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
+#endif
+
 	m_renderTargets.clear();
 }
 

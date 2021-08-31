@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Semaphore> Create();
 
-		virtual ~Semaphore() = default;
+		virtual ~Semaphore();
 
 		virtual bool IsSignaled() const;
 

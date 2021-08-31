@@ -10,6 +10,7 @@
 #include "VulkanBuffer.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/Textures/TextureBase.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanRootSignature.h"
 #include "VulkanDevice.h"

@@ -23,7 +23,20 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 
 TRAP::Graphics::DescriptorPool::DescriptorPool()
 	: m_numDescriptorSets()
-{}
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::DescriptorPool::~DescriptorPool()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

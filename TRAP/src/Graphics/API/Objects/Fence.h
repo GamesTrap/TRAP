@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Fence> Create();
 
-		virtual ~Fence() = default;
+		virtual ~Fence();
 
 		virtual bool IsSubmitted() const;
 

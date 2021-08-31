@@ -10,7 +10,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Queue> Create(const RendererAPI::QueueDesc& desc);
 
-		virtual ~Queue() = default;
+		virtual ~Queue();
 
 		virtual void WaitQueueIdle() const = 0;
 
@@ -19,7 +19,7 @@ namespace TRAP::Graphics
 		virtual RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const = 0;
 
 	protected:
-		Queue() = default;
+		Queue();
 
 		//No Graphic API independent data
 	};

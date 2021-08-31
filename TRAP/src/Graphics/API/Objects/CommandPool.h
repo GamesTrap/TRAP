@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<CommandPool> Create(const RendererAPI::CommandPoolDesc& desc);
 
-		virtual ~CommandPool() = default;
+		virtual ~CommandPool();
 
 		virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
 		virtual void FreeCommandBuffer(CommandBuffer* cmdBuffer) = 0;
@@ -20,7 +20,7 @@ namespace TRAP::Graphics
 		virtual void Reset() const = 0;
 
 	protected:
-		CommandPool() = default;
+		CommandPool();
 
 		std::vector<TRAP::Scope<CommandBuffer>> m_commandBuffers;
 

@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
 
-		virtual ~RenderTarget() = default;
+		virtual ~RenderTarget();
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;

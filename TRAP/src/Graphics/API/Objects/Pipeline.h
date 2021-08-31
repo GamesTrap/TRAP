@@ -10,10 +10,10 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
 
-		virtual ~Pipeline() = default;
+		virtual ~Pipeline();
 
 	protected:
-		Pipeline() = default;
+		Pipeline();
 
 		//No Graphic API independent data
 	};

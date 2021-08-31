@@ -16,7 +16,7 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Sampler> Create(const SamplerDesc& desc);
 
-		virtual ~Sampler() = default;
+		virtual ~Sampler();
 
 		FilterType GetMinFilter() const;
 		FilterType GetMagFilter() const;
@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 		static void ClearCache();
 
 	protected:
-		Sampler() = default;
+		Sampler();
 
 	private:
 		static std::unordered_map<SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;

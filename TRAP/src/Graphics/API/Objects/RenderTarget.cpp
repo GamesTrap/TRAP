@@ -17,7 +17,20 @@ TRAP::Graphics::RenderTarget::RenderTarget()
 	  m_sampleQuality(),
 	  m_format(),
 	  m_sampleCount()
-{}
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererRenderTargetPrefix, "Creating RenderTarget");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RenderTarget::~RenderTarget()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererRenderTargetPrefix, "Destroying RenderTarget");
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

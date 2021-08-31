@@ -5,7 +5,20 @@
 
 TRAP::Graphics::RootSignature::RootSignature()
 	: m_pipelineType(), m_descriptorNameToIndexMap(nullptr)
-{}
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererRootSignaturePrefix, "Creating RootSignature");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RootSignature::~RootSignature()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererRootSignaturePrefix, "Destroying RootSignature");
+#endif
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -8,6 +8,24 @@ std::unordered_map<TRAP::Graphics::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sample
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::Sampler::Sampler()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSamplerPrefix, "Creating Sampler");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Sampler::~Sampler()
+{
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const SamplerDesc& desc)
 {
 	//Try to use cached Sampler
@@ -23,7 +41,7 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 		result->m_samplerDesc = desc;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::SamplerPrefix, "Caching Sampler");
+		TP_DEBUG(Log::RendererSamplerPrefix, "Caching Sampler");
 #endif
 		s_cachedSamplers[desc] = result;
 

@@ -2094,3 +2094,4 @@ SITREP 08/31/2021|21w35a1
     - Changed TRAP Engine version to 21w35a1(0.7.78)
     - Renderer Added missing draw call reset ~<5 mins
     - Sandbox Updated Shaders using new Renderer UBO ~<10 mins
+    - Better utilization of ENABLE_GRAPHICS_DEBUG ~<15 mins

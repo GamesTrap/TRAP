@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 		virtual void ToggleVSync() = 0;
 
 	protected:
-		SwapChain() = default;
+		SwapChain();
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;

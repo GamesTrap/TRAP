@@ -17,7 +17,7 @@ namespace TRAP::Graphics
 	class CommandBuffer
 	{
 	public:
-		virtual ~CommandBuffer() = default;
+		virtual ~CommandBuffer();
 
 		virtual TRAP::Ref<Queue> GetQueue() const;
 
