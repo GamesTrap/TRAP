@@ -118,6 +118,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
 	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
 	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
+	RendererAPI::GPUSettings.MaxVertexInputAttributes = m_physicalDeviceProperties.limits.maxVertexInputAttributes;
 	RendererAPI::GPUSettings.MultiDrawIndirect = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1u;
 	RendererAPI::GPUSettings.MaxAnisotropy = m_physicalDeviceProperties.limits.maxSamplerAnisotropy;
 	RendererAPI::GPUSettings.MaxImageDimension2D = m_physicalDeviceProperties.limits.maxImageDimension2D;

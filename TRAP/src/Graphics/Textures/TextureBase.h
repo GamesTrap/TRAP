@@ -27,6 +27,8 @@ namespace TRAP::Graphics
     protected:
         TextureBase() = default;
 
+		static bool ValidateLimits(const RendererAPI::TextureDesc& desc);
+
         //Current state of the buffer
 		uint32_t m_width;
 		uint32_t m_height;

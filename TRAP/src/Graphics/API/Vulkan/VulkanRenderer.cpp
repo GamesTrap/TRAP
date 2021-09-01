@@ -923,18 +923,6 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexArray)
-{
-}*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 const std::string& TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
 	return m_rendererTitle;

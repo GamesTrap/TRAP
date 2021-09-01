@@ -199,15 +199,15 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 		TRAP_ASSERT(stageCount != 0);
 
 		uint32_t inputBindingCount = 0;
-		std::array<VkVertexInputBindingDescription, 15> inputBindings{};
+		std::vector<VkVertexInputBindingDescription> inputBindings(RendererAPI::GPUSettings.MaxVertexInputBindings);
 		uint32_t inputAttributeCount = 0;
-		std::array<VkVertexInputAttributeDescription, 15> inputAttributes{};
+		std::vector<VkVertexInputAttributeDescription> inputAttributes(RendererAPI::GPUSettings.MaxVertexInputAttributes);
 
 		//Make sure there's attributes
 		if(vertexLayout != nullptr)
 		{
-			//Ignore everything that's beyond 15(Max Vertex Attributes)
-			const uint32_t attribCount = vertexLayout->AttributeCount > 15 ? 15 : vertexLayout->AttributeCount;
+			//Ignore everything that's beyond Max Vertex Attributes limit
+			const uint32_t attribCount = TRAP::Math::Min(vertexLayout->AttributeCount, RendererAPI::GPUSettings.MaxVertexInputAttributes);
 			uint32_t bindingValue = std::numeric_limits<uint32_t>::max();
 
 			//Initial values

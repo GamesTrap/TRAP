@@ -1299,6 +1299,7 @@ namespace TRAP::Graphics
 			uint32_t UploadBufferTextureAlignment;
 			uint32_t UploadBufferTextureRowAlignment;
 			uint32_t MaxVertexInputBindings;
+			uint32_t MaxVertexInputAttributes;
 			uint32_t MaxRootSignatureDWORDS;
 			uint32_t WaveLaneCount;
 			TRAP::Graphics::RendererAPI::WaveOpsSupportFlags WaveOpsSupportFlags;

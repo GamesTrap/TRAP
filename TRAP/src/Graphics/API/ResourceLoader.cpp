@@ -413,6 +413,9 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 		//by the user in the texture description
 		*textureDesc.Texture = TRAP::Graphics::TextureBase::Create(*textureDesc.Desc);
 
+		if(!(*textureDesc.Texture))
+			return;
+
 		//Transition texture to desired state for Vulkan since all Vulkan resources are created in undefined state
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		{

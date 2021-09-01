@@ -8,12 +8,8 @@ TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::TextureBase::Create(const
 {
     TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
 
-    if(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1)
-	{
-		TP_ERROR(Log::TextureBasePrefix, "Multi-Sampled textures cannot have mip maps");
-		TRAP_ASSERT(false);
-		return nullptr;
-	}
+    if(!ValidateLimits(desc))
+        return nullptr;
 
     switch(TRAP::Graphics::RendererAPI::GetRenderAPI())
     {
@@ -104,4 +100,54 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::TextureBase::GetUAV(
 bool TRAP::Graphics::TextureBase::OwnsImage() const
 {
     return m_ownsImage;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::TextureBase::ValidateLimits(const RendererAPI::TextureDesc& desc)
+{
+    if(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1)
+	{
+		TP_ERROR(Log::TextureBasePrefix, "Multi-Sampled textures cannot have mip maps!");
+		TRAP_ASSERT(false);
+		return false;
+	}
+    bool cubeMapRequired = (desc.Descriptors & RendererAPI::DescriptorType::TextureCube) ==
+	                        RendererAPI::DescriptorType::TextureCube;
+    if(!cubeMapRequired)
+    {
+        if(desc.Width > RendererAPI::GPUSettings.MaxImageDimension2D)
+        {
+            TP_ERROR(Log::TextureBasePrefix, "Texture Width: ", desc.Width,
+                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
+            TRAP_ASSERT(false);
+            return false;
+        }
+        if(desc.Height > RendererAPI::GPUSettings.MaxImageDimension2D)
+        {
+            TP_ERROR(Log::TextureBasePrefix, "Texture Height: ", desc.Width,
+                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
+            TRAP_ASSERT(false);
+            return false;
+        }
+    }
+    else
+    {
+        if(desc.Width > RendererAPI::GPUSettings.MaxImageDimensionCube)
+        {
+            TP_ERROR(Log::TextureBasePrefix, "Texture Width: ", desc.Width,
+                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
+            TRAP_ASSERT(false);
+            return false;
+        }
+        if(desc.Height > RendererAPI::GPUSettings.MaxImageDimensionCube)
+        {
+            TP_ERROR(Log::TextureBasePrefix, "Texture Height: ", desc.Width,
+                     " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
+            TRAP_ASSERT(false);
+            return false;
+        }
+    }
+
+    return true;
 }

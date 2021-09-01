@@ -88,8 +88,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref
 	const RendererAPI::DescriptorInfo* desc = rSig->GetDescriptor(name);
 
 	if(!desc)
+	{
+		TP_ERROR(Log::RendererVulkanCommandBufferPrefix, "Unable to find PushConstants with name: ", name, "!");
 		return;
-	//TRAP_ASSERT(desc);
+	}
+
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant);
 
 	vkCmdPushConstants(m_vkCommandBuffer, rSig->GetVkPipelineLayout(), desc->VkStages, 0, desc->Size, constants);
@@ -108,8 +111,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 	const RendererAPI::DescriptorInfo* desc = &rootSignature->GetDescriptors()[paramIndex];
 
 	if(!desc)
+	{
+		TP_ERROR(Log::RendererVulkanCommandBufferPrefix, "Unable to find PushConstants with RootSignature index: ", paramIndex, "!");
 		return;
-	//TRAP_ASSERT(desc);
+	}
+
 	TRAP_ASSERT(desc->Type == RendererAPI::DescriptorType::RootConstant);
 
 	vkCmdPushConstants(m_vkCommandBuffer,
