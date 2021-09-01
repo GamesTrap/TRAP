@@ -2095,3 +2095,5 @@ SITREP 08/31/2021|21w35a1
     - Renderer Added missing draw call reset ~<5 mins
     - Sandbox Updated Shaders using new Renderer UBO ~<10 mins
     - Better utilization of ENABLE_GRAPHICS_DEBUG ~<15 mins
+    - Increased Vertex Input Attributes & Bindings to be GPU limited ~<10 mins
+    - TextureBase Added Image dimension validation ~<10 mins
