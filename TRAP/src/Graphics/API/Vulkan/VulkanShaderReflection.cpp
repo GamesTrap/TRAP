@@ -46,7 +46,11 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
 {
 	bool filter = false;
 
-	//Remove used resources
+	//Check for invalid PushConstant
+	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
+		resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize);
+
+	//Remove unused resources
 	filter = filter || (resource.IsUsed == false);
 
 	//Remove stage outputs
@@ -86,6 +90,18 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	{
 		SPIRVTools::Resource& resource = cc.ShaderResources[i];
 
+		if(!resource.IsUsed)
+		{
+			TP_WARN(TRAP::Log::ShaderSPIRVPrefix, "Found unused resource with name: ", resource.Name, "!");
+		}
+		if(resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
+			resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize)
+		{
+			TRAP_ASSERT(false);
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Found PushConstants with invalid size: ", resource.Size,
+				     " max allowed size: ", RendererAPI::GPUSettings.MaxPushConstantSize, "!");
+		}
+		
 		//Filter out what we don't use
 		if(!FilterResource(resource, shaderStage))
 		{

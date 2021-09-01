@@ -114,7 +114,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	}
 
 	RendererAPI::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
-	RendererAPI::GPUSettings.MaxUniformBufferRange = static_cast<uint32_t>(m_physicalDeviceProperties.limits.maxUniformBufferRange);
+	RendererAPI::GPUSettings.MaxUniformBufferRange = m_physicalDeviceProperties.limits.maxUniformBufferRange;
 	RendererAPI::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
 	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
 	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
@@ -124,6 +124,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxImageDimension2D = m_physicalDeviceProperties.limits.maxImageDimension2D;
 	RendererAPI::GPUSettings.MaxImageDimensionCube = m_physicalDeviceProperties.limits.maxImageDimensionCube;
 	RendererAPI::GPUSettings.FillModeNonSolid = m_physicalDeviceFeatures.fillModeNonSolid;
+	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
 
 	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
 	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;

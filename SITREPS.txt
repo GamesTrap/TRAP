@@ -2097,3 +2097,7 @@ SITREP 08/31/2021|21w35a1
     - Better utilization of ENABLE_GRAPHICS_DEBUG ~<15 mins
     - Increased Vertex Input Attributes & Bindings to be GPU limited ~<10 mins
     - TextureBase Added Image dimension validation ~<10 mins
+
+SITREP 09/01/2021|21w35a2
+    - Changed TRAP Engine version to 21w35a2(0.7.79)
+    - Added error message for using a push constant bigger than GPU allows ~<20 mins

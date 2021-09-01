@@ -1311,6 +1311,7 @@ namespace TRAP::Graphics
 			uint32_t MaxImageDimension2D;
 			uint32_t MaxImageDimensionCube;
 			bool FillModeNonSolid;
+			uint32_t MaxPushConstantSize;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
