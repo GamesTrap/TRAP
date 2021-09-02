@@ -98,11 +98,11 @@ void Cube3D::OnAttach()
     m_cubeVertexBuffer = TRAP::Graphics::VertexBuffer::Create(cubeVertices.data(),
                                                               static_cast<uint32_t>(cubeVertices.size()) *
                                                               sizeof(float),
-                                                              TRAP::Graphics::UpdateFrequency::None);
+                                                              TRAP::Graphics::UpdateFrequency::Static);
     m_cubeIndexBuffer = TRAP::Graphics::IndexBuffer::Create(cubeIndices.data(),
                                                             static_cast<uint32_t>(cubeIndices.size()) *
                                                             sizeof(uint16_t),
-                                                            TRAP::Graphics::UpdateFrequency::None);
+                                                            TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout cubeLayout =
     {
     	{TRAP::Graphics::ShaderDataType::Float3, "Position"},
@@ -159,7 +159,7 @@ void Cube3D::OnAttach()
     m_skyBoxVertexBuffer = TRAP::Graphics::VertexBuffer::Create(skyBoxVertices.data(),
                                                                 static_cast<uint32_t>(skyBoxVertices.size()) *
                                                                 sizeof(float),
-                                                                TRAP::Graphics::UpdateFrequency::None);
+                                                                TRAP::Graphics::UpdateFrequency::Static);
     const TRAP::Graphics::VertexBufferLayout skyBoxLayout =
     {
         {TRAP::Graphics::ShaderDataType::Float3, "Position"}
@@ -187,9 +187,9 @@ void Cube3D::OnAttach()
     m_diffuseReflectionDataBuffer.DiffuseReflectivity = { 0.9f, 0.5f, 0.3f };
     m_diffuseReflectionUniformBuffer = TRAP::Graphics::UniformBuffer::Create(&m_diffuseReflectionDataBuffer,
                                                                              sizeof(DiffuseReflectionDataBuffer),
-                                                                             TRAP::Graphics::UpdateFrequency::PerFrame);
+                                                                             TRAP::Graphics::UpdateFrequency::Dynamic);
     m_diffuseReflectionUniformBuffer->AwaitLoading();
-    TRAP::Graphics::ShaderManager::Get("Diffuse Reflection")->UseUBO(1, m_diffuseReflectionUniformBuffer.get());
+    TRAP::Graphics::ShaderManager::Get("Diffuse Reflection")->UseUBO(1, 2, m_diffuseReflectionUniformBuffer.get());
 
     //Load phong lightning UniformBuffer
     m_phongLightningDataBuffer.LightPosition = inverseView * m_lightPosition;
@@ -202,9 +202,9 @@ void Cube3D::OnAttach()
     m_phongLightningDataBuffer.MaterialShininess = 100.0f;
     m_phongLightningUniformBuffer = TRAP::Graphics::UniformBuffer::Create(&m_phongLightningDataBuffer,
                                                                           sizeof(PhongLightningDataBuffer),
-                                                                          TRAP::Graphics::UpdateFrequency::PerFrame);
+                                                                          TRAP::Graphics::UpdateFrequency::Dynamic);
     m_phongLightningUniformBuffer->AwaitLoading();
-    TRAP::Graphics::ShaderManager::Get("Phong Lightning")->UseUBO(1, m_phongLightningUniformBuffer.get());
+    TRAP::Graphics::ShaderManager::Get("Phong Lightning")->UseUBO(1, 2, m_phongLightningUniformBuffer.get());
 
     //Wait for all pending resources (just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

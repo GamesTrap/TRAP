@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) override;
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) override;
-		void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
+		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
 		            uint64_t size, uint64_t offset) override;
 	};
 }

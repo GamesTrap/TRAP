@@ -30,9 +30,9 @@ void TRAP::Graphics::Renderer::Init()
 					                        sizeof(Math::Mat4)));
 
 	s_uniformBuffer = TRAP::Graphics::UniformBuffer::Create(s_sceneData.get(), sizeof(SceneData),
-															TRAP::Graphics::UpdateFrequency::PerFrame);
+															TRAP::Graphics::UpdateFrequency::Dynamic);
 	s_modelUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(TRAP::Math::Mat4) * s_maxDrawCalls,
-	                                                             TRAP::Graphics::UpdateFrequency::PerDraw);
+	                                                             TRAP::Graphics::UpdateFrequency::Dynamic);
 
 	Renderer2D::Init();
 }
@@ -135,11 +135,11 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->UseUBO(0, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
+		shader->UseUBO(1, 1, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
 		               s_currentDrawCalls * (sizeof(Math::Mat4) +
 					                         (RendererAPI::GPUSettings.UniformBufferAlignment -
 											  sizeof(Math::Mat4))));
-		shader->UseUBO(0, s_uniformBuffer.get());
+		shader->UseUBO(1, 0, s_uniformBuffer.get());
 		shader->Use();
 	}
 
@@ -170,11 +170,11 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->UseUBO(0, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
+		shader->UseUBO(1, 1, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
 		               s_currentDrawCalls * (sizeof(Math::Mat4) +
 					                         (RendererAPI::GPUSettings.UniformBufferAlignment -
 											  sizeof(Math::Mat4))));
-		shader->UseUBO(0, s_uniformBuffer.get());
+		shader->UseUBO(1, 0, s_uniformBuffer.get());
 		shader->Use();
 	}
 	indexBuffer->Use();

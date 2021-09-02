@@ -18,6 +18,7 @@ namespace TRAP::Graphics::API
 		uint8_t GetDynamicOffsetCount() const;
 		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
 		uint32_t GetMaxSets() const;
+		uint32_t GetSet() const;
 
 		void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) override;
 
@@ -28,7 +29,7 @@ namespace TRAP::Graphics::API
 		                    TRAP::Ref<VulkanRootSignature> rootSignature,
 		                    std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData,
 		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
-							RendererAPI::DescriptorUpdateFrequency updateFrequency);
+							uint32_t set);
 
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
 		TRAP::Ref<VulkanRootSignature> m_rootSignature;
@@ -38,7 +39,7 @@ namespace TRAP::Graphics::API
 		std::vector<VulkanRenderer::SizeOffset> m_dynamicSizeOffsets;
 		uint32_t m_maxSets;
 		uint8_t m_dynamicOffsetCount;
-		RendererAPI::DescriptorUpdateFrequency m_updateFrequency;
+		uint32_t m_set;
 
 		TRAP::Ref<VulkanDevice> m_device;
 	};

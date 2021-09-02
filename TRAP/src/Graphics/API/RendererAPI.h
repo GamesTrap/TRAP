@@ -390,13 +390,10 @@ namespace TRAP::Graphics
 
 		enum class DescriptorUpdateFrequency
 		{
-			None = 0,
-			PerFrame,
-			PerBatch,
-			PerDraw,
-
-			DESCRIPTOR_UPDATE_FREQUENCY_COUNT
+			Static = 0,
+			Dynamic
 		};
+		inline static constexpr uint32_t MaxDescriptorSets = 4;
 
 		enum class FilterType
 		{
@@ -860,7 +857,7 @@ namespace TRAP::Graphics
 			DescriptorType Type{};
 			API::ShaderReflection::TextureDimension Dimension{};
 			bool RootDescriptor{};
-			DescriptorUpdateFrequency UpdateFrequency{};
+			uint32_t Set{};
 			uint32_t Size{};
 			//Index in the descriptor set
 			uint32_t IndexInParent{};
@@ -875,7 +872,7 @@ namespace TRAP::Graphics
 		struct DescriptorSetDesc
 		{
 			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
-			DescriptorUpdateFrequency UpdateFrequency{};
+			uint32_t Set;
 			uint32_t MaxSets{};
 		};
 

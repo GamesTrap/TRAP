@@ -73,7 +73,7 @@ public:
 		m_indexedVertexBuffer = TRAP::Graphics::VertexBuffer::Create(indexedVertices.data(),
 																	 static_cast<uint32_t>(indexedVertices.size()) *
 																	 sizeof(uint32_t),
-																	 TRAP::Graphics::UpdateFrequency::None);
+																	 TRAP::Graphics::UpdateFrequency::Static);
 		m_indexedVertexBuffer->AwaitLoading();
 
 		const TRAP::Graphics::VertexBufferLayout layout =
@@ -91,7 +91,7 @@ public:
 		m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(),
 		                                                    static_cast<uint32_t>(indices.size()) *
 															sizeof(uint16_t),
-															TRAP::Graphics::UpdateFrequency::None);
+															TRAP::Graphics::UpdateFrequency::Static);
 		m_indexBuffer->AwaitLoading();
 
 		//Non-Indexed
@@ -111,7 +111,7 @@ public:
 		m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(),
 		 													  static_cast<uint32_t>(vertices.size()) *
 															  sizeof(uint32_t),
-															  TRAP::Graphics::UpdateFrequency::None);
+															  TRAP::Graphics::UpdateFrequency::Static);
 		m_vertexBuffer->AwaitLoading();
 		m_vertexBuffer->SetLayout(layout);
 

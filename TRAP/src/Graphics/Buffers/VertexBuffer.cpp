@@ -69,9 +69,8 @@ uint64_t TRAP::Graphics::VertexBuffer::GetCount() const
 
 TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const
 {
-	//TODO What about PerBatch & PerDraw
-	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::None :
-	                                                                                         UpdateFrequency::PerFrame;
+	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::Static :
+	                                                                                         UpdateFrequency::Dynamic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -118,12 +117,12 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(flo
 	TRAP::Scope<VertexBuffer> buffer = TRAP::Scope<VertexBuffer>(new VertexBuffer());
 
 	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                       RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::VertexBuffer;
 	desc.Desc.Size = size;
-	desc.Desc.Flags = (updateFrequency != UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::PersistentMap :
-	                                                               RendererAPI::BufferCreationFlags::None;
+	desc.Desc.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
+	                                                                 RendererAPI::BufferCreationFlags::None;
 	desc.Data = vertices;
 
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);

@@ -2100,4 +2100,10 @@ SITREP 08/31/2021|21w35a1
 
 SITREP 09/01/2021|21w35a2
     - Changed TRAP Engine version to 21w35a2(0.7.79)
-    - Added error message for using a push constant bigger than GPU allows ~<20 mins
+    - Added error message for using push constants bigger than GPU allows ~<20 mins
+
+SITREP 09/02/2021|21w35a3
+    - Changed TRAP Engine version to 21w35a3(0.7.80)
+    - Made Descriptor set independent from DescriptorUpdateFrequency ~<30 mins
+    - Sandbox Updated Shaders ~<15 mins
+    - Tests3D Updated Shaders ~<15 mins

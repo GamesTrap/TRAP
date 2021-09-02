@@ -31,7 +31,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Creating RootSignature");
 #endif
 
-	static constexpr uint32_t maxLayoutCount = static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT);
+	static constexpr uint32_t maxLayoutCount = RendererAPI::MaxDescriptorSets;
 	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
 	std::array<VkPushConstantRange,
 	           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
@@ -147,7 +147,6 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		RendererAPI::DescriptorInfo& descInfo = m_descriptors[i];
 		ShaderReflection::ShaderResource& res = shaderResources[i];
 		uint32_t setIndex = res.Set;
-		RendererAPI::DescriptorUpdateFrequency updateFreq = static_cast<RendererAPI::DescriptorUpdateFrequency>(setIndex);
 
 		//Copy the binding information generated from the shader reflection into the descriptor
 		descInfo.Reg = res.Reg;
@@ -191,7 +190,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			//Store the Vulkan related info in the descriptor to avoid constantly calling mapping functions
 			descInfo.VkType = binding.descriptorType;
 			descInfo.VkStages = binding.stageFlags;
-			descInfo.UpdateFrequency = updateFreq;
+			descInfo.Set = setIndex;
 
 			if (binding.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC)
 				layouts[setIndex].DynamicDescriptors.emplace_back(&descInfo);
@@ -296,8 +295,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Pipeline layout
 	std::array<VkDescriptorSetLayout, maxLayoutCount> descriptorSetLayouts{};
 	uint32_t descriptorSetLayoutCount = 0;
-	for(uint32_t i = 0;
-	    i < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++i)
+	for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 	{
 		if (m_vkDescriptorSetLayouts[i])
 			descriptorSetLayouts[descriptorSetLayoutCount++] = m_vkDescriptorSetLayouts[i];
@@ -310,9 +308,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	VkCall(vkCreatePipelineLayout(m_device->GetVkDevice(), &addInfo, nullptr, &m_pipelineLayout));
 
 	//Update templates
-	for(uint32_t setIndex = 0;
-	    setIndex < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT);
-		++setIndex)
+	for(uint32_t setIndex = 0; setIndex < RendererAPI::MaxDescriptorSets; ++setIndex)
 	{
 		if(m_vkDescriptorCounts[setIndex])
 		{
@@ -462,8 +458,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");
 #endif
 
-	for(uint32_t i = 0;
-	    i < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT); ++i)
+	for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 	{
 		vkDestroyDescriptorSetLayout(m_device->GetVkDevice(), m_vkDescriptorSetLayouts[i], nullptr);
 		if (m_updateTemplates[i] != VK_NULL_HANDLE)
@@ -494,8 +489,7 @@ VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout()
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const ->
-const std::array<VkDescriptorSetLayout,
-                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_vkDescriptorSetLayouts;
 }
@@ -503,8 +497,7 @@ const std::array<VkDescriptorSetLayout,
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const ->
-	const std::array<uint32_t,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint32_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_vkCumulativeDescriptorsCounts;
 }
@@ -512,8 +505,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts()
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
-	const std::array<uint16_t,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint16_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_vkDescriptorCounts;
 }
@@ -521,8 +513,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const ->
-	const std::array<uint8_t,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_vkDynamicDescriptorCounts;
 }
@@ -530,8 +521,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() co
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const ->
-	const std::array<uint8_t,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_vkRayTracingDescriptorCounts;
 }
@@ -539,8 +529,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts()
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
-	const std::array<VkDescriptorUpdateTemplate,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<VkDescriptorUpdateTemplate, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_updateTemplates;
 }
@@ -548,8 +537,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
 //-------------------------------------------------------------------------------------------------------------------//
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const ->
-	const std::array<VkDescriptorSet,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	const std::array<VkDescriptorSet, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_vkEmptyDescriptorSets;
 }
@@ -558,7 +546,7 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const 
 
 auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
 	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
-	                 static_cast<uint32_t>(TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>&
+	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
 	return m_updateTemplateData;
 }

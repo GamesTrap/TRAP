@@ -139,9 +139,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t 
 
 		//Vulkan requires to bind all descriptor sets up to the highest set number even if they are empty
 		//Example: If shader uses only set 2, we still have to bind empty sets for set = 0 and set = 1
-		for(uint32_t setIndex = 0;
-		    setIndex < static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT);
-			++setIndex)
+		for(uint32_t setIndex = 0; setIndex < RendererAPI::MaxDescriptorSets; ++setIndex)
 		{
 			if(rootSignature->GetVkEmptyDescriptorSets()[setIndex] != VK_NULL_HANDLE)
 				vkCmdBindDescriptorSets(m_vkCommandBuffer,
@@ -153,7 +151,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t 
 
 	vkCmdBindDescriptorSets(m_vkCommandBuffer,
 	                        VkPipelineBindPointTranslator[static_cast<uint32_t>(rootSignature->GetPipelineType())],
-	                        rootSignature->GetVkPipelineLayout(), static_cast<uint32_t>(dSet->GetUpdateFrequency()),
+	                        rootSignature->GetVkPipelineLayout(), dSet->GetSet(),
 	                        1, &dSet->GetVkDescriptorSets()[index], dSet->GetDynamicOffsetCount(),
 							dSet->GetDynamicOffsetCount() ? &dSet->GetDynamicSizeOffsets()[index].Offset : nullptr);
 }

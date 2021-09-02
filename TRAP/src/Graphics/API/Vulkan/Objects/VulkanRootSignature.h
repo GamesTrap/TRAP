@@ -16,22 +16,22 @@ namespace TRAP::Graphics::API
 		RendererAPI::PipelineType GetPipelineType() const override;
 		VkPipelineLayout GetVkPipelineLayout() const;
 		const std::array<VkDescriptorSetLayout,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkDescriptorSetLayouts() const;
+		                 RendererAPI::MaxDescriptorSets>& GetVkDescriptorSetLayouts() const;
 		const std::array<uint32_t,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkCumulativeDescriptorCounts() const;
+		                 RendererAPI::MaxDescriptorSets>& GetVkCumulativeDescriptorCounts() const;
 		const std::array<uint16_t,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkDescriptorCounts() const;
+		                 RendererAPI::MaxDescriptorSets>& GetVkDescriptorCounts() const;
 		const std::array<uint8_t,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkDynamicDescriptorCounts() const;
+		                 RendererAPI::MaxDescriptorSets>& GetVkDynamicDescriptorCounts() const;
 		const std::array<uint8_t,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkRayTracingDescriptorCounts() const;
+		                 RendererAPI::MaxDescriptorSets>& GetVkRayTracingDescriptorCounts() const;
 
 		const std::array<VkDescriptorUpdateTemplate,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetUpdateTemplates() const;
+		                 RendererAPI::MaxDescriptorSets>& GetUpdateTemplates() const;
 		const std::array<VkDescriptorSet,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkEmptyDescriptorSets() const;
+		                 RendererAPI::MaxDescriptorSets>& GetVkEmptyDescriptorSets() const;
 		const std::array<std::vector<VulkanRenderer::DescriptorUpdateData>,
-		                 static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetUpdateTemplateData() const;
+		                 RendererAPI::MaxDescriptorSets>& GetUpdateTemplateData() const;
 
 		RendererAPI::DescriptorInfo* GetDescriptor(const char* resName);
 		uint32_t GetDescriptorCount() const override;
@@ -41,22 +41,22 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 
 		std::array<VkDescriptorSetLayout,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkDescriptorSetLayouts;
+		           RendererAPI::MaxDescriptorSets> m_vkDescriptorSetLayouts;
 		std::array<uint32_t,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkCumulativeDescriptorsCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkCumulativeDescriptorsCounts;
 		std::array<uint16_t,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkDescriptorCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkDescriptorCounts;
 		std::array<uint8_t,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkDynamicDescriptorCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkDynamicDescriptorCounts;
 		std::array<uint8_t,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkRayTracingDescriptorCounts;
+		           RendererAPI::MaxDescriptorSets> m_vkRayTracingDescriptorCounts;
 		VkPipelineLayout m_pipelineLayout;
 		std::array<VkDescriptorUpdateTemplate,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_updateTemplates;
+		           RendererAPI::MaxDescriptorSets> m_updateTemplates;
 		std::array<VkDescriptorSet,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkEmptyDescriptorSets;
+		           RendererAPI::MaxDescriptorSets> m_vkEmptyDescriptorSets;
 		std::array<std::vector<VulkanRenderer::DescriptorUpdateData>,
-		           static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_updateTemplateData;
+		           RendererAPI::MaxDescriptorSets> m_updateTemplateData;
 		uint32_t m_vkPushConstantCount;
 	};
 }

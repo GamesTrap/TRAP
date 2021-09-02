@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		RendererAPI::ShaderStage GetShaderStages() const;
 
 		TRAP::Ref<RootSignature> GetRootSignature() const;
-		const DescriptorSets& GetDescriptorSets() const;
+		const std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const;
 
 		virtual void Use(Window* window = nullptr) = 0;
 		virtual void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture) = 0;
@@ -49,7 +49,7 @@ namespace TRAP::Graphics
 		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) = 0;
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) = 0;
-		virtual void UseUBO(uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
+		virtual void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
 							uint64_t size = 0, uint64_t offset = 0) = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath,
@@ -64,7 +64,7 @@ namespace TRAP::Graphics
 		std::string m_filepath;
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
-		DescriptorSets m_descriptorSets;
+		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets;
 
 	private:
 		static bool CheckSPIRVMagicNumber(std::string_view filePath);
@@ -88,13 +88,11 @@ namespace TRAP::Graphics
 
 		static bool s_glslangInitialized;
 
-		inline static std::array<Macro, 4> s_defaultShaderMacrosVulkan
+		inline static std::array<Macro, 2> s_defaultShaderMacrosVulkan
 		{
 			{
-				{"UpdateFreqNone", "set = 0"},
-				{"UpdateFreqPerFrame", "set = 1"},
-				{"UpdateFreqPerBatch", "set = 2"},
-				{"UpdateFreqPerDraw", "set = 3"}
+				{"UpdateFreqStatic", "set = 0"},
+				{"UpdateFreqDynamic", "set = 1"}
 			}
 		};
 

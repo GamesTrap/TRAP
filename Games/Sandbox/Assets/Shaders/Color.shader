@@ -4,13 +4,13 @@ layout(location = 1) in vec4 Color;
 
 layout(location = 2) out vec4 vColor;
 
-layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
+layout(std140, UpdateFreqDynamic, binding = 0) uniform MatrixBuffer
 {
 	uniform mat4 sys_ProjectionMatrix;
 	uniform mat4 sys_ViewMatrix;
 } Matrices;
 
-layout(UpdateFreqPerDraw, binding = 0) uniform ModelBufferDynamic
+layout(UpdateFreqDynamic, binding = 1) uniform ModelBufferDynamic
 {
 	uniform mat4 sys_ModelMatrix;
 } ModelMatrixDynamic;

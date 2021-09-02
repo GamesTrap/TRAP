@@ -1,28 +1,21 @@
-#language glsl
 #shader vertex
 layout(location = 0) in vec3 Position;
 layout(location = 3) in vec3 Normal;
 
 layout(location = 0) out vec3 LightIntensity;
 
-layout(std140, UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
+layout(std140, UpdateFreqDynamic, binding = 0) uniform MatrixBuffer
 {
 	uniform mat4 sys_ProjectionMatrix;
 	uniform mat4 sys_ViewMatrix;
-	//uniform mat4 sys_ModelMatrix;
 } Matrices;
 
-layout(UpdateFreqPerDraw, binding = 0) uniform ModelBufferDynamic
+layout(UpdateFreqDynamic, binding = 1) uniform ModelBufferDynamic
 {
 	uniform mat4 sys_ModelMatrix;
 } ModelMatrixDynamic;
 
-// layout(push_constant) uniform PushConstantBlock
-// {
-// 	uniform mat4 sys_ModelMatrix;
-// } ModelRootConstant;
-
-layout(std140, UpdateFreqPerFrame, binding = 1) uniform DataBuffer
+layout(std140, UpdateFreqDynamic, binding = 2) uniform DataBuffer
 {
     uniform vec4 LightPosition;
     uniform vec3 LightLa;
@@ -37,8 +30,6 @@ layout(std140, UpdateFreqPerFrame, binding = 1) uniform DataBuffer
 
 void GetCameraSpace(out vec3 normal, out vec3 position)
 {
-    // normal = normalize(mat3(Matrices.sys_ViewMatrix * ModelRootConstant.sys_ModelMatrix) * Normal);
-    // position = (Matrices.sys_ViewMatrix * ModelRootConstant.sys_ModelMatrix * vec4(Position, 1.0f)).xyz;
     normal = normalize(mat3(Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix) * Normal);
     position = (Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix * vec4(Position, 1.0f)).xyz;
 }
@@ -69,7 +60,6 @@ void main()
     //Evaluate the reflection model
     LightIntensity = PhongModel(cameraPosition, cameraNormal);
 
-	//gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * ModelRootConstant.sys_ModelMatrix * vec4(Position, 1.0f);
 	gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix * vec4(Position, 1.0f);
 }
 

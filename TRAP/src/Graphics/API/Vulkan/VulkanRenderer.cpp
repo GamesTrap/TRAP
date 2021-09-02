@@ -760,25 +760,13 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 			data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 			data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
 
-			//Bind Static Descriptors
-			if(shader->GetDescriptorSets().StaticDescriptors)
+			//Bind Descriptors
+			for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+			{
+				if(shader->GetDescriptorSets()[i])
 				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(0,
-				                                                                 *(shader->GetDescriptorSets().StaticDescriptors));
-
-			//Bind Per Frame Descriptors
-			if(shader->GetDescriptorSets().PerFrameDescriptors)
-				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
-				                                                                 *(shader->GetDescriptorSets().PerFrameDescriptors));
-
-			//Bind Per Batch Descriptors
-			if(shader->GetDescriptorSets().PerBatchDescriptors)
-				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
-				                                                                 *(shader->GetDescriptorSets().PerBatchDescriptors));
-
-			//Bind Per Draw Descriptors
-			if(shader->GetDescriptorSets().PerDrawDescriptors)
-				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
-				                                                                 *(shader->GetDescriptorSets().PerDrawDescriptors));
+				                                                                 *(shader->GetDescriptorSets()[i]));
+			}
 
 			return;
 		}
@@ -790,25 +778,13 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
 
-		//Bind Static Descriptors
-		if(shader->GetDescriptorSets().StaticDescriptors)
+		//Bind Descriptors
+		for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+		{
+			if(shader->GetDescriptorSets()[i])
 			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(0,
-			                                                                 *(shader->GetDescriptorSets().StaticDescriptors));
-
-		//Bind Per Frame Descriptors
-		if(shader->GetDescriptorSets().PerFrameDescriptors)
-			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
-			                                                                 *(shader->GetDescriptorSets().PerFrameDescriptors));
-
-		//Bind Per Batch Descriptors
-		if(shader->GetDescriptorSets().PerBatchDescriptors)
-			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
-																			 *(shader->GetDescriptorSets().PerBatchDescriptors));
-
-		//Bind Per Draw Descriptors
-		if(shader->GetDescriptorSets().PerDrawDescriptors)
-			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex,
-																			 *(shader->GetDescriptorSets().PerDrawDescriptors));
+																				*(shader->GetDescriptorSets()[i]));
+		}
 	}
 }
 

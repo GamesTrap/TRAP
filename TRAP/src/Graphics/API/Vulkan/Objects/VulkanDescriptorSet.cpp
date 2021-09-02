@@ -23,14 +23,14 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 	                                                          TRAP::Ref<VulkanRootSignature> rootSignature,
 	                                                          std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData,
 	                                                          const uint32_t maxSets, const uint8_t dynamicOffsetCount,
-	                                                          const RendererAPI::DescriptorUpdateFrequency updateFrequency)
+	                                                          const uint32_t set)
 		: m_vkDescriptorSetHandles(std::move(vkDescriptorSetHandles)),
 		  m_rootSignature(std::move(rootSignature)),
 		  m_updateData(std::move(updateData)),
 		  m_dynamicSizeOffsets(dynamicOffsetCount * maxSets),
 		  m_maxSets(maxSets),
 		  m_dynamicOffsetCount(dynamicOffsetCount),
-		  m_updateFrequency(updateFrequency),
+		  m_set(set),
 	      m_device(std::move(device))
 {
 	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
@@ -58,7 +58,8 @@ TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanD
 
 TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const
 {
-	return m_updateFrequency;
+	return m_set > 0 ? RendererAPI::DescriptorUpdateFrequency::Dynamic :
+	                   RendererAPI::DescriptorUpdateFrequency::Static;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -84,6 +85,13 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const
+{
+	return m_set;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
                                                       const std::vector<RendererAPI::DescriptorData>& params)
 {
@@ -104,7 +112,6 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 	TRAP_ASSERT(index < m_maxSets);
 
 	const TRAP::Ref<VulkanRootSignature>& rootSignature = m_rootSignature;
-	RendererAPI::DescriptorUpdateFrequency updateFreq = m_updateFrequency;
 	std::vector<VulkanRenderer::DescriptorUpdateData>& updateData = m_updateData[index];
 	bool update = false;
 
@@ -112,10 +119,10 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 	std::vector<VkWriteDescriptorSetAccelerationStructureKHR> rayTracingWritesKHR;
 	uint32_t rayTracingWriteCount = 0;
 
-	if(rootSignature->GetVkRayTracingDescriptorCounts()[static_cast<uint32_t>(updateFreq)])
+	if(rootSignature->GetVkRayTracingDescriptorCounts()[m_set])
 	{
-		rayTracingWrites.resize(rootSignature->GetVkRayTracingDescriptorCounts()[static_cast<uint32_t>(updateFreq)]);
-		rayTracingWritesKHR.resize(rootSignature->GetVkRayTracingDescriptorCounts()[static_cast<uint32_t>(updateFreq)]);
+		rayTracingWrites.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
+		rayTracingWritesKHR.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
 	}
 
 	for(uint32_t i = 0; i < params.size(); ++i)
@@ -141,8 +148,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		const RendererAPI::DescriptorType type = desc->Type;
 		const uint32_t arrayCount = TRAP::Math::Max(1U, param.Count);
 
-		VALIDATE_DESCRIPTOR(desc->UpdateFrequency == updateFreq, std::string("Descriptor ") +
-		                    std::string(desc->Name) + std::string(" - Mismatching update frequency and set index"));
+		VALIDATE_DESCRIPTOR(desc->Set == m_set, std::string("Descriptor ") +
+		                    std::string(desc->Name) + std::string(" - Mismatching set index"));
 
 		switch(type)
 		{
@@ -443,7 +450,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 	//If this was called to just update a dynamic offset skip the update
 	if (update)
 		vkUpdateDescriptorSetWithTemplate(m_device->GetVkDevice(), m_vkDescriptorSetHandles[index],
-		                                  rootSignature->GetUpdateTemplates()[static_cast<uint32_t>(updateFreq)],
+		                                  rootSignature->GetUpdateTemplates()[m_set],
 										  updateData.data());
 
 	//RayTracing Update Descriptor Set since it does not support update template

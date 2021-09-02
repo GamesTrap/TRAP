@@ -79,12 +79,12 @@ inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Ini
 	TRAP::Scope<IndexBuffer> buffer = TRAP::Scope<IndexBuffer>(new IndexBuffer(indexType));
 
 	RendererAPI::BufferLoadDesc desc{};
-	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::None) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
-	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
+	                                                                       RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::IndexBuffer;
 	desc.Desc.Size = size;
-	desc.Desc.Flags = (updateFrequency != UpdateFrequency::None) ? RendererAPI::BufferCreationFlags::PersistentMap :
-	                                                               RendererAPI::BufferCreationFlags::None;
+	desc.Desc.Flags = (updateFrequency != UpdateFrequency::Static) ? RendererAPI::BufferCreationFlags::PersistentMap :
+	                                                                 RendererAPI::BufferCreationFlags::None;
 	desc.Data = indices;
 
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
