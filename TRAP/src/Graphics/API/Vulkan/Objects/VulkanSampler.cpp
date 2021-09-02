@@ -19,23 +19,31 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");
 #endif
 
-	VkSamplerCreateInfo info = VulkanInits::SamplerCreateInfo(FilterTypeToVkFilter(desc.MagFilter),
-		                                                      FilterTypeToVkFilter(desc.MinFilter),
-		                                                      MipMapModeToVkMipMapMode(desc.MipMapMode),
-		                                                      AddressModeToVkAddressMode(desc.AddressU),
-		                                                      AddressModeToVkAddressMode(desc.AddressV),
-		                                                      AddressModeToVkAddressMode(desc.AddressW),
-		                                                      desc.MipLodBias,
-		                                                      desc.MaxAnisotropy,
-		                                                      VkComparisonFuncTranslator[static_cast<uint32_t>(desc.CompareFunc)]);
+	m_samplerDesc = desc;
 
-	if(!TRAP::Graphics::API::ImageFormatIsPlanar(desc.SamplerConversionDesc.Format))
+	if(m_samplerDesc.MaxAnisotropy > RendererAPI::GPUSettings.MaxAnisotropy)
+	{
+		TP_ERROR(Log::RendererVulkanSamplerPrefix, "Sampler Anisotropy is greater than the maximum supported by the GPU! Clamping to GPU maximum");
+		m_samplerDesc.MaxAnisotropy = RendererAPI::GPUSettings.MaxAnisotropy;
+	}
+
+	VkSamplerCreateInfo info = VulkanInits::SamplerCreateInfo(FilterTypeToVkFilter(m_samplerDesc.MagFilter),
+		                                                      FilterTypeToVkFilter(m_samplerDesc.MinFilter),
+		                                                      MipMapModeToVkMipMapMode(m_samplerDesc.MipMapMode),
+		                                                      AddressModeToVkAddressMode(m_samplerDesc.AddressU),
+		                                                      AddressModeToVkAddressMode(m_samplerDesc.AddressV),
+		                                                      AddressModeToVkAddressMode(m_samplerDesc.AddressW),
+		                                                      m_samplerDesc.MipLodBias,
+		                                                      m_samplerDesc.MaxAnisotropy,
+		                                                      VkComparisonFuncTranslator[static_cast<uint32_t>(m_samplerDesc.CompareFunc)]);
+
+	if(!TRAP::Graphics::API::ImageFormatIsPlanar(m_samplerDesc.SamplerConversionDesc.Format))
 	{
 		VkCall(vkCreateSampler(m_device->GetVkDevice(), &info, nullptr, &m_vkSampler));
 		return;
 	}
 
-	auto& conversionDesc = desc.SamplerConversionDesc;
+	auto& conversionDesc = m_samplerDesc.SamplerConversionDesc;
 	const VkFormat format = ImageFormatToVkFormat(conversionDesc.Format);
 
 	//Check format props

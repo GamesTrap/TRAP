@@ -2109,3 +2109,4 @@ SITREP 09/02/2021|21w35a3
     - Tests3D Updated Shaders ~<15 mins
     - Tests Updated Shaders ~<15 mins
     - Made Texture constructors more useful ~<10 mins
+    - Sampler Added validation check for Anisotropy ~<10 mins

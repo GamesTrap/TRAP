@@ -33,10 +33,10 @@ namespace TRAP::Graphics
 	protected:
 		Sampler();
 
+		SamplerDesc m_samplerDesc;
+
 	private:
 		static std::unordered_map<SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
-
-		SamplerDesc m_samplerDesc;
 	};
 }
 
