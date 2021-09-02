@@ -88,12 +88,12 @@ bool TRAP::Input::InitController()
 
 					//Ordinal 100 is the same as XInputGetState, except it doesn't dummy out the guide button info.
 					//Try loading it and fall back if needed.
-					s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
-					                                                                        reinterpret_cast<LPCSTR>(100)));
-					if (s_xinput.GetState)
+					s_xinput.GetStateSecret = reinterpret_cast<PFN_XInputGetStateSecret>(GetProcAddress(s_xinput.Instance,
+					                                                                                    reinterpret_cast<LPCSTR>(100)));
+					if (s_xinput.GetStateSecret)
 						s_xinput.HasGuideButton = true;
-					else
-						s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
+
+					s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance,
 																								"XInputGetState"));
 					s_xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(s_xinput.Instance,
 																							"XInputSetState"));
@@ -384,8 +384,13 @@ bool TRAP::Input::PollController(Controller controller, const PollMode mode)
 		//Guide button is never reported in caps
 		if(s_xinput.HasGuideButton)
 		{
-			const bool value = (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_GUIDE) ? true : false;
-			InternalInputControllerButton(con, 10, value);
+			XINPUT_STATE xiss{};
+			const DWORD res = s_xinput.GetStateSecret(con->WinCon.Index, &xiss);
+			if(res == ERROR_SUCCESS)
+			{
+				const bool guidePressed = (xiss.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_GUIDE) ? true : false;
+				InternalInputControllerButton(con, 10, guidePressed);
+			}
 		}
 
 		if (xis.Gamepad.wButtons & TRAP_XINPUT_GAMEPAD_DPAD_UP)

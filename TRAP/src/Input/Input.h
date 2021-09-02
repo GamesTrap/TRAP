@@ -788,6 +788,7 @@ namespace TRAP
 		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_FULL = 0x03;
 		typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
 		typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);
+		typedef DWORD(WINAPI* PFN_XInputGetStateSecret)(DWORD, XINPUT_STATE*);
 		typedef DWORD(WINAPI* PFN_XInputSetState)(DWORD, XINPUT_VIBRATION*);
 		typedef DWORD(WINAPI* PFN_XInputGetBatteryInformation)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
 		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
@@ -800,6 +801,7 @@ namespace TRAP
 			HINSTANCE Instance{};
 			PFN_XInputGetCapabilities GetCapabilities{};
 			PFN_XInputGetState GetState{};
+			PFN_XInputGetStateSecret GetStateSecret{};
 			PFN_XInputSetState SetState{};
 			PFN_XInputGetBatteryInformation GetBatteryInformation{};
 			bool HasGuideButton = false;
