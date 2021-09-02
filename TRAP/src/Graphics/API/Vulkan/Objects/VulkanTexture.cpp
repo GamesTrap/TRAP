@@ -258,6 +258,14 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		}
 	}
 
+	m_width = desc.Width;
+	m_height = desc.Height;
+	m_depth = desc.Depth;
+	m_mipLevels = desc.MipLevels;
+	m_arraySize = desc.ArraySize;
+	m_format = desc.Format;
+	m_UAV = desc.Descriptors & RendererAPI::DescriptorType::RWTexture;
+
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (!desc.Name.empty())
 		SetTextureName(desc.Name.c_str());

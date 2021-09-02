@@ -19,14 +19,6 @@ TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::TextureBase::Create(const
         TRAP::Ref<TextureBase> texture = TRAP::MakeRef<API::VulkanTexture>(vkRenderer->GetDevice(), desc,
                                                                            vkRenderer->GetVMA());
 
-        texture->m_width = desc.Width;
-        texture->m_height = desc.Height;
-        texture->m_depth = desc.Depth;
-        texture->m_mipLevels = desc.MipLevels;
-        texture->m_arraySize = desc.ArraySize;
-        texture->m_format = desc.Format;
-        texture->m_UAV = desc.Descriptors & RendererAPI::DescriptorType::RWTexture;
-
         return texture;
     }
 

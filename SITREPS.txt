@@ -2108,3 +2108,4 @@ SITREP 09/02/2021|21w35a3
     - Sandbox Updated Shaders ~<15 mins
     - Tests3D Updated Shaders ~<15 mins
     - Tests Updated Shaders ~<15 mins
+    - Made Texture constructors more useful ~<10 mins

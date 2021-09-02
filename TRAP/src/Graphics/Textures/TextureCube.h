@@ -32,7 +32,8 @@ namespace TRAP::Graphics
 
 		~TextureCube() = default;
 	protected:
-		TextureCube();
+		TextureCube(const std::string& name, const std::array<std::string, 6>& filepaths, TextureCubeFormat format);
+		TextureCube(const std::string& name, const std::string& filepath, TextureCubeFormat format);
 
 		std::array<std::string, 6> m_filepaths;
 		TextureCubeFormat m_textureFormat;

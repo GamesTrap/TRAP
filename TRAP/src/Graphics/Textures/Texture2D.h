@@ -25,6 +25,7 @@ namespace TRAP::Graphics
 		~Texture2D() = default;
 	protected:
 		Texture2D();
+		Texture2D(const std::string& name, std::string_view filepath);
 
 		std::string m_filepath;
 	};

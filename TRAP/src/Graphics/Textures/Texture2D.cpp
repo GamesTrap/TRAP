@@ -21,7 +21,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D(name, filepath));
 
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
@@ -30,8 +30,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_name = name;
-		texture->m_filepath = filepath;
 		texture->m_textureType = TextureType::Texture2D;
 
 		return texture;
@@ -58,7 +56,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D(name, filepath));
 
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
@@ -67,9 +65,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_name = name;
-		texture->m_filepath = filepath;
-		texture->m_textureType = TextureType::Texture2D;
 
 		return texture;
 	}
@@ -107,7 +102,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
 
-		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D(name, useImg->GetFilePath()));
 
 		//Create empty TextureBase
 		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
@@ -121,11 +116,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 		loadDesc.Desc->Descriptors = RendererAPI::DescriptorType::Texture;
 		loadDesc.Texture = &texture->m_texture;
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Set Texture2D data
-		texture->m_name = name;
-		texture->m_filepath = useImg->GetFilePath();
-		texture->m_textureType = TextureType::Texture2D;
 
 		//Wait for texture to be ready
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
@@ -189,7 +179,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_textureType = TextureType::Texture2D;
 
 		return texture;
 	}
@@ -283,4 +272,13 @@ void TRAP::Graphics::Texture2D::Update(const void* data, const uint32_t sizeInBy
 TRAP::Graphics::Texture2D::Texture2D()
 {
 	m_textureType = TextureType::Texture2D;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Texture2D::Texture2D(const std::string& name, std::string_view filepath)
+{
+	m_textureType = TextureType::Texture2D;
+	m_name = name;
+	m_filepath = filepath;
 }

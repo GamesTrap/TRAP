@@ -21,7 +21,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube());
+		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube(name, filepaths,
+		                                                                            TextureCubeFormat::MultiFile));
 
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
@@ -31,10 +32,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_name = name;
-		texture->m_filepaths = filepaths;
-		texture->m_textureFormat = TextureCubeFormat::MultiFile;
-		texture->m_textureType = TextureType::TextureCube;
 
 		return texture;
 	}
@@ -69,7 +66,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube());
+		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube(name, filepath, format));
 
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
@@ -81,10 +78,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_name = name;
-		texture->m_filepaths[0] = filepath;
-		texture->m_textureFormat = format;
-		texture->m_textureType = TextureType::TextureCube;
 
 		return texture;
 	}
@@ -114,7 +107,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube());
+		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube(name, filepath, format));
 
 		//Load Texture
 		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
@@ -126,10 +119,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_name = name;
-		texture->m_filepaths[0] = filepath;
-		texture->m_textureFormat = format;
-		texture->m_textureType = TextureType::TextureCube;
 
 		return texture;
 	}
@@ -170,7 +159,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
 
-		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube());
+		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube(name, useImg->GetFilePath(),
+		                                                                            format));
 
 		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
 
@@ -199,12 +189,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		loadDesc.Desc->Descriptors = RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube;
 		loadDesc.Texture = &texture->m_texture;
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Set TextureCube data
-		texture->m_name = name;
-		texture->m_textureFormat = format;
-		texture->m_filepaths[0] = useImg->GetFilePath();
-		texture->m_textureType = TextureType::TextureCube;
 
 		//Wait for texture to be ready
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
@@ -288,7 +272,12 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
 
-		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube());
+		std::array<std::string, 6> filepaths{};
+		for(uint32_t i = 0; i < imgs.size(); ++i)
+			filepaths[i] = useImgs[i]->GetFilePath();
+
+		TRAP::Scope<TextureCube> texture = TRAP::Scope<TextureCube>(new TextureCube(name, filepaths,
+		                                                                            TextureCubeFormat::MultiFile));
 
 		//Create empty TextureBase
 		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
@@ -304,13 +293,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		loadDesc.Desc->Descriptors = RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube;
 		loadDesc.Texture = &texture->m_texture;
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Set TextureCube data
-		texture->m_name = name;
-		texture->m_textureFormat = TextureCubeFormat::MultiFile;
-		for(uint32_t i = 0; i < imgs.size(); ++i)
-			texture->m_filepaths[i] = useImgs[i]->GetFilePath();
-		texture->m_textureType = TextureType::TextureCube;
 
 		//Wait for texture to be ready
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
@@ -436,8 +418,22 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCube::TextureCube()
-	: m_textureFormat(TextureCubeFormat::Cross)
+TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::array<std::string, 6>& filepaths,
+										 const TextureCubeFormat format)
+	: m_textureFormat(format)
 {
 	m_textureType = TextureType::TextureCube;
+	m_name = name;
+	m_filepaths = filepaths;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::string& filepath,
+										 const TextureCubeFormat format)
+	: m_textureFormat(format)
+{
+	m_textureType = TextureType::TextureCube;
+	m_name = name;
+	m_filepaths[0] = filepath;
 }
