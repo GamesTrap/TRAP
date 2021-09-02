@@ -15,8 +15,8 @@ layout(location = 0) out vec4 FragColor;
 
 layout(location = 0) in vec2 vUV;
 
-layout(UpdateFreqNone, binding = 0) uniform texture2D Texture;
-layout(UpdateFreqNone, binding = 1) uniform sampler Sampler;
+layout(UpdateFreqStatic, binding = 0) uniform texture2D Texture;
+layout(UpdateFreqStatic, binding = 1) uniform sampler Sampler;
 
 layout(push_constant) uniform PushConstantBlock
 {

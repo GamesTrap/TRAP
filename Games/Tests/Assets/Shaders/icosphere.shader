@@ -4,7 +4,7 @@ layout(location = 1) in vec3 col;
 
 layout(location = 2) out vec3 vCol;
 
-layout(std140, UpdateFreqPerFrame, binding = 0) uniform CameraUBO
+layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraUBO
 {
 	uniform mat4 Projection;
 	uniform mat4 View;

@@ -4,7 +4,7 @@ layout(location = 1) in vec3 col;
 
 layout(location = 0) out vec3 vCol;
 
-layout(std140, UpdateFreqPerFrame, binding = 0) uniform SizeMultiplicator
+layout(std140, UpdateFreqDynamic, binding = 0) uniform SizeMultiplicator
 {
 	uniform vec3 Multiplier;
 };
@@ -20,7 +20,7 @@ layout(location = 0) out vec4 FragColor;
 
 layout(location = 0) in vec3 vCol;
 
-layout(std140, UpdateFreqPerFrame, binding = 1) uniform Color
+layout(std140, UpdateFreqDynamic, binding = 1) uniform Color
 {
 	uniform vec3 color;
 };

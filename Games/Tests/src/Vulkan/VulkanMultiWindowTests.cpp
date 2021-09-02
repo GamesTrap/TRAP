@@ -55,7 +55,7 @@ void VulkanMultiWindowTests::OnAttach()
 	//Load Triangle vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
 	                                                      static_cast<uint32_t>(m_triangleVertices.size()) *
-														  sizeof(float), TRAP::Graphics::UpdateFrequency::None);
+														  sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -68,15 +68,15 @@ void VulkanMultiWindowTests::OnAttach()
 	//Load Triangle indices
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(),
 	                                                    static_cast<uint32_t>(m_triangleIndices.size()) *
-														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
+														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	//Load UniformBuffers
 	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(SizeMultiplicatorData),
-																			 TRAP::Graphics::UpdateFrequency::PerFrame);
+																			 TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(ColorData),
-																 TRAP::Graphics::UpdateFrequency::PerFrame);
+																 TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
@@ -87,8 +87,8 @@ void VulkanMultiWindowTests::OnAttach()
 	                                                                      &macros);
 
 	//Bind UBOs
-	vkTestUBOShader->UseUBO(0, m_sizeMultiplicatorUniformBuffer.get());
-	vkTestUBOShader->UseUBO(1, m_colorUniformBuffer.get());
+	vkTestUBOShader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
+	vkTestUBOShader->UseUBO(1, 1, m_colorUniformBuffer.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

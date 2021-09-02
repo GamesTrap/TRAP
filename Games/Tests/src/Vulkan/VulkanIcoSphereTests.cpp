@@ -21,7 +21,7 @@ void VulkanIcoSphereTests::OnAttach()
 	//Load Icosphere vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
 		                                                  static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) *
-														  sizeof(float), TRAP::Graphics::UpdateFrequency::None);
+														  sizeof(float), TRAP::Graphics::UpdateFrequency::Static);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -34,18 +34,18 @@ void VulkanIcoSphereTests::OnAttach()
 	//Load Icosphere indices
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_icosphereIndices.data(),
 	                                                    static_cast<uint32_t>(m_icosphereIndices.size()) *
-														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::None);
+														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	//Load Camera UniformBuffer
 	m_cameraUBO = TRAP::Graphics::UniformBuffer::Create(sizeof(CameraUBOData),
-	                                                    TRAP::Graphics::UpdateFrequency::PerFrame);
+	                                                    TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader
 	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader").get();
-	m_shader->UseUBO(0, m_cameraUBO.get());
+	m_shader->UseUBO(1, 0, m_cameraUBO.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

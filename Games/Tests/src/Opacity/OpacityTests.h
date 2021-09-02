@@ -9,7 +9,8 @@ public:
 	OpacityTests();
 
 	void OnImGuiRender() override;
-	void OnAttach() override;void OnEvent(TRAP::Events::Event& event) override;
+	void OnAttach() override;
+	void OnEvent(TRAP::Events::Event& event) override;
 
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 

@@ -30,7 +30,7 @@ void VulkanTests::OnAttach()
 	//Load Triangle vertices (with enough space for a quad)
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
 	                                                      static_cast<uint32_t>(m_quadVertices.size()) *
-														  sizeof(float), TRAP::Graphics::UpdateFrequency::PerFrame);
+														  sizeof(float), TRAP::Graphics::UpdateFrequency::Dynamic);
 	const TRAP::Graphics::VertexBufferLayout layout =
 	{
 		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
@@ -43,15 +43,15 @@ void VulkanTests::OnAttach()
 	//Load Triangle indices (with enough space for a quad)
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(),
 	                                                    static_cast<uint32_t>(m_quadIndices.size()) *
-														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::PerFrame);
+														sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_indexBuffer->AwaitLoading();
 	m_indexBuffer->Use();
 
 	//Load UniformBuffers
 	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(SizeMultiplicatorData),
-																			 TRAP::Graphics::UpdateFrequency::PerFrame);
+																			 TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(ColorData),
-																 TRAP::Graphics::UpdateFrequency::PerFrame);
+																 TRAP::Graphics::UpdateFrequency::Dynamic);
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
@@ -60,8 +60,8 @@ void VulkanTests::OnAttach()
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
 	const auto& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader",
 	 																	  &macros);
-	vkTestUBOShader->UseUBO(0, m_sizeMultiplicatorUniformBuffer.get());
-	vkTestUBOShader->UseUBO(1, m_colorUniformBuffer.get());
+	vkTestUBOShader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
+	vkTestUBOShader->UseUBO(1, 1, m_colorUniformBuffer.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
