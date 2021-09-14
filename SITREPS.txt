@@ -2111,3 +2111,8 @@ SITREP 09/02/2021|21w35a3
     - Made Texture constructors more useful ~<10 mins
     - Sampler Added validation check for Anisotropy ~<10 mins
     - Controller Guide button now works without reseting other axis and buttons states ~<10 mins
+
+SITREP 09/14/2021|21w37a1
+    - Changed TRAP Engine version to 21w37a1(0.7.81)
+    - Made Renderer2D work again (missing Textures) ~<30 mins
+    - Updated Renderer2D shader ~<10 mins

@@ -11,6 +11,7 @@
 #include "Graphics/API/Objects/DescriptorPool.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
+#include "Graphics/Textures/TextureManager.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
@@ -284,7 +285,12 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 
 	std::vector<TRAP::Graphics::TextureBase*> textureBases(textures.size());
 	for(uint32_t i = 0; i < textureBases.size(); ++i)
-		textureBases[i] = textures[i]->GetTexture().get();
+	{
+		if(textures[i])
+			textureBases[i] = textures[i]->GetTexture().get();
+		else //Default Texture
+			textureBases[i] = TextureManager::Get2D("Fallback2D")->GetTexture().get();
+	}
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();

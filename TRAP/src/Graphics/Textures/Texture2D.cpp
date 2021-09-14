@@ -30,7 +30,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		desc.Texture = &texture->m_texture;
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
-		texture->m_textureType = TextureType::Texture2D;
 
 		return texture;
 	}
