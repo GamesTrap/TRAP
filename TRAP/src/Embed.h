@@ -77,46 +77,12 @@ namespace TRAP::Embed
 		layout(location = 3) in flat float vTexIndex;
 
 		layout(UpdateFreqStatic, binding = 1) uniform sampler Sampler;
-		layout(UpdateFreqDynamic, binding = 1) uniform texture2D Textures[32];
+		layout(UpdateFreqDynamic, binding = 1) uniform texture2D Textures[4096];
 
 		void main()
 		{
 			vec4 texColor = vColor;
-			switch(int(vTexIndex))
-			{
-				case 0: texColor *= texture(sampler2D(Textures[0], Sampler), vTexCoord); break;
-				case 1: texColor *= texture(sampler2D(Textures[1], Sampler), vTexCoord); break;
-				case 2: texColor *= texture(sampler2D(Textures[2], Sampler), vTexCoord); break;
-				case 3: texColor *= texture(sampler2D(Textures[3], Sampler), vTexCoord); break;
-				case 4: texColor *= texture(sampler2D(Textures[4], Sampler), vTexCoord); break;
-				case 5: texColor *= texture(sampler2D(Textures[5], Sampler), vTexCoord); break;
-				case 6: texColor *= texture(sampler2D(Textures[6], Sampler), vTexCoord); break;
-				case 7: texColor *= texture(sampler2D(Textures[7], Sampler), vTexCoord); break;
-				case 8: texColor *= texture(sampler2D(Textures[8], Sampler), vTexCoord); break;
-				case 9: texColor *= texture(sampler2D(Textures[9], Sampler), vTexCoord); break;
-				case 10: texColor *= texture(sampler2D(Textures[10], Sampler), vTexCoord); break;
-				case 11: texColor *= texture(sampler2D(Textures[11], Sampler), vTexCoord); break;
-				case 12: texColor *= texture(sampler2D(Textures[12], Sampler), vTexCoord); break;
-				case 13: texColor *= texture(sampler2D(Textures[13], Sampler), vTexCoord); break;
-				case 14: texColor *= texture(sampler2D(Textures[14], Sampler), vTexCoord); break;
-				case 15: texColor *= texture(sampler2D(Textures[15], Sampler), vTexCoord); break;
-				case 16: texColor *= texture(sampler2D(Textures[16], Sampler), vTexCoord); break;
-				case 17: texColor *= texture(sampler2D(Textures[17], Sampler), vTexCoord); break;
-				case 18: texColor *= texture(sampler2D(Textures[18], Sampler), vTexCoord); break;
-				case 19: texColor *= texture(sampler2D(Textures[19], Sampler), vTexCoord); break;
-				case 20: texColor *= texture(sampler2D(Textures[20], Sampler), vTexCoord); break;
-				case 21: texColor *= texture(sampler2D(Textures[21], Sampler), vTexCoord); break;
-				case 22: texColor *= texture(sampler2D(Textures[22], Sampler), vTexCoord); break;
-				case 23: texColor *= texture(sampler2D(Textures[23], Sampler), vTexCoord); break;
-				case 24: texColor *= texture(sampler2D(Textures[24], Sampler), vTexCoord); break;
-				case 25: texColor *= texture(sampler2D(Textures[25], Sampler), vTexCoord); break;
-				case 26: texColor *= texture(sampler2D(Textures[26], Sampler), vTexCoord); break;
-				case 27: texColor *= texture(sampler2D(Textures[27], Sampler), vTexCoord); break;
-				case 28: texColor *= texture(sampler2D(Textures[28], Sampler), vTexCoord); break;
-				case 29: texColor *= texture(sampler2D(Textures[29], Sampler), vTexCoord); break;
-				case 30: texColor *= texture(sampler2D(Textures[30], Sampler), vTexCoord); break;
-				case 31: texColor *= texture(sampler2D(Textures[31], Sampler), vTexCoord); break;
-			}
+			texColor *= texture(sampler2D(Textures[int(vTexIndex)], Sampler), vTexCoord);
 			FragColor = texColor;
 		}
 	)"

@@ -2118,4 +2118,8 @@ SITREP 09/14/2021|21w37a1
     - Updated Renderer2D shader ~<10 mins
 
 SITREP 09/15/2021|21w37a2
+    - Changed TRAP Engine version to 21w37a2(0.7.82)
     - Fixed bugs in Premake action scripts ~<30 mins
+    - Changed Renderer2D ~>30 mins
+    - Made Sandbox2D work again (except Textures) ~<10 mins
+    - Made TRAP-Editor runnable again (viewport/framebuffer non-functional) ~<10 mins

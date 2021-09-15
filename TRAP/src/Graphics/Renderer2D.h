@@ -18,7 +18,6 @@ namespace TRAP::Graphics
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
 		static void BeginScene(const OrthographicCamera& camera); //Deprecated
 		static void EndScene();
-		static void Flush();
 
 		//Transform struct
 		struct Transform
@@ -48,10 +47,8 @@ namespace TRAP::Graphics
 		static void ResetStats();
 
 	private:
+		static void FlushAndReset();
 		static float GetTextureIndex(const Scope<Texture2D>& texture);
-
-		static void StartBatch();
-		static void NextBatch();
 
 		static Renderer2DData s_data;
 	};

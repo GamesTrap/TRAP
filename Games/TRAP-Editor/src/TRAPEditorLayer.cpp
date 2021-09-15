@@ -118,8 +118,8 @@ void TRAPEditorLayer::OnImGuiRender()
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-	const uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
-	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
+	//const uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
+	//ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 	ImGui::End();
 	ImGui::PopStyleVar();
 
@@ -139,7 +139,7 @@ void TRAPEditorLayer::OnAttach()
 
 	//Setup Viewport FrameBuffer
 	const TRAP::Graphics::FrameBufferProps frameBufferProps{ 1280, 720, 1, false };
-	m_frameBuffer = TRAP::Graphics::FrameBuffer::Create(frameBufferProps);
+	//m_frameBuffer = TRAP::Graphics::FrameBuffer::Create(frameBufferProps);
 
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
@@ -193,7 +193,7 @@ void TRAPEditorLayer::OnAttach()
 
 void TRAPEditorLayer::OnDetach()
 {
-	m_frameBuffer.reset();
+	//m_frameBuffer.reset();
 	m_activeScene.reset();
 }
 
@@ -202,23 +202,23 @@ void TRAPEditorLayer::OnDetach()
 void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Resize Viewport
-	if (const TRAP::Graphics::FrameBufferProps props = m_frameBuffer->GetProps();
-		m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f && //Zero sized framebuffer is invalid
-		(props.Width != static_cast<uint32_t>(m_viewportSize.x) || props.Height != static_cast<uint32_t>(m_viewportSize.y)))
-	{
-		m_frameBuffer->Resize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+	//const TRAP::Graphics::FrameBufferProps props = m_frameBuffer->GetProps();
+	//if (m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f && //Zero sized framebuffer is invalid
+	//	(props.Width != static_cast<uint32_t>(m_viewportSize.x) || props.Height != static_cast<uint32_t>(m_viewportSize.y)))
+	//{
+	//	m_frameBuffer->Resize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 
-		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
-	}
+	//	m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+	//}
 
 	TRAP::Graphics::Renderer2D::ResetStats();
 	//Framebuffer
-	m_frameBuffer->Bind();
+	//m_frameBuffer->Bind();
 
 	//Update Scene
 	m_activeScene->OnUpdate(deltaTime);
 
-	m_frameBuffer->Unbind();
+	//m_frameBuffer->Unbind();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

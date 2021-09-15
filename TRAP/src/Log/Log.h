@@ -9,6 +9,7 @@
 #include <mutex>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 namespace TRAP
 {
@@ -122,7 +123,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[21w37a1]";
+		inline static constexpr auto WindowVersion =                        "[21w37a2]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";

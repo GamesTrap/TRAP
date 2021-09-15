@@ -285,12 +285,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 
 	std::vector<TRAP::Graphics::TextureBase*> textureBases(textures.size());
 	for(uint32_t i = 0; i < textureBases.size(); ++i)
-	{
-		if(textures[i])
-			textureBases[i] = textures[i]->GetTexture().get();
-		else //Default Texture
-			textureBases[i] = TextureManager::Get2D("Fallback2D")->GetTexture().get();
-	}
+		textureBases[i] = textures[i]->GetTexture().get();
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
