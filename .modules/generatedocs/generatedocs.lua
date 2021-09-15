@@ -3,107 +3,10 @@ local m = premake.modules.generatedocs
 
 local p = premake
 
-local success = true
-local doxygenPath = "Dependencies/Docs/Doxygen"
-local doxygenBinPath = doxygenPath .. "/bin/"
-local tempSphinxEmbedPath = "../.modules/generatedocs/sphinx/embed"
-
-function InstallSphinx()
-    print("Installing Sphinx...")
-    os.execute("pip install -U sphinx")
-end
-
-function InstallSphinxInlineSyntaxHighlight()
-    print("Installing Sphinx-InlineSyntaxHighlight...")
-    os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight")
-end
-
-function CheckLinuxStuff()
-    print("Checking Doxygen")
-    if(os.outputof("doxygen --version > /dev/null 2>&1") == nil) then
-        print("Unable to find Doxygen")
-        return false
-    end
-
-    print("Checking Python")
-    if(os.outputof("python3 --version > /dev/null 2>&1") == nil) then
-        print("Unable to find Python 3")
-        return false
-    end
-
-    print("Checking pip")
-    if(os.outputof("pip --version > /dev/null 2>&1") == nil) then
-        print("Unable to find pip")
-        return false
-    end
-
-    print("Checking Sphinx")
-    if(os.outputof("sphinx-build --version > /dev/null 2>&1") == nil) then
-        print("Sphinx is not installed!")
-        InstallSphinx()
-    end
-
-    print("Checking Sphinx-Extensions")
-    if(os.outputof("pip list | grep -F sphinxcontrib-inlinesyntaxhighlight > /dev/null 2>&1") == nil) then
-        print("Sphinx-InlineSyntaxHighlight is not installed!")
-        InstallSphinxInlineSyntaxHighlight()
-    end
-
-    return true
-end
-
-function CheckWindowsStuff()
-    print("Checking Doxygen")
-    if(os.outputof("doxygen --version > NUL") == nil) then
-        print("Unable to find Doxygen")
-        return false
-    end
-
-    print("Checking Python")
-    if(os.outputof("python --version >NUL") == nil) then
-        print("Unable to find Python 3")
-        return false
-    end
-
-    print("Checking pip")
-    if(os.outputof("pip --version > NUL") == nil) then
-        print("Unable to find pip")
-        return false
-    end
-
-    print("Checking Sphinx")
-    if(os.outputof("sphinx-build --version > NUL") == nil) then
-        print("Sphinx is not installed!")
-        InstallSphinx()
-    end
-
-    print("Checking Sphinx-Extensions")
-    if(os.outputof("pip list | findstr sphinxcontrib-inlinesyntaxhighlight > NUL") == nil) then
-        print("Sphinx-InlineSyntaxHighlight is not installed!")
-        InstallSphinxInlineSyntaxHighlight()
-    end
-
-    return true
-end
-
-function LinuxCopyDocs()
-    os.mkdir("../docs") --Recreate final docs folder
-    os.execute("mv ../.modules/generatedocs/sphinx/** ../docs/")
-    os.execute("mv ../.modules/generatedocs/sphinx/.** ../docs/ > /dev/null 2>&1")
-end
-
-function WindowsCopyDocs()
-    os.execute("move ..\\.modules\\generatedocs\\sphinx ..\\ > NUL")
-    os.execute("rename ..\\sphinx docs > NUL")
-end
-
-function LinuxCopyFonts()
-    os.execute("cp -r ../.modules/generatedocs/fonts ../.modules/generatedocs/sphinx/fonts")
-end
-
-function WindowsCopyFonts()
-    os.execute("xcopy ..\\.modules\\generatedocs\\fonts ..\\.modules\\generatedocs\\sphinx\\fonts > NUL")
-end
+success = true
+doxygenPath = "Dependencies/Docs/Doxygen"
+doxygenBinPath = doxygenPath .. "/bin/"
+tempSphinxEmbedPath = "../.modules/generatedocs/sphinx/embed"
 
 newaction
 {
@@ -111,19 +14,94 @@ newaction
     description = "Generate Documentation",
 
     execute = function()
+    local res = true
         print("Checking Dependencies")
-        if(_TARGET_OS == "linux") then
-            if(not CheckLinuxStuff()) then
+        if(os.host() == "linux") then
+            print("Checking Doxygen")
+            local out, errorCode = os.outputof("doxygen --version")
+            if(errorCode ~= 0) then
+                print("Unable to find Doxygen")
+                res = false
+            end
+
+            print("Checking Python")
+            local out, errorCode = os.outputof("python3 --version")
+            if(errorCode ~= 0) then
+                print("Unable to find Python 3")
+                res = false
+            end
+
+            print("Checking pip")
+            local out, errorCode = os.outputof("pip --version")
+            if(errorCode ~= 0) then
+                print("Unable to find pip")
+                res = false
+            end
+
+            print("Checking Sphinx")
+            local out, errorCode = os.outputof("sphinx-build --version")
+            if(errorCode ~= 0) then
+                print("Sphinx is not installed!")
+                print("Installing Sphinx...")
+                os.execute("pip install -U sphinx  > /dev/null 2>&1")
+            end
+
+            print("Checking Sphinx-Extensions")
+            local out, errorCode = os.outputof("pip list | grep -F sphinxcontrib-inlinesyntaxhighlight")
+            if(errorCode ~= 0) then
+                print("Sphinx-InlineSyntaxHighlight is not installed!")
+                print("Installing Sphinx-InlineSyntaxHighlight...")
+                os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > /dev/null 2>&1")
+            end
+
+            if(res == false) then
                 success = false
                 return
             end
-        elseif(_TARGET_OS == "windows") then
-            if(not CheckWindowsStuff()) then
+        elseif(os.host() == "windows") then
+            print("Checking Doxygen")
+            local out, errorCode = os.outputof("doxygen --version")
+            if(errorCode ~= 0) then
+                print("Unable to find Doxygen")
+                res = false
+            end
+
+            print("Checking Python")
+            local out, errorCode = os.outputof("python --version")
+            if(errorCode ~= 0) then
+                print("Unable to find Python 3")
+                res = false
+            end
+
+            print("Checking pip")
+            local out, errorCode = os.outputof("pip --version")
+            if(errorCode ~= 0) then
+                print("Unable to find pip")
+                res = false
+            end
+
+            print("Checking Sphinx")
+            local out, errorCode = os.outputof("sphinx-build --version")
+            if(errorCode ~= 0) then
+                print("Sphinx is not installed!")
+                print("Installing Sphinx...")
+                os.execute("pip install -U sphinx  > NUL")
+            end
+
+            print("Checking Sphinx-Extensions")
+            local out, errorCode = os.outputof("pip list | findstr sphinxcontrib-inlinesyntaxhighlight")
+            if(errorCode ~= 0) then
+                print("Sphinx-InlineSyntaxHighlight is not installed!")
+                print("Installing Sphinx-InlineSyntaxHighlight...")
+                os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > NUL")
+            end
+
+            if(res == false) then
                 success = false
                 return
             end
         else
-            print("Unsupported OS: " .. _TARGET_OS)
+            print("Unsupported OS: " .. os.host())
             success = false
             return
         end
@@ -135,16 +113,16 @@ newaction
         end
 
         --Generate Doxygen pages
-        if(_TARGET_OS == "windows") then
+        if(os.host() == "windows") then
             os.execute("doxygen ..\\.modules\\generatedocs\\Doxyfile")
-        elseif(_TARGET_OS == "linux") then
+        elseif(os.host() == "linux") then
             os.execute("doxygen ../.modules/generatedocs/Doxyfile > /dev/null 2>&1")
         end
 
         print("Generating Sphinx pages...")
-        if(_TARGET_OS == "windows") then
+        if(os.host() == "windows") then
             os.execute("sphinx-build ..\\.modules\\generatedocs\\ ..\\.modules\\generatedocs\\sphinx -b html -j 8 -q") --Generate Sphinx pages
-        elseif(_TARGET_OS == "linux") then
+        elseif(os.host() == "linux") then
             os.execute("sphinx-build ../.modules/generatedocs/ ../.modules/generatedocs/sphinx -b html -j 8 -q") --Generate Sphinx pages
         end
 
@@ -152,28 +130,31 @@ newaction
         os.copyfile("../.modules/generatedocs/.nojekyll", "../.modules/generatedocs/sphinx") --Needed for GitHub Pages to display correctly as a static page
 
         print("Copying fonts")
-        if(_TARGET_OS == "linux") then
-            LinuxCopyFonts()
-        elseif(_TARGET_OS == "windows") then
-            WindowsCopyFonts()
+        if(os.host() == "linux") then
+            os.execute("cp -r ../.modules/generatedocs/fonts ../.modules/generatedocs/sphinx/fonts")
+        elseif(os.host() == "windows") then
+            os.execute("xcopy ..\\.modules\\generatedocs\\fonts ..\\.modules\\generatedocs\\sphinx\\fonts > NUL")
         end
 
-        if(_TARGET_OS == "linux") then
+        if(os.host() == "linux") then
             os.rmdir("../docs") --Delete old pages
-        elseif(_TARGET_OS == "windows") then
+        elseif(os.host() == "windows") then
             os.rmdir("..\\docs") --Delete old pages
         end
 
         print("Copying files to docs folder...")
-        if(_TARGET_OS == "linux") then
-            LinuxCopyDocs()
-        elseif(_TARGET_OS == "windows") then
-            WindowsCopyDocs()
+        if(os.host() == "linux") then
+            os.mkdir("../docs") --Recreate final docs folder
+            os.execute("mv ../.modules/generatedocs/sphinx/** ../docs/")
+            os.execute("mv ../.modules/generatedocs/sphinx/.** ../docs/ > /dev/null 2>&1")
+        elseif(os.host() == "windows") then
+            os.execute("move ..\\.modules\\generatedocs\\sphinx ..\\ > NUL")
+            os.execute("rename ..\\sphinx docs > NUL")
         end
     end,
 
     onEnd = function()
-        if(success) then
+        if(success == true) then
             print("Documentation generation successful")
         else
             print("Documentation generation failed")

@@ -3,16 +3,6 @@ local m = premake.modules.generatecontrollermappings
 
 local p = premake
 
-function CheckFileCanBeOpened(path)
-    local f = io.open(path, "r")
-    if f ~= nil then
-        f:close()
-        return true
-    else
-        return false
-    end
-end
-
 newaction
 {
     trigger = "genconmappings",
@@ -28,7 +18,10 @@ newaction
         local targetPath = _MAIN_SCRIPT_DIR .. "/TRAP/src/Input/ControllerMappings.h"
 
         -- Check if template File can be opened
-        if CheckFileCanBeOpened(templatePath) ~= true then
+        local templateFile = io.open(templatePath, "r")
+        if templateFile ~= nil then
+            templateFile:close()
+        else
             print("Failed to find template file " .. templatePath)
             return
         end
@@ -37,7 +30,10 @@ newaction
         http.download(sourceURL, "gamecontrollerdb.txt")
 
         -- Check if mapping File can be opened
-        if CheckFileCanBeOpened(sourcePath) ~= true then
+        local sourceFile = io.open(sourcePath, "r")
+        if sourceFile ~= nil then
+            sourceFile:close()
+        else
             print("Failed to find source file " .. sourcePath)
             return
         end

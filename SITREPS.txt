@@ -2116,3 +2116,6 @@ SITREP 09/14/2021|21w37a1
     - Changed TRAP Engine version to 21w37a1(0.7.81)
     - Made Renderer2D work again (missing Textures) ~<30 mins
     - Updated Renderer2D shader ~<10 mins
+
+SITREP 09/15/2021|21w37a2
+    - Fixed bugs in Premake action scripts ~<30 mins

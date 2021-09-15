@@ -3,23 +3,7 @@ local m = premake.modules.generatevulkanloader
 
 local p = premake
 
-local success = true
-
-function CheckLinuxStuff()
-    print("Checking Python")
-    if(os.outputof("python3 --version > /dev/null 2>&1") == nil) then
-        print("Unable to find Python 3")
-        return false
-    end
-
-    print("Checking pip")
-    if(os.outputof("pip --version > /dev/null 2>&1") == nil) then
-        print("Unable to find pip")
-        return false
-    end
-
-    return true
-end
+success = true
 
 function CheckWindowsStuff()
     print("Checking Python")
@@ -37,30 +21,6 @@ function CheckWindowsStuff()
     return true
 end
 
-function LinuxMoveVulkanLoader()
-    os.execute("mv ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h")
-end
-
-function WindowsMoveVulkanLoader()
-    os.execute("move ..\\.modules\\generatevulkanloader\\VulkanLoader.h ..\\TRAP\\src\\Graphics\\API\\Vulkan\\Utils\\VulkanLoader.h > NUL")
-end
-
-function LinuxCopyTemplate()
-    os.execute("cp ../.modules/generatevulkanloader/TVulkanLoader.h ../.modules/generatevulkanloader/VulkanLoader.h")
-end
-
-function WindowsCopyTemplate()
-    os.execute("copy ..\\.modules\\generatevulkanloader\\TVulkanLoader.h ..\\.modules\\generatevulkanloader\\VulkanLoader.h > NUL")
-end
-
-function LinuxExecuteGenerator()
-    os.execute("python3 ../.modules/generatevulkanloader/generate.py")
-end
-
-function WindowsExecuteGenerator()
-    os.execute("python ../.modules/generatevulkanloader/generate.py")
-end
-
 newaction
 {
     trigger = "generatevulkanloader",
@@ -68,39 +28,63 @@ newaction
 
     execute = function()
         print("Checking Dependencies")
-        if(_TARGET_OS == "linux") then
-            if(not CheckLinuxStuff()) then
-                success = false
-                return
+        local res = true
+        if(os.host() == "linux") then
+            print("Checking Python")
+            local out, errorCode = os.outputof("python3 --version")
+            if(errorCode ~= 0) then
+                print("Unable to find Python 3")
+                res = false
             end
-        elseif(_TARGET_OS == "windows") then
-            if(not CheckWindowsStuff()) then
-                success = false
-                return
+
+            print("Checking pip")
+            local out, errorCode = os.outputof("pip --version")
+            if(errorCode ~= 0) then
+                print("Unable to find pip")
+                res = false
+            end
+        elseif(os.host() == "windows") then
+            print("Checking Python")
+            local out, errorCode = os.outputof("python --version")
+            if(errorCode ~= 0) then
+                print("Unable to find Python 3")
+                res = false
+            end
+
+            print("Checking pip")
+            local out, errorCode = os.outputof("pip --version")
+            if(errorCode ~= 0) then
+                print("Unable to find pip")
+                res = false
             end
         else
-            print("Unsupported OS: " .. _TARGET_OS)
+            print("Unsupported OS: " .. os.host())
             success = false
             return
         end
 
-        if(_TARGET_OS == "linux") then
-            LinuxCopyTemplate()
-        elseif(_TARGET_OS == "windows") then
-            WindowsCopyTemplate()
+        if(res == false) then
+            success = false
+            return
+        end
+
+        if(os.host() == "linux") then
+            os.execute("cp ../.modules/generatevulkanloader/TVulkanLoader.h ../.modules/generatevulkanloader/VulkanLoader.h")
+        elseif(os.host() == "windows") then
+            os.execute("copy ..\\.modules\\generatevulkanloader\\TVulkanLoader.h ..\\.modules\\generatevulkanloader\\VulkanLoader.h > NUL")
         end
 
         print("Generating Vulkan Loader...")
-        if(_TARGET_OS == "linux") then
-            LinuxExecuteGenerator()
-        elseif(_TARGET_OS == "windows") then
-            WindowsExecuteGenerator()
+        if(os.host() == "linux") then
+            os.execute("python3 ../.modules/generatevulkanloader/generate.py")
+        elseif(os.host() == "windows") then
+            os.execute("python ../.modules/generatevulkanloader/generate.py")
         end
 
-        if(_TARGET_OS == "linux") then
-            LinuxMoveVulkanLoader()
-        elseif(_TARGET_OS == "windows") then
-            WindowsMoveVulkanLoader()
+        if(os.host() == "linux") then
+            os.execute("mv ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h")
+        elseif(os.host() == "windows") then
+            os.execute("move ..\\.modules\\generatevulkanloader\\VulkanLoader.h ..\\TRAP\\src\\Graphics\\API\\Vulkan\\Utils\\VulkanLoader.h > NUL")
         end
     end,
 
