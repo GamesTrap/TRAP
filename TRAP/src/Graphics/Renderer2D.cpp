@@ -200,12 +200,12 @@ void TRAP::Graphics::Renderer2D::EndScene()
 		s_data.QuadVertexBuffer->AwaitLoading();
 
 		//Bind Textures
-		// for(uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
-		// {
-		// 	if(!s_data.TextureSlots[i])
-		// 		s_data.TextureSlots[i] = s_data.WhiteTexture.get();
-		// }
-		//s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots); //BUG
+		for(uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
+		{
+		    if(!s_data.TextureSlots[i])
+				s_data.TextureSlots[i] = s_data.WhiteTexture.get();
+		}
+		//s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
 
 		//Bind Vertex & Index Buffer
 		s_data.QuadVertexBuffer->Use();

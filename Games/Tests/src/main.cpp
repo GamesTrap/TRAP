@@ -28,7 +28,7 @@ public:
 		//PushLayer(TRAP::MakeScope<DragAndDropTests>());
 		//PushLayer(TRAP::MakeScope<EventTests>());
 		//PushLayer(TRAP::MakeScope<IconTests>());
-		PushLayer(TRAP::MakeScope<ImageLoaderTests>()); //TODO Needs Renderer2D
+		PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		//PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());

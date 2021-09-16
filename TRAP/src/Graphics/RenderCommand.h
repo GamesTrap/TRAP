@@ -53,6 +53,8 @@ namespace TRAP::Graphics
 
 		//Blending functions
 		static void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr);
+		static void SetBlendConstant(BlendConstant sourceRGBA, BlendConstant destinationRGBA,
+									 Window* window = nullptr);
 		static void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 									 BlendConstant destinationRGB, BlendConstant destinationAlpha,
 									 Window* window = nullptr);

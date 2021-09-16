@@ -2123,3 +2123,9 @@ SITREP 09/15/2021|21w37a2
     - Changed Renderer2D ~>30 mins
     - Made Sandbox2D work again (except Textures) ~<10 mins
     - Made TRAP-Editor runnable again (viewport/framebuffer non-functional) ~<10 mins
+
+SITREP 09/16/2021|21w37a3
+    - Changed TRAP Engine version to 21w37a3(0.7.83)
+    - Made ParticleSystem2D work again ~<15 mins
+    - VulkanRenderer Changed DescriptorSet binding ~<15 mins
+    - RenderCommand Added SetBlendConstant shortcut ~<10 mins

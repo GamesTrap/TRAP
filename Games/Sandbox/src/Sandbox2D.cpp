@@ -52,7 +52,7 @@ void Sandbox2D::OnAttach()
 
 	//Mount & Load Textures
 	TRAP::VFS::MountTextures("Assets/Textures");
-	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
+	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -77,27 +77,23 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
 
 	TRAP::Graphics::Renderer2D::ResetStats();
+	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
-		TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-		for(float y = -10.0; y < 10.0; y += 0.25f)
+		for(float y = -5.0; y < 5.0; y += 0.5f)
 		{
-			for(float x = -10.0; x < 10.0; x += 0.25f)
+			for(float x = -5.0; x < 5.0; x += 0.5f)
 			{
 				TRAP::Math::Vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
 				TRAP::Graphics::Renderer2D::DrawQuad({{x, y, 0.0f}, {}, {0.45f, 0.45f, 1.0f}}, color);
 			}
 		}
-		//TRAP::Graphics::Renderer2D::EndScene();
 
-		//TODO
-		//TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, -0.1f}, {}, {0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
 		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, -0.1f}, {}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		/*TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, 0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
-			{ 0.2f, 0.8f, 0.3f, 1.0f },
-			TRAP::Graphics::TextureManager::Get2D("TRAP"));*/
-		TRAP::Graphics::Renderer2D::EndScene();
+		TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, -0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
+			                                 { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 	}
+	TRAP::Graphics::Renderer2D::EndScene();
 
 	//Update FPS & FrameTime history
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)

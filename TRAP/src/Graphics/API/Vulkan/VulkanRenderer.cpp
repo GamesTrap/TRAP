@@ -764,8 +764,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 			for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 			{
 				if(shader->GetDescriptorSets()[i])
-				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(0,
-				                                                                 *(shader->GetDescriptorSets()[i]));
+				{
+					data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(i == 0 ? 0 : data->ImageIndex,
+				                                                                     *(shader->GetDescriptorSets()[i]));
+				}
 			}
 
 			return;
@@ -774,7 +776,6 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		gpd.ShaderProgram = shader;
 		gpd.RootSignature = shader->GetRootSignature();
 
-
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
 
@@ -782,8 +783,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
 		{
 			if(shader->GetDescriptorSets()[i])
-			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(0,
-																				*(shader->GetDescriptorSets()[i]));
+			{
+				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(i == 0 ? 0 : data->ImageIndex,
+																			 	 *(shader->GetDescriptorSets()[i]));
+			}
 		}
 	}
 }

@@ -168,6 +168,14 @@ void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceRGBA,
+                                                     const BlendConstant destinationRGBA, Window* window)
+{
+	RendererAPI::GetRenderer()->SetBlendConstant(sourceRGBA, sourceRGBA, destinationRGBA, destinationRGBA, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::SetBlendConstant(const BlendConstant sourceRGB, const BlendConstant sourceAlpha,
 	  												 const BlendConstant destinationRGB,
 													 const BlendConstant destinationAlpha, Window* window)
