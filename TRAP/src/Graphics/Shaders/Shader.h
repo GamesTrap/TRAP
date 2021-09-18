@@ -43,12 +43,16 @@ namespace TRAP::Graphics
 		const std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const;
 
 		virtual void Use(Window* window = nullptr) = 0;
-		virtual void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture) = 0;
+		virtual void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture,
+		                        Window* window = nullptr) = 0;
 		virtual void UseTextures(uint32_t set, uint32_t binding,
-		                         const std::vector<TRAP::Graphics::Texture*>& textures) = 0;
-		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) = 0;
+		                         const std::vector<TRAP::Graphics::Texture*>& textures,
+								 Window* window = nullptr) = 0;
+		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler,
+		                        Window* window = nullptr) = 0;
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
-		                         const std::vector<TRAP::Graphics::Sampler*>& samplers) = 0;
+		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
+								 Window* window = nullptr) = 0;
 		virtual void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
 							uint64_t size = 0, uint64_t offset = 0) = 0;
 

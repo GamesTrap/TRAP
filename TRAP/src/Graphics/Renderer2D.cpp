@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 
 	struct Renderer2DData
 	{
-		static constexpr uint32_t MaxQuads = 200000;
+		static constexpr uint32_t MaxQuads = 1000000;
 		static constexpr uint32_t MaxVertices = MaxQuads * 4;
 		static constexpr uint32_t MaxIndices = MaxQuads * 6;
 		static constexpr uint32_t MaxTextureSlots = 4096;
@@ -205,7 +205,7 @@ void TRAP::Graphics::Renderer2D::EndScene()
 		    if(!s_data.TextureSlots[i])
 				s_data.TextureSlots[i] = s_data.WhiteTexture.get();
 		}
-		//s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
+		s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
 
 		//Bind Vertex & Index Buffer
 		s_data.QuadVertexBuffer->Use();
@@ -257,7 +257,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
                                           const Scope<Texture2D>& texture)
 {
 	constexpr uint64_t quadVertexCount = 4;
-	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}} };
+	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
 
 	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		FlushAndReset();

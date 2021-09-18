@@ -12,6 +12,7 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Textures/TextureManager.h"
+#include "Application.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
@@ -241,9 +242,12 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
-                                                   TRAP::Graphics::Texture* const texture)
+                                                   TRAP::Graphics::Texture* const texture, Window* window)
 {
 	TRAP_ASSERT(texture, "Texture is nullptr!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture);
@@ -261,17 +265,21 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-			GetDescriptorSets()[set]->Update(i, params);
+		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
-													const std::vector<TRAP::Graphics::Texture*>& textures)
+													const std::vector<TRAP::Graphics::Texture*>& textures,
+													Window* window)
 {
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture,
@@ -295,17 +303,20 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-			GetDescriptorSets()[set]->Update(i, params);
+		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
-	                                               TRAP::Graphics::Sampler* const sampler)
+	                                               TRAP::Graphics::Sampler* const sampler, Window* window)
 {
 	TRAP_ASSERT(sampler, "Sampler is nullptr!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler);
@@ -323,17 +334,21 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-			GetDescriptorSets()[set]->Update(i, params);
+		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
-	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers)
+	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
+													Window* window)
 {
 	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
@@ -353,8 +368,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-			GetDescriptorSets()[set]->Update(i, params);
+		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
 

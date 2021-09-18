@@ -126,10 +126,6 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 		s_Data.Hints.Window.Maximized = value;
 		break;
 
-	case Hint::Minimized:
-		s_Data.Hints.Window.Maximized = !value;
-		break;
-
 	case Hint::Visible:
 		s_Data.Hints.Window.Visible = value;
 		break;

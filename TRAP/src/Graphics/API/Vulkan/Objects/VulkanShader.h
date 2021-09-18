@@ -22,12 +22,16 @@ namespace TRAP::Graphics::API
 		const std::vector<std::string>& GetEntryNames() const;
 
 		void Use(Window* window = nullptr) override;
-		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture) override;
+		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture,
+		                Window* window = nullptr) override;
 		void UseTextures(uint32_t set, uint32_t binding,
-						 const std::vector<TRAP::Graphics::Texture*>& textures) override;
-		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) override;
+						 const std::vector<TRAP::Graphics::Texture*>& textures,
+						 Window* window = nullptr) override;
+		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler,
+		                Window* window = nullptr) override;
 		void UseSamplers(uint32_t set, uint32_t binding,
-		                 const std::vector<TRAP::Graphics::Sampler*>& samplers) override;
+		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
+						 Window* window = nullptr) override;
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
 		            uint64_t size = 0, uint64_t offset = 0) override;
 

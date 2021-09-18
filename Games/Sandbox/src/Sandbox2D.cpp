@@ -53,6 +53,8 @@ void Sandbox2D::OnAttach()
 	//Mount & Load Textures
 	TRAP::VFS::MountTextures("Assets/Textures");
 	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
+	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
+	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -72,8 +74,6 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	m_cameraController.OnUpdate(deltaTime);
 
 	//Render
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
 
 	TRAP::Graphics::Renderer2D::ResetStats();

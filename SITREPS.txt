@@ -2129,3 +2129,11 @@ SITREP 09/16/2021|21w37a3
     - Made ParticleSystem2D work again ~<15 mins
     - VulkanRenderer Changed DescriptorSet binding ~<15 mins
     - RenderCommand Added SetBlendConstant shortcut ~<10 mins
+
+SITREP 09/18/2021|21w37a4
+    - Changed TRAP Engine version to 21w37a4(0.7.84)
+    - Removed OnMouseScroll Controller check from OrthographicCameraController ~<5 mins
+    - RendererAPI Added GetCurrentImageIndex function ~<5 mins
+    - VulkanShader Changed updating of dynamic resources ~<20 mins
+    - Renderer2D corrected UV coordinates ~<5 mins
+    - Renderer2D Upped Quad limit to 1 million ~<5 mins

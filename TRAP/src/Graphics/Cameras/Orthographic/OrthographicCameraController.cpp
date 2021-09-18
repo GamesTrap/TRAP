@@ -246,7 +246,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseSc
 {
 	TP_PROFILE_FUNCTION();
 
-	if(!m_window || m_window.get() != e.GetWindow() || Input::IsControllerConnected(Input::Controller::One))
+	if(!m_window || m_window.get() != e.GetWindow())
 		return false;
 
 	m_zoomLevel -= e.GetYOffset() * 0.25f;

@@ -1313,6 +1313,8 @@ namespace TRAP::Graphics
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
 
+		static uint32_t GetCurrentImageIndex(TRAP::Window* window);
+
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;

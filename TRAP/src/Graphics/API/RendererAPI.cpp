@@ -351,3 +351,10 @@ bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==
 		   this->ChromaFilter == s.ChromaFilter &&
 		   this->ForceExplicitReconstruction == s.ForceExplicitReconstruction;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(TRAP::Window* window)
+{
+	return s_perWindowDataMap[window]->ImageIndex;
+}
