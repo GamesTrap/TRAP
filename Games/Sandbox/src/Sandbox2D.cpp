@@ -24,6 +24,8 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
 	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
 	ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+	ImGui::NewLine();
+	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP").get(), ImVec2(100, 100));
 	ImGui::End();
 
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();

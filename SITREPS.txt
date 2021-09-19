@@ -2137,3 +2137,8 @@ SITREP 09/18/2021|21w37a4
     - VulkanShader Changed updating of dynamic resources ~<20 mins
     - Renderer2D corrected UV coordinates ~<5 mins
     - Renderer2D Upped Quad limit to 1 million ~<5 mins
+
+SITREP 09/19/2021|21w37a5
+    - Changed TRAP Engine version to 21w37a5(0.7.85)
+    - Added new Vulkan ImGui backend with Texture support ~<45 mins
+    - ImGui Added helper function for Texture drawing ~<20 mins

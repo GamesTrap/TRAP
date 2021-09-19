@@ -1,12 +1,13 @@
 #include "TRAPPCH.h"
 #include "ImGuiLayer.h"
 
-#include <backends/imgui_impl_vulkan.h>
+#include "ImGuiVulkanBackend.h"
 
 #include "Application.h"
 #include "Embed.h"
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
+#include "Graphics/Textures/Texture2D.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Objects/CommandPool.h"
 #include "Graphics/API/Objects/Fence.h"
@@ -20,6 +21,8 @@
 #include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "VFS/VFS.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -269,4 +272,35 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 	colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.1505f, 0.151f, 1.0f);
 	colors[ImGuiCol_TitleBgActive] = ImVec4(0.15f, 0.1505f, 0.151f, 1.0f);
 	colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.15f, 0.1505f, 0.151f, 1.0f);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void ImGui::Image(TRAP::Graphics::Texture2D* image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
+                  const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
+{
+	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
+	{
+		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
+		auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
+		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void ImGui::Image(TRAP::Graphics::Texture2D* image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
+			      const ImVec4& tint_col, const ImVec4& border_col)
+{
+	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
+	{
+		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
+		auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkRenderer->s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		                                                      vkImage->GetSRVVkImageView(),
+		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
+	}
 }
