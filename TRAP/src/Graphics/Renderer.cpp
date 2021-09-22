@@ -26,8 +26,7 @@ void TRAP::Graphics::Renderer::Init()
 	TP_PROFILE_FUNCTION();
 
 	s_maxDrawCalls = RendererAPI::GPUSettings.MaxUniformBufferRange /
-	                 (sizeof(Math::Mat4) + (RendererAPI::GPUSettings.UniformBufferAlignment -
-					                        sizeof(Math::Mat4)));
+	                 UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4));
 
 	s_uniformBuffer = TRAP::Graphics::UniformBuffer::Create(s_sceneData.get(), sizeof(SceneData),
 															TRAP::Graphics::UpdateFrequency::Dynamic);

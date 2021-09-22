@@ -2149,3 +2149,4 @@ SITREP 09/22/2021|21w38a1
     - Updated all UBO binding calls ~<15 mins
     - Added StorageBuffer (SSBO) class ~<25 mins
     - Shader Added UseSSBO function ~<15 mins
+    - Added UniformBuffer CalculateAlignedSize function ~<10 mins

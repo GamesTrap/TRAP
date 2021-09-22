@@ -159,9 +159,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment()
+uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment()
 {
-	return TRAP::Math::Max(1u, RendererAPI::GPUSettings.UploadBufferTextureRowAlignment);
+	return TRAP::Math::Max(uint64_t(1), RendererAPI::GPUSettings.UploadBufferTextureRowAlignment);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

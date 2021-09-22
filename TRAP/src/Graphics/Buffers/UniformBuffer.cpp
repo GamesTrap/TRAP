@@ -106,6 +106,19 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint64_t TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const uint64_t byteSize)
+{
+	uint64_t minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
+	uint64_t alignedSize = byteSize;
+
+	if(minUBOAlignment > 0)
+		alignedSize = (alignedSize + minUBOAlignment - 1) & ~(minUBOAlignment - 1);
+
+	return alignedSize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(void* data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
