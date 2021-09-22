@@ -24,6 +24,8 @@ namespace TRAP::Graphics
 						 Window* window = nullptr) override;
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
 		            uint64_t size, uint64_t offset, Window* window = nullptr) override;
+		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* const storageBuffer,
+		             uint64_t size, uint64_t offset, Window* window = nullptr) override;
 	};
 }
 

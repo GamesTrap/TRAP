@@ -2147,3 +2147,5 @@ SITREP 09/22/2021|21w38a1
     - Changed TRAP Engine version to 21w38a1(0.7.86)
     - Shader Changed binding of UBOs ~<15 mins
     - Updated all UBO binding calls ~<15 mins
+    - Added StorageBuffer (SSBO) class ~<25 mins
+    - Shader Added UseSSBO function ~<15 mins

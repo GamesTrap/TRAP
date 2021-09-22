@@ -34,8 +34,13 @@ namespace TRAP::Graphics::API
 						 Window* window = nullptr) override;
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
 		            uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) override;
+		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* storageBuffer,
+		             uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) override;
 
 	private:
+		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
+		               uint64_t size, uint64_t offset, Window* window);
+
 		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint32_t size = 1);
 
 		TRAP::Ref<VulkanDevice> m_device;

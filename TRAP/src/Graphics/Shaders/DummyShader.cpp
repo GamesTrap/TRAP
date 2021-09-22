@@ -51,3 +51,11 @@ void TRAP::Graphics::DummyShader::UseUBO(const uint32_t, const uint32_t,
                                          Window*)
 {
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::DummyShader::UseSSBO(const uint32_t, const uint32_t,
+                                          TRAP::Graphics::StorageBuffer* const, const uint64_t, const uint64_t,
+                                          Window*)
+{
+}

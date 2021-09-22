@@ -10,6 +10,7 @@
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/DescriptorPool.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
+#include "Graphics/API/Objects/Buffer.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "Application.h"
@@ -371,28 +372,57 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 	if(!window)
 		window = TRAP::Application::GetWindow().get();
 
+	uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	                    0 : RendererAPI::GetCurrentImageIndex(window);
+
+	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size, offset, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
+                                                TRAP::Graphics::StorageBuffer* storageBuffer,
+											    const uint64_t size,  const uint64_t offset, Window* window)
+{
+	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+	                     0 : RendererAPI::GetCurrentImageIndex(window);
+
+	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size, offset, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
+                                                  uint64_t size, uint64_t offset, Window* window)
+{
+	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding,
-	                                          TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
-											  uniformBuffer->GetSize());
-	bool isDynamicUBO = false;
-	if(name.empty()) //Try again as this might be a dynamic UBO
+	                                          buffer->GetDescriptors(),
+											  buffer->GetSize());
+	bool isDynamic = false;
+	if(name.empty()) //Try again as this might be a dynamic Buffer
 	{
-		name = RetrieveDescriptorName(set, binding,
-									  TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer, 1);
+		//OPTIMIZE Use index into root signature instead of name
+		name = RetrieveDescriptorName(set, binding, buffer->GetDescriptors(), 1);
 		if(!name.empty())
-			isDynamicUBO = true;
+			isDynamic = true;
 	}
 
-	if(name.empty()) //Unable to find UBO @ with set, binding & size
+	if(name.empty()) //Unable to find Buffer @ with set, binding & size
 	{
 		//TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
 		return;
 	}
 
-	//Bind UBO
+	//Bind Buffer
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
-	if(isDynamicUBO)
+	if(isDynamic)
 	{
 		TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset off{};
 		off.Offsets.emplace_back(offset);
@@ -404,13 +434,13 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 
 	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
 	{
-		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[0].get()};
+		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
 		GetDescriptorSets()[set]->Update(0, params);
 	}
 	else
 	{
 		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
-		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[imageIndex].get()};
+		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
