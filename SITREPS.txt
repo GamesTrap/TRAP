@@ -2150,3 +2150,4 @@ SITREP 09/22/2021|21w38a1
     - Added StorageBuffer (SSBO) class ~<25 mins
     - Shader Added UseSSBO function ~<15 mins
     - Added UniformBuffer CalculateAlignedSize function ~<10 mins
+    - Added StorageBuffer CalculateAlignedSize function ~<10 mins

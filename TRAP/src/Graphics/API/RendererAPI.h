@@ -1241,15 +1241,15 @@ namespace TRAP::Graphics
 			uint8_t* MappedData;
 			//Size of each row in destination including padding - Needs to be respected
 			//otherwise texture data will be corrupted if dst row stride is not the same as src row stride
-			uint32_t DstRowStride;
+			uint64_t DstRowStride;
 			//Number of rows in this slice of the texture
-			uint32_t RowCount;
+			uint64_t RowCount;
 			//Src row stride for convenience (RowCount * width * texture format size)
-			uint32_t SrcRowStride;
+			uint64_t SrcRowStride;
 			//Size of each slice in destination including padding - Use for offsetting dst data updating 3D textures
-			uint32_t DstSliceStride;
+			uint64_t DstSliceStride;
 			//Size of each slice in src - Use for offsetting src data when updating 3D textures
-			uint32_t SrcSliceStride;
+			uint64_t SrcSliceStride;
 
 			//Internal
 			struct
@@ -1293,6 +1293,8 @@ namespace TRAP::Graphics
 		{
 			uint64_t UniformBufferAlignment;
 			uint32_t MaxUniformBufferRange;
+			uint64_t StorageBufferAlignment;
+			uint64_t MaxStorageBufferRange;
 			uint64_t UploadBufferTextureAlignment;
 			uint64_t UploadBufferTextureRowAlignment;
 			uint32_t MaxVertexInputBindings;

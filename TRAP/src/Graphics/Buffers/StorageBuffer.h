@@ -56,6 +56,8 @@ namespace TRAP::Graphics
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
+		static uint64_t CalculateAlignedSize(const uint64_t byteSize);
+
 		static Scope<StorageBuffer> Create(bool writable, uint64_t size, UpdateFrequency updateFrequency);
 		static Scope<StorageBuffer> Create(bool writable, void* data, uint64_t size, UpdateFrequency updateFrequency);
 

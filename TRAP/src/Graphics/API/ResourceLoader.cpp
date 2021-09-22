@@ -166,28 +166,28 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt)
+uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt)
 {
-	const uint32_t blockSize = Math::Max(1u, TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3);
-	const uint32_t alignment = ((RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
+	const uint64_t blockSize = Math::Max(uint64_t(1), uint64_t(TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3));
+	const uint64_t alignment = ((RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
 	                            blockSize) * blockSize;
 
-	const uint32_t rowAlignment = UtilGetTextureRowAlignment();
+	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
 	return ((alignment + rowAlignment - 1) / rowAlignment) * rowAlignment;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
+uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Graphics::API::ImageFormat fmt,
                                                                  const uint32_t width, const uint32_t height,
-																 const uint32_t depth, const uint32_t rowStride,
-																 const uint32_t sliceStride,
+																 const uint32_t depth, const uint64_t rowStride,
+																 const uint64_t sliceStride,
 																 const uint32_t baseMipLevel,
 																 const uint32_t mipLevels,
 																 const uint32_t baseArrayLayer,
 																 const uint32_t arrayLayers)
 {
-	uint32_t requiredSize = 0;
+	uint64_t requiredSize = 0;
 
 	for(uint32_t s = baseArrayLayer; s < baseArrayLayer + arrayLayers; ++s)
 	{
@@ -197,13 +197,13 @@ uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Gra
 
 		for(uint32_t m = baseMipLevel; m < baseMipLevel + mipLevels; ++m)
 		{
-			uint32_t rowBytes = 0;
-			uint32_t numRows = 0;
+			uint64_t rowBytes = 0;
+			uint64_t numRows = 0;
 
 			if(!UtilGetSurfaceInfo(w, h, fmt, nullptr, &rowBytes, &numRows))
 				return false;
 
-			const uint32_t temp = ((rowBytes + rowStride - 1) / rowStride) * rowStride;
+			const uint64_t temp = ((rowBytes + rowStride - 1) / rowStride) * rowStride;
 			requiredSize += (((d * temp * numRows) + sliceStride - 1) / sliceStride) * sliceStride;
 
 			w = w >> 1;
@@ -225,8 +225,8 @@ uint32_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Gra
 
 bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
 	                                                         const TRAP::Graphics::API::ImageFormat fmt,
-															 uint32_t* outNumBytes, uint32_t* outRowBytes,
-															 uint32_t* outNumRows)
+															 uint64_t* outNumBytes, uint64_t* outRowBytes,
+															 uint64_t* outNumRows)
 {
 	uint64_t numBytes = 0;
 	uint64_t rowBytes;
@@ -286,11 +286,11 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 		return false;
 
 	if(outNumBytes)
-		*outNumBytes = static_cast<uint32_t>(numBytes);
+		*outNumBytes = numBytes;
 	if(outRowBytes)
-		*outRowBytes = static_cast<uint32_t>(rowBytes);
+		*outRowBytes = rowBytes;
 	if(outNumRows)
-		*outNumRows = static_cast<uint32_t>(numRows);
+		*outNumRows = numRows;
 
 	return true;
 }
@@ -474,14 +474,14 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 {
 	const TRAP::Ref<TRAP::Graphics::TextureBase> texture = desc.Texture;
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
-	const uint32_t alignment = UtilGetTextureSubresourceAlignment(fmt);
+	const uint64_t alignment = UtilGetTextureSubresourceAlignment(fmt);
 
 	const bool success = UtilGetSurfaceInfo(MIP_REDUCE(texture->GetWidth(), desc.MipLevel),
 	                                        MIP_REDUCE(texture->GetHeight(), desc.MipLevel),
 	                                        fmt, &desc.SrcSliceStride, &desc.SrcRowStride, &desc.RowCount);
 	TRAP_ASSERT(success);
 
-	const uint32_t rowAlignment = UtilGetTextureRowAlignment();
+	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
 	desc.DstRowStride = ((desc.SrcRowStride + rowAlignment - 1) / rowAlignment) * rowAlignment;
 	desc.DstSliceStride = (((desc.DstRowStride * desc.RowCount) + alignment - 1) / alignment) * alignment;
 
@@ -1025,8 +1025,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
 	CommandBuffer* cmd = AcquireCmd(activeSet);
 
-	const uint32_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
-	const uint32_t rowAlignment = UtilGetTextureRowAlignment();
+	const uint64_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
+	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
 	const uint64_t requiredSize = UtilGetSurfaceSize(format, texture->GetWidth(), texture->GetHeight(),
 											         texture->GetDepth(), rowAlignment, sliceAlignment,
 													 textureUpdateDesc.BaseMipLevel, textureUpdateDesc.MipLevels,
@@ -1069,9 +1069,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			uint32_t h = MIP_REDUCE(texture->GetHeight(), mip);
 			uint32_t d = MIP_REDUCE(texture->GetDepth(), mip);
 
-			uint32_t numBytes = 0;
-			uint32_t rowBytes = 0;
-			uint32_t numRows = 0;
+			uint64_t numBytes = 0;
+			uint64_t rowBytes = 0;
+			uint64_t numRows = 0;
 
 			bool ret = UtilGetSurfaceInfo(w, h, format, &numBytes, &rowBytes, &numRows);
 			if(!ret)

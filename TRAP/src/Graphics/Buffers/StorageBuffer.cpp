@@ -114,6 +114,19 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byteSize)
+{
+	uint64_t minSSBOAlignment = RendererAPI::GPUSettings.StorageBufferAlignment;
+	uint64_t alignedSize = byteSize;
+
+	if(minSSBOAlignment > 0)
+		alignedSize = (alignedSize + minSSBOAlignment - 1) & ~(minSSBOAlignment - 1);
+
+	return alignedSize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const bool writable, void* data,
 																			   const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
