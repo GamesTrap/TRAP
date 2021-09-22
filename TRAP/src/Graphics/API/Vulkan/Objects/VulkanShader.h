@@ -33,7 +33,7 @@ namespace TRAP::Graphics::API
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
 						 Window* window = nullptr) override;
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
-		            uint64_t size = 0, uint64_t offset = 0) override;
+		            uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) override;
 
 	private:
 		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint32_t size = 1);
@@ -45,10 +45,6 @@ namespace TRAP::Graphics::API
 		std::vector<VkShaderModule> m_shaderModules;
 		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection;
 		std::vector<std::string> m_entryNames;
-
-		std::vector<TRAP::Graphics::UniformBuffer*> m_boundUBOs;
-
-		bool m_firstUBOError;
 	};
 }
 

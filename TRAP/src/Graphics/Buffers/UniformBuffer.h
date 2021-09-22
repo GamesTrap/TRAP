@@ -42,8 +42,6 @@ namespace TRAP::Graphics
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
 		std::vector<API::SyncToken> m_tokens;
-
-		bool m_first = true;
 	};
 }
 

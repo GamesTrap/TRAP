@@ -2142,3 +2142,8 @@ SITREP 09/19/2021|21w37a5
     - Changed TRAP Engine version to 21w37a5(0.7.85)
     - Added new Vulkan ImGui backend with Texture support ~<45 mins
     - ImGui Added helper function for Texture drawing ~<20 mins
+
+SITREP 09/22/2021|21w38a1
+    - Changed TRAP Engine version to 21w38a1(0.7.86)
+    - Shader Changed binding of UBOs ~<15 mins
+    - Updated all UBO binding calls ~<15 mins

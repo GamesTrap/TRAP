@@ -124,11 +124,8 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
 	s_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 
+	//Bind static shader resources
 	s_data.TextureShader->UseSampler(0, 1, s_data.TextureSampler.get());
-	s_data.TextureShader->UseUBO(1, 0, s_data.CameraUniformBuffer.get());
-	for (uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
-		s_data.TextureSlots[i] = s_data.WhiteTexture.get();
-	s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -199,13 +196,14 @@ void TRAP::Graphics::Renderer2D::EndScene()
 		s_data.QuadVertexBuffer->SetData(reinterpret_cast<float*>(s_data.QuadVertexBufferBase), dataSize);
 		s_data.QuadVertexBuffer->AwaitLoading();
 
-		//Bind Textures
+		//Bind dynamic shader resources
 		for(uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
 		{
 		    if(!s_data.TextureSlots[i])
 				s_data.TextureSlots[i] = s_data.WhiteTexture.get();
 		}
 		s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
+		s_data.TextureShader->UseUBO(1, 0, s_data.CameraUniformBuffer.get());
 
 		//Bind Vertex & Index Buffer
 		s_data.QuadVertexBuffer->Use();

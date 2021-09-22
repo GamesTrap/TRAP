@@ -45,7 +45,6 @@ void VulkanIcoSphereTests::OnAttach()
 
 	//Load Shader
 	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader").get();
-	m_shader->UseUBO(1, 0, m_cameraUBO.get());
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -93,6 +92,7 @@ void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		                                  TRAP::Math::Vec3(1.0f, 1.0f, 1.0f));
 
 		m_cameraUBO->SetData(&camera, sizeof(CameraUBOData));
+		m_shader->UseUBO(1, 0, m_cameraUBO.get());
 	}
 
 	m_vertexBuffer->Use();

@@ -83,12 +83,7 @@ void VulkanMultiWindowTests::OnAttach()
 	//Load Shaders
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	const auto& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader",
-	                                                                      &macros);
-
-	//Bind UBOs
-	vkTestUBOShader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
-	vkTestUBOShader->UseUBO(1, 1, m_colorUniformBuffer.get());
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -149,7 +144,12 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 			m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
 			m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
-			TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use(m_window.get());
+			const auto& shader = TRAP::Graphics::ShaderManager::Get("VKTestUBO");
+			//Bind UBOs
+			shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
+			shader->UseUBO(1, 1, m_colorUniformBuffer.get());
+
+			shader->Use(m_window.get());
 		}
 		else
 			TRAP::Graphics::ShaderManager::Get("VKTest")->Use(m_window.get());

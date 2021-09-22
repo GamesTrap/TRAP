@@ -19,8 +19,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
-	  m_firstUBOError(true)
+	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	m_name = name;
 
@@ -156,18 +155,6 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 			m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 		}
 	}
-
-	//Allocate enough space for all possible UBOs in the shader
-	uint32_t UBOCount = 0;
-	for(const auto& res : m_reflection->ShaderResources)
-	{
-		if(res.Type == TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer)
-		{
-			++UBOCount;
-			break;
-		}
-	}
-	m_boundUBOs.reserve(UBOCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -254,7 +241,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::RendererVulkanShaderPrefix, "Texture with invalid set and/or binding provided!");
+		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Texture with invalid set and/or binding provided!");
 		return;
 	}
 
@@ -287,7 +274,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::RendererVulkanShaderPrefix, "Textures with invalid set and/or binding provided!");
+		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Textures with invalid set and/or binding provided!");
 		return;
 	}
 
@@ -323,7 +310,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::RendererVulkanShaderPrefix, "Sampler with invalid set and/or binding provided!");
+		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Sampler with invalid set and/or binding provided!");
 		return;
 	}
 
@@ -356,7 +343,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::RendererVulkanShaderPrefix, "Samplers with invalid set and/or binding provided!");
+		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Samplers with invalid set and/or binding provided!");
 		return;
 	}
 
@@ -377,10 +364,12 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
                                                TRAP::Graphics::UniformBuffer* uniformBuffer,
-											   const uint64_t size,  const uint64_t offset)
+											   const uint64_t size,  const uint64_t offset, Window* window)
 {
-	if(std::find(m_boundUBOs.begin(), m_boundUBOs.end(), uniformBuffer) != m_boundUBOs.end())
-		return; //Already bound
+	TRAP_ASSERT(uniformBuffer, "UniformBuffer is nullptr!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	std::string name = RetrieveDescriptorName(set, binding,
 	                                          TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
@@ -396,11 +385,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 
 	if(name.empty()) //Unable to find UBO @ with set, binding & size
 	{
-		if(m_firstUBOError)
-		{
-			TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
-			m_firstUBOError = false;
-		}
+		//TP_ERROR(Log::RendererVulkanShaderPrefix, "UniformBuffer with invalid set and/or binding & size provided!");
 		return;
 	}
 
@@ -424,14 +409,10 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 	}
 	else
 	{
-		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-		{
-			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[i].get()};
-			GetDescriptorSets()[set]->Update(i, params);
-		}
+		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{uniformBuffer->GetUBOs()[imageIndex].get()};
+		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
-
-	m_boundUBOs.push_back(uniformBuffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

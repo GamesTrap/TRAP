@@ -189,7 +189,6 @@ void Cube3D::OnAttach()
                                                                              sizeof(DiffuseReflectionDataBuffer),
                                                                              TRAP::Graphics::UpdateFrequency::Dynamic);
     m_diffuseReflectionUniformBuffer->AwaitLoading();
-    TRAP::Graphics::ShaderManager::Get("Diffuse Reflection")->UseUBO(1, 2, m_diffuseReflectionUniformBuffer.get());
 
     //Load phong lightning UniformBuffer
     m_phongLightningDataBuffer.LightPosition = inverseView * m_lightPosition;
@@ -204,7 +203,6 @@ void Cube3D::OnAttach()
                                                                           sizeof(PhongLightningDataBuffer),
                                                                           TRAP::Graphics::UpdateFrequency::Dynamic);
     m_phongLightningUniformBuffer->AwaitLoading();
-    TRAP::Graphics::ShaderManager::Get("Phong Lightning")->UseUBO(1, 2, m_phongLightningUniformBuffer.get());
 
     //Wait for all pending resources (just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -369,6 +367,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_diffuseReflectionUniformBuffer->SetData(&m_diffuseReflectionDataBuffer,
                                                       sizeof(DiffuseReflectionDataBuffer));
             m_diffuseReflectionUniformBuffer->AwaitLoading();
+            TRAP::Graphics::ShaderManager::Get("Diffuse Reflection")->UseUBO(1, 2, m_diffuseReflectionUniformBuffer.get());
 
             TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
                                              m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
@@ -382,6 +381,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_phongLightningUniformBuffer->SetData(&m_phongLightningDataBuffer,
                                                    sizeof(PhongLightningDataBuffer));
             m_phongLightningUniformBuffer->AwaitLoading();
+            TRAP::Graphics::ShaderManager::Get("Phong Lightning")->UseUBO(1, 2, m_phongLightningUniformBuffer.get());
 
             TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
                                              m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),

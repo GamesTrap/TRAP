@@ -71,6 +71,7 @@ void VulkanTextureTests::OnAttach()
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
+    //Bind static shader resources
     m_shader->UseTexture(0, 0, m_texture);
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 

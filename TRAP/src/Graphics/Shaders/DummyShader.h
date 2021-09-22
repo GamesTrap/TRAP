@@ -23,7 +23,7 @@ namespace TRAP::Graphics
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
 						 Window* window = nullptr) override;
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
-		            uint64_t size, uint64_t offset) override;
+		            uint64_t size, uint64_t offset, Window* window = nullptr) override;
 	};
 }
 
