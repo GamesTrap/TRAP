@@ -2163,3 +2163,4 @@ SITREP 09/25/2021|21w38a2
       as an index for the ModelMatrices StorageBuffer ~<10 mins
     - Updated all Shaders to use StorageBuffers for ModelMatrices ~<15 mins
     - Tests Removed TestTexture Shader ~<5 mins
+    - Renderer Removed ModelMatrices UniformBuffer ~<5 mins
