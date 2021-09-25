@@ -10,8 +10,7 @@ DragAndDropTests::DragAndDropTests()
 void DragAndDropTests::OnImGuiRender()
 {
 	ImGui::Begin("Drag And Drop", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                       ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-										   ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                       ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press D to enable/disable Drag And Drop");
 	if(m_dragAndDrop)

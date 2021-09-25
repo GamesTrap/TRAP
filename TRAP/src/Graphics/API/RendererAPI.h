@@ -133,6 +133,11 @@ namespace TRAP::Graphics
 		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
 		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0,
 		                         Window* window = nullptr) = 0;
+		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
+		                           uint32_t firstInstance = 0, Window* window = nullptr) = 0;
+		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
+		                                  uint32_t firstIndex = 0, uint32_t firstInstance = 0,
+										  uint32_t firstVertex = 0, Window* window = nullptr) = 0;
 
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
 		                              Window* window = nullptr) = 0;

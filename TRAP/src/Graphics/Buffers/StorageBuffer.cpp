@@ -8,24 +8,22 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const bool writable,
-																				 const uint64_t size,
+TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(writable, nullptr, size, updateFrequency);
+	return Init(nullptr, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const bool writable, void* data,
-																				 const uint64_t size,
+TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(void* data, const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
 
-	return Init(writable, data, size, updateFrequency);
+	return Init(data, size, updateFrequency);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -86,13 +84,6 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* data, const uint64_t siz
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::StorageBuffer::IsWritable() const
-{
-	return m_storageBuffers[0]->GetDescriptors() == RendererAPI::DescriptorType::RWBuffer;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 {
 	for(uint32_t i = 0; i < m_storageBuffers.size(); ++i)
@@ -127,8 +118,7 @@ uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const bool writable, void* data,
-																			   const uint64_t size,
+TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(void* data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
 	TRAP::Scope<StorageBuffer> buffer = TRAP::Scope<StorageBuffer>(new StorageBuffer(updateFrequency));
@@ -136,9 +126,8 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(c
 	RendererAPI::BufferLoadDesc desc{};
 	desc.Desc.MemoryUsage = (updateFrequency == UpdateFrequency::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly :
 	                                                                     RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	desc.Desc.Flags = writable ? RendererAPI::BufferCreationFlags::PersistentMap :
-								 RendererAPI::BufferCreationFlags::None;
-	desc.Desc.Descriptors = writable ? RendererAPI::DescriptorType::RWBuffer : RendererAPI::DescriptorType::Buffer;
+	desc.Desc.Flags = RendererAPI::BufferCreationFlags::PersistentMap;
+	desc.Desc.Descriptors = RendererAPI::DescriptorType::RWBuffer;
 	desc.Desc.Size = size;
 	desc.Data = data;
 

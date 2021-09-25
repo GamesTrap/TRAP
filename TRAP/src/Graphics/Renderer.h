@@ -10,6 +10,7 @@ namespace TRAP::Graphics
 	class VertexBuffer;
 	class IndexBuffer;
 	class UniformBuffer;
+	class StorageBuffer;
 
 	class Camera;
 	class Renderer
@@ -44,12 +45,12 @@ namespace TRAP::Graphics
 
 			Math::Mat4 m_projectionMatrix;
 			Math::Mat4 m_viewMatrix;
-			//Math::Mat4 m_modelMatrix;
 		};
 
 		static Scope<SceneData> s_sceneData;
 		static Scope<UniformBuffer> s_uniformBuffer;
-		static Scope<UniformBuffer> s_modelUniformBuffer;
+		// static Scope<UniformBuffer> s_modelUniformBuffer;
+		static Scope<StorageBuffer> s_modelStorageBuffer;
 
 		static uint32_t s_maxDrawCalls;
 		static uint32_t s_currentDrawCalls;

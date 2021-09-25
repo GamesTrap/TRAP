@@ -101,7 +101,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			TP_ERROR(Log::ShaderSPIRVPrefix, "Found PushConstants with invalid size: ", resource.Size,
 				     " max allowed size: ", RendererAPI::GPUSettings.MaxPushConstantSize, "!");
 		}
-		
+
 		//Filter out what we don't use
 		if(!FilterResource(resource, shaderStage))
 		{
@@ -178,8 +178,11 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 				resources[j].Reg = resource.Binding;
 				std::string lowerName = Utils::String::ToLower(resource.Name);
 				if(lowerName.find("rootcbv") == std::string::npos &&
-				   lowerName.find("dynamic") == std::string::npos)
+				   lowerName.find("dynamic") == std::string::npos &&
+				   resources[j].Type != TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer)
+				{
 					resources[j].Size = resource.Size;
+				}
 				else
 					resources[j].Size = 1;
 				resources[j].UsedStages = shaderStage;

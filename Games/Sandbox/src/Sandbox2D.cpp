@@ -15,7 +15,7 @@ void Sandbox2D::OnImGuiRender()
 	TP_PROFILE_FUNCTION();
 
 	ImGui::SetNextWindowBgAlpha(0.3f);
-	ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Performance");
 	ImGui::Separator();
 	ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
@@ -31,8 +31,7 @@ void Sandbox2D::OnImGuiRender()
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();
 	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Renderer2D Stats:", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                                               ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing |
-                                               ImGuiWindowFlags_NoNav);
+                                               ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Renderer2D Stats");
 	ImGui::Separator();
 	ImGui::Text("DrawCalls: %u", stats.DrawCalls);

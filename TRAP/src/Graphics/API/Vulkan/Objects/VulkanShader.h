@@ -35,7 +35,7 @@ namespace TRAP::Graphics::API
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
 		            uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) override;
 		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* storageBuffer,
-		             uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) override;
+		             uint64_t size = 0, Window* window = nullptr) override;
 
 	private:
 		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,

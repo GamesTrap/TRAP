@@ -15,8 +15,9 @@ TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sce
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBuffer = nullptr;
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_modelUniformBuffer = nullptr;
-uint32_t TRAP::Graphics::Renderer::s_maxDrawCalls = 0;
+// TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_modelUniformBuffer = nullptr;
+TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::Renderer::s_modelStorageBuffer = nullptr;
+uint32_t TRAP::Graphics::Renderer::s_maxDrawCalls = 1000;
 uint32_t TRAP::Graphics::Renderer::s_currentDrawCalls = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -29,8 +30,10 @@ void TRAP::Graphics::Renderer::Init()
 	                 UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4));
 
 	s_uniformBuffer = TRAP::Graphics::UniformBuffer::Create(s_sceneData.get(), sizeof(SceneData),
-															TRAP::Graphics::UpdateFrequency::Dynamic);
-	s_modelUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(TRAP::Math::Mat4) * s_maxDrawCalls,
+	 														TRAP::Graphics::UpdateFrequency::Dynamic);
+	// s_modelUniformBuffer = TRAP::Graphics::UniformBuffer::Create(sizeof(TRAP::Math::Mat4) * s_maxDrawCalls,
+	//                                                              TRAP::Graphics::UpdateFrequency::Dynamic);
+	s_modelStorageBuffer = TRAP::Graphics::StorageBuffer::Create(sizeof(TRAP::Math::Mat4) * s_maxDrawCalls,
 	                                                             TRAP::Graphics::UpdateFrequency::Dynamic);
 
 	Renderer2D::Init();
@@ -124,25 +127,25 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 	if(s_currentDrawCalls >= s_maxDrawCalls)
 		return;
 
-	//s_sceneData->m_modelMatrix = transform;
-	s_modelUniformBuffer->SetData(&transform, sizeof(Math::Mat4),
-	                              s_currentDrawCalls * (sizeof(Math::Mat4) +
-								                        (RendererAPI::GPUSettings.UniformBufferAlignment -
-														 sizeof(Math::Mat4))));
-	s_modelUniformBuffer->AwaitLoading();
+	// s_modelUniformBuffer->SetData(&transform, sizeof(Math::Mat4),
+	//                               s_currentDrawCalls * UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	// s_modelUniformBuffer->AwaitLoading();
+	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
+	                              s_currentDrawCalls * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->UseUBO(1, 1, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
-		               s_currentDrawCalls * (sizeof(Math::Mat4) +
-					                         (RendererAPI::GPUSettings.UniformBufferAlignment -
-											  sizeof(Math::Mat4))));
+		// shader->UseUBO(1, 1, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
+		//                s_currentDrawCalls * UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+		shader->UseSSBO(1, 1, s_modelStorageBuffer.get(), s_maxDrawCalls * sizeof(Math::Mat4));
 		shader->UseUBO(1, 0, s_uniformBuffer.get());
 		shader->Use();
 	}
 
-	RenderCommand::Draw(vertexBuffer->GetCount());
+	// RenderCommand::Draw(vertexBuffer->GetCount());
+	RenderCommand::DrawInstanced(vertexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
 }
 
@@ -159,26 +162,26 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 	if(s_currentDrawCalls >= s_maxDrawCalls)
 		return;
 
-	//s_sceneData->m_modelMatrix = transform;
-	s_modelUniformBuffer->SetData(&transform, sizeof(Math::Mat4),
-	                              s_currentDrawCalls * (sizeof(Math::Mat4) +
-								                        (RendererAPI::GPUSettings.UniformBufferAlignment -
-														 sizeof(Math::Mat4))));
-	s_modelUniformBuffer->AwaitLoading();
+	// s_modelUniformBuffer->SetData(&transform, sizeof(Math::Mat4),
+	//                               s_currentDrawCalls * UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	// s_modelUniformBuffer->AwaitLoading();
+	s_modelStorageBuffer->SetData(&transform, sizeof(Math::Mat4),
+	                              s_currentDrawCalls * StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
 	if(shader)
 	{
-		shader->UseUBO(1, 1, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
-		               s_currentDrawCalls * (sizeof(Math::Mat4) +
-					                         (RendererAPI::GPUSettings.UniformBufferAlignment -
-											  sizeof(Math::Mat4))));
+		// shader->UseUBO(1, 1, s_modelUniformBuffer.get(), sizeof(Math::Mat4),
+		//                s_currentDrawCalls * UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+		shader->UseSSBO(1, 1, s_modelStorageBuffer.get(), s_maxDrawCalls * sizeof(Math::Mat4));
 		shader->UseUBO(1, 0, s_uniformBuffer.get());
 		shader->Use();
 	}
 	indexBuffer->Use();
 
-	RenderCommand::DrawIndexed(indexBuffer->GetCount());
+	// RenderCommand::DrawIndexed(indexBuffer->GetCount());
+	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
 }
 
@@ -193,13 +196,15 @@ void TRAP::Graphics::Renderer::Shutdown()
 	if(s_uniformBuffer)
 		s_uniformBuffer.reset();
 
-	if(s_modelUniformBuffer)
-	   s_modelUniformBuffer.reset();
+	// if(s_modelUniformBuffer)
+	//    s_modelUniformBuffer.reset();
+	if(s_modelStorageBuffer)
+	   s_modelStorageBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Renderer::SceneData::SceneData()
-	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)//, m_modelMatrix(0.0f)
+	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
 {
 }

@@ -187,9 +187,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 void VulkanMultiWindowTests::OnImGuiRender()
 {
 	ImGui::Begin("Vulkan Multi-Window Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                                  ImGuiWindowFlags_AlwaysAutoResize |
-													  ImGuiWindowFlags_NoSavedSettings |
-										              ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                                  ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Main-Window WireFrame (F1): %s", m_wireFrameMainWindow ? "Enabled" : "Disabled");
 	ImGui::Text("Secondary-Window WireFrame (F2): %s", m_wireFrameSecondWindow ? "Enabled" : "Disabled");

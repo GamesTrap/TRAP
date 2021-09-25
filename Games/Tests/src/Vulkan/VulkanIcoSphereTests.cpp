@@ -117,9 +117,7 @@ void VulkanIcoSphereTests::OnImGuiRender()
 	TRAP::Math::Vec3 pos = m_cameraTransform.Position;
 
 	ImGui::Begin("Vulkan IcoSphere Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                               ImGuiWindowFlags_AlwaysAutoResize |
-												   ImGuiWindowFlags_NoSavedSettings |
-												   ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                               ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");

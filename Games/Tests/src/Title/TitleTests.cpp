@@ -10,8 +10,7 @@ TitleTests::TitleTests()
 void TitleTests::OnImGuiRender()
 {
 	ImGui::Begin("CursorTest", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                    ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-										ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                    ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::End();
 }

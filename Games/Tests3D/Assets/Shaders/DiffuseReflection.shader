@@ -10,10 +10,10 @@ layout(std140, UpdateFreqDynamic, binding = 0) uniform MatrixBuffer
     uniform mat4 sys_ViewMatrix;
 } Matrices;
 
-layout(UpdateFreqDynamic, binding = 1) uniform ModelBufferDynamic
+layout(std140, UpdateFreqDynamic, binding = 1) readonly buffer ModelBuffer
 {
-	uniform mat4 sys_ModelMatrix;
-} ModelMatrixDynamic;
+	buffer mat4 sys_ModelMatrix[];
+} ModelMatrix;
 
 layout(std140, UpdateFreqDynamic, binding = 2) uniform DataBuffer
 {
@@ -24,13 +24,13 @@ layout(std140, UpdateFreqDynamic, binding = 2) uniform DataBuffer
 
 void main()
 {
-    vec3 tnorm = normalize(mat3(Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix) * Normal);
-    vec4 cameraCoords = Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix * vec4(Position, 1.0f);
+    vec3 tnorm = normalize(mat3(Matrices.sys_ViewMatrix * ModelMatrix.sys_ModelMatrix[gl_BaseInstance]) * Normal);
+    vec4 cameraCoords = Matrices.sys_ViewMatrix * ModelMatrix.sys_ModelMatrix[gl_BaseInstance] * vec4(Position, 1.0f);
     vec3 s = normalize(vec3(Data.LightPosition - cameraCoords));
 
     LightIntensity = Data.Ld * Data.Kd * max(dot(s, tnorm), 0.0f);
 
-    gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix * vec4(Position, 1.0f);
+    gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * ModelMatrix.sys_ModelMatrix[gl_BaseInstance] * vec4(Position, 1.0f);
 }
 
 #shader fragment

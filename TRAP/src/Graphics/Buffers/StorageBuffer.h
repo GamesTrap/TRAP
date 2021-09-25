@@ -51,18 +51,16 @@ namespace TRAP::Graphics
 			RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 		}
 
-		bool IsWritable() const;
-
 		bool IsLoaded() const;
 		void AwaitLoading() const;
 
 		static uint64_t CalculateAlignedSize(const uint64_t byteSize);
 
-		static Scope<StorageBuffer> Create(bool writable, uint64_t size, UpdateFrequency updateFrequency);
-		static Scope<StorageBuffer> Create(bool writable, void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<StorageBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<StorageBuffer> Create(void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
-		static Scope<StorageBuffer> Init(bool writable, void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<StorageBuffer> Init(void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_storageBuffers;
 

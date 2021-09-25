@@ -382,7 +382,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
                                                 TRAP::Graphics::StorageBuffer* storageBuffer,
-											    const uint64_t size,  const uint64_t offset, Window* window)
+											    const uint64_t size, Window* window)
 {
 	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
 
@@ -392,7 +392,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 	uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 	                     0 : RendererAPI::GetCurrentImageIndex(window);
 
-	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size, offset, window);
+	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size, 0, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -411,6 +411,8 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(uint32_t set, uint32_t binding
 		name = RetrieveDescriptorName(set, binding, buffer->GetDescriptors(), 1);
 		if(!name.empty())
 			isDynamic = true;
+		else //Try again as this might be a storage buffer
+			name = RetrieveDescriptorName(set, binding, buffer->GetDescriptors(), 0);
 	}
 
 	if(name.empty()) //Unable to find Buffer @ with set, binding & size

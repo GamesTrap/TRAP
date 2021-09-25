@@ -78,6 +78,11 @@ namespace TRAP::Graphics::API
 		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window = nullptr) override;
 		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex,
 		                 Window* window = nullptr) override;
+		void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
+		                   uint32_t firstInstance = 0, Window* window = nullptr) override;
+		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
+		                          uint32_t firstIndex = 0, uint32_t firstInstance = 0,
+							      uint32_t firstVertex = 0, Window* window = nullptr) override;
 
 		void BindShader(Shader* shader, Window* window = nullptr) const;
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,

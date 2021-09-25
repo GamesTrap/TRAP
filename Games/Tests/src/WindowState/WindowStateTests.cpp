@@ -10,8 +10,7 @@ WindowStateTests::WindowStateTests()
 void WindowStateTests::OnImGuiRender()
 {
 	ImGui::Begin("WindowState", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-										 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                     ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press I to minimize window");
 	ImGui::Text("Press M to maximize window");

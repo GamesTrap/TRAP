@@ -10,7 +10,7 @@ OpacityTests::OpacityTests()
 void OpacityTests::OnImGuiRender()
 {
 	ImGui::Begin("Opacity", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs);
+	                                 ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	if(ImGui::SliderFloat("Opacity", &m_opacity, 0.0f, 1.0f))
 		TRAP::Application::GetWindow()->SetOpacity(m_opacity);

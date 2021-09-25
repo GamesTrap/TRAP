@@ -145,7 +145,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	for(uint32_t i = 0; i < static_cast<uint32_t>(shaderResources.size()); ++i)
 	{
 		RendererAPI::DescriptorInfo& descInfo = m_descriptors[i];
-		ShaderReflection::ShaderResource& res = shaderResources[i];
+		const ShaderReflection::ShaderResource& res = shaderResources[i];
 		uint32_t setIndex = res.Set;
 
 		//Copy the binding information generated from the shader reflection into the descriptor
@@ -240,7 +240,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	{
 		VulkanRenderer::UpdateFrequencyLayoutInfo& layout = layouts[i];
 
-		if(!layouts[i].Bindings.empty())
+		if(!layout.Bindings.empty())
 		{
 			//Sort table by type (CBV/SRV/UAV) by register
 			std::sort(layout.Bindings.begin(), layout.Bindings.end(), [](const VkDescriptorSetLayoutBinding& lhs,
@@ -270,7 +270,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			                                   &m_vkDescriptorSetLayouts[i]));
 		}
 
-		if (layouts[i].Bindings.empty())
+		if (layout.Bindings.empty())
 			continue;
 
 		m_vkDescriptorCounts[i] = static_cast<uint16_t>(layout.Descriptors.size());

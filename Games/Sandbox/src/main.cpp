@@ -10,8 +10,8 @@ public:
 	Sandbox(const std::string& gameName)
 		: Application(gameName)
 	{
-		//PushLayer(TRAP::MakeScope<SandboxLayer>());
-		PushLayer(TRAP::MakeScope<Sandbox2D>());
+		PushLayer(TRAP::MakeScope<SandboxLayer>());
+		//PushLayer(TRAP::MakeScope<Sandbox2D>());
 		//PushLayer(TRAP::MakeScope<ParticleSystem2DLayer>());
 	}
 };

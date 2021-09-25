@@ -10,14 +10,14 @@ layout(std140, UpdateFreqDynamic, binding = 0) uniform MatrixBuffer
 	uniform mat4 sys_ViewMatrix;
 } Matrices;
 
-layout(UpdateFreqDynamic, binding = 1) uniform ModelBufferDynamic
+layout(std140, UpdateFreqDynamic, binding = 1) readonly buffer ModelBuffer
 {
-	uniform mat4 sys_ModelMatrix;
-} ModelMatrixDynamic;
+	buffer mat4 sys_ModelMatrix[];
+} ModelMatrix;
 
 void main()
 {
-	gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * ModelMatrixDynamic.sys_ModelMatrix * vec4(Position, 1.0f);
+	gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * ModelMatrix.sys_ModelMatrix[gl_BaseInstance] * vec4(Position, 1.0f);
 	vColor = Color;
 }
 

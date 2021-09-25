@@ -28,8 +28,7 @@ void ControllerTests::OnAttach()
 
 void ControllerTests::OnImGuiRender()
 {
-	ImGui::Begin("Controllers", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
-	                                     ImGuiWindowFlags_NoNavInputs);
+	ImGui::Begin("Controllers", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 	if (!s_controllers.empty())
 	{
 		ImGui::Checkbox("DPad Buttons", &s_dpadButtons);
@@ -54,8 +53,7 @@ void ControllerTests::OnImGuiRender()
 		std::vector<TRAP::Input::ControllerDPad> dpad = TRAP::Input::GetAllControllerDPads(controller);
 
 		ImGui::Begin((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
-		              TRAP::Input::GetControllerName(controller)).c_str(), nullptr,
-					 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNavInputs);
+		              TRAP::Input::GetControllerName(controller)).c_str());
 		ImGui::Text("Hardware GUID: %s", TRAP::Input::GetControllerGUID(controller).c_str());
 		ImGui::NewLine();
 		ImGui::Text("Controller Battery Status: %s", GetBatteryStatus(controller).c_str());

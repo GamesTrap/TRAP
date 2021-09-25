@@ -67,6 +67,11 @@ namespace TRAP::Graphics
 		static void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr);
 		static void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0,
 		                        Window* window = nullptr);
+		static void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
+		                          uint32_t firstInstance = 0, Window* window = nullptr);
+		static void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex = 0,
+		                                 uint32_t firstInstance = 0, uint32_t firstVertex = 0,
+										 Window* window = nullptr);
 
 		//Bind functions
 		static void SetPushConstants(const char* name, const void* data, Window* window = nullptr);

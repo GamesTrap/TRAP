@@ -216,6 +216,25 @@ void TRAP::Graphics::RenderCommand::DrawIndexed(const uint32_t indexCount, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::DrawInstanced(uint32_t vertexCount, uint32_t instanceCount,
+												  uint32_t firstVertex, uint32_t firstInstance,
+												  Window* window)
+{
+	RendererAPI::GetRenderer()->DrawInstanced(vertexCount, instanceCount, firstVertex, firstInstance, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
+                                                         uint32_t firstIndex, uint32_t firstInstance,
+														 uint32_t firstVertex, Window* window)
+{
+	RendererAPI::GetRenderer()->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, firstInstance,
+	                                                 firstVertex, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data, Window* window)
 {
 	RendererAPI::GetRenderer()->BindPushConstants(name, data, window);

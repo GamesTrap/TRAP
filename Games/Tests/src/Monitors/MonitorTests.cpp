@@ -27,7 +27,7 @@ void MonitorTests::OnImGuiRender()
 {
 	for(const MonitorInfo& monitor : s_monitorInfos)
 	{
-		ImGui::Begin(monitor.Name.c_str(), nullptr);
+		ImGui::Begin(monitor.Name.c_str());
 		ImGui::Text("Name: %s", monitor.Name.c_str());
 		ImGui::Text("Primary: %s", (monitor.ID == TRAP::Monitor::GetPrimaryMonitor().GetID() ?
 		                            std::string("True").c_str() : std::string("False").c_str()));

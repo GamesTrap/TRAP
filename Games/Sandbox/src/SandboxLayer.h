@@ -24,8 +24,7 @@ public:
 
 		ImGui::SetNextWindowBgAlpha(0.3f);
 		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-		                                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-											 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+		                                     ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
 		ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
 		//ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
@@ -35,8 +34,8 @@ public:
 		                 33, ImVec2(200, 50));
 		ImGui::End();
 
-		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize |
-		                                    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoNav);
+		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+		                                    ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Checkbox("WireFrame (F1)", &m_wireFrame);
 		ImGui::Checkbox("Indexed Drawing (F2)", &m_indexedDrawing);
 		ImGui::End();

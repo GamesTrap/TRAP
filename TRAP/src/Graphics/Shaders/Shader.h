@@ -57,7 +57,7 @@ namespace TRAP::Graphics
 		virtual void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
 							uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) = 0;
 		virtual void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* const storageBuffer,
-							 uint64_t size = 0, uint64_t offset = 0, Window* window = nullptr) = 0;
+							 uint64_t size = 0, Window* window = nullptr) = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath,
 		                                    const std::vector<Macro>* userMacros = nullptr);

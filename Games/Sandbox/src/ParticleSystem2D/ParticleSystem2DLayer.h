@@ -85,14 +85,14 @@ public:
 
 	void OnImGuiRender() override
 	{
-		ImGui::Begin("Settings");
+		ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::ColorEdit4("Spawn Color", &m_particle.ColorBegin[0]);
 		ImGui::ColorEdit4("Decay Color", &m_particle.ColorEnd[0]);
 		ImGui::DragFloat("Life Time", &m_particle.LifeTime, 0.1f, 0.0f, 1000.0f);
 		ImGui::End();
 
 		ImGui::SetNextWindowBgAlpha(0.3f);
-		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("Performance");
 		ImGui::Separator();
 		//ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());

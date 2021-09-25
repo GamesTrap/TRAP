@@ -17,8 +17,7 @@ void ClipboardTests::OnAttach()
 void ClipboardTests::OnImGuiRender()
 {
 	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
-	                                   ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-									   ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                   ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press CTRL+C to copy example text from engine");

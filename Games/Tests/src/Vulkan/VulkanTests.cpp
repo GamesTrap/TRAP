@@ -194,8 +194,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 void VulkanTests::OnImGuiRender()
 {
 	ImGui::Begin("Vulkan Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
-										 ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	                                     ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
 	ImGui::Text("Geometry (F2): %s", m_quad ? "Quad" : "Triangle");

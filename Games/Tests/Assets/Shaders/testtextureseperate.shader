@@ -26,5 +26,4 @@ layout(push_constant) uniform PushConstantBlock
 void main()
 {
     FragColor = textureLod(sampler2D(Texture, Sampler), vUV, SamplerRootConstant.SamplerIndex);
-    //FragColor = vec4(vUV, 0.0f, 1.0f);
 }

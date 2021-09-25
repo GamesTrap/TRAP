@@ -732,6 +732,36 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(uint32_t vertexCount, uint32_t instanceCount,
+                                                        uint32_t firstVertex, uint32_t firstInstance,
+														Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
+
+	data->GraphicCommandBuffers[data->ImageIndex]->DrawInstanced(vertexCount, firstVertex, instanceCount,
+	                                                             firstInstance);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
+                                                               uint32_t firstIndex, uint32_t firstInstance,
+						                                       uint32_t firstVertex, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
+
+	data->GraphicCommandBuffers[data->ImageIndex]->DrawIndexedInstanced(indexCount, firstIndex, instanceCount,
+	                                                                    firstInstance, firstVertex);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* window) const
 {
 	if (!window)
@@ -1202,6 +1232,9 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME);
 		s_samplerYcbcrConversionExtension = true;
 	}
+
+	if(physicalDevice->IsExtensionSupported(VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME))
+		extensions.emplace_back(VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME);
 
 	return extensions;
 }
