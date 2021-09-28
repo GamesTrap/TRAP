@@ -115,6 +115,7 @@ void TRAP::Graphics::Renderer2D::Init()
 																		       255, 255, 255, 255,
 																			   255, 255, 255, 255 });
 	s_data.WhiteTexture = Texture2D::CreateFromImage("Renderer2DWhite", whiteImage);
+	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
 
 	SamplerDesc samplerDesc{};
 	s_data.TextureSampler = Sampler::Create(samplerDesc);
@@ -280,12 +281,12 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& texture)
 {
-	float textureIndex = 0.0f;
+	float textureIndex = -1.0f;
 
 	if (!texture)
 		return textureIndex;
 
-	for (uint32_t i = 1; i < s_data.TextureSlotIndex; i++)
+	for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++)
 	{
 		if (s_data.TextureSlots[i] == texture.get())
 		{
@@ -294,7 +295,7 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& textur
 		}
 	}
 
-	if (textureIndex == 0.0f)
+	if (textureIndex < 0.0f)
 	{
 		textureIndex = static_cast<float>(s_data.TextureSlotIndex);
 		s_data.TextureSlots[s_data.TextureSlotIndex] = texture.get();

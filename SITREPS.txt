@@ -2164,3 +2164,7 @@ SITREP 09/25/2021|21w38a2
     - Updated all Shaders to use StorageBuffers for ModelMatrices ~<15 mins
     - Tests Removed TestTexture Shader ~<5 mins
     - Renderer Removed ModelMatrices UniformBuffer ~<5 mins
+
+SITREP 09/28/2021|21w39a1
+    - Changed TRAP Engine version to 21w39a1(0.7.88)
+    - Renderer2D Fixed a bug when using Textures ~<10 mins
