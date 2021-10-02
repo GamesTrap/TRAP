@@ -656,6 +656,19 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
     return true;
 }
 
+void ImGui_ImplVulkan_DestroyFontsTexture()
+{
+    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
+    ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
+
+	if(bd->FontImage)
+		vkDestroyImage(v->Device, bd->FontImage, nullptr);
+	if(bd->FontMemory)
+		vkFreeMemory(v->Device, bd->FontMemory, nullptr);
+	if(bd->FontView)
+		vkDestroyImageView(v->Device, bd->FontView, nullptr);
+}
+
 static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAllocationCallbacks* allocator)
 {
     // Create the shader modules

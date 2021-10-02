@@ -2168,3 +2168,7 @@ SITREP 09/25/2021|21w38a2
 SITREP 09/28/2021|21w39a1
     - Changed TRAP Engine version to 21w39a1(0.7.88)
     - Renderer2D Fixed a bug when using Textures ~<10 mins
+
+SITREP 10/03/2021|21w39a2
+    - Changed TRAP Engine version to 21w39a2(0.7.89)
+    - Made ImGui custom font loading Vulkan compatible ~<30 mins

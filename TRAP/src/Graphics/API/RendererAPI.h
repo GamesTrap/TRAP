@@ -66,7 +66,7 @@ namespace TRAP::Graphics
 		enum class ClearFlags;
 		enum class IndexType;
 		enum class ClearBufferType;
-	protected:
+	//protected:
 		struct PerWindowData;
 
 	public:
@@ -159,7 +159,7 @@ namespace TRAP::Graphics
 		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
-	protected:
+	//protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
 
 	public:
@@ -1333,12 +1333,9 @@ namespace TRAP::Graphics
 		static std::array<TRAP::Ref<CommandPool>, ImageCount> s_computeCommandPools;
 		static std::array<CommandBuffer*, ImageCount> s_computeCommandBuffers;
 
-		friend class TRAP::ImGuiLayer;
-
+	public:
 		struct PerWindowData
 		{
-			friend class TRAP::ImGuiLayer;
-
 			~PerWindowData();
 
 			TRAP::Window* Window;

@@ -283,7 +283,7 @@ void ImGui::Image(TRAP::Graphics::Texture2D* image, TRAP::Graphics::Sampler* sam
 	{
 		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
 		auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
-		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
+		ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
@@ -298,9 +298,83 @@ void ImGui::Image(TRAP::Graphics::Texture2D* image, const ImVec2& size, const Im
 	{
 		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
 		auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
-		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkRenderer->s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 		                                                      vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+ImFont* ImGui::AddFontFromFileTTF(const std::string& filename, const float sizePixels,
+							      const ImFontConfig* fontCfgTemplate, const ImWchar* glyphRanges)
+{
+	//Add font like normally
+	ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), sizePixels, fontCfgTemplate, glyphRanges);
+
+	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
+	{
+		//Destroy old font
+		ImGui_ImplVulkan_DestroyFontsTexture();
+		
+		const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+		//Execute a GPU command to upload ImGui font textures
+		TRAP::Graphics::CommandBuffer* cmd = winData->GraphicCommandPools[winData->ImageIndex]->AllocateCommandBuffer(false);
+		cmd->Begin();
+		ImGui_ImplVulkan_CreateFontsTexture(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+			(cmd)->GetVkCommandBuffer());
+		cmd->End();
+
+		TRAP::Ref<TRAP::Graphics::Fence> submitFence = TRAP::Graphics::Fence::Create();
+		TRAP::Graphics::RendererAPI::QueueSubmitDesc submitDesc{};
+		submitDesc.Cmds = { cmd };
+		submitDesc.SignalFence = submitFence;
+		TRAP::Graphics::RendererAPI::GetGraphicsQueue()->Submit(submitDesc);
+		submitFence->Wait();
+		submitFence.reset();
+		winData->GraphicCommandPools[winData->ImageIndex]->FreeCommandBuffer(cmd);
+	}
+
+	//Clear font textures from CPU data
+	ImGui_ImplVulkan_DestroyFontUploadObjects();
+
+	return font;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, const float sizePixels,
+								    const ImFontConfig* fontCfg, const ImWchar* glyphRanges)
+{
+	//Add font like normally
+	ImFont* font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData, fontSize, sizePixels, fontCfg, glyphRanges);
+
+	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
+	{
+		//Destroy old font
+		ImGui_ImplVulkan_DestroyFontsTexture();
+
+		const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+		//Execute a GPU command to upload ImGui font textures
+		TRAP::Graphics::CommandBuffer* cmd = winData->GraphicCommandPools[winData->ImageIndex]->AllocateCommandBuffer(false);
+		cmd->Begin();
+		ImGui_ImplVulkan_CreateFontsTexture(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+			(cmd)->GetVkCommandBuffer());
+		cmd->End();
+
+		TRAP::Ref<TRAP::Graphics::Fence> submitFence = TRAP::Graphics::Fence::Create();
+		TRAP::Graphics::RendererAPI::QueueSubmitDesc submitDesc{};
+		submitDesc.Cmds = { cmd };
+		submitDesc.SignalFence = submitFence;
+		TRAP::Graphics::RendererAPI::GetGraphicsQueue()->Submit(submitDesc);
+		submitFence->Wait();
+		submitFence.reset();
+		winData->GraphicCommandPools[winData->ImageIndex]->FreeCommandBuffer(cmd);
+	}
+
+	//Clear font textures from CPU data
+	ImGui_ImplVulkan_DestroyFontUploadObjects();
+	
+	return font;
 }
