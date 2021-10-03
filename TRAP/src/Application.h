@@ -125,6 +125,12 @@ namespace TRAP
 		static void SetHotTextureReloading(bool enabled);
 
 		/// <summary>
+		/// Sets the RenderAPI to be used on the next start of the engine.
+		/// </summary>
+		/// <param name="renderAPI">New RenderAPI to be used.</param>
+		static void SetNewRenderAPI(Graphics::RenderAPI renderAPI);
+
+		/// <summary>
 		/// Shutdown the Engine.
 		/// </summary>
 		static void Shutdown();
@@ -167,12 +173,6 @@ namespace TRAP
 		/// Game/Run Loop.
 		/// </summary>
 		void Run();
-
-		/// <summary>
-		/// Recreate the Engine for use by the specified TRAP::Graphics::API::RenderAPI (needed for switching RenderingAPIs).
-		/// </summary>
-		/// <param name="renderAPI">New TRAP::Graphics::API::RenderAPI to be used.</param>
-		void ReCreate(Graphics::RenderAPI renderAPI) const;
 
 		/// <summary>
 		/// Handles all Events for the Main Render Window and the TRAP::LayerStack.

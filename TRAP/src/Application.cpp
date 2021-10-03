@@ -84,23 +84,9 @@ TRAP::Application::Application(const std::string& gameName)
 
 	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
 		Graphics::RendererAPI::AutoSelectRenderAPI();
-	else
-	{
-		if (renderAPI == Graphics::RenderAPI::Vulkan)
-			Graphics::RendererAPI::SwitchRenderAPI(Graphics::RenderAPI::Vulkan);
-		else
-		{
-			//All RenderAPIs are unsupported
-			TRAP::Utils::Dialogs::ShowMsgBox("Incompatible Device",
-				"Every RenderAPI that TRAP Engine uses is unsupported on your device!\n"
-				"Does your system meet the minimum system requirements for running TRAP Engine?",
-				Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-			exit(-1);
-		}
-	}
 
 	//Initialize Renderer
-	Graphics::RendererAPI::Init(gameName);
+	Graphics::RendererAPI::Init(gameName, renderAPI);
 
 	m_window = MakeScope<Window>
 	(
@@ -187,7 +173,8 @@ TRAP::Application::~Application()
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
-	m_config.Set("RenderAPI", Graphics::RendererAPI::GetRenderAPI());
+	m_config.Set("RenderAPI", (m_newRenderAPI != Graphics::RenderAPI::NONE) ? m_newRenderAPI :
+	                                                                          Graphics::RendererAPI::GetRenderAPI());
 	const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
@@ -270,9 +257,6 @@ void TRAP::Application::Run()
 																std::ref(m_running));
 		}
 		UpdateHotReloading();
-
-		if (m_newRenderAPI != Graphics::RenderAPI::NONE && m_newRenderAPI != Graphics::RendererAPI::GetRenderAPI())
-			ReCreate(m_newRenderAPI);
 
 		//FPSLimiter
 		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
@@ -423,6 +407,13 @@ void TRAP::Application::SetHotTextureReloading(const bool enabled)
 
 //------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
+{
+	s_Instance->m_newRenderAPI = renderAPI;
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Application::Shutdown()
 {
 	s_Instance->m_running = false;
@@ -474,36 +465,6 @@ std::string TRAP::Application::GetClipboardString()
 std::thread::id TRAP::Application::GetMainThreadID()
 {
 	return s_Instance->m_mainThreadID;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
-{
-	TP_PROFILE_FUNCTION();
-
-	for (const auto& layer : *m_layerStack)
-		layer->OnDetach();
-
-	Graphics::RendererAPI::SwitchRenderAPI(renderAPI);
-
-	Graphics::TextureManager::Shutdown();
-	Graphics::ShaderManager::Shutdown();
-	Graphics::Renderer::Shutdown();
-	Graphics::RendererAPI::Shutdown();
-
-	Graphics::RendererAPI::Init(m_gameName);
-	m_window->SetTitle(m_window->GetTitle());
-	//Always added as a fallback shader
-	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);
-	//Always added as a fallback texture
-	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
-	//Initialize Renderer
-	Graphics::Renderer::Init();
-
-	for (const auto& layer : *m_layerStack)
-		layer->OnAttach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

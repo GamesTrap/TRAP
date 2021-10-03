@@ -33,10 +33,12 @@ std::array<TRAP::Graphics::CommandBuffer*,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Init(const std::string& gameName)
+void TRAP::Graphics::RendererAPI::Init(const std::string& gameName, const RenderAPI renderAPI)
 {
 	if(s_Renderer)
 		return;
+
+	s_RenderAPI = renderAPI;
 
 	switch (s_RenderAPI)
 	{
@@ -130,46 +132,14 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	}
 	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
+	//Never select RenderAPI::Headless as this auto selection is intended for normal users
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
 		                             "TRAP was unable to detect a compatible RenderAPI!"
 									 "\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
-{
-	if(api == s_RenderAPI)
-		return;
-
-	if (api == RenderAPI::Vulkan)
-	{
-		if (s_Renderer->IsVulkanCapable())
-		{
-			TP_WARN(Log::RendererPrefix, "Switching RenderAPI to Vulkan");
-			s_RenderAPI = RenderAPI::Vulkan;
-
-			return;
-		}
-
-		TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
-
-		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-			                             "TRAP was unable to detect a compatible RenderAPI!\n"
-										 "Please check your GPU driver!", Utils::Dialogs::Style::Error,
-			                             Utils::Dialogs::Buttons::Quit);
-		TRAP::Application::Shutdown();
-	}
-	else
-	{
-		TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found", "TRAP was unable to detect a compatible "
-		                                 "RenderAPI!\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
-			                             Utils::Dialogs::Buttons::Quit);
-		TRAP::Application::Shutdown();
-	}
+	exit(-1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

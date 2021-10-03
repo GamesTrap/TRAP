@@ -78,14 +78,13 @@ namespace TRAP::Graphics
 		RendererAPI(RendererAPI&&) = default;
 		RendererAPI& operator=(RendererAPI&&) = default;
 
-		static void Init(const std::string& gameName);
+		static void Init(const std::string& gameName, RenderAPI renderAPI);
 		static void Shutdown();
 
 		static const TRAP::Scope<RendererAPI>& GetRenderer();
 		static const TRAP::Scope<API::ResourceLoader>& GetResourceLoader();
 
 		static void AutoSelectRenderAPI();
-		static void SwitchRenderAPI(RenderAPI api);
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
 
