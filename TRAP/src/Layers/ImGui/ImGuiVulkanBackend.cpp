@@ -28,6 +28,10 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "ImGuiVulkanBackend.h"
 
 #include "Maths/Math.h"
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
+#include "Graphics/API/Vulkan/Objects/VulkanCommandBuffer.h"
+#include "Graphics/API/Objects/Fence.h"
 
 // dear imgui: Renderer Backend for Vulkan
 // This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
@@ -667,6 +671,29 @@ void ImGui_ImplVulkan_DestroyFontsTexture()
 		vkFreeMemory(v->Device, bd->FontMemory, nullptr);
 	if(bd->FontView)
 		vkDestroyImageView(v->Device, bd->FontView, nullptr);
+}
+
+void ImGui_ImplVulkan_UploadFontsTexture()
+{
+    //Destroy old font
+    ImGui_ImplVulkan_DestroyFontsTexture();
+
+    const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+    //Execute a GPU command to upload ImGui font textures
+    TRAP::Graphics::CommandBuffer* cmd = winData->GraphicCommandPools[winData->ImageIndex]->AllocateCommandBuffer(false);
+    cmd->Begin();
+    ImGui_ImplVulkan_CreateFontsTexture(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+        (cmd)->GetVkCommandBuffer());
+    cmd->End();
+
+    TRAP::Ref<TRAP::Graphics::Fence> submitFence = TRAP::Graphics::Fence::Create();
+    TRAP::Graphics::RendererAPI::QueueSubmitDesc submitDesc{};
+    submitDesc.Cmds = { cmd };
+    submitDesc.SignalFence = submitFence;
+    TRAP::Graphics::RendererAPI::GetGraphicsQueue()->Submit(submitDesc);
+    submitFence->Wait();
+    submitFence.reset();
+    winData->GraphicCommandPools[winData->ImageIndex]->FreeCommandBuffer(cmd);
 }
 
 static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAllocationCallbacks* allocator)
