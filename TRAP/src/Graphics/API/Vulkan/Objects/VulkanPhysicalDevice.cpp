@@ -7,6 +7,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
@@ -33,10 +34,12 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	if(!m_physicalDevice)
 	{
-		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix,
-		            "PhysicalDevice creation failed! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
-		return;
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan PhysicalDevice creation failed!\n"
+								   "Error code: 0x0006", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "PhysicalDevice creation failed!");
+		TRAP::Application::Shutdown();
+		exit(-1);
 	}
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -342,8 +345,12 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 		RatePhysicalDevices(physicalDevices);
 	else
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable PhysicalDevice was found!\n"
+								   "Error code: 0x0007", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!!");
+		TRAP::Application::Shutdown();
+		exit(-1);
 	}
 
 	return s_availablePhysicalDeviceUUIDs;
@@ -403,9 +410,12 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 		RatePhysicalDevices(physicalDevices);
 	else
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix,
-		            "No Vulkan capable physical device was found!! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable PhysicalDevice was found!\n"
+								   "Error code: 0x0007", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!");
+		TRAP::Application::Shutdown();
+		exit(-1);
 	}
 
 	return s_availablePhysicalDeviceUUIDs;

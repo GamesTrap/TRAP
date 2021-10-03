@@ -30,6 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Application.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
@@ -237,10 +238,12 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 	if (IsWindows7OrGreaterWin32())
 		return true;
 
-	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
 	Utils::Dialogs::ShowMsgBox("Unsupported Windows Version", "Unsupported Windows Version!\n"
-	                           "TRAP Engine needs Windows 7 or newer", Utils::Dialogs::Style::Error,
-							   Utils::Dialogs::Buttons::Quit);
+	                           "TRAP Engine needs Windows 7 or newer\nErro code: 0x000A",
+							   Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
+	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
+	TRAP::Application::Shutdown();
+	exit(-1);
 	return false;
 }
 

@@ -48,10 +48,11 @@ void TRAP::Graphics::RendererAPI::Init(const std::string& gameName, const Render
 		break;
 
 	default:
+		Utils::Dialogs::ShowMsgBox("Unsupported Device", "Device is unsupported!\nNo RenderAPI selected!\n"
+								   "Error code: 0x0002", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererPrefix, "Unsupported Device!");
-		Utils::Dialogs::ShowMsgBox("Unsupported Device",
-			"Device is unsupported!\n No RenderAPI selected!",
-			Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
+		TRAP::Application::Shutdown();
 		exit(-1);
 	}
 
@@ -133,10 +134,12 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
 	//Never select RenderAPI::Headless as this auto selection is intended for normal users
+
 	s_RenderAPI = RenderAPI::NONE;
-	TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
-		                             "TRAP was unable to detect a compatible RenderAPI!"
-									 "\nPlease check your GPU driver!", Utils::Dialogs::Style::Error,
+	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible Device (GPU)",
+		                             "TRAP was unable to detect a compatible RenderAPI!\n"
+									 "Does your system meet the minimum system requirements for running TRAP Engine?"
+									 "\nPlease check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 	exit(-1);

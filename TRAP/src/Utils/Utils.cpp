@@ -4,6 +4,7 @@
 #include "Core/PlatformDetection.h"
 #include "Utils/String/String.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Application.h"
 
 std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
@@ -270,11 +271,14 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		windowManager = LinuxWindowManager::X11;
 	else
 	{
-		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
 		Utils::Dialogs::ShowMsgBox("Unsupported Window Manager", "Window Manager is unsupported!\n"
-									"TRAP Engine uses X11 or Wayland\n"
-									"Make sure the appropriate environment variables are set!",
+									"TRAP Engine currently on supports X11\n"
+									//"TRAP Engine uses X11 or Wayland\n"
+									"Make sure the appropriate environment variables are set!\n"
+									"Error code: 0x0008",
 									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
+		TRAP::Application::Shutdown();
 		exit(-1);
 	}
 #endif

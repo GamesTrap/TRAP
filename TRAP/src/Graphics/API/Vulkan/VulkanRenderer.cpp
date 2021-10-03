@@ -33,6 +33,7 @@
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/Textures/TextureBase.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -1141,9 +1142,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 
 	if(!VulkanInstance::IsExtensionSupported(reqExt[0]) || !VulkanInstance::IsExtensionSupported(reqExt[1]))
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix,
-		            "Mandatory Vulkan Surface extensions are unsupported! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan Surface extensions are unsupported!\n"
+								   "Error code: 0x0003", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan Surface extensions are unsupported!");
+		TRAP::Application::Shutdown();
+		exit(-1);
 	}
 	else
 	{
@@ -1188,9 +1192,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 	else
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix,
-		            "Mandatory Vulkan swapchain extension is unsupported! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan Swapchain extension is unsupported!\n"
+								   "Error code: 0x0004", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan Swapchain extension is unsupported!");
+		TRAP::Application::Shutdown();
+		exit(-1);
 	}
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))

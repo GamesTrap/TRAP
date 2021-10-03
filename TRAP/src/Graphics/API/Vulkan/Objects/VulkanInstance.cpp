@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 uint32_t TRAP::Graphics::API::VulkanInstance::s_instanceVersion = 0;
 std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanInstance::s_availableInstanceLayers{};
@@ -63,8 +64,12 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 		VkLoadInstance(m_instance);
 	else
 	{
-		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Instance creation failed! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan Instance creation failed!\n"
+								   "Error code: 0x0005", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Instance creation failed!");
+		TRAP::Application::Shutdown();
+		exit(-1);
 	}
 }
 

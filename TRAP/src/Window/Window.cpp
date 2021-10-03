@@ -889,11 +889,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!m_window)
 	{
-		TP_CRITICAL(Log::WindowPrefix, "Failed to create window");
 		TRAP::Utils::Dialogs::ShowMsgBox("Failed to create Window",
-			"Failed to create Window!",
-			Utils::Dialogs::Style::Error,
-			Utils::Dialogs::Buttons::Quit);
+										 "Failed to create Window!\nError code: 0x0009",
+										 Utils::Dialogs::Style::Error,
+										 Utils::Dialogs::Buttons::Quit);
+		TRAP::Application::Shutdown();
+		TP_CRITICAL(Log::WindowPrefix, "Failed to create window");
 		exit(-1);
 	}
 
@@ -1258,8 +1259,9 @@ void TRAP::Window::SetupEventCallbacks()
 		if(!connected && Monitor::GetAllMonitors().size() == 1)
 		{
 			TP_ERROR(Log::WindowPrefix, "No Monitor Found!");
+			TP_ERROR(Log::WindowPrefix, "Error code: 0x000C");
 			TP_ERROR(Log::WindowPrefix, "Closing TRAP!");
-			std::exit(0);
+			exit(-1);
 		}
 
 		if(!mon->Window)

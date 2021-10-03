@@ -2174,3 +2174,4 @@ SITREP 10/03/2021|21w39a2
     - Made ImGui custom font loading Vulkan compatible ~<30 mins
     - Config Added support for Headless RenderAPI ~<5 mins
     - Removed runtime RenderAPI switching ~<20 mins
+    - Implemented error codes for user visible critical error dialogs ~<20 mins

@@ -49,10 +49,11 @@ TRAP::Application::Application(const std::string& gameName)
 	if (TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Wayland)
 	{
         TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!",
-		                                 "Wayland is currently not supported by TRAP! Please use X11 instead",
+		                                 "Wayland is currently not supported by TRAP! Please use X11 instead\n"
+										 "Error code: 0x0001",
                                          TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::EngineLinuxWaylandPrefix,
-		            "Wayland is currently not supported by TRAP! Please use X11 instead");
+		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP!\n"
+					"Please use X11 instead");
 		exit(-1);
 	}
 
