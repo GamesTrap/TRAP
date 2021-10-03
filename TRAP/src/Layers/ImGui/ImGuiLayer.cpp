@@ -282,7 +282,6 @@ void ImGui::Image(TRAP::Graphics::Texture2D* image, const ImVec2& size, const Im
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
-		auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
 		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 		                                                      vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
