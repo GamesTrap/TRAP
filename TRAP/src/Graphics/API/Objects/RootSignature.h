@@ -11,6 +11,23 @@ namespace TRAP::Graphics
 
 		virtual ~RootSignature();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		RootSignature(const RootSignature&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		RootSignature& operator=(const RootSignature&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		RootSignature(RootSignature&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		RootSignature& operator=(RootSignature&&) = default;
+
 		virtual RendererAPI::PipelineType GetPipelineType() const = 0;
 		virtual uint32_t GetDescriptorCount() const = 0;
 		virtual const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const = 0;

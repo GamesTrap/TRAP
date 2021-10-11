@@ -73,7 +73,7 @@ namespace TRAP::Graphics
 		                                 uint32_t firstInstance = 0, uint32_t firstVertex = 0,
 										 Window* window = nullptr);
 
-		//Bind functions
+		//CommandBuffer functions
 		static void SetPushConstants(const char* name, const void* data, Window* window = nullptr);
 	};
 }

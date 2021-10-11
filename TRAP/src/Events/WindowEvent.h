@@ -24,6 +24,26 @@ namespace TRAP::Events
 		/// <param name="height">New Window height.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		WindowResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowResizeEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowResizeEvent(const WindowResizeEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowResizeEvent& operator=(const WindowResizeEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowResizeEvent(WindowResizeEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowResizeEvent& operator=(WindowResizeEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the new Window width.
@@ -84,6 +104,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowMinimizeEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowMinimizeEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowMinimizeEvent(const WindowMinimizeEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowMinimizeEvent& operator=(const WindowMinimizeEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowMinimizeEvent(WindowMinimizeEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowMinimizeEvent& operator=(WindowMinimizeEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -133,6 +173,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowMaximizeEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowMaximizeEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowMaximizeEvent(const WindowMaximizeEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowMaximizeEvent& operator=(const WindowMaximizeEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowMaximizeEvent(WindowMaximizeEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowMaximizeEvent& operator=(WindowMaximizeEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -181,6 +241,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowRestoreEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowRestoreEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowRestoreEvent(const WindowRestoreEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowRestoreEvent& operator=(const WindowRestoreEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowRestoreEvent(WindowRestoreEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowRestoreEvent& operator=(WindowRestoreEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -230,6 +310,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowCloseEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowCloseEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowCloseEvent(const WindowCloseEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowCloseEvent& operator=(const WindowCloseEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowCloseEvent(WindowCloseEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowCloseEvent& operator=(WindowCloseEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -281,6 +381,26 @@ namespace TRAP::Events
 		/// <param name="y">New y position.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		WindowMoveEvent(int32_t x, int32_t y, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowMoveEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowMoveEvent(const WindowMoveEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowMoveEvent& operator=(const WindowMoveEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowMoveEvent(WindowMoveEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowMoveEvent& operator=(WindowMoveEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the new Window x position.
@@ -346,6 +466,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowFocusEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowFocusEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowFocusEvent(const WindowFocusEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowFocusEvent& operator=(const WindowFocusEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowFocusEvent(WindowFocusEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowFocusEvent& operator=(WindowFocusEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -395,6 +535,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowLostFocusEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowLostFocusEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowLostFocusEvent(const WindowLostFocusEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowLostFocusEvent& operator=(const WindowLostFocusEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowLostFocusEvent(WindowLostFocusEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowLostFocusEvent& operator=(WindowLostFocusEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -445,6 +605,26 @@ namespace TRAP::Events
 		/// <param name="paths">Path(s) to the file(s) or folder(s) dropped on the Window.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowDropEvent(std::vector<std::string> paths, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowDropEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowDropEvent(const WindowDropEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowDropEvent& operator=(const WindowDropEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowDropEvent(WindowDropEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowDropEvent& operator=(WindowDropEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the dropped paths.
@@ -502,6 +682,26 @@ namespace TRAP::Events
 		/// <param name="yScale">New y content scale.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit WindowContentScaleEvent(float xScale, float yScale, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~WindowContentScaleEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		WindowContentScaleEvent(const WindowContentScaleEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		WindowContentScaleEvent& operator=(const WindowContentScaleEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		WindowContentScaleEvent(WindowContentScaleEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		WindowContentScaleEvent& operator=(WindowContentScaleEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the new x content scale.
@@ -570,6 +770,26 @@ namespace TRAP::Events
 		/// <param name="height">New framebuffer height.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		FrameBufferResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~FrameBufferResizeEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		FrameBufferResizeEvent(const FrameBufferResizeEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		FrameBufferResizeEvent& operator=(const FrameBufferResizeEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		FrameBufferResizeEvent(FrameBufferResizeEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		FrameBufferResizeEvent& operator=(FrameBufferResizeEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the new framebuffer width.

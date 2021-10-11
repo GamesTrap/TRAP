@@ -14,6 +14,23 @@ namespace TRAP::Graphics
 
 		virtual ~RenderTarget();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		RenderTarget(const RenderTarget&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		RenderTarget& operator=(const RenderTarget&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		RenderTarget(RenderTarget&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		RenderTarget& operator=(RenderTarget&&) = default;
+
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 		virtual uint32_t GetDepth() const = 0;

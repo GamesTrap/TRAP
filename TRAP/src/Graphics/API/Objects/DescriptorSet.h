@@ -10,6 +10,24 @@ namespace TRAP::Graphics
 	public:
 		virtual ~DescriptorSet();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		DescriptorSet(const DescriptorSet&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		DescriptorSet& operator=(const DescriptorSet&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		DescriptorSet(DescriptorSet&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		DescriptorSet& operator=(DescriptorSet&&) = default;
+
+
 		virtual void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) = 0;
 
 	protected:

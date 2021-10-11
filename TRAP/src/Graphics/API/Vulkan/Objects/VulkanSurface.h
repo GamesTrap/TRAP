@@ -17,6 +17,23 @@ namespace TRAP::Graphics::API
 		              TRAP::Window* window);
 		~VulkanSurface();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanSurface(const VulkanSurface&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanSurface& operator=(const VulkanSurface&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanSurface(VulkanSurface&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanSurface& operator=(VulkanSurface&&) = default;
+
 		VkSurfaceKHR& GetVkSurface();
 		VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const;
 		const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const;

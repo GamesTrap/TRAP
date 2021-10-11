@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc);
 		~VulkanPipelineCache();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanPipelineCache(const VulkanPipelineCache&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanPipelineCache& operator=(const VulkanPipelineCache&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanPipelineCache(VulkanPipelineCache&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanPipelineCache& operator=(VulkanPipelineCache&&) = default;
+
 		void GetPipelineCacheData(std::size_t* size, void* data) const override;
 
 		void Save(const std::string& virtualOrPhysicalPath) override;

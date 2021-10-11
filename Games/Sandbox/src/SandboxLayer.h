@@ -129,7 +129,7 @@ public:
 		//Wait for all pending resources (just in case)
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-		//Bind Shader & Resources
+		//Use Shader & Resources
 		m_indexedVertexBuffer->Use();
 		m_indexBuffer->Use();
 		m_shader->UseTexture(0, 0, m_texture);

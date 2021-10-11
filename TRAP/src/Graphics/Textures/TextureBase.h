@@ -12,6 +12,23 @@ namespace TRAP::Graphics
 
         virtual ~TextureBase() = default;
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		TextureBase(const TextureBase&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		TextureBase& operator=(const TextureBase&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		TextureBase(TextureBase&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		TextureBase& operator=(TextureBase&&) = default;
+
         uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 		uint32_t GetDepth() const;

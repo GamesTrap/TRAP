@@ -18,6 +18,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanSwapChain(RendererAPI::SwapChainDesc& desc);
 		~VulkanSwapChain();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanSwapChain(const VulkanSwapChain&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanSwapChain& operator=(const VulkanSwapChain&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanSwapChain(VulkanSwapChain&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanSwapChain& operator=(VulkanSwapChain&&) = default;
+
 		uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                          const TRAP::Ref<Fence>& fence) const override;
 

@@ -19,6 +19,26 @@ namespace TRAP::Events
 		/// <param name="y">New mouse y position.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		MouseMoveEvent(float x, float y, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MouseMoveEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseMoveEvent(const MouseMoveEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseMoveEvent& operator=(const MouseMoveEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseMoveEvent(MouseMoveEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseMoveEvent& operator=(MouseMoveEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the new mouse x position.
@@ -86,6 +106,26 @@ namespace TRAP::Events
 		/// <param name="yOffset">New mouse scroll wheel y offset.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		MouseScrollEvent(float xOffset, float yOffset, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MouseScrollEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseScrollEvent(const MouseScrollEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseScrollEvent& operator=(const MouseScrollEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseScrollEvent(MouseScrollEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseScrollEvent& operator=(MouseScrollEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the new mouse scroll wheel x offset.
@@ -147,6 +187,11 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
+		/// Virtual Default Destructor.
+		/// </summary>
+		virtual ~MouseButtonEvent() = default;
+
+		/// <summary>
 		/// Retrieve the affected mouse button.
 		/// </summary>
 		/// <returns>Mouse button.</returns>
@@ -164,6 +209,22 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="button">Affected mouse button.</param>
 		explicit MouseButtonEvent(Input::MouseButton button);
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseButtonEvent(const MouseButtonEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseButtonEvent& operator=(const MouseButtonEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseButtonEvent(MouseButtonEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseButtonEvent& operator=(MouseButtonEvent&&) = default;
 
 		/// <summary>
 		/// Convert a mouse button to a string representation.
@@ -187,6 +248,26 @@ namespace TRAP::Events
 		/// <param name="button">Pressed mouse button.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit MouseButtonPressEvent(Input::MouseButton button, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MouseButtonPressEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseButtonPressEvent(const MouseButtonPressEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseButtonPressEvent& operator=(const MouseButtonPressEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseButtonPressEvent(MouseButtonPressEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseButtonPressEvent& operator=(MouseButtonPressEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -232,6 +313,26 @@ namespace TRAP::Events
 		/// <param name="button">Released mouse button.</param>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit MouseButtonReleaseEvent(Input::MouseButton button, TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MouseButtonReleaseEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseButtonReleaseEvent(const MouseButtonReleaseEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseButtonReleaseEvent& operator=(const MouseButtonReleaseEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseButtonReleaseEvent(MouseButtonReleaseEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseButtonReleaseEvent& operator=(MouseButtonReleaseEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -276,6 +377,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit MouseEnterEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MouseEnterEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseEnterEvent(const MouseEnterEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseEnterEvent& operator=(const MouseEnterEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseEnterEvent(MouseEnterEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseEnterEvent& operator=(MouseEnterEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.
@@ -319,6 +440,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="window">Pointer to the affected Window.</param>
 		explicit MouseLeaveEvent(TRAP::Window* window);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MouseLeaveEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MouseLeaveEvent(const MouseLeaveEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MouseLeaveEvent& operator=(const MouseLeaveEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MouseLeaveEvent(MouseLeaveEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MouseLeaveEvent& operator=(MouseLeaveEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected Window.

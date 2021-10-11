@@ -12,6 +12,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc);
 		~VulkanCommandSignature();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanCommandSignature(const VulkanCommandSignature&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanCommandSignature& operator=(const VulkanCommandSignature&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanCommandSignature(VulkanCommandSignature&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanCommandSignature& operator=(VulkanCommandSignature&&) = default;
+
 		RendererAPI::IndirectArgumentType GetDrawType() const;
 		uint32_t GetStride() const;
 

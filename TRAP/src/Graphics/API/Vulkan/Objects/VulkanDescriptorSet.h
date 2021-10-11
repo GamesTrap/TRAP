@@ -12,6 +12,23 @@ namespace TRAP::Graphics::API
 	public:
 		~VulkanDescriptorSet();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanDescriptorSet(const VulkanDescriptorSet&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanDescriptorSet(VulkanDescriptorSet&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) = default;
+
 		const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const;
 		TRAP::Ref<VulkanRootSignature> GetRootSignature() const;
 		RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const;

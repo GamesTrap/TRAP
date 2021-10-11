@@ -166,7 +166,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
 		const auto& shader = TRAP::Graphics::ShaderManager::Get("VKTestUBO");
-		//Bind UBOs
+		//Use UBOs
 		shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
 		shader->UseUBO(1, 1, m_colorUniformBuffer.get());
 

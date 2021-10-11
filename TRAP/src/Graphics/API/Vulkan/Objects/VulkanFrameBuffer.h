@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::FrameBufferDesc& desc);
 		~VulkanFrameBuffer();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanFrameBuffer(const VulkanFrameBuffer&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanFrameBuffer(VulkanFrameBuffer&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) = default;
+
 		VkFramebuffer& GetVkFrameBuffer();
 
 		uint32_t GetWidth() const;

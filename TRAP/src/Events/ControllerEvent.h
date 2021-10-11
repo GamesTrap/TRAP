@@ -13,6 +13,11 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
+		/// Virtual Default Destructor.
+		/// </summary>
+		virtual ~ControllerEvent() = default;
+
+		/// <summary>
 		/// Retrieve the affected Controller.
 		/// </summary>
 		/// <returns>Controller.</returns>
@@ -30,6 +35,22 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="controller">Affected Controller.</param>
 		explicit ControllerEvent(Input::Controller controller);
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		ControllerEvent(const ControllerEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		ControllerEvent& operator=(const ControllerEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		ControllerEvent(ControllerEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		ControllerEvent& operator=(ControllerEvent&&) = default;
 
 		Input::Controller m_controller;
 	};
@@ -45,6 +66,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="controller">Newly connected Controller.</param>
 		explicit ControllerConnectEvent(Input::Controller controller);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~ControllerConnectEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		ControllerConnectEvent(const ControllerConnectEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		ControllerConnectEvent& operator=(const ControllerConnectEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		ControllerConnectEvent(ControllerConnectEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		ControllerConnectEvent& operator=(ControllerConnectEvent&&) = default;
 
 		/// <summary>
 		/// Get a string representation of the ControllerConnectEvent.
@@ -80,6 +121,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="controller">Disconnected Controller.</param>
 		explicit ControllerDisconnectEvent(Input::Controller controller);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~ControllerDisconnectEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		ControllerDisconnectEvent(const ControllerDisconnectEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		ControllerDisconnectEvent(ControllerDisconnectEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) = default;
 
 		/// <summary>
 		/// Get a string representation of the ControllerDisconnectEvent.

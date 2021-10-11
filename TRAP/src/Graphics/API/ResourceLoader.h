@@ -19,6 +19,23 @@ namespace TRAP::Graphics::API
 		explicit ResourceLoader(const RendererAPI::ResourceLoaderDesc* desc = nullptr);
 		~ResourceLoader();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		ResourceLoader(const ResourceLoader&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		ResourceLoader& operator=(const ResourceLoader&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		ResourceLoader(ResourceLoader&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		ResourceLoader& operator=(ResourceLoader&&) = default;
+
 		//Adding and updating resources can be done using a AddResource or BeginUpdateResource/EndUpdateResource
 		//pair.
 		//If AddResource(BufferLoadDesc) is called with a data size larger than the ResourceLoader's

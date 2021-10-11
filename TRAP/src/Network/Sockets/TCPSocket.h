@@ -48,6 +48,27 @@ namespace TRAP::Network
 		/// Constructor.
 		/// </summary>
 		TCPSocket();
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~TCPSocket() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		TCPSocket(const TCPSocket&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		TCPSocket& operator=(const TCPSocket&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		TCPSocket(TCPSocket&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		TCPSocket& operator=(TCPSocket&&) = default;
+
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.<br>

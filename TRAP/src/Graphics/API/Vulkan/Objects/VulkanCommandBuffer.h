@@ -20,6 +20,23 @@ namespace TRAP::Graphics::API
 	public:
 		~VulkanCommandBuffer();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanCommandBuffer(const VulkanCommandBuffer&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanCommandBuffer(VulkanCommandBuffer&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = default;
+
 		VkCommandBuffer& GetVkCommandBuffer();
 		RendererAPI::QueueType GetQueueType() const;
 		bool IsSecondary() const;

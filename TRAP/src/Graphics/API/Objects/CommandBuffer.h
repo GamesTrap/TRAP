@@ -19,6 +19,23 @@ namespace TRAP::Graphics
 	public:
 		virtual ~CommandBuffer();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		CommandBuffer(const CommandBuffer&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		CommandBuffer& operator=(const CommandBuffer&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		CommandBuffer(CommandBuffer&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		CommandBuffer& operator=(CommandBuffer&&) = default;
+
 		virtual TRAP::Ref<Queue> GetQueue() const;
 
 		virtual void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, const char* name,

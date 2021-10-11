@@ -23,6 +23,24 @@ namespace TRAP::Graphics
 		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
 
 		~Texture2D() = default;
+
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Texture2D(const Texture2D&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Texture2D& operator=(const Texture2D&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Texture2D(Texture2D&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Texture2D& operator=(Texture2D&&) = default;
+
 	protected:
 		Texture2D();
 		Texture2D(const std::string& name, std::string_view filepath);

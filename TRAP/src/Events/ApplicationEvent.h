@@ -16,6 +16,26 @@ namespace TRAP::Events
 		/// Default Constructor.
 		/// </summary>
 		AppTickEvent() = default;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~AppTickEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		AppTickEvent(const AppTickEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		AppTickEvent& operator=(const AppTickEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		AppTickEvent(AppTickEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		AppTickEvent& operator=(AppTickEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the EventType of the Event.
@@ -50,6 +70,26 @@ namespace TRAP::Events
 		/// Default Constructor.
 		/// </summary>
 		AppUpdateEvent() = default;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~AppUpdateEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		AppUpdateEvent(const AppUpdateEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		AppUpdateEvent& operator=(const AppUpdateEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		AppUpdateEvent(AppUpdateEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		AppUpdateEvent& operator=(AppUpdateEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the EventType of the Event.
@@ -84,6 +124,26 @@ namespace TRAP::Events
 		/// Default Constructor.
 		/// </summary>
 		AppRenderEvent() = default;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~AppRenderEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		AppRenderEvent(const AppRenderEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		AppRenderEvent& operator=(const AppRenderEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		AppRenderEvent(AppRenderEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		AppRenderEvent& operator=(AppRenderEvent&&) = default;
 
 		/// <summary>
 		/// Retrieve the EventType of the Event.

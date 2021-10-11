@@ -12,6 +12,23 @@ namespace TRAP::Graphics
 
 		virtual ~DescriptorPool();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		DescriptorPool(const DescriptorPool&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		DescriptorPool& operator=(const DescriptorPool&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		DescriptorPool(DescriptorPool&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		DescriptorPool& operator=(DescriptorPool&&) = default;
+
 		virtual void Reset() = 0;
 
 		virtual uint32_t GetDescriptorSetsNum() const;

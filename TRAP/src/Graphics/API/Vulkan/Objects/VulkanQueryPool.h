@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc);
 		~VulkanQueryPool();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanQueryPool(const VulkanQueryPool&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanQueryPool& operator=(const VulkanQueryPool&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanQueryPool(VulkanQueryPool&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanQueryPool& operator=(VulkanQueryPool&&) = default;
+
 		VkQueryPool& GetVkQueryPool();
 		VkQueryType GetVkQueryType() const;
 		uint32_t GetCount() const;

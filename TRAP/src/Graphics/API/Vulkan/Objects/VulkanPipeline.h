@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanPipeline(const RendererAPI::PipelineDesc& desc);
 		~VulkanPipeline();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanPipeline(const VulkanPipeline&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanPipeline& operator=(const VulkanPipeline&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanPipeline(VulkanPipeline&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanPipeline& operator=(VulkanPipeline&&) = default;
+
 		VkPipeline& GetVkPipeline();
 		RendererAPI::PipelineType GetPipelineType() const;
 

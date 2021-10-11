@@ -15,6 +15,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanSemaphore();
 		~VulkanSemaphore();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanSemaphore(const VulkanSemaphore&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanSemaphore& operator=(const VulkanSemaphore&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanSemaphore(VulkanSemaphore&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanSemaphore& operator=(VulkanSemaphore&&) = default;
+
 		VkSemaphore& GetVkSemaphore();
 
 	private:

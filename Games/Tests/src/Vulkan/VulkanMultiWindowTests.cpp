@@ -49,6 +49,7 @@ void VulkanMultiWindowTests::OnAttach()
 		0
 	};
 	m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
+
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
 	TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, m_window.get());
 
@@ -145,7 +146,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 			m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
 			const auto& shader = TRAP::Graphics::ShaderManager::Get("VKTestUBO");
-			//Bind UBOs
+			//Use UBOs
 			shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
 			shader->UseUBO(1, 1, m_colorUniformBuffer.get());
 

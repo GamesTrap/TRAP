@@ -23,6 +23,24 @@ class OrthographicCameraController
 		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false,
 		                                      Input::Controller controller = Input::Controller::One,
 											  const std::unique_ptr<Window>& window = Application::GetWindow());
+		~OrthographicCameraController() = default;
+
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		OrthographicCameraController(const OrthographicCameraController&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		OrthographicCameraController& operator=(const OrthographicCameraController&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		OrthographicCameraController(OrthographicCameraController&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		OrthographicCameraController& operator=(OrthographicCameraController&&) = default;
 
 		void OnUpdate(const Utils::TimeStep& deltaTime);
 		void OnEvent(Events::Event& e);

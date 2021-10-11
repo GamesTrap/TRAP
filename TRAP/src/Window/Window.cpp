@@ -898,6 +898,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		exit(-1);
 	}
 
+	if(m_window->Maximized) //BUG Workaround for  X11 somehow ignoring the InitHint
+		this->Maximize();
+
 	INTERNAL::WindowingAPI::GetWindowSize(m_window.get(), m_data.Width, m_data.Height);
 
 	s_windows++;

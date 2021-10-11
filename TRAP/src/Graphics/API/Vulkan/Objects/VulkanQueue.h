@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanQueue(const RendererAPI::QueueDesc& desc);
 		~VulkanQueue();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanQueue(const VulkanQueue&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanQueue& operator=(const VulkanQueue&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanQueue(VulkanQueue&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanQueue& operator=(VulkanQueue&&) = default;
+
 		VkQueue& GetVkQueue();
 		uint8_t GetQueueFamilyIndex() const;
 		uint8_t GetQueueIndex() const;

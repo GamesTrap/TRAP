@@ -31,6 +31,24 @@ namespace TRAP::Graphics
 		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
 
 		~TextureCube() = default;
+
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		TextureCube(const TextureCube&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		TextureCube& operator=(const TextureCube&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		TextureCube(TextureCube&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		TextureCube& operator=(TextureCube&&) = default;
+
 	protected:
 		TextureCube(const std::string& name, const std::array<std::string, 6>& filepaths, TextureCubeFormat format);
 		TextureCube(const std::string& name, const std::string& filepath, TextureCubeFormat format);

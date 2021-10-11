@@ -16,6 +16,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanBuffer(const RendererAPI::BufferDesc& desc);
 		~VulkanBuffer();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanBuffer(const VulkanBuffer&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanBuffer& operator=(const VulkanBuffer&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanBuffer(VulkanBuffer&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanBuffer& operator=(VulkanBuffer&&) = default;
+
 		VkBuffer& GetVkBuffer();
 		VkBufferView& GetStorageTexelView();
 		VkBufferView& GetUniformTexelView();

@@ -12,6 +12,23 @@ namespace TRAP::Graphics
 
 		virtual ~Pipeline();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Pipeline(const Pipeline&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Pipeline& operator=(const Pipeline&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Pipeline(Pipeline&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Pipeline& operator=(Pipeline&&) = default;
+
 	protected:
 		Pipeline();
 

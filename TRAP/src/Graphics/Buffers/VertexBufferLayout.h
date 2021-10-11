@@ -29,6 +29,23 @@ namespace TRAP::Graphics
 		VertexBufferElement() = default;
 		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false);
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VertexBufferElement(const VertexBufferElement&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VertexBufferElement& operator=(const VertexBufferElement&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VertexBufferElement(VertexBufferElement&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VertexBufferElement& operator=(VertexBufferElement&&) = default;
+
 		uint32_t GetComponentCount() const;
 	};
 
@@ -37,6 +54,23 @@ namespace TRAP::Graphics
 	public:
 		VertexBufferLayout() = default;
 		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements);
+
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VertexBufferLayout(const VertexBufferLayout&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VertexBufferLayout& operator=(const VertexBufferLayout&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VertexBufferLayout(VertexBufferLayout&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VertexBufferLayout& operator=(VertexBufferLayout&&) = default;
 
 		uint32_t GetStride() const;
 		const std::vector<VertexBufferElement>& GetElements() const;

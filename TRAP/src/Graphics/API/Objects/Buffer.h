@@ -11,6 +11,23 @@ namespace TRAP::Graphics
 
 		virtual ~Buffer();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Buffer(const Buffer&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Buffer& operator=(const Buffer&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Buffer(Buffer&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Buffer& operator=(Buffer&&) = default;
+
 		virtual uint64_t GetSize() const = 0;
 		virtual RendererAPI::DescriptorType GetDescriptors() const = 0;
 		virtual RendererAPI::ResourceMemoryUsage GetMemoryUsage() const = 0;

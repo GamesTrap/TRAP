@@ -2175,3 +2175,8 @@ SITREP 10/03/2021|21w39a2
     - Config Added support for Headless RenderAPI ~<5 mins
     - Removed runtime RenderAPI switching ~<20 mins
     - Implemented error codes for user visible critical error dialogs ~<20 mins
+
+SITREP 10/12/2021|21w41a1
+    - Changed TRAP Engine version to 21w41a1(0.7.90)
+    - Rule of five everywhere ~<20 mins
+    - Linux X11 workaround for window maximization via WindowProps ~<10 mins

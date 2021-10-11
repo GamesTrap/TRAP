@@ -13,6 +13,23 @@ namespace TRAP::Graphics
 
 		virtual ~PipelineCache();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		PipelineCache(const PipelineCache&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		PipelineCache& operator=(const PipelineCache&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		PipelineCache(PipelineCache&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		PipelineCache& operator=(PipelineCache&&) = default;
+
 		virtual void GetPipelineCacheData(std::size_t* size, void* data) const = 0;
 
 		virtual void Save(const std::string& virtualOrPhysicalPath) = 0;

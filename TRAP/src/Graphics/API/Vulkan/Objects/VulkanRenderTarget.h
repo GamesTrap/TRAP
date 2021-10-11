@@ -16,6 +16,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc);
 		~VulkanRenderTarget();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanRenderTarget(const VulkanRenderTarget&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanRenderTarget& operator=(const VulkanRenderTarget&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanRenderTarget(VulkanRenderTarget&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanRenderTarget& operator=(VulkanRenderTarget&&) = default;
+
 		uint32_t GetWidth() const override;
 		uint32_t GetHeight() const override;
 		uint32_t GetDepth() const override;

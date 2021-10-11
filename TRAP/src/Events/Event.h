@@ -68,6 +68,7 @@ namespace TRAP::Events
 		/// Default Move Assignment Operator.
 		/// </summary>
 		Event& operator=(Event&&) = default;
+
 	public:
 		/// <summary>
 		/// Virtual Default Destructor.
@@ -117,6 +118,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="event">Event to dispatch.</param>
 		explicit EventDispatcher(Event& event);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~EventDispatcher() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		EventDispatcher(const EventDispatcher&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		EventDispatcher& operator=(const EventDispatcher&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		EventDispatcher(EventDispatcher&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		EventDispatcher& operator=(EventDispatcher&&) = default;
 
 		/// <summary>
 		/// Dispatch a specific Event to a function.

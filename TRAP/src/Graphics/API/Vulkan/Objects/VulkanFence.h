@@ -16,6 +16,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanFence();
 		~VulkanFence();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanFence(const VulkanFence&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanFence& operator=(const VulkanFence&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanFence(VulkanFence&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanFence& operator=(VulkanFence&&) = default;
+
 		VkFence& GetVkFence();
 
 		RendererAPI::FenceStatus GetStatus() override;

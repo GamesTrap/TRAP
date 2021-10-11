@@ -13,6 +13,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc);
 		~VulkanRootSignature();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanRootSignature(const VulkanRootSignature&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanRootSignature& operator=(const VulkanRootSignature&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanRootSignature(VulkanRootSignature&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanRootSignature& operator=(VulkanRootSignature&&) = default;
+
 		RendererAPI::PipelineType GetPipelineType() const override;
 		VkPipelineLayout GetVkPipelineLayout() const;
 		const std::array<VkDescriptorSetLayout,

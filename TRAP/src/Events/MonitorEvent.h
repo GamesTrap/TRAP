@@ -13,6 +13,11 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
+		/// Virtual Default Destructor.
+		/// </summary>
+		virtual ~MonitorEvent() = default;
+
+		/// <summary>
 		/// Retrieve the affected monitor.
 		/// </summary>
 		/// <returns>Monitor.</returns>
@@ -30,6 +35,22 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="monitor">Affected monitor.</param>
 		explicit MonitorEvent(Monitor monitor);
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MonitorEvent(const MonitorEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MonitorEvent& operator=(const MonitorEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MonitorEvent(MonitorEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MonitorEvent& operator=(MonitorEvent&&) = default;
 
 		Monitor m_monitor;
 	};
@@ -45,6 +66,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="monitor">New connected monitor.</param>
 		explicit MonitorConnectEvent(Monitor monitor);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MonitorConnectEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MonitorConnectEvent(const MonitorConnectEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MonitorConnectEvent& operator=(const MonitorConnectEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MonitorConnectEvent(MonitorConnectEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MonitorConnectEvent& operator=(MonitorConnectEvent&&) = default;
 
 		/// <summary>
 		/// Get a string representation of the MonitorConnectEvent.
@@ -80,6 +121,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="monitor">Disconnected monitor.</param>
 		explicit MonitorDisconnectEvent(Monitor monitor);
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~MonitorDisconnectEvent() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		MonitorDisconnectEvent(const MonitorDisconnectEvent&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		MonitorDisconnectEvent(MonitorDisconnectEvent&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		MonitorDisconnectEvent& operator=(MonitorDisconnectEvent&&) = default;
 
 		/// <summary>
 		/// Get a string representation of the MonitorDisconnectEvent.

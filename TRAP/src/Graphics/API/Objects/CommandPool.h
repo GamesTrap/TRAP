@@ -14,6 +14,23 @@ namespace TRAP::Graphics
 
 		virtual ~CommandPool();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		CommandPool(const CommandPool&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		CommandPool& operator=(const CommandPool&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		CommandPool(CommandPool&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		CommandPool& operator=(CommandPool&&) = default;
+
 		virtual CommandBuffer* AllocateCommandBuffer(bool secondary) = 0;
 		virtual void FreeCommandBuffer(CommandBuffer* cmdBuffer) = 0;
 

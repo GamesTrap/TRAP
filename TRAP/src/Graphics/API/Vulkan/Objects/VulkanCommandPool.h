@@ -16,6 +16,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc);
 		~VulkanCommandPool();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanCommandPool(const VulkanCommandPool&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanCommandPool& operator=(const VulkanCommandPool&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanCommandPool(VulkanCommandPool&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanCommandPool& operator=(VulkanCommandPool&&) = default;
+
 		VkCommandPool& GetVkCommandPool();
 
 		CommandBuffer* AllocateCommandBuffer(bool secondary) override;

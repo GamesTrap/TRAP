@@ -15,6 +15,23 @@ namespace TRAP::Graphics::API
 		VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc);
 		~VulkanShader();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanShader(const VulkanShader&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanShader& operator=(const VulkanShader&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanShader(VulkanShader&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanShader& operator=(VulkanShader&&) = default;
+
 		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const;
 
 		const std::vector<VkShaderModule>& GetVkShaderModules() const;

@@ -71,11 +71,11 @@ void VulkanTextureTests::OnAttach()
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-    //Bind static shader resources
+    //Use static shader resources
     m_shader->UseTexture(0, 0, m_texture);
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 
-    //Bind buffers
+    //Use buffers
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
 }
@@ -120,12 +120,12 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_texture->Update(m_vulkanLogoTransparent->GetPixelData(), m_vulkanLogoTransparent->GetPixelDataSize());
     }
 
-	//Bind shader
+	//Use shader
     TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
-	//TODO Currently shader needs to be bound in orderd to set push constants
+	//TODO Currently shader needs to be in Use in orderd to set push constants
 	//TODO PushConstant binding should use a shader as input or better Shader should have a function for
-    //binding push constants
 
+    //Use Push Constants
     //Upload mip level index
     //TODO Use Shaders RootSignature internally instead of GraphicsPipelineDescs RootSignature
     TRAP::Graphics::RenderCommand::SetPushConstants("SamplerRootConstant", &m_currentMipLevel);

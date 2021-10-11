@@ -11,6 +11,23 @@ namespace TRAP::Graphics
 		DummyShader(const std::string& name, const std::string& filepath);
 		~DummyShader() override = default;
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		DummyShader(const DummyShader&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		DummyShader& operator=(const DummyShader&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		DummyShader(DummyShader&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		DummyShader& operator=(DummyShader&&) = default;
+
 		void Use(Window* window = nullptr) override;
 		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture,
 		                Window* window = nullptr) override;

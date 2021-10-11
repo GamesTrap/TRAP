@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
 		~VulkanRenderPass();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanRenderPass(const VulkanRenderPass&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanRenderPass& operator=(const VulkanRenderPass&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanRenderPass(VulkanRenderPass&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanRenderPass& operator=(VulkanRenderPass&&) = default;
+
 		VkRenderPass& GetVkRenderPass();
 
 		const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const;

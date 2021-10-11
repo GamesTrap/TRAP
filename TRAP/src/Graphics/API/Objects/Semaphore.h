@@ -13,6 +13,23 @@ namespace TRAP::Graphics
 
 		virtual ~Semaphore();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Semaphore(const Semaphore&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Semaphore& operator=(const Semaphore&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Semaphore(Semaphore&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Semaphore& operator=(Semaphore&&) = default;
+
 		virtual bool IsSignaled() const;
 
 	protected:

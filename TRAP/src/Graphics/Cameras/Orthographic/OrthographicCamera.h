@@ -9,6 +9,25 @@ namespace TRAP::Graphics
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top, float near, float far);
+		~OrthographicCamera() = default;
+
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		OrthographicCamera(const OrthographicCamera&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		OrthographicCamera& operator=(const OrthographicCamera&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		OrthographicCamera(OrthographicCamera&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		OrthographicCamera& operator=(OrthographicCamera&&) = default;
+
 		void SetProjection(float left, float right, float bottom, float top, float near, float far);
 
 		const Math::Vec3& GetPosition() const;

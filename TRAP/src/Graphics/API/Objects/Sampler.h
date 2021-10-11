@@ -18,6 +18,23 @@ namespace TRAP::Graphics
 
 		virtual ~Sampler();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Sampler(const Sampler&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Sampler& operator=(const Sampler&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Sampler(Sampler&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Sampler& operator=(Sampler&&) = default;
+
 		FilterType GetMinFilter() const;
 		FilterType GetMagFilter() const;
 		MipMapMode GetMipMapMode() const;

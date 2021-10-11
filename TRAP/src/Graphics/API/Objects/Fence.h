@@ -13,6 +13,23 @@ namespace TRAP::Graphics
 
 		virtual ~Fence();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Fence(const Fence&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Fence& operator=(const Fence&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Fence(Fence&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Fence& operator=(Fence&&) = default;
+
 		virtual bool IsSubmitted() const;
 
 		virtual RendererAPI::FenceStatus GetStatus() = 0;

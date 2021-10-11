@@ -17,6 +17,23 @@ namespace TRAP::Graphics
 
 		virtual ~SwapChain();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		SwapChain(const SwapChain&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		SwapChain& operator=(const SwapChain&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		SwapChain(SwapChain&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		SwapChain& operator=(SwapChain&&) = default;
+
 		virtual uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                  const TRAP::Ref<Fence>& fence) const = 0;
 

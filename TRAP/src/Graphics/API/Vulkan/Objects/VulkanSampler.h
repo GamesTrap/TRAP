@@ -14,6 +14,23 @@ namespace TRAP::Graphics::API
 		explicit VulkanSampler(const RendererAPI::SamplerDesc& desc);
 		~VulkanSampler();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanSampler(const VulkanSampler&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanSampler& operator=(const VulkanSampler&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanSampler(VulkanSampler&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanSampler& operator=(VulkanSampler&&) = default;
+
 		VkSampler& GetVkSampler();
 
 	private:

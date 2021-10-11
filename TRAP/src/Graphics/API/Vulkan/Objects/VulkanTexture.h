@@ -17,6 +17,23 @@ namespace TRAP::Graphics::API
 			          TRAP::Ref<VulkanMemoryAllocator> vma);
 		~VulkanTexture();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		VulkanTexture(const VulkanTexture&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		VulkanTexture& operator=(const VulkanTexture&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		VulkanTexture(VulkanTexture&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		VulkanTexture& operator=(VulkanTexture&&) = default;
+
 		VkImageView& GetSRVVkImageView();
 		VkImageView& GetSRVStencilVkImageView();
 		const std::vector<VkImageView>& GetUAVVkImageViews() const;
