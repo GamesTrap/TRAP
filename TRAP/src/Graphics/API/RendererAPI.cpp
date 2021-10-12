@@ -121,16 +121,13 @@ const TRAP::Scope<TRAP::Graphics::API::ResourceLoader>& TRAP::Graphics::Renderer
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
+TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 {
 	TP_INFO(Log::RendererPrefix, "Auto selecting RenderAPI");
 
 	//Check if Vulkan capable
 	if (s_Renderer->IsVulkanCapable())
-	{
-		s_RenderAPI = RenderAPI::Vulkan;
-		return;
-	}
+		return RenderAPI::Vulkan;
 	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
 	//Never select RenderAPI::Headless as this auto selection is intended for normal users

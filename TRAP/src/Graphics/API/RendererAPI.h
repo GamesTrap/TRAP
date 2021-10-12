@@ -84,7 +84,7 @@ namespace TRAP::Graphics
 		static const TRAP::Scope<RendererAPI>& GetRenderer();
 		static const TRAP::Scope<API::ResourceLoader>& GetResourceLoader();
 
-		static void AutoSelectRenderAPI();
+		static RenderAPI AutoSelectRenderAPI();
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
 

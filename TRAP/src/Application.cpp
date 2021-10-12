@@ -73,7 +73,7 @@ TRAP::Application::Application(const std::string& gameName)
 	const bool maximized = m_config.Get<bool>("Maximized");
 	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
 	const bool rawInput = m_config.Get<bool>("RawMouseInput");
-	const Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
+	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
 	if (fpsLimit > 0)
 	{
@@ -84,7 +84,7 @@ TRAP::Application::Application(const std::string& gameName)
 	}
 
 	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
-		Graphics::RendererAPI::AutoSelectRenderAPI();
+		renderAPI = Graphics::RendererAPI::AutoSelectRenderAPI();
 
 	//Initialize Renderer
 	Graphics::RendererAPI::Init(gameName, renderAPI);

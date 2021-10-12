@@ -2180,3 +2180,4 @@ SITREP 10/12/2021|21w41a1
     - Changed TRAP Engine version to 21w41a1(0.7.90)
     - Rule of five everywhere ~<20 mins
     - Linux X11 workaround for window maximization via WindowProps ~<10 mins
+    - Fixed a bug which resulted in error code 0x0002 ~<10 mins
