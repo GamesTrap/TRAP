@@ -184,4 +184,9 @@ premake5Private.lua
 *.code-workspace
 !/GeneratorScripts/**
 gitui
-
+Dependencies/DiscordGameSDK/c/**
+Dependencies/DiscordGameSDK/cpp/**
+Dependencies/DiscordGameSDK/csharp/**
+Dependencies/DiscordGameSDK/examples/**
+Dependencies/DiscordGameSDK/lib/**
+Dependencies/DiscordGameSDK/README.md

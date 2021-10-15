@@ -76,6 +76,3 @@ project "Sandbox"
 		runtime "Release"
 		optimize "On"
 		symbols "On"
-
-	filter "action:gmake2"
-	    resoptions { "-j6"}

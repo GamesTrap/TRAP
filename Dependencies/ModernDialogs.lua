@@ -5,7 +5,7 @@ project "ModernDialogs"
     staticruntime "on"
     systemversion "latest"
     warnings "off"
-    
+
     targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
@@ -14,7 +14,7 @@ project "ModernDialogs"
         "ModernDialogs/ModernDialogs/**.h",
         "ModernDialogs/ModernDialogs/**.cpp"
     }
-    
+
     filter "configurations:Debug"
 	    runtime "Debug"
 		symbols "On"
@@ -27,6 +27,3 @@ project "ModernDialogs"
 		runtime "Release"
         optimize "On"
         symbols "On"
-
-    filter "action:gmake2"
-	    resoptions { "-j6"}
