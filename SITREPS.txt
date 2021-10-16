@@ -2185,3 +2185,5 @@ SITREP 10/12/2021|21w41a1
 SITREP 10/16/2021|21w41a2
     - Changed TRAP Engine version to 21w41a2(0.7.91)
     - Added Drop-In support for the Discord Game SDK ~>120 mins
+    - Added simple wrapper for Discord Game SDK ~<60 mins
+    - Added activity wrapper for Discord Game SDK ~<30 mins

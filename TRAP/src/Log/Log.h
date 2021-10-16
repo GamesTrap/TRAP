@@ -218,6 +218,7 @@ namespace TRAP
 		inline static constexpr auto NetworkUDPSocketPrefix =               "[Network][UDPSocket] ";
 		inline static constexpr auto NetworkSocketUnixPrefix =              "[Network][Socket][Unix] ";
 		inline static constexpr auto SceneSerializerPrefix =                "[SceneSerializer] ";
+		inline static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:

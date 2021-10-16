@@ -107,6 +107,8 @@ project "TRAP"
 			}
 
 			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+
+			defines "USE_DISCORD_GAME_SDK"
 		end
 
 	filter "system:linux"
@@ -148,6 +150,8 @@ project "TRAP"
 			}
 
 			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+
+			defines "USE_DISCORD_GAME_SDK"
 		end
 
 	filter "configurations:Debug"

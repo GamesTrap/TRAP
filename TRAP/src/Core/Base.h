@@ -9,9 +9,6 @@
 //      it conflicts with the renderdoc capture layer.
 //#define USE_RENDER_DOC
 
-//Set this define to enable the Discord Game SDK specific features.
-//#define USE_DISCORD_GAME_SDK
-
 //Enable graphics validation in debug builds by default.
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG

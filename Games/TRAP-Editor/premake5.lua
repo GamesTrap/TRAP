@@ -70,6 +70,8 @@ project "TRAP-Editor"
 				"../../%{IncludeDir.DISCORDGAMESDK}/**.h",
 				"../../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
+
+			defines "USE_DISCORD_GAME_SDK"
 		end
 
 	filter "system:windows"
@@ -93,6 +95,8 @@ project "TRAP-Editor"
 			{
 				"{COPY} ../../%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 			}
+
+			defines "USE_DISCORD_GAME_SDK"
 		end
 
 	filter "configurations:Debug"

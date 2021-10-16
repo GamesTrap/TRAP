@@ -18,6 +18,7 @@
 #include "Input/Input.h"
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
+#include "Utils/Discord/DiscordGameSDK.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 std::mutex TRAP::Application::s_hotReloadingMutex;
@@ -144,6 +145,8 @@ TRAP::Application::Application(const std::string& gameName)
 	Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
 	m_ImGuiLayer = imguiLayer.get();
 	m_layerStack->PushOverlay(std::move(imguiLayer));
+
+	TRAP::Utils::Discord::Create();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -155,6 +158,7 @@ TRAP::Application::~Application()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP Modules...");
+	TRAP::Utils::Discord::Destroy();
 	if(m_hotReloadingThread)
 	{
 		m_hotReloadingThread->join();
@@ -268,6 +272,9 @@ void TRAP::Application::Run()
 			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
 			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
 		}
+
+		//Needed by Discord Game SDK
+		TRAP::Utils::Discord::RunCallbacks();
 	}
 }
 
