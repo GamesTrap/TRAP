@@ -24,7 +24,7 @@ project "TRAP"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
-	removefiles 
+	removefiles
 	{
 		"src/Utils/Win.h",
 		"src/Log/ANSILog.cpp",
@@ -56,6 +56,18 @@ project "TRAP"
 		"../%{IncludeDir.MODERNDIALOGS}"
 	}
 
+	links
+	{
+		"ImGui",
+		"YAMLCpp",
+		"ModernDialogs",
+		"GLSLang",
+		"SPIRV",
+		"SPIRV-Cross-Core",
+		"SPIRV-Cross-GLSL",
+		"SPIRV-Cross-HLSL"
+	}
+
 	filter "system:windows"
 		files
 		{
@@ -69,20 +81,35 @@ project "TRAP"
 
 		links
 		{
-			"ImGui",
-			"YAMLCpp",
-			"ModernDialogs",
-			"GLSLang",
-			"SPIRV",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
 			"Imm32",
 			"ws2_32"
 		}
 
-	filter "system:linux"
+		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib") and
+		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
+		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
+		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
+			links
+			{
+				"../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib"
+			}
+
+			sysincludedirs
+			{
+				"../%{IncludeDir.DISCORDGAMESDK}"
+			}
+
+			files
+			{
+				"../%{IncludeDir.DISCORDGAMESDK}/**.h",
+				"../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
+			}
+
+			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+		end
+
+	filter "system:linux"
 		-- Add Linux-specific files
         files
         {
@@ -93,17 +120,35 @@ project "TRAP"
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
 		}
 
-		links
-		{
-			"ImGui",
-			"YAMLCpp",
-			"ModernDialogs",
-			"GLSLang",
-			"SPIRV",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
-		}
+		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") and
+		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
+		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
+
+			linkoptions{ "-Wl,/usr/local/lib/discord_game_sdk.so"}
+
+			sysincludedirs
+			{
+				"../%{IncludeDir.DISCORDGAMESDK}"
+			}
+
+			files
+			{
+				"../%{IncludeDir.DISCORDGAMESDK}/**.h",
+				"../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
+			}
+
+			prelinkcommands
+			{
+				-- Copy the discord_game_sdk.so file to /usr/local/lib/discord_game_sdk.so if exists and
+				-- not already in /usr/local/lib
+				"if [ ! -f '/usr/local/lib/discord_game_sdk.so' ]; then " ..
+				"echo 'Copying discord_game_sdk.so to /usr/local/lib/discord_game_sdk.so' && " ..
+				"sudo cp '../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so' '/usr/local/lib/discord_game_sdk.so'; " ..
+				"fi"
+			}
+
+			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+		end
 
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"

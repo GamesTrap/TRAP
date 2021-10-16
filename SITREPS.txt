@@ -2181,3 +2181,7 @@ SITREP 10/12/2021|21w41a1
     - Rule of five everywhere ~<20 mins
     - Linux X11 workaround for window maximization via WindowProps ~<10 mins
     - Fixed a bug which resulted in error code 0x0002 ~<10 mins
+
+SITREP 10/16/2021|21w41a2
+    - Changed TRAP Engine version to 21w41a2(0.7.91)
+    - Added Drop-In support for the Discord Game SDK ~>120 mins

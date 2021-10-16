@@ -33,6 +33,7 @@ IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
 IncludeDir["ENTT"] = "Dependencies/Entt"
 IncludeDir["YAMLCPP"] = "Dependencies/YAMLCpp/include"
 IncludeDir["MODERNDIALOGS"] = "Dependencies/ModernDialogs/ModernDialogs"
+IncludeDir["DISCORDGAMESDK"] = "Dependencies/DiscordGameSDK/cpp"
 
 include "TRAP"
 

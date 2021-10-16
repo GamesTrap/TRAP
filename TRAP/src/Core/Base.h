@@ -9,6 +9,9 @@
 //      it conflicts with the renderdoc capture layer.
 //#define USE_RENDER_DOC
 
+//Set this define to enable the Discord Game SDK specific features.
+//#define USE_DISCORD_GAME_SDK
+
 //Enable graphics validation in debug builds by default.
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG
@@ -68,7 +71,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 90);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 91);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
