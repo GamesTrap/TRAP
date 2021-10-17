@@ -884,6 +884,17 @@ void TRAP::Window::Init(const WindowProps& props)
 	std::string newTitle = m_data.Title;
 #endif
 
+	if(m_data.Width < MinimumSupportedWindowWidth)
+	{
+		TP_WARN(Log::WindowPrefix, "Specified Window width is smaller than the minimum supported!");
+		m_data.Width = MinimumSupportedWindowWidth;
+	}
+	if(m_data.Height < MinimumSupportedWindowHeight)
+	{
+		TP_WARN(Log::WindowPrefix, "Specified Window height is smaller than the minimum supported!");
+		m_data.Height = MinimumSupportedWindowHeight;
+	}
+
 	m_window = INTERNAL::WindowingAPI::CreateWindow(m_data.Width, m_data.Height,
 		                                            newTitle, nullptr);
 

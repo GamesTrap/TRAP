@@ -355,7 +355,7 @@ namespace TRAP
 		{
 			std::string Title;
 			int32_t Width{}, Height{}, RefreshRate{};
-			int32_t MinWidth = 800, MinHeight = 600;
+			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
 			bool VSync{};
 			DisplayMode displayMode{};
@@ -374,8 +374,8 @@ namespace TRAP
 		static bool s_WindowingAPIInitialized;
 		static std::vector<Window*> s_fullscreenWindows;
 
-		inline static constexpr int32_t MinimumSupportedWindowWidth = 2; //800 for games, but for tools?!
-		inline static constexpr int32_t MinimumSupportedWindowHeight = 2; //600 for games, but for tools?!
+		inline static constexpr int32_t MinimumSupportedWindowWidth = 2;
+		inline static constexpr int32_t MinimumSupportedWindowHeight = 2;
 	};
 
 	/// <summary>

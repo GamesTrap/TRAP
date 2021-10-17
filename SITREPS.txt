@@ -2187,3 +2187,4 @@ SITREP 10/16/2021|21w41a2
     - Added Drop-In support for the Discord Game SDK ~>120 mins
     - Added simple wrapper for Discord Game SDK ~<60 mins
     - Added activity wrapper for Discord Game SDK ~<30 mins
+    - Window Added check for minimum supported width & height at window creation ~<15 mins
