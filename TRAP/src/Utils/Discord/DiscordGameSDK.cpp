@@ -124,6 +124,15 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_DISCORD_GAME_SDK
+discord::Core* TRAP::Utils::Discord::GetDiscordCore()
+{
+    return core;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef USE_DISCORD_GAME_SDK
 void DiscordLogger(const discord::LogLevel logLevel, const char* msg)
 {
     switch (logLevel)

@@ -2188,3 +2188,8 @@ SITREP 10/16/2021|21w41a2
     - Added simple wrapper for Discord Game SDK ~<60 mins
     - Added activity wrapper for Discord Game SDK ~<30 mins
     - Window Added check for minimum supported width & height at window creation ~<15 mins
+
+SITREP 10/23/2021|21w42a1
+    - Changed TRAP Engine version to 21w42a1(0.7.92)
+    - Fixed a small bug in ImGuiWindowing::NewFrame which could cause a crash after some time ~<5 mins
+    - Added GetDiscordCore in DiscordGameSDK ~<5 mins

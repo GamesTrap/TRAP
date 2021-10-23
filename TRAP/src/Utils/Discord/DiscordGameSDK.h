@@ -1,6 +1,11 @@
 #ifndef _TRAP_DISCORDGAMESDK_H_
 #define _TRAP_DISCORDGAMESDK_H_
 
+namespace discord
+{
+    class Core;
+}
+
 namespace TRAP::Utils::Discord
 {
     struct Activity
@@ -15,6 +20,10 @@ namespace TRAP::Utils::Discord
     void Destroy();
     bool RunCallbacks();
     bool SetActivity(const Activity& activity);
+
+#ifdef USE_DISCORD_GAME_SDK
+    discord::Core* GetDiscordCore();
+#endif
 }
 
 #endif /*_TRAP_DISCORDGAMESDK_H_*/

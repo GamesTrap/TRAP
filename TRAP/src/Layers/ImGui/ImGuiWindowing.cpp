@@ -27,6 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 #include "ImGuiWindowing.h"
 #include "Application.h"
+#include "Maths/Math.h"
 
 TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::ImGuiWindowing::s_window = nullptr;
 double TRAP::INTERNAL::ImGuiWindowing::s_time = 0.0;
@@ -100,7 +101,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 	//Setup time step
 	const double currentTime = static_cast<double>(Application::GetTime());
-	io.DeltaTime = s_time > 0.0 ? static_cast<float>(currentTime - s_time) : 1.0f / 60.0f;
+	io.DeltaTime = TRAP::Math::Max(static_cast<float>(currentTime - s_time), 1e-4f);
 	s_time = currentTime;
 
 	UpdateMousePosAndButtons();
