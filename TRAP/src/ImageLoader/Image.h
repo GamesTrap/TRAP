@@ -383,8 +383,8 @@ std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_
 		whitePixelColor = 1.0f;
 
 	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGBA));
-	uint32_t newDataIndex = 0;
-	for(uint32_t oldDataIndex = 0; oldDataIndex < width * height * static_cast<uint32_t>(ColorFormat::RGB);
+	std::size_t newDataIndex = 0;
+	for(std::size_t oldDataIndex = 0; oldDataIndex < width * height * static_cast<uint32_t>(ColorFormat::RGB);
 		oldDataIndex += 3)
 	{
 		newData[newDataIndex + 0] = data[oldDataIndex + 0];

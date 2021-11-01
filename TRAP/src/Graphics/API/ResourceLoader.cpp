@@ -1187,7 +1187,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
 		{
-			for(uint32_t i = 0; i < images.size(); ++i)
+			for(std::size_t i = 0; i < images.size(); ++i)
 				images[i] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[i]);
 
 			//Validation checks
@@ -1197,7 +1197,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				TP_ERROR(Log::TextureCubePrefix, "Images width and height must be the same!");
 				valid = false;
 			}
-			for(uint32_t i = 1; i < images.size(); ++i)
+			for(std::size_t i = 1; i < images.size(); ++i)
 			{
 				if(!valid)
 					break;

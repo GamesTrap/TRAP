@@ -127,7 +127,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 			memcpy(updateDesc.MappedData, useImg->GetPixelData(), useImg->GetPixelDataSize());
 		else //Needs row by row copy
 		{
-			for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+			for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 			{
 				memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
 				       reinterpret_cast<const uint8_t*>(useImg->GetPixelData()) + r * updateDesc.SrcRowStride,
@@ -256,7 +256,7 @@ void TRAP::Graphics::Texture2D::Update(const void* data, const uint32_t sizeInBy
 		memcpy(updateDesc.MappedData, data, updateDesc.RowCount * updateDesc.SrcRowStride);
 	else //Needs row by row copy
 	{
-		for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 		{
 			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
 				   reinterpret_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,

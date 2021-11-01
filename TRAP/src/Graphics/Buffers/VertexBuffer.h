@@ -23,7 +23,7 @@ namespace TRAP::Graphics
 		const VertexBufferLayout& GetLayout() const;
 		void SetLayout(const VertexBufferLayout& layout);
 		uint64_t GetSize() const;
-		uint64_t GetCount() const;
+		uint32_t GetCount() const;
 		UpdateFrequency GetUpdateFrequency() const;
 
 		void SetData(float* data, uint64_t size, uint64_t offset = 0);

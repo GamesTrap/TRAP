@@ -60,9 +60,9 @@ uint64_t TRAP::Graphics::VertexBuffer::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::VertexBuffer::GetCount() const
+uint32_t TRAP::Graphics::VertexBuffer::GetCount() const
 {
-	return m_vertexBuffer->GetSize() / m_bufferLayout.GetStride();
+	return static_cast<uint32_t>(m_vertexBuffer->GetSize() / static_cast<uint64_t>(m_bufferLayout.GetStride()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

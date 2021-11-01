@@ -85,7 +85,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	std::vector<std::vector<float>> queueFamilyPriorities(queueFamilyProperties.size());
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
 
-	for(uint32_t i = 0; i < queueFamilyProperties.size(); i++)
+	for(std::size_t i = 0; i < queueFamilyProperties.size(); i++)
 	{
 		uint32_t queueCount = queueFamilyProperties[i].queueCount;
 		if(queueCount > 0)
@@ -100,7 +100,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 			info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			info.pNext = nullptr;
 			info.flags = 0;
-			info.queueFamilyIndex = i;
+			info.queueFamilyIndex = static_cast<uint32_t>(i);
 			info.queueCount = queueCount;
 			info.pQueuePriorities = queueFamilyPriorities[i].data();
 			queueCreateInfos.push_back(info);
@@ -197,7 +197,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	uint32_t minQueueFlag = std::numeric_limits<uint32_t>::max();
 
 	//Try to find a dedicated queue of this type
-	for(uint32_t index = 0; index < props.size(); ++index)
+	for(std::size_t index = 0; index < props.size(); ++index)
 	{
 		const VkQueueFlags queueFlags = props[index].queueFlags;
 		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) ? true : false;
@@ -205,7 +205,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		if(queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
 		{
 			found = true;
-			qfi = index;
+			qfi = static_cast<uint32_t>(index);
 			qi = 0;
 			break;
 		}
@@ -213,7 +213,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 		{
 			found = true;
-			qfi = index;
+			qfi = static_cast<uint32_t>(index);
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
@@ -222,7 +222,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		{
 			found = true;
 			minQueueFlag = (queueFlags - flagAnd);
-			qfi = index;
+			qfi = static_cast<uint32_t>(index);
 			qi = m_usedQueueCount[queueFlags];
 			break;
 		}
@@ -231,13 +231,13 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	//If hardware doesn't provide a dedicated queue try to find a non-dedicated one
 	if(!found)
 	{
-		for(uint32_t index = 0; index < props.size(); ++index)
+		for(std::size_t index = 0; index < props.size(); ++index)
 		{
 			const VkQueueFlags queueFlags = props[index].queueFlags;
 			if((queueFlags & requiredFlags) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
 			{
 				found = true;
-				qfi = index;
+				qfi = static_cast<uint32_t>(index);
 				qi = m_usedQueueCount[queueFlags];
 				break;
 			}

@@ -196,7 +196,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		if(format == TextureCubeFormat::Cross)
 		{
 			//Fill empty TextureBase with images pixel data
-			for(uint32_t i = 0; i < 6; ++i)
+			for(uint32_t i = 0; i < faces.size(); ++i)
 			{
 				RendererAPI::TextureUpdateDesc updateDesc{};
 				updateDesc.Texture = texture->m_texture;
@@ -206,7 +206,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 					memcpy(updateDesc.MappedData, faces[i]->GetPixelData(), faces[i]->GetPixelDataSize());
 				else //Needs row by row copy
 				{
-					for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+					for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 					{
 						memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
 							reinterpret_cast<const uint8_t*>(faces[i]->GetPixelData()) + r * updateDesc.SrcRowStride,
@@ -298,7 +298,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
 
 		//Fill empty TextureBase with images pixel data
-		for(uint32_t i = 0; i < 6; ++i)
+		for(uint32_t i = 0; i < imgs.size(); ++i)
 		{
 			RendererAPI::TextureUpdateDesc updateDesc{};
 			updateDesc.Texture = texture->m_texture;
@@ -308,7 +308,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 				memcpy(updateDesc.MappedData, useImgs[i]->GetPixelData(), useImgs[i]->GetPixelDataSize());
 			else //Needs row by row copy
 			{
-				for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+				for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 				{
 					memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
 						reinterpret_cast<const uint8_t*>(useImgs[i]->GetPixelData()) + r * updateDesc.SrcRowStride,
@@ -406,7 +406,7 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 		memcpy(updateDesc.MappedData, data, updateDesc.RowCount * updateDesc.SrcRowStride);
 	else //Needs row by row copy
 	{
-		for(uint32_t r = 0; r < updateDesc.RowCount; ++r)
+		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 		{
 			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
 				   reinterpret_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,

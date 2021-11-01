@@ -138,8 +138,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	}
 
 	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
-	uint32_t signalCount = 0;
-	for(uint32_t i = 0; i < desc.SignalSemaphores.size(); ++i)
+	std::size_t signalCount = 0;
+	for(std::size_t i = 0; i < desc.SignalSemaphores.size(); ++i)
 	{
 		if(desc.SignalSemaphores[i]->IsSignaled())
 			continue;

@@ -20,7 +20,7 @@ namespace TRAP::Graphics
 	public:
 		~IndexBuffer();
 
-		uint64_t GetCount() const;
+		uint32_t GetCount() const;
 		uint64_t GetSize() const;
 		UpdateFrequency GetUpdateFrequency() const;
 

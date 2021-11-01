@@ -272,7 +272,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 		else //if(m_data.displayMode != DisplayMode::Windowed)
 		{
 			//Remove Window from FullscreenWindows as it gets windowed now
-			for(uint32_t i = 0; i < s_fullscreenWindows.size(); ++i)
+			for(std::size_t i = 0; i < s_fullscreenWindows.size(); ++i)
 			{
 				if(s_fullscreenWindows[i] == this)
 					s_fullscreenWindows[m_data.Monitor] = nullptr;
@@ -845,7 +845,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if(s_baseVideoModes.empty())
 	{
 		//Store the current VideoMode of each monitor
-		for(uint32_t i = 0; i < monitors.size(); i++)
+		for(std::size_t i = 0; i < monitors.size(); i++)
 		{
 			s_baseVideoModes[i] = INTERNAL::WindowingAPI::GetVideoMode(monitors[i]);
 			TP_DEBUG(Log::WindowPrefix, "Storing underlying OS video mode: Monitor: ", i, " ",

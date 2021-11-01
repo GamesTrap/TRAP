@@ -2193,3 +2193,11 @@ SITREP 10/23/2021|21w42a1
     - Changed TRAP Engine version to 21w42a1(0.7.92)
     - Fixed a small bug in ImGuiWindowing::NewFrame which could cause a crash after some time ~<5 mins
     - Added GetDiscordCore in DiscordGameSDK ~<5 mins
+
+SITREP 11/01/2021|21w44a1
+    - Changed TRAP Engine version to 21w44a1(0.7.93)
+    - Shader Reflection Changed size types to uint64_t ~<10 mins
+    - Vertex/IndexBuffer Changed GetCount to return uint32_t ~<5 mins
+    - Tests fixed warnings ~<10 mins
+    - Windows again disabled min and max macros ~<10 mins
+    - Corrected for loop data types ~>20 mins

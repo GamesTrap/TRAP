@@ -271,7 +271,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture,
-	                                          static_cast<uint32_t>(textures.size()));
+	                                          textures.size());
 
 	if(name.empty())
 	{
@@ -280,7 +280,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	}
 
 	std::vector<TRAP::Graphics::TextureBase*> textureBases(textures.size());
-	for(uint32_t i = 0; i < textureBases.size(); ++i)
+	for(std::size_t i = 0; i < textureBases.size(); ++i)
 		textureBases[i] = textures[i]->GetTexture().get();
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
@@ -340,7 +340,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
-	                                          static_cast<uint32_t>(samplers.size()));
+	                                          samplers.size());
 
 	if(name.empty())
 	{
@@ -451,7 +451,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(uint32_t set, uint32_t binding
 
 std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
 																	  RendererAPI::DescriptorType type,
-																	  const uint32_t size)
+																	  const uint64_t size)
 {
 	for(const auto& resource : m_reflection->ShaderResources)
 	{

@@ -81,7 +81,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 		if (!type.array.empty())
 			resource.Size = type.array[0];
 		else if(!type.member_types.empty())
-			resource.Size = static_cast<uint32_t>(compiler.get_declared_struct_size(type)); //Used by UBO creation from Shader
+			resource.Size = compiler.get_declared_struct_size(type); //Used by UBO creation from Shader
 		else
 			resource.Size = 1;
 
@@ -253,7 +253,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 		resource.Binding = static_cast<uint32_t>(-1); //Push constants dont have bindings
 
 		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
-		resource.Size = static_cast<uint32_t>(compiler.Compiler->get_declared_struct_size(type));
+		resource.Size = compiler.Compiler->get_declared_struct_size(type);
 
 		resource.Name = input.name;
 		resource.Dimension = ResourceTextureDimension::Undefined;
@@ -270,35 +270,35 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& comp
 		return; //Error code here
 
 	//1. Count number of variables we have
-	uint32_t variableCount = 0;
+	std::size_t variableCount = 0;
 
-	for(uint32_t i = 0; i < compiler.ShaderResources.size(); ++i)
+	for(std::size_t i = 0; i < compiler.ShaderResources.size(); ++i)
 	{
 		Resource& resource = compiler.ShaderResources[i];
 
 		if(resource.Type == ResourceType::UniformBuffers || resource.Type == ResourceType::PushConstant)
 		{
 			spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
-			variableCount += static_cast<uint32_t>(type.member_types.size());
+			variableCount += type.member_types.size();
 		}
 	}
 
 	//2. Allocate memory
 	std::vector<Variable> variables(variableCount);
-	uint32_t currentVariable = 0;
+	std::size_t currentVariable = 0;
 
 	//3. Reflect
-	for(uint32_t i = 0; i < compiler.ShaderResources.size(); ++i)
+	for(std::size_t i = 0; i < compiler.ShaderResources.size(); ++i)
 	{
 		Resource& resource = compiler.ShaderResources[i];
 
 		if(resource.Type != ResourceType::UniformBuffers && resource.Type != ResourceType::PushConstant)
 			continue;
 
-		uint32_t startOfBlock = currentVariable;
+		std::size_t startOfBlock = currentVariable;
 
 		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
-		for(uint32_t j = 0; j < static_cast<uint32_t>(type.member_types.size()); ++j)
+		for(std::size_t j = 0; j < type.member_types.size(); ++j)
 		{
 			Variable& variable = variables[currentVariable++];
 
@@ -309,7 +309,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& comp
 
 			variable.IsUsed = false;
 
-			variable.Size = static_cast<uint32_t>(compiler.Compiler->get_declared_struct_member_size(type, j));
+			variable.Size = compiler.Compiler->get_declared_struct_member_size(type, j);
 			variable.Offset = compiler.Compiler->get_member_decoration(resource.SPIRVCode.BaseTypeID, j,
 																		spv::DecorationOffset);
 
@@ -318,7 +318,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& comp
 
 		spirv_cross::SmallVector<spirv_cross::BufferRange> range = compiler.Compiler->get_active_buffer_ranges(resource.SPIRVCode.ID);
 
-		for(uint32_t j = 0; j < static_cast<uint32_t>(range.size()); ++j)
+		for(std::size_t j = 0; j < range.size(); ++j)
 			variables[startOfBlock + range[j].index].IsUsed = true;
 	}
 

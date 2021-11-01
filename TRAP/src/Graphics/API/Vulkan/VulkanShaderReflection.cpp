@@ -82,11 +82,11 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
 		out.NumControlPoint = ReflectTessellationControlShaderControlPoint(cc);
 
-	uint32_t vertexInputCount = 0;
-	uint32_t resourceCount = 0;
-	uint32_t variablesCount = 0;
+	std::size_t vertexInputCount = 0;
+	std::size_t resourceCount = 0;
+	std::size_t variablesCount = 0;
 
-	for(uint32_t i = 0; i < cc.ShaderResources.size(); ++i)
+	for(std::size_t i = 0; i < cc.ShaderResources.size(); ++i)
 	{
 		SPIRVTools::Resource& resource = cc.ShaderResources[i];
 
@@ -113,7 +113,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		}
 	}
 
-	for(uint32_t i = 0; i < cc.UniformVariables.size(); ++i)
+	for(std::size_t i = 0; i < cc.UniformVariables.size(); ++i)
 	{
 		SPIRVTools::Variable& variable = cc.UniformVariables[i];
 
@@ -133,8 +133,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	{
 		vertexInputs.resize(vertexInputCount);
 
-		uint32_t j = 0;
-		for(uint32_t i = 0; i < cc.ShaderResources.size(); ++i)
+		std::size_t j = 0;
+		for(std::size_t i = 0; i < cc.ShaderResources.size(); ++i)
 		{
 			SPIRVTools::Resource& resource = cc.ShaderResources[i];
 
@@ -144,7 +144,6 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			{
 				vertexInputs[j].Size = resource.Size;
 				vertexInputs[j].Name = resource.Name;
-				vertexInputs[j].NameSize = static_cast<uint32_t>(resource.Name.size());
 
 				++j;
 			}
@@ -159,8 +158,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		indexRemap.resize(cc.ShaderResources.size());
 		resources.resize(resourceCount);
 
-		uint32_t j = 0;
-		for(uint32_t i = 0; i < cc.ShaderResources.size(); ++i)
+		std::size_t j = 0;
+		for(std::size_t i = 0; i < cc.ShaderResources.size(); ++i)
 		{
 			//Set index remap
 			indexRemap[i] = static_cast<uint32_t>(-1);
@@ -201,8 +200,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	{
 		variables.resize(variablesCount);
 
-		uint32_t j = 0;
-		for(uint32_t i = 0; i < cc.UniformVariables.size(); ++i)
+		std::size_t j = 0;
+		for(std::size_t i = 0; i < cc.UniformVariables.size(); ++i)
 		{
 			SPIRVTools::Variable& variable = cc.UniformVariables[i];
 

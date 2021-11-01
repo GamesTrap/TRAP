@@ -70,7 +70,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* data, const uint64_t siz
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
 
-	for(uint32_t i = 0; i < m_storageBuffers.size(); ++i)
+	for(std::size_t i = 0; i < m_storageBuffers.size(); ++i)
 	{
 		RendererAPI::BufferUpdateDesc desc{};
 		desc.Buffer = m_storageBuffers[i];
@@ -86,7 +86,7 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* data, const uint64_t siz
 
 bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 {
-	for(uint32_t i = 0; i < m_storageBuffers.size(); ++i)
+	for(std::size_t i = 0; i < m_storageBuffers.size(); ++i)
 	{
 	   if(!RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_tokens[i]))
 			return false;
@@ -99,7 +99,7 @@ bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 
 void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 {
-	for(uint32_t i = 0; i < m_storageBuffers.size(); ++i)
+	for(std::size_t i = 0; i < m_storageBuffers.size(); ++i)
 		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
 }
 
@@ -131,7 +131,7 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(v
 	desc.Desc.Size = size;
 	desc.Data = data;
 
-	for(uint32_t i = 0; i < buffer->m_storageBuffers.size(); ++i)
+	for(std::size_t i = 0; i < buffer->m_storageBuffers.size(); ++i)
 	{
 		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
 		buffer->m_storageBuffers[i] = desc.Buffer;

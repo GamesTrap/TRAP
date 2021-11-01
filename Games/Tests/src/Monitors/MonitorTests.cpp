@@ -91,7 +91,7 @@ void MonitorTests::ListModes(const TRAP::Monitor& monitor)
 
 	TP_TRACE("Modes:");
 
-	for(uint32_t i = 0; i < modes.size(); i++)
+	for(std::size_t i = 0; i < modes.size(); i++)
 	{
 		if (mode.Width == modes[i].Width && mode.Height == modes[i].Height &&
 		    mode.RefreshRate == modes[i].RefreshRate)

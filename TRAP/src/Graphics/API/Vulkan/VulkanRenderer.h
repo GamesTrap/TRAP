@@ -176,7 +176,7 @@ namespace TRAP::Graphics::API
 			//(applicable to DescriptorType::UniformBuffer)
 			std::vector<DescriptorInfo*> DynamicDescriptors{};
 			//Hash map to get index of the descriptor in the root signature
-			std::unordered_map<DescriptorInfo*, uint32_t> DescriptorIndexMap{};
+			std::unordered_map<DescriptorInfo*, uint64_t> DescriptorIndexMap{};
 		};
 
 		//Create default resources to be used as null descriptors in case user does not specify some descriptors

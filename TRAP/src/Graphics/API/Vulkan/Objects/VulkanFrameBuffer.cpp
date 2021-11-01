@@ -56,7 +56,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	auto iterAttachments = imageViews.begin();
 
 	//Color
-	for(uint32_t i = 0; i < desc.RenderTargets.size(); i++)
+	for(std::size_t i = 0; i < desc.RenderTargets.size(); i++)
 	{
 		VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.RenderTargets[i].get());
 		if(desc.ColorMipSlices.empty() && desc.ColorArraySlices.empty())

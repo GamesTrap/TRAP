@@ -240,7 +240,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	//We hash those two values to generate the RenderPass Hash.
 	//FrameBuffer is the actual array of all the VkImageViews
 	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
-	for(uint32_t i = 0; i < renderTargets.size(); ++i)
+	for(std::size_t i = 0; i < renderTargets.size(); ++i)
 	{
 		std::array<uint32_t, 3> hashValues =
 		{
@@ -352,7 +352,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	clearValues.reserve(8 + 1);
 	if(loadActions)
 	{
-		for(uint32_t i = 0; i < renderTargets.size(); ++i)
+		for(std::size_t i = 0; i < renderTargets.size(); ++i)
 		{
 			TRAP::Math::Vec4 clearColor = loadActions->ClearColorValues[i];
 			VkClearValue val{};

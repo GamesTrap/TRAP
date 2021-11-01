@@ -48,10 +48,11 @@ TRAP::Graphics::IndexBuffer::~IndexBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::Graphics::IndexBuffer::GetCount() const
+uint32_t TRAP::Graphics::IndexBuffer::GetCount() const
 {
-	return m_indexBuffer->GetSize() / ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(uint16_t) :
-	                                                                                     sizeof(uint32_t));
+	return static_cast<uint32_t>(m_indexBuffer->GetSize() /
+	                             ((m_indexType == RendererAPI::IndexType::UInt16) ? static_cast<uint64_t>(sizeof(uint16_t)) :
+	                                                                                static_cast<uint64_t>(sizeof(uint32_t))));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

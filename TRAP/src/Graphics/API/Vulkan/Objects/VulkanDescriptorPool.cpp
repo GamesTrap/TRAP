@@ -126,7 +126,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 			updateData[i] = rootSignature->GetUpdateTemplateData()[updateFreq];
 		}
 
-		for(uint32_t i = 0; i < handles.size(); ++i)
+		for(std::size_t i = 0; i < handles.size(); ++i)
 			handles[i] = RetrieveVkDescriptorSet(layouts[i]);
 	}
 	else

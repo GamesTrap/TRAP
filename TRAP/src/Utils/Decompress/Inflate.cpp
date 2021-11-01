@@ -506,12 +506,14 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 		nextCode[bits] = (nextCode[bits - 1] + bitLengthCount[bits - 1]) << 1u;
 	//Step 3: Generate all the codes
 	for(uint32_t n = 0; n != NumCodes; ++n)
+	{
 		if(Lengths[n] != 0)
 		{
 			Codes[n] = nextCode[Lengths[n]]++;
 			//Remove superfluous bits from the code
 			Codes[n] &= ((1u << Lengths[n]) - 1u);
 		}
+	}
 
 	if (!MakeTable())
 		return false;

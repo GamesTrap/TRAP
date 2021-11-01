@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
 	std::unordered_map<std::string, TRAP::Ref<VulkanSampler>> staticSamplerMap;
 
-	for(uint32_t i = 0; i < desc.StaticSamplers.size(); ++i)
+	for(std::size_t i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
 		TRAP_ASSERT(desc.StaticSamplers[i]);
 		staticSamplerMap.insert({ {desc.StaticSamplerNames[i],
@@ -52,7 +52,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
 	//be considered the same resource)
-	for(uint32_t sh = 0; sh < desc.Shaders.size(); ++sh)
+	for(std::size_t sh = 0; sh < desc.Shaders.size(); ++sh)
 	{
 		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
 		(
@@ -66,7 +66,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		else
 			pipelineType = RendererAPI::PipelineType::Graphics;
 
-		for(uint32_t i = 0; i < reflection->ShaderResources.size(); ++i)
+		for(std::size_t i = 0; i < reflection->ShaderResources.size(); ++i)
 		{
 			ShaderReflection::ShaderResource& res = reflection->ShaderResources[i];
 
@@ -142,7 +142,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	m_descriptorNameToIndexMap->Map = indexMap.Map;
 
 	//Fill the descriptor array to be stored in the root signature
-	for(uint32_t i = 0; i < static_cast<uint32_t>(shaderResources.size()); ++i)
+	for(std::size_t i = 0; i < shaderResources.size(); ++i)
 	{
 		RendererAPI::DescriptorInfo& descInfo = m_descriptors[i];
 		const ShaderReflection::ShaderResource& res = shaderResources[i];
@@ -276,7 +276,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		m_vkDescriptorCounts[i] = static_cast<uint16_t>(layout.Descriptors.size());
 
 		//Loop through descriptor belonging to this update frequency and increment the cumulative descriptor count
-		for(uint32_t descIndex = 0; descIndex < static_cast<uint32_t>(layout.Descriptors.size()); ++descIndex)
+		for(std::size_t descIndex = 0; descIndex < layout.Descriptors.size(); ++descIndex)
 		{
 			RendererAPI::DescriptorInfo* descInfo = layout.Descriptors[descIndex];
 			descInfo->IndexInParent = descIndex;
@@ -285,10 +285,10 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		}
 
 		m_vkDynamicDescriptorCounts[i] = static_cast<uint8_t>(layout.DynamicDescriptors.size());
-		for(uint32_t descIndex = 0; descIndex < m_vkDynamicDescriptorCounts[i]; ++descIndex)
+		for(std::size_t descIndex = 0; descIndex < m_vkDynamicDescriptorCounts[i]; ++descIndex)
 		{
 			RendererAPI::DescriptorInfo* descInfo = layout.DynamicDescriptors[descIndex];
-			descInfo->RootDescriptorIndex = descIndex;
+			descInfo->RootDescriptorIndex = static_cast<uint32_t>(descIndex);
 		}
 	}
 
@@ -320,7 +320,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			//Fill the write descriptors with default values during initialization so the only thing we change
 			//in CmdBindDescriptors are the VkBuffer / VKImageView objects
-			for(uint32_t i = 0; i < static_cast<uint32_t>(layout.Descriptors.size()); ++i)
+			for(std::size_t i = 0; i < layout.Descriptors.size(); ++i)
 			{
 				const RendererAPI::DescriptorInfo* descInfo = layout.Descriptors[i];
 				const uint64_t offset = descInfo->HandleIndex * sizeof(VulkanRenderer::DescriptorUpdateData);

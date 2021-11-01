@@ -50,7 +50,7 @@ void ControllerTests::OnImGuiRender()
 	{
 		std::vector<float> axes = TRAP::Input::GetAllControllerAxes(controller);
 		std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(controller);
-		std::vector<TRAP::Input::ControllerDPad> dpad = TRAP::Input::GetAllControllerDPads(controller);
+		std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(controller);
 
 		ImGui::Begin((std::to_string(static_cast<uint32_t>(controller) + 1) + ". " +
 		              TRAP::Input::GetControllerName(controller)).c_str());
@@ -63,7 +63,7 @@ void ControllerTests::OnImGuiRender()
 			float axisCpy = axis;
 			ImGui::SliderFloat("", &axisCpy, -1.0f, 1.0f);
 		}
-		for(uint32_t i = 0; i < (s_dpadButtons ? buttons.size() : buttons.size() - dpad.size() * 4); i++)
+		for(std::size_t i = 0; i < (s_dpadButtons ? buttons.size() : buttons.size() - dpads.size() * 4); i++)
 		{
 			bool cpy = buttons[i];
 			ImGui::Checkbox(std::to_string(i + 1).c_str(), &cpy);
@@ -71,11 +71,11 @@ void ControllerTests::OnImGuiRender()
 				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
 		}
 
-		for(uint32_t i = 0; i < dpad.size(); i++)
+		for(std::size_t i = 0; i < dpads.size(); i++)
 		{
 			std::string dpadText = "DPad " + std::to_string(i) + ": ";
-			dpadText += GetDPadDirection(dpad[i]);
-			bool dpadPressed = static_cast<bool>(dpad[i]);
+			dpadText += GetDPadDirection(dpads[i]);
+			bool dpadPressed = static_cast<bool>(dpads[i]);
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 			if (i % 2 == 0)
 				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
@@ -191,7 +191,7 @@ bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectE
 
 bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event)
 {
-	for(uint32_t i = 0; i < s_controllers.size(); i++)
+	for(std::size_t i = 0; i < s_controllers.size(); i++)
 	{
 		if(s_controllers[i] == event.GetController())
 		{

@@ -1,6 +1,10 @@
 #ifndef _TRAP_WIN_H_
 #define _TRAP_WIN_H_
 
+#ifndef NOMINMAX
+	#define NOMINMAX
+#endif
+
 //Target Windows 8 or later
 #ifndef _WIN32_WINNT
 	#define _WIN32_WINNT 0x0602

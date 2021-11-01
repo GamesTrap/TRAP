@@ -330,8 +330,8 @@ std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<uin
 	std::vector<uint32_t> data{};
 	data.resize(source.size() / 4);
 
-	uint32_t j = 0;
-	for(uint32_t i = 0; i < source.size(); i += 4)
+	std::size_t j = 0;
+	for(std::size_t i = 0; i < source.size(); i += 4)
 	{
 		const uint32_t val = source[i] |
 			                 (source[i + 1] << 8) |
@@ -354,7 +354,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 	std::vector<std::string> lines = Utils::String::GetLines(glslSource);
 
 	//Go through every line of the shader source
-	for(uint32_t i = 0; i < lines.size(); ++i)
+	for(std::size_t i = 0; i < lines.size(); ++i)
 	{
 		//Optimization lines converted to lower case
 		std::string lowerLine = Utils::String::ToLower(lines[i]);

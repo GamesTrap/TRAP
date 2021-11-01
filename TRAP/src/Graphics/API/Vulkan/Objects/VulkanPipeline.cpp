@@ -134,9 +134,9 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 
 	//Pipeline
 	{
-		uint32_t stageCount = 0;
+		std::size_t stageCount = 0;
 		std::array<VkPipelineShaderStageCreateInfo, 5> stages{};
-		for(uint32_t i = 0; i < stages.size(); ++i)
+		for(std::size_t i = 0; i < stages.size(); ++i)
 		{
 			const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
 			if (stageMask == (shaderProgram->GetShaderStages() & stageMask))

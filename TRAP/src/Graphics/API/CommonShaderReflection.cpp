@@ -67,9 +67,9 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	uint32_t geometryStageIndex = ~0u;
 	uint32_t fragmentStageIndex = ~0u;
 	std::vector<ShaderResource> resources;
-	uint32_t resourceCount = 0;
+	std::size_t resourceCount = 0;
 	std::vector<ShaderVariable> variables;
-	uint32_t variableCount = 0;
+	std::size_t variableCount = 0;
 
 	TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
 
@@ -94,7 +94,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			fragmentStageIndex = i;
 
 		//Loop through all shader resources
-		for(uint32_t j = 0; j < srcRef.ShaderResources.size(); ++j)
+		for(std::size_t j = 0; j < srcRef.ShaderResources.size(); ++j)
 		{
 			bool unique = true;
 
@@ -102,10 +102,10 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			//resource was already added from a different shader stage.
 			//If we find a duplicate shader resource, we add the shader stage
 			//to the shader stage mask of that resource instead.
-			for(uint32_t k = 0; k < resourceCount; ++k)
+			for(std::size_t k = 0; k < resourceCount; ++k)
 			{
 				unique = !ShaderResourceCmp(srcRef.ShaderResources[j], *uniqueResources[k]);
-				if(unique == false)
+				if(!unique)
 				{
 					shaderUsage[k] |= srcRef.ShaderResources[j].UsedStages;
 					break;
@@ -113,7 +113,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			}
 
 			//If it's unique, we add it to the list of shader resources
-			if(unique == true)
+			if(unique)
 			{
 				shaderUsage[resourceCount] = srcRef.ShaderResources[j].UsedStages;
 				uniqueResources[resourceCount] = &srcRef.ShaderResources[j];
@@ -122,17 +122,17 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 		}
 
 		//Loop through all shader variables (constant/uniform buffer members)
-		for(uint32_t j = 0; j < srcRef.Variables.size(); ++j)
+		for(std::size_t j = 0; j < srcRef.Variables.size(); ++j)
 		{
 			bool unique = true;
 
 			//Go through all already added shader variables to see if this shader
 			//variable was already added from a different shader stage.
 			//If we find a duplicate shader variable, we don't add it.
-			for(uint32_t k = 0; k < variableCount; ++k)
+			for(std::size_t k = 0; k < variableCount; ++k)
 			{
 				unique = !ShaderVariableCmp(srcRef.Variables[j], *uniqueVariable[k]);
-				if (unique == false)
+				if (!unique)
 					break;
 			}
 
@@ -151,7 +151,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	{
 		resources.resize(resourceCount);
 
-		for(uint32_t i = 0; i < resourceCount; ++i)
+		for(std::size_t i = 0; i < resourceCount; ++i)
 		{
 			resources[i] = *uniqueResources[i];
 			resources[i].UsedStages = shaderUsage[i];
@@ -163,12 +163,12 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	{
 		variables.resize(variableCount);
 
-		for(uint32_t i = 0; i < variableCount; ++i)
+		for(std::size_t i = 0; i < variableCount; ++i)
 		{
 			variables[i] = *uniqueVariable[i];
 			ShaderResource* parentResource = uniqueVariableParent[i];
 			//Look for parent
-			for(uint32_t j = 0; j < resourceCount; ++j)
+			for(std::size_t j = 0; j < resourceCount; ++j)
 			{
 				if(ShaderResourceCmp(resources[j], *parentResource))
 				{

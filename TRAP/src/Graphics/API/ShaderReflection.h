@@ -25,11 +25,10 @@ namespace TRAP::Graphics::API::ShaderReflection
 	struct VertexInput
 	{
 		//The size of the attribute
-		uint32_t Size;
+		uint64_t Size;
 
 		//Resource name
 		std::string Name;
-		uint32_t NameSize;
 	};
 
 	struct ShaderResource
@@ -45,7 +44,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 
 		//The size of the resource.
 		//This will be the DescriptorInfo array size for textures
-		uint32_t Size{};
+		uint64_t Size{};
 
 		//What stages use this resource
 		RendererAPI::ShaderStage UsedStages;
@@ -66,7 +65,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		uint32_t Offset{};
 
 		//The size of the Variable.
-		uint32_t Size{};
+		uint64_t Size{};
 
 		//Variable name
 		std::string Name;

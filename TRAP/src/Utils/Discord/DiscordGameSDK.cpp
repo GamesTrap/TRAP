@@ -6,7 +6,9 @@
 #include "Core/Base.h"
 
 #ifdef USE_DISCORD_GAME_SDK
+
 #include <discord.h>
+
 discord::Core* core{};
 discord::Result lastRes = discord::Result::Ok;
 

@@ -580,9 +580,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		//Required: Check if PhysicalDevice supports Presenting
 		VkBool32 foundPresentSupport = false;
-		for(uint32_t i = 0; i < queueFamilyProperties.size(); i++)
+		for(std::size_t i = 0; i < queueFamilyProperties.size(); i++)
 		{
-			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, surface, &foundPresentSupport));
+			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, static_cast<uint32_t>(i), surface, &foundPresentSupport));
 			if (foundPresentSupport)
 				break;
 		}

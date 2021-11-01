@@ -66,7 +66,7 @@ TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateC
 
 void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(CommandBuffer* cmdBuffer)
 {
-	for(uint32_t i = 0; i < m_commandBuffers.size(); i++)
+	for(std::size_t i = 0; i < m_commandBuffers.size(); i++)
 	{
 		if(m_commandBuffers[i].get() != cmdBuffer)
 			continue;

@@ -79,7 +79,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 
 		//The size of the resource.
 		//This will be the descriptor array size for textures
-		uint32_t Size;
+		uint64_t Size;
 
 		//The declared name (OpName) of the resource.
 		//For Buffer blocks, the name actually reflects the externally
@@ -105,7 +105,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		uint32_t Offset;
 
 		//The size of the Variable.
-		uint32_t Size;
+		uint64_t Size;
 
 		//Variable name
 		std::string Name;

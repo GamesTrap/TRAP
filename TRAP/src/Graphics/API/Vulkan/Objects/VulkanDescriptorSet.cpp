@@ -125,7 +125,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		rayTracingWritesKHR.resize(rootSignature->GetVkRayTracingDescriptorCounts()[m_set]);
 	}
 
-	for(uint32_t i = 0; i < params.size(); ++i)
+	for(std::size_t i = 0; i < params.size(); ++i)
 	{
 		const RendererAPI::DescriptorData& param = params[i];
 		uint32_t paramIndex = param.Index;

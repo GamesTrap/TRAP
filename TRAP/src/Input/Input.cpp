@@ -803,7 +803,7 @@ void TRAP::Input::InitControllerMappings()
 {
 	s_mappings.resize(Embed::ControllerMappings.size());
 
-	for(uint32_t i = 0; i < Embed::ControllerMappings.size(); ++i)
+	for(std::size_t i = 0; i < Embed::ControllerMappings.size(); ++i)
 		ParseMapping(s_mappings[i], Embed::ControllerMappings[i]);
 }
 

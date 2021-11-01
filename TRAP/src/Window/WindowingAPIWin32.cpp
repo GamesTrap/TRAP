@@ -244,7 +244,6 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
 	TRAP::Application::Shutdown();
 	exit(-1);
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

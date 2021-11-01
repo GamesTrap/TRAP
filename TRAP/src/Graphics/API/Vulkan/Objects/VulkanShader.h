@@ -58,7 +58,7 @@ namespace TRAP::Graphics::API
 		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
 		               uint64_t size, uint64_t offset, Window* window);
 
-		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint32_t size = 1);
+		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint64_t size = 1);
 
 		TRAP::Ref<VulkanDevice> m_device;
 

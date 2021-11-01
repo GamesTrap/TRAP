@@ -109,13 +109,13 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 			                        static_cast<uint32_t>(m_quadVerticesIndexed.size()) * sizeof(float));
 			m_indexBuffer->SetData(m_quadIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) *
 			                       sizeof(uint16_t));
-			const TRAP::Graphics::VertexBufferLayout layout =
+			const TRAP::Graphics::VertexBufferLayout layoutUV =
 			{
 				{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
 				{TRAP::Graphics::ShaderDataType::Float3, "Color"},
 				{TRAP::Graphics::ShaderDataType::Float2, "UV"}
 			};
-			m_vertexBuffer->SetLayout(layout);
+			m_vertexBuffer->SetLayout(layoutUV);
 		}
 	}
 
@@ -128,7 +128,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	{
 		if(m_colorTimer.Elapsed() > 2.5f)
 		{
-			for(uint32_t i = 0; i < static_cast<uint32_t>(m_colorData.Color.Length()); ++i)
+			for(int32_t i = 0; i < m_colorData.Color.Length(); ++i)
 				m_colorData.Color[i] = TRAP::Utils::Random::Get(0.0f, 1.0f);
 
 			m_colorTimer.Reset();
