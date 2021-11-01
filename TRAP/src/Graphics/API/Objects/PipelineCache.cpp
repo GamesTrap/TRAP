@@ -46,7 +46,7 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc{};
+		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc;
 		cacheDesc.Flags = desc.Flags;
 		cacheDesc.Data = TRAP::VFS::ReadFile(desc.VirtualOrPhysicalPath, true);
 

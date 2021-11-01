@@ -32,7 +32,7 @@ class OrthographicCameraController
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		OrthographicCameraController& operator=(const OrthographicCameraController&) = default;
+		OrthographicCameraController& operator=(const OrthographicCameraController&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>
@@ -40,7 +40,7 @@ class OrthographicCameraController
 		/// <summary>
 		/// Default Move Assignment Operator.
 		/// </summary>
-		OrthographicCameraController& operator=(OrthographicCameraController&&) = default;
+		OrthographicCameraController& operator=(OrthographicCameraController&&) = delete;
 
 		void OnUpdate(const Utils::TimeStep& deltaTime);
 		void OnEvent(Events::Event& e);

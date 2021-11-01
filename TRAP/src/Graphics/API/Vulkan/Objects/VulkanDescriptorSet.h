@@ -10,7 +10,7 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:
-		~VulkanDescriptorSet();
+		~VulkanDescriptorSet() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

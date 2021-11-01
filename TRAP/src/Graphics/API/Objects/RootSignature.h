@@ -14,11 +14,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
-		RootSignature(const RootSignature&) = default;
+		RootSignature(const RootSignature&) = delete;
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		RootSignature& operator=(const RootSignature&) = default;
+		RootSignature& operator=(const RootSignature&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>

@@ -22,7 +22,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MouseMoveEvent() = default;
+		~MouseMoveEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -109,7 +109,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MouseScrollEvent() = default;
+		~MouseScrollEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -189,7 +189,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Virtual Default Destructor.
 		/// </summary>
-		virtual ~MouseButtonEvent() = default;
+		~MouseButtonEvent() override = default;
 
 		/// <summary>
 		/// Retrieve the affected mouse button.
@@ -251,7 +251,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MouseButtonPressEvent() = default;
+		~MouseButtonPressEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -316,7 +316,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MouseButtonReleaseEvent() = default;
+		~MouseButtonReleaseEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -380,7 +380,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MouseEnterEvent() = default;
+		~MouseEnterEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -443,7 +443,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MouseLeaveEvent() = default;
+		~MouseLeaveEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>

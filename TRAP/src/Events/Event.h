@@ -129,7 +129,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		EventDispatcher& operator=(const EventDispatcher&) = default;
+		EventDispatcher& operator=(const EventDispatcher&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>
@@ -137,7 +137,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Move Assignment Operator.
 		/// </summary>
-		EventDispatcher& operator=(EventDispatcher&&) = default;
+		EventDispatcher& operator=(EventDispatcher&&) = delete;
 
 		/// <summary>
 		/// Dispatch a specific Event to a function.

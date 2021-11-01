@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc);
-		~VulkanPipelineCache();
+		~VulkanPipelineCache() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

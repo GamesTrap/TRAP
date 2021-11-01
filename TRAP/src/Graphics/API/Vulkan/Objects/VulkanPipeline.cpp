@@ -138,7 +138,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 		std::array<VkPipelineShaderStageCreateInfo, 5> stages{};
 		for(std::size_t i = 0; i < stages.size(); ++i)
 		{
-			const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
+			const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(static_cast<uint32_t>(i)));
 			if (stageMask == (shaderProgram->GetShaderStages() & stageMask))
 			{
 				stages[stageCount].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -319,7 +319,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 		};
 		VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 
-		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(stageCount, stages.data(),
+		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(static_cast<uint32_t>(stageCount), stages.data(),
 																					vi, ia, vs, rs, ms, ds, cb, dy,
 																					dynamic_cast<VulkanRootSignature*>(graphicsDesc.RootSignature.get())->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()

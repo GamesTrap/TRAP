@@ -176,7 +176,7 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
 
-	return static_cast<uint64_t>(allocInfo.offset);
+	return allocInfo.offset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

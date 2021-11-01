@@ -15,7 +15,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Virtual Default Destructor.
 		/// </summary>
-		virtual ~MonitorEvent() = default;
+		~MonitorEvent() override = default;
 
 		/// <summary>
 		/// Retrieve the affected monitor.
@@ -69,7 +69,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MonitorConnectEvent() = default;
+		~MonitorConnectEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -124,7 +124,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~MonitorDisconnectEvent() = default;
+		~MonitorDisconnectEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>

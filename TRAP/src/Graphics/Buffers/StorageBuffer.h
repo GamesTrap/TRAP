@@ -17,7 +17,7 @@ namespace TRAP::Graphics
 	class StorageBuffer
 	{
 	protected:
-		StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		explicit StorageBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
 		StorageBuffer(const StorageBuffer&) = default;
 		StorageBuffer& operator=(const StorageBuffer&) = default;
 		StorageBuffer(StorageBuffer&&) = default;
@@ -32,7 +32,7 @@ namespace TRAP::Graphics
 
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
 		template<typename T>
-		void GetData(const T* data, uint64_t size, uint64_t offset = 0,
+		void GetData(const T* data, uint64_t size, const uint64_t offset = 0,
 		             Window* window = nullptr)
 		{
 			TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
@@ -41,9 +41,9 @@ namespace TRAP::Graphics
 				window = TRAP::Application::GetWindow().get();
 
 			RendererAPI::BufferUpdateDesc desc{};
-			uint32_t imageIndex = GetUpdateFrequency() ==
-			                      RendererAPI::DescriptorUpdateFrequency::Static ?
-			                      0 : RendererAPI::GetCurrentImageIndex(window);
+			const uint32_t imageIndex = GetUpdateFrequency() ==
+			                            RendererAPI::DescriptorUpdateFrequency::Static ?
+				                            0 : RendererAPI::GetCurrentImageIndex(window);
 			desc.Buffer = m_storageBuffers[imageIndex];
 			desc.DstOffset = offset;
 			RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);

@@ -6,7 +6,7 @@
 
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string& appName)
 {
-	VkApplicationInfo info{};
+	VkApplicationInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	info.pNext = nullptr;
@@ -25,7 +25,7 @@ VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const 
 	                                                                      const std::vector<const char*>& instanceLayers,
 	                                                                      const std::vector<const char*>& instanceExtensions)
 {
-	VkInstanceCreateInfo info{};
+	VkInstanceCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -43,7 +43,7 @@ VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const 
 
 VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback)
 {
-	VkDebugUtilsMessengerCreateInfoEXT info{};
+	VkDebugUtilsMessengerCreateInfoEXT info;
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	info.pNext = nullptr;
@@ -66,7 +66,7 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 	                                                                                     const uint64_t handle,
 	                                                                                     const std::string& name)
 {
-	VkDebugUtilsObjectNameInfoEXT info{};
+	VkDebugUtilsObjectNameInfoEXT info;
 
 	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
 	info.pNext = nullptr;
@@ -100,7 +100,7 @@ VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void
                                                                       const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
 																	  const std::vector<const char*>& deviceExtensions)
 {
-	VkDeviceCreateInfo info{};
+	VkDeviceCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	info.pNext = pNext;
@@ -145,7 +145,7 @@ VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(
 VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
                                                                                       const uint32_t numDescriptorSets)
 {
-	VkDescriptorPoolCreateInfo info{};
+	VkDescriptorPoolCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	info.pNext = nullptr;
@@ -162,7 +162,7 @@ VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreat
 VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
 	                                                                                    const VkDescriptorSetLayout& descriptorLayout)
 {
-	VkDescriptorSetAllocateInfo info{};
+	VkDescriptorSetAllocateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	info.pNext = nullptr;
@@ -177,7 +177,7 @@ VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAlloc
 
 VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings)
 {
-	VkDescriptorSetLayoutCreateInfo info{};
+	VkDescriptorSetLayoutCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	info.pNext = nullptr;
@@ -197,7 +197,7 @@ VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::Descripto
 	                                                                                                      VkPipelineLayout pipelineLayout,
 	                                                                                                      const uint32_t setIndex)
 {
-	VkDescriptorUpdateTemplateCreateInfo info{};
+	VkDescriptorUpdateTemplateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -217,7 +217,7 @@ VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::Descripto
 
 VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo()
 {
-	VkFenceCreateInfo info{};
+	VkFenceCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -230,7 +230,7 @@ VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo()
 
 VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo()
 {
-	VkSemaphoreCreateInfo info{};
+	VkSemaphoreCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -250,7 +250,7 @@ VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(
 	                                                                            const VkImageLayout layout,
 	                                                                            const VkImageLayout finalLayout)
 {
-	VkAttachmentDescription desc{};
+	VkAttachmentDescription desc;
 
 	desc.flags = 0;
 	desc.format = format;
@@ -272,7 +272,7 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 	                                                                      const std::vector<VkAttachmentReference>& colorAttachments,
 	                                                                      VkAttachmentReference& depthStencilAttachment)
 {
-	VkSubpassDescription subpass{};
+	VkSubpassDescription subpass;
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
@@ -294,7 +294,7 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 	                                                                      const std::vector<VkAttachmentReference>& inputAttachments,
 	                                                                      const std::vector<VkAttachmentReference>& colorAttachments)
 {
-	VkSubpassDescription subpass{};
+	VkSubpassDescription subpass;
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
@@ -315,7 +315,7 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
 	                                                                          const VkSubpassDescription& subpassDescription)
 {
-	VkRenderPassCreateInfo info{};
+	VkRenderPassCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	info.pNext = nullptr;
@@ -334,7 +334,7 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 
 VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions)
 {
-	VkRenderPassCreateInfo info{};
+	VkRenderPassCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	info.pNext = nullptr;
@@ -356,7 +356,7 @@ VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRe
 	                                                                        const VkRect2D renderArea,
 	                                                                        const std::vector<VkClearValue>& colorValues)
 {
-	VkRenderPassBeginInfo info{};
+	VkRenderPassBeginInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	info.pNext = nullptr;
@@ -377,7 +377,7 @@ VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(
 	                                                                            const uint32_t height,
 	                                                                            const uint32_t layerCount)
 {
-	VkFramebufferCreateInfo info{};
+	VkFramebufferCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	info.pNext = nullptr;
@@ -398,7 +398,7 @@ VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(Vk
 	                                                                          const uint64_t offset,
 	                                                                          const uint64_t range)
 {
-	VkBufferViewCreateInfo info{};
+	VkBufferViewCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
 	info.pNext = nullptr;
@@ -419,7 +419,7 @@ VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkIm
 																			const uint32_t levelCount,
 	                                                                        const uint32_t layerCount)
 {
-	VkImageViewCreateInfo info{};
+	VkImageViewCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	info.pNext = nullptr;
@@ -451,7 +451,7 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 																	const VkImageTiling tiling,
 																	const VkImageUsageFlags usage)
 {
-	VkImageCreateInfo info{};
+	VkImageCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -479,7 +479,7 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint64_t allocationSize,
                                                                       const VkBufferUsageFlags usageFlags)
 {
-	VkBufferCreateInfo info{};
+	VkBufferCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	info.pNext = nullptr;
@@ -497,7 +497,7 @@ VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint
 
 VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex)
 {
-	VkCommandPoolCreateInfo info{};
+	VkCommandPoolCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	info.pNext = nullptr;
@@ -512,7 +512,7 @@ VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(
 VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(VkCommandPool commandPool,
                                                                                         const bool secondary)
 {
-	VkCommandBufferAllocateInfo info{};
+	VkCommandBufferAllocateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	info.pNext = nullptr;
@@ -527,7 +527,7 @@ VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAlloc
 
 VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo()
 {
-	VkCommandBufferBeginInfo info{};
+	VkCommandBufferBeginInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	info.pNext = nullptr;
@@ -549,7 +549,7 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 	                                                                    const float maxAnisotropy,
 	                                                                    const VkCompareOp compareOp)
 {
-	VkSamplerCreateInfo info{};
+	VkSamplerCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	info.pNext = nullptr;
@@ -580,7 +580,7 @@ VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreat
 	                                                                                  const uint32_t pushConstantRangeCount,
 	                                                                                  VkPushConstantRange* pushConstants)
 {
-	VkPipelineLayoutCreateInfo info{};
+	VkPipelineLayoutCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	info.pNext = nullptr;
@@ -645,7 +645,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
 	                                                                                const VkPipelineCacheCreateFlags flags)
 {
-	VkPipelineCacheCreateInfo info{};
+	VkPipelineCacheCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -662,7 +662,7 @@ VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShader
 	                                                                                            VkShaderModule module,
 	                                                                                            const char* name)
 {
-	VkPipelineShaderStageCreateInfo info{};
+	VkPipelineShaderStageCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -682,7 +682,7 @@ VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineV
 	                                                                                                      const uint32_t inputAttributeCount,
 	                                                                                                      VkVertexInputAttributeDescription* inputAttributes)
 {
-	VkPipelineVertexInputStateCreateInfo info{};
+	VkPipelineVertexInputStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -700,7 +700,7 @@ VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineV
 VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(const VkPrimitiveTopology topology,
                                                                                                               const bool primitiveRestart)
 {
-	VkPipelineInputAssemblyStateCreateInfo info{};
+	VkPipelineInputAssemblyStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -715,7 +715,7 @@ VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::Pipelin
 
 VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints)
 {
-	VkPipelineTessellationStateCreateInfo info{};
+	VkPipelineTessellationStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -729,7 +729,7 @@ VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::Pipeline
 
 VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo()
 {
-	VkPipelineViewportStateCreateInfo info{};
+	VkPipelineViewportStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -747,7 +747,7 @@ VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineView
 VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
 	                                                                                                      const bool sampleShading)
 {
-	VkPipelineMultisampleStateCreateInfo info{};
+	VkPipelineMultisampleStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -766,7 +766,7 @@ VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineM
 
 VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates)
 {
-	VkPipelineDynamicStateCreateInfo info{};
+	VkPipelineDynamicStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -782,7 +782,7 @@ VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynam
 VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
 	                                                                                    VkPipelineLayout layout)
 {
-	VkComputePipelineCreateInfo info{};
+	VkComputePipelineCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -810,7 +810,7 @@ VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineC
 	                                                                                      const VkPipelineLayout layout,
 	                                                                                      VkRenderPass renderPass)
 {
-	VkGraphicsPipelineCreateInfo info{};
+	VkGraphicsPipelineCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	info.pNext = nullptr;
@@ -844,7 +844,7 @@ VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSe
                                                           const std::vector<VkCommandBuffer>& cmds,
                                                           const std::vector<VkSemaphore>& signalSemaphore)
 {
-	VkSubmitInfo info{};
+	VkSubmitInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	info.pNext = nullptr;
@@ -864,7 +864,7 @@ VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSe
 VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count,
                                                                             const VkQueryType queryType)
 {
-	VkQueryPoolCreateInfo info{};
+	VkQueryPoolCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
 	info.pNext = nullptr;
@@ -889,7 +889,7 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 	                                                                              const VkCompositeAlphaFlagBitsKHR compositeAlpha,
 	                                                                              const VkPresentModeKHR presentMode)
 {
-	VkSwapchainCreateInfoKHR info{};
+	VkSwapchainCreateInfoKHR info;
 
 	info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	info.pNext = nullptr;
@@ -919,7 +919,7 @@ VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector
                                                                const VkSwapchainKHR& swapChain,
 															   uint32_t& presentIndex)
 {
-	VkPresentInfoKHR info{};
+	VkPresentInfoKHR info;
 
 	info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	info.pNext = nullptr;
@@ -938,7 +938,7 @@ VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector
 VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const VkDeviceSize allocSize,
                                                                           const uint32_t memoryTypeIndex)
 {
-	VkMemoryAllocateInfo info{};
+	VkMemoryAllocateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	info.pNext = nullptr;

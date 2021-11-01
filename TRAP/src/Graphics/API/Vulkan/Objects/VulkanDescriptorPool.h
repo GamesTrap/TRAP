@@ -17,24 +17,24 @@ namespace TRAP::Graphics::API
 
 	public:
 		explicit VulkanDescriptorPool(uint32_t numDescriptorSets);
-		~VulkanDescriptorPool();
+		~VulkanDescriptorPool() override;
 
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
-		VulkanDescriptorPool(const VulkanDescriptorPool&) = default;
+		VulkanDescriptorPool(const VulkanDescriptorPool&) = delete;
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		VulkanDescriptorPool& operator=(const VulkanDescriptorPool&) = default;
+		VulkanDescriptorPool& operator=(const VulkanDescriptorPool&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>
-		VulkanDescriptorPool(VulkanDescriptorPool&&) = default;
+		VulkanDescriptorPool(VulkanDescriptorPool&&) = delete;
 		/// <summary>
 		/// Default Move Assignment Operator.
 		/// </summary>
-		VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = default;
+		VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = delete;
 
 		void Reset() override;
 

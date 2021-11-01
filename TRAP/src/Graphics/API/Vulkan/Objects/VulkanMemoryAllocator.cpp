@@ -18,7 +18,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
 #endif
 
-	VmaVulkanFunctions vulkanFunctions = {};
+	VmaVulkanFunctions vulkanFunctions;
 
 	vulkanFunctions.vkGetPhysicalDeviceProperties = vkGetPhysicalDeviceProperties;
 	vulkanFunctions.vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties;

@@ -340,7 +340,7 @@ namespace TRAP
 		Scope<INTERNAL::WindowingAPI::InternalWindow> m_window;
 		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
 		//Stores the underlying video mode being used by the OS for every monitor
-		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
+		static std::unordered_map<std::size_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
 
 		/// <summary>
 		/// Used when switched back from Fullscreen to Windowed mode.

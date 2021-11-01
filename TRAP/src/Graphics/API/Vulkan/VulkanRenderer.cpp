@@ -733,9 +733,9 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(uint32_t vertexCount, uint32_t instanceCount,
-                                                        uint32_t firstVertex, uint32_t firstInstance,
-														Window* window)
+void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCount, const uint32_t instanceCount,
+                                                        const uint32_t firstVertex, const uint32_t firstInstance,
+                                                        Window* window)
 {
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
@@ -748,9 +748,9 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(uint32_t vertexCount, ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-                                                               uint32_t firstIndex, uint32_t firstInstance,
-						                                       uint32_t firstVertex, Window* window)
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
+                                                               const uint32_t firstIndex, const uint32_t firstInstance,
+						                                       const uint32_t firstVertex, Window* window)
 {
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
@@ -971,7 +971,7 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 
 	for (const auto& [score, devUUID] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance))
 	{
-		const VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
+		VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
 		VkPhysicalDeviceProperties props;
 		vkGetPhysicalDeviceProperties(dev, &props);
 
@@ -1248,7 +1248,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
+void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources() const
 {
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Creating DefaultResources");
@@ -1426,13 +1426,13 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(TRAP::Ref<TRAP::Graphics::TextureBase> texture,
-                                                                RendererAPI::ResourceState startState)
+                                                                const RendererAPI::ResourceState startState)
 {
 	std::lock_guard<std::mutex> lock(s_NullDescriptors->InitialTransitionMutex);
 	VulkanCommandBuffer* cmd = s_NullDescriptors->InitialTransitionCmd;
 	s_NullDescriptors->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
-	TextureBarrier barrier = {texture, RendererAPI::ResourceState::Undefined, startState};
+	const TextureBarrier barrier = {std::move(texture), RendererAPI::ResourceState::Undefined, startState};
 	cmd->ResourceBarrier({}, {barrier}, {});
 	cmd->End();
 	RendererAPI::QueueSubmitDesc submitDesc{};
@@ -1519,8 +1519,8 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
 #endif
-	TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
 	{
+		TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
 		//Lock while inserting new Pipeline
 		std::lock_guard<std::mutex> lock(s_pipelineMutex);
 		s_pipelines.insert({ hash, std::move(pipeline) });

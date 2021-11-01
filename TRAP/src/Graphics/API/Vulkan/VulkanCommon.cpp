@@ -888,7 +888,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 	imagePlaneMemReqInfo.pNext = nullptr;
 
 	VkImageMemoryRequirementsInfo2 imagePlaneMemReqInfo2;
-	imagePlaneMemReqInfo.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2;
+	imagePlaneMemReqInfo2.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2;
 	imagePlaneMemReqInfo2.pNext = &imagePlaneMemReqInfo;
 	imagePlaneMemReqInfo2.image = image;
 
@@ -921,7 +921,7 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapch
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(VkFormat format)
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(const VkFormat format)
 {
 	switch(format)
 	{

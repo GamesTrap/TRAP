@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanFence();
-		~VulkanFence();
+		~VulkanFence() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc);
-		~VulkanRenderTarget();
+		~VulkanRenderTarget() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

@@ -31,7 +31,7 @@ std::vector<TRAP::Window*> TRAP::Window::s_fullscreenWindows{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<uint32_t, TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::Window::s_baseVideoModes{};
+std::unordered_map<std::size_t, TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::Window::s_baseVideoModes{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

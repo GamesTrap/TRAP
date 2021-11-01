@@ -248,7 +248,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 		std::vector<float> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
 		for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 		{
-			uint32_t offset = y * img->GetWidth();
+			const uint32_t offset = y * img->GetWidth();
 
 			for(uint32_t x = 0; x < img->GetWidth(); ++x)
 			{
@@ -266,7 +266,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 		std::vector<uint16_t> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
 		for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 		{
-			uint32_t offset = y * img->GetWidth();
+			const uint32_t offset = y * img->GetWidth();
 
 			for(uint32_t x = 0; x < img->GetWidth(); ++x)
 			{
@@ -283,7 +283,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 	std::vector<uint8_t> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
 	for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 	{
-		uint32_t offset = y * img->GetWidth();
+		const uint32_t offset = y * img->GetWidth();
 
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
@@ -314,7 +314,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 				uint32_t J = img->GetWidth() - 1 - x;
 				while((x * img->GetHeight() + y) > (I * img->GetWidth() + J))
 				{
-					uint32_t p = I * img->GetWidth() + J;
+					const uint32_t p = I * img->GetWidth() + J;
 					I = p % img->GetHeight();
 					J = img->GetWidth() - 1 - (p / img->GetHeight());
 				}
@@ -340,7 +340,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 				uint32_t J = img->GetWidth() - 1 - x;
 				while((x * img->GetHeight() + y) > (I * img->GetWidth() + J))
 				{
-					uint32_t p = I * img->GetWidth() + J;
+					const uint32_t p = I * img->GetWidth() + J;
 					I = p % img->GetHeight();
 					J = img->GetWidth() - 1 - (p / img->GetHeight());
 				}
@@ -365,7 +365,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 			uint32_t J = img->GetWidth() - 1 - x;
 			while((x * img->GetHeight() + y) > (I * img->GetWidth() + J))
 			{
-				uint32_t p = I * img->GetWidth() + J;
+				const uint32_t p = I * img->GetWidth() + J;
 				I = p % img->GetHeight();
 				J = img->GetWidth() - 1 - (p / img->GetHeight());
 			}

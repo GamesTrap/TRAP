@@ -324,7 +324,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	TRAP_ASSERT(signalSemaphore || fence);
 
 	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
-	VkResult res{};
+	VkResult res;
 
 	if(fence != nullptr)
 	{

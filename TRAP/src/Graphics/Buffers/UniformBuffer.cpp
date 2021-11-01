@@ -30,7 +30,6 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
-	: m_uniformBuffers(), m_tokens()
 {
 	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 	m_uniformBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
@@ -108,7 +107,7 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 
 uint64_t TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const uint64_t byteSize)
 {
-	uint64_t minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
+	const uint64_t minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 	uint64_t alignedSize = byteSize;
 
 	if(minUBOAlignment > 0)

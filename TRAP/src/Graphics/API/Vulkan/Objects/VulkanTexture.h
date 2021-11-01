@@ -15,7 +15,7 @@ namespace TRAP::Graphics::API
 	public:
 		VulkanTexture(TRAP::Ref<VulkanDevice> device, const RendererAPI::TextureDesc& desc,
 			          TRAP::Ref<VulkanMemoryAllocator> vma);
-		~VulkanTexture();
+		~VulkanTexture() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

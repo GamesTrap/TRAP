@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanSwapChain(RendererAPI::SwapChainDesc& desc);
-		~VulkanSwapChain();
+		~VulkanSwapChain() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

@@ -5,7 +5,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 	                       const spirv_cross::SmallVector<spirv_cross::Resource>& allResources,
 	                       const std::unordered_set<spirv_cross::VariableID>& usedResources,
 	                       std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& resources,
-	                       uint32_t& currentResource,
+	                       std::size_t& currentResource,
 	                       const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
 {
 	for(std::size_t i = 0; i < allResources.size(); ++i)
@@ -142,20 +142,20 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 	usedResources = compiler.Compiler->get_active_interface_variables();
 
 	//2. Count number of resources and allocate array
-	uint32_t resourceCount = 0;
+	std::size_t resourceCount = 0;
 
 	//Resources we want to reflect
-	resourceCount += static_cast<uint32_t>(allResources.stage_inputs.size()); //inputs
-	resourceCount += static_cast<uint32_t>(allResources.stage_outputs.size()); //outputs
-	resourceCount += static_cast<uint32_t>(allResources.uniform_buffers.size()); //const buffers
-	resourceCount += static_cast<uint32_t>(allResources.storage_buffers.size()); //buffers
-	resourceCount += static_cast<uint32_t>(allResources.separate_images.size()); //textures
-	resourceCount += static_cast<uint32_t>(allResources.storage_images.size()); //uav textures
-	resourceCount += static_cast<uint32_t>(allResources.separate_samplers.size()); //samplers
-	resourceCount += static_cast<uint32_t>(allResources.sampled_images.size()); //combined samplers
-	resourceCount += static_cast<uint32_t>(allResources.push_constant_buffers.size()); //push constants
-	resourceCount += static_cast<uint32_t>(allResources.subpass_inputs.size()); //input attachments
-	resourceCount += static_cast<uint32_t>(allResources.acceleration_structures.size()); //raytracing structures
+	resourceCount += allResources.stage_inputs.size(); //inputs
+	resourceCount += allResources.stage_outputs.size(); //outputs
+	resourceCount += allResources.uniform_buffers.size(); //const buffers
+	resourceCount += allResources.storage_buffers.size(); //buffers
+	resourceCount += allResources.separate_images.size(); //textures
+	resourceCount += allResources.storage_images.size(); //uav textures
+	resourceCount += allResources.separate_samplers.size(); //samplers
+	resourceCount += allResources.sampled_images.size(); //combined samplers
+	resourceCount += allResources.push_constant_buffers.size(); //push constants
+	resourceCount += allResources.subpass_inputs.size(); //input attachments
+	resourceCount += allResources.acceleration_structures.size(); //raytracing structures
 
 	//These we dont care about right
 	//subpass_inputs - we are not going to use this
@@ -163,7 +163,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 
 	//Allocate array for resources
 	std::vector<Resource> resources(resourceCount);
-	uint32_t currentResource = 0;
+	std::size_t currentResource = 0;
 
 	//3. Start by reflecting the shader inputs
 	for(std::size_t i = 0; i < allResources.stage_inputs.size(); ++i)
@@ -185,7 +185,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 
 		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
 		//bit width * vecsize = size
-		resource.Size = (type.width / 8) * type.vecsize;
+		resource.Size = static_cast<uint64_t>(type.width / 8) * type.vecsize;
 
 		resource.Name = input.name;
 	}
@@ -210,7 +210,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 
 		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
 		//bit width * vecsize = size
-		resource.Size = (type.width / 8) * type.vecsize;
+		resource.Size = (static_cast<uint64_t>(type.width / 8)) * type.vecsize;
 
 		resource.Name = input.name;
 	}
@@ -305,15 +305,15 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& comp
 			variable.SPIRVTypeID = type.member_types[j];
 
 			variable.ParentSPIRVCode = resource.SPIRVCode;
-			variable.ParentIndex = i;
+			variable.ParentIndex = static_cast<uint32_t>(i);
 
 			variable.IsUsed = false;
 
-			variable.Size = compiler.Compiler->get_declared_struct_member_size(type, j);
-			variable.Offset = compiler.Compiler->get_member_decoration(resource.SPIRVCode.BaseTypeID, j,
+			variable.Size = compiler.Compiler->get_declared_struct_member_size(type, static_cast<uint32_t>(j));
+			variable.Offset = compiler.Compiler->get_member_decoration(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j),
 																		spv::DecorationOffset);
 
-			variable.Name = compiler.Compiler->get_member_name(resource.SPIRVCode.BaseTypeID, j);
+			variable.Name = compiler.Compiler->get_member_name(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j));
 		}
 
 		spirv_cross::SmallVector<spirv_cross::BufferRange> range = compiler.Compiler->get_active_buffer_ranges(resource.SPIRVCode.ID);

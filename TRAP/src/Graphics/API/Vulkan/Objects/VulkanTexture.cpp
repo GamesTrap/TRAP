@@ -127,7 +127,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		VmaAllocationCreateInfo memReqs{};
 		if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory))
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
-		memReqs.usage = static_cast<VmaMemoryUsage>(VMA_MEMORY_USAGE_GPU_ONLY);
+		memReqs.usage = VMA_MEMORY_USAGE_GPU_ONLY;
 
 		VmaAllocationInfo allocInfo{};
 		if(isSinglePlane)
@@ -268,7 +268,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (!desc.Name.empty())
-		SetTextureName(desc.Name.c_str());
+		VulkanTexture::SetTextureName(desc.Name);
 #endif
 }
 

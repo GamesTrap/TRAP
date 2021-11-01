@@ -29,19 +29,19 @@ namespace TRAP::Graphics
 		DummyShader& operator=(DummyShader&&) = default;
 
 		void Use(Window* window = nullptr) override;
-		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture,
+		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
 		                Window* window = nullptr) override;
 		void UseTextures(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Texture*>& textures,
 						 Window* window = nullptr) override;
-		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler,
+		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
 		                Window* window = nullptr) override;
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
 						 Window* window = nullptr) override;
-		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* const uniformBuffer,
+		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
 		            uint64_t size, uint64_t offset, Window* window = nullptr) override;
-		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* const storageBuffer,
+		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* storageBuffer,
 		             uint64_t size, Window* window = nullptr) override;
 	};
 }

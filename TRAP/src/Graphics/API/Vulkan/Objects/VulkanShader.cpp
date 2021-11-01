@@ -238,7 +238,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture);
+	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture);
 
 	if(name.empty())
 	{
@@ -253,7 +253,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
@@ -270,8 +270,8 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture,
-	                                          textures.size());
+	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Texture,
+	                                                textures.size());
 
 	if(name.empty())
 	{
@@ -291,7 +291,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
@@ -307,7 +307,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler);
+	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler);
 
 	if(name.empty())
 	{
@@ -322,7 +322,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
@@ -339,8 +339,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 		window = TRAP::Application::GetWindow().get();
 
 	//OPTIMIZE Use index into root signature instead of name
-	std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
-	                                          samplers.size());
+	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
+	                                                samplers.size());
 
 	if(name.empty())
 	{
@@ -356,7 +356,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 		GetDescriptorSets()[set]->Update(0, params);
 	else
 	{
-		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
 }
@@ -372,8 +372,8 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 	if(!window)
 		window = TRAP::Application::GetWindow().get();
 
-	uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
-	                    0 : RendererAPI::GetCurrentImageIndex(window);
+	const uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+		                          0 : RendererAPI::GetCurrentImageIndex(window);
 
 	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size, offset, window);
 }
@@ -389,16 +389,17 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 	if(!window)
 		window = TRAP::Application::GetWindow().get();
 
-	uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
-	                     0 : RendererAPI::GetCurrentImageIndex(window);
+	const uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
+		                           0 : RendererAPI::GetCurrentImageIndex(window);
 
 	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size, 0, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
-                                                  uint64_t size, uint64_t offset, Window* window)
+void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
+												  TRAP::Graphics::Buffer* buffer, uint64_t size, uint64_t offset,
+												  Window* window)
 {
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding,
@@ -441,7 +442,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(uint32_t set, uint32_t binding
 	}
 	else
 	{
-		uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
+		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
 		params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer};
 		GetDescriptorSets()[set]->Update(imageIndex, params);
 	}
@@ -450,8 +451,8 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(uint32_t set, uint32_t binding
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
-																	  RendererAPI::DescriptorType type,
-																	  const uint64_t size)
+                                                                      const RendererAPI::DescriptorType type,
+																	  const uint64_t size) const
 {
 	for(const auto& resource : m_reflection->ShaderResources)
 	{

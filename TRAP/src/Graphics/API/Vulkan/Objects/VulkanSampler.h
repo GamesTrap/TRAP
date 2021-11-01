@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanSampler(const RendererAPI::SamplerDesc& desc);
-		~VulkanSampler();
+		~VulkanSampler() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

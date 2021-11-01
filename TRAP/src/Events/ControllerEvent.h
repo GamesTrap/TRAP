@@ -15,7 +15,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Virtual Default Destructor.
 		/// </summary>
-		virtual ~ControllerEvent() = default;
+		~ControllerEvent() override = default;
 
 		/// <summary>
 		/// Retrieve the affected Controller.
@@ -69,7 +69,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~ControllerConnectEvent() = default;
+		~ControllerConnectEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -124,7 +124,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~ControllerDisconnectEvent() = default;
+		~ControllerDisconnectEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>

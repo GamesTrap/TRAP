@@ -27,7 +27,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowResizeEvent() = default;
+		~WindowResizeEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -107,7 +107,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowMinimizeEvent() = default;
+		~WindowMinimizeEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -176,7 +176,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowMaximizeEvent() = default;
+		~WindowMaximizeEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -244,7 +244,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowRestoreEvent() = default;
+		~WindowRestoreEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -313,7 +313,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowCloseEvent() = default;
+		~WindowCloseEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -384,7 +384,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowMoveEvent() = default;
+		~WindowMoveEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -469,7 +469,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowFocusEvent() = default;
+		~WindowFocusEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -538,7 +538,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowLostFocusEvent() = default;
+		~WindowLostFocusEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -608,7 +608,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowDropEvent() = default;
+		~WindowDropEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -685,7 +685,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~WindowContentScaleEvent() = default;
+		~WindowContentScaleEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -773,7 +773,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~FrameBufferResizeEvent() = default;
+		~FrameBufferResizeEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>

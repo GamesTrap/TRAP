@@ -19,7 +19,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~AppTickEvent() = default;
+		~AppTickEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -73,7 +73,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~AppUpdateEvent() = default;
+		~AppUpdateEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -127,7 +127,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~AppRenderEvent() = default;
+		~AppRenderEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>

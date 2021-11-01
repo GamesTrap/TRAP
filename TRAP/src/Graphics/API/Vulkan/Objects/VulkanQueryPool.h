@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc);
-		~VulkanQueryPool();
+		~VulkanQueryPool() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

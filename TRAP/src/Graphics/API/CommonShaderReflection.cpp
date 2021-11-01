@@ -94,7 +94,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			fragmentStageIndex = i;
 
 		//Loop through all shader resources
-		for(std::size_t j = 0; j < srcRef.ShaderResources.size(); ++j)
+		for (auto& ShaderResource : srcRef.ShaderResources)
 		{
 			bool unique = true;
 
@@ -104,10 +104,10 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			//to the shader stage mask of that resource instead.
 			for(std::size_t k = 0; k < resourceCount; ++k)
 			{
-				unique = !ShaderResourceCmp(srcRef.ShaderResources[j], *uniqueResources[k]);
+				unique = !ShaderResourceCmp(ShaderResource, *uniqueResources[k]);
 				if(!unique)
 				{
-					shaderUsage[k] |= srcRef.ShaderResources[j].UsedStages;
+					shaderUsage[k] |= ShaderResource.UsedStages;
 					break;
 				}
 			}
@@ -115,8 +115,8 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			//If it's unique, we add it to the list of shader resources
 			if(unique)
 			{
-				shaderUsage[resourceCount] = srcRef.ShaderResources[j].UsedStages;
-				uniqueResources[resourceCount] = &srcRef.ShaderResources[j];
+				shaderUsage[resourceCount] = ShaderResource.UsedStages;
+				uniqueResources[resourceCount] = &ShaderResource;
 				resourceCount++;
 			}
 		}
@@ -172,7 +172,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 			{
 				if(ShaderResourceCmp(resources[j], *parentResource))
 				{
-					variables[i].ParentIndex = j;
+					variables[i].ParentIndex = static_cast<uint32_t>(j);
 					break;
 				}
 			}

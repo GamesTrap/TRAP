@@ -505,14 +505,14 @@ uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSp
 
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField)
 {
-	return static_cast<uint32_t>(x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1));
+	return x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField)
 {
-	return static_cast<uint32_t>(x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1));
+	return x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

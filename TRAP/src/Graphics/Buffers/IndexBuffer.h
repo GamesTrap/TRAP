@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 	class IndexBuffer
 	{
 	protected:
-		IndexBuffer(RendererAPI::IndexType indexType);
+		explicit IndexBuffer(RendererAPI::IndexType indexType);
 		IndexBuffer(const IndexBuffer&) = default;
 		IndexBuffer& operator=(const IndexBuffer&) = default;
 		IndexBuffer(IndexBuffer&&) = default;
@@ -54,13 +54,13 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(T* indices, const uint64_t size,
-                                                                                  const UpdateFrequency updateFrequency)
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(T* indices, const uint64_t size,
+                                                                           const UpdateFrequency updateFrequency)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
-	              "Trying to initialize IndexBuffer with wrong indice type!");
+	              "Trying to initialize IndexBuffer with wrong index type!");
 
-	RendererAPI::IndexType indexType;
+	RendererAPI::IndexType indexType = {};
 	if(indices)
 	{
 		if constexpr(std::is_same_v<T, uint16_t>)
@@ -97,11 +97,11 @@ inline TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Ini
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-inline void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64_t size,
-														 const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64_t size,
+                                                  const uint64_t offset)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
-	              "Trying to initialize IndexBuffer with wrong indice type!");
+	              "Trying to initialize IndexBuffer with wrong index type!");
 
 	TRAP_ASSERT(indices);
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());

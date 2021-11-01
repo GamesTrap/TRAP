@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanQueue(const RendererAPI::QueueDesc& desc);
-		~VulkanQueue();
+		~VulkanQueue() override;
 
 		/// <summary>
 		/// Default Copy Constructor.
@@ -21,7 +21,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		VulkanQueue& operator=(const VulkanQueue&) = default;
+		VulkanQueue& operator=(const VulkanQueue&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>
@@ -29,7 +29,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Default Move Assignment Operator.
 		/// </summary>
-		VulkanQueue& operator=(VulkanQueue&&) = default;
+		VulkanQueue& operator=(VulkanQueue&&) = delete;
 
 		VkQueue& GetVkQueue();
 		uint8_t GetQueueFamilyIndex() const;

@@ -29,7 +29,6 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
-	: m_storageBuffers(), m_tokens()
 {
 	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 	m_storageBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
@@ -107,7 +106,7 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 
 uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byteSize)
 {
-	uint64_t minSSBOAlignment = RendererAPI::GPUSettings.StorageBufferAlignment;
+	const uint64_t minSSBOAlignment = RendererAPI::GPUSettings.StorageBufferAlignment;
 	uint64_t alignedSize = byteSize;
 
 	if(minSSBOAlignment > 0)

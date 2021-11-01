@@ -106,7 +106,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 		(
 			desc.RootSignature
 		);
-	uint32_t updateFreq = desc.Set;
+	const uint32_t updateFreq = desc.Set;
 	const uint8_t dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[updateFreq];
 	const uint32_t maxSets = desc.MaxSets;
 	std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData{};
@@ -149,7 +149,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
+VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(const VkDescriptorSetLayout layout)
 {
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time

@@ -18,7 +18,7 @@ namespace TRAP::Graphics::API
 	class VulkanCommandBuffer final : public CommandBuffer
 	{
 	public:
-		~VulkanCommandBuffer();
+		~VulkanCommandBuffer() override;
 
 		/// <summary>
 		/// Default Copy Constructor.
@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) = default;
+		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>
@@ -35,7 +35,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Default Move Assignment Operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = default;
+		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = delete;
 
 		VkCommandBuffer& GetVkCommandBuffer();
 		RendererAPI::QueueType GetQueueType() const;

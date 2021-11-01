@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 	  m_activeRenderPass(VK_NULL_HANDLE),
 	  m_boundPipelineLayout(VK_NULL_HANDLE)
 {
-	m_queue = queue;
+	m_queue = std::move(queue);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -441,7 +441,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetViewport(const float x, const 
 	if (width == 0.0f || height == 0.0f)
 		return;
 
-	VkViewport viewport{};
+	VkViewport viewport;
 	viewport.x = x;
 	viewport.y = y + height;
 	viewport.width = width;
@@ -459,7 +459,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetScissor(const uint32_t x, cons
 {
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
-	VkRect2D rect{};
+	VkRect2D rect;
 	rect.offset.x = x;
 	rect.offset.y = y;
 	rect.extent.width = width;
@@ -608,7 +608,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 		copy.bufferOffset = subresourceDesc.SrcOffset;
 		copy.bufferRowLength = numBlocksWide * TRAP::Graphics::API::ImageFormatWidthOfBlock(fmt);
 		copy.bufferImageHeight = numBlocksHigh * TRAP::Graphics::API::ImageFormatHeightOfBlock(fmt);
-		copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlags>(texture->GetAspectMask());
+		copy.imageSubresource.aspectMask = texture->GetAspectMask();
 		copy.imageSubresource.mipLevel = subresourceDesc.MipLevel;
 		copy.imageSubresource.baseArrayLayer = subresourceDesc.ArrayLayer;
 		copy.imageSubresource.layerCount = 1;
@@ -930,8 +930,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
 													 const uint32_t height)
 {
-	VkClearRect rect{};
-	VkRect2D r{};
+	VkClearRect rect;
+	VkRect2D r;
 	r.offset.x = 0;
 	r.offset.y = 0;
 	r.extent.width = width;
@@ -940,10 +940,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 	rect.baseArrayLayer = 0;
 	rect.layerCount = 1;
 
-	VkClearAttachment attachment{};
+	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.color = { color.x, color.y, color.z, color.w };
+	attachment.clearValue.color = {{color.x, color.y, color.z, color.w}};
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }
@@ -953,8 +953,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t stencil,
  												     const uint32_t width, const uint32_t height)
 {
-	VkClearRect rect{};
-	VkRect2D r{};
+	VkClearRect rect;
+	VkRect2D r;
 	r.offset.x = 0;
 	r.offset.y = 0;
 	r.extent.width = width;
@@ -963,7 +963,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 	rect.baseArrayLayer = 0;
 	rect.layerCount = 1;
 
-	VkClearAttachment attachment{};
+	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 	attachment.colorAttachment = 0;
 	attachment.clearValue.depthStencil = { depth, stencil };
@@ -975,8 +975,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t width, const uint32_t height)
 {
-	VkClearRect rect{};
-	VkRect2D r{};
+	VkClearRect rect;
+	VkRect2D r;
 	r.offset.x = 0;
 	r.offset.y = 0;
 	r.extent.width = width;
@@ -985,7 +985,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 	rect.baseArrayLayer = 0;
 	rect.layerCount = 1;
 
-	VkClearAttachment attachment{};
+	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 	attachment.colorAttachment = 0;
 	attachment.clearValue.depthStencil = { depth, 0 };
@@ -998,8 +998,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, const uint32_t width,
                                                      const uint32_t height)
 {
-	VkClearRect rect{};
-	VkRect2D r{};
+	VkClearRect rect;
+	VkRect2D r;
 	r.offset.x = 0;
 	r.offset.y = 0;
 	r.extent.width = width;
@@ -1008,7 +1008,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 	rect.baseArrayLayer = 0;
 	rect.layerCount = 1;
 
-	VkClearAttachment attachment{};
+	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 	attachment.colorAttachment = 0;
 	attachment.clearValue.depthStencil = { 1.0f, stencil };

@@ -104,8 +104,8 @@ bool TRAP::Graphics::TextureBase::ValidateLimits(const RendererAPI::TextureDesc&
 		TRAP_ASSERT(false);
 		return false;
 	}
-    bool cubeMapRequired = (desc.Descriptors & RendererAPI::DescriptorType::TextureCube) ==
-	                        RendererAPI::DescriptorType::TextureCube;
+    const bool cubeMapRequired = (desc.Descriptors & RendererAPI::DescriptorType::TextureCube) ==
+	                              RendererAPI::DescriptorType::TextureCube;
     if(!cubeMapRequired)
     {
         if(desc.Width > RendererAPI::GPUSettings.MaxImageDimension2D)

@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanSemaphore();
-		~VulkanSemaphore();
+		~VulkanSemaphore() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

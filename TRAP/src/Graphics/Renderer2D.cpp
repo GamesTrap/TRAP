@@ -117,7 +117,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data.WhiteTexture = Texture2D::CreateFromImage("Renderer2DWhite", whiteImage);
 	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
 
-	SamplerDesc samplerDesc{};
+	const SamplerDesc samplerDesc{};
 	s_data.TextureSampler = Sampler::Create(samplerDesc);
 
 	s_data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };

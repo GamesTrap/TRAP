@@ -291,12 +291,12 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 
 	for(uint32_t i = ImageCount; i > 0; i--)
 	{
-		RenderCompleteSemaphores[i - 1].reset();
-		RenderCompleteFences[i - 1].reset();
+		RenderCompleteSemaphores[i - static_cast<std::size_t>(1)].reset();
+		RenderCompleteFences[i - static_cast<std::size_t>(1)].reset();
 
-		GraphicCommandPools[i - 1]->FreeCommandBuffer(GraphicCommandBuffers[i - 1]);
-		GraphicCommandBuffers[i - 1] = nullptr;
-		GraphicCommandPools[i - 1].reset();
+		GraphicCommandPools[i - static_cast<std::size_t>(1)]->FreeCommandBuffer(GraphicCommandBuffers[i - 1]);
+		GraphicCommandBuffers[i - static_cast<std::size_t>(1)] = nullptr;
+		GraphicCommandPools[i - static_cast<std::size_t>(1)].reset();
 	}
 }
 

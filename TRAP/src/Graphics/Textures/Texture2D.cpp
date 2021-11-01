@@ -49,7 +49,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 {
 	TP_PROFILE_FUNCTION();
 
-	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
+	const std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 
 	switch (RendererAPI::GetRenderAPI())
 	{
@@ -96,7 +96,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 	{
 	case RenderAPI::Vulkan:
 	{
-		API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
+		const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
 
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
@@ -130,7 +130,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 			for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 			{
 				memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-				       reinterpret_cast<const uint8_t*>(useImg->GetPixelData()) + r * updateDesc.SrcRowStride,
+				       static_cast<const uint8_t*>(useImg->GetPixelData()) + r * updateDesc.SrcRowStride,
 					   updateDesc.SrcRowStride);
 			}
 		}
@@ -150,9 +150,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height,
-	                                                                          uint32_t bitsPerPixel,
-																			  Image::ColorFormat format)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(const uint32_t width, const uint32_t height,
+																			  const uint32_t bitsPerPixel,
+																			  const Image::ColorFormat format)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -160,7 +160,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 	{
 	case RenderAPI::Vulkan:
 	{
-		API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
+		const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
 
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
@@ -232,7 +232,7 @@ void TRAP::Graphics::Texture2D::Update(const void* data, const uint32_t sizeInBy
 
 	if(arrayLayer >= 6)
 	{
-		TP_ERROR(Log::Texture2DPrefix, "Update: Invalid Arraylayer provided!");
+		TP_ERROR(Log::Texture2DPrefix, "Update: Invalid Array layer provided!");
 		return;
 	}
 	if(mipLevel >= m_texture->GetMipLevels())
@@ -259,7 +259,7 @@ void TRAP::Graphics::Texture2D::Update(const void* data, const uint32_t sizeInBy
 		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 		{
 			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-				   reinterpret_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+				   static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
 				   updateDesc.SrcRowStride);
 		}
 	}
@@ -275,7 +275,7 @@ TRAP::Graphics::Texture2D::Texture2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture2D::Texture2D(const std::string& name, std::string_view filepath)
+TRAP::Graphics::Texture2D::Texture2D(const std::string& name, const std::string_view filepath)
 {
 	m_textureType = TextureType::Texture2D;
 	m_name = name;

@@ -22,7 +22,7 @@ namespace TRAP::Graphics
 
 		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
 
-		~Texture2D() = default;
+		~Texture2D() override = default;
 
 		/// <summary>
 		/// Default Copy Constructor.

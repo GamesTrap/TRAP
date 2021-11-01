@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc);
-		~VulkanCommandPool();
+		~VulkanCommandPool() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

@@ -27,7 +27,7 @@ namespace TRAP::Graphics
 		static void SetTickRate(uint32_t tickRate);
 
 		[[deprecated("Use BeginScene(Camera, Mat4) instead!")]]
-		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const OrthographicCamera& camera); //TODO
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
 		static void EndScene();
 

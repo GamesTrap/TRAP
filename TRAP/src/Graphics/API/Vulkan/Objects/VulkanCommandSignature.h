@@ -10,7 +10,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc);
-		~VulkanCommandSignature();
+		~VulkanCommandSignature() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

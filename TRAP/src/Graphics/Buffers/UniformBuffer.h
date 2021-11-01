@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 	class UniformBuffer
 	{
 	protected:
-		UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
+		explicit UniformBuffer(RendererAPI::DescriptorUpdateFrequency updateFrequency);
 		UniformBuffer(const UniformBuffer&) = default;
 		UniformBuffer& operator=(const UniformBuffer&) = default;
 		UniformBuffer(UniformBuffer&&) = default;

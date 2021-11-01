@@ -46,7 +46,7 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
 	auto& asset = activity.GetAssets();
 	asset.SetLargeImage("trapwhitelogo2048x2048");
 	asset.SetLargeText(u8"TRAP™");
-	core->ActivityManager().UpdateActivity(activity, [](discord::Result res)
+	core->ActivityManager().UpdateActivity(activity, [](const discord::Result res)
 	{
         lastRes = res;
         DiscordLogResult(lastRes);
@@ -107,7 +107,7 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
         auto& asset = acti.GetAssets();
         asset.SetLargeImage(activity.LargeImage.c_str());
         asset.SetLargeText(activity.LargeText.c_str());
-        core->ActivityManager().UpdateActivity(acti, [](discord::Result res)
+        core->ActivityManager().UpdateActivity(acti, [](const discord::Result res)
         {
             lastRes = res;
             DiscordLogResult(lastRes);

@@ -15,7 +15,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Virtual Default Destructor.
 		/// </summary>
-		virtual ~KeyEvent() = default;
+		~KeyEvent() override = default;
 
 		/// <summary>
 		/// Retrieve the affected key.
@@ -78,7 +78,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~KeyPressEvent() = default;
+		~KeyPressEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -149,7 +149,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~KeyReleaseEvent() = default;
+		~KeyReleaseEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -214,7 +214,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~KeyTypeEvent() = default;
+		~KeyTypeEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
@@ -296,7 +296,7 @@ namespace TRAP::Events
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~KeyLayoutEvent() = default;
+		~KeyLayoutEvent() override = default;
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>

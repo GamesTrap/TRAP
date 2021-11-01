@@ -101,7 +101,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	TP_PROFILE_FUNCTION();
 
-	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
+	const std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 
 	switch (RendererAPI::GetRenderAPI())
 	{
@@ -154,7 +154,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	{
 	case RenderAPI::Vulkan:
 	{
-		API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
+		const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
 
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
@@ -209,7 +209,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 					for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 					{
 						memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-							reinterpret_cast<const uint8_t*>(faces[i]->GetPixelData()) + r * updateDesc.SrcRowStride,
+							static_cast<const uint8_t*>(faces[i]->GetPixelData()) + r * updateDesc.SrcRowStride,
 							updateDesc.SrcRowStride);
 					}
 				}
@@ -266,8 +266,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	{
 	case RenderAPI::Vulkan:
 	{
-		API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImgs[0]->GetColorFormat(),
-		                                                                    useImgs[0]->GetBitsPerPixel());
+		const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImgs[0]->GetColorFormat(),
+		                                                                          useImgs[0]->GetBitsPerPixel());
 
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
@@ -311,7 +311,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 				for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 				{
 					memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-						reinterpret_cast<const uint8_t*>(useImgs[i]->GetPixelData()) + r * updateDesc.SrcRowStride,
+						static_cast<const uint8_t*>(useImgs[i]->GetPixelData()) + r * updateDesc.SrcRowStride,
 						updateDesc.SrcRowStride);
 				}
 			}
@@ -371,8 +371,8 @@ uint32_t TRAP::Graphics::TextureCube::GetArraySize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeInBytes, uint32_t mipLevel,
-										 uint32_t arrayLayer)
+void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeInBytes,
+                                         const uint32_t mipLevel, const uint32_t arrayLayer)
 {
 	TRAP_ASSERT(data, "Update: Data is nullptr!");
 	TRAP_ASSERT(arrayLayer < 6, "Invalid Arraylayer provided!");
@@ -382,7 +382,7 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 
 	if(arrayLayer >= 6)
 	{
-		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid Arraylayer provided!");
+		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid Array layer provided!");
 		return;
 	}
 	if(mipLevel >= m_texture->GetMipLevels())
@@ -409,7 +409,7 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 		{
 			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-				   reinterpret_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+				   static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
 				   updateDesc.SrcRowStride);
 		}
 	}

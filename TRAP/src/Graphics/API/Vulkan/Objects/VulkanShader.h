@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc);
-		~VulkanShader();
+		~VulkanShader() override;
 
 		/// <summary>
 		/// Default Copy Constructor.
@@ -39,12 +39,12 @@ namespace TRAP::Graphics::API
 		const std::vector<std::string>& GetEntryNames() const;
 
 		void Use(Window* window = nullptr) override;
-		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture,
+		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
 		                Window* window = nullptr) override;
 		void UseTextures(uint32_t set, uint32_t binding,
 						 const std::vector<TRAP::Graphics::Texture*>& textures,
 						 Window* window = nullptr) override;
-		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler,
+		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
 		                Window* window = nullptr) override;
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
@@ -58,7 +58,7 @@ namespace TRAP::Graphics::API
 		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
 		               uint64_t size, uint64_t offset, Window* window);
 
-		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint64_t size = 1);
+		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint64_t size = 1) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 

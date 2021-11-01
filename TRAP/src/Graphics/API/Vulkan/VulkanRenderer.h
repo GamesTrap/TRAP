@@ -33,7 +33,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanRenderer();
-		~VulkanRenderer();
+		~VulkanRenderer() override;
 
 		VulkanRenderer(const VulkanRenderer&) = delete;
 		VulkanRenderer& operator=(const VulkanRenderer&) = delete;
@@ -233,7 +233,7 @@ namespace TRAP::Graphics::API
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
 
-		void AddDefaultResources();
+		void AddDefaultResources() const;
 		static void RemoveDefaultResources();
 
 		static void StartGraphicRecording(const TRAP::Scope<PerWindowData>& p);

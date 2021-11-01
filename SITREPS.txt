@@ -2202,3 +2202,4 @@ SITREP 11/01/2021|21w44a1
     - Windows again disabled min and max macros ~<10 mins
     - Corrected for loop data types ~>20 mins
     - GCC suppressed warnings from VulkanMemoryAllocator ~<10 mins
+    - Static code analysis ~>60 mins

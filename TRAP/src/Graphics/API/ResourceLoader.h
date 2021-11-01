@@ -22,19 +22,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Default Copy Constructor.
 		/// </summary>
-		ResourceLoader(const ResourceLoader&) = default;
+		ResourceLoader(const ResourceLoader&) = delete;
 		/// <summary>
 		/// Default Copy Assignment Operator.
 		/// </summary>
-		ResourceLoader& operator=(const ResourceLoader&) = default;
+		ResourceLoader& operator=(const ResourceLoader&) = delete;
 		/// <summary>
 		/// Default Move Constructor.
 		/// </summary>
-		ResourceLoader(ResourceLoader&&) = default;
+		ResourceLoader(ResourceLoader&&) = delete;
 		/// <summary>
 		/// Default Move Assignment Operator.
 		/// </summary>
-		ResourceLoader& operator=(ResourceLoader&&) = default;
+		ResourceLoader& operator=(ResourceLoader&&) = delete;
 
 		//Adding and updating resources can be done using a AddResource or BeginUpdateResource/EndUpdateResource
 		//pair.
@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		//If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		//If token is non nullptr, the resource will be available after IsTokenCompleted(token) return true.
 		void AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* token);
-		void AddResource(RendererAPI::TextureLoadDesc& desc, SyncToken* token);
+		void AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* token);
 
 		static void BeginUpdateResource(RendererAPI::BufferUpdateDesc& desc);
 		static void BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc);
@@ -130,7 +130,7 @@ namespace TRAP::Graphics::API
 		UploadFunctionResult UpdateBuffer(std::size_t activeSet,
 		                                  const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
 		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc,
-		                                   std::array<TRAP::Scope<TRAP::Image>, 6>* const img);
+		                                   std::array<TRAP::Scope<TRAP::Image>, 6>* images);
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 
 		RendererAPI::ResourceLoaderDesc m_desc;
@@ -195,7 +195,6 @@ namespace TRAP::Graphics::API
 			bool IsRecording{};
 		} m_copyEngine;
 		uint32_t m_nextSet;
-		uint32_t m_submittedSets;
 	};
 }
 

@@ -45,7 +45,7 @@ namespace TRAP::Graphics::API
 		friend VulkanQueue;
 
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, uint8_t& queueFamilyIndex, uint8_t& queueIndex);
-		void FindQueueFamilyIndex(RendererAPI::QueueType type, VkQueueFamilyProperties& queueFamilyProperties,
+		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
 		                          uint8_t& queueFamilyIndex, uint8_t& queueIndex);
 
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;

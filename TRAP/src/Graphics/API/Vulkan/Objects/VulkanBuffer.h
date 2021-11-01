@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanBuffer(const RendererAPI::BufferDesc& desc);
-		~VulkanBuffer();
+		~VulkanBuffer() override;
 
 		/// <summary>
 		/// Default Copy Constructor.

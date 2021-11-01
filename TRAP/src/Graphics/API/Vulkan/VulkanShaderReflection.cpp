@@ -170,7 +170,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			if(!FilterResource(resource, shaderStage) && resource.Type != SPIRVTools::ResourceType::Inputs)
 			{
 				//Set new index
-				indexRemap[i] = j;
+				indexRemap[i] = static_cast<uint32_t>(j);
 
 				resources[j].Type = SPIRVToDescriptorType[static_cast<uint32_t>(resource.Type)];
 				resources[j].Set = resource.Set;
@@ -206,7 +206,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			SPIRVTools::Variable& variable = cc.UniformVariables[i];
 
 			//Check if parent buffer was filtered out
-			bool parentFiltered = FilterResource(cc.ShaderResources[variable.ParentIndex], shaderStage);
+			const bool parentFiltered = FilterResource(cc.ShaderResources[variable.ParentIndex], shaderStage);
 
 			//Filter out what we don't use
 			if(variable.IsUsed && !parentFiltered)
