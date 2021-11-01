@@ -26,6 +26,12 @@
 #ifdef _MSC_VER
 #pragma warning(push, 0)
 #endif
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wtype-limits"
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 
 /** \mainpage Vulkan Memory Allocator
 
@@ -19311,6 +19317,9 @@ VMA_CALL_PRE void VMA_CALL_POST vmaDestroyImage(
     }
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif

@@ -429,7 +429,7 @@ bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFie
 	uint32_t totalMask = 0;
 	BitField totalField{};
 
-	for(int32_t i = 0; i < bitFields.size(); i++)
+	for(uint32_t i = 0; i < bitFields.size(); i++)
 	{
 		//No overlapping masks.
 		if (totalMask & masks[i])
