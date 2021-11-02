@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANSHADER_H_
-#define _TRAP_VULKANSHADER_H_
+#ifndef TRAP_VULKANSHADER_H
+#define TRAP_VULKANSHADER_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
@@ -70,4 +70,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANSHADER_H_*/
+#endif /*TRAP_VULKANSHADER_H*/

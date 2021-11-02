@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANRENDERPASS_H_
-#define _TRAP_VULKANRENDERPASS_H_
+#ifndef TRAP_VULKANRENDERPASS_H
+#define TRAP_VULKANRENDERPASS_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
@@ -58,4 +58,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANRENDERPASS_H_*/
+#endif /*TRAP_VULKANRENDERPASS_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_IMAGE_H_
-#define _TRAP_IMAGE_H_
+#ifndef TRAP_IMAGE_H
+#define TRAP_IMAGE_H
 
 #include <vector>
 
@@ -397,4 +397,4 @@ std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_
 	return newData;
 }
 
-#endif /*_TRAP_IMAGE_H_*/
+#endif /*TRAP_IMAGE_H*/

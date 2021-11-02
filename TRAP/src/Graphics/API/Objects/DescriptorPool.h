@@ -1,5 +1,5 @@
-#ifndef _TRAP_DESCRIPTORPOOL_H_
-#define _TRAP_DESCRIPTORPOOL_H_
+#ifndef TRAP_DESCRIPTORPOOL_H
+#define TRAP_DESCRIPTORPOOL_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -42,4 +42,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_DESCRIPTORPOOL_H_*/
+#endif /*TRAP_DESCRIPTORPOOL_H*/

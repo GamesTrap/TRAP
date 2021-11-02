@@ -1,5 +1,5 @@
-#ifndef _TRAP_IMAGEFORMAT_H_
-#define _TRAP_IMAGEFORMAT_H_
+#ifndef TRAP_IMAGEFORMAT_H
+#define TRAP_IMAGEFORMAT_H
 
 namespace TRAP::Graphics::API
 {
@@ -842,4 +842,4 @@ namespace TRAP::Graphics::API
     }
 }
 
-#endif /*_TRAP_IMAGEFORMAT_H_*/
+#endif /*TRAP_IMAGEFORMAT_H*/

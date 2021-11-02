@@ -1,5 +1,5 @@
-#ifndef _TRAP_DESCRIPTORSET_H_
-#define _TRAP_DESCRIPTORSET_H_
+#ifndef TRAP_DESCRIPTORSET_H
+#define TRAP_DESCRIPTORSET_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -35,4 +35,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_DESCRIPTORSET_H_*/
+#endif /*TRAP_DESCRIPTORSET_H*/

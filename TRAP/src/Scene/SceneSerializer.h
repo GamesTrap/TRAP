@@ -1,5 +1,5 @@
-#ifndef _TRAP_SCENESERIALIZER_H_
-#define _TRAP_SCENESERIALIZER_H_
+#ifndef TRAP_SCENESERIALIZER_H
+#define TRAP_SCENESERIALIZER_H
 
 #include "Scene.h"
 
@@ -42,4 +42,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_SCENESERIALIZER_H_*/
+#endif /*TRAP_SCENESERIALIZER_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_SCENECAMERA_H_
-#define _TRAP_SCENECAMERA_H_
+#ifndef TRAP_SCENECAMERA_H
+#define TRAP_SCENECAMERA_H
 
 #include "Graphics/Cameras/Camera.h"
 
@@ -63,4 +63,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_SCENECAMERA_H_*/
+#endif /*TRAP_SCENECAMERA_H*/

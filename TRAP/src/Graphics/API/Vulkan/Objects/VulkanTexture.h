@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANTEXTURE_H_
-#define _TRAP_VULKANTEXTURE_H_
+#ifndef TRAP_VULKANTEXTURE_H
+#define TRAP_VULKANTEXTURE_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Utils/VMA.h"
@@ -63,4 +63,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANTEXTURE_H_*/
+#endif /*TRAP_VULKANTEXTURE_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_SCRIPTABLEENTITY_H_
-#define _TRAP_SCRIPTABLEENTITY_H_
+#ifndef TRAP_SCRIPTABLEENTITY_H
+#define TRAP_SCRIPTABLEENTITY_H
 
 #include "Entity.h"
 #include "Utils/Time/TimeStep.h"
@@ -35,4 +35,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_SCRIPTABLEENTITY_H_*/
+#endif /*TRAP_SCRIPTABLEENTITY_H*/

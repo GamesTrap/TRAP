@@ -1,5 +1,5 @@
-#ifndef _TRAP_CAMERA_H_
-#define _TRAP_CAMERA_H_
+#ifndef TRAP_CAMERA_H
+#define TRAP_CAMERA_H
 
 #include "Maths/Math.h"
 
@@ -23,4 +23,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_CAMERA_H_*/
+#endif /*TRAP_CAMERA_H*/

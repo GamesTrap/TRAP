@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANPHYSICALDEVICE_H_
-#define _TRAP_VULKANPHYSICALDEVICE_H_
+#ifndef TRAP_VULKANPHYSICALDEVICE_H
+#define TRAP_VULKANPHYSICALDEVICE_H
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API
@@ -75,4 +75,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANPHYSICALDEVICE_H_*/
+#endif /*TRAP_VULKANPHYSICALDEVICE_H*/

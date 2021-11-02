@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANQUEUE_H_
-#define _TRAP_VULKANQUEUE_H_
+#ifndef TRAP_VULKANQUEUE_H
+#define TRAP_VULKANQUEUE_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Queue.h"
@@ -58,4 +58,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANQUEUE_H_*/
+#endif /*TRAP_VULKANQUEUE_H*/

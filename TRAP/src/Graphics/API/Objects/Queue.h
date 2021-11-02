@@ -1,5 +1,5 @@
-#ifndef _TRAP_QUEUE_H_
-#define _TRAP_QUEUE_H_
+#ifndef TRAP_QUEUE_H
+#define TRAP_QUEUE_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -42,4 +42,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_QUEUE_H_*/
+#endif /*TRAP_QUEUE_H*/

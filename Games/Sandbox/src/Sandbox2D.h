@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_SANDBOX2D_H_
-#define _GAMESTRAP_SANDBOX2D_H_
+#ifndef GAMESTRAP_SANDBOX2D_H
+#define GAMESTRAP_SANDBOX2D_H
 
 #include <TRAP.h>
 
@@ -25,4 +25,4 @@
  	TRAP::Utils::Timer m_updateFPSTimer;
  };
 
-#endif /*_GAMESTRAP_SANDBOX2D_H_*/
+#endif /*GAMESTRAP_SANDBOX2D_H*/

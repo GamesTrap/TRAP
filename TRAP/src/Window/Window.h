@@ -1,5 +1,5 @@
-#ifndef _TRAP_WINDOW_H_
-#define _TRAP_WINDOW_H_
+#ifndef TRAP_WINDOW_H
+#define TRAP_WINDOW_H
 
 #include "Events/Event.h"
 #include "ImageLoader/Image.h"
@@ -447,4 +447,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_WINDOW_H_*/
+#endif /*TRAP_WINDOW_H*/

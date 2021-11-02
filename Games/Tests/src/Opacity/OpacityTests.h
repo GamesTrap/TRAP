@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_OPACITYTESTS_H_
-#define _GAMESTRAP_OPACITYTESTS_H_
+#ifndef GAMESTRAP_OPACITYTESTS_H
+#define GAMESTRAP_OPACITYTESTS_H
 
 #include <TRAP.h>
 
@@ -18,4 +18,4 @@ private:
 	float m_opacity = 1.0f;
 };
 
-#endif /*_GAMESTRAP_OPACITYTESTS_H_*/
+#endif /*GAMESTRAP_OPACITYTESTS_H*/

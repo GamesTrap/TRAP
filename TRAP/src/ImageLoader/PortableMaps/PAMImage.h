@@ -1,5 +1,5 @@
-#ifndef _TRAP_PAMIMAGE_H_
-#define _TRAP_PAMIMAGE_H_
+#ifndef TRAP_PAMIMAGE_H
+#define TRAP_PAMIMAGE_H
 
 #include "ImageLoader/Image.h"
 
@@ -61,4 +61,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_PAMIMAGE_H_*/
+#endif /*TRAP_PAMIMAGE_H*/

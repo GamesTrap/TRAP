@@ -29,8 +29,8 @@ THE SOFTWARE.
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_VEC4_H_
-#define _TRAP_VEC4_H_
+#ifndef TRAP_VEC4_H
+#define TRAP_VEC4_H
 
 #include "Types.h"
 #include "Core/Base.h"
@@ -1419,4 +1419,4 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator||(const Vec<4, bool>& v1
 	return Vec<4, bool>(v1.x || v2.x, v1.y || v2.y, v1.z || v2.z, v1.w || v2.w);
 }
 
-#endif /*_TRAP_VEC4_H_*/
+#endif /*TRAP_VEC4_H*/

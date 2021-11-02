@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_MONITORTESTS_H_
-#define _GAMESTRAP_MONITORTESTS_H_
+#ifndef GAMESTRAP_MONITORTESTS_H
+#define GAMESTRAP_MONITORTESTS_H
 
 #include <TRAP.h>
 
@@ -29,4 +29,4 @@ private:
 	static std::vector<MonitorInfo> s_monitorInfos;
 };
 
-#endif /*_GAMESTRAP_MONITORTESTS_H_*/
+#endif /*GAMESTRAP_MONITORTESTS_H*/

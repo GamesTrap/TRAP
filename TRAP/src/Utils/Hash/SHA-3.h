@@ -1,5 +1,5 @@
-#ifndef _TRAP_SHA3_H_
-#define _TRAP_SHA3_H_
+#ifndef TRAP_SHA3_H
+#define TRAP_SHA3_H
 
 namespace TRAP::Utils::Hash
 {
@@ -32,4 +32,4 @@ namespace TRAP::Utils::Hash
 	std::array<uint8_t, 64> SHA3_512(std::string_view str);
 }
 
-#endif /*_TRAP_SHA3_H_*/
+#endif /*TRAP_SHA3_H*/

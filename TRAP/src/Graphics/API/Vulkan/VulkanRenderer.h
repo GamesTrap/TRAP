@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANRENDERER_H_
-#define _TRAP_VULKANRENDERER_H_
+#ifndef TRAP_VULKANRENDERER_H
+#define TRAP_VULKANRENDERER_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Maths/Math.h"
@@ -263,4 +263,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANRENDERER_H_*/
+#endif /*TRAP_VULKANRENDERER_H*/

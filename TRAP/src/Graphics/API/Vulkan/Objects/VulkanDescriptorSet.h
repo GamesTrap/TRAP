@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANDESCRIPTORSET_H_
-#define _TRAP_VULKANDESCRIPTORSET_H_
+#ifndef TRAP_VULKANDESCRIPTORSET_H
+#define TRAP_VULKANDESCRIPTORSET_H
 
 #include "VulkanDescriptorPool.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
@@ -62,4 +62,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANDESCRIPTORSET_H_*/
+#endif /*TRAP_VULKANDESCRIPTORSET_H*/

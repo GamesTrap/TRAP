@@ -29,8 +29,8 @@ THE SOFTWARE.
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_QUATERNION_H_
-#define _TRAP_QUATERNION_H_
+#ifndef TRAP_QUATERNION_H
+#define TRAP_QUATERNION_H
 
 #include "Types.h"
 #include "Core/Base.h"
@@ -465,4 +465,4 @@ constexpr bool TRAP::Math::operator!=(const tQuaternion<T>& q1, const tQuaternio
 	return q1.x != q2.x && q1.y != q2.y && q1.z != q2.z && q1.w != q2.w;
 }
 
-#endif /*_TRAP_QUATERNION_H_*/
+#endif /*TRAP_QUATERNION_H*/

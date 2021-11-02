@@ -1,5 +1,5 @@
-#ifndef _TRAP_BLOCKINGQUEUE_H_
-#define _TRAP_BLOCKINGQUEUE_H_
+#ifndef TRAP_BLOCKINGQUEUE_H
+#define TRAP_BLOCKINGQUEUE_H
 
 namespace TRAP
 {
@@ -269,4 +269,4 @@ uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
 	return m_queue.size();
 }
 
-#endif /*_TRAP_BLOCKINGQUEUE_H_*/
+#endif /*TRAP_BLOCKINGQUEUE_H*/

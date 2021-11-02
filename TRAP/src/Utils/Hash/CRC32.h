@@ -1,5 +1,5 @@
-#ifndef _TRAP_CRC32_H_
-#define _TRAP_CRC32_H_
+#ifndef TRAP_CRC32_H
+#define TRAP_CRC32_H
 
 namespace TRAP::Utils::Hash
 {
@@ -18,4 +18,4 @@ namespace TRAP::Utils::Hash
 	std::array<uint8_t, 4> CRC32(std::string_view str);
 }
 
-#endif /*_TRAP_CRC32_H_*/
+#endif /*TRAP_CRC32_H*/

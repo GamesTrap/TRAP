@@ -1,5 +1,5 @@
-#ifndef _TRAP_WIN_H_
-#define _TRAP_WIN_H_
+#ifndef TRAP_WIN_H
+#define TRAP_WIN_H
 
 #ifndef NOMINMAX
 	#define NOMINMAX
@@ -63,4 +63,4 @@
 	#define OCR_HAND 32649
 #endif
 
-#endif /*_TRAP_WIN_H_*/
+#endif /*TRAP_WIN_H*/

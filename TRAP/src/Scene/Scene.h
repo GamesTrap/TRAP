@@ -1,5 +1,5 @@
-#ifndef _TRAP_SCENE_H_
-#define _TRAP_SCENE_H_
+#ifndef TRAP_SCENE_H
+#define TRAP_SCENE_H
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
@@ -56,4 +56,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_SCENE_H_*/
+#endif /*TRAP_SCENE_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_TYPES_H_
-#define _TRAP_TYPES_H_
+#ifndef TRAP_TYPES_H
+#define TRAP_TYPES_H
 
 namespace TRAP::Math
 {
@@ -71,4 +71,4 @@ namespace TRAP::Math
 	using Quaterniond = tQuaternion<double>;
 }
 
-#endif /*_TRAP_TYPES_H_*/
+#endif /*TRAP_TYPES_H*/

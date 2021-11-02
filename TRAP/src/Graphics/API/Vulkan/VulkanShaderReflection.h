@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANSHADERREFLECTION_H_
-#define _TRAP_VULKANSHADERREFLECTION_H_
+#ifndef TRAP_VULKANSHADERREFLECTION_H
+#define TRAP_VULKANSHADERREFLECTION_H
 
 #include "Graphics/API/ShaderReflection.h"
 
@@ -9,4 +9,4 @@ namespace TRAP::Graphics::API
 	                                                            RendererAPI::ShaderStage shaderStage);
 }
 
-#endif /*_TRAP_VULKANSHADERREFLECTION_H_*/
+#endif /*TRAP_VULKANSHADERREFLECTION_H*/

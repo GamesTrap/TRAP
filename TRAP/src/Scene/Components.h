@@ -1,5 +1,5 @@
-#ifndef _TRAP_COMPONENTS_H_
-#define _TRAP_COMPONENTS_H_
+#ifndef TRAP_COMPONENTS_H
+#define TRAP_COMPONENTS_H
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
@@ -100,4 +100,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_COMPONENTS_H_*/
+#endif /*TRAP_COMPONENTS_H*/

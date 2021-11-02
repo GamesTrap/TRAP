@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_NETWORK_H_
-#define _TRAP_NETWORK_H_
+#ifndef TRAP_NETWORK_H
+#define TRAP_NETWORK_H
 
 #include "FTP/FTP.h"
 #include "HTTP/HTTP.h"
@@ -44,4 +44,4 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/UDPSocket.h"
 #include "Sockets/UDPSocketIPv6.h"
 
-#endif /*_TRAP_NETWORK_H_*/
+#endif /*TRAP_NETWORK_H*/

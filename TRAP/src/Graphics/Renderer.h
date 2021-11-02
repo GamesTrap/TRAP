@@ -1,5 +1,5 @@
-#ifndef _TRAP_RENDERER_H_
-#define _TRAP_RENDERER_H_
+#ifndef TRAP_RENDERER_H
+#define TRAP_RENDERER_H
 
 #include "Application.h"
 
@@ -56,4 +56,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_RENDERER_H_*/
+#endif /*TRAP_RENDERER_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_CONVERTHASHTOSTRING_H_
-#define _TRAP_CONVERTHASHTOSTRING_H_
+#ifndef TRAP_CONVERTHASHTOSTRING_H
+#define TRAP_CONVERTHASHTOSTRING_H
 
 namespace TRAP::Utils::Hash
 {
@@ -22,4 +22,4 @@ namespace TRAP::Utils::Hash
 	}
 }
 
-#endif /*_TRAP_CONVERTHASHTOSTRING_H_*/
+#endif /*TRAP_CONVERTHASHTOSTRING_H*/

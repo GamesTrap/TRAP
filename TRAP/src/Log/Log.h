@@ -1,5 +1,5 @@
-#ifndef _TRAP_LOG_H_
-#define _TRAP_LOG_H_
+#ifndef TRAP_LOG_H
+#define TRAP_LOG_H
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	#include "Utils/Win.h"
@@ -123,7 +123,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[21w44a1]";
+		inline static constexpr auto WindowVersion =                        "[21w44a2]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -339,4 +339,4 @@ constexpr void TP_CRITICAL(const Args& ... args)
 	TRAP::TRAPLog.Critical(args...);
 }
 
-#endif /*_TRAP_LOG_H_*/
+#endif /*TRAP_LOG_H*/

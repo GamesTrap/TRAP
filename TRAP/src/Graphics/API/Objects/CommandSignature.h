@@ -1,5 +1,5 @@
-#ifndef _TRAP_COMMANDSIGNATURE_H_
-#define _TRAP_COMMANDSIGNATURE_H_
+#ifndef TRAP_COMMANDSIGNATURE_H
+#define TRAP_COMMANDSIGNATURE_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -36,4 +36,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_COMMANDSIGNATURE_H_*/
+#endif /*TRAP_COMMANDSIGNATURE_H*/

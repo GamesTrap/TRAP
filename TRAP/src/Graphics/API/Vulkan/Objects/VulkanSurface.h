@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANSURFACE_H_
-#define _TRAP_VULKANSURFACE_H_
+#ifndef TRAP_VULKANSURFACE_H
+#define TRAP_VULKANSURFACE_H
 
 #include "Window/WindowingAPI.h"
 
@@ -50,4 +50,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANSURFACE_H_*/
+#endif /*TRAP_VULKANSURFACE_H*/

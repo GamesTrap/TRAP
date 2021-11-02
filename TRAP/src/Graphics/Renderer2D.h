@@ -1,5 +1,5 @@
-#ifndef _TRAP_RENDERER2D_H_
-#define _TRAP_RENDERER2D_H_
+#ifndef TRAP_RENDERER2D_H
+#define TRAP_RENDERER2D_H
 
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Textures/Texture2D.h"
@@ -54,4 +54,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_RENDERER2D_H_*/
+#endif /*TRAP_RENDERER2D_H*/

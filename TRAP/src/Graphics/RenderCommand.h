@@ -1,5 +1,5 @@
-#ifndef _TRAP_RENDERCOMMAND_H_
-#define _TRAP_RENDERCOMMAND_H_
+#ifndef TRAP_RENDERCOMMAND_H
+#define TRAP_RENDERCOMMAND_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -78,4 +78,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_RENDERCOMMAND_H_*/
+#endif /*TRAP_RENDERCOMMAND_H*/

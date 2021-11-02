@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_VULKANTESTS_H_
-#define _GAMESTRAP_VULKANTESTS_H_
+#ifndef GAMESTRAP_VULKANTESTS_H
+#define GAMESTRAP_VULKANTESTS_H
 
 #include <TRAP.h>
 
@@ -80,4 +80,4 @@ private:
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
 };
 
-#endif /*_GAMESTRAP_VULKANTESTS_H_*/
+#endif /*GAMESTRAP_VULKANTESTS_H*/

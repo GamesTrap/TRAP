@@ -1,5 +1,5 @@
-#ifndef _TRAP_TEXTURE2D_H_
-#define _TRAP_TEXTURE2D_H_
+#ifndef TRAP_TEXTURE2D_H
+#define TRAP_TEXTURE2D_H
 
 #include "Texture.h"
 #include "ImageLoader/Image.h"
@@ -49,4 +49,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_TEXTURE2D_H_*/
+#endif /*TRAP_TEXTURE2D_H*/

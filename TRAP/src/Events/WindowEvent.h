@@ -1,5 +1,5 @@
-#ifndef _TRAP_WINDOWEVENT_H_
-#define _TRAP_WINDOWEVENT_H_
+#ifndef TRAP_WINDOWEVENT_H
+#define TRAP_WINDOWEVENT_H
 
 #include "Event.h"
 #include "Maths/Vec2.h"
@@ -845,4 +845,4 @@ namespace TRAP::Events
 	};
 }
 
-#endif /*_TRAP_WINDOWEVENT_H_*/
+#endif /*TRAP_WINDOWEVENT_H*/

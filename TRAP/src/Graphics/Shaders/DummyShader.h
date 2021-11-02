@@ -1,5 +1,5 @@
-#ifndef _TRAP_DUMMYSHADER_H_
-#define _TRAP_DUMMYSHADER_H_
+#ifndef TRAP_DUMMYSHADER_H
+#define TRAP_DUMMYSHADER_H
 
 #include "Shader.h"
 
@@ -46,4 +46,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_DUMMYSHADER_H_*/
+#endif /*TRAP_DUMMYSHADER_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_TRAPASSERT_H_
-#define _TRAP_TRAPASSERT_H_
+#ifndef TRAP_TRAPASSERT_H
+#define TRAP_TRAPASSERT_H
 
 #include <filesystem>
 
@@ -36,4 +36,4 @@ template<typename... Args>
 constexpr void TRAP_ASSERT(const Args&...) {}
 #endif
 
-#endif /*_TRAP_TRAPASSERT_H_*/
+#endif /*TRAP_TRAPASSERT_H*/

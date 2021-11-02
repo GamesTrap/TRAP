@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_NETWORK_SOCKETIMPL_H_
-#define _TRAP_NETWORK_SOCKETIMPL_H_
+#ifndef TRAP_NETWORK_SOCKETIMPL_H
+#define TRAP_NETWORK_SOCKETIMPL_H
 
 #include "Core/PlatformDetection.h"
 
@@ -37,4 +37,4 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Platform/SocketImplLinux.h"
 #endif
 
-#endif /*_TRAP_NETWORK_SOCKETIMPL_H_*/
+#endif /*TRAP_NETWORK_SOCKETIMPL_H*/

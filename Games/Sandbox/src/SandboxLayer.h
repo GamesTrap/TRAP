@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_SANDBOXLAYER_H_
-#define _GAMESTRAP_SANDBOXLAYER_H_
+#ifndef GAMESTRAP_SANDBOXLAYER_H
+#define GAMESTRAP_SANDBOXLAYER_H
 
 #include <TRAP.h>
 
@@ -262,4 +262,4 @@ private:
 	TRAP::Graphics::Shader* m_shader{};
 };
 
-#endif /*_GAMESTRAP_SANDBOXLAYER_H_*/
+#endif /*GAMESTRAP_SANDBOXLAYER_H*/

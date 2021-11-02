@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_NETWORK_PACKET_H_
-#define _TRAP_NETWORK_PACKET_H_
+#ifndef TRAP_NETWORK_PACKET_H
+#define TRAP_NETWORK_PACKET_H
 
 namespace TRAP::Network
 {
@@ -229,4 +229,4 @@ namespace TRAP::Network
 	};
 }
 
-#endif /*_TRAP_NETWORK_PACKET_H_*/
+#endif /*TRAP_NETWORK_PACKET_H*/

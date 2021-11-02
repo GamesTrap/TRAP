@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANFENCE_H_
-#define _TRAP_VULKANFENCE_H_
+#ifndef TRAP_VULKANFENCE_H
+#define TRAP_VULKANFENCE_H
 
 #include "VulkanSwapChain.h"
 #include "Graphics/API/RendererAPI.h"
@@ -50,4 +50,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANFENCE_H_*/
+#endif /*TRAP_VULKANFENCE_H*/

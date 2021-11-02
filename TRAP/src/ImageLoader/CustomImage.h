@@ -1,5 +1,5 @@
-#ifndef _TRAP_CUSTOMIMAGE_H_
-#define _TRAP_CUSTOMIMAGE_H_
+#ifndef TRAP_CUSTOMIMAGE_H
+#define TRAP_CUSTOMIMAGE_H
 
 #include "Image.h"
 #include "Embed.h"
@@ -120,4 +120,4 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t wi
 	}
 }
 
-#endif /*_TRAP_CUSTOMIMAGE_H_*/
+#endif /*TRAP_CUSTOMIMAGE_H*/

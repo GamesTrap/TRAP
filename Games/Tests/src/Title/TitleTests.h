@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_TITLETESTS_H_
-#define _GAMESTRAP_TITLETESTS_H_
+#ifndef GAMESTRAP_TITLETESTS_H
+#define GAMESTRAP_TITLETESTS_H
 
 #include <TRAP.h>
 
@@ -15,4 +15,4 @@ public:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 };
 
-#endif /*_GAMESTRAP_TITLETESTS_H_*/
+#endif /*GAMESTRAP_TITLETESTS_H*/

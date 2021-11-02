@@ -29,8 +29,8 @@ THE SOFTWARE.
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_MAT3_H_
-#define _TRAP_MAT3_H_
+#ifndef TRAP_MAT3_H
+#define TRAP_MAT3_H
 
 #include "Vec3.h"
 #include "Core/PlatformDetection.h"
@@ -576,4 +576,4 @@ bool TRAP::Math::operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
 	return (m1[0] != m2[0]) || (m1[1] != m2[1]) || (m1[2] != m2[2]);
 }
 
-#endif /*_TRAP_MAT3_H_*/
+#endif /*TRAP_MAT3_H*/

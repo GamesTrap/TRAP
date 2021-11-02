@@ -8,8 +8,8 @@ This library is distributed under the MIT License. See notice at the end of this
 
 Modified by: Jan "GamesTrap" Schuerkamp
 */
-#ifndef _GAMESTRAP_VULKANLOADER_H_
-#define _GAMESTRAP_VULKANLOADER_H_
+#ifndef TRAP_VULKANLOADER_H
+#define TRAP_VULKANLOADER_H
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)

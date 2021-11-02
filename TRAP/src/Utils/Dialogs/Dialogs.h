@@ -1,5 +1,5 @@
-#ifndef _TRAP_DIALOGS_H_
-#define _TRAP_DIALOGS_H_
+#ifndef TRAP_DIALOGS_H
+#define TRAP_DIALOGS_H
 
 #include <ModernDialogs.h>
 
@@ -145,4 +145,4 @@ namespace TRAP::Utils::Dialogs
     Selection ShowMsgBox(const std::string& title, const std::string& message);
 }
 
-#endif /*_TRAP_DIALOGS_H_*/
+#endif /*TRAP_DIALOGS_H*/

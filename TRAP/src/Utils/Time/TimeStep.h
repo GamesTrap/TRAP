@@ -1,5 +1,5 @@
-#ifndef _TRAP_TIMESTEP_H_
-#define _TRAP_TIMESTEP_H_
+#ifndef TRAP_TIMESTEP_H
+#define TRAP_TIMESTEP_H
 
 namespace TRAP::Utils
 {
@@ -58,4 +58,4 @@ namespace TRAP::Utils
 	};
 }
 
-#endif /*_TRAP_TIMESTEP_H_*/
+#endif /*TRAP_TIMESTEP_H*/

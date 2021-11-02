@@ -1,5 +1,5 @@
-#ifndef _TRAP_TGAIMAGE_H_
-#define _TRAP_TGAIMAGE_H_
+#ifndef TRAP_TGAIMAGE_H
+#define TRAP_TGAIMAGE_H
 
 #include "ImageLoader/Image.h"
 
@@ -87,4 +87,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_TGAIMAGE_H_*/
+#endif /*TRAP_TGAIMAGE_H*/

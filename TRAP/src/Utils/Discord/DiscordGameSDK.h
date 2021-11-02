@@ -1,5 +1,5 @@
-#ifndef _TRAP_DISCORDGAMESDK_H_
-#define _TRAP_DISCORDGAMESDK_H_
+#ifndef TRAP_DISCORDGAMESDK_H
+#define TRAP_DISCORDGAMESDK_H
 
 namespace discord
 {
@@ -26,4 +26,4 @@ namespace TRAP::Utils::Discord
 #endif
 }
 
-#endif /*_TRAP_DISCORDGAMESDK_H_*/
+#endif /*TRAP_DISCORDGAMESDK_H*/

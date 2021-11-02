@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANRENDERTARGET_H_
-#define _TRAP_VULKANRENDERTARGET_H_
+#ifndef TRAP_VULKANRENDERTARGET_H
+#define TRAP_VULKANRENDERTARGET_H
 
 #include "VulkanCommandBuffer.h"
 #include "Graphics/API/RendererAPI.h"
@@ -76,4 +76,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANRENDERTARGET_H_*/
+#endif /*TRAP_VULKANRENDERTARGET_H*/

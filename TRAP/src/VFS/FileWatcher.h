@@ -1,5 +1,5 @@
-#ifndef _TRAP_FILEWATCHER_H_
-#define _TRAP_FILEWATCHER_H_
+#ifndef TRAP_FILEWATCHER_H
+#define TRAP_FILEWATCHER_H
 
 #include "Utils/Time/Timer.h"
 
@@ -93,4 +93,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_FILEWATCHER_H_*/
+#endif /*TRAP_FILEWATCHER_H*/

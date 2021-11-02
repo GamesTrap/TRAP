@@ -1,5 +1,5 @@
-#ifndef _TRAP_CONTROLLERMAPPINGS_H_
-#define _TRAP_CONTROLLERMAPPINGS_H_
+#ifndef TRAP_CONTROLLERMAPPINGS_H
+#define TRAP_CONTROLLERMAPPINGS_H
 
 // SDL_GameControllerDB project under the following license:
 //
@@ -48,4 +48,4 @@ namespace TRAP::Embed
 	};
 }
 
-#endif /*_TRAP_CONTROLLERMAPPINGS_H_*/
+#endif /*TRAP_CONTROLLERMAPPINGS_H*/

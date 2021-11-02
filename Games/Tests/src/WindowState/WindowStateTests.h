@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_MINIMIZETESTS_H_
-#define _GAMESTRAP_MINIMIZETESTS_H_
+#ifndef GAMESTRAP_MINIMIZETESTS_H
+#define GAMESTRAP_MINIMIZETESTS_H
 
 #include <TRAP.h>
 
@@ -23,4 +23,4 @@ private:
 	bool OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event);
 };
 
-#endif /*_GAMESTRAP_MINIMIZETESTS_H_*/
+#endif /*GAMESTRAP_MINIMIZETESTS_H*/

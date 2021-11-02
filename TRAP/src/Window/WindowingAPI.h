@@ -25,8 +25,8 @@ freely, subject to the following restrictions:
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_WINDOWINGAPI_H_
-#define _TRAP_WINDOWINGAPI_H_
+#ifndef TRAP_WINDOWINGAPI_H
+#define TRAP_WINDOWINGAPI_H
 
 #include "Core/PlatformDetection.h"
 #include "ImageLoader/Image.h"
@@ -3120,4 +3120,4 @@ namespace TRAP::INTERNAL
 #endif
 	};
 }
-#endif /*_TRAP_WINDOWINGAPI_H_*/
+#endif /*TRAP_WINDOWINGAPI_H*/

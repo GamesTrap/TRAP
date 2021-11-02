@@ -1,5 +1,5 @@
-#ifndef _TRAP_TEXTURE_H_
-#define _TRAP_TEXTURE_H_
+#ifndef TRAP_TEXTURE_H
+#define TRAP_TEXTURE_H
 
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/API/ResourceLoader.h"
@@ -204,4 +204,4 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 }
 
 
-#endif /*_TRAP_TEXTURE_H_*/
+#endif /*TRAP_TEXTURE_H*/

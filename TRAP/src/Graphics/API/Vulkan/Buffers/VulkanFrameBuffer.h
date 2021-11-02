@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANFRAMEBUFFER2D_H_
-#define _TRAP_VULKANFRAMEBUFFER2D_H_
+#ifndef TRAP_VULKANFRAMEBUFFER2D_H
+#define TRAP_VULKANFRAMEBUFFER2D_H
 
 #include "Graphics/Buffers/FrameBuffer.h"
 
@@ -29,4 +29,4 @@ namespace TRAP::Graphics::API
 	};*/
 }
 
-#endif /*_TRAP_VULKANFRAMEBUFFER2D_H_*/
+#endif /*TRAP_VULKANFRAMEBUFFER2D_H*/

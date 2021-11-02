@@ -1,5 +1,5 @@
-#ifndef _TRAP_TEXTUREMANAGER_H_
-#define _TRAP_TEXTUREMANAGER_H_
+#ifndef TRAP_TEXTUREMANAGER_H
+#define TRAP_TEXTUREMANAGER_H
 
 #include "Texture.h"
 #include "Texture2D.h"
@@ -50,4 +50,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_TEXTUREMANAGER_H_*/
+#endif /*TRAP_TEXTUREMANAGER_H*/

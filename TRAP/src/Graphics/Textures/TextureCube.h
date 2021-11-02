@@ -1,5 +1,5 @@
-#ifndef _TRAP_TEXTURECUBE_H_
-#define _TRAP_TEXTURECUBE_H_
+#ifndef TRAP_TEXTURECUBE_H
+#define TRAP_TEXTURECUBE_H
 
 #include "Texture.h"
 #include "ImageLoader/Image.h"
@@ -58,4 +58,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_TEXTURECUBE_H_*/
+#endif /*TRAP_TEXTURECUBE_H*/

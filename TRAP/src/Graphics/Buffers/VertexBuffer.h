@@ -1,5 +1,5 @@
-#ifndef _TRAP_VERTEXBUFFER_H_
-#define _TRAP_VERTEXBUFFER_H_
+#ifndef TRAP_VERTEXBUFFER_H
+#define TRAP_VERTEXBUFFER_H
 
 #include "VertexBufferLayout.h"
 #include "Graphics/API/ResourceLoader.h"
@@ -46,4 +46,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_VERTEXBUFFER_H_*/
+#endif /*TRAP_VERTEXBUFFER_H*/

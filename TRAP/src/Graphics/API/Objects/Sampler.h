@@ -1,5 +1,5 @@
-#ifndef _TRAP_SAMPLER_H_
-#define _TRAP_SAMPLER_H_
+#ifndef TRAP_SAMPLER_H
+#define TRAP_SAMPLER_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -66,4 +66,4 @@ namespace std
 	};
 }
 
-#endif /*_TRAP_SAMPLER_H_*/
+#endif /*TRAP_SAMPLER_H*/

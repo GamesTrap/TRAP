@@ -1,5 +1,5 @@
-#ifndef _TRAP_EVENT_H_
-#define _TRAP_EVENT_H_
+#ifndef TRAP_EVENT_H
+#define TRAP_EVENT_H
 
 #include <string>
 
@@ -174,4 +174,4 @@ TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs, TRAP::Ev
 TRAP::Events::EventCategory operator ~(TRAP::Events::EventCategory rhs);
 TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
 
-#endif /*_TRAP_EVENT_H_*/
+#endif /*TRAP_EVENT_H*/

@@ -23,8 +23,8 @@ freely, subject to the following restrictions:
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_INFLATE_H_
-#define _TRAP_INFLATE_H_
+#ifndef TRAP_INFLATE_H
+#define TRAP_INFLATE_H
 
 namespace TRAP::Utils::Decompress
 {
@@ -325,4 +325,4 @@ namespace TRAP::Utils::Decompress
 	             std::size_t destinationLength);
 }
 
-#endif /*_TRAP_INFLATE_H_*/
+#endif /*TRAP_INFLATE_H*/

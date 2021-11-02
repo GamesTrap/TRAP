@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANCOMMANDBUFFER_H_
-#define _TRAP_VULKANCOMMANDBUFFER_H_
+#ifndef TRAP_VULKANCOMMANDBUFFER_H
+#define TRAP_VULKANCOMMANDBUFFER_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
@@ -140,4 +140,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANCOMMANDBUFFER_H_*/
+#endif /*TRAP_VULKANCOMMANDBUFFER_H*/

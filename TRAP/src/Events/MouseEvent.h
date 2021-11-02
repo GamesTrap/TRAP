@@ -1,5 +1,5 @@
-#ifndef _TRAP_MOUSEEVENT_H_
-#define _TRAP_MOUSEEVENT_H_
+#ifndef TRAP_MOUSEEVENT_H
+#define TRAP_MOUSEEVENT_H
 
 #include "Input/Input.h"
 #include "Event.h"
@@ -493,4 +493,4 @@ namespace TRAP::Events
 	};
 }
 
-#endif /*_TRAP_MOUSEEVENT_H_*/
+#endif /*TRAP_MOUSEEVENT_H*/

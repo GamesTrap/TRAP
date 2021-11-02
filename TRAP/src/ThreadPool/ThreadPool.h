@@ -1,5 +1,5 @@
-#ifndef _TRAP_THREADPOOL_H_
-#define _TRAP_THREADPOOL_H_
+#ifndef TRAP_THREADPOOL_H
+#define TRAP_THREADPOOL_H
 
 #include "BlockingQueue.h"
 
@@ -122,4 +122,4 @@ auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::in
 	return result;
 }
 
-#endif /*_TRAP_THREADPOOL_H_*/
+#endif /*TRAP_THREADPOOL_H*/

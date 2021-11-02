@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_FTP_H_
-#define _TRAP_FTP_H_
+#ifndef TRAP_FTP_H
+#define TRAP_FTP_H
 
 #include "Network/Sockets/TCPSocket.h"
 #include "Utils/Time/TimeStep.h"
@@ -439,4 +439,4 @@ namespace TRAP::Network
 	};
 }
 
-#endif /*_TRAP_FTP_H_*/
+#endif /*TRAP_FTP_H*/

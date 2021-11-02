@@ -1,5 +1,5 @@
-#ifndef _TRAP_SHADERREFLECTION_H_
-#define _TRAP_SHADERREFLECTION_H_
+#ifndef TRAP_SHADERREFLECTION_H
+#define TRAP_SHADERREFLECTION_H
 #include "RendererAPI.h"
 
 namespace TRAP::Graphics::API::ShaderReflection
@@ -114,4 +114,4 @@ namespace TRAP::Graphics::API::ShaderReflection
 														   uint32_t stageCount);
 }
 
-#endif /*_TRAP_SHADERREFLECTION_H_*/
+#endif /*TRAP_SHADERREFLECTION_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_TRAPPCH_H_
-#define _TRAP_TRAPPCH_H_
+#ifndef TRAP_TRAPPCH_H
+#define TRAP_TRAPPCH_H
 
 #include "Core/PlatformDetection.h"
 #include "TRAP_Assert.h"
@@ -247,4 +247,4 @@
 	#pragma warning(pop)
 #endif
 
-#endif /*_TRAP_TRAPPCH_H_*/
+#endif /*TRAP_TRAPPCH_H*/

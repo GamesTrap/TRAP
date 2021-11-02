@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_CONTROLLERTESTS_H_
-#define _GAMESTRAP_CONTROLLERTESTS_H_
+#ifndef GAMESTRAP_CONTROLLERTESTS_H
+#define GAMESTRAP_CONTROLLERTESTS_H
 
 #include <TRAP.h>
 
@@ -24,4 +24,4 @@ private:
 	static bool s_dpadButtons;
 };
 
-#endif /*_GAMESTRAP_CONTROLLERTESTS_H_*/
+#endif /*GAMESTRAP_CONTROLLERTESTS_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_MONITOR_H_
-#define _TRAP_MONITOR_H_
+#ifndef TRAP_MONITOR_H
+#define TRAP_MONITOR_H
 
 #include "Window.h"
 #include "WindowingAPI.h"
@@ -166,4 +166,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_MONITOR_H_*/
+#endif /*TRAP_MONITOR_H*/

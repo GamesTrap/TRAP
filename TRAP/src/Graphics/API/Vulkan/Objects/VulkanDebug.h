@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANDEBUG_H_
-#define _TRAP_VULKANDEBUG_H_
+#ifndef TRAP_VULKANDEBUG_H
+#define TRAP_VULKANDEBUG_H
 
 namespace TRAP::Graphics::API
 {
@@ -28,4 +28,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANDEBUG_H_*/
+#endif /*TRAP_VULKANDEBUG_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_PIPELINE_H_
-#define _TRAP_PIPELINE_H_
+#ifndef TRAP_PIPELINE_H
+#define TRAP_PIPELINE_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -36,4 +36,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_PIPELINE_H_*/
+#endif /*TRAP_PIPELINE_H*/

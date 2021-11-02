@@ -1,5 +1,5 @@
-#ifndef _TRAP_BMPIMAGE_H_
-#define _TRAP_BMPIMAGE_H_
+#ifndef TRAP_BMPIMAGE_H
+#define TRAP_BMPIMAGE_H
 
 #include "ImageLoader/Image.h"
 
@@ -85,4 +85,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_BMPIMAGE_H_*/
+#endif /*TRAP_BMPIMAGE_H*/

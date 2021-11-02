@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANCOMMANDPOOL_H_
-#define _TRAP_VULKANCOMMANDPOOL_H_
+#ifndef TRAP_VULKANCOMMANDPOOL_H
+#define TRAP_VULKANCOMMANDPOOL_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandPool.h"
@@ -47,4 +47,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANCOMMANDPOOL_H_*/
+#endif /*TRAP_VULKANCOMMANDPOOL_H*/

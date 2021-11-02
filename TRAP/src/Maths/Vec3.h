@@ -29,8 +29,8 @@ THE SOFTWARE.
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_VEC3_H_
-#define _TRAP_VEC3_H_
+#ifndef TRAP_VEC3_H
+#define TRAP_VEC3_H
 
 #include "Types.h"
 #include "Core/Base.h"
@@ -1296,4 +1296,4 @@ constexpr TRAP::Math::Vec<3, bool> TRAP::Math::operator||(const Vec<3, bool>& v1
 	return Vec<3, bool>(v1.x || v2.x, v1.y || v2.y, v1.z || v2.z);
 }
 
-#endif /*_TRAP_VEC3_H_*/
+#endif /*TRAP_VEC3_H*/

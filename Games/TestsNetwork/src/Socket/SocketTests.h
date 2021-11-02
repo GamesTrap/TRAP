@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_SOCKETTESTS_H_
-#define _GAMESTRAP_SOCKETTESTS_H_
+#ifndef GAMESTRAP_SOCKETTESTS_H
+#define GAMESTRAP_SOCKETTESTS_H
 
 #include <TRAP.h>
 
@@ -27,4 +27,4 @@ private:
 	TRAP::Scope<std::thread> m_socketThread;
 };
 
-#endif /*_GAMESTRAP_SOCKETTESTS_H_*/
+#endif /*GAMESTRAP_SOCKETTESTS_H*/

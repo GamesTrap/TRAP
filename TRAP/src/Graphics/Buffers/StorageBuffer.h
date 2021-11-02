@@ -1,5 +1,5 @@
-#ifndef _TRAP_STORAGEBUFFER_H_
-#define _TRAP_STORAGEBUFFER_H_
+#ifndef TRAP_STORAGEBUFFER_H
+#define TRAP_STORAGEBUFFER_H
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/Buffer.h"
@@ -68,4 +68,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_STORAGEBUFFER_H_*/
+#endif /*TRAP_STORAGEBUFFER_H*/

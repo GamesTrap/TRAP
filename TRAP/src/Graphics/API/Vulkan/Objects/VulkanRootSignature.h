@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANROOTSIGNATURE_H_
-#define _TRAP_VULKANROOTSIGNATURE_H_
+#ifndef TRAP_VULKANROOTSIGNATURE_H
+#define TRAP_VULKANROOTSIGNATURE_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/RootSignature.h"
@@ -78,4 +78,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANROOTSIGNATURE_H_*/
+#endif /*TRAP_VULKANROOTSIGNATURE_H*/

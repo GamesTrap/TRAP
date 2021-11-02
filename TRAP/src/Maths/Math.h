@@ -29,8 +29,8 @@ THE SOFTWARE.
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_MATH_H_
-#define _TRAP_MATH_H_
+#ifndef TRAP_MATH_H
+#define TRAP_MATH_H
 
 #include "Vec2.h"
 #include "Vec3.h"
@@ -4613,4 +4613,4 @@ TRAP::Math::Vec<L, T> TRAP::Math::ATanH(const Vec<L, T>& v)
 	return result;
 }
 
-#endif /*_TRAP_MATH_H_*/
+#endif /*TRAP_MATH_H*/

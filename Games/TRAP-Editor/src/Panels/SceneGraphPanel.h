@@ -1,5 +1,5 @@
-#ifndef _TRAPEDITOR_SCENEGRAPHPANEL_H_
-#define _TRAPEDITOR_SCENEGRAPHPANEL_H_
+#ifndef TRAPEDITOR_SCENEGRAPHPANEL_H
+#define TRAPEDITOR_SCENEGRAPHPANEL_H
 
 #include <Scene/Scene.h>
 #include <Core/Base.h>
@@ -27,4 +27,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAPEDITOR_SCENEGRAPHPANEL_H_*/
+#endif /*TRAPEDITOR_SCENEGRAPHPANEL_H*/

@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_EVENTTESTS_H_
-#define _GAMESTRAP_EVENTTESTS_H_
+#ifndef GAMESTRAP_EVENTTESTS_H
+#define GAMESTRAP_EVENTTESTS_H
 
 #include <TRAP.h>
 
@@ -12,4 +12,4 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 };
 
-#endif /*_GAMESTRAP_EVENTTESTS_H_*/
+#endif /*GAMESTRAP_EVENTTESTS_H*/

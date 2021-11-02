@@ -1,5 +1,5 @@
-#ifndef _TRAP_SHADERMANAGER_H_
-#define _TRAP_SHADERMANAGER_H_
+#ifndef TRAP_SHADERMANAGER_H
+#define TRAP_SHADERMANAGER_H
 
 #include "Shader.h"
 
@@ -46,4 +46,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_SHADERMANAGER_H_*/
+#endif /*TRAP_SHADERMANAGER_H*/

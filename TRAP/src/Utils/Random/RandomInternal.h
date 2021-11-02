@@ -1,5 +1,5 @@
-#ifndef _TRAP_RANDOMINTERNAL_H_
-#define _TRAP_RANDOMINTERNAL_H_
+#ifndef TRAP_RANDOMINTERNAL_H
+#define TRAP_RANDOMINTERNAL_H
 
 namespace TRAP::Utils::INTERNAL
 {
@@ -92,4 +92,4 @@ namespace TRAP::Utils::INTERNAL
     };
 }
 
-#endif /*_TRAP_RANDOMINTERNAL_H_*/
+#endif /*TRAP_RANDOMINTERNAL_H*/

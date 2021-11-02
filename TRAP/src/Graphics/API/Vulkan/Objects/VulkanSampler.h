@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANSAMPLER_H_
-#define _TRAP_VULKANSAMPLER_H_
+#ifndef TRAP_VULKANSAMPLER_H
+#define TRAP_VULKANSAMPLER_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Sampler.h"
@@ -43,4 +43,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANSAMPLER_H_*/
+#endif /*TRAP_VULKANSAMPLER_H*/

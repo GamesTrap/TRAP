@@ -24,8 +24,8 @@ SOFTWARE.
 Modified by Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_IMGUIVULKANBACKEND_H_
-#define _TRAP_IMGUIVULKANBACKEND_H_
+#ifndef TRAP_IMGUIVULKANBACKEND_H
+#define TRAP_IMGUIVULKANBACKEND_H
 
 // dear imgui: Renderer Backend for Vulkan
 // This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
@@ -160,4 +160,4 @@ struct ImGui_ImplVulkanH_Window
     }
 };
 
-#endif /*_TRAP_IMGUIVULKANBACKEND_H_*/
+#endif /*TRAP_IMGUIVULKANBACKEND_H*/

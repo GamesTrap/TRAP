@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_ICONTESTS_H_
-#define _GAMESTRAP_ICONTESTS_H_
+#ifndef GAMESTRAP_ICONTESTS_H
+#define GAMESTRAP_ICONTESTS_H
 
 #include <TRAP.h>
 
@@ -21,4 +21,4 @@ private:
 	static int32_t s_cursorIconColor;
 };
 
-#endif /*_GAMESTRAP_ICONTESTS_H_*/
+#endif /*GAMESTRAP_ICONTESTS_H*/

@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_DRAGANDDROPTESTS_H_
-#define _GAMESTRAP_DRAGANDDROPTESTS_H_
+#ifndef GAMESTRAP_DRAGANDDROPTESTS_H
+#define GAMESTRAP_DRAGANDDROPTESTS_H
 
 #include <TRAP.h>
 
@@ -20,4 +20,4 @@ private:
 	std::vector<std::string> m_dropData;
 };
 
-#endif /*_GAMESTRAP_DRAGANDDROPTESTS_H_*/
+#endif /*GAMESTRAP_DRAGANDDROPTESTS_H*/

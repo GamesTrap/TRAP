@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANBUFFER_H_
-#define _TRAP_VULKANBUFFER_H_
+#ifndef TRAP_VULKANBUFFER_H
+#define TRAP_VULKANBUFFER_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Utils/VMA.h"
@@ -66,4 +66,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANBUFFER_H_*/
+#endif /*TRAP_VULKANBUFFER_H*/

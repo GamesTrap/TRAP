@@ -1,5 +1,5 @@
-#ifndef _TRAP_CONFIG_H_
-#define _TRAP_CONFIG_H_
+#ifndef TRAP_CONFIG_H
+#define TRAP_CONFIG_H
 
 #include "Window/Window.h"
 #include "Utils/String/String.h"
@@ -695,4 +695,4 @@ TRAP::Utils::Config::ConvertToString<TRAP::Graphics::RenderAPI>(const Graphics::
 	}
 }
 
-#endif /*_TRAP_CONFIG_H_*/
+#endif /*TRAP_CONFIG_H*/

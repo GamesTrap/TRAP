@@ -1,5 +1,5 @@
-#ifndef _TRAP_ENTITY_H_
-#define _TRAP_ENTITY_H_
+#ifndef TRAP_ENTITY_H
+#define TRAP_ENTITY_H
 
 #include "Core/PlatformDetection.h"
 #include "Core/Base.h"
@@ -71,4 +71,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_ENTITY_H_*/
+#endif /*TRAP_ENTITY_H*/

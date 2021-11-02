@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_TITLETESTS_H_
-#define _GAMESTRAP_TITLETESTS_H_
+#ifndef GAMESTRAP_CUBE3D_H
+#define GAMESTRAP_CUBE3D_H
 
 #include <TRAP.h>
 
@@ -74,4 +74,4 @@ private:
 	bool m_firstMouse; //Camera Controls
 };
 
-#endif /*_GAMESTRAP_TITLETESTS_H_*/
+#endif /*GAMESTRAP_CUBE3D_H*/

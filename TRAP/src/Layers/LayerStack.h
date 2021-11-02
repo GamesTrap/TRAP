@@ -1,5 +1,5 @@
-#ifndef _TRAP_LAYERSTACK_H_
-#define _TRAP_LAYERSTACK_H_
+#ifndef TRAP_LAYERSTACK_H
+#define TRAP_LAYERSTACK_H
 
 #include "Layer.h"
 
@@ -112,4 +112,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_LAYERSTACK_H_*/
+#endif /*TRAP_LAYERSTACK_H*/

@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_NETWORK_SOCKETIMPLWINAPI_H_
-#define _TRAP_NETWORK_SOCKETIMPLWINAPI_H_
+#ifndef TRAP_NETWORK_SOCKETIMPLWINAPI_H
+#define TRAP_NETWORK_SOCKETIMPLWINAPI_H
 
 #include "Core/PlatformDetection.h"
 #include "Network/Sockets/Socket.h"
@@ -94,4 +94,4 @@ namespace TRAP::INTERNAL::Network
 
 #endif
 
-#endif /*_TRAP_NETWORK_SOCKETIMPLWINAPI_H_*/
+#endif /*TRAP_NETWORK_SOCKETIMPLWINAPI_H*/

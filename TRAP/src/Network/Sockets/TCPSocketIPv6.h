@@ -1,5 +1,5 @@
-#ifndef _TRAP_NETWORK_TCPSOCKETIPV6_H_
-#define _TRAP_NETWORK_TCPSOCKETIPV6_H_
+#ifndef TRAP_NETWORK_TCPSOCKETIPV6_H
+#define TRAP_NETWORK_TCPSOCKETIPV6_H
 
 #include "Socket.h"
 #include "Network/IP/IPv6Address.h"
@@ -171,4 +171,4 @@ namespace TRAP::Network
 	};
 }
 
-#endif /*_TRAP_NETWORK_TCPSOCKETIPV6_H_*/
+#endif /*TRAP_NETWORK_TCPSOCKETIPV6_H*/

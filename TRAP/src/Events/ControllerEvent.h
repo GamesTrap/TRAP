@@ -1,5 +1,5 @@
-#ifndef _TRAP_CONTROLLEREVENT_H_
-#define _TRAP_CONTROLLEREVENT_H_
+#ifndef TRAP_CONTROLLEREVENT_H
+#define TRAP_CONTROLLEREVENT_H
 
 #include "Event.h"
 #include "Input/Input.h"
@@ -166,4 +166,4 @@ namespace TRAP::Events
 	};
 }
 
-#endif /*_TRAP_CONTROLLEREVENT_H_*/
+#endif /*TRAP_CONTROLLEREVENT_H*/

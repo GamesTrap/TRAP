@@ -1,5 +1,5 @@
-#ifndef _TRAP_RENDERERAPI_H_
-#define _TRAP_RENDERERAPI_H_
+#ifndef TRAP_RENDERERAPI_H
+#define TRAP_RENDERERAPI_H
 
 #include "Maths/Math.h"
 #include "Window/Window.h"
@@ -1388,4 +1388,4 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
 
-#endif /*_TRAP_RENDERERAPI_H_*/
+#endif /*TRAP_RENDERERAPI_H*/

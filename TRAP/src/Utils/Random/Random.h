@@ -1,5 +1,5 @@
-#ifndef _TRAP_RANDOM_H_
-#define _TRAP_RANDOM_H_
+#ifndef TRAP_RANDOM_H
+#define TRAP_RANDOM_H
 
 #include "RandomInternal.h"
 #include "TRAP_Assert.h"
@@ -1268,4 +1268,4 @@ namespace TRAP::Utils
     using RandomLocal = BasicRandomLocal<std::mt19937_64>;
 }
 
-#endif /*_TRAP_RANDOM_H_*/
+#endif /*TRAP_RANDOM_H*/

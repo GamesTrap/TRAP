@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANINITS_H_
-#define _TRAP_VULKANINITS_H_
+#ifndef TRAP_VULKANINITS_H
+#define TRAP_VULKANINITS_H
 
 #include "VulkanMemoryAllocator.h"
 
@@ -200,4 +200,4 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkMemoryAllocateInfo MemoryAllocateInfo(VkDeviceSize allocSize, uint32_t memoryTypeIndex);
 }
 
-#endif /*_TRAP_VULKANINITS_H_*/
+#endif /*TRAP_VULKANINITS_H*/

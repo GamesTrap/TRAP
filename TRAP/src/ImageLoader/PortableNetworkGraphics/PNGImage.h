@@ -1,5 +1,5 @@
-#ifndef _TRAP_PNGIMAGE_H_
-#define _TRAP_PNGIMAGE_H_
+#ifndef TRAP_PNGIMAGE_H
+#define TRAP_PNGIMAGE_H
 
 #include "ImageLoader/Image.h"
 
@@ -162,4 +162,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_PNGIMAGE_H_*/
+#endif /*TRAP_PNGIMAGE_H*/

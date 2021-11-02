@@ -1,5 +1,5 @@
-#ifndef _TRAP_TEXTUREBASE_H_
-#define _TRAP_TEXTUREBASE_H_
+#ifndef TRAP_TEXTUREBASE_H
+#define TRAP_TEXTUREBASE_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -61,4 +61,4 @@ namespace TRAP::Graphics
     };
 }
 
-#endif /*_TRAP_TEXTUREBASE_H_*/
+#endif /*TRAP_TEXTUREBASE_H*/

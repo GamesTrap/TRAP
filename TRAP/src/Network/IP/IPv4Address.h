@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_IPV4ADDRESS_H_
-#define _TRAP_IPV4ADDRESS_H_
+#ifndef TRAP_IPV4ADDRESS_H
+#define TRAP_IPV4ADDRESS_H
 
 #include "Utils/Time/TimeStep.h"
 
@@ -248,4 +248,4 @@ namespace TRAP::Network
 	std::ostream& operator<<(std::ostream& stream, const IPv4Address& address);
 }
 
-#endif /*_TRAP_NETWORK_IPADDRESS_H*/
+#endif /*TRAP_IPV4ADDRESS_H*/

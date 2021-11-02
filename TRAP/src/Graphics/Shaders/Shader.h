@@ -1,5 +1,5 @@
-#ifndef _TRAP_SHADER_H_
-#define _TRAP_SHADER_H_
+#ifndef TRAP_SHADER_H
+#define TRAP_SHADER_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Buffers/UniformBuffer.h"
@@ -216,4 +216,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_SHADER_H_*/
+#endif /*TRAP_SHADER_H*/

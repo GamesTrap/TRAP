@@ -1,5 +1,5 @@
-#ifndef _TRAP_PIPELINEDESCHASH_H_
-#define _TRAP_PIPELINEDESCHASH_H_
+#ifndef TRAP_PIPELINEDESCHASH_H
+#define TRAP_PIPELINEDESCHASH_H
 
 #include "RendererAPI.h"
 #include "Utils/Utils.h"
@@ -138,4 +138,4 @@ namespace std
 	};
 }
 
-#endif /*_TRAP_PIPELINEDESCHASH_H_*/
+#endif /*TRAP_PIPELINEDESCHASH_H*/

@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_IPV6TESTS_H_
-#define _GAMESTRAP_IPV6TESTS_H_
+#ifndef GAMESTRAP_IPV6TESTS_H
+#define GAMESTRAP_IPV6TESTS_H
 
 #include <TRAP.h>
 
@@ -18,4 +18,4 @@ private:
 };
 
 
-#endif /*_GAMESTRAP_IPV6TESTS_H_*/
+#endif /*GAMESTRAP_IPV6TESTS_H*/

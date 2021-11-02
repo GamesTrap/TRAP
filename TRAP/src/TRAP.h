@@ -1,5 +1,5 @@
-#ifndef _TRAP_TRAP_H_
-#define _TRAP_TRAP_H_
+#ifndef TRAP_TRAP_H
+#define TRAP_TRAP_H
 
 //----BASE---------------
 #include "../src/Core/Base.h"
@@ -123,4 +123,4 @@
 #include "../src/Scene/ScriptableEntity.h"
 //-----------------------
 
-#endif /*_TRAP_TRAP_H_*/
+#endif /*TRAP_TRAP_H*/

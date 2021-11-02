@@ -1,5 +1,5 @@
-#ifndef _TRAP_TIMER_H_
-#define _TRAP_TIMER_H_
+#ifndef TRAP_TIMER_H
+#define TRAP_TIMER_H
 
 namespace TRAP::Utils
 {
@@ -56,4 +56,4 @@ namespace TRAP::Utils
 	};
 }
 
-#endif /*_TRAP_TIMER_H_*/
+#endif /*TRAP_TIMER_H*/

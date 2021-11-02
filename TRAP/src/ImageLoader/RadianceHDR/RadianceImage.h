@@ -1,5 +1,5 @@
-#ifndef _TRAP_RADIANCEIMAGE_H_
-#define _TRAP_RADIANCEIMAGE_H_
+#ifndef TRAP_RADIANCEIMAGE_H
+#define TRAP_RADIANCEIMAGE_H
 
 #include "ImageLoader/Image.h"
 
@@ -67,4 +67,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_IMAGE_RADIANCE_H_*/
+#endif /*TRAP_IMAGE_RADIANCE_H*/

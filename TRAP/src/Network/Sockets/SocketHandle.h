@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_NETWORK_SOCKETHANDLE_H_
-#define _TRAP_NETWORK_SOCKETHANDLE_H_
+#ifndef TRAP_NETWORK_SOCKETHANDLE_H
+#define TRAP_NETWORK_SOCKETHANDLE_H
 
 #include <cstdint>
 #include "Core/PlatformDetection.h"
@@ -41,4 +41,4 @@ namespace TRAP::Network
 #endif
 }
 
-#endif /*_TRAP_NETWORK_SOCKETHANDLE_H_*/
+#endif /*TRAP_NETWORK_SOCKETHANDLE_H*/

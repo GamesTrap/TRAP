@@ -1,5 +1,5 @@
-#ifndef _TRAP_SPIRVTOOLS_H_
-#define _TRAP_SPIRVTOOLS_H_
+#ifndef TRAP_SPIRVTOOLS_H
+#define TRAP_SPIRVTOOLS_H
 
 namespace TRAP::Graphics::API::SPIRVTools
 {
@@ -135,4 +135,4 @@ namespace TRAP::Graphics::API::SPIRVTools
 	uint32_t ReflectTessellationControlShaderControlPoint(CrossCompiler& compiler);
 }
 
-#endif /*_TRAP_SPIRVTOOLS_H_*/
+#endif /*TRAP_SPIRVTOOLS_H*/

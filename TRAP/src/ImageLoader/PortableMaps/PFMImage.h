@@ -1,5 +1,5 @@
-#ifndef _TRAP_PFMIMAGE_H_
-#define _TRAP_PFMIMAGE_H_
+#ifndef TRAP_PFMIMAGE_H
+#define TRAP_PFMIMAGE_H
 
 #include "ImageLoader/Image.h"
 
@@ -58,4 +58,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_PFMIMAGE_H_*/
+#endif /*TRAP_PFMIMAGE_H*/

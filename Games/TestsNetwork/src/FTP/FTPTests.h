@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_FTPTESTS_H_
-#define _GAMESTRAP_FTPTESTS_H_
+#ifndef GAMESTRAP_FTPTESTS_H
+#define GAMESTRAP_FTPTESTS_H
 
 #include <TRAP.h>
 
@@ -17,4 +17,4 @@ private:
 	TRAP::Scope<std::thread> m_ftpThread;
 };
 
-#endif /*_GAMESTRAP_FTPTESTS_H_*/
+#endif /*GAMESTRAP_FTPTESTS_H*/

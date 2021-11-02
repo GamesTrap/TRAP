@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANDESCRIPTORPOOL_H_
-#define _TRAP_VULKANDESCRIPTORPOOL_H_
+#ifndef TRAP_VULKANDESCRIPTORPOOL_H
+#define TRAP_VULKANDESCRIPTORPOOL_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/DescriptorPool.h"
@@ -65,4 +65,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANDESCRIPTORPOOL_H_*/
+#endif /*TRAP_VULKANDESCRIPTORPOOL_H*/

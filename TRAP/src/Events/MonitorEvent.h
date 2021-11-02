@@ -1,5 +1,5 @@
-#ifndef _TRAP_MONITOREVENT_H_
-#define _TRAP_MONITOREVENT_H_
+#ifndef TRAP_MONITOREVENT_H
+#define TRAP_MONITOREVENT_H
 
 #include "Event.h"
 #include "Window/Monitor.h"
@@ -166,4 +166,4 @@ namespace TRAP::Events
 	};
 }
 
-#endif /*_TRAP_MONITOREVENT_H_*/
+#endif /*TRAP_MONITOREVENT_H*/

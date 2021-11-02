@@ -1,5 +1,5 @@
-#ifndef _TRAP_CORE_H_
-#define _TRAP_CORE_H_
+#ifndef TRAP_CORE_H
+#define TRAP_CORE_H
 
 #include <memory>
 #include "PlatformDetection.h"
@@ -68,7 +68,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 93);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 94);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -186,4 +186,4 @@ namespace TRAP
 	}
 }
 
-#endif /*_TRAP_CORE_H_*/
+#endif /*TRAP_CORE_H*/

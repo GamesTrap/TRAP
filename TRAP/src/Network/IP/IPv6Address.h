@@ -1,5 +1,5 @@
-#ifndef _TRAP_IPV6ADDRESS_H_
-#define _TRAP_IPV6ADDRESS_H_
+#ifndef TRAP_IPV6ADDRESS_H
+#define TRAP_IPV6ADDRESS_H
 
 #include "Utils/Time/TimeStep.h"
 
@@ -198,4 +198,4 @@ namespace TRAP::Network
 	std::ostream& operator<<(std::ostream& stream, const IPv6Address& address);
 }
 
-#endif /*_TRAP_IPV6ADDRESS_H_*/
+#endif /*TRAP_IPV6ADDRESS_H*/

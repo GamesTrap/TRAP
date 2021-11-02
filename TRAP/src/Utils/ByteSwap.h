@@ -1,5 +1,5 @@
-#ifndef _TRAP_BYTESWAP_H_
-#define _TRAP_BYTESWAP_H_
+#ifndef TRAP_BYTESWAP_H
+#define TRAP_BYTESWAP_H
 
 #include <bitset>
 
@@ -134,4 +134,4 @@ inline void TRAP::Utils::Memory::SwapBytes<int64_t>(int64_t& t)
 	t = (t << 32) | ((t >> 32) & 0xFFFFFFFFULL);
 }
 
-#endif /*_TRAP_BYTESWAP_H_*/
+#endif /*TRAP_BYTESWAP_H*/

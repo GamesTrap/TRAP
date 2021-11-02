@@ -1,5 +1,5 @@
-#ifndef _TRAP_LOG_INL_
-#define _TRAP_LOG_INL_
+#ifndef TRAP_LOG_INL
+#define TRAP_LOG_INL
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
@@ -244,4 +244,4 @@ void TRAP::Log::Critical(Args&& ... args)
 }
 #endif
 
-#endif /*_TRAP_LOG_INL_*/
+#endif /*TRAP_LOG_INL*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_EMBED_H_
-#define _TRAP_EMBED_H_
+#ifndef TRAP_EMBED_H
+#define TRAP_EMBED_H
 
 namespace TRAP::Embed
 {
@@ -18920,4 +18920,4 @@ namespace TRAP::Embed
 	};
 }
 
-#endif /*_TRAP_EMBED_H_*/
+#endif /*TRAP_EMBED_H*/

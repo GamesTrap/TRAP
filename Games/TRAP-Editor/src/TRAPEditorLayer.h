@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_TRAPEDITORLAYER_H_
-#define _GAMESTRAP_TRAPEDITORLAYER_H_
+#ifndef GAMESTRAP_TRAPEDITORLAYER_H
+#define GAMESTRAP_TRAPEDITORLAYER_H
 
 #include <TRAP.h>
 #include "Panels/SceneGraphPanel.h"
@@ -39,4 +39,4 @@ private:
 	std::string m_lastScenePath;
 };
 
-#endif /*_GAMESTRAP_TRAPEDITORLAYER_H_*/
+#endif /*GAMESTRAP_TRAPEDITORLAYER_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_VERTEXBUFFERLAYOUT_H_
-#define _TRAP_VERTEXBUFFERLAYOUT_H_
+#ifndef TRAP_VERTEXBUFFERLAYOUT_H
+#define TRAP_VERTEXBUFFERLAYOUT_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -88,4 +88,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_VERTEXBUFFERLAYOUT_H_*/
+#endif /*TRAP_VERTEXBUFFERLAYOUT_H*/

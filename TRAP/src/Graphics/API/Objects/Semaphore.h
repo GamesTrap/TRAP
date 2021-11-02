@@ -1,5 +1,5 @@
-#ifndef _TRAP_SEMAPHORE_H_
-#define _TRAP_SEMAPHORE_H_
+#ifndef TRAP_SEMAPHORE_H
+#define TRAP_SEMAPHORE_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanQueue.h"
@@ -43,4 +43,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_SEMAPHORE_H_*/
+#endif /*TRAP_SEMAPHORE_H*/

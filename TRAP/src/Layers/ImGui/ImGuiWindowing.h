@@ -23,8 +23,8 @@ SOFTWARE.
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_IMGUIWINDOWING_H_
-#define _TRAP_IMGUIWINDOWING_H_
+#ifndef TRAP_IMGUIWINDOWING_H
+#define TRAP_IMGUIWINDOWING_H
 
 #include "Core/PlatformDetection.h"
 #include "Window/WindowingAPI.h"
@@ -115,4 +115,4 @@ namespace TRAP::INTERNAL
 	};
 }
 
-#endif /*_TRAP_IMGUIWINDOWING_H_*/
+#endif /*TRAP_IMGUIWINDOWING_H*/

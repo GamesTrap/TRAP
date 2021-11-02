@@ -1,5 +1,5 @@
-#ifndef _TRAP_VFS_H_
-#define _TRAP_VFS_H_
+#ifndef TRAP_VFS_H
+#define TRAP_VFS_H
 
 #include "Application.h"
 #include "FileWatcher.h"
@@ -374,4 +374,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_VFS_H_*/
+#endif /*TRAP_VFS_H*/

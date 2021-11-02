@@ -26,8 +26,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 The above license only applies to some of the Controller specific parts of this file!
 */
 
-#ifndef _TRAP_INPUT_H_
-#define _TRAP_INPUT_H_
+#ifndef TRAP_INPUT_H
+#define TRAP_INPUT_H
 
 #include "Core/PlatformDetection.h" //Needed for OS dependent includes
 
@@ -994,4 +994,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_INPUT_H_*/
+#endif /*TRAP_INPUT_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_INDEXBUFFER_H_
-#define _TRAP_INDEXBUFFER_H_
+#ifndef TRAP_INDEXBUFFER_H
+#define TRAP_INDEXBUFFER_H
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/Buffer.h"
@@ -119,4 +119,4 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64
 		m_indexType = RendererAPI::IndexType::UInt32;
 }
 
-#endif /*_TRAP_INDEXBUFFER_H_*/
+#endif /*TRAP_INDEXBUFFER_H*/

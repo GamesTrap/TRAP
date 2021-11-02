@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANQUERYPOOL_H_
-#define _TRAP_VULKANQUERYPOOL_H_
+#ifndef TRAP_VULKANQUERYPOOL_H
+#define TRAP_VULKANQUERYPOOL_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/QueryPool.h"
@@ -42,4 +42,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANQUERYPOOL_H_*/
+#endif /*TRAP_VULKANQUERYPOOL_H*/

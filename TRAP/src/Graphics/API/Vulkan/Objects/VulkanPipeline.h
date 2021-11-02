@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANPIPELINE_H_
-#define _TRAP_VULKANPIPELINE_H_
+#ifndef TRAP_VULKANPIPELINE_H
+#define TRAP_VULKANPIPELINE_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Pipeline.h"
@@ -48,4 +48,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANPIPELINE_H_*/
+#endif /*TRAP_VULKANPIPELINE_H*/

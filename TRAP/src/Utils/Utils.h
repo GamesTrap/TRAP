@@ -1,5 +1,5 @@
-#ifndef _TRAP_UTILS_H_
-#define _TRAP_UTILS_H_
+#ifndef TRAP_UTILS_H
+#define TRAP_UTILS_H
 
 namespace TRAP::Utils
 {
@@ -89,4 +89,4 @@ namespace TRAP::Utils
 	std::string LinuxWindowManagerToString(LinuxWindowManager lwm);
 }
 
-#endif /*_TRAP_UTILS_H_*/
+#endif /*TRAP_UTILS_H*/

@@ -1,5 +1,5 @@
-#ifndef _TRAP_KEYEVENT_H_
-#define _TRAP_KEYEVENT_H_
+#ifndef TRAP_KEYEVENT_H
+#define TRAP_KEYEVENT_H
 
 #include "Input/Input.h"
 #include "Event.h"
@@ -352,4 +352,4 @@ namespace TRAP::Events
 	};
 }
 
-#endif /*_TRAP_KEYEVENT_H_*/
+#endif /*TRAP_KEYEVENT_H*/

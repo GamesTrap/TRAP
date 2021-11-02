@@ -1,5 +1,5 @@
-#ifndef _TRAP_PLATFORMDETECTION_H_
-#define _TRAP_PLATFORMDETECTION_H_
+#ifndef TRAP_PLATFORMDETECTION_H
+#define TRAP_PLATFORMDETECTION_H
 
 #ifdef _WIN32
 	//Windows x64/x86
@@ -29,4 +29,4 @@
 	#error "Unknown platform!"
 #endif
 
-#endif /*_TRAP_PLATFORMDETECTION_H_*/
+#endif /*TRAP_PLATFORMDETECTION_H*/

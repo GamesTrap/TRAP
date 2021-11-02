@@ -1,5 +1,5 @@
-#ifndef _TRAP_LAYER_H_
-#define _TRAP_LAYER_H_
+#ifndef TRAP_LAYER_H
+#define TRAP_LAYER_H
 
 #include "Utils/Time/TimeStep.h"
 #include "Events/Event.h"
@@ -74,4 +74,4 @@ namespace TRAP
 	};
 }
 
-#endif /*_TRAP_LAYER_H_*/
+#endif /*TRAP_LAYER_H*/

@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_CURSORTESTS_H_
-#define _GAMESTRAP_CURSORTESTS_H_
+#ifndef GAMESTRAP_CURSORTESTS_H
+#define GAMESTRAP_CURSORTESTS_H
 
 #include <TRAP.h>
 
@@ -27,4 +27,4 @@ private:
 	TRAP::Image* m_currentFrame;
 };
 
-#endif /*_GAMESTRAP_CURSORTESTS_H_*/
+#endif /*GAMESTRAP_CURSORTESTS_H*/

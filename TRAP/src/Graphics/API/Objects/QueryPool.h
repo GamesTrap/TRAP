@@ -1,5 +1,5 @@
-#ifndef _TRAP_QUERYPOOL_H_
-#define _TRAP_QUERYPOOL_H_
+#ifndef TRAP_QUERYPOOL_H
+#define TRAP_QUERYPOOL_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -36,4 +36,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_QUERYPOOL_H_*/
+#endif /*TRAP_QUERYPOOL_H*/

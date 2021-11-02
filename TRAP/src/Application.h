@@ -1,5 +1,5 @@
-#ifndef _TRAP_APPLICATION_H_
-#define _TRAP_APPLICATION_H_
+#ifndef TRAP_APPLICATION_H
+#define TRAP_APPLICATION_H
 
 #include "Layers/ImGui/ImGuiLayer.h"
 
@@ -271,4 +271,4 @@ namespace TRAP
 	std::unique_ptr<Application> CreateApplication();
 }
 
-#endif /*_TRAP_APPLICATION_H_*/
+#endif /*TRAP_APPLICATION_H*/

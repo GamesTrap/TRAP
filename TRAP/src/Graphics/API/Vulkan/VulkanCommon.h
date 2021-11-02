@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANCOMMON_H_
-#define _TRAP_VULKANCOMMON_H_
+#ifndef TRAP_VULKANCOMMON_H
+#define TRAP_VULKANCOMMON_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -149,4 +149,4 @@ namespace TRAP::Graphics::API
 	{}
 #endif
 
-#endif /*_TRAP_VULKANCOMMON_H_*/
+#endif /*TRAP_VULKANCOMMON_H*/

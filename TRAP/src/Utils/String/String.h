@@ -1,5 +1,5 @@
-#ifndef _TRAP_STRING_H_
-#define _TRAP_STRING_H_
+#ifndef TRAP_STRING_H
+#define TRAP_STRING_H
 
 namespace TRAP::Utils::String
 {
@@ -191,4 +191,4 @@ namespace TRAP::Utils::String
 	bool CompareAnyCase(std::string_view left, std::string_view right);
 }
 
-#endif /*_TRAP_STRING_H_*/
+#endif /*TRAP_STRING_H*/

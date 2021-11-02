@@ -1,5 +1,5 @@
-#ifndef _TRAP_PIPELINECACHE_H_
-#define _TRAP_PIPELINECACHE_H_
+#ifndef TRAP_PIPELINECACHE_H
+#define TRAP_PIPELINECACHE_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -41,4 +41,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_PIPELINECACHE_H_*/
+#endif /*TRAP_PIPELINECACHE_H*/

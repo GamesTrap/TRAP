@@ -1,5 +1,5 @@
-#ifndef _TRAP_UNIFORMBUFFER_H_
-#define _TRAP_UNIFORMBUFFER_H_
+#ifndef TRAP_UNIFORMBUFFER_H
+#define TRAP_UNIFORMBUFFER_H
 
 #include "Graphics/API/ResourceLoader.h"
 
@@ -47,4 +47,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_UNIFORMBUFFER_H_*/
+#endif /*TRAP_UNIFORMBUFFER_H*/

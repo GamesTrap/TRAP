@@ -1,5 +1,5 @@
-#ifndef _TRAP_RESOURCELOADER_H_
-#define _TRAP_RESOURCELOADER_H_
+#ifndef TRAP_RESOURCELOADER_H
+#define TRAP_RESOURCELOADER_H
 
 #include "RendererAPI.h"
 #include "ImageLoader/Image.h"
@@ -198,4 +198,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_RESOURCELOADER_H_*/
+#endif /*TRAP_RESOURCELOADER_H*/

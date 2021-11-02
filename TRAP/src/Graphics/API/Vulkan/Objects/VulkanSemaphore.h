@@ -1,5 +1,5 @@
-#ifndef _TRAP_VULKANSEMAPHORE_H_
-#define _TRAP_VULKANSEMAPHORE_H_
+#ifndef TRAP_VULKANSEMAPHORE_H
+#define TRAP_VULKANSEMAPHORE_H
 
 #include "VulkanSwapChain.h"
 #include "Graphics/API/Objects/Semaphore.h"
@@ -44,4 +44,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-#endif /*_TRAP_VULKANSEMAPHORE_H_*/
+#endif /*TRAP_VULKANSEMAPHORE_H*/

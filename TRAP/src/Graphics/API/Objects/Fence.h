@@ -1,5 +1,5 @@
-#ifndef _TRAP_FENCE_H_
-#define _TRAP_FENCE_H_
+#ifndef TRAP_FENCE_H
+#define TRAP_FENCE_H
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanQueue.h"
@@ -48,4 +48,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_FENCE_H_*/
+#endif /*TRAP_FENCE_H*/

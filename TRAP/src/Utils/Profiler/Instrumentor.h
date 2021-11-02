@@ -1,5 +1,5 @@
-#ifndef _TRAP_INSTRUMENTOR_H_
-#define _TRAP_INSTRUMENTOR_H_
+#ifndef TRAP_INSTRUMENTOR_H
+#define TRAP_INSTRUMENTOR_H
 
 namespace TRAP::Utils::Debug
 {
@@ -241,4 +241,4 @@ namespace TRAP::Utils::Debug
 	inline constexpr void TP_PROFILE_FUNCTION() {}
 #endif
 
-#endif /*_TRAP_INSTRUMENTOR_H_*/
+#endif /*TRAP_INSTRUMENTOR_H*/

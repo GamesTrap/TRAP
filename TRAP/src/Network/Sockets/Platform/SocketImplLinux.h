@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_NETWORK_SOCKETIMPLLINUX_H_
-#define _TRAP_NETWORK_SOCKETIMPLLINUX_H_
+#ifndef TRAP_NETWORK_SOCKETIMPLLINUX_H
+#define TRAP_NETWORK_SOCKETIMPLLINUX_H
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -100,4 +100,4 @@ namespace TRAP::INTERNAL::Network
 
 #endif
 
-#endif /*_TRAP_NETWORK_SOCKETIMPLLINUX_H_*/
+#endif /*TRAP_NETWORK_SOCKETIMPLLINUX_H*/

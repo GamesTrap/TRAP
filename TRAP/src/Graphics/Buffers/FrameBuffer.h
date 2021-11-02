@@ -1,5 +1,5 @@
-#ifndef _TRAP_FRAMEBUFFER_H_
-#define _TRAP_FRAMEBUFFER_H_
+#ifndef TRAP_FRAMEBUFFER_H
+#define TRAP_FRAMEBUFFER_H
 
 namespace TRAP::Graphics
 {
@@ -34,4 +34,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_FRAMEBUFFER_H_*/
+#endif /*TRAP_FRAMEBUFFER_H*/

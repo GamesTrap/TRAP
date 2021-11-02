@@ -1,5 +1,5 @@
-#ifndef _TRAP_ENTRYPOINT_H_
-#define _TRAP_ENTRYPOINT_H_
+#ifndef TRAP_ENTRYPOINT_H
+#define TRAP_ENTRYPOINT_H
 
 #include "Application.h"
 #include "Core/PlatformDetection.h"
@@ -21,4 +21,4 @@ extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication();
 
 int main();
 
-#endif /*_TRAP_ENTRYPOINT_H_*/
+#endif /*TRAP_ENTRYPOINT_H*/

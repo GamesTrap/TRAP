@@ -1,5 +1,5 @@
-#ifndef _TRAP_IMGUILAYER_H_
-#define _TRAP_IMGUILAYER_H_
+#ifndef TRAP_IMGUILAYER_H
+#define TRAP_IMGUILAYER_H
 
 #include "Layers/Layer.h"
 
@@ -116,4 +116,4 @@ namespace ImGui
 							     const ImWchar* glyphRanges = nullptr);
 }
 
-#endif /*_TRAP_IMGUILAYER_H_*/
+#endif /*TRAP_IMGUILAYER_H*/

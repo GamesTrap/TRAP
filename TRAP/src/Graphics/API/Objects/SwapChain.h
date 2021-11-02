@@ -1,5 +1,5 @@
-#ifndef _TRAP_SWAPCHAIN_H_
-#define _TRAP_SWAPCHAIN_H_
+#ifndef TRAP_SWAPCHAIN_H
+#define TRAP_SWAPCHAIN_H
 
 #include "Graphics/API/RendererAPI.h"
 
@@ -49,4 +49,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_SWAPCHAIN_H_*/
+#endif /*TRAP_SWAPCHAIN_H*/

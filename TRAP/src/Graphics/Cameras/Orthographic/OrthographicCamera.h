@@ -1,5 +1,5 @@
-#ifndef _TRAP_ORTHOGRAPHICCAMERA_H_
-#define _TRAP_ORTHOGRAPHICCAMERA_H_
+#ifndef TRAP_ORTHOGRAPHICCAMERA_H
+#define TRAP_ORTHOGRAPHICCAMERA_H
 
 #include "Maths/Math.h"
 
@@ -50,4 +50,4 @@ namespace TRAP::Graphics
 	};
 }
 
-#endif /*_TRAP_ORTHOGRAPHICCAMERA_H_*/
+#endif /*TRAP_ORTHOGRAPHICCAMERA_H*/
