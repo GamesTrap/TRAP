@@ -53,7 +53,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueue& TRAP::Graphics::API::VulkanQueue::GetVkQueue()
+VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const
 {
 	return m_vkQueue;
 }
@@ -194,7 +194,8 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 	uint32_t presentIndex = desc.Index;
 
 	VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
-	VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sChain->GetVkSwapChain(), presentIndex);
+	VkSwapchainKHR sc = sChain->GetVkSwapChain();
+	VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 	std::lock_guard<std::mutex> lock(m_submitMutex);

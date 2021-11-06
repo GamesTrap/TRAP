@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 
 		void ToggleVSync() override;
 
-		const VkSwapchainKHR& GetVkSwapChain() const;
+		VkSwapchainKHR GetVkSwapChain() const;
 		VkQueue GetPresentVkQueue() const;
 
 	private:

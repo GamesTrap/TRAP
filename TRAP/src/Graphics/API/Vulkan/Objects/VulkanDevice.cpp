@@ -135,7 +135,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDevice& TRAP::Graphics::API::VulkanDevice::GetVkDevice()
+VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
 {
 	return m_device;
 }

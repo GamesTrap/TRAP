@@ -119,7 +119,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPass& TRAP::Graphics::API::VulkanRenderPass::GetVkRenderPass()
+VkRenderPass TRAP::Graphics::API::VulkanRenderPass::GetVkRenderPass() const
 {
 	return m_renderPass;
 }

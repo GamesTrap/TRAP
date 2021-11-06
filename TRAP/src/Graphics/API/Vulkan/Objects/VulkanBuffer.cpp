@@ -133,21 +133,21 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBuffer& TRAP::Graphics::API::VulkanBuffer::GetVkBuffer()
+VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const
 {
 	return m_vkBuffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferView& TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView()
+VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const
 {
 	return m_vkStorageTexelView;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferView& TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView()
+VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const
 {
 	return m_vkUniformTexelView;
 }

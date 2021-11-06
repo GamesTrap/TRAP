@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanPipeline& operator=(VulkanPipeline&&) = default;
 
-		VkPipeline& GetVkPipeline();
+		VkPipeline GetVkPipeline() const;
 		RendererAPI::PipelineType GetPipelineType() const;
 
 	private:

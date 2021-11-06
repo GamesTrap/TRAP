@@ -269,7 +269,7 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanRenderTar
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView()
+VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
 {
 	return m_vkDescriptor;
 }

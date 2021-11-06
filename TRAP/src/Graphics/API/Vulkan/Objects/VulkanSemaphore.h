@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanSemaphore& operator=(VulkanSemaphore&&) = default;
 
-		VkSemaphore& GetVkSemaphore();
+		VkSemaphore GetVkSemaphore() const;
 
 	private:
 		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,

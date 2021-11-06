@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanSampler& operator=(VulkanSampler&&) = default;
 
-		VkSampler& GetVkSampler();
+		VkSampler GetVkSampler() const;
 
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

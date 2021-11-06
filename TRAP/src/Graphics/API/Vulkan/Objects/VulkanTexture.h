@@ -34,11 +34,11 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanTexture& operator=(VulkanTexture&&) = default;
 
-		VkImageView& GetSRVVkImageView();
-		VkImageView& GetSRVStencilVkImageView();
+		VkImageView GetSRVVkImageView() const;
+		VkImageView GetSRVStencilVkImageView() const;
 		const std::vector<VkImageView>& GetUAVVkImageViews() const;
-		VkImage& GetVkImage();
-		VmaAllocation& GetVMAAllocation();
+		VkImage GetVkImage();
+		VmaAllocation GetVMAAllocation() const;
 
 		void SetTextureName(const std::string& name) const override;
 

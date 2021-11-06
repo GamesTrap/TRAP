@@ -34,7 +34,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanSurface& operator=(VulkanSurface&&) = default;
 
-		VkSurfaceKHR& GetVkSurface();
+		VkSurfaceKHR GetVkSurface() const;
 		VkSurfaceCapabilitiesKHR GetVkSurfaceCapabilities() const;
 		const std::vector<VkSurfaceFormatKHR>& GetVkSurfaceFormats() const;
 		const std::vector<VkPresentModeKHR>& GetVkSurfacePresentModes() const;

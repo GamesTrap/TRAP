@@ -336,7 +336,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipeline& TRAP::Graphics::API::VulkanPipeline::GetVkPipeline()
+VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 {
 	return m_vkPipeline;
 }

@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 		VulkanDevice(VulkanDevice&&) = default;
 		VulkanDevice& operator=(VulkanDevice&&) = default;
 
-		VkDevice& GetVkDevice();
+		VkDevice GetVkDevice() const;
 
 		const TRAP::Scope<VulkanPhysicalDevice>& GetPhysicalDevice() const;
 

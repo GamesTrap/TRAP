@@ -38,7 +38,7 @@ namespace TRAP::Graphics::API
 
 		void Reset() override;
 
-		VkDescriptorPool& GetCurrentVkDescriptorPool();
+		VkDescriptorPool GetCurrentVkDescriptorPool() const;
 		const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const;
 		uint32_t GetUsedDescriptorSetsCount() const;
 

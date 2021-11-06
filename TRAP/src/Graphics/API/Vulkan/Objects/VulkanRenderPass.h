@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanRenderPass& operator=(VulkanRenderPass&&) = default;
 
-		VkRenderPass& GetVkRenderPass();
+		VkRenderPass GetVkRenderPass() const;
 
 		const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const;
 		const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const;

@@ -37,7 +37,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = delete;
 
-		VkCommandBuffer& GetVkCommandBuffer();
+		VkCommandBuffer GetVkCommandBuffer() const;
 		RendererAPI::QueueType GetQueueType() const;
 		bool IsSecondary() const;
 

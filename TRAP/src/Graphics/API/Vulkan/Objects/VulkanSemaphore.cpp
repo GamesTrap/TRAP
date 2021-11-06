@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSemaphore& TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore()
+VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const
 {
 	return m_semaphore;
 }

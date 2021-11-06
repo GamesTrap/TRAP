@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 		VulkanInstance(VulkanInstance&&) = default;
 		VulkanInstance& operator=(VulkanInstance&&) = default;
 
-		VkInstance& GetVkInstance();
+		VkInstance GetVkInstance() const;
 		const std::vector<std::string>& GetUsedInstanceLayers() const;
 		const std::vector<std::string>& GetUsedInstanceExtensions() const;
 

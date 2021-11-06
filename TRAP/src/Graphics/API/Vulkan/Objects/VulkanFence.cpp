@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFence& TRAP::Graphics::API::VulkanFence::GetVkFence()
+VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const
 {
 	return m_fence;
 }

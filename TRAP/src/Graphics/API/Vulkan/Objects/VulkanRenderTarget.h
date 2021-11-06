@@ -46,7 +46,7 @@ namespace TRAP::Graphics::API
 		uint32_t GetClearStencil() const override;
 		RendererAPI::DescriptorType GetDescriptorType() const override;
 
-		VkImageView& GetVkImageView();
+		VkImageView GetVkImageView() const;
 		const std::vector<VkImageView>& GetVkImageViewSlices() const;
 		uint32_t GetID() const;
 

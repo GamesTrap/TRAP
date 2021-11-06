@@ -2207,3 +2207,7 @@ SITREP 11/01/2021|21w44a1
 SITREP 11/02/2021|21w44a2
     - Changed TRAP Engine version to 21w44a2(0.7.94)
     - Fixed Wreserved-id-macro messages ~>30 mins
+
+SITREP 11/06/2021|21w44a3
+    - Changed TRAP Engine version to 21w44a3(0.7.95)
+    - Vulkan typedef pointer types are now returned by value ~<30 mins

@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API
 		VulkanPhysicalDevice(VulkanPhysicalDevice&&) = default;
 		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) = default;
 
-		VkPhysicalDevice& GetVkPhysicalDevice();
+		VkPhysicalDevice GetVkPhysicalDevice() const;
 		const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const;
 		const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const;
 		const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const;

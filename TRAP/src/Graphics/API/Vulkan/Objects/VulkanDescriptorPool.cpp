@@ -79,7 +79,7 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorPool& TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool()
+VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const
 {
 	return m_currentPool;
 }

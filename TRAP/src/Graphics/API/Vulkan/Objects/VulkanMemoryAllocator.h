@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) = default;
 
-		VmaAllocator& GetVMAAllocator();
+		VmaAllocator GetVMAAllocator() const;
 
 	private:
 		VmaAllocator m_allocator;

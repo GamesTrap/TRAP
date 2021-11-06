@@ -133,7 +133,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFramebuffer& TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer()
+VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
 {
 	return m_framebuffer;
 }

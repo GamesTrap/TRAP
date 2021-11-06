@@ -201,7 +201,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			if (hasStaticSampler)
 			{
 				TP_INFO("Descriptor (", descInfo.Name, "): User specified Static Sampler");
-				binding.pImmutableSamplers = &it->second->GetVkSampler();
+				VkSampler sampler = it->second->GetVkSampler();
+				binding.pImmutableSamplers = &sampler;
 			}
 
 			//Set the index to an invalid value so we can use this later for error checking

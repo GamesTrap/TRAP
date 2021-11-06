@@ -33,9 +33,9 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanBuffer& operator=(VulkanBuffer&&) = default;
 
-		VkBuffer& GetVkBuffer();
-		VkBufferView& GetStorageTexelView();
-		VkBufferView& GetUniformTexelView();
+		VkBuffer GetVkBuffer() const;
+		VkBufferView GetStorageTexelView() const;
+		VkBufferView GetUniformTexelView() const;
 		uint64_t GetOffset() const;
 		VkDeviceMemory GetVkDeviceMemory() const;
 		uint64_t GetVkDeviceMemoryOffset() const;

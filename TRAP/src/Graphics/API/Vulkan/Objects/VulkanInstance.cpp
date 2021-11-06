@@ -88,7 +88,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkInstance& TRAP::Graphics::API::VulkanInstance::GetVkInstance()
+VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const
 {
 	return m_instance;
 }

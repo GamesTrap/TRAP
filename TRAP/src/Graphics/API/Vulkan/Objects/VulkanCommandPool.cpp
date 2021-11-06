@@ -49,7 +49,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandPool& TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool()
+VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
 {
 	return m_vkCommandPool;
 }

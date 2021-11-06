@@ -317,14 +317,14 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView& TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView()
+VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const
 {
 	return m_vkSRVDescriptor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView& TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView()
+VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
 {
 	return m_vkSRVStencilDescriptor;
 }
@@ -338,14 +338,14 @@ const std::vector<VkImageView>& TRAP::Graphics::API::VulkanTexture::GetUAVVkImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImage& TRAP::Graphics::API::VulkanTexture::GetVkImage()
+VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage()
 {
 	return m_vkImage;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocation& TRAP::Graphics::API::VulkanTexture::GetVMAAllocation()
+VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const
 {
 	return m_vkAllocation;
 }

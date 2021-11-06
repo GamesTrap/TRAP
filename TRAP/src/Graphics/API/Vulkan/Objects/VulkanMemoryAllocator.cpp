@@ -65,7 +65,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocator& TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator()
+VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const
 {
 	return m_allocator;
 }

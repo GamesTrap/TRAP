@@ -33,7 +33,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanCommandPool& operator=(VulkanCommandPool&&) = default;
 
-		VkCommandPool& GetVkCommandPool();
+		VkCommandPool GetVkCommandPool() const;
 
 		CommandBuffer* AllocateCommandBuffer(bool secondary) override;
 		void FreeCommandBuffer(CommandBuffer* cmdBuffer) override;

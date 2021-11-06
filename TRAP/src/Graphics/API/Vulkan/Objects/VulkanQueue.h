@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanQueue& operator=(VulkanQueue&&) = delete;
 
-		VkQueue& GetVkQueue();
+		VkQueue GetVkQueue() const;
 		uint8_t GetQueueFamilyIndex() const;
 		uint8_t GetQueueIndex() const;
 		RendererAPI::QueueType GetQueueType() const;

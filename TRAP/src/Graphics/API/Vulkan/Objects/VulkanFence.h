@@ -33,7 +33,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanFence& operator=(VulkanFence&&) = default;
 
-		VkFence& GetVkFence();
+		VkFence GetVkFence() const;
 
 		RendererAPI::FenceStatus GetStatus() override;
 

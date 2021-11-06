@@ -170,7 +170,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPhysicalDevice& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice()
+VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const
 {
 	return m_physicalDevice;
 }

@@ -38,7 +38,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 	                   m_vkQueryPool, nullptr);
 }
 
-VkQueryPool& TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool()
+VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const
 {
 	return m_vkQueryPool;
 }

@@ -335,7 +335,8 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 		//If SwapChain is out of date, let caller know by returning -1
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &fen->GetVkFence()));
+			VkFence vkF = fen->GetVkFence();
+			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &vkF));
 			fen->m_submitted = false;
 			return std::numeric_limits<uint32_t>::max();
 		}
@@ -377,7 +378,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkSwapchainKHR& TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
+VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 {
 	return m_swapChain;
 }

@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanQueryPool& operator=(VulkanQueryPool&&) = default;
 
-		VkQueryPool& GetVkQueryPool();
+		VkQueryPool GetVkQueryPool() const;
 		VkQueryType GetVkQueryType() const;
 		uint32_t GetCount() const;
 

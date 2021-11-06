@@ -105,7 +105,7 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSampler& TRAP::Graphics::API::VulkanSampler::GetVkSampler()
+VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const
 {
 	return m_vkSampler;
 }

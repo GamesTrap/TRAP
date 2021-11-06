@@ -58,7 +58,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSurfaceKHR& TRAP::Graphics::API::VulkanSurface::GetVkSurface()
+VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const
 {
 	return m_surface;
 }

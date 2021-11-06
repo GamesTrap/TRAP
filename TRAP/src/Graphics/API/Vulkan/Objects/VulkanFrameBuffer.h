@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) = default;
 
-		VkFramebuffer& GetVkFrameBuffer();
+		VkFramebuffer GetVkFrameBuffer() const;
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
