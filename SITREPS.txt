@@ -2211,3 +2211,5 @@ SITREP 11/02/2021|21w44a2
 SITREP 11/06/2021|21w44a3
     - Changed TRAP Engine version to 21w44a3(0.7.95)
     - Vulkan typedef pointer types are now returned by value ~<30 mins
+    - Updated Premake to 5.0-beta1 ~<5 mins
+    - Added support for Visual Studio 2022 project generation ~<5 mins
