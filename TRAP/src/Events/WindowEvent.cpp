@@ -61,7 +61,7 @@ const char* TRAP::Events::WindowResizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,7 +112,7 @@ const char* TRAP::Events::WindowMinimizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -163,7 +163,7 @@ const char* TRAP::Events::WindowMaximizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -214,7 +214,7 @@ const char* TRAP::Events::WindowRestoreEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -265,7 +265,7 @@ const char* TRAP::Events::WindowCloseEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -337,7 +337,7 @@ const char* TRAP::Events::WindowMoveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -388,7 +388,7 @@ const char* TRAP::Events::WindowFocusEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -439,7 +439,7 @@ const char* TRAP::Events::WindowLostFocusEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -501,7 +501,7 @@ const char* TRAP::Events::WindowDropEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application | EventCategory::Input;
+	return EventCategory::Window | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -574,7 +574,7 @@ const char* TRAP::Events::WindowContentScaleEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -648,5 +648,5 @@ const char* TRAP::Events::FrameBufferResizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }

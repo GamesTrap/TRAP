@@ -10,7 +10,7 @@ TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
 
 TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 {
-	return EventCategory::Application;
+	return EventCategory::Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

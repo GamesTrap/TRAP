@@ -21,7 +21,6 @@ namespace TRAP::Events
 		None = 0,
 		WindowClose, WindowResize, WindowMinimize, WindowMaximize, WindowRestore, WindowFocus, WindowLostFocus,
 		WindowMove, WindowDrop, WindowContentScale, FrameBufferResize,
-		AppTick, AppUpdate, AppRender,
 		KeyPress, KeyRelease, KeyType, KeyLayout,
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
 		ControllerConnect, ControlledDisconnect,
@@ -35,7 +34,7 @@ namespace TRAP::Events
 	enum class EventCategory
 	{
 		None        = 0,
-		Application = BIT(0),
+		Window      = BIT(0),
 		Input       = BIT(1),
 		Keyboard    = BIT(2),
 		Mouse       = BIT(3),
