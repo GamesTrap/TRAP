@@ -2220,6 +2220,9 @@ SITREP 11/07/2021|21w44a4
     - Vulkan Added check for minimum support of 4 simultaneously bound descriptor sets ~<10 mins
     - Vulkan Added check for maximum tessellation patch size ~<15 mins
     - Discord Game SDK Added automatic reconnect on error/not running ~<15 mins
+
+SITREP 11/07/2021|21w44b1
+    - Changed TRAP Engine version to 21w44b1(0.7.97)
     - HotTextureReloading now works correctly again ~>35 mins
     - Renderer2D Added support for HotTextureReloading ~<15 mins
     - FileWatcher Changed minimum check delay from 50ms to 500ms ~<5 mins
