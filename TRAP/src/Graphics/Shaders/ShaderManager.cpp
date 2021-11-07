@@ -130,7 +130,7 @@ void TRAP::Graphics::ShaderManager::Clean()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
+TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -146,6 +146,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 				s_Shaders[nameOrVirtualPath].reset();
 				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
+				return s_Shaders[nameOrVirtualPath].get();
 			}
 		}
 		else
@@ -156,26 +157,25 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 		for (const auto& [name, shader] : s_Shaders)
 		{
 			if (nameOrVirtualPath == shader->GetFilePath())
-			{
-				Reload(shader);
-				return;
-			}
+				return Reload(shader);
 		}
 
 		TP_WARN(Log::ShaderManagerPrefix, "Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
+TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 {
 	TP_PROFILE_FUNCTION();
 
 	if(!Exists(shader->GetName()))
 	{
 		TP_WARN(Log::ShaderManagerPrefix, "Could not find Shader: \"", shader->GetName(), "\" to reload.");
-		return;
+		return nullptr;
 	}
 
 	const std::string name = shader->GetName();
@@ -183,11 +183,13 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 	std::string error;
 
 	if (path.empty())
-		return;
+		return nullptr;
 
 	s_Shaders[name].reset();
 	s_Shaders[name] = Shader::CreateFromFile(name, path);
 	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
+
+	return s_Shaders[name].get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

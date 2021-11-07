@@ -48,6 +48,8 @@ public:
 		TP_PROFILE_FUNCTION();
 
 		TRAP::Application::SetHotTextureReloading(true);
+		TRAP::Application::SetHotShaderReloading(true);
+
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 
 		//Mount & Load Shader
@@ -243,6 +245,18 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnShaderReload(TRAP::Events::ShaderReloadEvent& event)
+	{
+		m_shader = event.GetShader();
+		m_shader->UseTexture(0, 0, m_texture);
+		m_shader->UseSampler(0, 1, m_sampler.get());
+		m_shader->Use();
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	void OnEvent(TRAP::Events::Event& event) override
 	{
 		m_cameraController.OnEvent(event);
@@ -255,6 +269,10 @@ public:
 		dispatcher.Dispatch<TRAP::Events::TextureReloadEvent>([this](TRAP::Events::TextureReloadEvent& e)
 		{
 			return OnTextureReload(e);
+		});
+		dispatcher.Dispatch<TRAP::Events::ShaderReloadEvent>([this](TRAP::Events::ShaderReloadEvent& e)
+		{
+			return OnShaderReload(e);
 		});
 	}
 

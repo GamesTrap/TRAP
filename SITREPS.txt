@@ -2223,3 +2223,9 @@ SITREP 11/07/2021|21w44a4
     - HotTextureReloading now works correctly again ~>35 mins
     - Renderer2D Added support for HotTextureReloading ~<15 mins
     - FileWatcher Changed minimum check delay from 50ms to 500ms ~<5 mins
+    - TextureManager Reload functions now return reloaded texture ~<10 mins
+    - Added TextureReload event for hot reloaded textures ~<30 mins
+    - ShaderManager Reload functions now return reloaded shader ~<10 mins
+    - Added ShaderReload event for hot reloaded shaders ~<30 mins
+    - Sandbox2D now uses new TextureReload event ~<10 mins
+    - Sandbox2D now uses new ShaderReload event ~<10 mins

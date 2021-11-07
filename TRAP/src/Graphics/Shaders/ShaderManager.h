@@ -32,8 +32,8 @@ namespace TRAP::Graphics
 		static const std::unordered_map<std::string, Scope<Shader>>& GetShaders();
 		static void Clean();
 
-		static void Reload(const std::string& nameOrVirtualPath);
-		static void Reload(const Scope<Shader>& shader);
+		static Shader* Reload(const std::string& nameOrVirtualPath);
+		static Shader* Reload(const Scope<Shader>& shader);
 		static void ReloadAll();
 
 		static void Shutdown();

@@ -637,7 +637,11 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::ShaderManagerPrefix, "Shader Modified Reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			Graphics::ShaderManager::Reload(virtualPath);
+			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(virtualPath);
+
+			//Send event
+			TRAP::Events::ShaderReloadEvent e(shader);
+			OnEvent(e);
 		}
 	}
 	if(!m_hotReloadingShaderPaths.empty())
