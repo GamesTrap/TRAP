@@ -2219,3 +2219,4 @@ SITREP 11/07/2021|21w44a4
     - Vulkan Added max sampler allocation validation ~<15 mins
     - Vulkan Added check for minimum support of 4 simultaneously bound descriptor sets ~<10 mins
     - Vulkan Added check for maximum tessellation patch size ~<15 mins
+    - Discord Game SDK Added automatic reconnect on error/not running ~<15 mins

@@ -11,6 +11,8 @@
 
 discord::Core* core{};
 discord::Result lastRes = discord::Result::Ok;
+int64_t CurrentAppID = 639903785971613728;
+TRAP::Utils::Discord::Activity CurrentActivity{};
 
 //Forward declares
 void DiscordLogger(const discord::LogLevel logLevel, const char* msg);
@@ -31,6 +33,8 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
         return false;
     }
 
+    CurrentAppID = appID;
+
     //Set log hook
     core->SetLogHook(discord::LogLevel::Warn, DiscordLogger);
 
@@ -40,21 +44,12 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
                      std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." +
                      std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "]";
 
-    discord::Activity activity{};
-	activity.SetDetails(version.c_str());
-	activity.SetState("Developed by TrappedGames");
-	auto& asset = activity.GetAssets();
-	asset.SetLargeImage("trapwhitelogo2048x2048");
-	asset.SetLargeText(u8"TRAP™");
-	core->ActivityManager().UpdateActivity(activity, [](const discord::Result res)
-	{
-        lastRes = res;
-        DiscordLogResult(lastRes);
-        if(lastRes != discord::Result::Ok)
-            TRAP::Utils::Discord::Destroy();
-	});
+    CurrentActivity.LargeImage = "trapwhitelogo2048x2048";
+    CurrentActivity.LargeText = u8"TRAP™";
+    CurrentActivity.Details = version;
+    CurrentActivity.State = "Developed by TrappedGames";
 
-    return true;
+    return SetActivity(CurrentActivity);
 #else
     return false;
 #endif
@@ -89,9 +84,19 @@ bool TRAP::Utils::Discord::RunCallbacks()
         return true;
     }
 
+    //Try to reconnect
+    lastRes = discord::Core::Create(CurrentAppID, DiscordCreateFlags_NoRequireDiscord, &core);
+    if(lastRes != discord::Result::Ok)
+    {
+        core = nullptr;
+        return false;
+    }
+
+    TRAP::Utils::Discord::SetActivity(CurrentActivity);
+
 #endif
 
-    return false;
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -114,6 +119,8 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
             if(lastRes != discord::Result::Ok)
                 TRAP::Utils::Discord::Destroy();
         });
+
+        CurrentActivity = activity;
 
         return lastRes == discord::Result::Ok;
     }
