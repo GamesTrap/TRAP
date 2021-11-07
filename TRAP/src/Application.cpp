@@ -6,6 +6,7 @@
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/Renderer2D.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "Graphics/Textures/Texture2D.h"
@@ -634,19 +635,24 @@ void TRAP::Application::UpdateHotReloading()
 		if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
 		{
 			TP_INFO(Log::ShaderManagerPrefix, "Shader Modified Reloading...");
+			Graphics::RendererAPI::GetRenderer()->WaitIdle();
 			Graphics::ShaderManager::Reload(virtualPath);
 		}
 	}
-	m_hotReloadingShaderPaths.clear();
+	if(!m_hotReloadingShaderPaths.empty())
+		m_hotReloadingShaderPaths.clear();
 
 	//Texture Reloading
 	for (const std::string& virtualPath : m_hotReloadingTexturePaths)
 	{
 		if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
 		{
-			TP_INFO(Log::ShaderManagerPrefix, "Texture Modified Reloading...");
+			TP_INFO(Log::TextureManagerPrefix, "Texture Modified Reloading...");
+			Graphics::RendererAPI::GetRenderer()->WaitIdle();
+			Graphics::Renderer2D::ClearTextures();
 			Graphics::TextureManager::Reload(virtualPath);
 		}
 	}
-	m_hotReloadingTexturePaths.clear();
+	if(!m_hotReloadingTexturePaths.empty())
+		m_hotReloadingTexturePaths.clear();
 }

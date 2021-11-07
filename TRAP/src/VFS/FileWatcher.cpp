@@ -12,8 +12,8 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 {
 	TP_PROFILE_FUNCTION();
 
-	if (m_delay < 50.0f)
-		m_delay = 50.0f; //Prevent issues with programs that first delete a file and then recreate it
+	if (m_delay < 500.0f)
+		m_delay = 500.0f; //Prevent issues with programs that first delete a file and then recreate it
 
 	m_timer.Reset();
 	m_physicalPathsToWatch = VFS::ResolveToPhysicalPaths(m_virtualPathToWatch);

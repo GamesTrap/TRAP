@@ -257,6 +257,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			{
 				s_Textures[nameOrVirtualPath].reset();
 				s_Textures[nameOrVirtualPath] = Texture2D::CreateFromFile(name, filePath);
+				s_Textures[nameOrVirtualPath]->AwaitLoading();
 				TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 			}
 			else if (textureType == TextureType::TextureCube)
@@ -280,6 +281,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFile(name, filePath, textureFormat);
 					else
 						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths);
+					s_Textures[nameOrVirtualPath]->AwaitLoading();
 
 					TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 				}
@@ -346,30 +348,29 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		{
 			s_Textures[name].reset();
 			s_Textures[name] = Texture2D::CreateFromFile(name, filePath);
+			s_Textures[name]->AwaitLoading();
 			TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", name, "\"");
 		}
 		else if (textureType == TextureType::TextureCube)
 		{
-			if (texture)
-			{
-				const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>
-					(
-						texture.get()
-					)->GetTextureCubeFormat();
+			const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>
+				(
+					texture.get()
+				)->GetTextureCubeFormat();
 
-				std::array<std::string, 6> filePaths{};
-				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetFilePaths().size(); i++)
-					filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i];
+			std::array<std::string, 6> filePaths{};
+			for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetFilePaths().size(); i++)
+				filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i];
 
-				s_Textures[name].reset();
-				if (textureFormat == TextureCubeFormat::Cross /*||
-				    textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
-					s_Textures[name] = TextureCube::CreateFromFile(name, filePath, textureFormat);
-				else
-					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths);
+			s_Textures[name].reset();
+			if (textureFormat == TextureCubeFormat::Cross /*||
+				textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
+				s_Textures[name] = TextureCube::CreateFromFile(name, filePath, textureFormat);
+			else
+				s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths);
+			s_Textures[name]->AwaitLoading();
 
-				TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
-			}
+			TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
 		}
 		else
 			TP_WARN(Log::TextureManagerPrefix, "Unknown TextureType: \"", name, "\"");

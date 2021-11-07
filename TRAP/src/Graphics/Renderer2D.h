@@ -46,6 +46,8 @@ namespace TRAP::Graphics
 		static Statistics GetStats();
 		static void ResetStats();
 
+		static void ClearTextures();
+
 	private:
 		static void FlushAndReset();
 		static float GetTextureIndex(const Scope<Texture2D>& texture);

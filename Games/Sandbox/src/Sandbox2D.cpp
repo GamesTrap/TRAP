@@ -53,7 +53,7 @@ void Sandbox2D::OnAttach()
 
 	//Mount & Load Textures
 	TRAP::VFS::MountTextures("Assets/Textures");
-	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
+	TRAP::Graphics::TextureManager::Load("TRAP", "/textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 }

@@ -335,6 +335,15 @@ void TRAP::Graphics::Renderer2D::ResetStats()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Renderer2D::ClearTextures()
+{
+	s_data.TextureSlotIndex = 1;
+	s_data.TextureSlots = std::vector<Texture*>(Renderer2DData::MaxTextureSlots);
+	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::Renderer2D::FlushAndReset()
 {
 	s_data.QuadIndexCount = 0;
