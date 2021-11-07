@@ -47,15 +47,16 @@ public:
 	{
 		TP_PROFILE_FUNCTION();
 
+		TRAP::Application::SetHotTextureReloading(true);
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 
 		//Mount & Load Shader
 		TRAP::VFS::MountShaders("Assets/Shaders");
-		m_shader = TRAP::Graphics::ShaderManager::LoadFile("/Shaders/TextureColor.shader").get();
+		m_shader = TRAP::Graphics::ShaderManager::LoadFile("/shaders/TextureColor.shader").get();
 
 		//Mount & Load Texture
 		TRAP::VFS::MountTextures("Assets/Textures");
-		m_texture = TRAP::Graphics::TextureManager::Load("/Textures/TRAPWhiteLogo2048x2048.png").get();
+		m_texture = TRAP::Graphics::TextureManager::Load("/textures/TRAPWhiteLogo2048x2048.png").get();
 
 		//Indexed
 		///////////////
@@ -234,6 +235,14 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	bool OnTextureReload(TRAP::Events::TextureReloadEvent& event)
+	{
+		m_texture = event.GetTexture();
+		m_shader->UseTexture(0, 0, m_texture);
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
 	void OnEvent(TRAP::Events::Event& event) override
 	{
 		m_cameraController.OnEvent(event);
@@ -242,6 +251,10 @@ public:
 		dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
 		{
 			return OnKeyPress(e);
+		});
+		dispatcher.Dispatch<TRAP::Events::TextureReloadEvent>([this](TRAP::Events::TextureReloadEvent& e)
+		{
+			return OnTextureReload(e);
 		});
 	}
 

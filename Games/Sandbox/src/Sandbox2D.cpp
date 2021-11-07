@@ -47,7 +47,6 @@ void Sandbox2D::OnAttach()
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Application::SetHotShaderReloading(true);
 	TRAP::Application::SetHotTextureReloading(true);
 	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
 

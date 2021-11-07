@@ -16,6 +16,7 @@
 #include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
 #include "Events/WindowEvent.h"
+#include "Events/HotReloadEvent.h"
 #include "Input/Input.h"
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
@@ -650,7 +651,11 @@ void TRAP::Application::UpdateHotReloading()
 			TP_INFO(Log::TextureManagerPrefix, "Texture Modified Reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
 			Graphics::Renderer2D::ClearTextures();
-			Graphics::TextureManager::Reload(virtualPath);
+			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(virtualPath);
+
+			//Send event
+			TRAP::Events::TextureReloadEvent e(texture);
+			OnEvent(e);
 		}
 	}
 	if(!m_hotReloadingTexturePaths.empty())

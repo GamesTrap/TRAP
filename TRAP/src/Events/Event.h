@@ -25,7 +25,8 @@ namespace TRAP::Events
 		KeyPress, KeyRelease, KeyType, KeyLayout,
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
 		ControllerConnect, ControlledDisconnect,
-		MonitorConnect, MonitorDisconnect
+		MonitorConnect, MonitorDisconnect,
+		TextureReload, ShaderReload
 	};
 
 	/// <summary>
@@ -39,7 +40,8 @@ namespace TRAP::Events
 		Keyboard    = BIT(2),
 		Mouse       = BIT(3),
 		Controller  = BIT(4),
-		MouseButton = BIT(5)
+		MouseButton = BIT(5),
+		HotReload   = BIT(6)
 	};
 
 	/// <summary>

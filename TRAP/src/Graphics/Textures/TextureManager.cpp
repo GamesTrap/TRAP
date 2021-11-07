@@ -229,7 +229,7 @@ void TRAP::Graphics::TextureManager::Clean()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath)
+TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -248,7 +248,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			if (filePath.empty())
 			{
 				TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
-				return;
+				return nullptr;
 			}
 
 			const std::string name = s_Textures[nameOrVirtualPath]->GetName();
@@ -259,6 +259,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 				s_Textures[nameOrVirtualPath] = Texture2D::CreateFromFile(name, filePath);
 				s_Textures[nameOrVirtualPath]->AwaitLoading();
 				TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
+				return s_Textures[nameOrVirtualPath].get();
 			}
 			else if (textureType == TextureType::TextureCube)
 			{
@@ -284,6 +285,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 					s_Textures[nameOrVirtualPath]->AwaitLoading();
 
 					TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
+					return s_Textures[nameOrVirtualPath].get();
 				}
 			}
 			else
@@ -299,10 +301,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			if (texture->GetType() == TextureType::Texture2D)
 			{
 				if (nameOrVirtualPath == dynamic_cast<Texture2D*>(texture.get())->GetFilePath())
-				{
-					Reload(texture);
-					return;
-				}
+					return Reload(texture);
 			}
 			else if (texture->GetType() == TextureType::TextureCube)
 			{
@@ -311,21 +310,20 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 					if (!dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i].empty())
 					{
 						if (nameOrVirtualPath == dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i])
-						{
-							Reload(texture);
-							return;
-						}
+							return Reload(texture);
 					}
 				}
 			}
 
 		TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
+TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -341,7 +339,7 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		if (filePath.empty())
 		{
 			TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", name, "\" to reload.");
-			return;
+			return nullptr;
 		}
 
 		if (textureType == TextureType::Texture2D)
@@ -350,6 +348,7 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 			s_Textures[name] = Texture2D::CreateFromFile(name, filePath);
 			s_Textures[name]->AwaitLoading();
 			TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", name, "\"");
+			return s_Textures[name].get();
 		}
 		else if (textureType == TextureType::TextureCube)
 		{
@@ -371,12 +370,15 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 			s_Textures[name]->AwaitLoading();
 
 			TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
+			return s_Textures[name].get();
 		}
 		else
 			TP_WARN(Log::TextureManagerPrefix, "Unknown TextureType: \"", name, "\"");
 	}
 	else
 		TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", texture->GetName(), "\" to reload.");
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

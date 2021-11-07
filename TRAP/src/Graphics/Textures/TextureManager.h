@@ -37,8 +37,8 @@ namespace TRAP::Graphics
 		static const Scope<TextureCube>& GetCube(const std::string& name);
 		static void Clean();
 
-		static void Reload(const std::string& nameOrVirtualPath);
-		static void Reload(const Scope<Texture>& texture);
+		static Texture* Reload(const std::string& nameOrVirtualPath);
+		static Texture* Reload(const Scope<Texture>& texture);
 		static void ReloadAll();
 
 		static void Shutdown();
