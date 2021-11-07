@@ -844,7 +844,7 @@ SITREP 02/09/2020|20w06a4
 SITREP 02/10/2020|20w07a1
     - Changed TRAP Engine version to 20w07a1(0.6.09)
     - Changed Controller API (Temporarily removed XInput) ~>40 mins
-    - Added support for up to 16 Controllers simoultaneously ~>20 mins
+    - Added support for up to 16 Controllers simultaneously ~>20 mins
     - Fixed CRLF endings for Linux ~<10 mins
     - Readded XInput support ~>40 mins
     - Removed ControllerAPI from Engine.cfg ~<20 mins
@@ -2213,3 +2213,9 @@ SITREP 11/06/2021|21w44a3
     - Vulkan typedef pointer types are now returned by value ~<30 mins
     - Updated Premake to 5.0-beta1 ~<5 mins
     - Added support for Visual Studio 2022 project generation ~<5 mins
+
+SITREP 11/07/2021|21w44a4
+    - Changed TRAP Engine version to 21w44a4(0.7.96)
+    - Vulkan Added max sampler allocation validation ~<15 mins
+    - Vulkan Added check for minimum support of 4 simultaneously bound descriptor sets ~<10 mins
+    - Vulkan Added check for maximum tessellation patch size ~<15 mins

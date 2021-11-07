@@ -1316,6 +1316,8 @@ namespace TRAP::Graphics
 			uint32_t MaxImageDimensionCube;
 			bool FillModeNonSolid;
 			uint32_t MaxPushConstantSize;
+			uint32_t MaxSamplerAllocationCount;
+			uint32_t MaxTessellationControlPoints;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered

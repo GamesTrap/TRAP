@@ -32,6 +32,12 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 	if(s_cachedSamplers.find(desc) != s_cachedSamplers.end())
 		return s_cachedSamplers[desc];
 
+	if(s_cachedSamplers.size() == RendererAPI::GPUSettings.MaxSamplerAllocationCount)
+	{
+		TP_ERROR(Log::RendererSamplerPrefix, "Exceeding max simultaneously allowed samplers! Returning first cached sampler");
+		return s_cachedSamplers.begin()->second;
+	}
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

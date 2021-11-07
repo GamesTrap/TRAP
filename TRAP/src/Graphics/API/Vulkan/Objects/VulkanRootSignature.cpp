@@ -256,6 +256,16 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			});
 		}
 
+		//TODO Validation Checks for
+		//maxDescriptorSetSamplers
+		//maxDescriptorSetUniformBuffers
+		//maxDescriptorSetUniformBuffersDynamic
+		//maxDescriptorSetStorageBuffers
+		//maxDescriptorSetStorageBuffersDynamic
+		//maxDescriptorSetSampledImages
+		//maxDescriptorSetStorageImages
+		//maxDescriptorSetInputAttachments
+
 		bool createLayout = !layout.Bindings.empty();
 		//Check if we need to create an empty layout in case there is an empty set between two used sets
 		//Example: set = 0 is used, set = 2 is used.

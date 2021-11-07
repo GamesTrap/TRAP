@@ -323,11 +323,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 				                    std::string("): Must provide Sizes for VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC"));
 				VALIDATE_DESCRIPTOR(off.Sizes[0] > 0, std::string("Descriptor (") + std::string(desc->Name) +
 				                    std::string(") - Sizes[0] is zero"));
-				VALIDATE_DESCRIPTOR(off.Sizes[0] <= m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.maxUniformBufferRange,
+				VALIDATE_DESCRIPTOR(off.Sizes[0] <= RendererAPI::GPUSettings.MaxUniformBufferRange,
 					                std::string("Descriptor (") + std::string(desc->Name) +
 									std::string(") - Sizes[0] is " + std::to_string(off.Sizes[0]) +
 									std::string(" which exceeds max size ") +
-									std::to_string(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.maxUniformBufferRange)));
+									std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange)));
 
 				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? static_cast<uint32_t>(off.Offsets[0]) :
 				                                     0;
@@ -377,11 +377,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 					                    std::string(") - Sizes must be provided with Offsets"));
 					VALIDATE_DESCRIPTOR(off.Sizes[arr] > 0, std::string("Descriptor (") + std::string(desc->Name) +
 					                    std::string(") - Sizes[") + std::to_string(arr) + std::string("] is zero"));
-					VALIDATE_DESCRIPTOR(off.Sizes[arr] <= m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.maxUniformBufferRange,
+					VALIDATE_DESCRIPTOR(off.Sizes[arr] <= RendererAPI::GPUSettings.MaxUniformBufferRange,
 						                std::string("Descriptor (") + std::string(desc->Name) +
 										std::string(") - Sizes[") + std::to_string(arr) + std::string("] is ") +
 						                std::to_string(off.Sizes[arr]) + std::string(" which exceeds max size ") +
-						                std::to_string(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.maxUniformBufferRange));
+						                std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange));
 
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo.offset = off.Offsets[arr];
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo.range = off.Sizes[arr];

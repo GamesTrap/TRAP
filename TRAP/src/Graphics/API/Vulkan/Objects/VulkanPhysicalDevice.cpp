@@ -130,6 +130,10 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxImageDimensionCube = m_physicalDeviceProperties.limits.maxImageDimensionCube;
 	RendererAPI::GPUSettings.FillModeNonSolid = m_physicalDeviceFeatures.fillModeNonSolid;
 	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
+	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
+	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
+
+	//maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
 	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
 	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;
@@ -463,6 +467,14 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 			         "\" Failed Dedicated/Internal GPU Test!");
+			continue;
+		}
+
+		//Required: Minimum 4 simultaneously bound descriptor sets support
+		if(devProps.limits.maxBoundDescriptorSets < 4)
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
+			         "\" Failed Max bound descriptor set Test!");
 			continue;
 		}
 

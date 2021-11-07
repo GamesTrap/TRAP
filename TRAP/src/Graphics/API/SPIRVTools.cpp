@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "SPIRVTools.h"
 
+#include "RendererAPI.h"
+
 void ReflectBoundResources(spirv_cross::Compiler& compiler,
 	                       const spirv_cross::SmallVector<spirv_cross::Resource>& allResources,
 	                       const std::unordered_set<spirv_cross::VariableID>& usedResources,
@@ -345,6 +347,16 @@ std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::ReflectComputeShaderWor
 
 uint32_t TRAP::Graphics::API::SPIRVTools::ReflectTessellationControlShaderControlPoint(CrossCompiler& compiler)
 {
-	return compiler.Compiler->get_entry_point(compiler.EntryPoint,
+	uint32_t controlPoints = compiler.Compiler->get_entry_point(compiler.EntryPoint,
 	                                          compiler.Compiler->get_execution_model()).output_vertices;
+
+	if(controlPoints > RendererAPI::GPUSettings.MaxTessellationControlPoints)
+	{
+		TP_ERROR(Log::ShaderSPIRVPrefix, "Tessellation patch control points ", controlPoints,
+		        " is higher than maximum allowed ", RendererAPI::GPUSettings.MaxTessellationControlPoints, ". "
+				"Setting to maximum allowed value.");
+		controlPoints = RendererAPI::GPUSettings.MaxTessellationControlPoints;
+	}
+
+	return controlPoints;
 }

@@ -33,7 +33,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
 	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::UniformBuffer))
 	{
-		const uint64_t minAlignment = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.minUniformBufferOffsetAlignment;
+		const uint64_t minAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 		allocationSize = ((allocationSize + minAlignment - 1) / minAlignment) * minAlignment;
 	}
 
