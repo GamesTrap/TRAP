@@ -342,7 +342,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	//Add missing mandatory fields
 	Request toSend(request);
 	if (!toSend.HasField("From"))
-		toSend.SetField("From", "user@trap.com");
+		toSend.SetField("From", "user@trappedgames.de");
 	if (!toSend.HasField("User-Agent"))
 		toSend.SetField("User-Agent", "libtrap-network/1.x");
 	if (!toSend.HasField("Host"))

@@ -241,8 +241,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 		result = MakeScope<INTERNAL::RadianceImage>(virtualFilePath);
 	else
 	{
-		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown Image Format!");
-		TP_WARN(Log::ImagePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image format ", fileFormat, "!");
+		TP_WARN(Log::ImagePrefix, "Using default image!");
 		return MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 	}
 

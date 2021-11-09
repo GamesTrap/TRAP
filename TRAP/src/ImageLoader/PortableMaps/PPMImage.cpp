@@ -13,13 +13,13 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::RGB;
 
-	TP_DEBUG(Log::ImagePPMPrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePPMPrefix, "Loading image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
 	{
-		TP_ERROR(Log::ImagePPMPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePPMPrefix, "Couldn't resolve file path: ", m_filepath, "!");
+		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}
 
@@ -29,8 +29,8 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 	std::ifstream file(physicalPath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePPMPrefix, "Couldn't open FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePPMPrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}
 
@@ -40,29 +40,29 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 	if (header.MagicNumber != "P3" && header.MagicNumber != "P6")
 	{
 		file.close();
-		TP_ERROR(Log::ImagePPMPrefix, "Unsupported Format or invalid Magic Number!");
-		TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePPMPrefix, "Unsupported format or invalid magic number (", header.MagicNumber, ")!");
+		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}
 	if (header.Width < 1)
 	{
 		file.close();
-		TP_ERROR(Log::ImagePPMPrefix, "Width is < 1!");
-		TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePPMPrefix, "Width is < 1 (", header.Width, ")!");
+		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}
 	if (header.Height < 1)
 	{
 		file.close();
-		TP_ERROR(Log::ImagePPMPrefix, "Height is < 1!");
-		TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePPMPrefix, "Height is < 1 (", header.Height, ")!");
+		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}
 	if (header.MaxValue < 1 || header.MaxValue > 65535)
 	{
 		file.close();
-		TP_ERROR(Log::ImagePPMPrefix, "Max Value is unsupported/invalid!");
-		TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImagePPMPrefix, "MaxValue ", header.MaxValue, " is unsupported or invalid!");
+		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}
 
@@ -79,7 +79,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 		{
 			file.close();
 			TP_ERROR(Log::ImagePPMPrefix, "Couldn't load pixel data!");
-			TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+			TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 			return;
 		}
 
@@ -101,7 +101,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 		{
 			file.close();
 			TP_ERROR(Log::ImagePPMPrefix, "Couldn't load pixel data!");
-			TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
+			TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 			return;
 		}
 

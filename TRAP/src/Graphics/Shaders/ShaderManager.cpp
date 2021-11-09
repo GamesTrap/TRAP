@@ -64,26 +64,26 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadSo
 
 void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 {
-	TRAP_ASSERT(shader, "Provided Shader is nullptr!");
+	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 	TP_PROFILE_FUNCTION();
 
 	if(!Exists(shader->GetName()))
 		s_Shaders[shader->GetName()] = std::move(shader);
 	else
-		TP_ERROR(Log::ShaderManagerPrefix, "Shader with Name: \"", shader->GetName(), "\" already exists! Ignoring new Shader");
+		TP_ERROR(Log::ShaderManagerPrefix, "Shader with name: \"", shader->GetName(), "\" already exists! Ignoring new shader");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
 {
-	TRAP_ASSERT(shader, "Provided Shader is nullptr!");
+	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(shader->GetName()))
 		s_Shaders.erase(shader->GetName());
 	else
-		TP_ERROR(Log::ShaderManagerPrefix, "Could not find Shader with Name: \"", shader->GetName(), "\"!");
+		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", shader->GetName(), "\"!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -95,7 +95,7 @@ void TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 	if (Exists(name))
 		s_Shaders.erase(name);
 	else
-		TP_ERROR(Log::ShaderManagerPrefix, "Could not find Shader with Name: \"", name, "\"!");
+		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", name, "\"!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -107,8 +107,8 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(co
 	if(Exists(name))
 		return s_Shaders[name];
 
-	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find Shader: ", name, "!");
-	TP_WARN(Log::ShaderManagerPrefix, "Using Fallback Shader!");
+	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: ", name, "!");
+	TP_WARN(Log::ShaderManagerPrefix, "Using fallback shader!");
 
 	//Should always be available as a fallback
 	return Get("Fallback");
@@ -150,7 +150,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 			}
 		}
 		else
-			TP_WARN(Log::ShaderManagerPrefix, "Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
+			TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
 	else //Virtual Path
 	{
@@ -160,7 +160,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 				return Reload(shader);
 		}
 
-		TP_WARN(Log::ShaderManagerPrefix, "Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
+		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
 
 	return nullptr;
@@ -174,7 +174,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Scope<Shader
 
 	if(!Exists(shader->GetName()))
 	{
-		TP_WARN(Log::ShaderManagerPrefix, "Could not find Shader: \"", shader->GetName(), "\" to reload.");
+		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", shader->GetName(), "\" to reload.");
 		return nullptr;
 	}
 
@@ -210,7 +210,7 @@ void TRAP::Graphics::ShaderManager::Shutdown()
 	TP_PROFILE_FUNCTION();
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::ShaderManagerPrefix, "Destroying Shaders");
+	TP_DEBUG(Log::ShaderManagerPrefix, "Destroying shaders");
 #endif
 	Clean();
 }

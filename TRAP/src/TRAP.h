@@ -24,7 +24,6 @@
 //----EVENTS-------------
 #include "../src/Events/Event.h"
 #include "../src/Events/WindowEvent.h"
-#include "../src/Events/ApplicationEvent.h"
 #include "../src/Events/KeyEvent.h"
 #include "../src/Events/MouseEvent.h"
 #include "../src/Events/ControllerEvent.h"

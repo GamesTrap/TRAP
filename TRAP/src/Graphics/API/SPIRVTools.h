@@ -6,7 +6,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 	struct Type
 	{
 		//Resources are identifier with their SPIR-V ID.
-		//This ise the ID of the OpVariable.
+		//This is the ID of the OpVariable.
 		uint32_t ID;
 
 		//The type ID of the variable which includes arrays and all type modifications.

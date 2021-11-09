@@ -49,38 +49,38 @@ namespace TRAP::Network
 		/// </summary>
 		TCPSocket();
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~TCPSocket() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		TCPSocket(const TCPSocket&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		TCPSocket& operator=(const TCPSocket&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		TCPSocket(TCPSocket&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		TCPSocket& operator=(TCPSocket&&) = default;
 
 
 		/// <summary>
-		/// Get the port to which the socket is bound locally.<br>
-		/// <br>
+		/// Get the port to which the socket is bound locally.
+		///
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
 		uint16_t GetLocalPort() const;
 
 		/// <summary>
-		/// Get the address of the connected peer.<br>
-		/// <br>
+		/// Get the address of the connected peer.
+		///
 		/// If the socket is not connected, this function returns
 		/// TRAP::Network::IPv4Address::None.
 		/// </summary>
@@ -89,19 +89,19 @@ namespace TRAP::Network
 
 		/// <summary>
 		/// Get the port of the connected peer to which
-		/// the socket is connected.<br>
-		/// <br>
+		/// the socket is connected.
+		///
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
 		/// <returns>Remote port to which the socket is connected.</returns>
 		uint16_t GetRemotePort() const;
 
 		/// <summary>
-		/// Connect the socket to a remote peer.<br>
-		/// <br>
+		/// Connect the socket to a remote peer.
+		///
 		/// In blocking mode, this function may take a while, especially
-		/// if the remote peer is not reachable.<br>
-		/// The last parameter allows you to stop trying to connect after a given timeout.<br>
+		/// if the remote peer is not reachable.
+		/// The last parameter allows you to stop trying to connect after a given timeout.
 		/// If the socket is already connected, the connection is
 		/// forcibly disconnected before attempting to connect again.
 		/// </summary>
@@ -113,19 +113,19 @@ namespace TRAP::Network
 		               Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
-		/// Disconnect the socket from its remote peer.<br>
-		/// <br>
-		/// This function gracefully closes the connection.<br>
+		/// Disconnect the socket from its remote peer.
+		///
+		/// This function gracefully closes the connection.
 		/// If the socket is not connected, this function has no effect.
 		/// </summary>
 		void Disconnect();
 
 		/// <summary>
-		/// Send raw data to the remote peer.<br>
-		/// <br>
+		/// Send raw data to the remote peer.
+		///
 		/// To be able to handle partial sends over non-blocking
 		/// sockets, use the Send(const void*, std::size_t, std::size_t&)
-		/// overload instead.<br>
+		/// overload instead.
 		/// This function will fail if the socket is not connected
 		/// </summary>
 		/// <param name="data">Pointer to the sequence of bytes to send.</param>
@@ -134,8 +134,8 @@ namespace TRAP::Network
 		Status Send(const void* data, std::size_t size) const;
 
 		/// <summary>
-		/// Send raw data to the remote peer.<br>
-		/// <br>
+		/// Send raw data to the remote peer.
+		///
 		/// This function will fail if the socket is not connected
 		/// </summary>
 		/// <param name="data">Pointer to the sequence of bytes to send.</param>
@@ -145,10 +145,10 @@ namespace TRAP::Network
 		Status Send(const void* data, std::size_t size, std::size_t& sent) const;
 
 		/// <summary>
-		/// Receive raw data from the remote peer.<br>
-		/// <br>
+		/// Receive raw data from the remote peer.
+		///
 		/// In blocking mode, this function will wait until some
-		/// bytes are actually received.<br>
+		/// bytes are actually received.
 		/// This function will fail if the socket is not connected.
 		/// </summary>
 		/// <param name="data">Pointer to the array to fill with the received bytes.</param>
@@ -158,12 +158,12 @@ namespace TRAP::Network
 		Status Receive(void* data, std::size_t size, std::size_t& received) const;
 
 		/// <summary>
-		/// Send a formatted packet of adata to the remote peer.<br>
-		/// <br>
+		/// Send a formatted packet of adata to the remote peer.
+		///
 		/// In non-blocking mode, if this function returns TRAP::Network::Socket::Status::Partial,
 		/// you must retry sending the same unmodified packet before sending
 		/// anything else in order to guarantee the packet arrives at the remote
-		/// peer uncorrupted.<br>
+		/// peer uncorrupted.
 		/// This function will fail if the socket is not connected.
 		/// </summary>
 		/// <param name="packet">Packet to send.</param>
@@ -171,10 +171,10 @@ namespace TRAP::Network
 		Status Send(Packet& packet) const;
 
 		/// <summary>
-		/// Receive a formatted packet of data from the remote peer.<br>
-		/// <br>
+		/// Receive a formatted packet of data from the remote peer.
+		///
 		/// In blocking mode, this function will wait until the whole packet
-		/// has been received.<br>
+		/// has been received.
 		/// This function will fail if the socket is not connected.
 		/// </summary>
 		/// <param name="packet">Packet to fill with the received data.</param>

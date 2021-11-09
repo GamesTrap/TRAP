@@ -12,42 +12,42 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="filepath">File path of Image.</param>
-		/// <param name="width">Width for the Image.</param>
-		/// <param name="height">Height for the Image.</param>
-		/// <param name="format">Color format of the pixelData.</param>
+		/// <param name="filepath">File path of image.</param>
+		/// <param name="width">Width for the image.</param>
+		/// <param name="height">Height for the image.</param>
+		/// <param name="format">Color format of the pixel data.</param>
 		/// <param name="pixelData">Raw pixel data.</param>
 		template<typename T>
 		CustomImage(std::string filepath, uint32_t width, uint32_t height, ColorFormat format,
 		            std::vector<T> pixelData);
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		CustomImage(const CustomImage&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		CustomImage& operator=(const CustomImage&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		CustomImage(CustomImage&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		CustomImage& operator=(CustomImage&&) = default;
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~CustomImage() override = default;
 
 		/// <summary>
-		/// Retrieve the raw pixel data of the Image.
+		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
 		const void* GetPixelData() const override;
 		/// <summary>
-		/// Retrieve the size of the raw pixel data of the Image.
+		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
 		uint64_t GetPixelDataSize() const override;
@@ -74,25 +74,12 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t wi
 	}
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_ASSERT(false, "Invalid color format!");
 		return;
 	}
 	if (pixelData.empty())
 	{
 		TRAP_ASSERT(false, "Invalid pixel data provided!");
-		return;
-	}
-
-	if(format == ColorFormat::NONE)
-	{
-		TP_ERROR(Log::ImagePrefix, "ColorFormat is invalid!");
-		TP_WARN(Log::ImagePrefix, "Using Default Image!");
-		m_width = 32;
-		m_height = 32;
-		m_colorFormat = ColorFormat::RGBA;
-		m_bitsPerPixel = 32;
-		m_data = std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() };
-		m_isHDR = false;
 		return;
 	}
 

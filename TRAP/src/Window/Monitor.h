@@ -7,18 +7,18 @@
 namespace TRAP
 {
 	/// <summary>
-	/// Interface representing a physical Monitor.
+	/// Class representing a physical monitor.
 	/// </summary>
 	class Monitor
 	{
 	public:
 		/// <summary>
-		/// Interface representing a VideoMode used by TRAP::Monitors.
+		/// Struct representing a video mode used by TRAP::Monitors.
 		/// </summary>
 		struct VideoMode
 		{
 			/// <summary>
-			/// VideoMode Constructor.
+			/// Constructor.
 			/// </summary>
 			/// <param name="width">Width.</param>
 			/// <param name="height">Height.</param>
@@ -31,131 +31,131 @@ namespace TRAP
 		};
 
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~Monitor() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Monitor(const Monitor&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Monitor(Monitor&&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Monitor& operator=(const Monitor&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Monitor& operator=(Monitor&&) = default;
 
 		/// <summary>
-		/// Retrieve the name of a TRAP::Monitor.
+		/// Retrieve the name of a monitor.
 		/// </summary>
-		/// <returns>Name of the TRAP::Monitor.</returns>
+		/// <returns>Name of the monitor.</returns>
 		const std::string& GetName() const;
 		/// <summary>
-		/// Retrieve a list of available TRAP::Monitor::VideoModes for the TRAP::Monitor.
+		/// Retrieve a list of available video modes for the monitor.
 		/// </summary>
-		/// <returns>Vector of TRAP::Monitor::VideoModes.</returns>
+		/// <returns>Vector of video modes.</returns>
 		std::vector<VideoMode> GetVideoModes() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors TRAP::Monitor::VideoMode.
+		/// Retrieve the current video mode.
 		/// </summary>
-		/// <returns>Current TRAP::Monitor::VideoMode</returns>
+		/// <returns>Current video mode</returns>
 		VideoMode GetCurrentVideoMode() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors content scale.
+		/// Retrieve the monitors content scale.
 		/// </summary>
-		/// <returns>TRAP::Math::Vec2 containing the content scale.</returns>
+		/// <returns>Vec2 containing the content scale.</returns>
 		Math::Vec2 GetContentScale() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors X content scale.
+		/// Retrieve the monitors X content scale.
 		/// </summary>
-		/// <returns>TRAP::Monitors X content scale.</returns>
+		/// <returns>Monitors X content scale.</returns>
 		float GetContentScaleX() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors Y content scale.
+		/// Retrieve the monitors Y content scale.
 		/// </summary>
-		/// <returns>TRAP::Monitors Y content scale.</returns>
+		/// <returns>Monitors Y content scale.</returns>
 		float GetContentScaleY() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors Viewport position.
+		/// Retrieve the monitors viewport position.
 		/// </summary>
-		/// <returns>TRAP::Math::Vec2i containing the TRAP::Monitors Viewport position.</returns>
+		/// <returns>Vec2i containing the monitors viewport position.</returns>
 		Math::Vec2i GetPosition() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors X Viewport position.
+		/// Retrieve the monitors X viewport position.
 		/// </summary>
-		/// <returns>TRAP::Monitors X Viewport position.</returns>
+		/// <returns>Monitors X viewport position.</returns>
 		int32_t GetPositionX() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors Y Viewport position.
+		/// Retrieve the monitors Y viewport position.
 		/// </summary>
-		/// <returns>TRAP::Monitors Y Viewport position.</returns>
+		/// <returns>Monitors Y viewport position.</returns>
 		int32_t GetPositionY() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors work area.<br>
-		/// <br>
-		/// Work area is the area of a Monitor without task bars or menu bars.
+		/// Retrieve the monitors work area.
+		///
+		/// Work area is the area of a monitor without task bars or menu bars.
 		/// </summary>
-		/// <returns>TRAP::Math::Vec4i containing the TRAP::Monitors work area.</returns>
+		/// <returns>Vec4i containing the monitors work area.</returns>
 		Math::Vec4i GetWorkArea() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors X work area.
+		/// Retrieve the monitors X work area.
 		/// </summary>
-		/// <returns>TRAP::Monitors X work area.</returns>
+		/// <returns>Monitors X work area.</returns>
 		int32_t GetWorkAreaX() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors Y work area.
+		/// Retrieve the monitors Y work area.
 		/// </summary>
-		/// <returns>TRAP::Monitors Y work area.</returns>
+		/// <returns>Monitors Y work area.</returns>
 		int32_t GetWorkAreaY() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors work area width.
+		/// Retrieve the monitors work area width.
 		/// </summary>
-		/// <returns>TRAP::Monitors work area width.</returns>
+		/// <returns>Monitors work area width.</returns>
 		int32_t GetWorkAreaWidth() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors work area height.
+		/// Retrieve the monitors work area height.
 		/// </summary>
-		/// <returns>TRAP::Monitors work area height.</returns>
+		/// <returns>Monitors work area height.</returns>
 		int32_t GetWorkAreaHeight() const;
 		/// <summary>
-		/// Check whether the TRAP::Monitor is currently used by a TRAP::Window.
+		/// Check whether the monitor is currently used by a window.
 		/// </summary>
-		/// <returns>True if it is currently used, false otherwise.</returns>
+		/// <returns>True if monitor is currently used, false otherwise.</returns>
 		bool IsInUse() const;
 		/// <summary>
-		/// Retrieve the TRAP::Monitors ID.<br>
-		/// <br>
+		/// Retrieve the monitors ID.
+		///
 		/// Note: ID 0 is always the primary monitor!
 		/// </summary>
-		/// <returns>TRAP::Monitors ID.</returns>
+		/// <returns>Monitors ID.</returns>
 		uint32_t GetID() const;
 
 		/// <summary>
-		/// Retrieve a pointer to the InternalMonitor.
+		/// Retrieve a pointer to the internal monitor.
 		/// </summary>
-		/// <returns>Pointer to TRAP::INTERNAL::WindowingAPI::InternalMonitor of the TRAP::Monitor.</returns>
+		/// <returns>Pointer to the internal monitor of the Monitor.</returns>
 		void* GetInternalMonitor() const;
 
 		/// <summary>
-		/// Retrieve all currently connected Monitors.
+		/// Retrieve all currently connected monitors.
 		/// </summary>
-		/// <returns>Vector with all TRAP::Monitors.</returns>
+		/// <returns>Vector with all monitors.</returns>
 		static std::vector<Monitor> GetAllMonitors();
 		/// <summary>
-		/// Retrieve the primary Monitor.
+		/// Retrieve the primary monitor.
 		/// </summary>
-		/// <returns>Primary TRAP::Monitor.</returns>
+		/// <returns>Primary monitor.</returns>
 		static Monitor GetPrimaryMonitor();
 
 	private:
 		/// <summary>
-		/// Private Constructor.
+		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Monitor ID.</param>
 		explicit Monitor(uint32_t monitor);

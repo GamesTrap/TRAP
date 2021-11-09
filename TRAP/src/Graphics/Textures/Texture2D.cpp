@@ -13,7 +13,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 	if(name.empty())
 	{
-		TP_WARN(Log::Texture2DPrefix, "Name is empty! Using Filename as Texture2D Name!");
+		TP_WARN(Log::Texture2DPrefix, "Name is empty! Using filename as name!");
 		return CreateFromFile(filepath);
 	}
 
@@ -225,19 +225,19 @@ void TRAP::Graphics::Texture2D::Update(const void* data, const uint32_t sizeInBy
  									   const uint32_t arrayLayer)
 {
 	TRAP_ASSERT(data, "Update: Data is nullptr!");
-	TRAP_ASSERT(arrayLayer < m_texture->GetArraySize(), "Invalid Arraylayer provided!");
-	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid Miplevel provided!");
+	TRAP_ASSERT(arrayLayer < m_texture->GetArraySize(), "Invalid array layer provided!");
+	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid mip level provided!");
 	TRAP_ASSERT(sizeInBytes >= (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *
 	            GetBytesPerPixel(), "Texture update size is too small");
 
 	if(arrayLayer >= 6)
 	{
-		TP_ERROR(Log::Texture2DPrefix, "Update: Invalid Array layer provided!");
+		TP_ERROR(Log::Texture2DPrefix, "Update: Invalid array layer provided!");
 		return;
 	}
 	if(mipLevel >= m_texture->GetMipLevels())
 	{
-		TP_ERROR(Log::Texture2DPrefix, "Update: Invalid MipLevel provided!");
+		TP_ERROR(Log::Texture2DPrefix, "Update: Invalid mip level provided!");
 		return;
 	}
 	if(sizeInBytes < (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *

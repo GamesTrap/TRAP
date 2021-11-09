@@ -8,7 +8,7 @@
 		#define TRAP_PLATFORM_WINDOWS
 	#else
 		//Windows x86
-		#error "x86 Builds are unsupported!"
+		#error "x86 builds are unsupported!"
 	#endif
 #elif defined(__APPLE__) || defined(__MACH__)
 	#error "macOS is unsupported!"
@@ -23,7 +23,7 @@
 		#define TRAP_PLATFORM_LINUX
 	#else
 		//Linux x86
-		#error "x86 Builds are unsupported!"
+		#error "x86 builds are unsupported!"
 	#endif
 #else
 	#error "Unknown platform!"

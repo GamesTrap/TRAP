@@ -4,51 +4,51 @@
 namespace TRAP::Utils
 {
 	/// <summary>
-	/// Struct for a single step in Time.
+	/// Struct for a single step in time.
 	/// </summary>
 	struct TimeStep
 	{
 		/// <summary>
-		/// Constructor for a single TimeStep.
+		/// Constructor for a single step in time.
 		/// </summary>
-		/// <param name="time">Time for the TimeStep.</param>
+		/// <param name="time">Time for the time step.</param>
 		explicit TimeStep(float time);
 
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~TimeStep() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		TimeStep(const TimeStep&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		TimeStep(TimeStep&&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		TimeStep& operator=(const TimeStep&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		TimeStep& operator=(TimeStep&&) = default;
 
 		/// <summary>
-		/// Convenience operator.<br>
+		/// Convenience operator.
 		/// Same as GetSeconds();
 		/// </summary>
-		/// <returns>Time of TimeStep in seconds.</returns>
+		/// <returns>Time of the time step in seconds.</returns>
 		operator float() const;
 
 		/// <summary>
-		/// Get time of TimeStep in seconds.
+		/// Get time of the time step in seconds.
 		/// </summary>
 		/// <returns>Time in seconds.</returns>
 		float GetSeconds() const;
 		/// <summary>
-		/// Get time of TimeStep in milliseconds.
+		/// Get time of the time step in milliseconds.
 		/// </summary>
 		/// <returns>Time in milliseconds.</returns>
 		float GetMilliseconds() const;

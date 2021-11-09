@@ -207,7 +207,7 @@ TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const
 
 const char* TRAP::Events::WindowRestoreEvent::GetName() const
 {
-	return "WindowRestoreEvent";
+	return "WindowRestore";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

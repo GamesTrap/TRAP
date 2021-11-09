@@ -13,18 +13,18 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~ControllerEvent() override = default;
 
 		/// <summary>
-		/// Retrieve the affected Controller.
+		/// Retrieve the affected controller.
 		/// </summary>
 		/// <returns>Controller.</returns>
 		Input::Controller GetController() const;
 
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -33,22 +33,22 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="controller">Affected Controller.</param>
+		/// <param name="controller">Affected controller.</param>
 		explicit ControllerEvent(Input::Controller controller);
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ControllerEvent(const ControllerEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ControllerEvent& operator=(const ControllerEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ControllerEvent(ControllerEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ControllerEvent& operator=(ControllerEvent&&) = default;
 
@@ -64,26 +64,26 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="controller">Newly connected Controller.</param>
+		/// <param name="controller">Newly connected controller.</param>
 		explicit ControllerConnectEvent(Input::Controller controller);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~ControllerConnectEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ControllerConnectEvent(const ControllerConnectEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ControllerConnectEvent& operator=(const ControllerConnectEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ControllerConnectEvent(ControllerConnectEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ControllerConnectEvent& operator=(ControllerConnectEvent&&) = default;
 
@@ -94,17 +94,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
@@ -119,26 +119,26 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="controller">Disconnected Controller.</param>
+		/// <param name="controller">Disconnected controller.</param>
 		explicit ControllerDisconnectEvent(Input::Controller controller);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~ControllerDisconnectEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ControllerDisconnectEvent(const ControllerDisconnectEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ControllerDisconnectEvent(ControllerDisconnectEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) = default;
 
@@ -149,17 +149,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;

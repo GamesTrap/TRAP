@@ -426,7 +426,7 @@ void TRAP::Input::CloseController(Controller controller)
 		        (s_controllerInternal[static_cast<uint32_t>(controller)].mapping
 			         ? s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name
 			         : s_controllerInternal[static_cast<uint32_t>(controller)].Name),
-		        " (", static_cast<uint32_t>(controller), ") Disconnected!");
+		        " (", static_cast<uint32_t>(controller), ") disconnected!");
 	}
 
 	s_controllerInternal[static_cast<uint32_t>(controller)] = {};
@@ -688,6 +688,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		}
 
 		lpDirectInputJoystick->Release();*/
+		//TODO
 		TP_DEBUG(Log::InputControllerDirectInputPrefix, "Controller supports Force Feedback!\n",
 		         "This feature is not implemented because all my controllers do not set this flag\nPls help thx");
 	}
@@ -720,7 +721,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, name.data(),
 	                         static_cast<int32_t>(name.size()), nullptr, nullptr))
 	{
-		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to convert Controller name to UTF-8");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to convert controller name to UTF-8");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_STOP;
 	}

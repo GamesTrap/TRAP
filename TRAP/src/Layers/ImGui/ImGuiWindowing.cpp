@@ -83,7 +83,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	TP_PROFILE_FUNCTION();
 
 	ImGuiIO& io = ImGui::GetIO();
-	IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It generally built by the renderer back-end. "
+	IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It generally gets built by the renderer back-end. "
 	                                 "Missing call to renderer _NewFrame() function? "
 								     "e.g. ImGui_ImplOpenGL3_NewFrame().");
 

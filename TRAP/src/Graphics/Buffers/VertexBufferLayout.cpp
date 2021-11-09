@@ -21,7 +21,7 @@ uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 	case ShaderDataType::Bool:   return 1;
 
 	default:
-		TRAP_ASSERT(false, "Unknown ShaderDataType!");
+		TRAP_ASSERT(false, "Unknown shader data type!");
 		return 0;
 	}
 }
@@ -53,7 +53,7 @@ uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 	case ShaderDataType::Bool:    return 1;
 
 	default:
-		TRAP_ASSERT(false, "Unknown/Invalid ShaderDataType!");
+		TRAP_ASSERT(false, "Unknown/Invalid shader data type!");
 		return 0;
 	}
 }

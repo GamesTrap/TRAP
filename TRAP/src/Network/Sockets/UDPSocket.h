@@ -52,43 +52,43 @@ namespace TRAP::Network
 		/// </summary>
 		UDPSocket();
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~UDPSocket() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		UDPSocket(const UDPSocket&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		UDPSocket& operator=(const UDPSocket&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		UDPSocket(UDPSocket&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		UDPSocket& operator=(UDPSocket&&) = default;
 
 		/// <summary>
-		/// Get the port to which the socket is bound locally.<br>
-		/// <br>
+		/// Get the port to which the socket is bound locally.
+		///
 		/// If the socket is not bound to a port, this function returns 0.
 		/// </summary>
 		/// <returns>Port to which the socket is bound.</returns>
 		uint16_t GetLocalPort() const;
 
 		/// <summary>
-		/// Bind the socket to a specific port.<br>
-		/// <br>
+		/// Bind the socket to a specific port.
+		///
 		/// Binding the socket to a port is necessary for being
-		/// able to receive data on that port.<br>
+		/// able to receive data on that port.
 		/// When providing TRAP::Network::Socket::AnyPort as part, the listener
-		/// will request an available port from the system.<br>
-		/// The chosen port can be retrieved by calling GetLocalPort().<br>
-		/// <br>
+		/// will request an available port from the system.
+		/// The chosen port can be retrieved by calling GetLocalPort().
+		///
 		/// Since the socket cn only be bound to a single port at
 		/// any given moment, if it is already bound when this
 		/// function is called, it will be unbound from the previous
@@ -100,19 +100,19 @@ namespace TRAP::Network
 		Status Bind(uint16_t port, const IPv4Address& address = IPv4Address::Any);
 
 		/// <summary>
-		/// Unbind the socket from the local port to which it is bound.<br>
-		/// <br>
+		/// Unbind the socket from the local port to which it is bound.
+		///
 		/// The port that the socket was previously bound to is immediately
-		/// made available to the operating system after this function is called.<br>
+		/// made available to the operating system after this function is called.
 		/// This means that a subsequent call to Bind() will be able to re-bind
-		/// the port if no other process has done so in the mean time.<br>
+		/// the port if no other process has done so in the mean time.
 		/// If the socket is not bound to a port, this function has no effect.
 		/// </summary>
 		void Unbind();
 
 		/// <summary>
-		/// Send raw data to a remote peer.<br>
-		/// <br>
+		/// Send raw data to a remote peer.
+		///
 		/// Make sure that size is not greater than
 		/// UDPSocket::MaxDatagramSize, otherwise this function will
 		/// fail and no data will be sent.
@@ -125,10 +125,10 @@ namespace TRAP::Network
 		Status Send(const void* data, std::size_t size, const IPv4Address& remoteAddress, uint16_t remotePort);
 
 		/// <summary>
-		/// Receive raw data from a remote peer.<br>
-		/// <br>
+		/// Receive raw data from a remote peer.
+		///
 		/// In blocking mode, this function will wait until some
-		/// bytes are actually received.<br>
+		/// bytes are actually received.
 		/// Be careful to use a buffer which is large enough for
 		/// the data that you intend to receive, if it is too small
 		/// then an error will be returned and *all* the data will
@@ -144,8 +144,8 @@ namespace TRAP::Network
 		               uint16_t& remotePort) const;
 
 		/// <summary>
-		/// Send a formatted packet of data to a remote peer.<br>
-		/// <br>
+		/// Send a formatted packet of data to a remote peer.
+		///
 		/// Make sure that the packet size is not greater than
 		/// UDPSocket::MaxDatagramSize, otherwise this function will
 		/// fail and no data will be sent.
@@ -157,8 +157,8 @@ namespace TRAP::Network
 		Status Send(Packet& packet, const IPv4Address& remoteAddress, uint16_t remotePort);
 
 		/// <summary>
-		/// Receive a formatted packet of data from a remote peer.<br>
-		/// <br>
+		/// Receive a formatted packet of data from a remote peer.
+		///
 		/// In blocking mode, this function will wait until the whole packet
 		/// has been received.
 		/// </summary>

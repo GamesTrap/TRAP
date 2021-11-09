@@ -8,7 +8,7 @@
 namespace TRAP
 {
 	/// <summary>
-	/// Abstract Image base class.
+	/// Abstract image base class.
 	/// </summary>
 	class Image
 	{
@@ -27,48 +27,48 @@ namespace TRAP
 
 	protected:
 		/// <summary>
-		/// Protected Constructor.
+		/// Constructor.
 		/// </summary>
 		Image();
 	public:
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Image(const Image&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Image& operator=(const Image&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Image(Image&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Image& operator=(Image&&) = default;
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Destructor.
 		/// </summary>
 		virtual ~Image() = default;
 
 		/// <summary>
-		/// Retrieve the raw pixel data of the Image.
+		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
 		virtual const void* GetPixelData() const = 0;
 		/// <summary>
-		/// Retrieve the size of the raw pixel data of the Image.
+		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
 		virtual uint64_t GetPixelDataSize() const = 0;
 		/// <summary>
-		/// Retrieve the amount of bits used for a single pixel in the Image.
+		/// Retrieve the amount of bits used for a single pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bits.</returns>
 		uint32_t GetBitsPerPixel() const;
 		/// <summary>
-		/// Retrieve the amount of bytes used for a single pixel in the Image.
+		/// Retrieve the amount of bytes used for a single pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bytes.</returns>
 		uint32_t GetBytesPerPixel() const;
@@ -83,130 +83,139 @@ namespace TRAP
 		/// <returns>Amount of bytes.</returns>
 		uint32_t GetBytesPerChannel() const;
 		/// <summary>
-		/// Retrieve the width of the Image.
+		/// Retrieve the width of the image.
 		/// </summary>
-		/// <returns>Width of the Image.</returns>
+		/// <returns>Width of the image.</returns>
 		uint32_t GetWidth() const;
 		/// <summary>
-		/// Retrieve the height of the Image.
+		/// Retrieve the height of the image.
 		/// </summary>
-		/// <returns>Height of the Image.</returns>
+		/// <returns>Height of the image.</returns>
 		uint32_t GetHeight() const;
 		/// <summary>
-		/// Retrieve the size of the Image.
+		/// Retrieve the size of the image.
 		/// </summary>
-		/// <returns>Size of the Image as a Math::Vec2ui.</returns>
+		/// <returns>Size of the image as a Math::Vec2ui.</returns>
 		Math::Vec2ui GetSize() const;
 		/// <summary>
-		/// Retrieve whether the Image has an alpha channel or not.
+		/// Retrieve whether the image has an alpha channel or not.
 		/// </summary>
-		/// <returns>True if Image has an alpha channel, false otherwise.</returns>
+		/// <returns>True if image has an alpha channel, false otherwise.</returns>
 		bool HasAlphaChannel() const;
 		/// <summary>
-		/// Retrieve whether the Image is gray scale or not.
+		/// Retrieve whether the image is gray scale or not.
 		/// </summary>
-		/// <returns>True if Image is gray scale, false otherwise.</returns>
+		/// <returns>True if image is gray scale, false otherwise.</returns>
 		bool IsImageGrayScale() const;
 		/// <summary>
-		/// Retrieve whether the Image is colored or not.
+		/// Retrieve whether the image is colored or not.
 		/// </summary>
-		/// <returns>True if Image is colored, false otherwise.</returns>
+		/// <returns>True if image is colored, false otherwise.</returns>
 		bool IsImageColored() const;
 		/// <summary>
-		/// Retrieve whether the Image is HDR(High Dynamic Range) or not.
+		/// Retrieve whether the image is HDR(High Dynamic Range) or not.
 		/// </summary>
-		/// <returns>True if Image is HDR, false otherwise.</returns>
+		/// <returns>True if image is HDR, false otherwise.</returns>
 		bool IsHDR() const;
 		/// <summary>
-		/// Retrieve whether the Image is LHDR(Low Dynamic Range) or not.
+		/// Retrieve whether the image is LDR(Low Dynamic Range) or not.
 		/// </summary>
-		/// <returns>True if Image is LDR, false otherwise.</returns>
+		/// <returns>True if image is LDR, false otherwise.</returns>
 		bool IsLDR() const;
 		/// <summary>
-		/// Retrieve the file path of the Image.
+		/// Retrieve the file path of the image.
 		/// </summary>
-		/// <returns>Path to the Image file, or empty string for CustomImages.</returns>
+		/// <returns>Path to the image file, or empty string for custom images.</returns>
 		const std::string& GetFilePath() const;
 		/// <summary>
-		/// Retrieve the color format used by the Image.
+		/// Retrieve the color format used by the image.
 		/// </summary>
-		/// <returns>ColorFormat of the Image.</returns>
+		/// <returns>Color format of the image.</returns>
 		ColorFormat GetColorFormat() const;
 
 		/// <summary>
-		/// Load an Image from disk.
+		/// Load an image from disk.
 		/// </summary>
 		/// <param name="filepath">
-		/// Path to the Image.<br>
-		/// Supported Formats:<br>
-		///		- Portable Maps: PGM, PPM, PNM, PAM, PFM<br>
-		///		- Targa: TGA, ICB, VDA, VST<br>
-		///		- Bitmap: BMP, DIB<br>
-		///		- Portable Network Graphics: PNG<br>
+		/// Path to the image.
+		/// Supported formats:
+		///		- Portable Maps: PGM, PPM, PNM, PAM, PFM
+		///		- Targa: TGA, ICB, VDA, VST
+		///		- Bitmap: BMP, DIB
+		///		- Portable Network Graphics: PNG
 		///		- Radiance: HDR, PIC
 		/// </param>
-		/// <returns>Loaded Image on success, fallback Image otherwise.</returns>
+		/// <returns>Loaded image on success, fallback image otherwise.</returns>
 		static Scope<Image> LoadFromFile(const std::string& filepath);
 		/// <summary>
-		/// Load an Image from memory.
+		/// Load an image from memory.
 		/// </summary>
-		/// <param name="width">Width for the Image.</param>
-		/// <param name="height">Height for the Image</param>
-		/// <param name="format">Color format for the Image.</param>
-		/// <param name="pixelData">Raw pixel data for the Image</param>
-		/// <returns>Loaded Image.<br>Note: There are no validation checks for Images loaded from memory!</returns>
+		/// <param name="width">Width for the image.</param>
+		/// <param name="height">Height for the image</param>
+		/// <param name="format">Color format for the image.</param>
+		/// <param name="pixelData">Raw pixel data for the image</param>
+		/// <returns>
+		/// Loaded image.
+		/// Note: There are no validation checks for images loaded from memory!
+		/// </returns>
 		static Scope<Image> LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format,
 		                                   const std::vector<uint8_t>& pixelData);
 		/// <summary>
-		/// Load an Image from memory.
+		/// Load an image from memory.
 		/// </summary>
-		/// <param name="width">Width for the Image.</param>
-		/// <param name="height">Height for the Image</param>
-		/// <param name="format">Color format for the Image.</param>
-		/// <param name="pixelData">Raw pixel data for the Image</param>
-		/// <returns>Loaded Image.<br>Note: There are no validation checks for Images loaded from memory!</returns>
+		/// <param name="width">Width for the image.</param>
+		/// <param name="height">Height for the image</param>
+		/// <param name="format">Color format for the image.</param>
+		/// <param name="pixelData">Raw pixel data for the image</param>
+		/// <returns>
+		/// Loaded Image.
+		/// Note: There are no validation checks for images loaded from memory!
+		/// </returns>
 		static Scope<Image> LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format,
 		                                   const std::vector<uint16_t>& pixelData);
 		/// <summary>
-		/// Load an HDR Image from memory.
+		/// Load an HDR image from memory.
 		/// </summary>
-		/// <param name="width">Width for the Image.</param>
-		/// <param name="height">Height for the Image</param>
-		/// <param name="format">Color format for the Image.</param>
-		/// <param name="pixelData">Raw pixel data for the Image</param>
-		/// <returns>Loaded Image.<br>Note: There are no validation checks for Images loaded from memory!</returns>
+		/// <param name="width">Width for the image.</param>
+		/// <param name="height">Height for the image</param>
+		/// <param name="format">Color format for the image.</param>
+		/// <param name="pixelData">Raw pixel data for the image</param>
+		/// <returns>
+		/// Loaded Image.
+		/// Note: There are no validation checks for images loaded from memory!
+		/// </returns>
 		static Scope<Image> LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format,
 		                                   const std::vector<float>& pixelData);
 		/// <summary>
-		/// Load the Fallback Image.<br>
+		/// Load the fallback image.
 		/// </summary>
-		/// <returns>Fallback Image.</returns>
+		/// <returns>Fallback image.</returns>
 		static Scope<Image> LoadFallback();
 
 		/// <summary>
-		/// Check if the given (valid) file is a supported Image.
+		/// Check if the given (valid) file is a supported image.
 		/// </summary>
 		/// <param name="filepath">Path to a file</param>
-		/// <returns>True if given file is an Image, false otherwise.</returns>
+		/// <returns>True if given file is an image, false otherwise.</returns>
 		static bool IsSupportedImageFile(const std::string& filepath);
 
 		/// <summary>
-		/// Flip an Image on its X axis.
+		/// Flip an image on its X axis.
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
-		/// <returns>Flipped Image</returns>
+		/// <returns>Flipped image</returns>
 		static Scope<Image> FlipX(const Scope<Image>& img);
 		/// <summary>
-		/// Flip an Image on its Y axis.
+		/// Flip an image on its Y axis.
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
-		/// <returns>Flipped Image</returns>
+		/// <returns>Flipped image</returns>
 		static Scope<Image> FlipY(const Scope<Image>& img);
 		/// <summary>
-		/// Convert a RGB Image to RGBA.
+		/// Convert a RGB image to RGBA.
 		/// </summary>
 		/// <param name="img">Image to convert.</param>
-		/// <returns>Converted Image</returns>
+		/// <returns>Converted image</returns>
 		static Scope<Image> ConvertRGBToRGBA(const Scope<Image>& img);
 
 		static const std::array<std::string, 14> SupportedImageFormatSuffixes;
@@ -216,9 +225,9 @@ namespace TRAP
 		/// Flip raw pixel data on X axis.
 		/// </summary>
 		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
-		/// <param name="width">Width of Image in pixels.</param>
-		/// <param name="height">Height of Image in pixels.</param>
-		/// <param name="format">Color format of the Image data.</param>
+		/// <param name="width">Width of image in pixels.</param>
+		/// <param name="height">Height of image in pixels.</param>
+		/// <param name="format">Color format of the image data.</param>
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
@@ -227,9 +236,9 @@ namespace TRAP
 		/// Flip raw pixel data on Y axis.
 		/// </summary>
 		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
-		/// <param name="width">Width of Image in pixels.</param>
-		/// <param name="height">Height of Image in pixels.</param>
-		/// <param name="format">Color format of the Image data.</param>
+		/// <param name="width">Width of image in pixels.</param>
+		/// <param name="height">Height of image in pixels.</param>
+		/// <param name="format">Color format of the image data.</param>
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
@@ -238,15 +247,15 @@ namespace TRAP
 		/// Converts raw RGB pixel data to RGBA.
 		/// </summary>
 		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
-		/// <param name="width">Width of Image in pixels.</param>
-		/// <param name="height">Height of Image in pixels.</param>
-		/// <param name="format">Color format of the Image data.</param>
+		/// <param name="width">Width of image in pixels.</param>
+		/// <param name="height">Height of image in pixels.</param>
+		/// <param name="format">Color format of the image data.</param>
 		/// <param name="data">Raw pixel data.</param>
 		/// <returns>Converted RGBA raw pixel data</returns>
 		template<typename T>
 		static std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 
-		//Used by multiple Image formats
+		//Used by multiple image formats
 		static std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source,
 		                                                uint32_t width, uint32_t height);
 		static std::vector<uint8_t> ConvertBGR24ToRGB24(std::vector<uint8_t>& source,
@@ -279,7 +288,7 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 	}
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_ASSERT(false, "Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)
@@ -323,7 +332,7 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 	}
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_ASSERT(false, "Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)
@@ -367,7 +376,7 @@ std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_
 	}
 	if(format != ColorFormat::RGB)
 	{
-		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_ASSERT(false, "Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)

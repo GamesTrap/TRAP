@@ -80,7 +80,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* dat
 	//Make sure that all the data will fit in one datagram
 	if(size > MaxDatagramSize)
 	{
-		TP_ERROR(Log::NetworkUDPSocketPrefix, "Cannot send data over the network (the number of bytes",
+		TP_ERROR(Log::NetworkUDPSocketPrefix, "Can't send data over the network (the number of bytes",
 			" to send is greater than TRAP::Network::UDPSocket::MaxDatagramSize)");
 		return Status::Error;
 	}
@@ -115,7 +115,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, 
 	if(!data)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix,
-		         "Cannot receive data from the network (the destination buffer is invalid)");
+		         "Can't receive data from the network (the destination buffer is invalid)");
 		return Status::Error;
 	}
 

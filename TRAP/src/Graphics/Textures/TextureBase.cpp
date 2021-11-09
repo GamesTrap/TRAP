@@ -110,14 +110,14 @@ bool TRAP::Graphics::TextureBase::ValidateLimits(const RendererAPI::TextureDesc&
     {
         if(desc.Width > RendererAPI::GPUSettings.MaxImageDimension2D)
         {
-            TP_ERROR(Log::TextureBasePrefix, "Texture Width: ", desc.Width,
+            TP_ERROR(Log::TextureBasePrefix, "Texture width: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
             TRAP_ASSERT(false);
             return false;
         }
         if(desc.Height > RendererAPI::GPUSettings.MaxImageDimension2D)
         {
-            TP_ERROR(Log::TextureBasePrefix, "Texture Height: ", desc.Width,
+            TP_ERROR(Log::TextureBasePrefix, "Texture height: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
             TRAP_ASSERT(false);
             return false;
@@ -127,14 +127,14 @@ bool TRAP::Graphics::TextureBase::ValidateLimits(const RendererAPI::TextureDesc&
     {
         if(desc.Width > RendererAPI::GPUSettings.MaxImageDimensionCube)
         {
-            TP_ERROR(Log::TextureBasePrefix, "Texture Width: ", desc.Width,
+            TP_ERROR(Log::TextureBasePrefix, "Texture width: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
             TRAP_ASSERT(false);
             return false;
         }
         if(desc.Height > RendererAPI::GPUSettings.MaxImageDimensionCube)
         {
-            TP_ERROR(Log::TextureBasePrefix, "Texture Height: ", desc.Width,
+            TP_ERROR(Log::TextureBasePrefix, "Texture height: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
             TRAP_ASSERT(false);
             return false;

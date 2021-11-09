@@ -11,36 +11,36 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="filepath">File path of the Image to load.</param>
+		/// <param name="filepath">File path of the image to load.</param>
 		explicit RadianceImage(std::string filepath);
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		RadianceImage(const RadianceImage&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		RadianceImage& operator=(const RadianceImage&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		RadianceImage(RadianceImage&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		RadianceImage& operator=(RadianceImage&&) = default;
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~RadianceImage() override = default;
 
 		/// <summary>
-		/// Retrieve the raw pixel data of the Image.
+		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
 		const void* GetPixelData() const override;
 		/// <summary>
-		/// Retrieve the size of the raw pixel data of the Image.
+		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
 		uint64_t GetPixelDataSize() const override;

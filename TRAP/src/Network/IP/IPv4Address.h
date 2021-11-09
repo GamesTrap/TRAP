@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 namespace TRAP::Network
 {
 	/// <summary>
-	/// TRAP::Network::IPv4Address is a utility class for manipulating network addresses.<br>
+	/// TRAP::Network::IPv4Address is a utility class for manipulating network addresses.
 	/// It provides a set of implicit constructors and conversion functions to easily build or transform
 	/// an IPv4 address from/to various representations.
 	/// </summary>
@@ -47,8 +47,8 @@ namespace TRAP::Network
 		IPv4Address();
 
 		/// <summary>
-		/// Construct the address from a string.<br>
-		/// <br>
+		/// Construct the address from a string.
+		///
 		/// Here address can be either a decimal address (ex: "192.168.1.180") or a
 		/// network name (ex: "localhost").
 		/// </summary>
@@ -56,10 +56,10 @@ namespace TRAP::Network
 		explicit IPv4Address(std::string_view address);
 
 		/// <summary>
-		/// Construct the address from a string.<br>
-		/// <br>
+		/// Construct the address from a string.
+		///
 		/// Here address can either be a decimal address (ex: "192.168.1.180") or a
-		/// network name (ex: "localhost").<br>
+		/// network name (ex: "localhost").
 		/// This is equivalent to the constructor taking a std::string
 		/// parameter, it is defined for convenience so that the
 		/// implicit conversion from literal strings to IPv4Address work.
@@ -68,8 +68,8 @@ namespace TRAP::Network
 		explicit IPv4Address(const char* address);
 
 		/// <summary>
-		/// Construct the address from 4 bytes.<br>
-		/// <br>
+		/// Construct the address from 4 bytes.
+		///
 		/// Calling IPv4Address(a, b, c, d) is equivalent to calling
 		/// IPv4Address("a.b.c.d"), but safer as it doesn't have to
 		/// parse a string to get the address components.
@@ -81,40 +81,40 @@ namespace TRAP::Network
 		IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3);
 
 		/// <summary>
-		/// Construct the address from a 32 Bit integer.<br>
-		/// <br>
+		/// Construct the address from a 32 bit integer.
+		///
 		/// This constructor uses the internal representation of
-		/// the address directly.<br>
+		/// the address directly.
 		/// It should be used for optimization purposes, and only if you
 		/// get that representation from IPv4Address::ToInteger().
 		/// </summary>
-		/// <param name="address">4 Bytes of the address packed into a 32 Bit integer.</param>
+		/// <param name="address">4 Bytes of the address packed into a 32 bit integer.</param>
 		explicit IPv4Address(uint32_t address);
 
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~IPv4Address() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		IPv4Address(const IPv4Address&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		IPv4Address& operator=(const IPv4Address&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		IPv4Address(IPv4Address&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		IPv4Address& operator=(IPv4Address&&) = default;
 
 		/// <summary>
-		/// Get a string representation of the address.<br>
-		/// <br>
+		/// Get a string representation of the address.
+		///
 		/// The returned string is the decimal representation of the
 		/// IPv4 address (like "192.168.1.180"), even if it was constructed
 		/// from a host name.
@@ -123,39 +123,39 @@ namespace TRAP::Network
 		std::string ToString() const;
 
 		/// <summary>
-		/// Get an integer representation of the address.<br>
-		/// <br>
+		/// Get an integer representation of the address.
+		///
 		/// The returned number is in the internal representation of the
 		/// address, and should be used for optimization purposes only
-		/// (like sending the address through a socket).<br>
+		/// (like sending the address through a socket).
 		/// The integer produced by this function can then be converted
 		/// back to a TRAP::Network::IPv4Address with the proper constructor.
 		/// </summary>
-		/// <returns>32 Bit unsigned integer representation of the address.</returns>
+		/// <returns>32 bit unsigned integer representation of the address.</returns>
 		uint32_t ToInteger() const;
 
 		/// <summary>
-		/// Get the computer's local address.<br>
-		/// <br>
+		/// Get the computer's local address.
+		///
 		/// The local address is the address of the computer from the
-		/// LAN point of view, i.e. something like 192.168.1.180.<br>
-		/// It is meaningful only for communications over the local network.<br>
+		/// LAN point of view, i.e. something like 192.168.1.180.
+		/// It is meaningful only for communications over the local network.
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
 		/// </summary>
 		/// <returns>Local IPv4 address of the computer.</returns>
 		static IPv4Address GetLocalAddress();
 
 		/// <summary>
-		/// Get the computer's public address.<br>
-		/// <br>
+		/// Get the computer's public address.
+		///
 		/// The public address is the address of the computer from the
-		/// internet point of view, i.e. something like 89.54.1.169.<br>
-		/// It is necessary for communications over the world wide web.<br>
+		/// internet point of view, i.e. something like 89.54.1.169.
+		/// It is necessary for communications over the world wide web.
 		/// The only way to get a public address is to ask it to a
 		/// distant website; as a consequence, this function depends on
 		/// both your network connection and the server, and may be
-		/// very slow.<br>
-		/// You should use it as few as possible.<br>
+		/// very slow.
+		/// You should use it as few as possible.
 		/// Because this function depends on the network connection and on a distant
 		/// server, you may use a time limit if you don't want your program
 		/// to be possibly stuck waiting in case there is a problem; this
@@ -179,7 +179,7 @@ namespace TRAP::Network
 		/// <param name="address">Address string.</param>
 		void Resolve(std::string_view address);
 
-		uint32_t m_address; //Address stored as an unsigned 32 Bit integer
+		uint32_t m_address; //Address stored as an unsigned 32 bit integer
 		bool m_valid; //Is the address valid?
 	};
 

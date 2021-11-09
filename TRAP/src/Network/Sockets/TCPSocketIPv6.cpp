@@ -214,7 +214,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* dat
 	//Check the parameters
 	if(!data || (size == 0))
 	{
-		TP_ERROR(Log::NetworkTCPSocketPrefix, "Cannot send data over the network (no data to send)");
+		TP_ERROR(Log::NetworkTCPSocketPrefix, "Can't send data over the network (no data to send)");
 		return Status::Error;
 	}
 
@@ -252,7 +252,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* data, 
 	if(!data)
 	{
 		TP_ERROR(Log::NetworkTCPSocketPrefix,
-		         "Cannot receive data from the network (the destination buffer is invalid)");
+		         "Can't receive data from the network (the destination buffer is invalid)");
 		return Status::Error;
 	}
 

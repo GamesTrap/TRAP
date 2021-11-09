@@ -244,7 +244,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 
 		if (!p->SwapChain)
 		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create Swapchain!",
+			TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create swapchain!",
 			                                 TRAP::Utils::Dialogs::Style::Error,
 											 TRAP::Utils::Dialogs::Buttons::Quit);
 			TRAP::Application::Shutdown();
@@ -1142,10 +1142,10 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 
 	if(!VulkanInstance::IsExtensionSupported(reqExt[0]) || !VulkanInstance::IsExtensionSupported(reqExt[1]))
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan Surface extensions are unsupported!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\n"
 								   "Error code: 0x0003", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan Surface extensions are unsupported!");
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported!");
 		TRAP::Application::Shutdown();
 		exit(-1);
 	}
@@ -1192,10 +1192,10 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan Swapchain extension is unsupported!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan swapchain extension is unsupported!\n"
 								   "Error code: 0x0004", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan Swapchain extension is unsupported!");
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported!");
 		TRAP::Application::Shutdown();
 		exit(-1);
 	}

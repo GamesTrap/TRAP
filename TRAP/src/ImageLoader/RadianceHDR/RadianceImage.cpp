@@ -15,14 +15,14 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 	m_bitsPerPixel = 96;
 	m_colorFormat = ColorFormat::RGB;
 
-	TP_DEBUG(Log::ImageRadiancePrefix, "Loading Image: \"",
+	TP_DEBUG(Log::ImageRadiancePrefix, "Loading image: \"",
 	         Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
 	{
-		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't resolve file path: ", m_filepath, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
@@ -32,8 +32,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 	std::ifstream file(physicalPath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
@@ -45,8 +45,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 	if(str.find("#?RADIANCE") == std::string::npos && str.find("#?RGBE") == std::string::npos)
 	{
 		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid Magic Number!");
-		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid magic number ", str, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
@@ -61,8 +61,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 	if(!formatFound)
 	{
 		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid File Format!");
-		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid file format", str, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
@@ -95,16 +95,25 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 	else
 	{
 		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid Resolution!");
-		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid resolution ", signOne, axisOne, ' ',
+		         signTwo, axisTwo, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
-	if(m_width == 0 || m_height == 0)
+	if(m_width == 0)
 	{
 		file.close();
-		TP_ERROR(Log::ImageRadiancePrefix, "Invalid Width or Height!");
-		TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid width ", m_width, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
+		return;
+	}
+	if(m_height == 0)
+	{
+
+		file.close();
+		TP_ERROR(Log::ImageRadiancePrefix, "Invalid height ", m_height, "!");
+		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
 
@@ -123,7 +132,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 			m_data.clear();
 			file.close();
 			TP_ERROR(Log::ImageRadiancePrefix, "Decrunching failed!");
-			TP_WARN(Log::ImageRadiancePrefix, "Using Default Image!");
+			TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 			return;
 		}
 		WorkOnRGBE(scanline, scanlineIndex, m_data, dataIndex);

@@ -16,7 +16,7 @@
 
 namespace TRAP
 {
-	//Document
+	//TODO Document
 	class Entity
 	{
 	public:

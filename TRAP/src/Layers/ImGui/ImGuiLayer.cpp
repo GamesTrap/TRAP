@@ -88,7 +88,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	{
 		TRAP::INTERNAL::ImGuiWindowing::InitForVulkan(window, true);
 
-		TP_TRACE(Log::ImGuiPrefix, "Vulkan Init...");
+		TP_TRACE(Log::ImGuiPrefix, "Vulkan init...");
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer().get()
@@ -132,7 +132,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		//Clear font textures from CPU data
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
-		TP_TRACE(Log::ImGuiPrefix, "Vulkan Init Finished");
+		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan init");
 	}
 }
 
@@ -144,7 +144,7 @@ void TRAP::ImGuiLayer::OnDetach()
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		TP_TRACE(Log::ImGuiPrefix, "Vulkan Shutdown...");
+		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
 		m_imguiPipelineCache->Save(TRAP::VFS::GetTempFolderPath() + "TRAP/ImGui.cache");
 		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
@@ -152,7 +152,7 @@ void TRAP::ImGuiLayer::OnDetach()
 			TRAP::Graphics::RendererAPI::GetRenderer().get()
 		);
 		vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
-		TP_TRACE(Log::ImGuiPrefix, "Vulkan Shutdown Finished");
+		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
 
 		ImGui_ImplVulkan_Shutdown();
 		INTERNAL::ImGuiWindowing::Shutdown();

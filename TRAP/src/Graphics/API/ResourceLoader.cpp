@@ -1209,7 +1209,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				else if (images[0]->GetColorFormat() != images[i]->GetColorFormat() ||
 					     images[0]->GetBitsPerPixel() != images[i]->GetBitsPerPixel())
 				{
-					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching color formats and/or BPP!");
+					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching color formats and/or bits per pixel!");
 					valid = false;
 					break;
 				}
@@ -1217,7 +1217,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			if(!valid) //Use FallbackCube
 			{
-				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube Texture");
+				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
 				for (auto& image : images)
@@ -1250,7 +1250,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				{
 					valid = false;
 					TP_ERROR(Log::TextureCubePrefix,
-					         "Width must be a multiple of 4 & Height must be a multiple of 3!");
+					         "Width must be a multiple of 4 & height must be a multiple of 3!");
 				}
 			}
 			else //Vertical
@@ -1258,7 +1258,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				if(baseImg->GetWidth() % 3 != 0 || baseImg->GetHeight() % 4 != 0)
 				{
 					TP_ERROR(Log::TextureCubePrefix,
-					         "Width must be a multiple of 3 & Height must be a multiple of 4!");
+					         "Width must be a multiple of 3 & height must be a multiple of 4!");
 					valid = false;
 				}
 			}
@@ -1274,7 +1274,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			}
 			else //Use FallbackCube
 			{
-				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube Texture");
+				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
 				for (auto& image : images)

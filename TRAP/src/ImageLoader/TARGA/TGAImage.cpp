@@ -11,14 +11,14 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	TP_PROFILE_FUNCTION();
 
 	m_filepath = std::move(filepath);
-	TP_DEBUG(Log::ImageTGAPrefix, "Loading Image: \"",
+	TP_DEBUG(Log::ImageTGAPrefix, "Loading image: \"",
 	         Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
 	{
-		TP_ERROR(Log::ImageTGAPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageTGAPrefix, "Couldn't resolve file path: ", m_filepath, "!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
 
@@ -28,8 +28,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	std::ifstream file(physicalPath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageTGAPrefix, "Couldn't open FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageTGAPrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
 
@@ -67,7 +67,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	{
 		file.close();
 		TP_ERROR(Log::ImageTGAPrefix, "Image doesn't contain pixel data!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
 	if (header.IDLength != 0)
@@ -82,16 +82,16 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		              (header.ColorMapDepth / 8) * header.NumOfColorMaps))
 		{
 			file.close();
-			TP_ERROR(Log::ImageTGAPrefix, "Couldn't load Color Map!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Couldn't load color map!");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 	}
 	if(header.BitsPerPixel == 15)
 	{
 		file.close();
-		TP_ERROR(Log::ImageTGAPrefix, "BitsPerPixel 15 is unsupported!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageTGAPrefix, "Bits per pixel 15 is unsupported!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
 	bool needXFlip = false;
@@ -102,11 +102,18 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	//1. If Image is stored Bottom/Left | 2. If Image is stored Bottom/Right
 	if ((header.ImageDescriptor & 0x30) == 0x00 || (header.ImageDescriptor & 0x30) == 0x10)
 		needYFlip = true;
-	if (header.Width < 2 || header.Height < 2)
+	if (header.Width < 2)
 	{
 		file.close();
-		TP_ERROR(Log::ImageTGAPrefix, "Image Width/Height is invalid/unsupported!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageTGAPrefix, "Image width ", header.Width, " is invalid or unsupported!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
+		return;
+	}
+	if(header.Height < 2)
+	{
+		file.close();
+		TP_ERROR(Log::ImageTGAPrefix, "Image height ", header.Height, " is invalid or unsupported!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
 	if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
@@ -126,7 +133,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		{
 			file.close();
 			TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 	}
@@ -138,7 +145,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		{
 			file.close();
 			TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 	}
@@ -154,8 +161,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	{
 		if (header.BitsPerPixel > 8)
 		{
-			TP_ERROR(Log::ImageTGAPrefix, "Bad ColorMapped index size: ", header.BitsPerPixel, " bits/pixel");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad color mapped index size: ", header.BitsPerPixel, " bits per pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 		if (header.BitsPerPixel == 8)
@@ -181,8 +188,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	{
 		if (header.BitsPerPixel > 8)
 		{
-			TP_ERROR(Log::ImageTGAPrefix, "Bad ColorMapped RLE index size: ", header.BitsPerPixel, " bits/pixel");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad color mapped RLE index size: ", header.BitsPerPixel, " bits per pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 		if (header.BitsPerPixel == 8)
@@ -207,8 +214,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	{
 		if (header.BitsPerPixel > 8)
 		{
-			TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale pixel size: ", header.BitsPerPixel, " bits/pixel");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale pixel size: ", header.BitsPerPixel, " bits per pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 		if (header.BitsPerPixel == 8)
@@ -221,8 +228,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	{
 		if (header.BitsPerPixel > 8)
 		{
-			TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad GrayScale RLE pixel size: ", header.BitsPerPixel, " bits per pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 		if (header.BitsPerPixel == 8)
@@ -258,8 +265,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		}
 
 		default:
-			TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor pixel size: ", header.BitsPerPixel, " bits/pixel");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor pixel size: ", header.BitsPerPixel, " bits per pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 		break;
@@ -292,8 +299,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		}
 
 		default:
-			TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
-			TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageTGAPrefix, "Bad TrueColor RLE pixel size: ", header.BitsPerPixel, " bits per pixel");
+			TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 			return;
 		}
 		break;
@@ -301,12 +308,12 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 	case 0: //Shouldn't be reached because of the above check!
 		TP_ERROR(Log::ImageTGAPrefix, "Image doesn't contain pixel data!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 
 	default:
-		TP_ERROR(Log::ImageTGAPrefix, "Unknown or invalid Image Type!");
-		TP_WARN(Log::ImageTGAPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageTGAPrefix, "Unknown or invalid image type!");
+		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
 

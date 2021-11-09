@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "KeyEvent.h"
 
-#include <utility>
-
 #include "Window/WindowingAPI.h"
 
 TRAP::Input::Key TRAP::Events::KeyEvent::GetKey() const
@@ -31,7 +29,7 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 	switch(key)
 	{
 	case Input::Key::Unknown:
-		return "ERROR Unknown";
+		return "Unknown";
 
 	case Input::Key::Space:
 		return "Space";

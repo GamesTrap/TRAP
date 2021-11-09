@@ -25,7 +25,6 @@
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 std::mutex TRAP::Application::s_hotReloadingMutex;
 
-
 TRAP::Application::Application(const std::string& gameName)
 	: m_timer(std::make_unique<Utils::Timer>()),
 	  m_FramesPerSecond(0),
@@ -40,7 +39,7 @@ TRAP::Application::Application(const std::string& gameName)
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP Modules...");
+	TP_DEBUG(Log::ApplicationPrefix, u8"Initializing TRAP modules...");
 
 	TRAP_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
@@ -52,7 +51,7 @@ TRAP::Application::Application(const std::string& gameName)
 	if (TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Wayland)
 	{
         TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!",
-		                                 "Wayland is currently not supported by TRAP! Please use X11 instead\n"
+		                                 u8"Wayland is currently not supported by TRAP™! Please use X11 instead\n"
 										 "Error code: 0x0001",
                                          TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP!\n"
@@ -96,7 +95,7 @@ TRAP::Application::Application(const std::string& gameName)
 	(
 		WindowProps
 		(
-			"TRAP Engine",
+			u8"TRAP™",
 			width,
 			height,
 			refreshRate,
@@ -159,7 +158,7 @@ TRAP::Application::~Application()
 
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP Modules...");
+	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 	TRAP::Utils::Discord::Destroy();
 	if(m_hotReloadingThread)
 	{
@@ -635,7 +634,7 @@ void TRAP::Application::UpdateHotReloading()
 	{
 		if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
 		{
-			TP_INFO(Log::ShaderManagerPrefix, "Shader Modified Reloading...");
+			TP_INFO(Log::ShaderManagerPrefix, "Shader modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
 			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(virtualPath);
 
@@ -652,7 +651,7 @@ void TRAP::Application::UpdateHotReloading()
 	{
 		if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
 		{
-			TP_INFO(Log::TextureManagerPrefix, "Texture Modified Reloading...");
+			TP_INFO(Log::TextureManagerPrefix, "Texture modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
 			Graphics::Renderer2D::ClearTextures();
 			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(virtualPath);

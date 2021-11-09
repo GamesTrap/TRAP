@@ -29,8 +29,8 @@ namespace TRAP::Utils
     };
 
     /// <summary>
-    /// Base template class for random with static API and static internal member storage.<br>
-    /// <br>
+    /// Base template class for random with static API and static internal member storage.
+    ///
     /// Note: It is NOT thread safe but more efficient then basic_random_thread_local.
     /// </summary>
     /// <typeparam name="engine">A random engine with interface like in the std::mt19937.</typeparam>
@@ -44,27 +44,27 @@ namespace TRAP::Utils
 	{
     public:
         /// <summary>
-        /// Deleted Constructor.
+        /// Constructor.
         /// </summary>
         BasicRandomStatic() = delete;
     	/// <summary>
-    	/// Deleted Destructor.
+    	/// Destructor.
     	/// </summary>
         ~BasicRandomStatic() = delete;
         /// <summary>
-        /// Deleted Copy Constructor.
+        /// Copy constructor.
         /// </summary>
         BasicRandomStatic(const BasicRandomStatic&) = delete;
         /// <summary>
-        /// Deleted Copy Assignment Operator.
+        /// Copy assignment operator.
         /// </summary>
         BasicRandomStatic operator=(const BasicRandomStatic&) = delete;
         /// <summary>
-        /// Deleted Move Constructor.
+        /// Move constructor.
         /// </summary>
         BasicRandomStatic(BasicRandomStatic&&) = delete;
         /// <summary>
-        /// Deleted Move Assignment Operator.
+        /// Move assignment operator.
         /// </summary>
         BasicRandomStatic operator=(BasicRandomStatic&&) = delete;
 
@@ -130,7 +130,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Reseed by Seeder.
+        /// Reseed by seeder.
         /// </summary>
         static void Reseed()
     	{
@@ -169,7 +169,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br>
+        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.
         /// Two engines are equal, if their internal states are equivalent, that is, if they would generate
         /// equivalent values for any number of calls of operator().
         /// </summary>
@@ -182,7 +182,7 @@ namespace TRAP::Utils
 
         /// <summary>
         /// Serializes the internal state of the internal pseudo-random number engine as a sequence
-        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br>
+        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.
         /// The fill character and the formatting flags of the stream are ignored and unaffected.
         /// </summary>
         /// <param name="ost">Output stream to insert the data to.</param>
@@ -195,7 +195,7 @@ namespace TRAP::Utils
         /// <summary>
         /// Restores the internal state of the internal pseudo-random number engine from
         /// the serialized representation, which was created by an earlier call to 'Serialize'
-        /// using a stream with the same imbued locale and the same CharT and Traits.<br>
+        /// using a stream with the same imbued locale and the same CharT and Traits.
         /// If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.
         /// </summary>
         /// <param name="ist">Input stream to extract the data from.</param>
@@ -312,8 +312,8 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Get random value from initializer_list.<br>
-        /// Should be 1 or more elements in initializer_list.<br>
+        /// Get random value from initializer_list.
+        /// Should be 1 or more elements in initializer_list.
         /// Note: Elements in initializer_list can't be moved!
         /// </summary>
         /// <param name="init_list">Initializer_list with values.</param>
@@ -343,7 +343,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Get random iterator from Container.
+        /// Get random iterator from container.
         /// </summary>
         /// <param name="container">Container with elements.</param>
         /// <returns>Random iterator from container.</returns>
@@ -368,10 +368,10 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Get value from custom Dist distribution seeded by internal random engine.
+        /// Get value from custom dist distribution seeded by internal random engine.
         /// </summary>
         /// <typeparam name="Dist">Type of custom distribution with next concept.</typeparam>
-        /// <typeparam name="...Args">Arguments which will be forwarded to Dist constructor.</typeparam>
+        /// <typeparam name="...Args">Arguments which will be forwarded to dist constructor.</typeparam>
         /// <returns>Value from custom distribution.</returns>
         template<typename Dist, typename... Args>
         static typename Dist::result_type Get(Args&&... args)
@@ -444,8 +444,8 @@ namespace TRAP::Utils
     };
 
     /// <summary>
-    /// Base template class for random with thread_local API and thread_local internal member storage.<br>
-    /// <br>
+    /// Base template class for random with thread_local API and thread_local internal member storage.
+    ///
     /// Note: It IS thread safe but less efficient then BasicRandomStatic.
     /// </summary>
     /// <typeparam name="engine">A random engine with interface like in the std::mt19937.</typeparam>
@@ -459,27 +459,27 @@ namespace TRAP::Utils
 	{
     public:
         /// <summary>
-        /// Deleted Constructor.
+        /// Constructor.
         /// </summary>
         BasicRandomThreadLocal() = delete;
         /// <summary>
-        /// Deleted Destructor.
+        /// Destructor.
         /// </summary>
         ~BasicRandomThreadLocal() = delete;
         /// <summary>
-        /// Deleted Copy Constructor.
+        /// Copy constructor.
         /// </summary>
         BasicRandomThreadLocal(const BasicRandomThreadLocal&) = delete;
         /// <summary>
-        /// Deleted Copy Assignment Operator.
+        /// Copy assignment operator.
         /// </summary>
         BasicRandomThreadLocal operator=(const BasicRandomThreadLocal&) = delete;
         /// <summary>
-        /// Deleted Move Constructor.
+        /// Move constructor.
         /// </summary>
         BasicRandomThreadLocal(BasicRandomThreadLocal&&) = delete;
         /// <summary>
-        /// Deleted Move Assignment Operator.
+        /// Move assignment operator.
         /// </summary>
         BasicRandomThreadLocal operator=(BasicRandomThreadLocal&&) = delete;
 
@@ -543,7 +543,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Reseed by Seeder.
+        /// Reseed by seeder.
         /// </summary>
         static void Reseed()
         {
@@ -580,7 +580,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br>
+        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.
         /// Two engines are equal, if their internal states are equivalent, that is, if they would generate
         /// equivalent values for any number of calls of operator().
         /// </summary>
@@ -593,7 +593,7 @@ namespace TRAP::Utils
 
         /// <summary>
         /// Serializes the internal state of the internal pseudo-random number engine as a sequence
-        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br>
+        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.
         /// The fill character and the formatting flags of the stream are ignored and unaffected.
         /// </summary>
         /// <param name="ost">Output stream to insert the data to.</param>
@@ -606,7 +606,7 @@ namespace TRAP::Utils
         /// <summary>
         /// Restores the internal state of the internal pseudo-random number engine from
         /// the serialized representation, which was created by an earlier call to 'Serialize'
-        /// using a stream with the same imbued locale and the same CharT and Traits.<br>
+        /// using a stream with the same imbued locale and the same CharT and Traits.
         /// If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.
         /// </summary>
         /// <param name="ist">Input stream to extract the data from.</param>
@@ -751,7 +751,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Retrieve a random iterator from Container.
+        /// Retrieve a random iterator from container.
         /// </summary>
         /// <param name="container">Container with elements.</param>
         /// <returns>Random iterator from container.</returns>
@@ -852,7 +852,7 @@ namespace TRAP::Utils
     };
 
     /// <summary>
-    /// Base template class for random with local API and local internal member storage.<br>
+    /// Base template class for random with local API and local internal member storage.
     /// It IS thread safe but less efficient then BasicRandomStatic.
     /// </summary>
     /// <typeparam name="engine">Random engine with interface like in the std::mt19937.</typeparam>
@@ -925,7 +925,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Reseed by Seeder.
+        /// Reseed by seeder.
         /// </summary>
         void Reseed()
     	{
@@ -962,7 +962,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br>
+        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.
         /// Two engines are equal, if their internal states are equivalent, that is, if they would generate
         /// equivalent values for any number of calls of operator().
         /// </summary>
@@ -975,7 +975,7 @@ namespace TRAP::Utils
 
         /// <summary>
         /// Serializes the internal state of the internal pseudo-random number engine as a sequence
-        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br>
+        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.
         /// The fill character and the formatting flags of the stream are ignored and unaffected.
         /// </summary>
         /// <param name="ost">Output stream to insert the data to</param>
@@ -988,7 +988,7 @@ namespace TRAP::Utils
         /// <summary>
         /// Restores the internal state of the internal pseudo-random number engine from
         /// the serialized representation, which was created by an earlier call to 'Serialize'
-        /// using a stream with the same imbued locale and the same CharT and Traits.<br>
+        /// using a stream with the same imbued locale and the same CharT and Traits.
         /// If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.
         /// </summary>
         /// <param name="ist">Input stream to extract the data from.</param>
@@ -1134,7 +1134,7 @@ namespace TRAP::Utils
         }
 
         /// <summary>
-        /// Retrieve random iterator from Container.
+        /// Retrieve random iterator from container.
         /// </summary>
         /// <typeparam name="Container">Container with elements.</typeparam>
         /// <param name="container">Container with elements.</param>
@@ -1162,7 +1162,7 @@ namespace TRAP::Utils
         /// Retrieve value from custom Dist distribution seeded by internal random engine.
         /// </summary>
         /// <typeparam name="Dist">Type of custom distribution with next concept.</typeparam>
-        /// <typeparam name="...Args">Arguments which will be forwarded to Dist constructor.</typeparam>
+        /// <typeparam name="...Args">Arguments which will be forwarded to dist constructor.</typeparam>
         /// <returns>Value from custom distribution.</returns>
         template<typename Dist, typename... Args>
         typename Dist::result_type Get(Args&&... args)
@@ -1226,7 +1226,7 @@ namespace TRAP::Utils
 
     protected:
         /// <summary>
-        /// Retrieve engine seeded by Seeder
+        /// Retrieve engine seeded by seeder
         /// </summary>
         /// <returns>Seeded engine.</returns>
         static engine MakeSeededEngine()
@@ -1247,22 +1247,22 @@ namespace TRAP::Utils
 namespace TRAP::Utils
 {
 	/// <summary>
-	/// The basic static random alias based on a std::mt19937_64.<br>
-	/// It uses static methods API and data with static storage.<br>
+	/// The basic static random alias based on a std::mt19937_64.
+	/// It uses static methods API and data with static storage.
 	/// Note: Not thread safe but more performance.
 	/// </summary>
 	using Random = BasicRandomStatic<std::mt19937_64>;
 
 	/// <summary>
-	/// The basic static random alias based on a std::mt19937_64.<br>
-	/// It uses static methods API and data with thread_local storage.<br>
+	/// The basic static random alias based on a std::mt19937_64.
+	/// It uses static methods API and data with thread_local storage.
 	/// Note: Thread safe but less performance.
 	/// </summary>
 	using RandomThreadLocal = BasicRandomThreadLocal<std::mt19937_64>;
 
     /// <summary>
-    /// The basic static random alias based on a std::mt19937_64.<br>
-    /// It uses non static methods API and data with auto storage.<br>
+    /// The basic static random alias based on a std::mt19937_64.
+    /// It uses non static methods API and data with auto storage.
     /// Note: Not thread safe. Should construct on the stack at local scope.
     /// </summary>
     using RandomLocal = BasicRandomLocal<std::mt19937_64>;

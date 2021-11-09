@@ -14,64 +14,70 @@ namespace TRAP::Utils
 		/// </summary>
 		Config();
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~Config() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Config(const Config&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Config(Config&&) = default;
 		/// <summary>
-		/// Deleted Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Config& operator=(const Config&) = delete;
 		/// <summary>
-		/// Deleted Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Config& operator=(Config&&) = delete;
 
 		/// <summary>
-		/// Load a Config file from disk.
+		/// Load a config file from disk.
 		/// </summary>
 		/// <param name="file">Virtual or physical file path to load.</param>
 		/// <returns>True if loading was successful, false otherwise.</returns>
 		bool LoadFromFile(std::string_view file);
 		/// <summary>
-		/// Save a Config file to disk.
+		/// Save a config file to disk.
 		/// </summary>
 		/// <param name="file">Virtual or physical file path to save to.</param>
 		/// <returns>True if saving was successful, false otherwise.</returns>
 		bool SaveToFile(std::string_view file);
 
 		/// <summary>
-		/// Check if Config got changed after last Loading/Saving.
+		/// Check if config got changed after last load/save.
 		/// </summary>
-		/// <returns>True if Config got changed, false otherwise.</returns>
+		/// <returns>True if config got changed, false otherwise.</returns>
 		bool IsChanged() const;
 
 		/// <summary>
-		/// Retrieve the value of a specific key in the Config.
+		/// Retrieve the value of a specific key in the config.
 		/// </summary>
 		/// <typeparam name="T">Output variable.</typeparam>
 		/// <param name="key">Key to get value from.</param>
-		/// <param name="value">Output variable for the value.<br>Note: Unchanged when key was not found!</param>
+		/// <param name="value">
+		/// Output variable for the value.
+		/// Note: Unchanged when key was not found!
+		/// </param>
 		template<typename T>
 		void Get(std::string_view key, T& value) const;
 		/// <summary>
-		/// Retrieve the values of a specific key in the Config.
+		/// Retrieve the values of a specific key in the config.
 		/// </summary>
 		/// <typeparam name="T">Output variable.</typeparam>
 		/// <param name="key">Key to get values from.</param>
-		/// <param name="value">Output variable for the values.<br>Note: Unchanged when key was not found!</param>
+		/// <param name="value">
+		/// Output variable for the values.
+		/// Note: Unchanged when key was not found!
+		/// </param>
 		template<typename T>
 		void Get(std::string_view key, std::vector<T>& value) const;
 
 		/// <summary>
-		/// Retrieve the value of a specific key in the Config.
+		/// Retrieve the value of a specific key in the config.
 		/// </summary>
 		/// <typeparam name="T">Output variable.</typeparam>
 		/// <param name="key">Key to get value from.</param>
@@ -79,7 +85,7 @@ namespace TRAP::Utils
 		template<typename T>
 		T Get(std::string_view key) const;
 		/// <summary>
-		/// Retrieve the values of a specific key in the Config.
+		/// Retrieve the values of a specific key in the config.
 		/// </summary>
 		/// <typeparam name="T">Output variable.</typeparam>
 		/// <param name="key">Key to get values from.</param>
@@ -88,7 +94,7 @@ namespace TRAP::Utils
 		std::vector<T> GetVector(std::string_view key) const;
 
 		/// <summary>
-		/// Set a value in the Config.
+		/// Set a value in the config.
 		/// </summary>
 		/// <typeparam name="T">Value type.</typeparam>
 		/// <param name="key">Key for the new or updated value.</param>
@@ -96,7 +102,7 @@ namespace TRAP::Utils
 		template<typename T>
 		void Set(const std::string& key, T value);
 		/// <summary>
-		/// Set values in the Config.
+		/// Set values in the config.
 		/// </summary>
 		/// <typeparam name="T">Value type.</typeparam>
 		/// <param name="key">Key for the new or updated values.</param>
@@ -128,8 +134,8 @@ namespace TRAP::Utils
 		std::string ConvertToString(T value) const;
 
 		/// <summary>
-		/// Parse a line from the Config files.<br>
-		/// Splits keys from value(s).<br>
+		/// Parse a line from the Config files.
+		/// Splits keys from value(s).
 		/// Ignores lines starting with a '#'.
 		/// </summary>
 		/// <param name="line">Line to parse.</param>

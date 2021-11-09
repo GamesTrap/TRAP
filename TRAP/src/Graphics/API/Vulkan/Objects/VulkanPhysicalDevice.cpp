@@ -34,10 +34,10 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	if(!m_physicalDevice)
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan PhysicalDevice creation failed!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan physical device creation failed!\n"
 								   "Error code: 0x0006", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "PhysicalDevice creation failed!");
+		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Physical device creation failed!");
 		TRAP::Application::Shutdown();
 		exit(-1);
 	}
@@ -349,7 +349,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 		RatePhysicalDevices(physicalDevices);
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable PhysicalDevice was found!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
 								   "Error code: 0x0007", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!!");
@@ -414,7 +414,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 		RatePhysicalDevices(physicalDevices);
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable PhysicalDevice was found!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
 								   "Error code: 0x0007", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!");

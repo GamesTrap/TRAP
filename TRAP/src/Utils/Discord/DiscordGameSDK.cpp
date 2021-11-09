@@ -189,7 +189,7 @@ void DiscordLogResult(const discord::Result res)
         TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Internal API error");
         break;
     case discord::Result::InvalidPayload:
-        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid Payload");
+        TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid payload");
         break;
     case discord::Result::InvalidCommand:
         TP_ERROR(TRAP::Log::DiscordGameSDKPrefix, "Invalid command");

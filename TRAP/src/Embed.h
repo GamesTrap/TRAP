@@ -4,7 +4,7 @@
 namespace TRAP::Embed
 {
 	/// <summary>
-	/// Fallback Shader
+	/// Fallback shader
 	/// </summary>
 	inline static constexpr const char* FallbackShader
 	{
@@ -38,7 +38,7 @@ namespace TRAP::Embed
 	};
 
 	/// <summary>
-	/// 2D Renderer Shader
+	/// 2D Renderer shader
 	/// </summary>
 	inline static constexpr const char* Renderer2DShader
 	{
@@ -89,7 +89,7 @@ namespace TRAP::Embed
 	};
 
 	/// <summary>
-	/// Default Debug Image Pixel Data RGBA 32BPP
+	/// Default debug image pixel data RGBA 32BPP
 	/// </summary>
 	inline static constexpr std::array<uint8_t, 4096> DefaultImageData =
 	{

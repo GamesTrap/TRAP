@@ -58,7 +58,7 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(T* in
                                                                            const UpdateFrequency updateFrequency)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
-	              "Trying to initialize IndexBuffer with wrong index type!");
+	              "Trying to initialize index buffer with wrong index type!");
 
 	RendererAPI::IndexType indexType = {};
 	if(indices)
@@ -101,7 +101,7 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64
                                                   const uint64_t offset)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
-	              "Trying to initialize IndexBuffer with wrong index type!");
+	              "Trying to initialize index buffer with wrong index type!");
 
 	TRAP_ASSERT(indices);
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());

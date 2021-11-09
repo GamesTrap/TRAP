@@ -6,7 +6,7 @@
 namespace TRAP
 {
 	/// <summary>
-	/// ThreadPool is a multi-thread task scheduler.<br>
+	/// ThreadPool is a multi-thread task scheduler.
 	/// Note: ThreadPool should only be used for small tasks!
 	/// </summary>
 	class ThreadPool
@@ -23,19 +23,19 @@ namespace TRAP
 		~ThreadPool() noexcept;
 
 		/// <summary>
-		/// Deleted Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ThreadPool(const ThreadPool&) = delete;
 		/// <summary>
-		/// Deleted Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ThreadPool& operator=(const ThreadPool&) = delete;
 		/// <summary>
-		/// Deleted Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ThreadPool(ThreadPool&&) = delete;
 		/// <summary>
-		/// Deleted Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ThreadPool& operator=(ThreadPool&&) = delete;
 

@@ -20,31 +20,31 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="texture">Pointer to the affected Texture.</param>
+		/// <param name="texture">Pointer to the affected texture.</param>
 		TextureReloadEvent(TRAP::Graphics::Texture* texture);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~TextureReloadEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		TextureReloadEvent(const TextureReloadEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		TextureReloadEvent& operator=(const TextureReloadEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		TextureReloadEvent(TextureReloadEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		TextureReloadEvent& operator=(TextureReloadEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Texture.
+		/// Retrieve a pointer to the affected texture.
 		/// </summary>
 		/// <returns>Texture pointer.</returns>
 		TRAP::Graphics::Texture* GetTexture() const;
@@ -56,22 +56,22 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -89,31 +89,31 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="shader">Pointer to the affected Shader.</param>
+		/// <param name="shader">Pointer to the affected shader.</param>
 		ShaderReloadEvent(TRAP::Graphics::Shader* shader);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~ShaderReloadEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ShaderReloadEvent(const ShaderReloadEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ShaderReloadEvent& operator=(const ShaderReloadEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ShaderReloadEvent(ShaderReloadEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ShaderReloadEvent& operator=(ShaderReloadEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Shader.
+		/// Retrieve a pointer to the affected shader.
 		/// </summary>
 		/// <returns>Shader pointer.</returns>
 		TRAP::Graphics::Shader* GetShader() const;
@@ -125,22 +125,22 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;

@@ -60,19 +60,19 @@ namespace TRAP::Network
 		~SocketSelector();
 
 		/// <summary>
-		/// Add a new socket to the selector.<br>
-		/// <br>
+		/// Add a new socket to the selector.
+		///
 		/// This function keeps a weak reference to the socket,
 		/// so you have to make sure that the socket is not destroyed
-		/// while it is stored in the selector.<br>
+		/// while it is stored in the selector.
 		/// This function does nothing if the socket is not valid.
 		/// </summary>
 		/// <param name="socket">Reference to the socket to add.</param>
 		void Add(Socket& socket);
 
 		/// <summary>
-		/// Remove a socket from the selector.<br>
-		/// <br>
+		/// Remove a socket from the selector.
+		///
 		/// This function doesn't destroy the socket, it simply
 		/// removes the reference that the selector has to it.
 		/// </summary>
@@ -80,8 +80,8 @@ namespace TRAP::Network
 		void Remove(Socket& socket) const;
 
 		/// <summary>
-		/// Remove all the sockets stored in the selector.<br>
-		/// <br>
+		/// Remove all the sockets stored in the selector.
+		///
 		/// This function doesn't destroy any instance, it simply
 		/// removes all the references that the selector has to
 		/// external sockets.
@@ -89,11 +89,11 @@ namespace TRAP::Network
 		void Clear() const;
 
 		/// <summary>
-		/// Wait until one or more sockets are ready to receive.<br>
-		/// <br>
+		/// Wait until one or more sockets are ready to receive.
+		///
 		/// This function returns as soon as at least one socket has
-		/// some data available to be received.<br>
-		/// To know which sockets are ready, use the IsReady function.<br>
+		/// some data available to be received.
+		/// To know which sockets are ready, use the IsReady function.
 		/// If you use a timeout and no socket is ready before the timeout
 		/// is over, the function returns false.
 		/// </summary>
@@ -102,12 +102,12 @@ namespace TRAP::Network
 		bool Wait(Utils::TimeStep timeout) const;
 
 		/// <summary>
-		/// Test a socket to know if it is ready to receive data.<br>
-		/// <br>
+		/// Test a socket to know if it is ready to receive data.
+		///
 		/// This function must be used after a call to Wait, to know
-		/// which sockets are ready to receive data.<br>
+		/// which sockets are ready to receive data.
 		/// If a socket is ready, a call to receive will never block because we know
-		/// that there is data available to read.<br>
+		/// that there is data available to read.
 		/// Note that if this function returns true for a TCPListener,
 		/// this means that it is ready to accept a new connection.
 		/// </summary>

@@ -42,16 +42,16 @@ TRAP::Window::Window(const WindowProps &props)
 
 	TP_INFO
 	(
-	    Log::WindowPrefix, "Initializing Window: \"", props.Title, "\" ", props.Width, 'x', props.Height, '@',
+	    Log::WindowPrefix, "Initializing window: \"", props.Title, "\" ", props.Width, 'x', props.Height, '@',
 		props.RefreshRate, "Hz VSync: ", props.VSync ? "True" : "False",
 		//Output DisplayMode
-		" DisplayMode: ", props.DisplayMode == DisplayMode::Windowed ? "Windowed" :
+		" Display mode: ", props.DisplayMode == DisplayMode::Windowed ? "Windowed" :
 		props.DisplayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen",
 		" Monitor: ", props.Monitor,
 		//Output CursorMode
-		" CursorMode: ", props.Advanced.CursorMode == CursorMode::Normal ? "Normal" :
+		" Cursor Mode: ", props.Advanced.CursorMode == CursorMode::Normal ? "Normal" :
 		props.Advanced.CursorMode == CursorMode::Hidden ? "Hidden" : "Disabled",
-		" RawMouseInput: ", props.Advanced.RawMouseInput ? "Enabled" : "Disabled"
+		" Raw mouse input: ", props.Advanced.RawMouseInput ? "Enabled" : "Disabled"
 	);
 
 	Init(props);
@@ -78,7 +78,7 @@ TRAP::Window::~Window()
 		TP_TRACE("Shutting down RendererAPI");
 		Graphics::RendererAPI::Shutdown();
 	}
-	TP_DEBUG(Log::WindowPrefix, "Destroying Window: \"", m_data.Title, "\"");
+	TP_DEBUG(Log::WindowPrefix, "Destroying window: \"", m_data.Title, "\"");
 	Shutdown();
 }
 
@@ -205,10 +205,10 @@ void TRAP::Window::SetTitle(const std::string& title)
 	if (!title.empty())
 		m_data.Title = title;
 	else
-		m_data.Title = "TRAP Engine";
+		m_data.Title = u8"TRAP™";
 
 #ifndef TRAP_RELEASE
-	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
+	std::string newTitle = m_data.Title + u8" - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
 	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
 						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 		                   "[INDEV]" + Log::WindowVersion + Graphics::Renderer::GetTitle();
@@ -242,7 +242,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			//Check for invalid parameters
 			if(width == 0 || height == 0)
 			{
-				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Invalid SetDisplayMode with ", width,
+				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" invalid with invalid resolution ", width,
 				         'x', height, '@', refreshRate, "Hz called!");
 				return;
 			}
@@ -318,17 +318,17 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			if(s_fullscreenWindows[m_data.Monitor] != this)
 			{
 				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title,
-						 "\" couldn't set DisplayMode to ", GetModeStr(mode), " because Monitor: ", m_data.Monitor,
+						 "\" couldn't set display mode to ", GetModeStr(mode), " because monitor: ", m_data.Monitor,
 						 '(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')',
-						 " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+						 " is already used by window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
 				return;
 			}
 			//Or is the Monitor used by this monitor and the current and new display modes are the same
 			else if(s_fullscreenWindows[m_data.Monitor] == this && m_data.displayMode == mode &&
 			        mode == DisplayMode::Borderless)
 			{
-				TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" already uses DisplayMode ",
-						GetModeStr(m_data.displayMode), " on Monitor: ", m_data.Monitor,
+				TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" already uses display mode ",
+						GetModeStr(m_data.displayMode), " on monitor: ", m_data.Monitor,
 						"(", INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ")!");
 				return;
 			}
@@ -407,7 +407,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			m_data.RefreshRate = videoMode.RefreshRate;
 		}
 
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Using Monitor: ", m_data.Monitor,
+		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" using monitor: ", m_data.Monitor,
 				 '(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')');
 
 		if(mode == DisplayMode::Borderless)
@@ -424,7 +424,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 		}
 	}
 
-	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" Changing DisplayMode from ",
+	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
 	        GetModeStr(m_data.displayMode), " to ", GetModeStr(mode), ": ",
 	        m_data.Width, 'x', m_data.Height, '@', m_data.RefreshRate, "Hz");
 
@@ -440,8 +440,7 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 
 	const uint32_t oldMonitor = m_data.Monitor;
 
-	TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Set Monitor: ", monitor.GetID(), " Name: ",
-	         monitor.GetName());
+	TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set monitor: ", monitor.GetName(), " (", monitor.GetID(), ")");
 	m_data.Monitor = monitor.GetID();
 	m_useMonitor = static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(monitor.GetInternalMonitor());
 
@@ -452,8 +451,8 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 
 	if (s_fullscreenWindows[m_data.Monitor]) //Monitor already has a Fullscreen/Borderless Window
 	{
-		TP_ERROR(Log::WindowPrefix, "Monitor: ", m_data.Monitor, "(", monitor.GetName(),
-					") is already used by another Window!");
+		TP_ERROR(Log::WindowPrefix, "Monitor: ", monitor.GetName(), " (", m_data.Monitor,
+		         ") is already used by another window!");
 		SetDisplayMode(DisplayMode::Windowed, 0, 0, 0);
 	}
 	else
@@ -467,13 +466,13 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 	TP_PROFILE_FUNCTION();
 
 	if (mode == CursorMode::Normal)
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Set CursorMode: Normal");
+		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Normal");
 	else if (mode == CursorMode::Hidden)
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Set CursorMode: Hidden");
+		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Hidden");
 	else if (mode == CursorMode::Disabled)
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Set CursorMode: Disabled");
+		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Disabled");
 	else if(mode == CursorMode::Captured)
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Set CursorMode: Captured");
+		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Captured");
 
 	INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), mode);
 	m_data.cursorMode = mode;
@@ -514,11 +513,11 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 	{
 		m_data.RawMouseInput = enabled;
 		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window.get(), enabled);
-		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Raw Mouse Input ", enabled ? "Enabled" : "Disabled");
+		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" Raw mouse input: ", enabled ? "Enabled" : "Disabled");
 	}
 	else
 	{
-		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Raw Mouse Input is unsupported!");
+		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Raw mouse input is unsupported!");
 		m_data.RawMouseInput = false;
 	}
 }
@@ -548,7 +547,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 	if (image->IsHDR() && image->GetBytesPerChannel() == 4)
 	{
 		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title, "\" HDR is not supported for window icons!");
-		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using Default Icon!");
+		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using default icon!");
 		SetIcon();
 		return;
 	}
@@ -556,14 +555,14 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 	{
 		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title,
 		         "\" Images with short pixel data are not supported for window icons!");
-		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using Default Icon!");
+		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using default icon!");
 		SetIcon();
 		return;
 	}
 	if (image->IsImageGrayScale())
 	{
-		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title, "\" Only RGBA Images are supported for window icons!");
-		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using Default Icon!");
+		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title, "\" Only RGBA images are supported for window icons!");
+		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using default icon!");
 		SetIcon();
 		return;
 	}
@@ -600,14 +599,14 @@ void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHei
 	{
 		m_data.MinWidth = m_data.MaxWidth;
 		TP_WARN(Log::WindowPrefix,
-				"SetMaximumSize: Provided minimum width is bigger than the current maximum width!",
+				"SetMinimumSize: Provided minimum width is bigger than the current maximum width!",
 				"Using maximum width as the new minimum width");
 	}
 	if(m_data.MaxHeight >= MinimumSupportedWindowHeight && m_data.MinHeight > m_data.MaxHeight)
 	{
 		m_data.MinHeight = m_data.MaxHeight;
 		TP_WARN(Log::WindowPrefix,
-				"SetMaximumSize: Provided minimum height is smaller than the current maximum height!",
+				"SetMinimumSize: Provided minimum height is smaller than the current maximum height!",
 				"Using maximum height as the new minimum height");
 	}
 
@@ -662,7 +661,7 @@ void TRAP::Window::SetOpacity(const float opacity) const
 	if(opacity >= 0.0f || opacity <= 1.0f)
 		INTERNAL::WindowingAPI::SetWindowOpacity(m_window.get(), opacity);
 	else
-		TP_ERROR(Log::WindowPrefix, "Invalid Window Opacity: ", opacity, "! Valid Range: 0.0 - 1.0f");
+		TP_ERROR(Log::WindowPrefix, "Invalid window opacity: ", opacity, "! Valid range: 0.0 - 1.0f");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -816,10 +815,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!s_WindowingAPIInitialized)
 	{
 		const int32_t success = INTERNAL::WindowingAPI::Init();
-		TRAP_ASSERT(success, "Could not initialize WindowingAPI!");
+		TRAP_ASSERT(success, "Couldn't initialize WindowingAPI!");
 		if (!success)
-			Utils::Dialogs::ShowMsgBox("Error WindowingAPI",
-				"Could not initialize WindowingAPI!",
+			Utils::Dialogs::ShowMsgBox("WindowingAPI Error",
+				"Couldn't initialize WindowingAPI!",
 				Utils::Dialogs::Style::Error,
 				Utils::Dialogs::Buttons::Quit);
 		s_WindowingAPIInitialized = true;
@@ -836,8 +835,8 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_useMonitor = monitors[props.Monitor];
 	else
 	{
-		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Invalid Monitor!");
-		TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" Using Primary Monitor!");
+		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Invalid monitor!");
+		TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" Using primary monitor!");
 		m_data.Monitor = 0;
 		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor().get();
 	}
@@ -848,7 +847,8 @@ void TRAP::Window::Init(const WindowProps& props)
 		for(std::size_t i = 0; i < monitors.size(); i++)
 		{
 			s_baseVideoModes[i] = INTERNAL::WindowingAPI::GetVideoMode(monitors[i]);
-			TP_DEBUG(Log::WindowPrefix, "Storing underlying OS video mode: Monitor: ", i, " ",
+			TP_DEBUG(Log::WindowPrefix, "Storing underlying OS video mode");
+			TP_DEBUG(Log::WindowPrefix, "Monitor: ", i, " ",
 			         s_baseVideoModes[i].Width, 'x', s_baseVideoModes[i].Height, '@',
 					 s_baseVideoModes[i].RefreshRate, "Hz (R", s_baseVideoModes[i].RedBits,
 					                                      'G', s_baseVideoModes[i].GreenBits,
@@ -876,7 +876,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	//Create Window
 #ifndef TRAP_RELEASE
-	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
+	std::string newTitle = m_data.Title + u8" - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
 	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
 						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 						   "[INDEV]" + Log::WindowVersion;
@@ -886,12 +886,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if(m_data.Width < MinimumSupportedWindowWidth)
 	{
-		TP_WARN(Log::WindowPrefix, "Specified Window width is smaller than the minimum supported!");
+		TP_WARN(Log::WindowPrefix, "Specified window width is smaller than the minimum supported!");
 		m_data.Width = MinimumSupportedWindowWidth;
 	}
 	if(m_data.Height < MinimumSupportedWindowHeight)
 	{
-		TP_WARN(Log::WindowPrefix, "Specified Window height is smaller than the minimum supported!");
+		TP_WARN(Log::WindowPrefix, "Specified window height is smaller than the minimum supported!");
 		m_data.Height = MinimumSupportedWindowHeight;
 	}
 
@@ -900,8 +900,8 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!m_window)
 	{
-		TRAP::Utils::Dialogs::ShowMsgBox("Failed to create Window",
-										 "Failed to create Window!\nError code: 0x0009",
+		TRAP::Utils::Dialogs::ShowMsgBox("Failed to create window",
+										 "Failed to create window!\nError code: 0x0009",
 										 Utils::Dialogs::Style::Error,
 										 Utils::Dialogs::Buttons::Quit);
 		TRAP::Application::Shutdown();
@@ -964,7 +964,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window.get(), m_data.RawMouseInput);
 	else
 	{
-		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Raw Mouse Input is unsupported!");
+		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Raw mouse input is unsupported!");
 		m_data.RawMouseInput = false;
 	}
 
@@ -1272,7 +1272,7 @@ void TRAP::Window::SetupEventCallbacks()
 	{
 		if(!connected && Monitor::GetAllMonitors().size() == 1)
 		{
-			TP_ERROR(Log::WindowPrefix, "No Monitor Found!");
+			TP_ERROR(Log::WindowPrefix, "No monitor found!");
 			TP_ERROR(Log::WindowPrefix, "Error code: 0x000C");
 			TP_ERROR(Log::WindowPrefix, "Closing TRAP!");
 			exit(-1);

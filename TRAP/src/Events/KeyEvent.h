@@ -13,7 +13,7 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~KeyEvent() override = default;
 
@@ -24,7 +24,7 @@ namespace TRAP::Events
 		Input::Key GetKey() const;
 
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -36,24 +36,24 @@ namespace TRAP::Events
 		/// <param name="key">Affected key.</param>
 		explicit KeyEvent(Input::Key key);
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		KeyEvent(const KeyEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		KeyEvent& operator=(const KeyEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		KeyEvent(KeyEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		KeyEvent& operator=(KeyEvent&&) = default;
 
 		/// <summary>
-		/// Get a string representation for a non printable key (Space key for example).
+		/// Get a string representation for a non printable key (space key for example).
 		/// </summary>
 		/// <param name="key">Key to get.</param>
 		/// <returns>String representation.</returns>
@@ -73,26 +73,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="key">Pressed key.</param>
 		/// <param name="repeatCount">Amount of key press repeats.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		KeyPressEvent(Input::Key key, uint32_t repeatCount, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~KeyPressEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		KeyPressEvent(const KeyPressEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		KeyPressEvent& operator=(const KeyPressEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		KeyPressEvent(KeyPressEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		KeyPressEvent& operator=(KeyPressEvent&&) = default;
 
@@ -102,7 +102,7 @@ namespace TRAP::Events
 		/// <returns>Repeat count.</returns>
 		uint32_t GetRepeatCount() const;
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -114,17 +114,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
@@ -144,31 +144,31 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="key">Released key.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		explicit KeyReleaseEvent(Input::Key key, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~KeyReleaseEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		KeyReleaseEvent(const KeyReleaseEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		KeyReleaseEvent& operator=(const KeyReleaseEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		KeyReleaseEvent(KeyReleaseEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		KeyReleaseEvent& operator=(KeyReleaseEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -180,17 +180,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
@@ -209,31 +209,31 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="codePoint">Unicode code point entered.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		explicit KeyTypeEvent(uint32_t codePoint, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~KeyTypeEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		KeyTypeEvent(const KeyTypeEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		KeyTypeEvent& operator=(const KeyTypeEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		KeyTypeEvent(KeyTypeEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		KeyTypeEvent& operator=(KeyTypeEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -250,22 +250,22 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -294,23 +294,23 @@ namespace TRAP::Events
 		/// <param name="layout">New keyboard layout.</param>
 		explicit KeyLayoutEvent(std::string layout);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~KeyLayoutEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		KeyLayoutEvent(const KeyLayoutEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		KeyLayoutEvent& operator=(const KeyLayoutEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		KeyLayoutEvent(KeyLayoutEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		KeyLayoutEvent& operator=(KeyLayoutEvent&&) = default;
 
@@ -323,26 +323,26 @@ namespace TRAP::Events
 		/// <summary>
 		/// Get a string representation of the KeyLayoutEvent.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>String representation.</returns>
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;

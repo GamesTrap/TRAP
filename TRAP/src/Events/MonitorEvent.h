@@ -13,7 +13,7 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MonitorEvent() override = default;
 
@@ -24,7 +24,7 @@ namespace TRAP::Events
 		Monitor GetMonitor() const;
 
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -36,19 +36,19 @@ namespace TRAP::Events
 		/// <param name="monitor">Affected monitor.</param>
 		explicit MonitorEvent(Monitor monitor);
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MonitorEvent(const MonitorEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MonitorEvent& operator=(const MonitorEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MonitorEvent(MonitorEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MonitorEvent& operator=(MonitorEvent&&) = default;
 
@@ -64,26 +64,26 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="monitor">New connected monitor.</param>
+		/// <param name="monitor">Newly connected monitor.</param>
 		explicit MonitorConnectEvent(Monitor monitor);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MonitorConnectEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MonitorConnectEvent(const MonitorConnectEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MonitorConnectEvent& operator=(const MonitorConnectEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MonitorConnectEvent(MonitorConnectEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MonitorConnectEvent& operator=(MonitorConnectEvent&&) = default;
 
@@ -94,17 +94,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
@@ -122,23 +122,23 @@ namespace TRAP::Events
 		/// <param name="monitor">Disconnected monitor.</param>
 		explicit MonitorDisconnectEvent(Monitor monitor);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MonitorDisconnectEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MonitorDisconnectEvent(const MonitorDisconnectEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MonitorDisconnectEvent(MonitorDisconnectEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MonitorDisconnectEvent& operator=(MonitorDisconnectEvent&&) = default;
 
@@ -149,17 +149,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;

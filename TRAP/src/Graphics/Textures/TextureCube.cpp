@@ -13,7 +13,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::TextureCubePrefix, "Invalid Name!");
+		TP_ERROR(Log::TextureCubePrefix, "Invalid name!");
 		return nullptr;
 	}
 
@@ -58,7 +58,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	if(name.empty())
 	{
-		TP_WARN(Log::TextureCubePrefix, "Name is empty! Using Filename as TextureCube Name!");
+		TP_WARN(Log::TextureCubePrefix, "Name is empty! Using filename as name!");
 		return CreateFromFile(filepath, format);
 	}
 
@@ -248,7 +248,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 													   img->GetWidth() != imgs[0]->GetWidth() ||
 													   img->GetHeight() != imgs[0]->GetHeight(); }))
 	{
-		TP_ERROR(Log::TextureCubePrefix, "An Image has mismatching ColorFormat, Bits Per Channel, Width and/or Height!");
+		TP_ERROR(Log::TextureCubePrefix, "An image has mismatching color format, bits per channel, width and/or height!");
 		return nullptr;
 	}
 
@@ -375,19 +375,19 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
                                          const uint32_t mipLevel, const uint32_t arrayLayer)
 {
 	TRAP_ASSERT(data, "Update: Data is nullptr!");
-	TRAP_ASSERT(arrayLayer < 6, "Invalid Arraylayer provided!");
-	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid Miplevel provided!");
+	TRAP_ASSERT(arrayLayer < 6, "Invalid array layer provided!");
+	TRAP_ASSERT(mipLevel < m_texture->GetMipLevels(), "Invalid mip level provided!");
 	TRAP_ASSERT(sizeInBytes >= (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *
 	            GetBytesPerPixel(), "Texture update size is too small");
 
 	if(arrayLayer >= 6)
 	{
-		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid Array layer provided!");
+		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid array layer provided!");
 		return;
 	}
 	if(mipLevel >= m_texture->GetMipLevels())
 	{
-		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid MipLevel provided!");
+		TP_ERROR(Log::TextureCubePrefix, "Update: Invalid mip level provided!");
 		return;
 	}
 	if(sizeInBytes < (m_texture->GetWidth() >> mipLevel) * (m_texture->GetHeight() >> mipLevel) *

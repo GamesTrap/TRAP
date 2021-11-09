@@ -137,7 +137,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 
 		if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
 		{
-			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop Vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop vibration");
 			return;
 		}
 
@@ -169,7 +169,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 
 		if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
 		{
-			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start Vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start vibration");
 			return;
 		}
 	}
@@ -332,7 +332,7 @@ void TRAP::Input::CloseController(Controller controller)
 		        (con->mapping
 			        ? con->mapping->Name
 			        : con->Name),
-		        " (", static_cast<uint32_t>(controller), ") Disconnected!");
+		        " (", static_cast<uint32_t>(controller), ") disconnected!");
 	}
 
 	*con = {};

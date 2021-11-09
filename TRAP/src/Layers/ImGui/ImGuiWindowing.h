@@ -55,7 +55,7 @@ namespace TRAP::INTERNAL
 		static Scope<WindowingAPI::InternalCursor> s_customCursor;
 		static TRAP::Graphics::RenderAPI s_renderAPI;
 
-		//Chain WindowingAPI callbacks for main viewport: our callbacks will call the user's
+		//Chain WindowingAPI callbacks for main viewport: Our callbacks will call the user's
 		//                                                previously installed callbacks, if any.
 		static WindowingAPI::MouseButtonFunc s_prevUserCallbackMouseButton;
 		static WindowingAPI::ScrollFunc s_prevUserCallbackScroll;

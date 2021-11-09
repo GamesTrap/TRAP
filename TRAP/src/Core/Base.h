@@ -5,7 +5,7 @@
 #include "PlatformDetection.h"
 
 //Set this define to enable RenderDoc layer
-//NOTE: Settings this define will disable use of the KHR dedicated allocation extension since
+//NOTE: Settings this define will disable usage of the KHR dedicated allocation extension since
 //      it conflicts with the RenderDoc capture layer.
 //#define USE_RENDER_DOC
 
@@ -16,12 +16,12 @@
 #endif
 
 /// <summary>
-/// Construct an API/Engine version number.
+/// Construct a version number.
 /// </summary>
 /// <param name="major">Major version number.</param>
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
-/// <returns>API/Engine version number packed into a single uint32_t.</returns>
+/// <returns>Version number packed into a single uint32_t.</returns>
 constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
 {
 	return major << 22 | minor << 12 | patch;
@@ -30,9 +30,9 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// <summary>
-/// Extract major version number from API/Engine version created with TRAP_MAKE_VERSION.
+/// Extract major version from a version number created with TRAP_MAKE_VERSION.
 /// </summary>
-/// <param name="version">API/Engine version created with TRAP_MAKE_VERSION.</param>
+/// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
 constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 {
@@ -42,9 +42,9 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// <summary>
-/// Extract minor version number from API/Engine version created with TRAP_MAKE_VERSION.
+/// Extract minor version from a version number created with TRAP_MAKE_VERSION.
 /// </summary>
-/// <param name="version">API/Engine version created with TRAP_MAKE_VERSION.</param>
+/// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
 constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 {
@@ -54,9 +54,9 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// <summary>
-/// Extract patch version number from API/Engine version created with TRAP_MAKE_VERSION.
+/// Extract patch version from a version number created with TRAP_MAKE_VERSION.
 /// </summary>
-/// <param name="version">API/Engine version created with TRAP_MAKE_VERSION.</param>
+/// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
 constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 {
@@ -66,7 +66,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 //-------------------------------------------------------------------------------------------------------------------//
 
 /// <summary>
-/// TRAP_VERSION number created with TRAP_MAKE_VERSION
+/// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
 constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 97);
 
@@ -93,7 +93,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 97);
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#if defined(TRAP_PLATFORM_WINDOWS)
 		/// <summary>
-		/// Set a cross platform Debug Break.<br>
+		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		inline void TRAP_DEBUG_BREAK()
@@ -102,7 +102,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 97);
 		}
 	#elif defined(TRAP_PLATFORM_LINUX)
 		/// <summary>
-		/// Set a cross platform Debug Break.<br>
+		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		#include <signal.h>
@@ -112,7 +112,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 97);
 		}
 	#else
 		/// <summary>
-		/// Set a cross platform Debug Break.<br>
+		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK()
@@ -121,7 +121,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 97);
 	#endif
 #else
 		/// <summary>
-		/// Set a cross platform Debug Break.<br>
+		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK()
@@ -154,13 +154,13 @@ constexpr T BIT(T x)
 namespace TRAP
 {
 	/// <summary>
-	/// WIP!<br>
+	/// Wrapper for new & delete.
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
 	/// <summary>
-	/// WIP!<br>
+	/// Wrapper for new & delete.
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
 	template<typename T, typename... Args>
@@ -170,13 +170,13 @@ namespace TRAP
 	}
 
 	/// <summary>
-	/// WIP!<br>
+	/// Wrapper for new & delete with reference counting.
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 	/// <summary>
-	/// WIP!<br>
+	/// Wrapper for new & delete with reference counting.
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
 	template<typename T, typename... Args>

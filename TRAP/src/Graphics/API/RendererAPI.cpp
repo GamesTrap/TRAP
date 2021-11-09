@@ -48,10 +48,10 @@ void TRAP::Graphics::RendererAPI::Init(const std::string& gameName, const Render
 		break;
 
 	default:
-		Utils::Dialogs::ShowMsgBox("Unsupported Device", "Device is unsupported!\nNo RenderAPI selected!\n"
+		Utils::Dialogs::ShowMsgBox("Unsupported device", "Device is unsupported!\nNo RenderAPI selected!\n"
 								   "Error code: 0x0002", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::RendererPrefix, "Unsupported Device!");
+		TP_CRITICAL(Log::RendererPrefix, "Unsupported device!");
 		TRAP::Application::Shutdown();
 		exit(-1);
 	}
@@ -133,10 +133,10 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	//Never select RenderAPI::Headless as this auto selection is intended for normal users
 
 	s_RenderAPI = RenderAPI::NONE;
-	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible Device (GPU)",
-		                             "TRAP was unable to detect a compatible RenderAPI!\n"
-									 "Does your system meet the minimum system requirements for running TRAP Engine?"
-									 "\nPlease check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
+	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible device (GPU)",
+		                             u8"TRAP™ was unable to detect a compatible RenderAPI!\n"
+									 u8"Does your system meet the minimum system requirements for running TRAP™?\n"
+									 "Please check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 	exit(-1);
@@ -208,7 +208,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		return s_isVulkanCapable;
 
 	TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
-	TP_INFO(Log::RendererVulkanPrefix, "Running Vulkan Capability Tester");
+	TP_INFO(Log::RendererVulkanPrefix, "Running Vulkan capability tester");
 
 	s_isVulkanCapableFirstTest = false;
 
@@ -216,8 +216,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 	{
 		if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
 		{
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Instance version Test!");
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed instance version test!");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
@@ -229,8 +229,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
 			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 		{
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed surface extension test");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
@@ -262,7 +262,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		else
 		{
 			s_isVulkanCapable = false;
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan Instance!");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan instance!");
 		}
 	}
 	else
@@ -270,12 +270,12 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 
 	if (s_isVulkanCapable)
 	{
-		TP_INFO(Log::RendererVulkanPrefix, "Passed Vulkan Capability Tester!");
+		TP_INFO(Log::RendererVulkanPrefix, "Passed Vulkan capability tester!");
 		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 	}
 	else
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 	}
 

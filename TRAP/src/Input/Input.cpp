@@ -57,7 +57,7 @@ void TRAP::Input::Init()
 	InitControllerMappings();
 
 	if(!InitController())
-		TP_ERROR(Log::InputControllerPrefix, "Failed to initialize Controller support!");
+		TP_ERROR(Log::InputControllerPrefix, "Failed to initialize controller support!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,7 +66,7 @@ void TRAP::Input::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG(Log::InputPrefix, "Shutting down Input");
+	TP_DEBUG(Log::InputPrefix, "Shutting down input");
 
 	ShutdownController();
 }
@@ -79,7 +79,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 	if (key == Key::Unknown)
 	{
-		TP_WARN(Log::InputPrefix, "Invalid Key provided!");
+		TP_WARN(Log::InputPrefix, "Invalid key provided!");
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
 
 	if (key == Key::Unknown)
 	{
-		TP_WARN(Log::InputPrefix, "Invalid Key provided!");
+		TP_WARN(Log::InputPrefix, "Invalid key provided!");
 		return false;
 	}
 	if(!window)
@@ -250,7 +250,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 
 	if (!INTERNAL::WindowingAPI::GetKeyName(key, 0))
 	{
-		TP_ERROR(Log::InputPrefix, "Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
+		TP_ERROR(Log::InputPrefix, "Couldn't get name of key: ", static_cast<uint32_t>(key), "!");
 		return "";
 	}
 
@@ -566,7 +566,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 	con->mapping = FindValidMapping(con);
 
 	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping ? con->mapping->Name : con->Name),
-	        " (", cID, ") Connected!");
+	        " (", cID, ") connected!");
 
 	return con;
 }
@@ -672,7 +672,8 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 
 	if(splittedString[0].size() != 32)
 	{
-		TP_ERROR(Log::InputControllerPrefix, "Invalid GUID size! Must be 32 bytes long");
+		TP_ERROR(Log::InputControllerPrefix, "Invalid GUID size ", splittedString[0].size(),
+		         "! Must be 32 bytes long");
 		return false;
 	}
 
@@ -685,7 +686,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 
 	if(splittedString[1].empty())
 	{
-		TP_ERROR(Log::InputControllerPrefix, "Mapping Name can't be empty!");
+		TP_ERROR(Log::InputControllerPrefix, "Mapping name can't be empty!");
 		return false;
 	}
 	mapping.Name = splittedString[1];
@@ -715,7 +716,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		{
 			if(c == '+' || c == '-') //TODO
 			{
-				TP_WARN(Log::InputControllerPrefix, "Controller Mapping output modifiers WIP! Mapping: ",
+				TP_WARN(Log::InputControllerPrefix, "Controller mapping output modifiers are WIP! Mapping: ",
 				        splittedString[1]);
 				return false;
 			}
@@ -837,7 +838,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 	{
 		if(!IsValidElementForController(&mapping->Buttons[i], con))
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Invalid button in Controller mapping: ", mapping->guid,
+			TP_ERROR(Log::InputControllerPrefix, "Invalid button in controller mapping: ", mapping->guid,
 						" ", mapping->Name);
 			return nullptr;
 		}
@@ -847,7 +848,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 	{
 		if(!IsValidElementForController(&mapping->Axes[i], con))
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Invalid axis in Controller mapping: ", mapping->guid,
+			TP_ERROR(Log::InputControllerPrefix, "Invalid axis in controller mapping: ", mapping->guid,
 						" ", mapping->Name);
 			return nullptr;
 		}

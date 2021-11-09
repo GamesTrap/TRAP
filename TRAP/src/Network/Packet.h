@@ -49,13 +49,13 @@ namespace TRAP::Network
 
 	public:
 		/// <summary>
-		/// Constructor.<br>
+		/// Constructor.
 		/// Creates an empty packet.
 		/// </summary>
 		Packet();
 
 		/// <summary>
-		/// Default virtual destructor.
+		/// Destructor.
 		/// </summary>
 		virtual ~Packet() = default;
 
@@ -67,32 +67,32 @@ namespace TRAP::Network
 		void Append(const void* data, std::size_t sizeInBytes);
 
 		/// <summary>
-		/// Get the current reading position in the packet.<br>
+		/// Get the current reading position in the packet.
 		/// The next read operation will read data from this position.
 		/// </summary>
 		/// <returns>The bytes offset of the current read position.</returns>
 		std::size_t GetReadPosition() const;
 
 		/// <summary>
-		/// Clear the packet.<br>
+		/// Clear the packet.
 		/// After calling Clear, the packet is empty.
 		/// </summary>
 		void Clear();
 
 		/// <summary>
-		/// Get a pointer to the data contained in the packet.<br>
-		/// <br>
-		/// Warning: the returned pointer may become invalid after
+		/// Get a pointer to the data contained in the packet.
+		///
+		/// Warning: The returned pointer may become invalid after
 		/// you append data to the packet, therefore it should never
-		/// be stored.<br>
+		/// be stored.
 		/// The return pointer is nullptr if the packet is empty.
 		/// </summary>
 		/// <returns>Pointer to the data.</returns>
 		const void* GetData() const;
 
 		/// <summary>
-		/// Get the size of the data contained in the packet.<br>
-		/// <br>
+		/// Get the size of the data contained in the packet.
+		///
 		/// This function returns the number of bytes pointer to by
 		/// what GetData returns.
 		/// </summary>
@@ -101,8 +101,8 @@ namespace TRAP::Network
 
 		/// <summary>
 		/// Tell if the reading position has reached the
-		/// end of the packet.<br>
-		/// <br>
+		/// end of the packet.
+		///
 		/// This function is useful to know if there is some data
 		/// left to be read, without actually reading it.
 		/// </summary>
@@ -111,16 +111,16 @@ namespace TRAP::Network
 
 	public:
 		/// <summary>
-		/// Test the validity of the packet, for reading.<br>
-		/// <br>
+		/// Test the validity of the packet, for reading.
+		///
 		/// This operator allows to test the packet as a boolean
-		/// variable, to check if a reading operation was successful.<br>
-		/// <br>
+		/// variable, to check if a reading operation was successful.
+		///
 		/// A packet will be in an invalid state if it has no more
-		/// data to read.<br>
-		/// <br>
-		/// This behavior is the same as standard C++ streams.<br>
-		/// <br>
+		/// data to read.
+		///
+		/// This behavior is the same as standard C++ streams.
+		///
 		/// Don't focus on the return type, it's equivalent to bool but
 		/// it disallows unwanted implicit conversions to integer or
 		/// pointer types.
@@ -173,13 +173,13 @@ namespace TRAP::Network
 		friend class UDPSocketIPv6;
 
 		/// <summary>
-		/// Called before the packet is sent over the network.<br>
-		/// <br>
+		/// Called before the packet is sent over the network.
+		///
 		/// This function can be defined by derived classes to
 		/// transform the data before it is sent; this can be
-		/// used for compression encryption, etc.<br>
+		/// used for compression encryption, etc.
 		/// The function must return a pointer to the modified data,
-		/// as well as the number of bytes pointed.<br>
+		/// as well as the number of bytes pointed.
 		/// The default implementation provides the packet's data
 		/// without transforming it.
 		/// </summary>
@@ -188,13 +188,13 @@ namespace TRAP::Network
 		virtual const void* OnSend(std::size_t& size);
 
 		/// <summary>
-		/// Called after the packet is received over the network.<br>
-		/// <br>
+		/// Called after the packet is received over the network.
+		///
 		/// This function can be defined by derived classes to
 		/// transform the data after it is received; this can be
-		/// used for decompression, decryption, etc.<br>
+		/// used for decompression, decryption, etc.
 		/// The function receives a pointer to the received data,
-		/// and must fill the packet with the transformed bytes.<br>
+		/// and must fill the packet with the transformed bytes.
 		/// The default implementation fills the packet directly
 		/// without transforming the data.
 		/// </summary>
@@ -214,8 +214,8 @@ namespace TRAP::Network
 
 	private:
 		/// <summary>
-		/// Check if the packet can extract a given number of bytes.<br>
-		/// <br>
+		/// Check if the packet can extract a given number of bytes.
+		///
 		/// This function updates accordingly the state of the packet.
 		/// </summary>
 		/// <param name="size">Size to check.</param>

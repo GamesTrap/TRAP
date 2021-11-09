@@ -10,34 +10,34 @@ namespace TRAP::Utils
 	{
 	public:
 		/// <summary>
-		/// Default Constructor.<br>
-		/// Creates and starts a new Timer.
+		/// Constructor.
+		/// Creates and starts a new timer.
 		/// </summary>
 		Timer();
 
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~Timer() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Timer(const Timer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Timer(Timer&&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Timer& operator=(const Timer&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Timer& operator=(Timer&&) = default;
 
 		/// <summary>
-		/// Resets and restarts the Timer.
+		/// Resets and restarts the timer.
 		/// </summary>
 		void Reset();
 		/// <summary>

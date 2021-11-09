@@ -12,19 +12,19 @@ namespace TRAP::Graphics
 		~DummyShader() override = default;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		DummyShader(const DummyShader&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment pperator.
 		/// </summary>
 		DummyShader& operator=(const DummyShader&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		DummyShader(DummyShader&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		DummyShader& operator=(DummyShader&&) = default;
 

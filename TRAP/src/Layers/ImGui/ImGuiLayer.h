@@ -22,36 +22,36 @@ namespace TRAP
 		/// </summary>
 		ImGuiLayer();
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ImGuiLayer(const ImGuiLayer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ImGuiLayer& operator=(const ImGuiLayer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ImGuiLayer(ImGuiLayer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ImGuiLayer& operator=(ImGuiLayer&&) = default;
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~ImGuiLayer() override = default;
 
 		/// <summary>
-		/// Called when pushed to a LayerStack.
+		/// Called when pushed to a layer stack.
 		/// </summary>
 		void OnAttach() override;
 		/// <summary>
-		/// Called when popped from a LayerStack.
+		/// Called when popped from a layer stack.
 		/// </summary>
 		void OnDetach() override;
 		/// <summary>
-		/// Called when an Event occurs.
+		/// Called when an event occurs.
 		/// </summary>
 		/// <param name="event">Event that occurred.</param>
 		void OnEvent(Events::Event& event) override;

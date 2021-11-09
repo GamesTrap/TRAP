@@ -11,23 +11,23 @@ namespace TRAP
 	public:
 		explicit SceneSerializer(Ref<Scene> scene);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~SceneSerializer() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		SceneSerializer(const SceneSerializer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		SceneSerializer& operator=(const SceneSerializer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		SceneSerializer(SceneSerializer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		SceneSerializer& operator=(SceneSerializer&&) = default;
 

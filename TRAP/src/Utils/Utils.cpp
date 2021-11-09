@@ -271,13 +271,13 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		windowManager = LinuxWindowManager::X11;
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Unsupported Window Manager", "Window Manager is unsupported!\n"
-									"TRAP Engine currently on supports X11\n"
-									//"TRAP Engine uses X11 or Wayland\n"
-									"Make sure the appropriate environment variables are set!\n"
+		Utils::Dialogs::ShowMsgBox("Unsupported window manager", "Window manager is unsupported!\n"
+									u8"TRAP™ currently only supports X11\n"
+									//u8"TRAP™ uses X11 or Wayland\n"
+									"Make sure the appropriate environment variable(s) is/are set!\n"
 									"Error code: 0x0008",
 									Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
+		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported window manager!");
 		TRAP::Application::Shutdown();
 		exit(-1);
 	}

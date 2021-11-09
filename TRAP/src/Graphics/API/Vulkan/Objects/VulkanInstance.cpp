@@ -64,7 +64,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 		VkLoadInstance(m_instance);
 	else
 	{
-		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan Instance creation failed!\n"
+		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan instance creation failed!\n"
 								   "Error code: 0x0005", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Instance creation failed!");

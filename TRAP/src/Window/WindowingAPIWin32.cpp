@@ -238,8 +238,8 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 	if (IsWindows7OrGreaterWin32())
 		return true;
 
-	Utils::Dialogs::ShowMsgBox("Unsupported Windows Version", "Unsupported Windows Version!\n"
-	                           "TRAP Engine needs Windows 7 or newer\nErro code: 0x000A",
+	Utils::Dialogs::ShowMsgBox("Unsupported Windows version", "Unsupported Windows version!\n"
+	                           u8"TRAP™ needs Windows 7 or newer\nError code: 0x000A",
 							   Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
 	TRAP::Application::Shutdown();

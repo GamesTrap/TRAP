@@ -9,7 +9,7 @@ namespace TRAP::Utils::Memory
 	/// Converts primitive data types from big->little or little->big endian depending on
 	/// given parameters endianness.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">Primitive data type.</typeparam>
 	/// <param name="t">Primitive data type.</param>
 	template<typename T>
 	inline static void SwapBytes(T& t)

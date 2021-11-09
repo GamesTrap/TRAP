@@ -13,13 +13,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImageBMPPrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImageBMPPrefix, "Loading image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
 	{
-		TP_ERROR(Log::ImageBMPPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageBMPPrefix, "Couldn't resolve file path: ", m_filepath, "!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
@@ -29,8 +29,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	std::ifstream file(physicalPath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageBMPPrefix, "Couldn't open FilePath: ", m_filepath, "!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageBMPPrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
@@ -53,8 +53,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	if (header.MagicNumber != 0x4D42)
 	{
 		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Magic number is invalid!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageBMPPrefix, "Magic number ", header.MagicNumber, " is invalid!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
@@ -86,7 +86,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	{
 		file.close();
 		TP_ERROR(Log::ImageBMPPrefix, "OS/2 1.x BMPs are unsupported!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
@@ -96,8 +96,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		if (infoHeader.Size == 40)
 		{
 			file.close();
-			TP_ERROR(Log::ImageBMPPrefix, "Only BMPV5 Images with BitFields are supported!");
-			TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageBMPPrefix, "Only BMPV5 images with bit fields are supported!");
+			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 			return;
 		}
 
@@ -118,8 +118,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	if (infoHeader.Width < 1)
 	{
 		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Width is invalid!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageBMPPrefix, "Width ", infoHeader.Width, " is invalid!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
@@ -129,8 +129,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	else if (infoHeader.Height == 0)
 	{
 		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "Height is invalid!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageBMPPrefix, "Height ", infoHeader.Height, " is invalid!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 	else
@@ -144,8 +144,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	if(m_bitsPerPixel <= 4)
 	{
 		file.close();
-		TP_ERROR(Log::ImageBMPPrefix, "BitsPerPixel ", m_bitsPerPixel, " is unsupported!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_ERROR(Log::ImageBMPPrefix, "Bits per pixel ", m_bitsPerPixel, " is unsupported!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 
@@ -156,8 +156,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * infoHeader.CLRUsed))
 		{
 			file.close();
-			TP_ERROR(Log::ImageBMPPrefix, "Couldn't load Color Map data!");
-			TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageBMPPrefix, "Couldn't load color map data!");
+			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 			return;
 		}
 
@@ -195,7 +195,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 				return;
 			}
 
@@ -214,7 +214,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 				return;
 			}
 		}
@@ -225,7 +225,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
-				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 				return;
 			}
 		}
@@ -237,8 +237,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	{
 		if (m_bitsPerPixel < 8)
 		{
-			TP_ERROR(Log::ImageBMPPrefix, "BitsPerPixel ", m_bitsPerPixel, " is unsupported!");
-			TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageBMPPrefix, "Bits per pixel ", m_bitsPerPixel, " is unsupported!");
+			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 			return;
 		}
 
@@ -318,7 +318,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	else if (infoHeader.Compression == 2) //Microsoft RLE 4
 	{
 		TP_ERROR(Log::ImageBMPPrefix, "RLE 4 is unsupported!");
-		TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
 	else if (infoHeader.Compression == 3) //BitFields
@@ -333,8 +333,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		{
 			if(!ValidateBitFields(bitFields, masks))
 			{
-				TP_ERROR(Log::ImageBMPPrefix, "Invalid BitFields!");
-				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+				TP_ERROR(Log::ImageBMPPrefix, "Invalid bit fields!");
+				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 				return;
 			}
 
@@ -364,8 +364,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		{
 			if (!ValidateBitFields(bitFields, masks))
 			{
-				TP_ERROR(Log::ImageBMPPrefix, "Invalid BitFields!");
-				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+				TP_ERROR(Log::ImageBMPPrefix, "Invalid bit fields!");
+				TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 				return;
 			}
 
@@ -393,8 +393,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else
 		{
-			TP_ERROR(Log::ImageBMPPrefix, "Invalid BitsPerPixel for BitField Image!");
-			TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
+			TP_ERROR(Log::ImageBMPPrefix, "Invalid bits per pixel ", m_bitsPerPixel, " for bit field image!");
+			TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 			return;
 		}
 

@@ -56,7 +56,7 @@
 	#pragma warning(pop)
 #endif
 
-//TRAP Engine
+//TRAP
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 #include "Log/Log.h"

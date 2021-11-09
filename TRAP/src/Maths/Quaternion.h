@@ -42,15 +42,15 @@ namespace TRAP::Math
 	struct tQuaternion
 	{
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		constexpr tQuaternion(tQuaternion&&) = default;
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~tQuaternion() = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		constexpr tQuaternion<T>& operator=(tQuaternion&&) = default;
 
@@ -64,11 +64,11 @@ namespace TRAP::Math
 		//Implicit basic constructors
 
 		/// <summary>
-		/// Default Constructor.
+		/// Constructor.
 		/// </summary>
 		constexpr tQuaternion() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		constexpr tQuaternion(const tQuaternion& q) = default;
 

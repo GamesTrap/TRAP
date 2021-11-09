@@ -33,19 +33,19 @@ namespace TRAP::Graphics
 		~TextureCube() override = default;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		TextureCube(const TextureCube&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		TextureCube& operator=(const TextureCube&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		TextureCube(TextureCube&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		TextureCube& operator=(TextureCube&&) = default;
 

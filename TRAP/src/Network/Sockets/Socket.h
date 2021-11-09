@@ -39,23 +39,23 @@ namespace TRAP::Network
 	{
 	public:
 		/// <summary>
-		/// Default Constructor.
+		/// Constructor.
 		/// </summary>
 		Socket() = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Socket(Socket&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Socket& operator=(Socket&&) = default;
 		/// <summary>
-		/// Deleted Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Socket(const Socket&) = delete;
 		/// <summary>
-		/// Deleted Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Socket& operator=(const Socket&) = delete;
 
@@ -86,16 +86,16 @@ namespace TRAP::Network
 		virtual ~Socket();
 
 		/// <summary>
-		/// Set the blocking state of the socket.<br>
-		/// <br>
+		/// Set the blocking state of the socket.
+		///
 		/// In blocking mode, calls will not return until they have
-		/// completed their task.<br>
+		/// completed their task.
 		/// For example, a call to receive in
 		/// blocking mode won't return until some data was actually
-		/// received.<br>
+		/// received.
 		/// In non-blocking mode, calls will always return immediately,
 		/// using the return code to signal whether there was data
-		/// available or not.<br>
+		/// available or not.
 		/// By default, all sockets are blocking.
 		/// </summary>
 		/// <param name="blocking">True to set the socket as blocking, false for non-blocking.</param>
@@ -118,49 +118,49 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Default constructor.<br>
-		/// <br>
+		/// Constructor.
+		///
 		/// This constructor can only be accessed by derived classes.
 		/// </summary>
 		/// <param name="type">Type of the socket (TCP or UDP).</param>
 		explicit Socket(Type type);
 
 		/// <summary>
-		/// Return the internal handle of the socket.<br>
-		/// <br>
+		/// Return the internal handle of the socket.
+		///
 		/// The returned handle may be invalid if the socket
-		/// was not created yet (or already destroyed).<br>
+		/// was not created yet (or already destroyed).
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		/// <returns>The internal (OS-specific) handle of the socket.</returns>
 		SocketHandle GetHandle() const;
 
 		/// <summary>
-		/// Create the internal representation of the socket.<br>
-		/// <br>
+		/// Create the internal representation of the socket.
+		///
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		void CreateIPv4();
 
 		/// <summary>
-		/// Create the internal representation of the socket.<br>
-		/// <br>
+		/// Create the internal representation of the socket.
+		///
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		void CreateIPv6();
 
 		/// <summary>
 		/// Create the internal representation of the socket
-		/// from a socket handle.<br>
-		/// <br>
+		/// from a socket handle.
+		///
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		/// <param name="handle">OS-specific handle of the socket to wrap.</param>
 		void Create(SocketHandle handle);
 
 		/// <summary>
-		/// Close the socket gracefully.<br>
-		/// <br>
+		/// Close the socket gracefully.
+		///
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		void Close();

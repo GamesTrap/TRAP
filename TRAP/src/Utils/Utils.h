@@ -45,7 +45,7 @@ namespace TRAP::Utils
 	Endian GetEndian();
 
 	/// <summary>
-	/// CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP Engine.
+	/// CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP.
 	/// </summary>
 	struct CPUInfo
 	{
@@ -56,13 +56,13 @@ namespace TRAP::Utils
 	};
 
 	/// <summary>
-	/// Get information about the CPU that runs the Engine.
+	/// Get information about the CPU that runs the engine.
 	/// </summary>
 	/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
 	const CPUInfo& GetCPUInfo();
 
 	/// <summary>
-	/// Enum used to indicate which Window Manager is used by Linux based systems.
+	/// Enum used to indicate which window manager is used by Linux based systems.
 	/// </summary>
 	enum class LinuxWindowManager
 	{
@@ -73,16 +73,17 @@ namespace TRAP::Utils
 	};
 
 	/// <summary>
-	/// Get the Window Manager used by Linux based systems.
+	/// Get the window manager used by Linux based systems.
 	/// </summary>
 	/// <returns>
 	/// TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or
-	/// TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).
+	/// TRAP::Application::LinuxWindowManager::Unknown(If window manager is unknown or system OS
+	/// is not Linux based Windows).
 	/// </returns>
 	LinuxWindowManager GetLinuxWindowManager();
 
 	/// <summary>
-	/// Get a string representation of the LinuxWindowManager.
+	/// Get a string representation of the Linux window manager.
 	/// </summary>
 	/// <param name="lwm">LinuxWindowManager to convert to a string.</param>
 	/// <returns>String representation.</returns>

@@ -154,7 +154,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Connect(const IPv4Address& serv
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::Login()
 {
-	return Login("anonymous", "user@trap.com");
+	return Login("anonymous", "user@trappedgames.de");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -294,7 +294,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 			std::filesystem::path physicalPath;
 			if (!VFS::ResolveReadPhysicalPath(path, physicalPath, true))
 			{
-				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FolderPath: ", path, "!");
+				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve folder path: ", path, "!");
 				return Response(Response::Status::InvalidFile);
 			}
 
@@ -330,7 +330,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& local
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(localVirtualOrPhysicalFile, physicalPath, true))
 	{
-		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FilePath: ", localVirtualOrPhysicalFile, "!");
+		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve file path: ", localVirtualOrPhysicalFile, "!");
 		return Response(Response::Status::InvalidFile);
 	}
 
@@ -340,7 +340,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& local
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open FilePath: ", localVirtualOrPhysicalFile, "!");
+			TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", localVirtualOrPhysicalFile, "!");
 			return Response(Response::Status::InvalidFile);
 		}
 

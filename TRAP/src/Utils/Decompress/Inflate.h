@@ -41,23 +41,23 @@ namespace TRAP::Utils::Decompress
 			BitReader(const uint8_t* data, std::size_t size);
 
 			/// <summary>
-			/// Default Destructor.
+			/// Destructor.
 			/// </summary>
 			~BitReader() = default;
 			/// <summary>
-			/// Default Copy Constructor.
+			/// Copy constructor.
 			/// </summary>
 			BitReader(const BitReader&) = default;
 			/// <summary>
-			/// Default Move Constructor.
+			/// Move constructor.
 			/// </summary>
 			BitReader(BitReader&&) = default;
 			/// <summary>
-			/// Default Copy Assignment Operator.
+			/// Copy assignment operator.
 			/// </summary>
 			BitReader& operator=(const BitReader&) = default;
 			/// <summary>
-			/// Default Move Assignment Operator.
+			/// Move assignment operator.
 			/// </summary>
 			BitReader& operator=(BitReader&&) = default;
 
@@ -97,7 +97,7 @@ namespace TRAP::Utils::Decompress
 			/// <returns>True if there are enough bits available, false otherwise.</returns>
 			bool EnsureBits32(std::size_t nBits);
 			/// <summary>
-			/// Read n amount of bits.<br>
+			/// Read n amount of bits.
 			/// Note: Must have enough bits available with EnsureBits.
 			/// </summary>
 			/// <param name="nBits">How many bits.</param>
@@ -109,14 +109,14 @@ namespace TRAP::Utils::Decompress
 			/// <returns>True if no overflow will happen, false otherwise.</returns>
 			static bool GreaterOverflow(std::size_t a, std::size_t b, std::size_t c);
 			/// <summary>
-			/// Get bits without advancing the bit pointer.<br>
+			/// Get bits without advancing the bit pointer.
 			/// Note: Must have enough bits available with EnsureBits.
 			/// </summary>
 			/// <param name="nBits">How many bits up to 31.</param>
 			/// <returns>N bits read.</returns>
 			uint32_t PeekBits(std::size_t nBits) const;
 			/// <summary>
-			/// Advance n amount of bits in the reader.<br>
+			/// Advance n amount of bits in the reader.
 			/// Note: Must have enough bits available with EnsureBits.
 			/// </summary>
 			/// <param name="nBits">How many bits.</param>
@@ -150,23 +150,23 @@ namespace TRAP::Utils::Decompress
 			HuffmanTree();
 
 			/// <summary>
-			/// Default Destructor.
+			/// Destructor.
 			/// </summary>
 			~HuffmanTree() = default;
 			/// <summary>
-			/// Default Copy Constructor.
+			/// Copy constructor.
 			/// </summary>
 			HuffmanTree(const HuffmanTree&) = default;
 			/// <summary>
-			/// Default Move Constructor.
+			/// Move constructor.
 			/// </summary>
 			HuffmanTree(HuffmanTree&&) = default;
 			/// <summary>
-			/// Default Copy Assignment Operator.
+			/// Copy assignment operator.
 			/// </summary>
 			HuffmanTree& operator=(const HuffmanTree&) = default;
 			/// <summary>
-			/// Default Move Assignment Operator.
+			/// Move assignment operator.
 			/// </summary>
 			HuffmanTree& operator=(HuffmanTree&&) = default;
 
@@ -199,7 +199,7 @@ namespace TRAP::Utils::Decompress
 			/// <returns>Code.</returns>
 			uint32_t DecodeSymbol(BitReader& reader);
 
-			//The Base lengths represented by codes 257-285
+			//The base lengths represented by codes 257-285
 			static constexpr std::array<uint32_t, 29> LengthBase
 			{
 				3, 4, 5, 6,
@@ -235,7 +235,7 @@ namespace TRAP::Utils::Decompress
 				4097, 6145, 8193, 12289,
 				16385, 24577
 			};
-			//The Extra bits of backwards distances(added to base)
+			//The extra bits of backwards distances(added to base)
 			static constexpr std::array<uint32_t, 30> DistanceExtra
 			{
 				0, 0, 0, 0,
@@ -267,7 +267,7 @@ namespace TRAP::Utils::Decompress
 			bool GenerateFixedDistanceTree();
 
 			/// <summary>
-			/// Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.<br>
+			/// Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
 			/// </summary>
 			/// <param name="bitLength">Code length in bits.</param>
 			/// <param name="numCodes">Amount of codes.</param>
@@ -276,7 +276,7 @@ namespace TRAP::Utils::Decompress
 			bool MakeFromLengths(const uint32_t* bitLength, std::size_t numCodes, uint32_t maxBitLength);
 
 			/// <summary>
-			/// Second step for the ...MakeFromLengths and ...MakeFromFrequencies functions.<br>
+			/// Second step for the ...MakeFromLengths and ...MakeFromFrequencies functions.
 			/// numCodes, lengths and maxBitLength must already be filled in correctly.
 			/// </summary>
 			/// <returns>True on success, false otherwise.</returns>

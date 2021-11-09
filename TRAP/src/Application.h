@@ -39,42 +39,42 @@ namespace TRAP
 		virtual ~Application();
 
 		/// <summary>
-		/// Deleted Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Application(const Application&) = delete;
 		/// <summary>
-		/// Deleted Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Application& operator=(const Application&) = delete;
 		/// <summary>
-		/// Deleted Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Application(Application&&) = delete;
 		/// <summary>
-		/// Deleted Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Application& operator=(Application&&) = delete;
 
 		/// <summary>
-		/// Pushes a TRAP::Layer to the TRAP::Applications TRAP::LayerStack.
+		/// Pushes a layer to the applications layer stack.
 		/// </summary>
-		/// <param name="layer">Scope containing TRAP::Layer to be pushed.</param>
+		/// <param name="layer">Scope containing the layer to be pushed.</param>
 		void PushLayer(Scope<Layer> layer) const;
 		/// <summary>
-		/// Pushes a TRAP::Layer to the TRAP::Applications TRAP::LayerStack.
+		/// Pushes a layer to the applications layer stack.
 		/// </summary>
-		/// <param name="overlay">Scope containing TRAP::Layer to be pushed.</param>
+		/// <param name="overlay">Scope containing the layer to be pushed.</param>
 		void PushOverlay(Scope<Layer> overlay) const;
 
 		/// <summary>
-		/// Get the Engine.cfg TRAP::Utils::Config (Engine.cfg) from the TRAP::Application.
+		/// Get the Engine.cfg config from the application.
 		/// </summary>
-		/// <returns>Constant reference to the TRAP::Utils::Config.</returns>
+		/// <returns>Constant reference to the config.</returns>
 		static const Utils::Config& GetConfig();
 		/// <summary>
-		/// Get the TRAP::LayerStack from the TRAP::Application.
+		/// Get the layer stack from the application.
 		/// </summary>
-		/// <returns>Reference to the TRAP::LayerStack.</returns>
+		/// <returns>Reference to the layer stack.</returns>
 		static LayerStack& GetLayerStack();
 		/// <summary>
 		/// Get the default ImGuiLayer
@@ -83,45 +83,45 @@ namespace TRAP
 		static ImGuiLayer GetImGuiLayer();
 
 		/// <summary>
-		/// Get the current Frames Per Second.
+		/// Get the current frames per second.
 		/// </summary>
-		/// <returns>Current Frames Per Second.</returns>
+		/// <returns>Current frames per second.</returns>
 		static uint32_t GetFPS();
 		/// <summary>
-		/// Get the current FrameTime.
+		/// Get the current frame time.
 		/// </summary>
-		/// <returns>Current FrameTime.</returns>
+		/// <returns>Current frame time.</returns>
 		static float GetFrameTime();
 		/// <summary>
-		/// Get the current TimeScale.
+		/// Get the current time scale.
 		/// </summary>
-		/// <returns>Current TimeScale.</returns>
+		/// <returns>Current time scale.</returns>
 		static float GetTimeScale();
 		/// <summary>
-		/// Get the current TickRate (Default: 100).
+		/// Get the current tick rate (Default: 100).
 		/// </summary>
-		/// <returns>Current TickRate.</returns>
+		/// <returns>Current tick rate.</returns>
 		static uint32_t GetTickRate();
 		/// <summary>
-		/// Set the TickRate.
+		/// Set the tick rate.
 		/// </summary>
-		/// <param name="tickRate">TickRate.</param>
+		/// <param name="tickRate">New Tick rate.</param>
 		static void SetTickRate(uint32_t tickRate);
 		/// <summary>
-		/// Set the TimeScale.
+		/// Set the time scale.
 		/// </summary>
-		/// <param name="timeScale">TimeScale.</param>
+		/// <param name="timeScale">Time scale.</param>
 		static void SetTimeScale(float timeScale);
 
 		/// <summary>
-		/// Enable or Disable HotShaderReloading.
+		/// Enable or disable hot shader reloading.
 		/// </summary>
-		/// <param name="enabled">Whether to enable or disable HotShaderReloading.</param>
+		/// <param name="enabled">Whether to enable or disable hot shader reloading.</param>
 		static void SetHotShaderReloading(bool enabled);
 		/// <summary>
-		/// Enable or Disable HotTextureReloading.
+		/// Enable or disable hot texture reloading.
 		/// </summary>
-		/// <param name="enabled">Whether to enable or disable HotTextureReloading.</param>
+		/// <param name="enabled">Whether to enable or disable hot texture reloading.</param>
 		static void SetHotTextureReloading(bool enabled);
 
 		/// <summary>
@@ -131,24 +131,24 @@ namespace TRAP
 		static void SetNewRenderAPI(Graphics::RenderAPI renderAPI);
 
 		/// <summary>
-		/// Shutdown the Engine.
+		/// Shutdown the engine.
 		/// </summary>
 		static void Shutdown();
 
 		/// <summary>
-		/// Get the Main Render TRAP::Window.
+		/// Get the Main Render window.
 		/// </summary>
-		/// <returns>Constant Reference to a Scope containing the Main Render TRAP::Window.</returns>
+		/// <returns>Constant feference to a Scope containing the main render window.</returns>
 		static const Scope<Window>& GetWindow();
 		/// <summary>
 		/// Get the Time since the Engine was started.
 		/// </summary>
-		/// <returns>TRAP::Utils::TimeStep containing the passed Time since the Engine was started.</returns>
+		/// <returns>Time step containing the passed time since the engine was started.</returns>
 		static Utils::TimeStep GetTime();
 		/// <summary>
-		/// Get the TRAP::ThreadPool to be used for small tasks that can be multi-threaded.
+		/// Get the thread pool to be used for small tasks that can be multi-threaded.
 		/// </summary>
-		/// <returns>Reference to the TRAP::ThreadPool.</returns>
+		/// <returns>Reference to the thread pool.</returns>
 		static ThreadPool& GetThreadPool();
 
 		/// <summary>
@@ -170,60 +170,60 @@ namespace TRAP
 
 	private:
 		/// <summary>
-		/// Game/Run Loop.
+		/// Game/Run loop.
 		/// </summary>
 		void Run();
 
 		/// <summary>
-		/// Handles all Events for the Main Render Window and the TRAP::LayerStack.
+		/// Handles all events for the main render window and the layer stack.
 		/// </summary>
-		/// <param name="e">TRAP::Events::Event that occurred.</param>
+		/// <param name="e">Event that occurred.</param>
 		void OnEvent(Events::Event& e);
 		/// <summary>
-		/// Handles Window close events for the Main Render Window.
+		/// Handles window close events for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::WindowCloseEvent that occurred.</param>
+		/// <param name="e">Window close event that occurred.</param>
 		/// <returns>Always true.</returns>
 		bool OnWindowClose(Events::WindowCloseEvent& e);
 		/// <summary>
-		/// Handles Window Frame buffer resizes for the Main Render Window.
+		/// Handles window framebuffer resizes for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::FrameBufferResizeEvent that occurred.</param>
+		/// <param name="e">Framebuffer resize event that occurred.</param>
 		/// <returns>Always false.</returns>
 		bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
 		/// <summary>
-		/// Handles Key presses(ALT+Enter) for the Main Render Window.
+		/// Handles key presses(ALT+Enter) for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::KeyPressEvent that occurred.</param>
+		/// <param name="e">Key press event that occurred.</param>
 		/// <returns>Always false.</returns>
 		bool OnKeyPress(Events::KeyPressEvent& e) const;
 		/// <summary>
-		/// Handles Window Focus for the Main Render Window.
+		/// Handles window focus for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::WindowFocusEvent that occurred.</param>
+		/// <param name="e">Window focus event that occurred.</param>
 		/// <returns>Always false.</returns>
 		bool OnWindowFocus(Events::WindowFocusEvent& e);
 		/// <summary>
-		/// Handles Window Lost Focus for the Main Render Window.
+		/// Handles window lost focus for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::WindowLostFocusEvent that occurred.</param>
+		/// <param name="e">Window lost focus event that occurred.</param>
 		/// <returns>Always false.</returns>
 		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e);
 		/// <summary>
-		/// Handles Window Minimize events for the Main Render Window.
+		/// Handles window minimize events for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::WindowMinimizeEvent that occurred.</param>
+		/// <param name="e">Window minimize event that occurred.</param>
 		/// <returns>Always false.</returns>
 		bool OnWindowMinimize(Events::WindowMinimizeEvent& e);
 		/// <summary>
-		/// Handles Window Restore events for the Main Render Window.
+		/// Handles window restore events for the main render window.
 		/// </summary>
-		/// <param name="e">TRAP::Events::WindowRestoreEvent that occurred.</param>
+		/// <param name="e">Window restore event that occurred.</param>
 		/// <returns>Always false.</returns>
 		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		/// <summary>
-		/// ProcessHotReloading is used to offload the HotReloading system onto another Thread.
+		/// ProcessHotReloading is used to offload the hot reloading system onto another thread.
 		/// </summary>
 		/// <param name="shaders">Reference to a vector for adding the virtual paths of modified shaders.</param>
 		/// <param name="textures">Reference to a vector for adding the virtual paths of modified textures.</param>

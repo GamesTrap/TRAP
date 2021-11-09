@@ -29,7 +29,7 @@ namespace TRAP::Events
 	};
 
 	/// <summary>
-	/// Category's for events.
+	/// Categories for events.
 	/// </summary>
 	enum class EventCategory
 	{
@@ -50,66 +50,69 @@ namespace TRAP::Events
 	{
 	protected:
 		/// <summary>
-		/// Default Constructor.
+		/// Constructor.
 		/// </summary>
 		Event() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Event(const Event&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Event& operator=(const Event&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Event(Event&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Event& operator=(Event&&) = default;
 
 	public:
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Virtual destructor.
 		/// </summary>
 		virtual ~Event() = default;
 
+		/// <summary>
+		/// If set to true then this event won't be passed on to other event handlers.
+		/// </summary>
 		bool Handled = false;
 
 		/// <summary>
-		/// Get a string representation of the Event.
+		/// Get a string representation of the event.
 		/// </summary>
 		/// <returns>String representation.</returns>
 		virtual std::string ToString() const;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		virtual EventType GetEventType() const = 0;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		virtual const char* GetName() const = 0;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		virtual EventCategory GetCategoryFlags() const = 0;
 
 		/// <summary>
-		/// Check if an Event is in the specified category.
+		/// Check if an event is in the specified category.
 		/// </summary>
 		/// <param name="category">Category to check.</param>
-		/// <returns>True if Event is in the category, false otherwise.</returns>
+		/// <returns>True if event is in the category, false otherwise.</returns>
 		bool IsInCategory(EventCategory category) const;
 	};
 
 	/// <summary>
-	/// Dispatcher for Events.
+	/// Dispatcher for events.
 	/// </summary>
 	class EventDispatcher
 	{
@@ -120,33 +123,33 @@ namespace TRAP::Events
 		/// <param name="event">Event to dispatch.</param>
 		explicit EventDispatcher(Event& event);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~EventDispatcher() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		EventDispatcher(const EventDispatcher&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		EventDispatcher& operator=(const EventDispatcher&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		EventDispatcher(EventDispatcher&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		EventDispatcher& operator=(EventDispatcher&&) = delete;
 
 		/// <summary>
-		/// Dispatch a specific Event to a function.
+		/// Dispatch a specific event to a function.
 		/// </summary>
 		/// <typeparam name="T">Event to dispatch.</typeparam>
 		/// <typeparam name="F">Function to call.</typeparam>
 		/// <param name="func">Function to call.</param>
-		/// <returns>True if received Event matches the Event to dispatch, false otherwise.</returns>
+		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
 		template<typename T, typename F>
 		bool Dispatch(const F& func);
 

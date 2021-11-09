@@ -15,32 +15,32 @@ namespace TRAP
 		/// <param name="debugName">Layer name for debugging.</param>
 		explicit Layer(std::string debugName = "Layer");
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Layer(const Layer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Layer& operator=(const Layer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Layer(Layer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Layer& operator=(Layer&&) = default;
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Destructor.
 		/// </summary>
 		virtual ~Layer() = default;
 
 		/// <summary>
-		/// Called when Layer gets pushed to a LayerStack.
+		/// Called when Layer gets pushed to a layer stack.
 		/// </summary>
 		virtual void OnAttach();
 		/// <summary>
-		/// Called when Layer gets popped from a LayerStack.
+		/// Called when Layer gets popped from a layer stack.
 		/// </summary>
 		virtual void OnDetach();
 		/// <summary>
@@ -53,20 +53,20 @@ namespace TRAP
 		/// </summary>
 		virtual void OnTick();
 		/// <summary>
-		/// Called every frame.<br>
+		/// Called every frame.
 		/// Should be used for debug GUIs.
 		/// </summary>
 		virtual void OnImGuiRender();
 		/// <summary>
-		/// Called when an Event occurs.
+		/// Called when an event occurs.
 		/// </summary>
 		/// <param name="event">Event that occurred.</param>
 		virtual void OnEvent(Events::Event& event);
 
 		/// <summary>
-		/// Retrieve the debug name of the Layer.
+		/// Retrieve the debug name of the layer.
 		/// </summary>
-		/// <returns>Name of the Layer.</returns>
+		/// <returns>Name of the layer.</returns>
 		const std::string& GetName() const;
 
 	protected:

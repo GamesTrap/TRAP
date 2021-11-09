@@ -44,24 +44,24 @@ namespace TRAP::Utils::Debug
 		~Instrumentor();
 
 		/// <summary>
-		/// Deleted Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Instrumentor(const Instrumentor&) = delete;
 		/// <summary>
-		/// Deleted Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Instrumentor& operator=(const Instrumentor&) = delete;
 		/// <summary>
-		/// Deleted Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Instrumentor(Instrumentor&&) = delete;
 		/// <summary>
-		/// Deleted Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Instrumentor& operator=(Instrumentor&&) = delete;
 
 		/// <summary>
-		/// Retrieve reference to the Instrumentor instance.
+		/// Retrieve reference to the instrumentor instance.
 		/// </summary>
 		/// <returns>Instrumentor instance.</returns>
 		static Instrumentor& Get();
@@ -111,7 +111,7 @@ namespace TRAP::Utils::Debug
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="name">Name of the function... to profile.</param>
+		/// <param name="name">Name of the function to profile.</param>
 		explicit InstrumentationTimer(const char* name);
 
 		/// <summary>
@@ -120,19 +120,19 @@ namespace TRAP::Utils::Debug
 		~InstrumentationTimer();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		InstrumentationTimer(const InstrumentationTimer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		InstrumentationTimer& operator=(const InstrumentationTimer&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		InstrumentationTimer(InstrumentationTimer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		InstrumentationTimer& operator=(InstrumentationTimer&&) = delete;
 
@@ -204,7 +204,7 @@ namespace TRAP::Utils::Debug
 	#endif
 
 	/// <summary>
-	/// Begin a new profiler session.<br>
+	/// Begin a new profiler session.
 	/// Note: Only one session at a time is allowed!
 	/// </summary>
 	/// <param name="name">Name for the session.</param>
@@ -227,7 +227,7 @@ namespace TRAP::Utils::Debug
 	#define TP_PROFILE_FUNCTION() TP_PROFILE_SCOPE(TP_FUNC_SIG)
 #else
 	/// <summary>
-	/// Begin a new profiler session.<br>
+	/// Begin a new profiler session.
 	/// Note: Only one session at a time is allowed!
 	/// </summary>
 	/// <param name="name">Name for the session.</param>

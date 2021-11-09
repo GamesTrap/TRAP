@@ -25,19 +25,19 @@ namespace TRAP::Graphics
 		~Texture2D() override = default;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Texture2D(const Texture2D&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Texture2D& operator=(const Texture2D&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Texture2D(Texture2D&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Texture2D& operator=(Texture2D&&) = default;
 

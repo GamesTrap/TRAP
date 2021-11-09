@@ -12,13 +12,13 @@ namespace TRAP
 	class Monitor;
 
 	/// <summary>
-	/// Interface representing a desktop system based Window.
+	/// Class representing a desktop system based window.
 	/// </summary>
 	class Window final
 	{
 	public:
 		/// <summary>
-		/// Specifies the display mode of a TRAP::Window.
+		/// Specifies the display mode of a window.
 		/// </summary>
 		enum class DisplayMode
 		{
@@ -36,7 +36,7 @@ namespace TRAP
 		///     Disabled,
 		///     Captured
 		/// };
-		/// Specifies the cursor mode of a TRAP::Window.
+		/// Specifies the cursor mode of a window.
 		/// </summary>
 		using CursorMode = INTERNAL::WindowingAPI::CursorMode;
 
@@ -55,32 +55,32 @@ namespace TRAP
 		///		ResizeAll = 8,
 		///		NotAllowed = 9
 		/// };
-		/// Specifies the cursor type (visual appearance) of a TRAP::Window.
+		/// Specifies the cursor type (visual appearance) of a window.
 		/// </summary>
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
 
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
 		/// <summary>
-		/// TRAP::Window Constructor.
+		/// Constructor.
 		/// </summary>
-		/// <param name="props">Properties to be applied to the new TRAP::Window.</param>
-		/// <returns>New TRAP::Window object.</returns>
+		/// <param name="props">Properties to be applied to the new window.</param>
+		/// <returns>New window object.</returns>
 		explicit Window(const WindowProps& props);
 		/// <summary>
-		/// Deleted Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Window(const Window&) = delete;
 		/// <summary>
-		/// Deleted Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Window& operator=(const Window&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Window(Window&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Window& operator=(Window&&) = default;
 		/// <summary>
@@ -89,71 +89,71 @@ namespace TRAP
 		~Window();
 
 		/// <summary>
-		/// Updates all TRAP::Windows (polls events from OS etc.).
+		/// Updates all windows (polls events from OS etc.).
 		/// </summary>
 		static void OnUpdate();
 
 		/// <summary>
-		/// Get the amount of all active TRAP::Windows.
+		/// Get the amount of all active windows.
 		/// </summary>
-		/// <returns>Total amount of active TRAP::Windows.</returns>
+		/// <returns>Total amount of active windows.</returns>
 		static uint32_t GetActiveWindows();
 
 		/// <summary>
-		/// Get the current title of the TRAP::Window.
+		/// Get the current title of the window.
 		/// </summary>
-		/// <returns>Title of the TRAP::Window.</returns>
+		/// <returns>Title of the window.</returns>
 		const std::string& GetTitle() const;
 		/// <summary>
-		/// Get the current width of the TRAP::Window.
+		/// Get the current width of the window.
 		/// </summary>
-		/// <returns>Width of the TRAP::Window.</returns>
+		/// <returns>Width of the window.</returns>
 		uint32_t GetWidth() const;
 		/// <summary>
-		/// Get the current height of the TRAP::Window.
+		/// Get the current height of the window.
 		/// </summary>
-		/// <returns>Height of the TRAP::Window.</returns>
+		/// <returns>Height of the window.</returns>
 		uint32_t GetHeight() const;
 		/// <summary>
-		/// Get the current width and height of the TRAP::Window.
+		/// Get the current width and height of the window.
 		/// </summary>
-		/// <returns>TRAP::Math::Vec2ui containing the width and height of the TRAP::Window.</returns>
+		/// <returns>Vec2ui containing the width and height of the window.</returns>
 		Math::Vec2ui GetSize() const;
 		/// <summary>
-		/// Get the current refresh rate of the TRAP::Window.
+		/// Get the current refresh rate of the window.
 		/// </summary>
-		/// <returns>Refresh rate of the TRAP::Window.</returns>
+		/// <returns>Refresh rate of the window.</returns>
 		uint32_t GetRefreshRate() const;
 		/// <summary>
-		/// Get the current TRAP::Window::DisplayMode of the TRAP::Window.
+		/// Get the current display mode of the window.
 		/// </summary>
-		/// <returns>TRAP::Window::DisplayMode of the TRAP::Window.</returns>
+		/// <returns>Display mode of the window.</returns>
 		DisplayMode GetDisplayMode() const;
 		/// <summary>
-		/// Get the current TRAP::Monitor used by the TRAP::Window
-		/// (only in TRAP::Window::DisplayMode Fullscreen and Borderless).
+		/// Get the current monitor used by the window
+		/// (only for display modes fullscreen and borderless).
 		/// </summary>
-		/// <returns>Object of TRAP::Monitor class used by the TRAP::Window.</returns>
+		/// <returns>Object of monitor class used by the window.</returns>
 		Monitor GetMonitor() const;
 		/// <summary>
-		/// Get the current TRAP::Window::CursorMode of the TRAP::Window.
+		/// Get the current cursor mode of the window.
 		/// </summary>
-		/// <returns>TRAP::Window::CursorMode of the TRAP::Window.</returns>
+		/// <returns>Cursor mode of the window.</returns>
 		CursorMode GetCursorMode() const;
 		/// <summary>
-		/// Get the current raw mouse input (false = off, true = on) usage of the TRAP::Window.
+		/// Get the current raw mouse input (false = off, true = on) usage of the window.
 		/// </summary>
-		/// <returns>Raw mouse input status of the TRAP::Window.</returns>
+		/// <returns>Raw mouse input status of the window.</returns>
 		bool GetRawMouseInput() const;
 		/// <summary>
 		/// Get the ratio between the current DPI and the platforms DPI.
 		/// </summary>
-		/// <returns>TRAP::Math::Vec2 containing the x and y scale.</returns>
+		/// <returns>Vec2 containing the x and y scale.</returns>
 		Math::Vec2 GetContentScale() const;
 		/// <summary>
-		/// Get the current opacity of the TRAP::Window.
+		/// Get the current opacity of the window.
 		/// </summary>
-		/// <returns>Opacity of the TRAP::Window.</returns>
+		/// <returns>Opacity of the window.</returns>
 		float GetOpacity() const;
 		/// <summary>
 		/// Get whether VSync is enabled or disabled.
@@ -162,50 +162,50 @@ namespace TRAP
 		bool GetVSync() const;
 
 		/// <summary>
-		/// Get the internal handle of the TRAP::Window.
+		/// Get the internal handle of the window.
 		/// </summary>
-		/// <returns>Pointer to the TRAP::INTERNAL::WindowingAPI::InternalWindow handle.</returns>
+		/// <returns>Pointer to the internal window handle.</returns>
 		void* GetInternalWindow() const;
 
 		/// <summary>
-		/// Set a new title for the TRAP::Window.
+		/// Set a new title for the window.
 		/// </summary>
-		/// <param name="title">New TRAP::Window title.</param>
+		/// <param name="title">New window title.</param>
 		void SetTitle(const std::string& title);
 		/// <summary>
-		/// Set a new TRAP::Window::DisplayMode and or a new size/refresh rate for the TRAP::Window.
+		/// Set a new display mode and or a new size/refresh rate for the window.
 		/// </summary>
-		/// <param name="mode">New TRAP::Window::DisplayMode for the TRAP::Window.</param>
-		/// <param name="width">New width (ignored when used with TRAP::Window::DisplayMode Borderless).</param>
-		/// <param name="height">New height (ignored when used with TRAP::Window::DisplayMode Borderless).</param>
+		/// <param name="mode">New display mode for the window.</param>
+		/// <param name="width">New width (ignored when used with display mode borderless).</param>
+		/// <param name="height">New height (ignored when used with display mode borderless).</param>
 		/// <param name="refreshRate">
-		/// New refresh rate (ignored when used with TRAP::Window::DisplayMode Borderless, Windowed).
+		/// New refresh rate (ignored when used with display modes Borderless or Windowed).
 		/// </param>
 		void SetDisplayMode(const DisplayMode& mode,
 			                uint32_t width = 0,
 			                uint32_t height = 0,
 			                uint32_t refreshRate = 0);
 		/// <summary>
-		/// Set a new Monitor for the TRAP::Window.
+		/// Set a new monitor for the window.
 		/// </summary>
-		/// <param name="monitor">TRAP::Monitor object to be used from now on.</param>
+		/// <param name="monitor">Monitor object to be used from now on.</param>
 		void SetMonitor(Monitor& monitor);
 		/// <summary>
-		/// Set the TRAP::Window::CursorMode for the TRAP:Window.
+		/// Set the cursor mode for the window.
 		/// </summary>
-		/// <param name="mode">New TRAP::Window::CursorMode.</param>
+		/// <param name="mode">New cursor mode.</param>
 		void SetCursorMode(const CursorMode& mode);
 		/// <summary>
-		/// Set the TRAP::Window::CursorType for the TRAP::Window.
+		/// Set the cursor type for the window.
 		/// </summary>
-		/// <param name="cursor">New CursorType.</param>
+		/// <param name="cursor">New cursor type.</param>
 		void SetCursorType(const CursorType& cursor) const;
 		/// <summary>
-		/// Set the cursor to a custom TRAP::Image (Image must be non HDR RGB/RGBA with 24/32 bits per pixel).
+		/// Set the cursor to a custom image (image must be non HDR RGB/RGBA with 24/32 bits per pixel).
 		/// </summary>
-		/// <param name="image">TRAP::Image to be used as a cursor.</param>
-		/// <param name="xHotspot">X hotspot of the TRAP::Image.</param>
-		/// <param name="yHotspot">Y hotspot of the TRAP::Image.</param>
+		/// <param name="image">Image to be used as a cursor.</param>
+		/// <param name="xHotspot">X hotspot of the image.</param>
+		/// <param name="yHotspot">Y hotspot of the image.</param>
 		void SetCursorIcon(const Scope<Image>& image, int32_t xHotspot = 0, int32_t yHotspot = 0) const;
 		/// <summary>
 		/// Set if raw mouse input should be used.
@@ -213,122 +213,122 @@ namespace TRAP
 		/// <param name="enabled">New status for raw mouse input.</param>
 		void SetRawMouseInput(bool enabled);
 		/// <summary>
-		/// Resets the TRAP::Window icon to the TRAP logo.
+		/// Resets the window icon to the TRAP logo.
 		/// </summary>
 		void SetIcon() const;
 		/// <summary>
-		/// Set a custom logo as TRAP::Window icon (Image must be non HDR RGBA 32 bits per pixel)
+		/// Set a custom logo as window icon (image must be non HDR RGBA 32 bits per pixel)
 		/// (nullptr resets the icon to the TRAP logo).
 		/// </summary>
-		/// <param name="image">New logo to be used by the TRAP::Window.</param>
+		/// <param name="image">New logo to be used by the window.</param>
 		void SetIcon(const Scope<Image>& image) const;
 		/// <summary>
-		/// Set the function where events should be reported to from the TRAP::Window.
+		/// Set the function where events should be reported to from the window.
 		/// </summary>
 		/// <param name="callback">Callback function used to report events to.</param>
 		void SetEventCallback(const EventCallbackFn& callback);
 		/// <summary>
-		/// Set whether resizing of the TRAP::Window should be allowed.
+		/// Set whether resizing of the window should be allowed.
 		/// </summary>
 		/// <param name="enabled">Set resizable or non resizable.</param>
 		void SetResizable(bool enabled) const;
 		/// <summary>
-		/// Limit the minimum size of the TRAP::Window.
+		/// Limit the minimum size of the window.
 		/// </summary>
 		/// <param name="minWidth">Min width.</param>
 		/// <param name="minHeight">Min height.</param>
 		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight);
 		/// <summary>
-		/// Limit the maximum size of the TRAP::Window.<br>
+		/// Limit the maximum size of the window.
 		/// Setting any of the two parameters to 0 will disable the maximum size restriction.
 		/// </summary>
 		/// <param name="maxWidth">Max width.</param>
 		/// <param name="maxHeight">Max height.</param>
 		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight);
 		/// <summary>
-		/// Set the opacity of the TRAP::Window (1.0f = Fully opaque, 0.0f = Fully transparent).
+		/// Set the opacity of the window (1.0f = fully opaque, 0.0f = fully transparent).
 		/// </summary>
 		/// <param name="opacity">Opacity strength.</param>
 		void SetOpacity(float opacity) const;
 		/// <summary>
-		/// Enable or Disable Drag and Drop feature for the TRAP::Window.
+		/// Enable or disable drag and drop feature for the window.
 		/// </summary>
 		/// <param name="enabled">True to enable, false otherwise.</param>
 		void SetDragAndDrop(bool enabled) const;
 		/// <summary>
-		/// Enable or Disable VSync for the TRAP::Window.
+		/// Enable or disable VSync for the window.
 		/// </summary>
 		/// <param name="enabled">Whether to enable VSync or not.</param>
 		void SetVSync(bool enabled);
 
 		/// <summary>
-		/// Query whether the TRAP::Window is maximized or not.
+		/// Query whether the window is maximized or not.
 		/// </summary>
-		/// <returns>TRAP::Window maximization status.</returns>
+		/// <returns>Window maximization status.</returns>
 		bool IsMaximized() const;
 		/// <summary>
-		/// Query whether the TRAP::Window is minimized or not.
+		/// Query whether the window is minimized or not.
 		/// </summary>
-		/// <returns>TRAP::Window minimization status.</returns>
+		/// <returns>Window minimization status.</returns>
 		bool IsMinimized() const;
 		/// <summary>
-		/// Query whether the TRAP::Window is resizable or not.
+		/// Query whether the window is resizable or not.
 		/// </summary>
-		/// <returns>TRAP::Window resizable status.</returns>
+		/// <returns>Window resizable status.</returns>
 		bool IsResizable() const;
 		/// <summary>
-		/// Query whether the TRAP::Window is visible or not.
+		/// Query whether the window is visible or not.
 		/// </summary>
-		/// <returns>TRAP::Window visibility status.</returns>
+		/// <returns>Window visibility status.</returns>
 		bool IsVisible() const;
 		/// <summary>
-		/// Query whether the TRAP::Window is focused or not.
+		/// Query whether the window is focused or not.
 		/// </summary>
-		/// <returns>TRAP::Window focus status.</returns>
+		/// <returns>Window focus status.</returns>
 		bool IsFocused() const;
 		/// <summary>
-		/// Query whether the TRAP::Window is decorated or not.
+		/// Query whether the window is decorated or not.
 		/// </summary>
-		/// <returns>TRAP::Window decoration status.</returns>
+		/// <returns>Window decoration status.</returns>
 		bool IsDecorated() const;
 
 		/// <summary>
-		/// Maximize the TRAP::Window.
+		/// Maximize the window.
 		/// </summary>
 		void Maximize() const;
 		/// <summary>
-		/// Minimize the TRAP::Window.
+		/// Minimize the window.
 		/// </summary>
 		void Minimize() const;
 		/// <summary>
-		/// Request attention/focus for the TRAP::Window.
+		/// Request attention/focus for the window.
 		/// </summary>
 		void RequestAttention() const;
 		/// <summary>
-		/// Focus the TRAP::Window.
+		/// Focus the window.
 		/// </summary>
 		void Focus() const;
 		/// <summary>
-		/// Hide the TRAP::Window.
+		/// Hide the window.
 		/// </summary>
 		void Hide() const;
 		/// <summary>
-		/// Show the TRAP::Window.
+		/// Show the window.
 		/// </summary>
 		void Show() const;
 		/// <summary>
-		/// Restore/Show the TRAP::Window.
+		/// Restore/Show the window.
 		/// </summary>
 		void Restore() const;
 
 	private:
 		/// <summary>
-		/// Initializes a new TRAP::Window and also if not happened already the Renderer.
+		/// Initializes a new window and also if not happened already the renderer.
 		/// </summary>
-		/// <param name="props">TRAP::WindowProps for the new TRAP::Window.</param>
+		/// <param name="props">Window properties for the new window.</param>
 		void Init(const WindowProps& props);
 		/// <summary>
-		/// Shutdown current TRAP::Window and if there are no other open TRAP::Windows also
+		/// Shutdown current window and if there are no other open windows also
 		/// deinitializes the internal WindowingAPI.
 		/// </summary>
 		void Shutdown();
@@ -343,7 +343,7 @@ namespace TRAP
 		static std::unordered_map<std::size_t, INTERNAL::WindowingAPI::InternalVideoMode> s_baseVideoModes;
 
 		/// <summary>
-		/// Used when switched back from Fullscreen to Windowed mode.
+		/// Used when switched back from fullscreen to windowed mode.
 		/// </summary>
 		struct WindowedModeParams
 		{
@@ -408,14 +408,14 @@ namespace TRAP
 			/// <summary>
 			/// Constructor for advanced(optional) window properties.
 			/// </summary>
-			/// <param name="resizable">Whether the TRAP::Window should be resizable.</param>
-			/// <param name="maximized">Whether the TRAP::Window should be maximized on creation.</param>
-			/// <param name="visible">Whether the TRAP::Window should be visible or not.</param>
-			/// <param name="focused">Whether the TRAP::Window should be focused or not.</param>
-			/// <param name="focusOnShow">Whether the TRAP::Window should be focused when shown or not.</param>
-			/// <param name="decorated">Whether the TRAP::Window should be decorated or not.</param>
-			/// <param name="rawMouseInput">Whether the TRAP::Window should use raw mouse input or not.</param>
-			/// <param name="cursorMode">TRAP::Window::CursorMode to be used by the TRAP::Window.</param>
+			/// <param name="resizable">Whether the window should be resizable.</param>
+			/// <param name="maximized">Whether the window should be maximized on creation.</param>
+			/// <param name="visible">Whether the window should be visible or not.</param>
+			/// <param name="focused">Whether the window should be focused or not.</param>
+			/// <param name="focusOnShow">Whether the window should be focused when shown or not.</param>
+			/// <param name="decorated">Whether the window should be decorated or not.</param>
+			/// <param name="rawMouseInput">Whether the window should use raw mouse input or not.</param>
+			/// <param name="cursorMode">Cursor mode to be used by the window.</param>
 			explicit AdvancedProps(bool resizable = true,
 			                       bool maximized = false,
 			                       bool visible = true,
@@ -429,14 +429,14 @@ namespace TRAP
 		/// <summary>
 		/// Constructor for basic window properties.
 		/// </summary>
-		/// <param name="title">Title for the new TRAP::Window.</param>
-		/// <param name="width">Width for the new TRAP::Window.</param>
-		/// <param name="height">Height for the new TRAP::Window.</param>
-		/// <param name="refreshRate">Refresh rate for the new TRAP::Window.</param>
-		/// <param name="displayMode">TRAP::Window::DisplayMode for the new TRAP::Window.</param>
-		/// <param name="advanced">Optional advanced properties to be used for the new TRAP::Window.</param>
-		/// <param name="monitor">Monitor to be used by the new TRAP::Window.</param>
-		explicit WindowProps(std::string title = "TRAP Engine",
+		/// <param name="title">Title for the new window.</param>
+		/// <param name="width">Width for the new window.</param>
+		/// <param name="height">Height for the new window.</param>
+		/// <param name="refreshRate">Refresh rate for the new window.</param>
+		/// <param name="displayMode">Display mode for the new window.</param>
+		/// <param name="advanced">Optional advanced properties to be used for the new window.</param>
+		/// <param name="monitor">Monitor to be used by the new window.</param>
+		explicit WindowProps(std::string title = u8"TRAP™",
 							 uint32_t width = 1280,
 							 uint32_t height = 720,
 							 uint32_t refreshRate = 60,

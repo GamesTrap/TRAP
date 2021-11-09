@@ -12,19 +12,19 @@ namespace TRAP::Graphics
 		~OrthographicCamera() = default;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		OrthographicCamera(const OrthographicCamera&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		OrthographicCamera& operator=(const OrthographicCamera&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		OrthographicCamera(OrthographicCamera&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		OrthographicCamera& operator=(OrthographicCamera&&) = default;
 

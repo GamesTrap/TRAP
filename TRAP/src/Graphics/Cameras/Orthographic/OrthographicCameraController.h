@@ -26,19 +26,19 @@ class OrthographicCameraController
 		~OrthographicCameraController() = default;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		OrthographicCameraController(const OrthographicCameraController&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		OrthographicCameraController& operator=(const OrthographicCameraController&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		OrthographicCameraController(OrthographicCameraController&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		OrthographicCameraController& operator=(OrthographicCameraController&&) = delete;
 

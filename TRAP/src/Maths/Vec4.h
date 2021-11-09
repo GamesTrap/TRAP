@@ -153,7 +153,7 @@ namespace TRAP::Math
 		//Explicit conversions
 		template<typename U>
 		constexpr explicit Vec(const Vec<4, U> & v);
-		
+
 		constexpr Vec(Vec&&) = default;
 		~Vec() = default;
 		constexpr Vec<4, T>& operator=(Vec&&) = default;

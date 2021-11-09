@@ -24,7 +24,7 @@ void TRAP::Utils::Debug::Instrumentor::BeginSession(const std::string& name, con
 		//Subsequent profiling output meant for the original session will end up in the newly opened session instead.
 		//That is better than having badly formatted profiling output.
 		TP_ERROR(Log::InstrumentorPrefix, "Instrumentor::BeginSession('", name, "') when session '",
-		         m_currentSession->Name, "' already open!");
+		         m_currentSession->Name, "' is already open!");
 		InternalEndSession();
 	}
 	m_outputStream.open(filePath);

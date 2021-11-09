@@ -17,26 +17,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="x">New mouse x position.</param>
 		/// <param name="y">New mouse y position.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		MouseMoveEvent(float x, float y, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseMoveEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseMoveEvent(const MouseMoveEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseMoveEvent& operator=(const MouseMoveEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseMoveEvent(MouseMoveEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseMoveEvent& operator=(MouseMoveEvent&&) = default;
 
@@ -56,7 +56,7 @@ namespace TRAP::Events
 		/// <returns>Mouse position.</returns>
 		Math::Vec2 GetPosition() const;
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -68,22 +68,22 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -104,26 +104,26 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="xOffset">New mouse scroll wheel x offset.</param>
 		/// <param name="yOffset">New mouse scroll wheel y offset.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		MouseScrollEvent(float xOffset, float yOffset, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseScrollEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseScrollEvent(const MouseScrollEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseScrollEvent& operator=(const MouseScrollEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseScrollEvent(MouseScrollEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseScrollEvent& operator=(MouseScrollEvent&&) = default;
 
@@ -143,7 +143,7 @@ namespace TRAP::Events
 		/// <returns>Mouse scroll wheel offset.</returns>
 		Math::Vec2 GetOffset() const;
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -155,22 +155,22 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -187,7 +187,7 @@ namespace TRAP::Events
 	{
 	public:
 		/// <summary>
-		/// Virtual Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseButtonEvent() override = default;
 
@@ -198,7 +198,7 @@ namespace TRAP::Events
 		Input::MouseButton GetMouseButton() const;
 
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -210,19 +210,19 @@ namespace TRAP::Events
 		/// <param name="button">Affected mouse button.</param>
 		explicit MouseButtonEvent(Input::MouseButton button);
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseButtonEvent(const MouseButtonEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseButtonEvent& operator=(const MouseButtonEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseButtonEvent(MouseButtonEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseButtonEvent& operator=(MouseButtonEvent&&) = default;
 
@@ -246,31 +246,31 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="button">Pressed mouse button.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		explicit MouseButtonPressEvent(Input::MouseButton button, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseButtonPressEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseButtonPressEvent(const MouseButtonPressEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseButtonPressEvent& operator=(const MouseButtonPressEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseButtonPressEvent(MouseButtonPressEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseButtonPressEvent& operator=(MouseButtonPressEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -282,17 +282,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
@@ -311,31 +311,31 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="button">Released mouse button.</param>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		explicit MouseButtonReleaseEvent(Input::MouseButton button, TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseButtonReleaseEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseButtonReleaseEvent(const MouseButtonReleaseEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseButtonReleaseEvent& operator=(const MouseButtonReleaseEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseButtonReleaseEvent(MouseButtonReleaseEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseButtonReleaseEvent& operator=(MouseButtonReleaseEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
@@ -347,17 +347,17 @@ namespace TRAP::Events
 		std::string ToString() const override;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
@@ -375,52 +375,52 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		explicit MouseEnterEvent(TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseEnterEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseEnterEvent(const MouseEnterEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseEnterEvent& operator=(const MouseEnterEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseEnterEvent(MouseEnterEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseEnterEvent& operator=(MouseEnterEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
@@ -430,7 +430,7 @@ namespace TRAP::Events
 	};
 
 	/// <summary>
-	/// Mouse leaved.
+	/// Mouse left.
 	/// </summary>
 	class MouseLeaveEvent final : public Event
 	{
@@ -438,52 +438,52 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="window">Pointer to the affected Window.</param>
+		/// <param name="window">Pointer to the affected window.</param>
 		explicit MouseLeaveEvent(TRAP::Window* window);
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~MouseLeaveEvent() override = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		MouseLeaveEvent(const MouseLeaveEvent&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		MouseLeaveEvent& operator=(const MouseLeaveEvent&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		MouseLeaveEvent(MouseLeaveEvent&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		MouseLeaveEvent& operator=(MouseLeaveEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected Window.
+		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
 		TRAP::Window* GetWindow() const;
 
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		static EventType GetStaticType();
 		/// <summary>
-		/// Retrieve the EventType of the Event.
+		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
 		EventType GetEventType() const override;
 		/// <summary>
-		/// Retrieve the name of the Event.
+		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
 		const char* GetName() const override;
 		/// <summary>
-		/// Retrieve the category flags of the Event.
+		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;

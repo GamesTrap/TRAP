@@ -14,7 +14,7 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 
 	if (virtualPath.empty() || physicalPath.empty())
 	{
-		TP_ERROR(Log::VFSPrefix, "Virtual or Physical path is empty!");
+		TP_ERROR(Log::VFSPrefix, "Virtual or physical path is empty!");
 		return;
 	}
 	if(virtualPath[0] != '/')
@@ -39,19 +39,19 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 	};
 
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
-	TP_INFO(Log::VFSPrefix, "Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"",
+	TP_INFO(Log::VFSPrefix, "Mounting virtual path: \"", virtualPath, "\" to physical path: \"",
 	        RemoveSlash(physicalPath), "\"");
 	s_Instance->m_mountPoints[virtualPathLower].emplace_back(RemoveSlash(physicalPath));
 
 	if (s_Instance->m_hotShaderReloading && virtualPathLower == "/shaders" && !s_Instance->m_shaderFileWatcher)
 	{
-		//Create a ShaderFileWatcher instance that will check the mounted folders for changes
+		//Create a shader file watcher instance that will check the mounted folders for changes
 		s_Instance->m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders");
 	}
 
 	if (s_Instance->m_hotTextureReloading && virtualPathLower == "/textures" && !s_Instance->m_textureFileWatcher)
 	{
-		//Create a TextureFileWatcher instance that will check the mounted folder for changes
+		//Create a texture file watcher instance that will check the mounted folder for changes
 		s_Instance->m_textureFileWatcher = MakeScope<FileWatcher>("/textures");
 	}
 }
@@ -84,15 +84,17 @@ void TRAP::VFS::Unmount(const std::string& virtualPath)
 		return;
 	}
 
-	TP_INFO(Log::VFSPrefix, "Unmounting VirtualPath: \"", virtualPath, "\"");
+	TP_INFO(Log::VFSPrefix, "Unmounting virtual path: \"", virtualPath, "\"");
 	const std::string pathLower = Utils::String::ToLower(virtualPath);
 	if(s_Instance->m_mountPoints.find(pathLower) != s_Instance->m_mountPoints.end())
 		s_Instance->m_mountPoints[pathLower].clear();
 
+	//BUG Only unmount if there are no more mount points for this virtual path
 	if (s_Instance->m_hotShaderReloading && s_Instance->m_shaderFileWatcher)
 		if (pathLower == "/shaders")
 			s_Instance->m_shaderFileWatcher.reset();
 
+	//BUG Only unmount if there are no more mount points for this virtual path
 	if (s_Instance->m_hotTextureReloading && s_Instance->m_textureFileWatcher)
 		if (pathLower == "/textures")
 			s_Instance->m_textureFileWatcher.reset();
@@ -106,7 +108,7 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string_view path, std::filesy
 	if(path.empty())
 	{
 		if(!silent)
-			TP_ERROR("[VFS] Path couldn't be resolved because it is empty!");
+			TP_ERROR(Log::VFSPrefix, "Path couldn't be resolved because it is empty!");
 
 		return false;
 	}
@@ -160,7 +162,7 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string_view path, std::files
 {
 	if(path.empty())
 	{
-		TP_ERROR("[VFS] Path couldn't be resolved because it is empty!");
+		TP_ERROR(Log::VFSPrefix, "Path couldn't be resolved because it is empty!");
 		return false;
 	}
 
@@ -437,7 +439,7 @@ std::vector<uint8_t> TRAP::VFS::ReadPhysicalFile(const std::filesystem::path& ph
 	}
 
 	if(!silent)
-		TP_ERROR(Log::FileSystemPrefix, "Could not open File: \"", physicalFilePath, "\"");
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: \"", physicalFilePath, "\"");
 
 	return std::vector<uint8_t>();
 }
@@ -469,7 +471,7 @@ std::string TRAP::VFS::ReadPhysicalTextFile(const std::filesystem::path& physica
 	}
 
 	if(!silent)
-		TP_ERROR(Log::FileSystemPrefix, "Could not open File: \"", physicalFilePath, "\"");
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: \"", physicalFilePath, "\"");
 
 	return "";
 }
@@ -481,7 +483,7 @@ bool TRAP::VFS::WritePhysicalFile(const std::filesystem::path& physicalFilePath,
 {
 	if (physicalFilePath.empty() || buffer.empty())
 	{
-		TP_ERROR(Log::FileSystemPrefix, "Could not write File because physical file path and/or data was empty!");
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't write file because physical file path and/or data was empty!");
 		return false;
 	}
 
@@ -495,7 +497,7 @@ bool TRAP::VFS::WritePhysicalFile(const std::filesystem::path& physicalFilePath,
 		return true;
 	}
 
-	TP_ERROR(Log::FileSystemPrefix, "Could not write File: \"", physicalFilePath, "\"");
+	TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: \"", physicalFilePath, "\"");
 
 	return false;
 }
@@ -507,7 +509,7 @@ bool TRAP::VFS::WritePhysicalTextFile(const std::filesystem::path& physicalFileP
 {
 	if (physicalFilePath.empty() || text.empty())
 	{
-		TP_ERROR(Log::FileSystemPrefix, "Could not write File because physical file path and/or data was empty!");
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't write file because physical file path and/or data was empty!");
 		return false;
 	}
 
@@ -524,7 +526,7 @@ bool TRAP::VFS::WritePhysicalTextFile(const std::filesystem::path& physicalFileP
 		return true;
 	}
 
-	TP_ERROR(Log::FileSystemPrefix, "Could not write File: ", physicalFilePath);
+	TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: ", physicalFilePath);
 
 	return false;
 }
@@ -540,6 +542,8 @@ void TRAP::VFS::Init()
 
 	if (!std::filesystem::exists(GetTempFolderPath() + "TRAP"))
 		std::filesystem::create_directory(GetTempFolderPath() + "TRAP");
+	if (!std::filesystem::exists(GetDocumentsFolderPath() + "TRAP"))
+		std::filesystem::create_directory(GetDocumentsFolderPath() + "TRAP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

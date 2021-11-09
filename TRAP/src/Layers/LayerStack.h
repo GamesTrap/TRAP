@@ -9,101 +9,101 @@ namespace TRAP
 	{
 	public:
 		/// <summary>
-		/// Default Constructor.
+		/// Constructor.
 		/// </summary>
 		LayerStack() = default;
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		LayerStack(const LayerStack&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		LayerStack& operator=(const LayerStack&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		LayerStack(LayerStack&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		LayerStack& operator=(LayerStack&&) = default;
 		/// <summary>
-		/// Default Destructor.
+		/// Destructor.
 		/// </summary>
 		~LayerStack();
 
 		/// <summary>
-		/// Push a Layer to the LayerStack.
+		/// Push a layer to the layer stack.
 		/// </summary>
 		/// <param name="layer">Layer to push.</param>
 		void PushLayer(std::unique_ptr<Layer> layer);
 		/// <summary>
-		/// Push an Overlay to the LayerStack.
+		/// Push an overlay to the layer stack.
 		/// </summary>
 		/// <param name="overlay">Overlay to push.</param>
 		void PushOverlay(std::unique_ptr<Layer> overlay);
 		/// <summary>
-		/// Pop a Layer from the LayerStack.
+		/// Pop a layer from the layer stack.
 		/// </summary>
 		/// <param name="layer">Layer to pop.</param>
 		void PopLayer(const std::unique_ptr<Layer>& layer);
 		/// <summary>
-		/// Pop an Overlay from the LayerStack.
+		/// Pop an overlay from the layer stack.
 		/// </summary>
 		/// <param name="overlay">Overlay to pop.</param>
 		void PopOverlay(const std::unique_ptr<Layer>& overlay);
 		/// <summary>
-		/// Pop a Layer from the LayerStack.
+		/// Pop a layer from the layer stack.
 		/// </summary>
 		/// <param name="layer">Layer to pop.</param>
 		void PopLayer(Layer* layer);
 		/// <summary>
-		/// Pop an Overlay from the LayerStack.
+		/// Pop an overlay from the layer stack.
 		/// </summary>
 		/// <param name="overlay">Overlay to pop.</param>
 		void PopOverlay(Layer* overlay);
 
 		/// <summary>
-		/// LayerStack begin iterator.
+		/// Layer stack begin iterator.
 		/// </summary>
-		/// <returns>LayerStack iterator.</returns>
+		/// <returns>Layer stack iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::iterator begin();
 		/// <summary>
-		/// LayerStack end iterator.
+		/// Layer stack end iterator.
 		/// </summary>
-		/// <returns>LayerStack iterator.</returns>
+		/// <returns>Layer stack iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::iterator end();
 		/// <summary>
-		/// LayerStack reverse begin iterator.
+		/// Layers tack reverse begin iterator.
 		/// </summary>
-		/// <returns>LayerStack reverse iterator.</returns>
+		/// <returns>Layer stack reverse iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::reverse_iterator rbegin();
 		/// <summary>
-		/// LayerStack reverse end iterator.
+		/// Layer stack reverse end iterator.
 		/// </summary>
-		/// <returns>LayerStack reverse iterator.</returns>
+		/// <returns>Layer stack reverse iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::reverse_iterator rend();
 
 		/// <summary>
-		/// LayerStack const begin iterator.
+		/// Layer stack const begin iterator.
 		/// </summary>
-		/// <returns>LayerStack const iterator.</returns>
+		/// <returns>Layer stack const iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::const_iterator begin() const;
 		/// <summary>
-		/// LayerStack const end iterator.
+		/// Layer stack const end iterator.
 		/// </summary>
-		/// <returns>LayerStack const iterator.</returns>
+		/// <returns>Layer stack const iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::const_iterator end() const;
 		/// <summary>
-		/// LayerStack const reverse begin iterator.
+		/// Layer stack const reverse begin iterator.
 		/// </summary>
-		/// <returns>LayerStack reverse iterator.</returns>
+		/// <returns>Layer stack reverse iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rbegin() const;
 		/// <summary>
-		/// LayerStack const reverse end iterator.
+		/// Layer stack const reverse end iterator.
 		/// </summary>
-		/// <returns>LayerStack reverse iterator.</returns>
+		/// <returns>Layer stack reverse iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rend() const;
 
 	private:

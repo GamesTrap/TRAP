@@ -20,19 +20,19 @@ namespace TRAP::Graphics::API
 		~ResourceLoader();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		ResourceLoader(const ResourceLoader&) = delete;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		ResourceLoader& operator=(const ResourceLoader&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		ResourceLoader(ResourceLoader&&) = delete;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		ResourceLoader& operator=(ResourceLoader&&) = delete;
 
