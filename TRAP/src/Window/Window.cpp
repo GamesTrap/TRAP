@@ -818,9 +818,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		TRAP_ASSERT(success, "Couldn't initialize WindowingAPI!");
 		if (!success)
 			Utils::Dialogs::ShowMsgBox("WindowingAPI Error",
-				"Couldn't initialize WindowingAPI!",
-				Utils::Dialogs::Style::Error,
-				Utils::Dialogs::Buttons::Quit);
+									   "Couldn't initialize WindowingAPI!\nError code: 0x0011",
+									   Utils::Dialogs::Style::Error,
+									   Utils::Dialogs::Buttons::Quit);
 		s_WindowingAPIInitialized = true;
 	}
 

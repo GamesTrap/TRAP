@@ -209,12 +209,14 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 	if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
 	{
 		if(presentStatus == PresentStatus::DeviceReset)
-			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Device was reset while presenting!",
+			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Device was reset while presenting!\n"
+											 "Error code: 0x000D",
 			                                 TRAP::Utils::Dialogs::Style::Error,
 											 TRAP::Utils::Dialogs::Buttons::Quit);
 		else if(presentStatus == PresentStatus::Failed)
 		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Presenting failed!",
+			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Presenting failed!\n"
+											 "Error code: 0x000F",
 			                                 TRAP::Utils::Dialogs::Style::Error,
 											 TRAP::Utils::Dialogs::Buttons::Quit);
 		}
@@ -244,7 +246,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 
 		if (!p->SwapChain)
 		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create swapchain!",
+			TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create swapchain!\n"
+											 "Error code: 0x0010",
 			                                 TRAP::Utils::Dialogs::Style::Error,
 											 TRAP::Utils::Dialogs::Buttons::Quit);
 			TRAP::Application::Shutdown();
