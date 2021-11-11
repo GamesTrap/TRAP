@@ -2233,3 +2233,8 @@ SITREP 11/07/2021|21w44b1
     - Sandbox2D now uses new TextureReload event ~<10 mins
     - Sandbox2D now uses new ShaderReload event ~<10 mins
     - Removed unused App events ~<5 mins
+
+SITREP 11/11/2021|21w45a1
+    - Changed TRAP Engine version to 21w45a1(0.7.98)
+    - Updated Controller mappings ~<5 mins
+    - Updated Vulkan loader ~<5 mins
