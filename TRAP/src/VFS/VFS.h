@@ -68,7 +68,7 @@ namespace TRAP
 		///
 		/// If hot shader reloading is enabled and the virtual path is "/shaders" then this also instantiates the
 		/// shader TRAP::FileWatcher.
-		/// <br>
+		///
 		/// Prints an error if physical path is empty.
 		/// </summary>
 		/// <param name="physicalPath">Physical folder path.</param>
@@ -119,7 +119,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="path">Virtual or physical file or folder path to resolve.</param>
 		/// <param name="outPhysicalPath">
-		/// Output physical path.<br>
+		/// Output physical path.
 		/// Unchanged if path couldn't be resolved.
 		/// </param>
 		/// <returns>

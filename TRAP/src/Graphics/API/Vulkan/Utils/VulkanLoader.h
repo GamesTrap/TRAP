@@ -74,8 +74,8 @@ struct VkDeviceTable;
 VkResult VkInitialize();
 
 /// <summary>
-/// Initialize library by providing a custom handler to load global symbols.<br>
-/// This function can be used instead of VkInitialize.<br>
+/// Initialize library by providing a custom handler to load global symbols.
+/// This function can be used instead of VkInitialize.
 /// The handler function pointer will be asked to load global Vulkan symbols which require no instance
 /// (such as vkCreateInstance, vkEnumerateInstance*and vkEnumerateInstanceVersion if available).
 /// </summary>
@@ -95,14 +95,14 @@ uint32_t VkGetInstanceVersion();
 void VkLoadInstance(VkInstance instance);
 
 /// <summary>
-/// Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.<br>
+/// Load global function pointers using application-created VkInstance; call this function after creating the Vulkan instance.
 /// Skips loading device-based function pointers, requires usage of VkLoadDevice afterwards.
 /// </summary>
 /// <param name="instance"></param>
 void VkLoadInstanceOnly(VkInstance instance);
 
 /// <summary>
-/// Load global function pointers using application-created VkDevice; call this function after creating the Vulkan device.<br>
+/// Load global function pointers using application-created VkDevice; call this function after creating the Vulkan device.
 /// Note: this is not suitable for applications that want to use multiple VkDevice objects concurrently.
 /// </summary>
 /// <param name="device"></param>
@@ -119,7 +119,7 @@ VkInstance VkGetLoadedInstance();
 VkDevice VkGetLoadedDevice();
 
 /// <summary>
-/// Load function pointers using application-created VkDevice into a table.<br>
+/// Load function pointers using application-created VkDevice into a table.
 /// Application should use function pointers from that table instead of using global function pointers.
 /// </summary>
 /// <param name="table">Pointer where to store loaded functions into</param>

@@ -470,8 +470,8 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Returns a value equal to the nearest integer to x.<br>
-	/// The fraction 0.5 will round in a direction chosen by the<br>
+	/// Returns a value equal to the nearest integer to x.
+	/// The fraction 0.5 will round in a direction chosen by the
 	/// implementation, presumably the direction that is fastest.
 	/// </summary>
 	///
@@ -482,8 +482,8 @@ namespace TRAP::Math
 	int32_t IRound(const genType& x);
 
 	/// <summary>
-	/// Returns a value equal to the nearest integer to x.<br>
-	/// The fraction 0.5 will round in a direction chosen by the<br>
+	/// Returns a value equal to the nearest integer to x.
+	/// The fraction 0.5 will round in a direction chosen by the
 	/// implementation, presumably the direction that is fastest.
 	/// </summary>
 	///
@@ -496,8 +496,8 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Returns a value equal to the nearest integer to x.<br>
-	/// The fraction 0.5 will round in a direction chosen by the<br>
+	/// Returns a value equal to the nearest integer to x.
+	/// The fraction 0.5 will round in a direction chosen by the
 	/// implementation, presumably the direction that is fastest.
 	/// </summary>
 	///
@@ -508,7 +508,7 @@ namespace TRAP::Math
 	uint32_t URound(const genType& x);
 
 	/// <summary>
-	/// Returns a value equal to the nearest integer to x.<br>
+	/// Returns a value equal to the nearest integer to x.
 	/// The fraction 0.5 will round in a direction chosen by the
 	/// implementation, presumably the direction that is fastest.
 	/// </summary>
@@ -522,11 +522,11 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// If genTypeU is a floating scalar or vector:<br>
-	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
-	/// The value for a is not restricted to the range [0, 1].<br>
-	/// <br>
-	/// If genTypeU is a boolean scalar or vector:<br>
+	/// If genTypeU is a floating scalar or vector:
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.
+	/// The value for a is not restricted to the range [0, 1].
+	///
+	/// If genTypeU is a boolean scalar or vector:
 	/// Select which vector each returned component comes from.
 	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
 	/// For a component of 'a' that is true, the corresponding component of 'y' is returned.
@@ -545,11 +545,11 @@ namespace TRAP::Math
 	genTypeT Mix(genTypeT x, genTypeT y, genTypeU a);
 
 	/// <summary>
-	/// If genTypeU is a floating scalar or vector:<br>
-	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
-	/// The value for a is not restricted to the range [0, 1].<br>
-	/// <br>
-	/// If genTypeU is a boolean scalar or vector:<br>
+	/// If genTypeU is a floating scalar or vector:
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.
+	/// The value for a is not restricted to the range [0, 1].
+	///
+	/// If genTypeU is a boolean scalar or vector:
 	/// Select which vector each returned component comes from.
 	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
 	/// For a component of 'a' that is true, the corresponding component of 'y' is returned.
@@ -568,11 +568,11 @@ namespace TRAP::Math
 	Vec<L, T> Mix(const Vec<L, T>& x, const Vec<L, T>& y, U a);
 
 	/// <summary>
-	/// If genTypeU is a floating scalar or vector:<br>
-	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
-	/// The value for a is not restricted to the range [0, 1].<br>
-	/// <br>
-	/// If genTypeU is a boolean scalar or vector:<br>
+	/// If genTypeU is a floating scalar or vector:
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.
+	/// The value for a is not restricted to the range [0, 1].
+	///
+	/// If genTypeU is a boolean scalar or vector:
 	/// Select which vector each returned component comes from.
 	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
 	/// For a component of 'a' that is true, the corresponding component of 'y' is returned.
@@ -591,7 +591,7 @@ namespace TRAP::Math
 	Vec<L, T> Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, U>& a);
 
 	/// <summary>
-	/// Spherical linear interpolation of two quaternions.<br>
+	/// Spherical linear interpolation of two quaternions.
 	/// The interpolation is oriented and the rotation is performed at constant speed.
 	/// For short path spherical linear interpolation, use the Slerp function.
 	/// </summary>
@@ -622,8 +622,8 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
-	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.
+	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);
 	/// Note: Results are undefined if edge0 >= edge1!
 	/// </summary>
 	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
@@ -634,8 +634,8 @@ namespace TRAP::Math
 	genType SmoothStep(genType edge0, genType edge1, genType x);
 
 	/// <summary>
-	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
-	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.
+	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);
 	/// Note: Results are undefined if edge0 >= edge1!
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
@@ -646,8 +646,8 @@ namespace TRAP::Math
 	Vec<L, T> SmoothStep(T edge0, T edge1, const Vec<L, T>& x);
 
 	/// <summary>
-	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
-	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.
+	/// This is equivalent to: genType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);
 	/// Note: Results are undefined if edge0 >= edge1!
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
@@ -665,7 +665,7 @@ namespace TRAP::Math
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <returns>
 	/// True if x hold a NaN (not a number) representation in the underlying implementation's
-	/// set of floating-point representations.<br>
+	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename genType>
@@ -677,7 +677,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>
 	/// True if x hold a NaN (not a number) representation in the underlying implementation's
-	/// set of floating-point representations.<br>
+	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<uint32_t L, typename T>
@@ -689,7 +689,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>
 	/// True if x hold a NaN (not a number) representation in the underlying implementation's
-	/// set of floating-point representations.<br>
+	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename T>
@@ -700,7 +700,7 @@ namespace TRAP::Math
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <returns>
 	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's
-	/// set of floating-point representations.<br>
+	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename genType>
@@ -709,7 +709,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>
 	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's
-	/// set of floating-point representations.<br>
+	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<uint32_t L, typename T>
@@ -718,7 +718,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>
 	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's
-	/// set of floating-point representations.<br>
+	/// set of floating-point representations.
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename T>
@@ -738,9 +738,9 @@ namespace TRAP::Math
 
 	/// <summary>
 	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
-	/// such that x = significant * exp(2, exponent).<br>
-	/// This significant is returned by the function and exponent is returned in the parameter exp.<br>
-	/// For a floating-point value of zero, the significant and exponent are both zero.<br>
+	/// such that x = significant * exp(2, exponent).
+	/// This significant is returned by the function and exponent is returned in the parameter exp.
+	/// For a floating-point value of zero, the significant and exponent are both zero.
 	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
 	/// </summary>
 	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
@@ -750,9 +750,9 @@ namespace TRAP::Math
 
 	/// <summary>
 	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
-	/// such that x = significant * Exp(2, exponent).<br>
-	/// This significant is returned by the function and exponent is returned in the parameter exp.<br>
-	/// For a floating-point value of zero, the significant and exponent are both zero.<br>
+	/// such that x = significant * Exp(2, exponent).
+	/// This significant is returned by the function and exponent is returned in the parameter exp.
+	/// For a floating-point value of zero, the significant and exponent are both zero.
 	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
@@ -763,8 +763,8 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
-	/// significant * Exp(2, exponent).<br>
+	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:
+	/// significant * Exp(2, exponent).
 	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
 	/// </summary>
 	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
@@ -773,8 +773,8 @@ namespace TRAP::Math
 	genType LdExp(const genType& x, const int32_t& exp);
 
 	/// <summary>
-	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
-	/// significant * Exp(2, exponent).<br>
+	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:
+	/// significant * Exp(2, exponent).
 	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
@@ -843,7 +843,7 @@ namespace TRAP::Math
 	Vec<L, T> Lerp(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, T>& a);
 
 	/// <summary>
-	/// Linear interpolation of two quaternions.<br>
+	/// Linear interpolation of two quaternions.
 	/// The interpolation is oriented.
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
@@ -869,7 +869,7 @@ namespace TRAP::Math
 	T Pow(T base, T exponent);
 
 	/// <param name="base">
-	/// Floating-point value.<br>
+	/// Floating-point value.
 	/// Pow function is defined for input values of 'base' defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
 	/// </param>
@@ -925,7 +925,7 @@ namespace TRAP::Math
 	/// in the limit of the type qualifier.
 	/// </param>
 	/// <returns>
-	/// Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.<br>
+	/// Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.
 	/// Note: Results are undefined if x <= 0!
 	/// </returns>
 	template<uint32_t L, typename T>
@@ -1367,11 +1367,11 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// If U is a floating scalar or vector:<br>
-	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
-	/// The value for a is not restricted to the range [0, 1].<br>
-	/// <br>
-	/// If U is a boolean scalar or vector:<br>
+	/// If U is a floating scalar or vector:
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.
+	/// The value for a is not restricted to the range [0, 1].
+	///
+	/// If U is a boolean scalar or vector:
 	/// Select which vector each returned component comes from.
 	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
 	/// For a component of 'a' that is true, the corresponding component of 'y' is returned.
@@ -1390,11 +1390,11 @@ namespace TRAP::Math
 	Mat<L, L, T> Mix(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Mat<L, L, U>& a);
 
 	/// <summary>
-	/// If U is a floating scalar or vector:<br>
-	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
-	/// The value for a is not restricted to the range [0, 1].<br>
-	/// <br>
-	/// If U is a boolean scalar or vector:<br>
+	/// If U is a floating scalar or vector:
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.
+	/// The value for a is not restricted to the range [0, 1].
+	///
+	/// If U is a boolean scalar or vector:
 	/// Select which vector each returned component comes from.
 	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
 	/// For a component of 'a' that is true, the corresponding component of 'y' is returned.
@@ -1858,7 +1858,7 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Standard trigonometric sine function.<br>
+	/// Standard trigonometric sine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
@@ -1867,7 +1867,7 @@ namespace TRAP::Math
 	T Sin(T x);
 
 	/// <summary>
-	/// Standard trigonometric sine function.<br>
+	/// Standard trigonometric sine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
@@ -1878,7 +1878,7 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Standard trigonometric cosine function.<br>
+	/// Standard trigonometric cosine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
@@ -1887,7 +1887,7 @@ namespace TRAP::Math
 	T Cos(T x);
 
 	/// <summary>
-	/// Standard trigonometric cosine function.<br>
+	/// Standard trigonometric cosine function.
 	/// Values returned by this function will range from [-1, 1].
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
@@ -1898,7 +1898,7 @@ namespace TRAP::Math
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Standard trigonometric tangent function.<br>
+	/// Standard trigonometric tangent function.
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Tangent.</returns>
@@ -1906,7 +1906,7 @@ namespace TRAP::Math
 	T Tan(T x);
 
 	/// <summary>
-	/// Standard trigonometric tangent function.<br>
+	/// Standard trigonometric tangent function.
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Tangent.</returns>
@@ -1920,8 +1920,8 @@ namespace TRAP::Math
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>
-	/// Angle whose sine is x.<br>
-	/// The range of values returned by this function is [-PI / 2, PI / 2].<br>
+	/// Angle whose sine is x.
+	/// The range of values returned by this function is [-PI / 2, PI / 2].
 	/// Note: Results are undefined if |x| > 1!
 	/// </returns>
 	template<typename T>
@@ -1932,8 +1932,8 @@ namespace TRAP::Math
 	/// </summary>
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>
-	/// Angle whose sine is x.<br>
-	/// The range of values returned by this function is [-PI / 2, PI / 2].<br>
+	/// Angle whose sine is x.
+	/// The range of values returned by this function is [-PI / 2, PI / 2].
 	/// Note: Results are undefined if |x| > 1!
 	/// </returns>
 	template<uint32_t L, typename T>
@@ -1947,7 +1947,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>
 	/// Angle whose cosine is x.
-	/// The range of values returned by this function is [0, PI].<br>
+	/// The range of values returned by this function is [0, PI].
 	/// Note: Results are undefined if |x| > 1!
 	/// </returns>
 	template<typename T>
@@ -1959,7 +1959,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>
 	/// Angle whose cosine is x.
-	/// The range of values returned by this function is [0, PI].<br>
+	/// The range of values returned by this function is [0, PI].
 	/// Note: Results are undefined if |x| > 1!
 	/// </returns>
 	template<uint32_t L, typename T>
@@ -1972,9 +1972,9 @@ namespace TRAP::Math
 	/// </summary>
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <returns>
-	/// Angle whose tangent is y / x.<br>
-	/// The signs of x and y are used to determine what quadrant the angle is in.<br>
-	/// The range of values returned by this function is [-PI, PI].<br>
+	/// Angle whose tangent is y / x.
+	/// The signs of x and y are used to determine what quadrant the angle is in.
+	/// The range of values returned by this function is [-PI, PI].
 	/// Note: Results are undefined if x and y are both 0!
 	/// </returns>
 	template<typename genType>
@@ -1985,9 +1985,9 @@ namespace TRAP::Math
 	/// </summary>
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
 	/// <returns>
-	/// Angle whose tangent is y / x.<br>
-	/// The signs of x and y are used to determine what quadrant the angle is in.<br>
-	/// The range of values returned by this function is [-PI, PI].<br>
+	/// Angle whose tangent is y / x.
+	/// The signs of x and y are used to determine what quadrant the angle is in.
+	/// The range of values returned by this function is [-PI, PI].
 	/// Note: Results are undefined if x and y are both 0!
 	/// </returns>
 	template<uint32_t L, typename T>

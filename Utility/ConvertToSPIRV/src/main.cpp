@@ -91,16 +91,16 @@ int main(const int argc, char* argv[])
 				std::cout << "Skipping File!" << '\n';
 				continue;
 			}
-			
+
 			if(CompileGLSLToSPIRV(shader))
-				SaveSPIRV(shader);					
+				SaveSPIRV(shader);
 			else
 				std::cout << "Skipping File!" << '\n';
 
 			std::cout << '\n';
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -141,7 +141,7 @@ std::string ReadTextFile(const std::filesystem::path& filePath)
 	}
 
 	std::cout << "Could not open File: " << filePath << '\n';
-	
+
 	return {};
 }
 
@@ -247,7 +247,7 @@ bool CheckForParameters(const int argc)
 std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 {
 	std::vector<Shader> shaders{};
-	
+
 	for (int i = 1; i < argc; i++)
 	{
 		std::cout << "Parameter " << i << ": \"" << argv[i] << "\"" << '\n';
@@ -454,7 +454,7 @@ bool PreProcessGLSL(Shader& shader)
 					return false;
 				}
 				break;
-					
+
 			case 3:
 				if (static_cast<uint32_t>(ShaderStage::Geometry & shader.Stages))
 				{
@@ -470,7 +470,7 @@ bool PreProcessGLSL(Shader& shader)
 					return false;
 				}
 				break;
-					
+
 			case 5:
 				if (static_cast<uint32_t>(ShaderStage::Compute & shader.Stages))
 				{
@@ -478,7 +478,7 @@ bool PreProcessGLSL(Shader& shader)
 					return false;
 				}
 				break;
-					
+
 			default:
 				break;
 			}
@@ -507,7 +507,7 @@ bool ValidateShaderStages(const Shader& shader)
 		std::cout << "[GLSL] No Shader Stage found!" << '\n';
 		return false;
 	}
-	
+
 	//Check for "Normal" Shader Stages combined with Compute
 	if ((static_cast<uint32_t>(ShaderStage::Vertex & stages) ||
 		static_cast<uint32_t>(ShaderStage::Fragment & stages) ||
@@ -731,7 +731,7 @@ bool CompileGLSLToSPIRV(Shader& shader)
 std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, const ShaderStage stage, std::string& preProcessedSource)
 {
 	std::unique_ptr<glslang::TShader> shader = nullptr;
-	
+
 	if (stage == ShaderStage::Vertex)
 	{
 		shader = std::make_unique<glslang::TShader>(EShLangVertex);
@@ -773,7 +773,7 @@ std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
 	glslang::TShader::ForbidIncluder includer;
-	constexpr TBuiltInResource DefaultTBuiltInResource = 
+	constexpr TBuiltInResource DefaultTBuiltInResource =
 	{
 		/* .MaxLights = */ 32,
 		/* .MaxClipPlanes = */ 6,
@@ -902,7 +902,7 @@ std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source
 
 bool ParseGLSL(glslang::TShader* shader)
 {
-	constexpr TBuiltInResource DefaultTBuiltInResource = 
+	constexpr TBuiltInResource DefaultTBuiltInResource =
 	{
 		/* .MaxLights = */ 32,
 		/* .MaxClipPlanes = */ 6,
@@ -1008,7 +1008,7 @@ bool ParseGLSL(glslang::TShader* shader)
 		/* .generalVariableIndexing = */ true,
 		/* .generalConstantMatrixVectorIndexing = */ true
 	};
-	
+
 	if (!shader->parse(&DefaultTBuiltInResource, 460, true, static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
 		std::cout << "[GLSL] Parsing failed: " << '\n';
@@ -1092,7 +1092,7 @@ std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, const ShaderStage
 			break;
 
 			//TODO RayTracing
-			
+
 		default:
 			break;
 		}
@@ -1108,7 +1108,7 @@ void SaveSPIRV(Shader& shader)
 	const std::string filepath = shader.FilePath + ".spirv";
 
 	std::cout << "[SPIRV] Saving Shader: \"" << filepath << "\"" << '\n';
-	
+
 	std::ofstream file(filepath, std::ios::binary);
 	if (file.is_open())
 	{
@@ -1119,7 +1119,7 @@ void SaveSPIRV(Shader& shader)
 				++SPIRVSubShadersCount;
 		}
 		file.write(reinterpret_cast<char*>(&SPIRVSubShadersCount), sizeof(uint32_t));
-		
+
 		for(uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
 		{
 			if(!shader.SubShaderSources[i].SPIRV.empty())
@@ -1153,7 +1153,7 @@ void SaveSPIRV(Shader& shader)
 					break;
 
 				//TODO RayTracing
-					
+
 				default:
 					break;
 				}
@@ -1163,9 +1163,9 @@ void SaveSPIRV(Shader& shader)
 				file.write(reinterpret_cast<char*>(shader.SubShaderSources[i].SPIRV.data()), shader.SubShaderSources[i].SPIRV.size() * sizeof(uint32_t));
 			}
 		}
-		
+
 		file.close();
 	}
 	else
-		std::cout << "Couldn't open file: " << filepath << '\n';	
+		std::cout << "Couldn't open file: " << filepath << '\n';
 }

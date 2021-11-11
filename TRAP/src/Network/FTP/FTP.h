@@ -265,7 +265,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Log in using a username and a password.
 		///
-		/// Logging in is mandatory after connecting to the server.<br>
+		/// Logging in is mandatory after connecting to the server.
 		/// Users that are not logged in cannot perform any operation.
 		/// </summary>
 		/// <param name="name">User name.</param>

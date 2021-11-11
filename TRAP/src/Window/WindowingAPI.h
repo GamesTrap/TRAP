@@ -1185,7 +1185,7 @@ namespace TRAP::INTERNAL
 		/// This function sets hints for the next call to WindowingAPI::CreateWindow.
 		/// The hints, once set, retain their values until changed by a call to this function
 		/// or WindowingAPI::DefaultWindowHints, or until the engine is terminated.
-		/// <br>
+		///
 		/// Some hints are platform specific. These may be set on any platform but they will only
 		/// affect their specific platform. Other platforms will ignore them. Setting these hints
 		/// requires no platform specific headers or functions.

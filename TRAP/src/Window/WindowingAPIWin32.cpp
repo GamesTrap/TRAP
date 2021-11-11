@@ -1950,7 +1950,6 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 		if (i < count)
 			continue;
 
-		//TODO or Bug
 		//I do not see any difference with this enabled other than WinAPI lagging while doing this call
 		/*if (monitor->ModesPruned)
 		{

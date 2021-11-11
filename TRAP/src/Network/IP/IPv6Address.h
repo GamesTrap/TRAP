@@ -29,7 +29,7 @@ namespace TRAP::Network
 
 		/// <summary>
 		/// Construct the address from a string.
-		/// <br>
+		///
 		/// Here address can either be a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
 		/// network name (ex: "localhost").
 		/// This is equivalent to the constructor taking a std::string
