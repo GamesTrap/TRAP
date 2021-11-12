@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanQueue() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanQueue(const VulkanQueue&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanQueue& operator=(const VulkanQueue&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanQueue(VulkanQueue&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanQueue& operator=(VulkanQueue&&) = delete;
 

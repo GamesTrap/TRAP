@@ -20,19 +20,19 @@ namespace TRAP::Graphics
 		virtual ~CommandBuffer();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		CommandBuffer(const CommandBuffer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		CommandBuffer& operator=(const CommandBuffer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		CommandBuffer(CommandBuffer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		CommandBuffer& operator=(CommandBuffer&&) = default;
 

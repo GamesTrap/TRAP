@@ -13,19 +13,19 @@ namespace TRAP::Graphics
 		virtual ~CommandSignature();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		CommandSignature(const CommandSignature&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		CommandSignature& operator=(const CommandSignature&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		CommandSignature(CommandSignature&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		CommandSignature& operator=(CommandSignature&&) = default;
 

@@ -19,19 +19,19 @@ namespace TRAP::Graphics
 		virtual ~Sampler();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Sampler(const Sampler&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Sampler& operator=(const Sampler&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Sampler(Sampler&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Sampler& operator=(Sampler&&) = default;
 

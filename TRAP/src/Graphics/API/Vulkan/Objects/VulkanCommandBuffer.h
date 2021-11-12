@@ -21,19 +21,19 @@ namespace TRAP::Graphics::API
 		~VulkanCommandBuffer() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanCommandBuffer(const VulkanCommandBuffer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanCommandBuffer(VulkanCommandBuffer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = delete;
 

@@ -17,19 +17,19 @@ namespace TRAP::Graphics::API
 		~VulkanFence() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanFence(const VulkanFence&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanFence& operator=(const VulkanFence&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanFence(VulkanFence&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanFence& operator=(VulkanFence&&) = default;
 

@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanMemoryAllocator();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanMemoryAllocator(const VulkanMemoryAllocator&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanMemoryAllocator(VulkanMemoryAllocator&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) = default;
 

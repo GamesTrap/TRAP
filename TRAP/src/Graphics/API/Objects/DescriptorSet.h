@@ -11,19 +11,19 @@ namespace TRAP::Graphics
 		virtual ~DescriptorSet();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		DescriptorSet(const DescriptorSet&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		DescriptorSet& operator=(const DescriptorSet&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		DescriptorSet(DescriptorSet&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		DescriptorSet& operator=(DescriptorSet&&) = default;
 

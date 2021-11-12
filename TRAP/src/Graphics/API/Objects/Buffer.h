@@ -12,19 +12,19 @@ namespace TRAP::Graphics
 		virtual ~Buffer();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Buffer(const Buffer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Buffer& operator=(const Buffer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Buffer(Buffer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Buffer& operator=(Buffer&&) = default;
 

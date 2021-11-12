@@ -14,19 +14,19 @@ namespace TRAP::Graphics
 		virtual ~Semaphore();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		Semaphore(const Semaphore&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		Semaphore& operator=(const Semaphore&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		Semaphore(Semaphore&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		Semaphore& operator=(Semaphore&&) = default;
 

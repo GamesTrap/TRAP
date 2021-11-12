@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanFrameBuffer();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanFrameBuffer(const VulkanFrameBuffer&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanFrameBuffer& operator=(const VulkanFrameBuffer&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanFrameBuffer(VulkanFrameBuffer&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) = default;
 

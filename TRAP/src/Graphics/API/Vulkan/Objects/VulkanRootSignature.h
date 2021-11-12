@@ -14,19 +14,19 @@ namespace TRAP::Graphics::API
 		~VulkanRootSignature() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanRootSignature(const VulkanRootSignature&) = delete;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanRootSignature& operator=(const VulkanRootSignature&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanRootSignature(VulkanRootSignature&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanRootSignature& operator=(VulkanRootSignature&&) = default;
 

@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanQueryPool() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanQueryPool(const VulkanQueryPool&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanQueryPool& operator=(const VulkanQueryPool&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanQueryPool(VulkanQueryPool&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanQueryPool& operator=(VulkanQueryPool&&) = default;
 

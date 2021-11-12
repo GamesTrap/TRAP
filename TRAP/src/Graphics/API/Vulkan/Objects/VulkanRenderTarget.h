@@ -17,19 +17,19 @@ namespace TRAP::Graphics::API
 		~VulkanRenderTarget() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanRenderTarget(const VulkanRenderTarget&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanRenderTarget& operator=(const VulkanRenderTarget&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanRenderTarget(VulkanRenderTarget&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanRenderTarget& operator=(VulkanRenderTarget&&) = default;
 

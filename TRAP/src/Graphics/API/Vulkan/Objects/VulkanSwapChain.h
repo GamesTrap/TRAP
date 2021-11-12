@@ -19,19 +19,19 @@ namespace TRAP::Graphics::API
 		~VulkanSwapChain() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanSwapChain(const VulkanSwapChain&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanSwapChain& operator=(const VulkanSwapChain&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanSwapChain(VulkanSwapChain&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanSwapChain& operator=(VulkanSwapChain&&) = default;
 

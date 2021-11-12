@@ -18,19 +18,19 @@ namespace TRAP::Graphics::API
 		~VulkanSurface();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanSurface(const VulkanSurface&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanSurface& operator=(const VulkanSurface&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanSurface(VulkanSurface&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanSurface& operator=(VulkanSurface&&) = default;
 

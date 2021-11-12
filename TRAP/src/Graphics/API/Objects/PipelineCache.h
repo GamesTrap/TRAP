@@ -14,19 +14,19 @@ namespace TRAP::Graphics
 		virtual ~PipelineCache();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		PipelineCache(const PipelineCache&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		PipelineCache& operator=(const PipelineCache&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		PipelineCache(PipelineCache&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		PipelineCache& operator=(PipelineCache&&) = default;
 

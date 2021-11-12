@@ -15,19 +15,19 @@ namespace TRAP::Graphics
 		virtual ~RenderTarget();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		RenderTarget(const RenderTarget&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		RenderTarget& operator=(const RenderTarget&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		RenderTarget(RenderTarget&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		RenderTarget& operator=(RenderTarget&&) = default;
 

@@ -13,19 +13,19 @@ namespace TRAP::Graphics
 		virtual ~QueryPool();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		QueryPool(const QueryPool&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		QueryPool& operator=(const QueryPool&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		QueryPool(QueryPool&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		QueryPool& operator=(QueryPool&&) = default;
 

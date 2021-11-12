@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanRenderPass();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanRenderPass(const VulkanRenderPass&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanRenderPass& operator=(const VulkanRenderPass&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanRenderPass(VulkanRenderPass&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanRenderPass& operator=(VulkanRenderPass&&) = default;
 

@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanPipeline() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanPipeline(const VulkanPipeline&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanPipeline& operator=(const VulkanPipeline&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanPipeline(VulkanPipeline&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanPipeline& operator=(VulkanPipeline&&) = default;
 

@@ -13,19 +13,19 @@ namespace TRAP::Graphics::API
 		~VulkanDescriptorSet() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanDescriptorSet(const VulkanDescriptorSet&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanDescriptorSet(VulkanDescriptorSet&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) = default;
 

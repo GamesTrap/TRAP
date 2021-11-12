@@ -12,19 +12,19 @@ namespace TRAP::Graphics
 		virtual ~RootSignature();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		RootSignature(const RootSignature&) = delete;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		RootSignature& operator=(const RootSignature&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		RootSignature(RootSignature&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		RootSignature& operator=(RootSignature&&) = default;
 

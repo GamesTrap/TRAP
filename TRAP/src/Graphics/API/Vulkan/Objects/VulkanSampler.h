@@ -15,19 +15,19 @@ namespace TRAP::Graphics::API
 		~VulkanSampler() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanSampler(const VulkanSampler&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanSampler& operator=(const VulkanSampler&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanSampler(VulkanSampler&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanSampler& operator=(VulkanSampler&&) = default;
 

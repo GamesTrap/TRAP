@@ -13,19 +13,19 @@ namespace TRAP::Graphics
 		virtual ~DescriptorPool();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		DescriptorPool(const DescriptorPool&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		DescriptorPool& operator=(const DescriptorPool&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		DescriptorPool(DescriptorPool&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		DescriptorPool& operator=(DescriptorPool&&) = default;
 

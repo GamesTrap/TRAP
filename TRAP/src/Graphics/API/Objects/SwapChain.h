@@ -18,19 +18,19 @@ namespace TRAP::Graphics
 		virtual ~SwapChain();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		SwapChain(const SwapChain&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		SwapChain& operator=(const SwapChain&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		SwapChain(SwapChain&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		SwapChain& operator=(SwapChain&&) = default;
 

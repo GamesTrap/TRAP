@@ -15,19 +15,19 @@ namespace TRAP::Graphics
 		virtual ~CommandPool();
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		CommandPool(const CommandPool&) = default;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		CommandPool& operator=(const CommandPool&) = default;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		CommandPool(CommandPool&&) = default;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		CommandPool& operator=(CommandPool&&) = default;
 

@@ -20,19 +20,19 @@ namespace TRAP::Graphics::API
 		~VulkanDescriptorPool() override;
 
 		/// <summary>
-		/// Default Copy Constructor.
+		/// Copy constructor.
 		/// </summary>
 		VulkanDescriptorPool(const VulkanDescriptorPool&) = delete;
 		/// <summary>
-		/// Default Copy Assignment Operator.
+		/// Copy assignment operator.
 		/// </summary>
 		VulkanDescriptorPool& operator=(const VulkanDescriptorPool&) = delete;
 		/// <summary>
-		/// Default Move Constructor.
+		/// Move constructor.
 		/// </summary>
 		VulkanDescriptorPool(VulkanDescriptorPool&&) = delete;
 		/// <summary>
-		/// Default Move Assignment Operator.
+		/// Move assignment operator.
 		/// </summary>
 		VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = delete;
 
