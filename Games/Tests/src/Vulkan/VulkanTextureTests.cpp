@@ -19,10 +19,6 @@ void VulkanTextureTests::OnAttach()
 {
     TRAP::Application::GetWindow()->SetTitle("Vulkan Texture Test");
 
-    //Mount Shader & Texture Folders
-    TRAP::VFS::MountShaders("Assets/Shaders");
-    TRAP::VFS::MountTextures("Assets/Textures");
-
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
                                                           static_cast<uint32_t>(m_quadVerticesIndexed.size()) *
@@ -42,8 +38,8 @@ void VulkanTextureTests::OnAttach()
     m_indexBuffer->AwaitLoading();
 
     //Load Images
-    m_vulkanLogo = TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png");
-    m_vulkanLogoTransparent = TRAP::Image::LoadFromFile("/Textures/vulkanlogoTransparent.png");
+    m_vulkanLogo = TRAP::Image::LoadFromFile("./Assets/Textures/vulkanlogo.png");
+    m_vulkanLogoTransparent = TRAP::Image::LoadFromFile("./Assets/Textures/vulkanlogoTransparent.png");
 
     //Load Texture
     m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", m_vulkanLogo).get();
@@ -53,7 +49,7 @@ void VulkanTextureTests::OnAttach()
     //Load Shader
     std::vector<TRAP::Graphics::Shader::Macro> macros{};
     macros.emplace_back(TRAP::Graphics::Shader::Macro{"MAX_TEXTURE_MIP_LEVELS", std::to_string(m_maxMipLevel)});
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "/shaders/testtextureseperate.shader",
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperate.shader",
                                                        &macros).get();
 
     TRAP::Graphics::SamplerDesc samplerDesc{};

@@ -2,7 +2,7 @@
 #include "PipelineCache.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 
 TRAP::Graphics::PipelineCache::PipelineCache()
 {
@@ -48,7 +48,8 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 	{
 		TRAP::Graphics::RendererAPI::PipelineCacheDesc cacheDesc;
 		cacheDesc.Flags = desc.Flags;
-		cacheDesc.Data = TRAP::VFS::ReadFile(desc.VirtualOrPhysicalPath, true);
+		if(std::filesystem::exists(desc.Path))
+			cacheDesc.Data = TRAP::FS::ReadFile(desc.Path);
 
 		return TRAP::Graphics::PipelineCache::Create(cacheDesc);
 	}

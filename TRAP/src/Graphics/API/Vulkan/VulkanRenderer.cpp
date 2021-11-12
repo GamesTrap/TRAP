@@ -6,7 +6,7 @@
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 #include "Utils/Dialogs/Dialogs.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "VulkanCommon.h"
 
 #include "Objects/VulkanSemaphore.h"
@@ -119,7 +119,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 		if(!cache)
 			continue;
 
-		cache->Save(TRAP::VFS::GetTempFolderPath() + "TRAP/" + std::to_string(hash) + ".cache");
+		cache->Save(TRAP::FS::GetGameTempFolderPath() / (std::to_string(hash) + ".cache"));
 		cache.reset();
 	}
 	s_pipelineCaches.clear();
@@ -1513,7 +1513,7 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 	if (cacheIt == s_pipelineCaches.end())
 	{
 		PipelineCacheLoadDesc cacheDesc{};
-		cacheDesc.VirtualOrPhysicalPath = TRAP::VFS::GetTempFolderPath() + "TRAP/" + std::to_string(hash) + ".cache";
+		cacheDesc.Path = TRAP::FS::GetGameTempFolderPath() / (std::to_string(hash) + ".cache");
 		s_pipelineCaches.insert({ hash, PipelineCache::Create(cacheDesc) });
 	}
 

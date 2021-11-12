@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "DummyShader.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"
 
@@ -32,7 +32,7 @@ const std::string& TRAP::Graphics::Shader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Shader::GetFilePath() const
+const std::filesystem::path& TRAP::Graphics::Shader::GetFilePath() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -64,7 +64,7 @@ const std::array<TRAP::Graphics::DescriptorSet*,
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
-                                                                           const std::string& filePath,
+                                                                           const std::filesystem::path& filePath,
 																		   const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
@@ -76,16 +76,15 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	}
 
 	std::string glslSource;
-	std::string VFSFilePath;
 	bool isSPIRV = false;
 	RendererAPI::BinaryShaderDesc desc;
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
-		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" &&
-		    Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
+		if (Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".spirv" &&
+		    Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".shader")
 		{
-			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not \"*.spirv\" or \"*.shader\"!");
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
 			return nullptr;
 		}
@@ -93,11 +92,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
-			glslSource = VFS::ReadTextFile(filePath, true);
+			glslSource = FS::ReadTextFile(filePath);
 		else
-			SPIRVSource = Convert8To32(VFS::ReadFile(filePath, true));
-
-		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
+			SPIRVSource = Convert8To32(FS::ReadFile(filePath));
 	}
 
 	if(isSPIRV)
@@ -146,7 +143,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
 
-		result->m_filepath = VFSFilePath;
+		result->m_filepath = filePath;
 		return result;
 	}
 
@@ -161,23 +158,22 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath,
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
                                                                            const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
 	std::string glslSource;
-	std::string VFSFilePath;
 	std::string name;
 	bool isSPIRV = false;
 	RendererAPI::BinaryShaderDesc desc;
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
-		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" &&
-		    Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
+		if (Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".spirv" &&
+		    Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".shader")
 		{
-			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not \"*.spirv\" or \"*.shader\"!");
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
 			return nullptr;
 		}
@@ -185,12 +181,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
-			glslSource = VFS::ReadTextFile(filePath, true);
+			glslSource = FS::ReadTextFile(filePath);
 		else
-			SPIRVSource = Convert8To32(VFS::ReadFile(filePath, true));
+			SPIRVSource = Convert8To32(FS::ReadFile(filePath));
 
-		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
-		name = VFS::GetFileName(VFSFilePath);
+		name = FS::GetFileName(filePath);
 	}
 
 	if (isSPIRV)
@@ -239,7 +234,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
 
-		result->m_filepath = VFSFilePath;
+		result->m_filepath = filePath;
 		return result;
 	}
 
@@ -293,19 +288,17 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string_view filePath)
+bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& filePath)
 {
 	//Check SPIRV Magic Number
-	std::filesystem::path physicalPath;
-	if (!VFS::ResolveReadPhysicalPath(filePath, physicalPath, true) && !VFS::FileOrFolderExists(physicalPath, true))
+	if (!FS::FileOrFolderExists(filePath))
 		return false;
 
-
-	std::ifstream file(physicalPath, std::ios::binary);
+	std::ifstream file(filePath, std::ios::binary);
 
 	if(!file.is_open())
 	{
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", physicalPath);
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath.generic_u8string());
 		return false;
 	}
 

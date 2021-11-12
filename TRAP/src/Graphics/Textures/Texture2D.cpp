@@ -2,12 +2,12 @@
 #include "Texture2D.h"
 
 #include "Graphics/API/RendererAPI.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Graphics/API/ResourceLoader.h"
 #include "TextureBase.h"
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name,
-	                                                                             const std::string_view filepath)
+	                                                                             const std::filesystem::path& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -45,11 +45,11 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::filesystem::path& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
-	const std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
+	const std::string name = FS::GetFileName(filepath);
 
 	switch (RendererAPI::GetRenderAPI())
 	{
@@ -214,7 +214,7 @@ uint32_t TRAP::Graphics::Texture2D::GetArraySize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
+const std::filesystem::path& TRAP::Graphics::Texture2D::GetFilePath() const
 {
 	return m_filepath;
 }
@@ -275,7 +275,7 @@ TRAP::Graphics::Texture2D::Texture2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture2D::Texture2D(const std::string& name, const std::string_view filepath)
+TRAP::Graphics::Texture2D::Texture2D(const std::string& name, const std::filesystem::path& filepath)
 {
 	m_textureType = TextureType::Texture2D;
 	m_name = name;

@@ -25,8 +25,6 @@ void VulkanTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
-	TRAP::VFS::MountShaders("Assets/Shaders");
-
 	//Load Triangle vertices (with enough space for a quad)
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
 	                                                      static_cast<uint32_t>(m_quadVertices.size()) *
@@ -55,10 +53,10 @@ void VulkanTests::OnAttach()
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
-	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "./Assets/Shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "./Assets/Shaders/testpushconstant.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "./Assets/Shaders/testubo.shader", &macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

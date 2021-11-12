@@ -7,7 +7,7 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graph
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& filepath,
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
 																				   const std::vector<Shader::Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
@@ -27,7 +27,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFi
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& name,
-																				   const std::string& filepath,
+																				   const std::filesystem::path& filepath,
 																				   const std::vector<Shader::Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
@@ -130,37 +130,38 @@ void TRAP::Graphics::ShaderManager::Clean()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
+TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrPath)
 {
 	TP_PROFILE_FUNCTION();
 
-	//Name
-	if (nameOrVirtualPath[0] != '/')
+	if(!std::filesystem::exists(nameOrPath))
 	{
-		if(Exists(nameOrVirtualPath))
+		//Name
+		if(Exists(nameOrPath))
 		{
-			const std::string path = s_Shaders[nameOrVirtualPath]->GetFilePath();
+			const std::filesystem::path path = s_Shaders[nameOrPath]->GetFilePath();
 			std::string error;
 			if (!path.empty())
 			{
-				s_Shaders[nameOrVirtualPath].reset();
-				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
-				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
-				return s_Shaders[nameOrVirtualPath].get();
+				s_Shaders[nameOrPath].reset();
+				s_Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path);
+				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
+				return s_Shaders[nameOrPath].get();
 			}
 		}
 		else
-			TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrVirtualPath, "\" to reload.");
+			TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrPath, "\" to reload.");
 	}
-	else //Virtual Path
+	else //Path
 	{
 		for (const auto& [name, shader] : s_Shaders)
 		{
-			if (nameOrVirtualPath == shader->GetFilePath())
+			if (nameOrPath == shader->GetFilePath())
 				return Reload(shader);
 		}
 
-		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrVirtualPath, "\" to reload.");
+		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"",
+		        std::filesystem::path(nameOrPath).generic_u8string(), "\" to reload.");
 	}
 
 	return nullptr;
@@ -179,7 +180,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Scope<Shader
 	}
 
 	const std::string name = shader->GetName();
-	const std::string path = shader->GetFilePath();
+	const std::filesystem::path path = shader->GetFilePath();
 	std::string error;
 
 	if (path.empty())
@@ -224,11 +225,11 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::ShaderManager::ExistsVirtualPath(const std::string_view virtualPath)
+bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
 {
 	for(const auto& [name, shader] : s_Shaders)
 	{
-		if (shader->GetFilePath() == virtualPath)
+		if (shader->GetFilePath() == path)
 			return true;
 	}
 

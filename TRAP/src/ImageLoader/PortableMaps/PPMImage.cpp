@@ -2,34 +2,26 @@
 #include "PPMImage.h"
 
 #include "Utils/String/String.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
 
-TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
+TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 {
 	TP_PROFILE_FUNCTION();
 
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::RGB;
 
-	TP_DEBUG(Log::ImagePPMPrefix, "Loading image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePPMPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
 
-	std::filesystem::path physicalPath;
-	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
-	{
-		TP_ERROR(Log::ImagePPMPrefix, "Couldn't resolve file path: ", m_filepath, "!");
-		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
-		return;
-	}
-
-	if (!VFS::FileOrFolderExists(physicalPath))
+	if (!FS::FileOrFolderExists(m_filepath))
 		return;
 
-	std::ifstream file(physicalPath, std::ios::binary);
+	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePPMPrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_ERROR(Log::ImagePPMPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
 		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}

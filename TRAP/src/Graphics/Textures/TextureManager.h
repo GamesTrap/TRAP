@@ -19,13 +19,13 @@ namespace TRAP::Graphics
 		TextureManager(TextureManager&&) = delete;
 		TextureManager& operator=(TextureManager&&) = delete;
 
-		static const Scope<Texture2D>& Load(const std::string& filepath);
-		static const Scope<Texture2D>& Load(const std::string& name, const std::string& filepath);
+		static const Scope<Texture2D>& Load(const std::filesystem::path& filepath);
+		static const Scope<Texture2D>& Load(const std::string& name, const std::filesystem::path& filepath);
 		static const Scope<Texture2D>& Load(const std::string& name, const Scope<Image>& img);
-		static const Scope<TextureCube>& Load(const std::string& name, const std::string& filepath,
+		static const Scope<TextureCube>& Load(const std::string& name, const std::filesystem::path& filepath,
 		                                      TextureCubeFormat format);
-		static const Scope<TextureCube>& Load(const std::string& filepath, TextureCubeFormat format);
-		static const Scope<TextureCube>& Load(const std::string& name, const std::array<std::string, 6>& filepaths);
+		static const Scope<TextureCube>& Load(const std::filesystem::path& filepath, TextureCubeFormat format);
+		static const Scope<TextureCube>& Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths);
 		static const Scope<TextureCube>& Load(const std::string& name, const Scope<Image>& img,
 		                                      TextureCubeFormat format);
 
@@ -37,14 +37,14 @@ namespace TRAP::Graphics
 		static const Scope<TextureCube>& GetCube(const std::string& name);
 		static void Clean();
 
-		static Texture* Reload(const std::string& nameOrVirtualPath);
+		static Texture* Reload(const std::string& nameOrPath);
 		static Texture* Reload(const Scope<Texture>& texture);
 		static void ReloadAll();
 
 		static void Shutdown();
 
 		static bool Exists(const std::string& name);
-		static bool ExistsVirtualPath(std::string_view virtualPath);
+		static bool ExistsPath(const std::filesystem::path& path);
 
 		static std::unordered_map<std::string, Scope<Texture>> s_Textures;
 	};

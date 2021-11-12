@@ -9,7 +9,7 @@
 #include "Graphics/Textures/Texture.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 
 #include "Vulkan/VulkanCommon.h"
 #include "Vulkan/Objects/VulkanDevice.h"
@@ -1141,9 +1141,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		);
 
 	bool validMultiFileCubemap = true;
-	for(const std::string& str : textureLoadDesc.Filepaths)
+	for(const std::filesystem::path& str : textureLoadDesc.Filepaths)
 	{
-		if(str.empty() || !TRAP::VFS::FileOrFolderExists(str, true) || !TRAP::Image::IsSupportedImageFile(str))
+		if(str.empty() || !TRAP::FS::FileOrFolderExists(str) || !TRAP::Image::IsSupportedImageFile(str))
 		{
 			validMultiFileCubemap = false;
 			break;
@@ -1152,7 +1152,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	bool supported = true;
 	if((textureLoadDesc.Filepaths[0].empty() ||
-	    !TRAP::VFS::FileOrFolderExists(textureLoadDesc.Filepaths[0], true) ||
+	    !TRAP::FS::FileOrFolderExists(textureLoadDesc.Filepaths[0]) ||
 	    !TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
 		supported = false;
 	else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile &&
@@ -1179,7 +1179,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	//https://github.com/GPUOpen-Effects/FidelityFX-SPD/blob/master/sample/src/VK/CSDownsampler.glsl
 	if(!textureLoadDesc.Filepaths[0].empty() && supported)
 	{
-		textureDesc.Name = TRAP::Utils::String::SplitString(textureLoadDesc.Filepaths[0], '/').back();
+		textureDesc.Name = FS::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
 
 		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
 		{

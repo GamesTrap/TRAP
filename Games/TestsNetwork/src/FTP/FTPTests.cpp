@@ -89,7 +89,7 @@ void FTPTests::FTP()
 			//Print the current server directory
 			TRAP::Network::FTP::DirectoryResponse response = server.GetWorkingDirectory();
 			std::cout << "[Network][FTP] " << response << std::endl;
-			std::cout << "[Network][FTP] Current directory is " << response.GetDirectory() << std::endl;
+			std::cout << "[Network][FTP] Current directory is " << response.GetDirectory().generic_u8string() << std::endl;
 			break;
 		}
 
@@ -98,16 +98,16 @@ void FTPTests::FTP()
 			//Print the contents of the current server directory
 			TRAP::Network::FTP::ListingResponse response = server.GetDirectoryListing();
 			std::cout << "[Network][FTP] " << response << std::endl;
-			const std::vector<std::string>& names = response.GetListing();
-			for (const std::string& name : names)
-				std::cout << "[Network][FTP] " << name << std::endl;
+			const std::vector<std::filesystem::path>& names = response.GetListing();
+			for (const std::filesystem::path& name : names)
+				std::cout << "[Network][FTP] " << name.generic_u8string() << std::endl;
 			break;
 		}
 
 		case 3:
 		{
 			//Change the current directory
-			std::string directory;
+			std::filesystem::path directory;
 			std::cout << "[Network][FTP] Choose a directory: ";
 			std::cin >> directory;
 			std::cout << "[Network][FTP] " << server.ChangeDirectory(directory) << std::endl;
@@ -117,7 +117,7 @@ void FTPTests::FTP()
 		case 4:
 		{
 			//Create a new directory
-			std::string directory;
+			std::filesystem::path directory;
 			std::cout << "[Network][FTP] Name of the directory to create: ";
 			std::cin >> directory;
 			std::cout << "[Network][FTP] " << server.CreateDirectory(directory) << std::endl;
@@ -127,7 +127,7 @@ void FTPTests::FTP()
 		case 5:
 		{
 			//Remove an existing directory
-			std::string directory;
+			std::filesystem::path directory;
 			std::cout << "[Network][FTP] Name of the directory to remove: ";
 			std::cin >> directory;
 			std::cout << "[Network][FTP] " << server.DeleteDirectory(directory) << std::endl;
@@ -137,7 +137,7 @@ void FTPTests::FTP()
 		case 6:
 		{
 			//Rename a file
-			std::string source, destination;
+			std::filesystem::path source, destination;
 			std::cout << "[Network][FTP] Name of the file to rename: ";
 			std::cin >> source;
 			std::cout << "[Network][FTP] " << "New name: ";
@@ -149,7 +149,7 @@ void FTPTests::FTP()
 		case 7:
 		{
 			//Remove an existing file
-			std::string filename;
+			std::filesystem::path filename;
 			std::cout << "[Network][FTP] Name of the file to remove: ";
 			std::cin >> filename;
 			std::cout << "[Network][FTP] " << server.DeleteFile(filename) << std::endl;
@@ -159,7 +159,7 @@ void FTPTests::FTP()
 		case 8:
 		{
 			//Download a file from server
-			std::string filename, directory;
+			std::filesystem::path filename, directory;
 			std::cout << "[Network][FTP] Filename of the file to download (relative to current directory): ";
 			std::cin >> filename;
 			std::cout << "[Network][FTP] Directory to download the file to: ";
@@ -171,7 +171,7 @@ void FTPTests::FTP()
 		case 9:
 		{
 			//Upload a file to server
-			std::string filename, directory;
+			std::filesystem::path filename, directory;
 			std::cout << "[Network][FTP] Path of the file to upload (absolute or relative to working directory): ";
 			std::cin >> filename;
 			std::cout << "[Network][FTP] Directory to upload the file to (relative to current directory): ";

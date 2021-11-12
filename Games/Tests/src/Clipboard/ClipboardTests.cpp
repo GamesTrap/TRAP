@@ -72,7 +72,7 @@ bool ClipboardTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
 			TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control))
 		{
-			const std::string clipboard = "Hello TRAP!";
+			const std::string clipboard = u8"Hello TRAP™!";
 			TRAP::Input::SetClipboard(clipboard);
 			TP_INFO("[Clipboard] Setting clipboard to \"", clipboard, "\"!");
 		}

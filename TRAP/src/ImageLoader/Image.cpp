@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Image.h"
 
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Utils/String/String.h"
 
 #include "PortableMaps/PGMImage.h"
@@ -18,7 +18,7 @@
 
 const std::array<std::string, 14> TRAP::Image::SupportedImageFormatSuffixes
 {
-	"pgm", "ppm", "pnm", "pam", "pfm", "tga", "icb", "vda", "vst", "bmp", "dib", "png", "hdr", "pic"
+	".pgm", ".ppm", ".pnm", ".pam", ".pfm", ".tga", ".icb", ".vda", ".vst", ".bmp", ".dib", ".png", ".hdr", ".pic"
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -114,7 +114,7 @@ bool TRAP::Image::IsLDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Image::GetFilePath() const
+const std::filesystem::path& TRAP::Image::GetFilePath() const
 {
 	return m_filepath;
 }
@@ -212,43 +212,42 @@ std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, co
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
+TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
-	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
-	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
+	const std::string fileFormat = Utils::String::ToLower(FS::GetFileEnding(filepath));
 
 	Scope<Image> result;
 
-	if (fileFormat == "pgm")
-		result = MakeScope<INTERNAL::PGMImage>(virtualFilePath);
-	else if (fileFormat == "ppm")
-		result = MakeScope<INTERNAL::PPMImage>(virtualFilePath);
-	else if (fileFormat == "pnm")
-		result = MakeScope<INTERNAL::PNMImage>(virtualFilePath);
-	else if (fileFormat == "pam")
-		result = MakeScope<INTERNAL::PAMImage>(virtualFilePath);
-	else if (fileFormat == "pfm")
-		result = MakeScope<INTERNAL::PFMImage>(virtualFilePath);
-	else if (fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst")
-		result = MakeScope<INTERNAL::TGAImage>(virtualFilePath);
-	else if (fileFormat == "bmp" || fileFormat == "dib")
-		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
-	else if (fileFormat == "png")
-		result = MakeScope<INTERNAL::PNGImage>(virtualFilePath);
-	else if (fileFormat == "hdr" || fileFormat == "pic")
-		result = MakeScope<INTERNAL::RadianceImage>(virtualFilePath);
+	if (fileFormat == ".pgm")
+		result = MakeScope<INTERNAL::PGMImage>(filepath);
+	else if (fileFormat == ".ppm")
+		result = MakeScope<INTERNAL::PPMImage>(filepath);
+	else if (fileFormat == ".pnm")
+		result = MakeScope<INTERNAL::PNMImage>(filepath);
+	else if (fileFormat == ".pam")
+		result = MakeScope<INTERNAL::PAMImage>(filepath);
+	else if (fileFormat == ".pfm")
+		result = MakeScope<INTERNAL::PFMImage>(filepath);
+	else if (fileFormat == ".tga" || fileFormat == ".icb" || fileFormat == ".vda" || fileFormat == ".vst")
+		result = MakeScope<INTERNAL::TGAImage>(filepath);
+	else if (fileFormat == ".bmp" || fileFormat == ".dib")
+		result = MakeScope<INTERNAL::BMPImage>(filepath);
+	else if (fileFormat == ".png")
+		result = MakeScope<INTERNAL::PNGImage>(filepath);
+	else if (fileFormat == ".hdr" || fileFormat == ".pic")
+		result = MakeScope<INTERNAL::RadianceImage>(filepath);
 	else
 	{
 		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image format ", fileFormat, "!");
 		TP_WARN(Log::ImagePrefix, "Using default image!");
-		return MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+		return MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 	}
 
 	//Test for Errors
 	if (result->GetPixelDataSize() == 0 || result->GetColorFormat() == ColorFormat::NONE)
-		result = MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+		result = MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 
 	return result;
 }
@@ -291,12 +290,11 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsSupportedImageFile(const std::string& filepath)
+bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
-	const std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
-	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
+	const std::string fileFormat = Utils::String::ToLower(FS::GetFileEnding(filepath));
 
 	return std::any_of(SupportedImageFormatSuffixes.begin(), SupportedImageFormatSuffixes.end(), [fileFormat](const std::string& suffix)
 	{

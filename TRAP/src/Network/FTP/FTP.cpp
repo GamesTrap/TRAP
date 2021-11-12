@@ -31,7 +31,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/IP/IPv4Address.h"
 #include "Utils/Time/TimeStep.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 
 namespace TRAP::Network
 {
@@ -101,7 +101,7 @@ TRAP::Network::FTP::DirectoryResponse::DirectoryResponse(const Response& respons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Network::FTP::DirectoryResponse::GetDirectory() const
+const std::filesystem::path& TRAP::Network::FTP::DirectoryResponse::GetDirectory() const
 {
 	return m_directory;
 }
@@ -125,7 +125,7 @@ TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Network::FTP::ListingResponse::GetListing() const
+const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::GetListing() const
 {
 	return m_listing;
 }
@@ -196,7 +196,7 @@ TRAP::Network::FTP::DirectoryResponse TRAP::Network::FTP::GetWorkingDirectory()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(const std::string& directory)
+TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(const std::filesystem::path& directory)
 {
 	//Open a data channel on default port (20) using ASCII transfer mode
 	std::ostringstream directoryData;
@@ -205,7 +205,7 @@ TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(cons
 	if(response.IsOK())
 	{
 		//Tell the server to send us the listing
-		response = SendCommand("NLST", directory);
+		response = SendCommand("NLST", directory.generic_u8string());
 		if(response.IsOK())
 		{
 			//Receive the listing
@@ -221,9 +221,9 @@ TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::ChangeDirectory(const std::string& directory)
+TRAP::Network::FTP::Response TRAP::Network::FTP::ChangeDirectory(const std::filesystem::path& directory)
 {
-	return SendCommand("CWD", directory);
+	return SendCommand("CWD", directory.generic_u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -235,40 +235,41 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::ParentDirectory()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::CreateDirectory(const std::string& name)
+TRAP::Network::FTP::Response TRAP::Network::FTP::CreateDirectory(const std::filesystem::path& name)
 {
-	return SendCommand("MKD", name);
+	return SendCommand("MKD", name.generic_u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteDirectory(const std::string& name)
+TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteDirectory(const std::filesystem::path& name)
 {
-	return SendCommand("RMD", name);
+	return SendCommand("RMD", name.generic_u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::string& file, const std::string& newName)
+TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::filesystem::path& file,
+   															const std::filesystem::path& newName)
 {
-	Response response = SendCommand("RNFR", file);
+	Response response = SendCommand("RNFR", file.generic_u8string());
 	if (response.IsOK())
-		response = SendCommand("RNTO", newName);
+		response = SendCommand("RNTO", newName.generic_u8string());
 
 	return response;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::string& name)
+TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::filesystem::path& name)
 {
 	return SendCommand("DELE", name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& remoteFile,
-                                                          const std::string& localVirtualOrPhysicalPath,
+TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem::path& remoteFile,
+                                                          const std::filesystem::path& path,
 														  const TransferMode mode)
 {
 	//Open a data channel using the given transfer mode
@@ -277,31 +278,24 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 	if(response.IsOK())
 	{
 		//Tell the server to start the transfer
-		response = SendCommand("RETR", remoteFile);
+		response = SendCommand("RETR", remoteFile.generic_u8string());
 		if(response.IsOK())
 		{
 			//Extract the filename from the file path
-			std::string filename = remoteFile;
-			const std::string::size_type pos = filename.find_last_of("/\\");
-			if (pos != std::string::npos)
-				filename = filename.substr(pos + 1);
+			std::filesystem::path filename = TRAP::FS::GetFileNameWithEnding(remoteFile);
 
-			//Make sure the destination path ends with a slash
-			std::string path = localVirtualOrPhysicalPath;
-			if (!path.empty() && (path[path.size() - 1] != '\\') && (path[path.size() - 1] != '/'))
-				path += '/';
-
-			std::filesystem::path physicalPath;
-			if (!VFS::ResolveReadPhysicalPath(path, physicalPath, true))
-			{
-				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve folder path: ", path, "!");
-				return Response(Response::Status::InvalidFile);
-			}
+			//Create missing directories if any
+			if(!std::filesystem::exists(path))
+				std::filesystem::create_directories(path);
 
 			//Create the file and truncate it if necessary
-			std::ofstream file((physicalPath.string() + filename).c_str(), std::ios::binary | std::ios::trunc);
-			if (!file)
+			std::filesystem::path filePath = path / filename;
+			std::ofstream file(filePath, std::ios::binary | std::ios::trunc);
+			if (!file.is_open() || !file.good())
+			{
+				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", filePath.generic_u8string(), "!");
 				return Response(Response::Status::InvalidFile);
+			}
 
 			//Receive the file data
 			data.Receive(file);
@@ -312,9 +306,9 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 			//Get the response from the server
 			response = GetResponse();
 
-			//IF the download was unsuccessful, delete the partial file
+			//If the download was unsuccessful, delete the partial file
 			if (!response.IsOK())
-				std::remove((path + filename).c_str());
+				std::filesystem::remove(filePath);
 		}
 	}
 
@@ -323,59 +317,42 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& localVirtualOrPhysicalFile,
-                                                        const std::string& remotePath,
+TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::path& localFile,
+                                                        const std::filesystem::path& remotePath,
 														TransferMode mode, bool append)
 {
-	std::filesystem::path physicalPath;
-	if (!VFS::ResolveReadPhysicalPath(localVirtualOrPhysicalFile, physicalPath, true))
+	if(!FS::FileOrFolderExists(localFile))
+		return Response(Response::Status::InvalidFile);
+
+	//Get the contents of the file to send
+	std::ifstream file(localFile, std::ios::binary);
+	if (!file.is_open() || !file.good())
 	{
-		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve file path: ", localVirtualOrPhysicalFile, "!");
+		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", localFile.generic_u8string(), "!");
 		return Response(Response::Status::InvalidFile);
 	}
 
-	if (VFS::FileOrFolderExists(physicalPath, true))
+	//Extract the filename from the file path
+	std::string filename = FS::GetFileNameWithEnding(localFile);
+
+	//Open a data channel using the given transfer mode
+	DataChannel data(*this);
+	Response response = data.Open(mode);
+	if (response.IsOK())
 	{
-		//Get the contents of the file to send
-		std::ifstream file(physicalPath, std::ios::binary);
-		if (!file.is_open())
-		{
-			TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", localVirtualOrPhysicalFile, "!");
-			return Response(Response::Status::InvalidFile);
-		}
-
-		//Extract the filename from the file path
-		std::string filename = localVirtualOrPhysicalFile;
-		const std::string::size_type pos = filename.find_last_of("/\\");
-		if (pos != std::string::npos)
-			filename = filename.substr(pos + 1);
-
-		//Make sure the destination path ends with a slash
-		std::string path = remotePath;
-		if (!path.empty() && (path[path.size() - 1] != '\\') && (path[path.size() - 1] != '/'))
-			path += '/';
-
-		//Open a data channel using the given transfer mode
-		DataChannel data(*this);
-		Response response = data.Open(mode);
+		//Tell the server to start the transfer
+		response = SendCommand(append ? "APPE" : "STOR", (remotePath / filename).generic_u8string());
 		if (response.IsOK())
 		{
-			//Tell the server to start the transfer
-			response = SendCommand(append ? "APPE" : "STOR", path + filename);
-			if (response.IsOK())
-			{
-				//Send the file data
-				data.Send(file);
+			//Send the file data
+			data.Send(file);
 
-				//Get the response from the server
-				response = GetResponse();
-			}
+			//Get the response from the server
+			response = GetResponse();
 		}
-
-		return response;
 	}
 
-	return Response(Response::Status::InvalidFile);
+	return response;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

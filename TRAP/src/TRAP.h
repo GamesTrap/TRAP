@@ -35,8 +35,8 @@
 #include "../src/Layers/ImGui/ImGuiLayer.h"
 //-----------------------
 
-//----VIRTUAL-FILE-SYSTEM
-#include "../src/VFS/VFS.h"
+//----FILE-SYSTEM--------
+#include "../src/FS/FS.h"
 //-----------------------
 
 //----UTILS--------------

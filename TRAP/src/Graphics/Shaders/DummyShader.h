@@ -8,7 +8,7 @@ namespace TRAP::Graphics
 	class DummyShader final : public Shader
 	{
 	public:
-		DummyShader(const std::string& name, const std::string& filepath);
+		DummyShader(const std::string& name, const std::filesystem::path& filepath);
 		~DummyShader() override = default;
 
 		/// <summary>

@@ -2,7 +2,7 @@
 #include "Application.h"
 
 #include "Core/Base.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
@@ -59,7 +59,7 @@ TRAP::Application::Application(const std::string& gameName)
 		exit(-1);
 	}
 
-	VFS::Init();
+	FS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
 
@@ -191,7 +191,7 @@ TRAP::Application::~Application()
 	}
 	m_config.SaveToFile("Engine.cfg");
 	m_window.reset();
-	VFS::Shutdown();
+	FS::Shutdown();
 
 	TP_PROFILE_END_SESSION();
 };
@@ -255,7 +255,7 @@ void TRAP::Application::Run()
 			Graphics::RenderCommand::Present(m_window.get());
 		TRAP::Window::OnUpdate();
 
-		if (!m_hotReloadingThread && (VFS::GetHotShaderReloading() || VFS::GetHotTextureReloading()))
+		if (!m_hotReloadingThread && (FS::GetHotShaderReloading() || FS::GetHotTextureReloading()))
 		{
 			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading,
 			                                                    std::ref(m_hotReloadingShaderPaths),
@@ -400,20 +400,6 @@ void TRAP::Application::SetTimeScale(const float timeScale)
 	s_Instance->m_timeScale = timeScale;
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::SetHotShaderReloading(const bool enabled)
-{
-	VFS::SetHotShaderReloading(enabled);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::SetHotTextureReloading(const bool enabled)
-{
-	VFS::SetHotTextureReloading(enabled);
-}
-
 //------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
@@ -474,6 +460,13 @@ std::string TRAP::Application::GetClipboardString()
 std::thread::id TRAP::Application::GetMainThreadID()
 {
 	return s_Instance->m_mainThreadID;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Application::GetGameName()
+{
+	return s_Instance->m_gameName;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -563,11 +556,11 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 	while (run)
 	{
 		//Update Shaders if needed
-		if (VFS::GetHotShaderReloading() && VFS::GetShaderFileWatcher())
+		if (FS::GetHotShaderReloading() && FS::GetShaderFileWatcher())
 		{
 			//Check monitoring shader folders for changes and
 			//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
-			VFS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
+			FS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
 				const FileWatcher::FileStatus status) -> void
 				{
@@ -591,11 +584,11 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 				});
 		}
 		//Update Textures if needed
-		if (VFS::GetHotTextureReloading() && VFS::GetTextureFileWatcher())
+		if (FS::GetHotTextureReloading() && FS::GetTextureFileWatcher())
 		{
 			//Check monitoring texture folders for changes and
 			//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
-			VFS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
+			FS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
 				const FileWatcher::FileStatus status) -> void
 			{
@@ -630,37 +623,37 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 void TRAP::Application::UpdateHotReloading()
 {
 	//Shader Reloading
-	for (const std::string& virtualPath : m_hotReloadingShaderPaths)
-	{
-		if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
-		{
-			TP_INFO(Log::ShaderManagerPrefix, "Shader modified reloading...");
-			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(virtualPath);
+	// for (const std::string& virtualPath : m_hotReloadingShaderPaths)
+	// {
+	// 	if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
+	// 	{
+	// 		TP_INFO(Log::ShaderManagerPrefix, "Shader modified reloading...");
+	// 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
+	// 		TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(virtualPath);
 
-			//Send event
-			TRAP::Events::ShaderReloadEvent e(shader);
-			OnEvent(e);
-		}
-	}
-	if(!m_hotReloadingShaderPaths.empty())
-		m_hotReloadingShaderPaths.clear();
+	// 		//Send event
+	// 		TRAP::Events::ShaderReloadEvent e(shader);
+	// 		OnEvent(e);
+	// 	}
+	// }
+	// if(!m_hotReloadingShaderPaths.empty())
+	// 	m_hotReloadingShaderPaths.clear();
 
 	//Texture Reloading
-	for (const std::string& virtualPath : m_hotReloadingTexturePaths)
-	{
-		if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
-		{
-			TP_INFO(Log::TextureManagerPrefix, "Texture modified reloading...");
-			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			Graphics::Renderer2D::ClearTextures();
-			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(virtualPath);
+	// for (const std::string& virtualPath : m_hotReloadingTexturePaths)
+	// {
+	// 	if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
+	// 	{
+	// 		TP_INFO(Log::TextureManagerPrefix, "Texture modified reloading...");
+	// 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
+	// 		Graphics::Renderer2D::ClearTextures();
+	// 		TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(virtualPath);
 
-			//Send event
-			TRAP::Events::TextureReloadEvent e(texture);
-			OnEvent(e);
-		}
-	}
-	if(!m_hotReloadingTexturePaths.empty())
-		m_hotReloadingTexturePaths.clear();
+	// 		//Send event
+	// 		TRAP::Events::TextureReloadEvent e(texture);
+	// 		OnEvent(e);
+	// 	}
+	// }
+	// if(!m_hotReloadingTexturePaths.empty())
+	// 	m_hotReloadingTexturePaths.clear();
 }

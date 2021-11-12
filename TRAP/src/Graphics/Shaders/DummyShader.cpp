@@ -3,7 +3,7 @@
 
 #include "ShaderManager.h"
 
-TRAP::Graphics::DummyShader::DummyShader(const std::string& name, const std::string& filepath)
+TRAP::Graphics::DummyShader::DummyShader(const std::string& name, const std::filesystem::path& filepath)
 {
 	m_name = name;
 	m_filepath = filepath;

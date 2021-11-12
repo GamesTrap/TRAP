@@ -12,7 +12,7 @@ namespace TRAP::INTERNAL
 		/// Constructor.
 		/// </summary>
 		/// <param name="filepath">File path of the image to load.</param>
-		explicit PFMImage(std::string filepath);
+		explicit PFMImage(std::filesystem::path filepath);
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

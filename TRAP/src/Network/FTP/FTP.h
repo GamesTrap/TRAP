@@ -187,10 +187,10 @@ namespace TRAP::Network
 			/// Get the directory returned in the response.
 			/// </summary>
 			/// <returns>Directory name.</returns>
-			const std::string& GetDirectory() const;
+			const std::filesystem::path& GetDirectory() const;
 
 		private:
-			std::string m_directory; //Directory extracted from the response message
+			std::filesystem::path m_directory; //Directory extracted from the response message
 		};
 
 		/// <summary>
@@ -210,10 +210,10 @@ namespace TRAP::Network
 			/// Return the array of directory/file names.
 			/// </summary>
 			/// <returns>Array containing the requested listing.</returns>
-			const std::vector<std::string>& GetListing() const;
+			const std::vector<std::filesystem::path>& GetListing() const;
 
 		private:
-			std::vector<std::string> m_listing; //Directory/file names extracted from the data
+			std::vector<std::filesystem::path> m_listing; //Directory/file names extracted from the data
 		};
 
 		/// <summary>
@@ -301,7 +301,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="directory">Directory to list.</param>
 		/// <returns>Server response to the request.</returns>
-		ListingResponse GetDirectoryListing(const std::string& directory = "");
+		ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
 
 		/// <summary>
 		/// Change the current working directory.
@@ -310,7 +310,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="directory">New working directory.</param>
 		/// <returns>Server response to the request.</returns>
-		Response ChangeDirectory(const std::string& directory);
+		Response ChangeDirectory(const std::filesystem::path& directory);
 
 		/// <summary>
 		/// Go to the parent directory of the current one.
@@ -325,7 +325,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="name">Name of the directory to create.</param>
 		/// <returns>Server response to the request.</returns>
-		Response CreateDirectory(const std::string& name);
+		Response CreateDirectory(const std::filesystem::path& name);
 
 		/// <summary>
 		/// Remove an existing directory.
@@ -337,7 +337,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="name">Name of the directory to remove.</param>
 		/// <returns>Server response to the request.</returns>
-		Response DeleteDirectory(const std::string& name);
+		Response DeleteDirectory(const std::filesystem::path& name);
 
 		/// <summary>
 		/// Rename an existing file.
@@ -347,7 +347,7 @@ namespace TRAP::Network
 		/// <param name="file">File to rename.</param>
 		/// <param name="newName">New name of the file.</param>
 		/// <returns>Server response to the request.</returns>
-		Response RenameFile(const std::string& file, const std::string& newName);
+		Response RenameFile(const std::filesystem::path& file, const std::filesystem::path& newName);
 
 		/// <summary>
 		/// Remove an existing file.
@@ -358,7 +358,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="name">File to remove.</param>
 		/// <returns>Server response to the request.</returns>
-		Response DeleteFile(const std::string& name);
+		Response DeleteFile(const std::filesystem::path& name);
 
 		/// <summary>
 		/// Download a file from the server.
@@ -372,12 +372,12 @@ namespace TRAP::Network
 		/// be overwritten.
 		/// </summary>
 		/// <param name="remoteFile">Filename of the distant file to download.</param>
-		/// <param name="localVirtualOrPhysicalPath">
+		/// <param name="path">
 		/// The directory in which to put the file on the local computer.
 		/// </param>
 		/// <param name="mode">Transfer mode.</param>
 		/// <returns>Server response to the request.</returns>
-		Response Download(const std::string& remoteFile, const std::string& localVirtualOrPhysicalPath,
+		Response Download(const std::filesystem::path& remoteFile, const std::filesystem::path& path,
 		                  TransferMode mode = TransferMode::Binary);
 
 		/// <summary>
@@ -391,14 +391,15 @@ namespace TRAP::Network
 		/// The append parameter controls whether the remote file is
 		/// appended to or overwritten if it already exists.
 		/// </summary>
-		/// <param name="localVirtualOrPhysicalFile">Path of the local file to upload.</param>
+		/// <param name="file">Path of the local file to upload.</param>
 		/// <param name="remotePath">The directory in which to put the file on the server.</param>
 		/// <param name="mode">Transfer mode.</param>
 		/// <param name="append">
 		/// Pass true to append to or false to overwrite the remote file if it already exists.
 		/// </param>
 		/// <returns>Server response to the request.</returns>
-		Response Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath,
+		Response Upload(const std::filesystem::path& localFile,
+		                const std::filesystem::path& remotePath,
 		                TransferMode mode = TransferMode::Binary, bool append = false);
 
 		/// <summary>

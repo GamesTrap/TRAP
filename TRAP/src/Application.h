@@ -12,7 +12,7 @@ int main();
 
 namespace TRAP
 {
-	class VFS;
+	class FS;
 
 	namespace Events
 	{
@@ -114,17 +114,6 @@ namespace TRAP
 		static void SetTimeScale(float timeScale);
 
 		/// <summary>
-		/// Enable or disable hot shader reloading.
-		/// </summary>
-		/// <param name="enabled">Whether to enable or disable hot shader reloading.</param>
-		static void SetHotShaderReloading(bool enabled);
-		/// <summary>
-		/// Enable or disable hot texture reloading.
-		/// </summary>
-		/// <param name="enabled">Whether to enable or disable hot texture reloading.</param>
-		static void SetHotTextureReloading(bool enabled);
-
-		/// <summary>
 		/// Sets the RenderAPI to be used on the next start of the engine.
 		/// </summary>
 		/// <param name="renderAPI">New RenderAPI to be used.</param>
@@ -167,6 +156,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Main thread ID.</returns>
 		static std::thread::id GetMainThreadID();
+
+		/// <summary>
+		/// Get the name of the game.
+		/// </summary>
+		static std::string GetGameName();
 
 	private:
 		/// <summary>
@@ -228,6 +222,7 @@ namespace TRAP
 		/// <param name="shaders">Reference to a vector for adding the virtual paths of modified shaders.</param>
 		/// <param name="textures">Reference to a vector for adding the virtual paths of modified textures.</param>
 		/// <param name="run">Whether to stop running the infinite loop or not.</param>
+		[[deprecated("Will be replaced or removed!")]]
 		static void ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& run);
 		/// <summary>
 		/// Tries to reload every modified shader/texture that was set by ProcessHotReloading.
@@ -264,7 +259,7 @@ namespace TRAP
 		static Application* s_Instance;
 
 		friend int ::main();
-		friend class TRAP::VFS;
+		friend class TRAP::FS;
 	};
 
 	//To be defined in CLIENT

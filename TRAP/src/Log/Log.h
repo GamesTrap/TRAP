@@ -19,8 +19,8 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="virtualOrPhysicalFilePath">Virtual or physical file path to save to.</param>
-		explicit Log(std::string virtualOrPhysicalFilePath);
+		/// <param name="filePath">File path to save to.</param>
+		explicit Log(std::filesystem::path filePath);
 		/// <summary>
 		///	Destructor.
 		/// </summary>
@@ -45,13 +45,13 @@ namespace TRAP
 		/// <summary>
 		/// Get the current used file path for saving.
 		/// </summary>
-		/// <returns>Virtual or physical file path.</returns>
-		const std::string& GetFilePath() const;
+		/// <returns>File path.</returns>
+		const std::filesystem::path& GetFilePath() const;
 		/// <summary>
 		/// Set the file path used for saving.
 		/// </summary>
-		/// <param name="virtualOrPhysicalFilePath">Virtual or physical file path.</param>
-		void SetFilePath(const std::string& virtualOrPhysicalFilePath);
+		/// <param name="filePath">File path.</param>
+		void SetFilePath(std::filesystem::path filePath);
 
 		/// <summary>
 		/// Importance levels.
@@ -242,7 +242,7 @@ namespace TRAP
 
 		std::mutex m_mtx;
 
-		std::string m_path;
+		std::filesystem::path m_path;
 	};
 
 	extern Log TRAPLog;

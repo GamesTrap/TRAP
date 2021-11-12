@@ -36,7 +36,7 @@ namespace TRAP::Graphics
 
 		const std::string& GetName() const;
 
-		const std::string& GetFilePath() const;
+		const std::filesystem::path& GetFilePath() const;
 
 		RendererAPI::ShaderStage GetShaderStages() const;
 
@@ -59,22 +59,22 @@ namespace TRAP::Graphics
 		virtual void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* const storageBuffer,
 							 uint64_t size = 0, Window* window = nullptr) = 0;
 
-		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath,
+		static Scope<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
 		                                    const std::vector<Macro>* userMacros = nullptr);
-		static Scope<Shader> CreateFromFile(const std::string& filepath,
+		static Scope<Shader> CreateFromFile(const std::filesystem::path& filepath,
 		                                    const std::vector<Macro>* userMacros = nullptr);
 		static Scope<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
 		                                      const std::vector<Macro>* userMacros = nullptr);
 
 	protected:
 		std::string m_name;
-		std::string m_filepath;
+		std::filesystem::path m_filepath;
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
 		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets;
 
 	private:
-		static bool CheckSPIRVMagicNumber(std::string_view filePath);
+		static bool CheckSPIRVMagicNumber(const std::filesystem::path& filePath);
 		static std::vector<uint32_t> Convert8To32(const std::vector<uint8_t>& source);
 
 		static bool PreProcessGLSL(const std::string& glslSource,

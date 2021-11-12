@@ -47,18 +47,16 @@ public:
 	{
 		TP_PROFILE_FUNCTION();
 
-		TRAP::Application::SetHotTextureReloading(true);
-		TRAP::Application::SetHotShaderReloading(true);
+		TRAP::FS::SetHotTextureReloading(true);
+		TRAP::FS::SetHotShaderReloading(true);
 
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 
-		//Mount & Load Shader
-		TRAP::VFS::MountShaders("Assets/Shaders");
-		m_shader = TRAP::Graphics::ShaderManager::LoadFile("/shaders/TextureColor.shader").get();
+		//Load Shader
+		m_shader = TRAP::Graphics::ShaderManager::LoadFile("./Assets/Shaders/TextureColor.shader").get();
 
-		//Mount & Load Texture
-		TRAP::VFS::MountTextures("Assets/Textures");
-		m_texture = TRAP::Graphics::TextureManager::Load("/textures/TRAPWhiteLogo2048x2048.png").get();
+		//Load Texture
+		m_texture = TRAP::Graphics::TextureManager::Load("./Assets/Textures/TRAPWhiteLogo2048x2048.png").get();
 
 		//Indexed
 		///////////////

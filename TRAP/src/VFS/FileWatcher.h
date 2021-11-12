@@ -5,6 +5,7 @@
 
 namespace TRAP
 {
+	//TODO NEW IMPLEMENTATION WIP
 	class FileWatcher final
 	{
 	public:

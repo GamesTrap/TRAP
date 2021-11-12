@@ -755,7 +755,7 @@ namespace TRAP::Graphics
 			//Load empty texture
 			TRAP::Ref<TextureDesc> Desc;
 			//Filepath with extension.
-			std::array<std::string, 6> Filepaths;
+			std::array<std::filesystem::path, 6> Filepaths;
 			//Following is ignored if Desc != nullptr.
 			//Desc->Flags will be considered instead.
 			TextureCreationFlags CreationFlag;
@@ -968,7 +968,7 @@ namespace TRAP::Graphics
 
 		struct PipelineCacheLoadDesc
 		{
-			std::string VirtualOrPhysicalPath{};
+			std::filesystem::path Path{};
 			PipelineCacheFlags Flags{};
 		};
 

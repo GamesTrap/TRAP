@@ -47,12 +47,11 @@ void Sandbox2D::OnAttach()
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Application::SetHotTextureReloading(true);
+	TRAP::FS::SetHotTextureReloading(true);
 	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
 
-	//Mount & Load Textures
-	TRAP::VFS::MountTextures("Assets/Textures");
-	TRAP::Graphics::TextureManager::Load("TRAP", "/textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
+	//Load Textures
+	TRAP::Graphics::TextureManager::Load("TRAP", "./Assets/Textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 }

@@ -24,8 +24,6 @@ void VulkanMultiWindowTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test 1");
 
-	TRAP::VFS::MountShaders("Assets/Shaders");
-
 	//Create second Window
 	TRAP::WindowProps windowProps
 	{
@@ -82,9 +80,9 @@ void VulkanMultiWindowTests::OnAttach()
 	m_colorUniformBuffer->AwaitLoading();
 
 	//Load Shaders
-	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "./Assets/Shaders/test.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "./Assets/Shaders/testubo.shader", &macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

@@ -25,20 +25,18 @@ void Cube3D::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Cube3D");
 
-	//Mount & Load Shader(s)
-	TRAP::VFS::MountShaders("Assets/Shaders");
-    TRAP::Graphics::ShaderManager::LoadFile("Base", "/shaders/Base.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Color", "/shaders/Color.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Texture", "/shaders/Texture.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Diffuse Reflection", "/shaders/DiffuseReflection.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("Phong Lightning", "/shaders/PhongLightning.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("SkyBox", "/shaders/SkyBox.shader");
+	//Load Shader(s)
+    TRAP::Graphics::ShaderManager::LoadFile("Base", "./Assets/Shaders/Base.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Color", "./Assets/Shaders/Color.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/Texture.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Diffuse Reflection", "./Assets/Shaders/DiffuseReflection.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Phong Lightning", "./Assets/Shaders/PhongLightning.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("SkyBox", "./Assets/Shaders/SkyBox.shader");
 
-	//Mount & Load Texture(s)
-	TRAP::VFS::MountTextures("Assets/Textures");
-    TRAP::Graphics::TextureManager::Load("SkyBox", "/textures/SkyboxCubic.png",
+	//Load Texture(s)
+    TRAP::Graphics::TextureManager::Load("SkyBox", "./Assets/Textures/SkyboxCubic.png",
                                          TRAP::Graphics::TextureCubeFormat::Cross);
-    TRAP::Graphics::TextureManager::Load("UVGrid", "/textures/UVGrid.png");
+    TRAP::Graphics::TextureManager::Load("UVGrid", "./Assets/Textures/UVGrid.png");
 
 	//Cube
 	//XYZ

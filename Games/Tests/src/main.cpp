@@ -28,14 +28,14 @@ public:
 		//PushLayer(TRAP::MakeScope<DragAndDropTests>());
 		//PushLayer(TRAP::MakeScope<EventTests>());
 		//PushLayer(TRAP::MakeScope<IconTests>());
-		//PushLayer(TRAP::MakeScope<ImageLoaderTests>());
+		// PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		//PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());
-		//PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
-		PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
-		//PushLayer(TRAP::MakeScope<VulkanTests>());
-		//PushLayer(TRAP::MakeScope<VulkanTextureTests>());
+		// PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
+		// PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
+		// PushLayer(TRAP::MakeScope<VulkanTests>());
+		PushLayer(TRAP::MakeScope<VulkanTextureTests>());
 		//PushLayer(TRAP::MakeScope<WindowStateTests>());
 	}
 };

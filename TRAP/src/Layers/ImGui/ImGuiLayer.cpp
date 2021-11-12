@@ -23,7 +23,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -100,7 +100,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		                              &m_imguiDescriptorPool));
 
 		TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
-		cacheDesc.VirtualOrPhysicalPath = TRAP::VFS::GetTempFolderPath() + "TRAP/ImGui.cache";
+		cacheDesc.Path = TRAP::FS::GetGameTempFolderPath() / "ImGui.cache";
 		m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 
 		//This initializes ImGui for Vulkan
@@ -145,7 +145,7 @@ void TRAP::ImGuiLayer::OnDetach()
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
-		m_imguiPipelineCache->Save(TRAP::VFS::GetTempFolderPath() + "TRAP/ImGui.cache");
+		m_imguiPipelineCache->Save(TRAP::FS::GetGameTempFolderPath() / "ImGui.cache");
 		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(

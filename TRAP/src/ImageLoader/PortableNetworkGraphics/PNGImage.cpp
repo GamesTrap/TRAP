@@ -2,7 +2,7 @@
 #include "PNGImage.h"
 
 #include "Utils/String/String.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Maths/Math.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
@@ -11,30 +11,22 @@
 #include "Utils/Hash/Adler32.h"
 #include "Utils/Hash/ConvertHashToString.h"
 
-TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
+TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	: m_data(), m_data2Byte()
 {
 	TP_PROFILE_FUNCTION();
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
 
-	std::filesystem::path physicalPath;
-	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "Couldn't resolve file path: ", m_filepath, "!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return;
-	}
-
-	if (!VFS::FileOrFolderExists(physicalPath))
+	if (!FS::FileOrFolderExists(m_filepath))
 		return;
 
-	std::ifstream file(physicalPath, std::ios::binary);
+	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePNGPrefix, "Couldn't open file path: ", m_filepath, "!");
+		TP_ERROR(Log::ImagePNGPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return;
 	}

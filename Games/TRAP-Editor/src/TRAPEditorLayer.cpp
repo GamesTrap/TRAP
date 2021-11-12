@@ -134,8 +134,8 @@ void TRAPEditorLayer::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("TRAP Editor");
 
 	//Enable Developer features
-	TRAP::Application::SetHotShaderReloading(true);
-	TRAP::Application::SetHotTextureReloading(true);
+	TRAP::FS::SetHotShaderReloading(true);
+	TRAP::FS::SetHotTextureReloading(true);
 
 	//Setup Viewport FrameBuffer
 	const TRAP::Graphics::FrameBufferProps frameBufferProps{ 1280, 720, 1, false };
@@ -297,10 +297,10 @@ void TRAPEditorLayer::NewScene()
 
 void TRAPEditorLayer::OpenScene()
 {
-	const std::string physicalPath = TRAP::Utils::Dialogs::OpenSingleFile("TRAP Scene", m_lastScenePath.empty() ? "" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
-	if (!physicalPath.empty())
+	const std::string path = TRAP::Utils::Dialogs::OpenSingleFile("TRAP Scene", m_lastScenePath.empty() ? "" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
+	if (!path.empty())
 	{
-		m_lastScenePath = physicalPath;
+		m_lastScenePath = path;
 
 		m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
@@ -315,12 +315,12 @@ void TRAPEditorLayer::OpenScene()
 
 void TRAPEditorLayer::SaveScene()
 {
-	std::string physicalPath;
+	std::string path;
 	if (m_lastScenePath.empty())
-		physicalPath = TRAP::Utils::Dialogs::SaveFile("TRAP Scene", "MyScene.TRAPScene", { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
+		path = TRAP::Utils::Dialogs::SaveFile("TRAP Scene", "MyScene.TRAPScene", { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
 
-	if (!physicalPath.empty())
-		m_lastScenePath = physicalPath;
+	if (!path.empty())
+		m_lastScenePath = path;
 
 	TRAP::SceneSerializer serializer(m_activeScene);
 	serializer.Serialize(m_lastScenePath);
@@ -330,11 +330,11 @@ void TRAPEditorLayer::SaveScene()
 
 void TRAPEditorLayer::SaveSceneAs()
 {
-	const std::string physicalPath = TRAP::Utils::Dialogs::SaveFile("TRAP Scene", m_lastScenePath.empty() ? "MyScene.TRAPScene" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
+	const std::string path = TRAP::Utils::Dialogs::SaveFile("TRAP Scene", m_lastScenePath.empty() ? "MyScene.TRAPScene" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
 
-	if (!physicalPath.empty())
+	if (!path.empty())
 	{
-		m_lastScenePath = physicalPath;
+		m_lastScenePath = path;
 
 		TRAP::SceneSerializer serializer(m_activeScene);
 		serializer.Serialize(m_lastScenePath);

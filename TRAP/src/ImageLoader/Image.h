@@ -126,7 +126,7 @@ namespace TRAP
 		/// Retrieve the file path of the image.
 		/// </summary>
 		/// <returns>Path to the image file, or empty string for custom images.</returns>
-		const std::string& GetFilePath() const;
+		const std::filesystem::path& GetFilePath() const;
 		/// <summary>
 		/// Retrieve the color format used by the image.
 		/// </summary>
@@ -146,7 +146,7 @@ namespace TRAP
 		///		- Radiance: HDR, PIC
 		/// </param>
 		/// <returns>Loaded image on success, fallback image otherwise.</returns>
-		static Scope<Image> LoadFromFile(const std::string& filepath);
+		static Scope<Image> LoadFromFile(const std::filesystem::path& filepath);
 		/// <summary>
 		/// Load an image from memory.
 		/// </summary>
@@ -193,11 +193,11 @@ namespace TRAP
 		static Scope<Image> LoadFallback();
 
 		/// <summary>
-		/// Check if the given (valid) file is a supported image.
+		/// Check if the given file is a supported image.
 		/// </summary>
 		/// <param name="filepath">Path to a file</param>
 		/// <returns>True if given file is an image, false otherwise.</returns>
-		static bool IsSupportedImageFile(const std::string& filepath);
+		static bool IsSupportedImageFile(const std::filesystem::path& filepath);
 
 		/// <summary>
 		/// Flip an image on its X axis.
@@ -269,7 +269,7 @@ namespace TRAP
 		uint32_t m_height;
 		bool m_isHDR;
 		ColorFormat m_colorFormat;
-		std::string m_filepath;
+		std::filesystem::path m_filepath;
 		uint32_t m_bitsPerPixel;
 	};
 }

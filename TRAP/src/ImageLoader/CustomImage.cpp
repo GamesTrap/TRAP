@@ -2,7 +2,6 @@
 #include "CustomImage.h"
 
 #include "Embed.h"
-#include "TARGA/TGAImage.h"
 
 const void* TRAP::INTERNAL::CustomImage::GetPixelData() const
 {

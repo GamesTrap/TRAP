@@ -37,15 +37,15 @@ namespace TRAP::Utils
 		/// <summary>
 		/// Load a config file from disk.
 		/// </summary>
-		/// <param name="file">Virtual or physical file path to load.</param>
+		/// <param name="file">File path to load.</param>
 		/// <returns>True if loading was successful, false otherwise.</returns>
-		bool LoadFromFile(std::string_view file);
+		bool LoadFromFile(const std::filesystem::path& file);
 		/// <summary>
 		/// Save a config file to disk.
 		/// </summary>
-		/// <param name="file">Virtual or physical file path to save to.</param>
+		/// <param name="file">File path to save to.</param>
 		/// <returns>True if saving was successful, false otherwise.</returns>
-		bool SaveToFile(std::string_view file);
+		bool SaveToFile(const std::filesystem::path& file);
 
 		/// <summary>
 		/// Check if config got changed after last load/save.

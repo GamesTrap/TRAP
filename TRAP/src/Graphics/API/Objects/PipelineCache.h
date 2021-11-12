@@ -32,7 +32,7 @@ namespace TRAP::Graphics
 
 		virtual void GetPipelineCacheData(std::size_t* size, void* data) const = 0;
 
-		virtual void Save(const std::string& virtualOrPhysicalPath) = 0;
+		virtual void Save(const std::filesystem::path& path) = 0;
 
 	protected:
 		PipelineCache();

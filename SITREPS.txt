@@ -2238,3 +2238,7 @@ SITREP 11/11/2021|21w45a1
     - Changed TRAP Engine version to 21w45a1(0.7.98)
     - Updated Controller mappings ~<5 mins
     - Updated Vulkan loader ~<5 mins
+    - New File System implementation ~<120 mins
+    - Complete engine now uses new File System ~>70 mins
+    - Disabled HotReloading systems until FileWatcher rewrite ~<20 mins
+    - Updated all Games ~<30 mins

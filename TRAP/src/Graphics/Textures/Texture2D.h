@@ -9,8 +9,8 @@ namespace TRAP::Graphics
 	class Texture2D : public Texture
 	{
 	public:
-		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath);
-		static Scope<Texture2D> CreateFromFile(std::string_view filepath);
+		static Scope<Texture2D> CreateFromFile(const std::string& name, const std::filesystem::path& filepath);
+		static Scope<Texture2D> CreateFromFile(const std::filesystem::path& filepath);
 		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img);
 		static Scope<Texture2D> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel,
 		                                    Image::ColorFormat format);
@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 
 		uint32_t GetDepth() const override;
 		uint32_t GetArraySize() const override;
-		const std::string& GetFilePath() const;
+		const std::filesystem::path& GetFilePath() const;
 
 		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) override;
 
@@ -43,9 +43,9 @@ namespace TRAP::Graphics
 
 	protected:
 		Texture2D();
-		Texture2D(const std::string& name, std::string_view filepath);
+		Texture2D(const std::string& name, const std::filesystem::path& filepath);
 
-		std::string m_filepath;
+		std::filesystem::path m_filepath;
 	};
 }
 

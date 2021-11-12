@@ -1,14 +1,14 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 
 TRAP::Log TRAP::TRAPLog("TRAP.Log");
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Log::Log(std::string virtualOrPhysicalFilePath)
-	: m_path(std::move(virtualOrPhysicalFilePath))
+TRAP::Log::Log(std::filesystem::path filePath)
+	: m_path(std::move(filePath))
 {
 	m_buffer.reserve(256);
 }
@@ -22,16 +22,16 @@ TRAP::Log::~Log()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Log::GetFilePath() const
+const std::filesystem::path& TRAP::Log::GetFilePath() const
 {
 	return m_path;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetFilePath(const std::string& virtualOrPhysicalFilePath)
+void TRAP::Log::SetFilePath(std::filesystem::path filePath)
 {
-	m_path = virtualOrPhysicalFilePath;
+	m_path = std::move(filePath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -47,23 +47,14 @@ void TRAP::Log::Save()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_INFO(LoggerPrefix, "Saving ", m_path);
+	TP_INFO(LoggerPrefix, "Saving ", m_path.generic_u8string());
 	std::string output = "";
 
 	for (const auto& [level, message] : m_buffer)
 		output += message + '\n';
 
-	if(m_path == "TRAP.Log")
-	{
-		std::ofstream file(m_path);
-		if(file.is_open())
-		{
-			file << output;
-			file.close();
-		}
-	}
-	else if(!TRAP::VFS::WriteTextFile(m_path, output))
-		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path);
+	if(!TRAP::FS::WriteTextFile(m_path, output))
+		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path.generic_u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

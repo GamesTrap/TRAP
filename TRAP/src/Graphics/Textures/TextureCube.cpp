@@ -2,12 +2,12 @@
 #include "TextureCube.h"
 
 #include "Graphics/API/RendererAPI.h"
-#include "VFS/VFS.h"
+#include "FS/FS.h"
 #include "Graphics/API/ResourceLoader.h"
 #include "TextureBase.h"
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name,
-	                                                                                  const std::array<std::string, 6>& filepaths)
+	                                                                                  const std::array<std::filesystem::path, 6>& filepaths)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -48,7 +48,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::string& name,
-	                                                                                 const std::string& filepath,
+	                                                                                 const std::filesystem::path& filepath,
 																					 const TextureCubeFormat format)
 {
 	TRAP_ASSERT(format != TextureCubeFormat::MultiFile,
@@ -93,7 +93,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::string& filepath,
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFile(const std::filesystem::path& filepath,
 	                                                                                 const TextureCubeFormat format)
 {
 	TRAP_ASSERT(format != TextureCubeFormat::MultiFile,
@@ -101,7 +101,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	TP_PROFILE_FUNCTION();
 
-	const std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
+	const std::string name = FS::GetFileName(filepath);
 
 	switch (RendererAPI::GetRenderAPI())
 	{
@@ -272,7 +272,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		if(imageFormat == API::ImageFormat::Undefined)
 			return nullptr;
 
-		std::array<std::string, 6> filepaths{};
+		std::array<std::filesystem::path, 6> filepaths{};
 		for(uint32_t i = 0; i < imgs.size(); ++i)
 			filepaths[i] = useImgs[i]->GetFilePath();
 
@@ -343,7 +343,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<std::string, 6> TRAP::Graphics::TextureCube::GetFilePaths() const
+std::array<std::filesystem::path, 6> TRAP::Graphics::TextureCube::GetFilePaths() const
 {
 	return m_filepaths;
 }
@@ -418,7 +418,7 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::array<std::string, 6>& filepaths,
+TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths,
 										 const TextureCubeFormat format)
 	: m_textureFormat(format)
 {
@@ -429,7 +429,7 @@ TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::arr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::string& filepath,
+TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::filesystem::path& filepath,
 										 const TextureCubeFormat format)
 	: m_textureFormat(format)
 {

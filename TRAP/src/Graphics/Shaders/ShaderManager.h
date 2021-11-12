@@ -17,9 +17,9 @@ namespace TRAP::Graphics
 		ShaderManager(ShaderManager&&) = delete;
 		ShaderManager& operator=(ShaderManager&&) = delete;
 
-		static const Scope<Shader>& LoadFile(const std::string& filepath,
+		static const Scope<Shader>& LoadFile(const std::filesystem::path& filepath,
 		                                     const std::vector<Shader::Macro>* userMacros = nullptr);
-		static const Scope<Shader>& LoadFile(const std::string& name, const std::string& filepath,
+		static const Scope<Shader>& LoadFile(const std::string& name, const std::filesystem::path& filepath,
 		                                     const std::vector<Shader::Macro>* userMacros = nullptr);
 		static const Scope<Shader>& LoadSource(const std::string& name,
 		                                       const std::string& glslSource,
@@ -32,14 +32,14 @@ namespace TRAP::Graphics
 		static const std::unordered_map<std::string, Scope<Shader>>& GetShaders();
 		static void Clean();
 
-		static Shader* Reload(const std::string& nameOrVirtualPath);
+		static Shader* Reload(const std::string& nameOrPath);
 		static Shader* Reload(const Scope<Shader>& shader);
 		static void ReloadAll();
 
 		static void Shutdown();
 
 		static bool Exists(const std::string& name);
-		static bool ExistsVirtualPath(std::string_view virtualPath);
+		static bool ExistsPath(const std::filesystem::path& path);
 
 	private:
 		static std::unordered_map<std::string, Scope<Shader>> s_Shaders;

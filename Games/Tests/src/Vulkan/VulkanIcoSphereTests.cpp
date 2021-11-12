@@ -16,8 +16,6 @@ void VulkanIcoSphereTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
-	TRAP::VFS::MountShaders("Assets/Shaders");
-
 	//Load Icosphere vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
 		                                                  static_cast<uint32_t>(m_icoSphereVerticesIndexed.size()) *
@@ -44,7 +42,7 @@ void VulkanIcoSphereTests::OnAttach()
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader
-	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "/shaders/icosphere.shader").get();
+	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "./Assets/Shaders/icosphere.shader").get();
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
