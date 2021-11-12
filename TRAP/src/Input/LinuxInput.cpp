@@ -253,6 +253,8 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 			name[8], name[9], name[10]);
 	}
 
+	name.erase(std::find(name.begin(), name.end(), '\0'), name.end());
+
 	int axisCount = 0, buttonCount = 0, dpadCount = 0;
 	for(int32_t code = BTN_MISC; code < KEY_CNT; code++)
 	{

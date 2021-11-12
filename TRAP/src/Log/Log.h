@@ -19,8 +19,8 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="filePath">File path to save to.</param>
-		explicit Log(std::filesystem::path filePath);
+		/// <param name="fileName">File name to save as.</param>
+		explicit Log(std::filesystem::path fileName);
 		/// <summary>
 		///	Destructor.
 		/// </summary>
@@ -43,15 +43,15 @@ namespace TRAP
 		Log& operator=(Log&&) = delete;
 
 		/// <summary>
-		/// Get the current used file path for saving.
+		/// Get the current used file name for saving.
 		/// </summary>
-		/// <returns>File path.</returns>
-		const std::filesystem::path& GetFilePath() const;
+		/// <returns>File name.</returns>
+		const std::filesystem::path& GetFileName() const;
 		/// <summary>
-		/// Set the file path used for saving.
+		/// Set the file name used for saving.
 		/// </summary>
-		/// <param name="filePath">File path.</param>
-		void SetFilePath(std::filesystem::path filePath);
+		/// <param name="fileName">File name.</param>
+		void SetFileName(std::filesystem::path fileName);
 
 		/// <summary>
 		/// Importance levels.
@@ -237,6 +237,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
 		static std::string GetTimeStamp();
+		/// <summary>
+		/// Get a time stamp with [HH:MM:SS] format.
+		/// </summary>
+		/// <returns>Time stamp as a string.</returns>
+		static std::string GetDateTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
 

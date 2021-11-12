@@ -247,6 +247,17 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[3]), 4);
 	}
 
+	uint32_t lastAlphaChar = 0;
+	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
+	{
+		if (isalnum(*it))
+		{
+			lastAlphaChar = static_cast<uint32_t>(it - cpu.Model.rbegin());
+			break;
+		}
+	}
+	cpu.Model.erase(cpu.Model.end() - lastAlphaChar, cpu.Model.end());
+
 	return cpu;
 }
 

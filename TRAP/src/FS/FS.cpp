@@ -88,8 +88,11 @@ bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::strin
     if(path.empty() || text.empty())
         return false;
 
-    std::ios_base::openmode modeFlags = (mode == WriteMode::Append) ? std::ios::ate : std::ios::trunc;
-    std::ofstream file(path, modeFlags);
+    std::ofstream file;
+    if(mode == WriteMode::Append)
+        file.open(path, std::ios::ate);
+    else
+        file.open(path);
     if(!file.is_open() || !file.good())
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: \"", path.generic_u8string(), "\"");
@@ -357,6 +360,8 @@ void TRAP::FS::Init()
         std::filesystem::create_directories(GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName());
     if(!std::filesystem::exists(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName()))
         std::filesystem::create_directories(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName());
+    if(!std::filesystem::exists(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "Logs"))
+        std::filesystem::create_directories(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "Logs");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
