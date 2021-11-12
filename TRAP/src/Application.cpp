@@ -60,7 +60,7 @@ TRAP::Application::Application(const std::string& gameName)
 	}
 
 	FS::Init();
-	if (!m_config.LoadFromFile("Engine.cfg"))
+	if (!m_config.LoadFromFile(FS::GetGameDocumentsFolderPath() / "Engine.cfg"))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
 
 	uint32_t width = 1280;
@@ -189,7 +189,7 @@ TRAP::Application::~Application()
 		if (m_config.Get<std::string_view>("VulkanGPU").empty())
 			m_config.Set("VulkanGPU", "");
 	}
-	m_config.SaveToFile("Engine.cfg");
+	m_config.SaveToFile(FS::GetGameDocumentsFolderPath() / "Engine.cfg");
 	m_window.reset();
 	FS::Shutdown();
 

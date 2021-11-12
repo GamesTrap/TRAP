@@ -2242,3 +2242,4 @@ SITREP 11/11/2021|21w45a1
     - Complete engine now uses new File System ~>70 mins
     - Disabled HotReloading systems until FileWatcher rewrite ~<20 mins
     - Updated all Games ~<30 mins
+    - Moved Engine.cfg to Documents/TRAP/<GameName>/Engine.cfg ~<5 mins
