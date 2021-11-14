@@ -19,8 +19,7 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="fileName">File name to save as.</param>
-		explicit Log(std::filesystem::path fileName);
+		explicit Log();
 		/// <summary>
 		///	Destructor.
 		/// </summary>
@@ -43,15 +42,17 @@ namespace TRAP
 		Log& operator=(Log&&) = delete;
 
 		/// <summary>
-		/// Get the current used file name for saving.
+		/// Get the current used file path for saving.
 		/// </summary>
-		/// <returns>File name.</returns>
-		const std::filesystem::path& GetFileName() const;
+		/// <returns>File path.</returns>
+		const std::filesystem::path& GetFilePath() const;
 		/// <summary>
-		/// Set the file name used for saving.
+		/// Set the file path used for saving.
+		///
+		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
 		/// </summary>
-		/// <param name="fileName">File name.</param>
-		void SetFileName(std::filesystem::path fileName);
+		/// <param name="filePath">File path.</param>
+		void SetFilePath(std::filesystem::path filePath);
 
 		/// <summary>
 		/// Importance levels.
@@ -123,7 +124,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[21w45a1]";
+		inline static constexpr auto WindowVersion =                        "[21w45b1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -238,7 +239,7 @@ namespace TRAP
 		/// <returns>Time stamp as a string.</returns>
 		static std::string GetTimeStamp();
 		/// <summary>
-		/// Get a time stamp with [HH:MM:SS] format.
+		/// Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
 		static std::string GetDateTimeStamp();

@@ -239,7 +239,7 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 		return true;
 
 	Utils::Dialogs::ShowMsgBox("Unsupported Windows version", "Unsupported Windows version!\n"
-	                           u8"TRAP™ needs Windows 7 or newer\nError code: 0x000A",
+	                           "TRAP™ needs Windows 7 or newer\nError code: 0x000A",
 							   Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
 	TRAP::Application::Shutdown();
@@ -1162,7 +1162,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 					disconnected[i] = false;
 					//Handle may have changed, update
 					EnumDisplayMonitors(nullptr, nullptr, MonitorCallback,
-					                    reinterpret_cast<LPARAM>(s_Data.Monitors[i]->Handle));
+					                    reinterpret_cast<LPARAM>(s_Data.Monitors[i].get()));
 					break;
 				}
 			}

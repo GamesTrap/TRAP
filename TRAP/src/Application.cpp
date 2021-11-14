@@ -39,11 +39,14 @@ TRAP::Application::Application(const std::string& gameName)
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG(Log::ApplicationPrefix, u8"Initializing TRAP modules...");
+	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 
 	TRAP_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 	m_mainThreadID = std::this_thread::get_id();
+
+	//Set main log file path
+	TRAP::TRAPLog.SetFilePath(FS::GetGameDocumentsFolderPath() / "logs/trap.log");
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
@@ -51,7 +54,7 @@ TRAP::Application::Application(const std::string& gameName)
 	if (TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Wayland)
 	{
         TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!",
-		                                 u8"Wayland is currently not supported by TRAP™! Please use X11 instead\n"
+		                                 "Wayland is currently not supported by TRAP™! Please use X11 instead\n"
 										 "Error code: 0x0001",
                                          TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP!\n"
@@ -95,7 +98,7 @@ TRAP::Application::Application(const std::string& gameName)
 	(
 		WindowProps
 		(
-			u8"TRAP™",
+			"TRAP™",
 			width,
 			height,
 			refreshRate,
@@ -192,6 +195,8 @@ TRAP::Application::~Application()
 	m_config.SaveToFile(FS::GetGameDocumentsFolderPath() / "engine.cfg");
 	m_window.reset();
 	FS::Shutdown();
+
+	s_Instance = nullptr;
 
 	TP_PROFILE_END_SESSION();
 };

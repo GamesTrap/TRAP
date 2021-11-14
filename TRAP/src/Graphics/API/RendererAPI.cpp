@@ -134,8 +134,8 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible device (GPU)",
-		                             u8"TRAP™ was unable to detect a compatible RenderAPI!\n"
-									 u8"Does your system meet the minimum system requirements for running TRAP™?\n"
+		                             "TRAP™ was unable to detect a compatible RenderAPI!\n"
+									 "Does your system meet the minimum system requirements for running TRAP™?\n"
 									 "Please check your GPU driver!\nError code: 0x000B", Utils::Dialogs::Style::Error,
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();

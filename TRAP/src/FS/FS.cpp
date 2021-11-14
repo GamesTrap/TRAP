@@ -15,7 +15,7 @@ std::vector<uint8_t> TRAP::FS::ReadFile(const std::filesystem::path& path)
         return {};
     }
 
-    const uintmax_t length = file.tellg();
+    const int64_t length = file.tellg();
     file.seekg(0);
     std::vector<uint8_t> buffer(length);
     file.read(reinterpret_cast<char*>(buffer.data()), length);
@@ -64,8 +64,8 @@ bool TRAP::FS::WriteFile(const std::filesystem::path& path, std::vector<uint8_t>
     if(path.empty() || buffer.empty())
         return false;
 
-    std::ios_base::openmode modeFlags = (mode == WriteMode::Overwrite) ? (std::ios::binary | std::ios::trunc) :
-                                                                         (std::ios::binary | std::ios::ate);
+    const std::ios_base::openmode modeFlags = (mode == WriteMode::Overwrite) ? (std::ios::binary | std::ios::trunc) :
+	                                              (std::ios::binary | std::ios::ate);
     std::ofstream file(path, modeFlags);
     if(!file.is_open() || !file.good())
     {
@@ -144,8 +144,8 @@ uintmax_t TRAP::FS::GetFileOrFolderSize(const std::filesystem::path& path, const
     {
         if(std::filesystem::is_directory(path))
         {
-            std::filesystem::recursive_directory_iterator rDIt(path);
-            std::filesystem::directory_iterator dIt(path);
+	        const std::filesystem::recursive_directory_iterator rDIt(path);
+	        const std::filesystem::directory_iterator dIt(path);
             if(recursive)
             {
                 for(const auto& entry : rDIt)
@@ -255,20 +255,29 @@ std::string TRAP::FS::GetFileEnding(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::filesystem::path TRAP::FS::GetFolderPath(const std::filesystem::path& filePath)
+{
+    TP_PROFILE_FUNCTION();
+
+    if (filePath.empty())
+        return {};
+
+    return filePath.parent_path().generic_u8string();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::filesystem::path TRAP::FS::GetTempFolderPath()
 {
-    std::string path = "";
+    std::string path;
     try
     {
         path = std::filesystem::temp_directory_path().generic_u8string();
     }
     catch (std::exception&)
     {
-        return std::filesystem::path();
+        return {};
     }
-
-    if(!path.empty() && path.back() != '/')
-        return std::filesystem::path(path + '/');
 
     return std::filesystem::path(path);
 }
@@ -284,18 +293,15 @@ std::filesystem::path TRAP::FS::GetGameTempFolderPath()
 
 std::filesystem::path TRAP::FS::GetCurrentFolderPath()
 {
-    std::string path = "";
+    std::string path;
     try
     {
         path = std::filesystem::current_path().generic_u8string();
     }
     catch (std::exception&)
     {
-        return std::filesystem::path();
+        return {};
     }
-
-    if(!path.empty() && path.back() != '/')
-        return std::filesystem::path(path + '/');
 
     return std::filesystem::path(path);
 }
@@ -321,6 +327,7 @@ std::filesystem::path TRAP::FS::GetDocumentsFolderPath()
 		return {};
 
 	CoTaskMemFree(path);
+    folderPath.pop_back(); //Remove the extra null byte
 #elif defined(TRAP_PLATFORM_LINUX)
     folderPath = std::string(getenv("HOME")) + "/Documents"; //BUG this only works on Linux systems with English as install language
 
@@ -328,19 +335,14 @@ std::filesystem::path TRAP::FS::GetDocumentsFolderPath()
 		return "";
 #endif
 
-    folderPath = std::filesystem::path(folderPath).generic_u8string();
-
-    if(!folderPath.empty() && folderPath.back() != '/')
-        return std::filesystem::path(folderPath + '/');
-
-    return std::filesystem::path(folderPath);
+    return std::filesystem::path(folderPath).generic_u8string();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::filesystem::path TRAP::FS::GetGameDocumentsFolderPath()
 {
-    std::filesystem::path path = GetDocumentsFolderPath();
+	const std::filesystem::path path = GetDocumentsFolderPath();
 
     if(path.empty())
         return {};
@@ -356,12 +358,15 @@ void TRAP::FS::Init()
 
 	TP_DEBUG(Log::FileSystemPrefix, "Initializing File System");
 
-    if(!std::filesystem::exists(GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName()))
-        std::filesystem::create_directories(GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName());
-    if(!std::filesystem::exists(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName()))
-        std::filesystem::create_directories(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName());
-    if(!std::filesystem::exists(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "Logs"))
-        std::filesystem::create_directories(GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "Logs");
+    std::filesystem::path p = GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName();
+    if(!std::filesystem::exists(p))
+        std::filesystem::create_directories(p);
+    p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName();
+    if(!std::filesystem::exists(p))
+        std::filesystem::create_directories(p);
+    p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "logs";
+    if(!std::filesystem::exists(p))
+        std::filesystem::create_directories(p);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

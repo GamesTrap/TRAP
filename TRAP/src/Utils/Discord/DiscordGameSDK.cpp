@@ -45,7 +45,7 @@ bool TRAP::Utils::Discord::Create([[maybe_unused]] const int64_t appID)
                      std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "]";
 
     CurrentActivity.LargeImage = "trapwhitelogo2048x2048";
-    CurrentActivity.LargeText = u8"TRAP™";
+    CurrentActivity.LargeText = "TRAP™";
     CurrentActivity.Details = version;
     CurrentActivity.State = "Developed by TrappedGames";
 

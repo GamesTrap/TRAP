@@ -205,10 +205,10 @@ void TRAP::Window::SetTitle(const std::string& title)
 	if (!title.empty())
 		m_data.Title = title;
 	else
-		m_data.Title = u8"TRAP™";
+		m_data.Title = "TRAP™";
 
 #ifndef TRAP_RELEASE
-	std::string newTitle = m_data.Title + u8" - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
+	std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
 	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
 						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 		                   "[INDEV]" + Log::WindowVersion + Graphics::Renderer::GetTitle();
@@ -242,7 +242,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			//Check for invalid parameters
 			if(width == 0 || height == 0)
 			{
-				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" invalid with invalid resolution ", width,
+				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" SetDisplayMode with invalid resolution ", width,
 				         'x', height, '@', refreshRate, "Hz called!");
 				return;
 			}
@@ -876,7 +876,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	//Create Window
 #ifndef TRAP_RELEASE
-	std::string newTitle = m_data.Title + u8" - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
+	std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
 	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
 						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 						   "[INDEV]" + Log::WindowVersion;

@@ -219,7 +219,7 @@ public:
 			return false;
 
 		if (event.GetKey() == TRAP::Input::Key::F5) //Make Window windowed
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed);
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed, 1280, 720);
 		if (event.GetKey() == TRAP::Input::Key::F6) //Make Window Borderless Fullscreen
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
 		if (event.GetKey() == TRAP::Input::Key::F7) //Make Window Exclusive Fullscreen

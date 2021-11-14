@@ -67,7 +67,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 	const std::string input = FS::ReadTextFile(file);
 	if (!input.empty())
 	{
-		std::vector<std::string> lines = String::SplitString(input, '\n');
+		const std::vector<std::string> lines = String::SplitString(input, '\n');
 
 		for (const auto& line : lines)
 		{

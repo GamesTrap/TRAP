@@ -164,6 +164,13 @@ namespace TRAP
 		/// <returns>String only containing the file ending without its file name.</returns>
 		static std::string GetFileEnding(const std::filesystem::path& path);
 
+		/// <summary>
+		/// Get only the folders without the filename and its ending.
+		/// </summary>
+		/// <param name="filePath">File path.</param>
+		/// <returns>Folder path from file path.</returns>
+		static std::filesystem::path GetFolderPath(const std::filesystem::path& filePath);
+
         /// <summary>
 		/// Get the path to the temp folder.
 		/// </summary>
@@ -194,7 +201,6 @@ namespace TRAP
 		/// <summary>
 		/// Initializes the File System.
 		/// </summary>
-        /// <param name="gameName">Name of the game. Used for some paths.</param>
 		static void Init();
 		/// <summary>
 		/// Shuts down the File System.

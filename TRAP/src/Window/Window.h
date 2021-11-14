@@ -436,7 +436,7 @@ namespace TRAP
 		/// <param name="displayMode">Display mode for the new window.</param>
 		/// <param name="advanced">Optional advanced properties to be used for the new window.</param>
 		/// <param name="monitor">Monitor to be used by the new window.</param>
-		explicit WindowProps(std::string title = u8"TRAP™",
+		explicit WindowProps(std::string title = "TRAP™",
 							 uint32_t width = 1280,
 							 uint32_t height = 720,
 							 uint32_t refreshRate = 60,

@@ -3,12 +3,12 @@
 
 #include "FS/FS.h"
 
-TRAP::Log TRAP::TRAPLog("trap.log");
+TRAP::Log TRAP::TRAPLog{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Log::Log(std::filesystem::path fileName)
-	: m_path(std::move(fileName))
+TRAP::Log::Log()
+	: m_path("trap.log")
 {
 	m_buffer.reserve(256);
 }
@@ -22,16 +22,16 @@ TRAP::Log::~Log()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Log::GetFileName() const
+const std::filesystem::path& TRAP::Log::GetFilePath() const
 {
 	return m_path;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetFileName(std::filesystem::path fileName)
+void TRAP::Log::SetFilePath(std::filesystem::path filePath)
 {
-	m_path = std::move(fileName);
+	m_path = std::move(filePath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -47,11 +47,12 @@ void TRAP::Log::Save()
 {
 	TP_PROFILE_FUNCTION();
 
-	std::filesystem::path logFile = FS::GetGameDocumentsFolderPath() / "Logs" / (FS::GetFileName(m_path) + "-" +
-	                                GetDateTimeStamp() + FS::GetFileEnding(m_path));
+	const std::filesystem::path logFile = FS::GetFolderPath(m_path) / (FS::GetFileName(m_path) + "-" +
+		                                                               GetDateTimeStamp() +
+		                                                               FS::GetFileEnding(m_path));
 
 	TP_INFO(LoggerPrefix, "Saving ", m_path.generic_u8string());
-	std::string output = "";
+	std::string output;
 
 	for (const auto& [level, message] : m_buffer)
 		output += message + '\n';
@@ -100,7 +101,7 @@ std::string TRAP::Log::GetDateTimeStamp()
 #else
 	localtime_r(&time, &tm);
 #endif
-	ss << std::put_time(&tm, "%FT%T");
+	ss << std::put_time(&tm, "%FT%H-%M-%S");
 
 	return ss.str();
 }

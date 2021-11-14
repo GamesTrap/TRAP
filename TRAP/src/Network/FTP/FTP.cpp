@@ -263,7 +263,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::filesyste
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::filesystem::path& name)
 {
-	return SendCommand("DELE", name);
+	return SendCommand("DELE", name.generic_u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

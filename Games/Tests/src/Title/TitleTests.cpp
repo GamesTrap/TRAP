@@ -19,7 +19,7 @@ void TitleTests::OnImGuiRender()
 
 void TitleTests::OnAttach()
 {
-	TRAP::Application::GetWindow()->SetTitle(u8"English 日本語 русский язык 官話");
+	TRAP::Application::GetWindow()->SetTitle("English 日本語 русский язык 官話");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

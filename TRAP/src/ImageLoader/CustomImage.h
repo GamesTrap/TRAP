@@ -18,7 +18,7 @@ namespace TRAP::INTERNAL
 		/// <param name="format">Color format of the pixel data.</param>
 		/// <param name="pixelData">Raw pixel data.</param>
 		template<typename T>
-		CustomImage(std::string filepath, uint32_t width, uint32_t height, ColorFormat format,
+		CustomImage(std::filesystem::path filepath, uint32_t width, uint32_t height, ColorFormat format,
 		            std::vector<T> pixelData);
 		/// <summary>
 		/// Copy constructor.
@@ -60,7 +60,7 @@ namespace TRAP::INTERNAL
 }
 
 template<typename T>
-TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t width, const uint32_t height,
+TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const uint32_t width, const uint32_t height,
                                          const ColorFormat format, std::vector<T> pixelData)
 	: m_data(), m_data2Byte(), m_dataHDR()
 {
