@@ -1038,7 +1038,6 @@ namespace TRAP::INTERNAL
 			bool Decorated = true;
 			bool Floating = false;
 			bool ShouldClose = false;
-			bool Visible;
 			bool FocusOnShow = true;
 			bool MousePassthrough = false;
 			bool DragAndDrop = false;
@@ -2920,8 +2919,8 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Sends an EWMH or ICCCM event to the window manager.
 		/// </summary>
-		static void SendEventToWM(const InternalWindow* window, Atom type, int32_t a, int32_t b, int32_t c,
-		                          int32_t d, int32_t e);
+		static void SendEventToWM(const InternalWindow* window, Atom type, long a, long b, long c,
+		                          long d, long e);
 		/// <summary>
 		/// Returns whether it is a _NET_FRAME_EXTENTS event for the specified window.
 		/// </summary>
@@ -2935,7 +2934,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Retrieve a single window property of the specified type.
 		/// </summary>
-		static uint32_t GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
+		static unsigned long GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
 		/// <summary>
 		/// Updates the normal hints according to the window settings.
 		/// </summary>
@@ -2982,7 +2981,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Check whether the specified atom is supported.
 		/// </summary>
-		static Atom GetAtomIfSupported(Atom* supportedAtoms, uint32_t atomCount, const char* atomName);
+		static Atom GetAtomIfSupported(Atom* supportedAtoms, unsigned long atomCount, const char* atomName);
 		/// <summary>
 		/// Create a blank cursor for hidden and disabled cursor modes.
 		/// </summary>
@@ -3035,7 +3034,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Convert XKB KeySym to Unicode.
 		/// </summary>
-		static int64_t KeySymToUnicode(uint32_t keySym);
+		static long KeySymToUnicode(uint32_t keySym);
 		struct CodePair
 		{
 			uint16_t keySym;
