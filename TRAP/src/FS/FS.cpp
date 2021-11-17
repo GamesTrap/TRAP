@@ -329,10 +329,7 @@ std::filesystem::path TRAP::FS::GetDocumentsFolderPath()
 	CoTaskMemFree(path);
     folderPath.pop_back(); //Remove the extra null byte
 #elif defined(TRAP_PLATFORM_LINUX)
-    folderPath = std::string(getenv("HOME")) + "/Documents"; //BUG this only works on Linux systems with English as install language
-
-	if(!std::filesystem::exists(folderPath))
-		return "";
+    folderPath = GetDocumentsFolderPathLinux();
 #endif
 
     return std::filesystem::path(folderPath).generic_u8string();

@@ -93,6 +93,7 @@
 #include <dlfcn.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <pwd.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
