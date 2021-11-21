@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
+#include "Events/FileEvent.h"
+
 TRAP::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
@@ -33,9 +35,16 @@ void TRAP::FileWatcher::SkipNextFileChange()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::SetChangeCallback(const FileChangedCallbackFn& callback)
+void TRAP::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
 {
     m_callback = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::FileWatcher::EventCallbackFn TRAP::FileWatcher::GetEventCallback()
+{
+    return m_callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,7 +59,10 @@ void TRAP::FileWatcher::AddFolder(const std::filesystem::path& path)
 void TRAP::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
     for (const auto& path : paths)
-        m_paths.emplace_back(path.generic_u8string());
+    {
+        if(std::find(m_paths.begin(), m_paths.end(), path) == m_paths.end())
+            m_paths.emplace_back(path);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,6 +80,13 @@ void TRAP::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& 
     for(const auto& path : paths)
         m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), path.generic_u8string()), m_paths.end());
     Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::filesystem::path> TRAP::FileWatcher::GetFolders() const
+{
+    return m_paths;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -111,7 +130,7 @@ void TRAP::FileWatcher::Watch()
 void TRAP::FileWatcher::WatchWindows()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
-    std::vector<FileChangedEvent> events;
+    std::vector<Events::FileChangeEvent> events;
     events.reserve(10);
 
     std::vector<HANDLE> dirHandles(m_paths.size());
@@ -178,31 +197,31 @@ void TRAP::FileWatcher::WatchWindows()
                     continue;
                const std::size_t filenameLength = notify->FileNameLength / sizeof(wchar_t);
 
-                FileChangedEvent e;
-                e.FilePath = (m_paths[i] / std::filesystem::path(std::wstring(notify->FileName, filenameLength))).generic_u8string();
-                e.IsDirectory = std::filesystem::is_directory(e.FilePath);
+                std::filesystem::path filePath = (m_paths[i] / std::filesystem::path(std::wstring(notify->FileName, filenameLength))).generic_u8string();
+                FileStatus status;
+                std::filesystem::path oldFileName = "";
 
                 switch(notify->Action)
                 {
                 case FILE_ACTION_ADDED:
-                    e.Status = FileStatus::Created;
+                    status = FileStatus::Created;
                     break;
 
                 case FILE_ACTION_REMOVED:
-                    e.Status = FileStatus::Erased;
+                    status = FileStatus::Erased;
                     break;
 
                 case FILE_ACTION_MODIFIED:
-                    e.Status = FileStatus::Modified;
+                    status = FileStatus::Modified;
                     break;
 
                 case FILE_ACTION_RENAMED_OLD_NAME:
-                    oldName = e.FilePath.filename();
+                    oldName = filePath.filename();
                     break;
 
                 case FILE_ACTION_RENAMED_NEW_NAME:
-                    e.Status = FileStatus::Renamed;
-                    e.OldName = oldName;
+                    status = FileStatus::Renamed;
+                    oldFileName = oldName;
                     break;
 
                 default:
@@ -210,7 +229,7 @@ void TRAP::FileWatcher::WatchWindows()
                 }
 
                 if(notify->Action != FILE_ACTION_RENAMED_OLD_NAME)
-                    events.push_back(e);
+                    events.emplace_back(status, filePath, oldFileName);
 
                 offset += notify->NextEntryOffset;
             } while(notify->NextEntryOffset);
@@ -222,7 +241,10 @@ void TRAP::FileWatcher::WatchWindows()
         if(!events.empty())
         {
             if(m_callback)
-                m_callback(events);
+            {
+                for(Events::FileChangeEvent& e : events)
+                    m_callback(e);
+            }
             events.clear();
         }
     }
@@ -237,7 +259,7 @@ void TRAP::FileWatcher::WatchWindows()
 void TRAP::FileWatcher::WatchLinux()
 {
 #ifdef TRAP_PLATFORM_LINUX
-    std::vector<FileChangedEvent> events;
+    std::vector<Events::FileChangeEvent> events;
     events.reserve(10);
 
     int32_t fd = inotify_init1(IN_NONBLOCK);
@@ -316,15 +338,16 @@ void TRAP::FileWatcher::WatchLinux()
             inotify_event* event = reinterpret_cast<inotify_event*>(buf.data() + offset);
             if(event->len)
             {
-                FileChangedEvent e;
-                e.FilePath = watchDescriptors[event->wd] / std::filesystem::path(std::string(event->name)).generic_u8string();
-                e.IsDirectory = std::filesystem::is_directory(e.FilePath);
+                FileStatus status;
+                std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(std::string(event->name)).generic_u8string();
+                bool isDir = std::filesystem::is_directory(filePath);
+                std::filesystem::path oldFileName = "";
 
                 if(event->mask & IN_CREATE)
                 {
-                    if(e.IsDirectory && m_recursive) //Add to tracking list
+                    if(isDir && m_recursive) //Add to tracking list
                     {
-                        const int32_t wd = inotify_add_watch(fd, e.FilePath.generic_u8string().c_str(),
+                        const int32_t wd = inotify_add_watch(fd, filePath.generic_u8string().c_str(),
                                                              IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                         if(wd < 0)
@@ -333,60 +356,60 @@ void TRAP::FileWatcher::WatchLinux()
                             return;
                         }
 
-                        watchDescriptors[wd] = e.FilePath;
+                        watchDescriptors[wd] = filePath;
                     }
 
-                    e.Status = FileStatus::Created;
+                    status = FileStatus::Created;
                 }
                 else if(event->mask & IN_DELETE)
                 {
-                    if(e.IsDirectory && m_recursive) //Remove from tracking list
+                    if(isDir && m_recursive) //Remove from tracking list
                     {
                         inotify_rm_watch(fd, event->wd);
                         watchDescriptors.erase(event->wd);
                     }
 
-                    e.Status = FileStatus::Erased;
+                    status = FileStatus::Erased;
                 }
                 else if(event->mask & IN_MODIFY)
-                    e.Status = FileStatus::Modified;
+                    status = FileStatus::Modified;
                 else if(event->mask & IN_MOVED_FROM)
                 {
-                    oldName = e.FilePath;
-                    e.Status = FileStatus::Renamed;
+                    oldName = filePath;
+                    status = FileStatus::Renamed;
                 }
-                else if(event->mask & IN_MOVED_TO)
+                else if(event->mask & IN_MOVED_TO) //BUG Some distros (like Ubuntu) seem to not report IN_MOVED_TO on deletion
                 {
-                    if(e.FilePath.parent_path() == oldName.parent_path())
+                    if(filePath.parent_path() == oldName.parent_path())
                     {
-                        e.Status = FileStatus::Renamed;
-                        e.OldName = oldName.filename();
+                        status = FileStatus::Renamed;
+                        oldFileName = oldName.filename();
                     }
                     else
                     {
-                        //Destroy first
-                        FileChangedEvent e2;
-                        e2.FilePath = oldName;
-                        e2.Status = FileStatus::Erased;
-                        events.push_back(e2);
+                        //Erase event
+                        events.emplace_back(FileStatus::Erased, oldName, std::filesystem::is_directory(oldName));
 
-                        e.Status = FileStatus::Created;
+                        status = FileStatus::Created;
                     }
                 }
 
-                if(event->mask != IN_MOVED_FROM)
-                    events.push_back(e);
+                if(!(event->mask & IN_MOVED_FROM))
+                    events.emplace_back(status, filePath, oldFileName);
             }
 
             offset += sizeof(inotify_event) + event->len;
         }
 
+        std::memset(buf.data(), 0, buf.size());
+
         if(!events.empty())
         {
-            for(const auto& e : events)
-                TP_INFO(Log::FileWatcherLinuxPrefix, "File changed: ", e.FilePath, " ", static_cast<int32_t>(e.Status));
             if(m_callback)
-                m_callback(events);
+            {
+                for(Events::FileChangeEvent& e : events)
+                    m_callback(e);
+            }
             events.clear();
         }
     }

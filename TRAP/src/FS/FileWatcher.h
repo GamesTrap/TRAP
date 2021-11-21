@@ -1,8 +1,13 @@
-#ifndef TRAP_FILEWATCHER_H_
-#define TRAP_FILEWATCHER_H_
+#ifndef TRAP_FILEWATCHER_H
+#define TRAP_FILEWATCHER_H
 
 namespace TRAP //TODO Put into FS namespace
 {
+    namespace Events
+    {
+        class Event;
+    }
+
     class FileWatcher
     {
     public:
@@ -17,17 +22,10 @@ namespace TRAP //TODO Put into FS namespace
             Erased
         };
 
-        struct FileChangedEvent
-        {
-            FileStatus Status{};
-            std::filesystem::path FilePath = "";
-            bool IsDirectory = false;
-
-            //If this is a rename event the new name will be in the the filepath.
-            std::filesystem::path OldName = "";
-        };
-
-        using FileChangedCallbackFn = std::function<void(const std::vector<FileChangedEvent>&)>;
+        /// <summary>
+		/// Describes a callback function which gets called when an input event occurs.
+		/// </summary>
+		using EventCallbackFn = std::function<void(Events::Event&)>;
 
         /// <summary>
         /// Keeps track of the statuses of all files inside the specified paths.
@@ -74,15 +72,20 @@ namespace TRAP //TODO Put into FS namespace
 		FileWatcher& operator=(FileWatcher&&) = default;
 
         /// <summary>
-        /// Skip the next file change event.
+        /// Skip the next file event.
         /// </summary>
         void SkipNextFileChange();
 
         /// <summary>
-        /// Sets the callback function that is called when a file change event occurs.
+        /// Sets the callback function that is called when a file event occurs.
         /// </summary>
         /// <param name="callback">Callback function used to report events to.</param>
-        void SetChangeCallback(const FileChangedCallbackFn& callback);
+        void SetEventCallback(const EventCallbackFn& callback);
+		/// <summary>
+		/// Get the function to call when an file event occurred.
+		/// </summary>
+		/// <returns>EventCallbackFn.</returns>
+		EventCallbackFn GetEventCallback();
 
         /// <summary>Adds a new folder path to the tracked paths.</summary>
         /// <param name="path">Folder path to track.</param>
@@ -98,6 +101,12 @@ namespace TRAP //TODO Put into FS namespace
         /// <param name="paths">Folder paths to untrack.</param>
         void RemoveFolders(const std::vector<std::filesystem::path>& paths);
 
+        /// <summary>
+        /// Returns the paths that are being watched.
+        /// </summary>
+        /// <returns>The paths that are being watched.</returns>
+        std::vector<std::filesystem::path> GetFolders() const;
+
     private:
         void Init();
         void Shutdown();
@@ -108,7 +117,7 @@ namespace TRAP //TODO Put into FS namespace
         void WatchLinux();
 
         std::thread m_thread;
-        FileChangedCallbackFn m_callback;
+        EventCallbackFn m_callback;
         std::vector<std::filesystem::path> m_paths;
         bool m_recursive;
         bool m_run = true;
@@ -120,4 +129,4 @@ namespace TRAP //TODO Put into FS namespace
     };
 }
 
-#endif /*TRAP_FILEWATCHER_H_*/
+#endif /*TRAP_FILEWATCHER_H*/

@@ -28,6 +28,7 @@
 #include "../src/Events/MouseEvent.h"
 #include "../src/Events/ControllerEvent.h"
 #include "../src/Events/HotReloadEvent.h"
+#include "../src/Events/FileEvent.h"
 //-----------------------
 
 //----LAYERS-------------

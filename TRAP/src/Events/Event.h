@@ -25,7 +25,7 @@ namespace TRAP::Events
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
 		ControllerConnect, ControlledDisconnect,
 		MonitorConnect, MonitorDisconnect,
-		TextureReload, ShaderReload
+		TextureReload, ShaderReload, FileChange
 	};
 
 	/// <summary>
@@ -40,7 +40,8 @@ namespace TRAP::Events
 		Mouse       = BIT(3),
 		Controller  = BIT(4),
 		MouseButton = BIT(5),
-		HotReload   = BIT(6)
+		HotReload   = BIT(6),
+		FileChange  = BIT(7)
 	};
 
 	/// <summary>
