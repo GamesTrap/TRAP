@@ -29,11 +29,11 @@
 #define TRAP_FS_H
 
 #include "Application.h"
-#include "VFS/FileWatcher.h"
+#include "FileWatcher.h"
 
 namespace TRAP
 {
-    class FS final
+    class FS final //TODO Make this a namespace
     {
     private:
         /// <summary>

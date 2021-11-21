@@ -560,66 +560,66 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 {
 	while (run)
 	{
-		//Update Shaders if needed
-		if (FS::GetHotShaderReloading() && FS::GetShaderFileWatcher())
-		{
-			//Check monitoring shader folders for changes and
-			//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
-			FS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
-				const std::string& virtualPath,
-				const FileWatcher::FileStatus status) -> void
-				{
-					//Process only regular files and FileStatus::Modified
-					if (!std::filesystem::is_regular_file(physicalPath))
-						return;
-					if (status == FileWatcher::FileStatus::Erased)
-						return;
+		// //Update Shaders if needed
+		// if (FS::GetHotShaderReloading() && FS::GetShaderFileWatcher())
+		// {
+		// 	//Check monitoring shader folders for changes and
+		// 	//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
+		// 	FS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
+		// 		const std::string& virtualPath,
+		// 		const FileWatcher::FileStatus status) -> void
+		// 		{
+		// 			//Process only regular files and FileStatus::Modified
+		// 			if (!std::filesystem::is_regular_file(physicalPath))
+		// 				return;
+		// 			if (status == FileWatcher::FileStatus::Erased)
+		// 				return;
 
-					const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-					if (suffix == "shader" || suffix == "spirv")
-					{
-						if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
-						{
-							{
-								std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-								shaders.emplace_back(virtualPath);
-							}
-						}
-					}
-				});
-		}
-		//Update Textures if needed
-		if (FS::GetHotTextureReloading() && FS::GetTextureFileWatcher())
-		{
-			//Check monitoring texture folders for changes and
-			//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
-			FS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
-				const std::string& virtualPath,
-				const FileWatcher::FileStatus status) -> void
-			{
-				//Process only regular files and FileStatus::Modified
-				if (!std::filesystem::is_regular_file(physicalPath))
-					return;
-				if (status == FileWatcher::FileStatus::Erased)
-					return;
+		// 			const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
+		// 			if (suffix == "shader" || suffix == "spirv")
+		// 			{
+		// 				if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
+		// 				{
+		// 					{
+		// 						std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+		// 						shaders.emplace_back(virtualPath);
+		// 					}
+		// 				}
+		// 			}
+		// 		});
+		// }
+		// //Update Textures if needed
+		// if (FS::GetHotTextureReloading() && FS::GetTextureFileWatcher())
+		// {
+		// 	//Check monitoring texture folders for changes and
+		// 	//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
+		// 	FS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
+		// 		const std::string& virtualPath,
+		// 		const FileWatcher::FileStatus status) -> void
+		// 	{
+		// 		//Process only regular files and FileStatus::Modified
+		// 		if (!std::filesystem::is_regular_file(physicalPath))
+		// 			return;
+		// 		if (status == FileWatcher::FileStatus::Erased)
+		// 			return;
 
-				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-				if(std::any_of(Image::SupportedImageFormatSuffixes.begin(),
-				               Image::SupportedImageFormatSuffixes.end(), [suffix](const std::string& sfx)
-				{
-					return suffix == sfx;
-				}))
-				{
-					if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
-					{
-						{
-							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-							textures.emplace_back(virtualPath);
-						}
-					}
-				}
-			});
-		}
+		// 		const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
+		// 		if(std::any_of(Image::SupportedImageFormatSuffixes.begin(),
+		// 		               Image::SupportedImageFormatSuffixes.end(), [suffix](const std::string& sfx)
+		// 		{
+		// 			return suffix == sfx;
+		// 		}))
+		// 		{
+		// 			if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
+		// 			{
+		// 				{
+		// 					std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+		// 					textures.emplace_back(virtualPath);
+		// 				}
+		// 			}
+		// 		}
+		// 	});
+		// }
 	}
 }
 

@@ -37,6 +37,7 @@
 
 //----FILE-SYSTEM--------
 #include "../src/FS/FS.h"
+#include "../src/FS/FileWatcher.h"
 //-----------------------
 
 //----UTILS--------------
