@@ -74,6 +74,7 @@
 #include <sys/inotify.h>
 #include <sys/select.h>
 #include <sys/utsname.h>
+#include <sys/eventfd.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -94,6 +95,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <pwd.h>
+#include <poll.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif

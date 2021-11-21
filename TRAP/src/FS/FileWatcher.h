@@ -33,7 +33,7 @@ namespace TRAP //TODO Put into FS namespace
         /// Note: This class starts a new thread.
         ///
         /// Windows: Event-based via ReadDirectoryChangesW.
-        /// Linux: Poll-based (every 2 seconds) via inotify.
+        /// Linux: Event-based via inotify & eventfd.
         /// </summary>
         /// <param name="paths">Folder paths to watch over.</param>
         /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
@@ -44,7 +44,7 @@ namespace TRAP //TODO Put into FS namespace
         /// Note: This class starts a new thread.
         ///
         /// Windows: Event-based via ReadDirectoryChangesW.
-        /// Linux: Poll-based (every 2 seconds) via inotify.
+        /// Linux: Event-based via inotify & eventfd.
         /// </summary>
         /// <param name="path">Folder path to watch over.</param>
         /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
@@ -125,6 +125,8 @@ namespace TRAP //TODO Put into FS namespace
 
 #ifdef TRAP_PLATFORM_WINDOWS
         HANDLE m_killEvent = nullptr;
+#elif defined(TRAP_PLATFORM_LINUX)
+        int32_t m_killEvent = 0;
 #endif
     };
 }
