@@ -38,7 +38,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if (!m_deviceExtensions.empty())
 	{
 		TP_DEBUG(Log::RendererVulkanDevicePrefix, "Loading Device Extension(s):");
-		for (const std::string& str : m_deviceExtensions)
+		for (const std::string_view str : m_deviceExtensions)
 			TP_DEBUG(Log::RendererVulkanDevicePrefix, "    ", str);
 	}
 #endif

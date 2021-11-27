@@ -53,9 +53,9 @@ void TRAP::Network::HTTP::Request::SetMethod(const Method method)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::Request::SetURI(const std::string& uri)
+void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 {
-	m_uri = uri;
+	m_uri = std::move(uri);
 
 	//Make sure it starts with a '/'
 	if (m_uri.empty() || (m_uri[0] != '/'))
@@ -72,9 +72,9 @@ void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::Request::SetBody(const std::string& body)
+void TRAP::Network::HTTP::Request::SetBody(std::string body)
 {
-	m_body = body;
+	m_body = std::move(body);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

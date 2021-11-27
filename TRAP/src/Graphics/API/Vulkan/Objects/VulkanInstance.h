@@ -6,7 +6,7 @@ namespace TRAP::Graphics::API
 	class VulkanInstance
 	{
 	public:
-		VulkanInstance(const std::string& appName, std::vector<std::string> instanceLayers,
+		VulkanInstance(const std::string_view appName, std::vector<std::string> instanceLayers,
 		               std::vector<std::string> instanceExtensions);
 		~VulkanInstance();
 		VulkanInstance(const VulkanInstance&) = default;
@@ -21,8 +21,8 @@ namespace TRAP::Graphics::API
 		static uint32_t GetInstanceVersion();
 		static const std::vector<VkLayerProperties>& GetAvailableInstanceLayers();
 		static const std::vector<VkExtensionProperties>& GetAvailableInstanceExtensions();
-		static bool IsLayerSupported(const std::string& layer);
-		static bool IsExtensionSupported(const std::string& extension);
+		static bool IsLayerSupported(const std::string_view layer);
+		static bool IsExtensionSupported(const std::string_view extension);
 
 	private:
 		static void LoadAllInstanceLayers();

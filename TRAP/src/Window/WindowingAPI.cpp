@@ -1377,7 +1377,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the clipboard to the specified string.
-void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string_view string)
+void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 {
 	PlatformSetClipboardString(string);
 }

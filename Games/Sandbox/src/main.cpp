@@ -7,8 +7,8 @@
 class Sandbox final : public TRAP::Application
 {
 public:
-	Sandbox(const std::string& gameName)
-		: Application(gameName)
+	explicit Sandbox(std::string gameName)
+		: Application(std::move(gameName))
 	{
 		PushLayer(TRAP::MakeScope<SandboxLayer>());
 		// PushLayer(TRAP::MakeScope<Sandbox2D>());

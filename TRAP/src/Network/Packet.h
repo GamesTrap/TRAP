@@ -162,7 +162,7 @@ namespace TRAP::Network
 		Packet& operator<<(float data);
 		Packet& operator<<(double data);
 		Packet& operator<<(const char* data);
-		Packet& operator<<(const std::string& data);
+		Packet& operator<<(const std::string_view data);
 		Packet& operator<<(const wchar_t* data);
 		Packet& operator<<(const std::wstring& data);
 

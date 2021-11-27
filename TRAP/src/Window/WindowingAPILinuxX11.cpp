@@ -3113,9 +3113,8 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(int32_t scanCo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string_view string)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string& string)
 {
-	s_Data.ClipboardString.clear();
 	s_Data.ClipboardString = std::string(string);
 
 	s_Data.XLIB.SetSelectionOwner(s_Data.display, s_Data.CLIPBOARD, s_Data.HelperWindowHandle, CurrentTime);
@@ -4328,7 +4327,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 {
 	Scope<InternalMonitor> monitor = MakeScope<InternalMonitor>();
 	if(!name.empty())
-		monitor->Name = name;
+		monitor->Name = std::move(name);
 
 	return monitor;
 }
@@ -4356,7 +4355,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 		struct Keys
 		{
 			TRAP::Input::Key Key = TRAP::Input::Key::Unknown;
-			std::string Name = nullptr;
+			std::string Name = "";
 		};
 
 		std::array<Keys, 121> KeyMap =

@@ -43,7 +43,7 @@ namespace TRAP::Graphics
 
 	protected:
 		Texture2D();
-		Texture2D(const std::string& name, const std::filesystem::path& filepath);
+		Texture2D(std::string name, std::filesystem::path filepath);
 
 		std::filesystem::path m_filepath;
 	};

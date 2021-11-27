@@ -81,7 +81,7 @@ bool TRAP::FS::WriteFile(const std::filesystem::path& path, std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::string& text, const WriteMode mode)
+bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::string_view text, const WriteMode mode)
 {
     TP_PROFILE_FUNCTION();
 

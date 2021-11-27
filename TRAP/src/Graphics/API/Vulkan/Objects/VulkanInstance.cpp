@@ -12,7 +12,7 @@ std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanInstance::s_availa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
+TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appName,
 													std::vector<std::string> instanceLayers,
                                                     std::vector<std::string> instanceExtensions)
 	: m_instance(VK_NULL_HANDLE),
@@ -39,18 +39,17 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");
-#endif
-#ifdef VERBOSE_GRAPHICS_DEBUG
+
 	if (!m_instanceLayers.empty())
 	{
 		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Layer(s):");
-		for (const std::string& str : m_instanceLayers)
+		for (const std::string_view str : m_instanceLayers)
 			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
 	}
 	if (!m_instanceExtensions.empty())
 	{
 		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Extension(s):");
-		for (const std::string& str : m_instanceExtensions)
+		for (const std::string_view str : m_instanceExtensions)
 			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
 	}
 #endif
@@ -139,7 +138,7 @@ const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string& layer)
+bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string_view layer)
 {
 	if (s_availableInstanceLayers.empty())
 		LoadAllInstanceLayers();
@@ -147,7 +146,7 @@ bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string& la
 	const auto result = std::find_if(s_availableInstanceLayers.begin(), s_availableInstanceLayers.end(),
 		                             [layer](VkLayerProperties prop)
 		{
-			return std::strcmp(prop.layerName, layer.c_str()) == 0;
+			return std::strcmp(prop.layerName, layer.data()) == 0;
 		});
 
 	if (result == s_availableInstanceLayers.end())
@@ -166,7 +165,7 @@ bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string& la
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string& extension)
+bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string_view extension)
 {
 	if (s_availableInstanceExtensions.empty())
 		LoadAllInstanceExtensions();
@@ -174,7 +173,7 @@ bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string
 	const auto result = std::find_if(s_availableInstanceExtensions.begin(),
 	                              s_availableInstanceExtensions.end(),
 	                              [extension](VkExtensionProperties prop)
-								  { return std::strcmp(prop.extensionName, extension.c_str()) == 0; });
+								  { return std::strcmp(prop.extensionName, extension.data()) == 0; });
 	if (result == s_availableInstanceExtensions.end())
 	{
 		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)

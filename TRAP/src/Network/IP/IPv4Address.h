@@ -60,7 +60,7 @@ namespace TRAP::Network
 		///
 		/// Here address can either be a decimal address (ex: "192.168.1.180") or a
 		/// network name (ex: "localhost").
-		/// This is equivalent to the constructor taking a std::string
+		/// This is equivalent to the constructor taking a std::string_view
 		/// parameter, it is defined for convenience so that the
 		/// implicit conversion from literal strings to IPv4Address work.
 		/// </summary>

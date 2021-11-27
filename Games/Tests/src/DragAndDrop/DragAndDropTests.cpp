@@ -23,8 +23,8 @@ void DragAndDropTests::OnImGuiRender()
 		ImGui::Text("No data");
 	else
 	{
-		for (const std::string& str : m_dropData)
-			ImGui::Text("%s", str.c_str());
+		for (const std::string_view str : m_dropData)
+			ImGui::Text("%s", str.data());
 	}
 	ImGui::End();
 }

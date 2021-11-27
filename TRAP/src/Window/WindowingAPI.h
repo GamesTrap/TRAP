@@ -511,7 +511,7 @@ namespace TRAP::INTERNAL
 	#ifndef DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 		#define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((HANDLE) -4)
 	#endif /*DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2*/
-		//HACK: Define macros that some windows.h variants don't		
+		//HACK: Define macros that some windows.h variants don't
 	#ifndef WM_COPYGLOBALDATA
 		inline static constexpr uint32_t WM_COPYGLOBALDATA = 0x0049;
 	#endif /*WM_COPYGLOBALDATA*/
@@ -2309,12 +2309,13 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///
-		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Format_Unavailable
+		/// and Error::Platform_Error.
 		/// Pointer lifetime: The specified string is copied before this function returns.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="string">UTF-8 encoded string to be set for the clipboard.</param>
-		static void SetClipboardString(std::string_view string);
+		static void SetClipboardString(const std::string& string);
 		/// <summary>
 		/// This function returns the contents of the system clipboard, if it contains or
 		/// is convertible to a UTF-8 encoded string. If the clipboard is empty or if its
@@ -2498,7 +2499,7 @@ namespace TRAP::INTERNAL
 		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
 		static int32_t PlatformGetKeyScanCode(Input::Key key);
 		static const char* PlatformGetScanCodeName(int32_t scanCode);
-		static void PlatformSetClipboardString(std::string_view string);
+		static void PlatformSetClipboardString(const std::string& string);
 		static std::string PlatformGetClipboardString();
 		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions);
 		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow* window,

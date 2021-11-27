@@ -72,7 +72,7 @@ bool TRAP::Input::InitController()
 				"xinput1_1.dll"
 			};
 
-			for (std::string_view dll : names)
+			for (const std::string_view dll : names)
 			{
 				s_xinput.Instance = LoadLibraryA(dll.data());
 				if (s_xinput.Instance)

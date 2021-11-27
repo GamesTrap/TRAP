@@ -418,22 +418,22 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths,
+TRAP::Graphics::TextureCube::TextureCube(std::string name, std::array<std::filesystem::path, 6> filepaths,
 										 const TextureCubeFormat format)
 	: m_textureFormat(format)
 {
 	m_textureType = TextureType::TextureCube;
-	m_name = name;
-	m_filepaths = filepaths;
+	m_name = std::move(name);
+	m_filepaths = std::move(filepaths);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCube::TextureCube(const std::string& name, const std::filesystem::path& filepath,
+TRAP::Graphics::TextureCube::TextureCube(std::string name, std::filesystem::path filepath,
 										 const TextureCubeFormat format)
 	: m_textureFormat(format)
 {
 	m_textureType = TextureType::TextureCube;
-	m_name = name;
-	m_filepaths[0] = filepath;
+	m_name = std::move(name);
+	m_filepaths[0] = std::move(filepath);
 }

@@ -481,7 +481,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const char* data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string& data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view data)
 {
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
@@ -489,7 +489,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string& data
 
 	//Then insert characters
 	if (length > 0)
-		Append(data.c_str(), length * sizeof(std::string::value_type));
+		Append(data.data(), length * sizeof(std::string::value_type));
 
 	return *this;
 }

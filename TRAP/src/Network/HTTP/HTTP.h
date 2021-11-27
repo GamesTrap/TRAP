@@ -124,7 +124,7 @@ namespace TRAP::Network
 			/// The URI is "/" (the root page) by default.
 			/// </summary>
 			/// <param name="uri">URI to request, relative to the host.</param>
-			void SetURI(const std::string& uri);
+			void SetURI(std::string uri);
 
 			/// <summary>
 			/// Set the HTTP version for the request.
@@ -144,7 +144,7 @@ namespace TRAP::Network
 			/// The body is empty by default.
 			/// </summary>
 			/// <param name="body">Content of the body.</param>
-			void SetBody(const std::string& body);
+			void SetBody(std::string body);
 
 		private:
 			friend class HTTP;

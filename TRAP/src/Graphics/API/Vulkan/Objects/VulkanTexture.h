@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 		VkImage GetVkImage();
 		VmaAllocation GetVMAAllocation() const;
 
-		void SetTextureName(const std::string& name) const override;
+		void SetTextureName(const std::string_view name) const override;
 
 	private:
 		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,

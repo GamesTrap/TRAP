@@ -108,7 +108,7 @@ namespace ImGui
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
 
-	ImFont* AddFontFromFileTTF(const std::string & filename, float sizePixels,
+	ImFont* AddFontFromFileTTF(const std::string_view filename, float sizePixels,
 		                       const ImFontConfig* fontCfgTemplate = nullptr,
 						       const ImWchar* glyphRanges = nullptr);
 	ImFont* AddFontFromMemoryTTF(void* fontData, int32_t fontSize, float sizePixels,

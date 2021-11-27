@@ -2269,3 +2269,7 @@ SITREP 11/21/2021|21w46b1
     - Added new FS FileWatcher ~>100 mins
     - Added FileChangeEvent ~<30 mins
     - FS FileWatcher is now fully event-based ~>30 mins
+
+SITREP 11/27/2021|21w47a1
+    - Changed TRAP Engine version to 21w47a1(0.7.98)
+    - Better utilization of std::string_view ~>30 mins

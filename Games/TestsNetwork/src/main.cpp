@@ -7,8 +7,8 @@
 class TestsNetwork final : public TRAP::Application
 {
 public:
-	explicit TestsNetwork(const std::string& gameName)
-		: Application(gameName)
+	explicit TestsNetwork(std::string gameName)
+		: Application(std::move(gameName))
 	{
 		PushLayer(TRAP::MakeScope<FTPTests>());
 		//PushLayer(TRAP::MakeScope<SocketTests>());

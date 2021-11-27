@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanCommon.h"
 
+#include "Core/Base.h"
+
 #include "Objects/VulkanQueue.h"
 #include "VulkanRenderer.h"
 #include "Graphics/RenderCommand.h"
@@ -462,7 +464,7 @@ VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const Rende
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type,
-                                          const std::string& name)
+                                          const std::string_view name)
 {
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)

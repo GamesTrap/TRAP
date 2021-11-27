@@ -50,8 +50,8 @@ namespace TRAP::Graphics
 		TextureCube& operator=(TextureCube&&) = default;
 
 	protected:
-		TextureCube(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths, TextureCubeFormat format);
-		TextureCube(const std::string& name, const std::filesystem::path& filepath, TextureCubeFormat format);
+		TextureCube(std::string name, std::array<std::filesystem::path, 6> filepaths, TextureCubeFormat format);
+		TextureCube(std::string name, std::filesystem::path filepath, TextureCubeFormat format);
 
 		std::array<std::filesystem::path, 6> m_filepaths;
 		TextureCubeFormat m_textureFormat;

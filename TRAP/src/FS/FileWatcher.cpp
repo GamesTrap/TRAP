@@ -424,7 +424,7 @@ void TRAP::FileWatcher::WatchLinux()
             if(event->len)
             {
                 FileStatus status;
-                std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(std::string(event->name)).generic_u8string();
+                std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(event->name).generic_u8string();
                 bool isDir = std::filesystem::is_directory(filePath);
                 std::filesystem::path oldFileName = "";
 

@@ -100,7 +100,7 @@ void TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name) //TODO Return a pointer instead
 {
 	TP_PROFILE_FUNCTION();
 

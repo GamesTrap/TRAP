@@ -147,8 +147,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		const RendererAPI::DescriptorType type = desc->Type;
 		const uint32_t arrayCount = TRAP::Math::Max(1U, param.Count);
 
-		VALIDATE_DESCRIPTOR(desc->Set == m_set, std::string("Descriptor ") +
-		                    std::string(desc->Name) + std::string(" - Mismatching set index"));
+		VALIDATE_DESCRIPTOR(desc->Set == m_set, std::string("Descriptor ") + desc->Name +
+		                    " - Mismatching set index");
 
 		switch(type)
 		{
@@ -156,17 +156,17 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		{
 			//Index is invalid when descriptor is a static sampler
 			VALIDATE_DESCRIPTOR(desc->IndexInParent != std::numeric_limits<uint32_t>::max(),
-				                std::string("Trying to update a static sampler (") + std::string(desc->Name) +
+				                std::string("Trying to update a static sampler (") + desc->Name +
 								"). All static samplers must be set in RootSignature constructor and cannot be "
 								"updated later");
 
 			const std::vector<Sampler*>& samplers = std::get<std::vector<Sampler*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!samplers.empty(), std::string("Empty Sampler (" + std::string(desc->Name) + ")"));
+			VALIDATE_DESCRIPTOR(!samplers.empty(), std::string("Empty Sampler (") + desc->Name + ")");
 
 			for(uint32_t arr = 0; arr < arrayCount; ++arr)
 			{
-				VALIDATE_DESCRIPTOR(samplers[arr], std::string("nullptr Sampler (") + std::string(desc->Name) +
-				                    std::string(" [") + std::to_string(arr) + std::string("])"));
+				VALIDATE_DESCRIPTOR(samplers[arr], std::string("nullptr Sampler (") + desc->Name +
+				                    std::string(" [") + std::to_string(arr) + "])");
 
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 				{
@@ -182,8 +182,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		case RendererAPI::DescriptorType::CombinedImageSampler:
 		{
 			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + std::string(desc->Name) +
-			                    std::string(")"));
+			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + desc->Name + ")");
 
 			std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap()->Map.find(desc->Name);
 			if(it == m_rootSignature->GetDescriptorNameToIndexMap()->Map.end())
@@ -194,8 +193,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 			for(uint32_t arr = 0; arr < arrayCount; ++arr)
 			{
-				VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + std::string(desc->Name) +
-				                    std::string(" [") + std::to_string(arr) + std::string("])"));
+				VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + desc->Name +
+				                    std::string(" [") + std::to_string(arr) + "])");
 
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 				{
@@ -212,15 +211,14 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		case RendererAPI::DescriptorType::Texture:
 		{
 			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + std::string(desc->Name) +
-			                    std::string(")"));
+			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + desc->Name + ")");
 
 			if(!std::get<bool>(param.Offset))
 			{
 				for(uint32_t arr = 0; arr < arrayCount; ++arr)
 				{
-					VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + std::string(desc->Name) +
-					                    std::string(" [") + std::to_string(arr) + std::string("])"));
+					VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + desc->Name +
+					                    std::string(" [") + std::to_string(arr) + "])");
 
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 					{
@@ -236,8 +234,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 			{
 				for(uint32_t arr = 0; arr < arrayCount; ++arr)
 				{
-					VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + std::string(desc->Name) +
-					                    std::string(" [") + std::to_string(arr) + std::string("])"));
+					VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + desc->Name +
+					                    std::string(" [") + std::to_string(arr) + "])");
 
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 					{
@@ -255,13 +253,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		case RendererAPI::DescriptorType::RWTexture:
 		{
 			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty RW Texture (") + std::string(desc->Name) +
-			                    std::string(")"));
+			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty RW Texture (") + desc->Name + ")");
 
 			if(std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>(param.Offset).BindMipChain)
 			{
-				VALIDATE_DESCRIPTOR(textures[0], std::string("nullptr RW Texture (") + std::string(desc->Name) +
-				                    std::string(")"));
+				VALIDATE_DESCRIPTOR(textures[0], std::string("nullptr RW Texture (") + desc->Name + ")");
 
 				for (uint32_t arr = 0; arr < arrayCount; ++arr)
 				{
@@ -285,13 +281,12 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 				for(uint32_t arr = 0; arr < arrayCount; ++arr)
 				{
 					VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr RW Texture (") +
-					                    std::string(desc->Name) + std::string(" [") + std::to_string(arr) +
-										std::string("])"));
+					                    desc->Name + std::string(" [") + std::to_string(arr) + "])");
 					VALIDATE_DESCRIPTOR(mipSlice < textures[arr]->GetMipLevels(), std::string("Descriptor: (") +
-					                    std::string(desc->Name) + std::string(" [") + std::to_string(arr) +
+					                    desc->Name + std::string(" [") + std::to_string(arr) +
 										std::string("]) Mip Slice (") + std::to_string(mipSlice) +
 										std::string(") exceeds mip levels (") +
-										std::to_string(textures[arr]->GetMipLevels()) + std::string(")"));
+										std::to_string(textures[arr]->GetMipLevels()) + ")");
 
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 					{
@@ -312,19 +307,16 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 			{
 				const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
 				const RendererAPI::DescriptorData::BufferOffset& off = std::get<RendererAPI::DescriptorData::BufferOffset>(param.Offset);
-				VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Uniform Buffer (") +
-				                    std::string(desc->Name) + std::string(")"));
-				VALIDATE_DESCRIPTOR(buffers[0], std::string("nullptr Uniform Buffer (") + std::string(desc->Name) +
-				                    std::string(" [0])"));
-				VALIDATE_DESCRIPTOR(arrayCount == 1, std::string("Descriptor (") + std::string(desc->Name) +
-				                    std::string("): VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC does not "
-									"support arrays"));
-				VALIDATE_DESCRIPTOR(!off.Sizes.empty(), std::string("Descriptor (") + std::string(desc->Name) +
-				                    std::string("): Must provide Sizes for VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC"));
-				VALIDATE_DESCRIPTOR(off.Sizes[0] > 0, std::string("Descriptor (") + std::string(desc->Name) +
-				                    std::string(") - Sizes[0] is zero"));
+				VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Uniform Buffer (") + desc->Name + ")");
+				VALIDATE_DESCRIPTOR(buffers[0], std::string("nullptr Uniform Buffer (") + desc->Name + " [0])");
+				VALIDATE_DESCRIPTOR(arrayCount == 1, std::string("Descriptor (") + desc->Name +
+				                    "): VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC does not support arrays");
+				VALIDATE_DESCRIPTOR(!off.Sizes.empty(), std::string("Descriptor (") + desc->Name +
+				                    "): Must provide Sizes for VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC");
+				VALIDATE_DESCRIPTOR(off.Sizes[0] > 0, std::string("Descriptor (") + desc->Name +
+				                    ") - Sizes[0] is zero");
 				VALIDATE_DESCRIPTOR(off.Sizes[0] <= RendererAPI::GPUSettings.MaxUniformBufferRange,
-					                std::string("Descriptor (") + std::string(desc->Name) +
+					                std::string("Descriptor (") + desc->Name +
 									std::string(") - Sizes[0] is " + std::to_string(off.Sizes[0]) +
 									std::string(" which exceeds max size ") +
 									std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange)));
@@ -355,12 +347,12 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		case RendererAPI::DescriptorType::RWBufferRaw:
 		{
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Buffer (") + std::string(desc->Name));
+			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Buffer (") + desc->Name);
 
 			for (uint32_t arr = 0; arr < arrayCount; ++arr)
 			{
-				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Buffer (") + std::string(desc->Name) +
-				                    std::string(" [") + std::to_string(arr) + std::string("])"));
+				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Buffer (") + desc->Name +
+				                    std::string(" [") + std::to_string(arr) + "])");
 
 				VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo =
@@ -373,12 +365,12 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 				const RendererAPI::DescriptorData::BufferOffset& off = std::get<RendererAPI::DescriptorData::BufferOffset>(param.Offset);
 				if (!off.Offsets.empty())
 				{
-					VALIDATE_DESCRIPTOR(!off.Sizes.empty(), std::string("Descriptor (") + std::string(desc->Name) +
-					                    std::string(") - Sizes must be provided with Offsets"));
-					VALIDATE_DESCRIPTOR(off.Sizes[arr] > 0, std::string("Descriptor (") + std::string(desc->Name) +
-					                    std::string(") - Sizes[") + std::to_string(arr) + std::string("] is zero"));
+					VALIDATE_DESCRIPTOR(!off.Sizes.empty(), std::string("Descriptor (") + desc->Name +
+					                    ") - Sizes must be provided with Offsets");
+					VALIDATE_DESCRIPTOR(off.Sizes[arr] > 0, std::string("Descriptor (") + desc->Name +
+					                    std::string(") - Sizes[") + std::to_string(arr) + "] is zero");
 					VALIDATE_DESCRIPTOR(off.Sizes[arr] <= RendererAPI::GPUSettings.MaxUniformBufferRange,
-						                std::string("Descriptor (") + std::string(desc->Name) +
+						                std::string("Descriptor (") + desc->Name +
 										std::string(") - Sizes[") + std::to_string(arr) + std::string("] is ") +
 						                std::to_string(off.Sizes[arr]) + std::string(" which exceeds max size ") +
 						                std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange));
@@ -397,13 +389,12 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		case RendererAPI::DescriptorType::TexelBuffer:
 		{
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Texel Buffer (") + std::string(desc->Name) +
-			                    std::string(")"));
+			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Texel Buffer (") + desc->Name + ")");
 
 			for(uint32_t arr = 0; arr < arrayCount; ++arr)
 			{
-				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Texel Buffer (") + std::string(desc->Name) +
-				                    std::string(" [") + std::to_string(arr) + std::string("])"));
+				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Texel Buffer (") + desc->Name +
+				                    std::string(" [") + std::to_string(arr) + "])");
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferView = dynamic_cast<VulkanBuffer*>
 					(
 						buffers[arr]
@@ -417,14 +408,12 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 		case RendererAPI::DescriptorType::RWTexelBuffer:
 		{
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);
-			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty RW Texel Buffer (") + std::string(desc->Name) +
-			                    std::string(")"));
+			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty RW Texel Buffer (") + desc->Name + ")");
 
 			for (uint32_t arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr RW Texel Buffer (") +
-				                    std::string(desc->Name) + std::string(" [") + std::to_string(arr) +
-									std::string("])"));
+				                    desc->Name + std::string(" [") + std::to_string(arr) + "])");
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferView = dynamic_cast<VulkanBuffer*>
 					(
 						buffers[arr]

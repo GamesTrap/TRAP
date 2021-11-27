@@ -23,16 +23,15 @@
 #include "Utils/Discord/DiscordGameSDK.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
-std::mutex TRAP::Application::s_hotReloadingMutex;
 
-TRAP::Application::Application(const std::string& gameName)
+TRAP::Application::Application(std::string gameName)
 	: m_timer(std::make_unique<Utils::Timer>()),
 	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
 	  m_tickRate(100),
 	  m_timeScale(1.0f),
-	  m_gameName(gameName),
+	  m_gameName(std::move(gameName)),
 	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
@@ -92,7 +91,7 @@ TRAP::Application::Application(const std::string& gameName)
 		renderAPI = Graphics::RendererAPI::AutoSelectRenderAPI();
 
 	//Initialize Renderer
-	Graphics::RendererAPI::Init(gameName, renderAPI);
+	Graphics::RendererAPI::Init(m_gameName, renderAPI);
 
 	m_window = MakeScope<Window>
 	(
@@ -444,7 +443,7 @@ TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::SetClipboardString(const std::string_view string)
+void TRAP::Application::SetClipboardString(const std::string& string)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -581,7 +580,7 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 		// 				if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
 		// 				{
 		// 					{
-		// 						std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+		// 						std::lock_guard<std::mutex> lock(s_Instance->m_hotReloadingMutex);
 		// 						shaders.emplace_back(virtualPath);
 		// 					}
 		// 				}
@@ -613,7 +612,7 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 		// 			if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 		// 			{
 		// 				{
-		// 					std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+		// 					std::lock_guard<std::mutex> lock(s_Instance->m_hotReloadingMutex);
 		// 					textures.emplace_back(virtualPath);
 		// 				}
 		// 			}

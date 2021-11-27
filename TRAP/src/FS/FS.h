@@ -113,7 +113,7 @@ namespace TRAP
 		/// <param name="text">Text to be written.</param>
 		/// <param name="mode">Write mode to use.</param>
 		/// <returns>True if path could be resolved and text has been written, false otherwise.</returns>
-		static bool WriteTextFile(const std::filesystem::path& path, const std::string& text,
+		static bool WriteTextFile(const std::filesystem::path& path, const std::string_view text,
 		                          WriteMode mode = WriteMode::Overwrite);
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace TRAP
 		/// Shuts down the File System.
 		/// </summary>
 		static void Shutdown();
-		friend TRAP::Application::Application(const std::string&);
+		friend TRAP::Application::Application(std::string);
 		friend TRAP::Application::~Application();
 
 #ifdef TRAP_PLATFORM_LINUX

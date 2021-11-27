@@ -296,7 +296,7 @@ bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 
 	const std::string fileFormat = Utils::String::ToLower(FS::GetFileEnding(filepath));
 
-	return std::any_of(SupportedImageFormatSuffixes.begin(), SupportedImageFormatSuffixes.end(), [fileFormat](const std::string& suffix)
+	return std::any_of(SupportedImageFormatSuffixes.cbegin(), SupportedImageFormatSuffixes.cend(), [fileFormat](const std::string_view suffix)
 	{
 		return fileFormat == suffix;
 	});

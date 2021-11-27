@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string& appName)
+VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName)
 {
 	VkApplicationInfo info;
 
@@ -64,7 +64,7 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 
 VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
 	                                                                                     const uint64_t handle,
-	                                                                                     const std::string& name)
+	                                                                                     const std::string_view name)
 {
 	VkDebugUtilsObjectNameInfoEXT info;
 
@@ -72,7 +72,7 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 	info.pNext = nullptr;
 	info.objectType = type;
 	info.objectHandle = handle;
-	info.pObjectName = name.c_str();
+	info.pObjectName = name.data();
 
 	return info;
 }

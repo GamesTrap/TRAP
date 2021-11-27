@@ -145,7 +145,7 @@ void TRAP::Utils::Config::Print() const
 //This method parses a line from out format("key = value") into a std::pair<std::string, std::string>
 //containing the key and the value.
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
-std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view& line) const
+std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view line) const
 {
 	if (!line.empty() && line[0] != '#')
 	{

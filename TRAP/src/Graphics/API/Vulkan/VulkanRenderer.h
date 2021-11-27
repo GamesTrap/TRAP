@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 		VulkanRenderer(VulkanRenderer&&) = delete;
 		VulkanRenderer& operator=(VulkanRenderer&&) = delete;
 
-		void InitInternal(const std::string& gameName) override;
+		void InitInternal(const std::string_view gameName) override;
 
 		void Present(Window* window) override;
 

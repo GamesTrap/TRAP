@@ -32,7 +32,7 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
-		explicit Application(const std::string& gameName);
+		explicit Application(std::string gameName);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -144,7 +144,7 @@ namespace TRAP
 		/// Set the clipboard.
 		/// </summary>
 		/// <param name="string">String to be set.</param>
-		static void SetClipboardString(std::string_view string);
+		static void SetClipboardString(const std::string& string);
 		/// <summary>
 		/// Get current content of the clipboard.
 		/// </summary>
@@ -231,7 +231,7 @@ namespace TRAP
 		Scope<std::thread> m_hotReloadingThread;
 		std::vector<std::string> m_hotReloadingShaderPaths;
 		std::vector<std::string> m_hotReloadingTexturePaths;
-		static std::mutex s_hotReloadingMutex;
+		std::mutex m_hotReloadingMutex;
 
 		Scope<Window> m_window;
 		ImGuiLayer* m_ImGuiLayer;

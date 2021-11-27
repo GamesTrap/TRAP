@@ -5,8 +5,8 @@
 class Tests3D final : public TRAP::Application
 {
 public:
-	Tests3D(const std::string& gameName)
-		: Application(gameName)
+	explicit Tests3D(std::string gameName)
+		: Application(std::move(gameName))
 	{
 		PushLayer(TRAP::MakeScope<Cube3D>());
 	}

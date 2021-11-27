@@ -78,7 +78,7 @@ namespace TRAP::Graphics
 		RendererAPI(RendererAPI&&) = default;
 		RendererAPI& operator=(RendererAPI&&) = default;
 
-		static void Init(const std::string& gameName, RenderAPI renderAPI);
+		static void Init(const std::string_view gameName, RenderAPI renderAPI);
 		static void Shutdown();
 
 		static const TRAP::Scope<RendererAPI>& GetRenderer();
@@ -88,7 +88,7 @@ namespace TRAP::Graphics
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
 
-		virtual void InitInternal(const std::string& gameName) = 0;
+		virtual void InitInternal(const std::string_view gameName) = 0;
 
 		virtual void Present(Window* window) = 0;
 

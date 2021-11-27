@@ -108,7 +108,7 @@ const std::filesystem::path& TRAP::Network::FTP::DirectoryResponse::GetDirectory
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, const std::string& data)
+TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, const std::string_view data)
 	: Response(response)
 {
 	if(!IsOK())

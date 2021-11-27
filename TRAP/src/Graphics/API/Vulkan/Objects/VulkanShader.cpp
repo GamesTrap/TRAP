@@ -15,14 +15,14 @@
 #include "Graphics/Textures/TextureManager.h"
 #include "Application.h"
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
 	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
-	m_name = name;
+	m_name = std::move(name);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 

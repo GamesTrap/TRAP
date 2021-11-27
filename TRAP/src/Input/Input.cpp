@@ -482,7 +482,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Scope<Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetClipboard(const std::string_view str)
+void TRAP::Input::SetClipboard(const std::string& str)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -539,8 +539,8 @@ TRAP::Input::EventCallbackFn TRAP::Input::GetEventCallback()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::string& name,
-                                                                    const std::string& guid,
+TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string name,
+                                                                    std::string guid,
 																	const int32_t axisCount,
 																	const int32_t buttonCount,
 																	const int32_t dpadCount)
@@ -557,8 +557,8 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 
 	ControllerInternal* con = &s_controllerInternal[cID];
 	con->Connected = true;
-	con->Name = name;
-	con->guid = guid;
+	con->Name = std::move(name);
+	con->guid = std::move(guid);
 	con->Axes.resize(axisCount);
 	con->Buttons.resize(buttonCount + dpadCount * 4);
 	con->DPads.resize(dpadCount);
@@ -626,7 +626,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 {
 	struct Fields
 	{
-		std::string Name = nullptr;
+		std::string Name = "";
 		MapElement* Element = nullptr;
 	};
 	std::array<Fields, 22> fields =
@@ -815,7 +815,7 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 {
 	for (auto& Mapping : s_mappings)
 	{
-		if(Mapping.guid == std::string(guid))
+		if(Mapping.guid == guid)
 			return &Mapping;
 	}
 

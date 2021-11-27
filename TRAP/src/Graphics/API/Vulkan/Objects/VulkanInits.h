@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API::VulkanInits
 {
-	VkApplicationInfo ApplicationInfo(const std::string& appName);
+	VkApplicationInfo ApplicationInfo(const std::string_view appName);
 
 	VkInstanceCreateInfo InstanceCreateInfo(const VkApplicationInfo& appInfo,
 									        const std::vector<const char*>& instanceLayers,
@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 	VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle,
-	                                                       const std::string& name);
+	                                                       const std::string_view name);
 
 	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, const char* name);
 

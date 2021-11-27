@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 
 	TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 
-	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string& name);
+	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string_view name);
 
 	inline static constexpr std::array<VkAttachmentLoadOp,
 	                                   static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =

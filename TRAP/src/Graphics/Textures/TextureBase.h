@@ -39,7 +39,7 @@ namespace TRAP::Graphics
 		RendererAPI::DescriptorType GetUAV() const;
 		bool OwnsImage() const;
 
-        virtual void SetTextureName(const std::string& name) const = 0;
+        virtual void SetTextureName(const std::string_view name) const = 0;
 
     protected:
         TextureBase() = default;

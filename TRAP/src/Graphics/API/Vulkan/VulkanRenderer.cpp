@@ -261,7 +261,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameName)
+void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view gameName)
 {
 	m_instance = TRAP::MakeRef<VulkanInstance>(gameName, SetupInstanceLayers(), SetupInstanceExtensions());
 #if defined(ENABLE_GRAPHICS_DEBUG)

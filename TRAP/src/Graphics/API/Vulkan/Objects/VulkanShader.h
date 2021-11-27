@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 	class VulkanShader final : public Shader
 	{
 	public:
-		VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc);
+		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc);
 		~VulkanShader() override;
 
 		/// <summary>

@@ -29,7 +29,7 @@ namespace TRAP::Graphics::API
 		const VkPhysicalDeviceVulkan12Properties& GetVkPhysicalDeviceVulkan12Properties() const;
 		const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const;
 		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const;
-		bool IsExtensionSupported(const std::string& extension);
+		bool IsExtensionSupported(const std::string_view extension);
 		uint32_t GetMemoryType(uint32_t typeBits, VkMemoryPropertyFlags properties) const;
 
 		const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();

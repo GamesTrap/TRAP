@@ -19,7 +19,7 @@ TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
 std::unordered_map<TRAP::Window*,
-                   TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
+                   TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {}; //TODO Evaluate thread safety of this
 std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
@@ -33,7 +33,7 @@ std::array<TRAP::Graphics::CommandBuffer*,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Init(const std::string& gameName, const RenderAPI renderAPI)
+void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const RenderAPI renderAPI)
 {
 	if(s_Renderer)
 		return;
@@ -83,6 +83,7 @@ void TRAP::Graphics::RendererAPI::Init(const std::string& gameName, const Render
 void TRAP::Graphics::RendererAPI::Shutdown()
 {
 	{
+		//Write operation requires lock
 		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 		s_perWindowDataMap.clear();
 	}

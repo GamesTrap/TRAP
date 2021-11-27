@@ -258,7 +258,7 @@ const std::vector<VkQueueFamilyProperties>& TRAP::Graphics::API::VulkanPhysicalD
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string& extension)
+bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension)
 {
 	if(m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
@@ -267,7 +267,7 @@ bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::
 		                             m_availablePhysicalDeviceExtensions.end(),
 		                             [extension](const VkExtensionProperties& props)
 		{
-			return std::strcmp(extension.c_str(), props.extensionName) == 0;
+			return std::strcmp(extension.data(), props.extensionName) == 0;
 		});
 
 	if(result == m_availablePhysicalDeviceExtensions.end())
@@ -678,12 +678,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
 			VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME
 		};
-		for (const std::string& str : raytracingExt)
+		for (const std::string_view str : raytracingExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 			                                 [str](const VkExtensionProperties& props)
 				{
-					return std::strcmp(str.c_str(), props.extensionName) == 0;
+					return std::strcmp(str.data(), props.extensionName) == 0;
 				});
 
 			if (extRes == extensions.end())

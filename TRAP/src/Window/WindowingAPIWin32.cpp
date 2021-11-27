@@ -2628,7 +2628,7 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string_view string)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string& string)
 {
 	const int32_t characterCount = MultiByteToWideChar(CP_UTF8, 0, string.data(), -1, nullptr, 0);
 	if (!characterCount)

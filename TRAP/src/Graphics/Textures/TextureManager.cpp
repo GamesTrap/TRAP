@@ -204,7 +204,7 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Get(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Get2D(const std::string& name)
+const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Get2D(const std::string& name) //TODO Return a pointer instead
 {
 	TP_PROFILE_FUNCTION();
 
@@ -213,7 +213,7 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::GetCube(const std::string& name)
+const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::GetCube(const std::string& name) //TODO Return a pointer instead
 {
 	TP_PROFILE_FUNCTION();
 

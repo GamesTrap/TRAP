@@ -513,7 +513,7 @@ namespace TRAP
 		/// Set the system clipboard to the specified UTF-8 encoded string.
 		/// </summary>
 		/// <param name="str">UTF-8 encoded string.</param>
-		static void SetClipboard(std::string_view str);
+		static void SetClipboard(const std::string& str);
 		/// <summary>
 		/// Retrieve the contents of the system clipboard.
 		/// </summary>
@@ -910,7 +910,7 @@ namespace TRAP
 		/// <param name="buttonCount">Amount of buttons.</param>
 		/// <param name="dpadCount">Amount of DPads.</param>
 		/// <returns>Pointer to the new controller internal or nullptr if there are already 16 controllers connected.</returns>
-		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid,
+		static ControllerInternal* AddInternalController(std::string name, std::string guid,
 		                                                 int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
 		/// <summary>
 		/// Internally DPad input processing.

@@ -212,7 +212,7 @@ bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
 {
 	std::vector<std::string> paths = event.GetPaths();
 
-	for (const std::string& path : paths)
+	for (const std::string_view path : paths)
 	{
 		std::string data = TRAP::FS::ReadTextFile(path);
 		if(!data.empty())

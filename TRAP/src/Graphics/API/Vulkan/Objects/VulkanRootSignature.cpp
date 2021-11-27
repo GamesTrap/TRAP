@@ -164,8 +164,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			binding.descriptorCount = descInfo.Size;
 			binding.descriptorType = DescriptorTypeToVkDescriptorType(descInfo.Type);
 
-			std::string name = res.Name;
-			name = Utils::String::ToLower(name);
+			std::string name = Utils::String::ToLower(res.Name);
 
 			//If a user specified a uniform buffer to be used as a dynamic uniform buffer change its type to
 			//VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC

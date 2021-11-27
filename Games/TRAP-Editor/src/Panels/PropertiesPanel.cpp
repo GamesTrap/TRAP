@@ -6,7 +6,7 @@
 #include <imgui_internal.h>
 #include <Maths/Math.h>
 
-static void DrawVec3Control(const std::string& label,
+static void DrawVec3Control(const std::string& label, //TODO can be replaced with std::string_view?!
                             TRAP::Math::Vec3& values,
                             const float resetValues = 0.0f,
                             const float columnWidth = 100.0f)
@@ -251,7 +251,7 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename UIFunction>
-void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entity, UIFunction func)
+void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entity, UIFunction func) //TODO name can be replaced by std::string_view
 {
 	constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
 		ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;

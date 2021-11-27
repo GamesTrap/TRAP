@@ -291,11 +291,11 @@ void ImGui::Image(TRAP::Graphics::Texture2D* image, const ImVec2& size, const Im
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImFont* ImGui::AddFontFromFileTTF(const std::string& filename, const float sizePixels,
+ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float sizePixels,
 							      const ImFontConfig* fontCfgTemplate, const ImWchar* glyphRanges)
 {
 	//Add font like normally
-	ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), sizePixels, fontCfgTemplate, glyphRanges);
+	ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_UploadFontsTexture();

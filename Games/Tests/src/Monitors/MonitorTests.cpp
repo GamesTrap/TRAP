@@ -29,8 +29,7 @@ void MonitorTests::OnImGuiRender()
 	{
 		ImGui::Begin(monitor.Name.c_str());
 		ImGui::Text("Name: %s", monitor.Name.c_str());
-		ImGui::Text("Primary: %s", (monitor.ID == TRAP::Monitor::GetPrimaryMonitor().GetID() ?
-		                            std::string("True").c_str() : std::string("False").c_str()));
+		ImGui::Text("Primary: %s", (monitor.ID == TRAP::Monitor::GetPrimaryMonitor().GetID() ? "True" : "False"));
 		ImGui::Text("Current VideoMode: %s", FormatMode(monitor.CurrentVideoMode).c_str());
 		ImGui::Text("Virtual Position: %i %i", monitor.Position.x, monitor.Position.y);
 		ImGui::Text("Content Scale: %f %f", monitor.Scale.x, monitor.Scale.y);
