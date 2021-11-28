@@ -2273,3 +2273,8 @@ SITREP 11/21/2021|21w46b1
 SITREP 11/27/2021|21w47a1
     - Changed TRAP Engine version to 21w47a1(0.7.98)
     - Better utilization of std::string_view ~>30 mins
+
+SITREP 11/28/2021|21w47a2
+    - Changed TRAP Engine version to 21w47a2(0.7.98)
+    - ResourceLoader Replaced volatile int32_t with std::atomic<bool> ~<5 mins
+    - Removed some mutexes as they were unused (Concurrency will be reworked) ~<5 mins

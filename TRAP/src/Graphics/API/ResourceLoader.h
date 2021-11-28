@@ -135,7 +135,7 @@ namespace TRAP::Graphics::API
 
 		RendererAPI::ResourceLoaderDesc m_desc;
 
-		volatile int32_t m_run;
+		std::atomic<bool> m_run;
 		std::thread m_thread;
 
 		std::mutex m_queueMutex;

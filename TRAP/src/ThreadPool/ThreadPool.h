@@ -68,7 +68,7 @@ namespace TRAP
 		Threads m_threads;
 
 		uint32_t m_maxThreadsCount;
-		std::atomic_uint m_index = 0;
+		std::atomic<uint32_t> m_index = 0;
 
 		inline static constexpr uint32_t K = 3;
 	};

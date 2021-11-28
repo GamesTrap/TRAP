@@ -192,7 +192,7 @@ namespace TRAP::Graphics::API
 			std::mutex SubmitMutex;
 
 			//Unlike DirectX 12, Vulkan textures start in undefined layout.
-			//With this, we transition them to the specified layout so app codee doesn't
+			//With this, we transition them to the specified layout so app code doesn't
 			//have to worry about this
 			std::mutex InitialTransitionMutex;
 			TRAP::Ref<VulkanQueue> InitialTransitionQueue;
@@ -257,7 +257,6 @@ namespace TRAP::Graphics::API
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
-		static std::mutex s_pipelineMutex;
 
 		static VulkanRenderer* s_renderer;
 	};

@@ -153,35 +153,33 @@ VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorS
 {
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time
+	std::lock_guard<std::mutex> lockGuard(m_mutex);
+
+	VkDescriptorSetAllocateInfo info = VulkanInits::DescriptorSetAllocateInfo(m_currentPool, layout);
+
+	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+	VkResult res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);
+	if(res != VK_SUCCESS)
 	{
-		std::lock_guard<std::mutex> lockGuard(m_mutex);
+		VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
 
-		VkDescriptorSetAllocateInfo info = VulkanInits::DescriptorSetAllocateInfo(m_currentPool, layout);
+		VkDescriptorPoolCreateInfo poolInfo = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+																					m_numDescriptorSets);
 
-		VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-		VkResult res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);
-		if(res != VK_SUCCESS)
-		{
-			VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+		VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &poolInfo, nullptr, &descriptorPool));
 
-			VkDescriptorPoolCreateInfo poolInfo = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-			                                                                            m_numDescriptorSets);
+		m_descriptorPools.emplace_back(descriptorPool);
 
-			VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &poolInfo, nullptr, &descriptorPool));
+		m_currentPool = descriptorPool;
+		m_usedDescriptorSetCount = 0;
 
-			m_descriptorPools.emplace_back(descriptorPool);
-
-			m_currentPool = descriptorPool;
-			m_usedDescriptorSetCount = 0;
-
-			info.descriptorPool = m_currentPool;
-			res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);
-		}
-
-		TRAP_ASSERT(res == VK_SUCCESS);
-
-		m_usedDescriptorSetCount++;
-
-		return descriptorSet;
+		info.descriptorPool = m_currentPool;
+		res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);
 	}
+
+	TRAP_ASSERT(res == VK_SUCCESS);
+
+	m_usedDescriptorSetCount++;
+
+	return descriptorSet;
 }

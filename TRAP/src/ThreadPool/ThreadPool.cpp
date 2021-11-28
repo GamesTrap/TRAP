@@ -6,7 +6,7 @@
 TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
-	if (!m_maxThreadsCount)
+	if (m_maxThreadsCount == 0)
 	{
 		m_maxThreadsCount = 3; //Fallback to 3 threads
 		m_queues = Queues(3);
@@ -30,7 +30,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 		}
 	};
 
-	for (uint32_t i = 0; i < threads; ++i)
+	for (uint32_t i = 0; i < m_maxThreadsCount; ++i)
 		m_threads.emplace_back(worker, i);
 }
 

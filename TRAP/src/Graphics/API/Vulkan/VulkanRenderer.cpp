@@ -82,7 +82,6 @@ std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
 std::unordered_map<uint64_t,
                    TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
-std::mutex TRAP::Graphics::API::VulkanRenderer::s_pipelineMutex{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -340,7 +339,6 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 	EndGraphicRecording(p);
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
 	{
-		//std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 		if(p->SwapChain)
 			p->SwapChain->ToggleVSync();
 		p->CurrentVSync = p->NewVSync;
@@ -988,8 +986,6 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 
 void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 {
-	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
-
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
 		//Window is already in map
 		return;
@@ -1101,7 +1097,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 
 void TRAP::Graphics::API::VulkanRenderer::RemovePerWindowData(Window* window)
 {
-	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
 		s_perWindowDataMap.erase(window);
 }
@@ -1522,12 +1517,8 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
 #endif
-	{
-		TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
-		//Lock while inserting new Pipeline
-		std::lock_guard<std::mutex> lock(s_pipelineMutex);
-		s_pipelines.insert({ hash, std::move(pipeline) });
-	}
+	TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
+	s_pipelines.insert({ hash, std::move(pipeline) });
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
 #endif

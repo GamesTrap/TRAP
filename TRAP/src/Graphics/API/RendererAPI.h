@@ -1367,7 +1367,6 @@ namespace TRAP::Graphics
 
 	protected:
 		static std::unordered_map<Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;
-		static std::mutex s_perWindowDataMutex;
 
 	private:
 		static bool s_isVulkanCapable;

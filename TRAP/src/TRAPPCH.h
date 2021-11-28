@@ -46,6 +46,8 @@
 #include <cassert>
 #include <numeric>
 #include <variant>
+#include <mutex>
+#include <shared_mutex>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
