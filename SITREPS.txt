@@ -2278,3 +2278,7 @@ SITREP 11/28/2021|21w47a2
     - Changed TRAP Engine version to 21w47a2(0.7.98)
     - ResourceLoader Replaced volatile int32_t with std::atomic<bool> ~<5 mins
     - Removed some mutexes as they were unused (Concurrency will be reworked) ~<5 mins
+
+SITREP 11/29/2021|21w48a1
+    - Changed TRAP Engine version to 21w48a1(0.7.98)
+    - FileSystem now uses std::error_code instead of try/catch ~<20 mins

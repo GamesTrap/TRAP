@@ -75,7 +75,7 @@ namespace TRAP
 		};
 
         /// <summary>
-		/// Read the given file.
+		/// Read the given binary file.
 		///
 		/// Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.
 		/// </summary>
@@ -98,7 +98,7 @@ namespace TRAP
 		static std::string ReadTextFile(const std::filesystem::path& path);
 
         /// <summary>
-		/// Write the given data to the given file path.
+		/// Write the given data as binary to the given file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <param name="buffer">Data to be written.</param>
@@ -223,6 +223,14 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Path to the users documents folder for the game.</returns>
 		static std::filesystem::path GetGameDocumentsFolderPath();
+
+		/// <summary>
+		/// Checks whether the paths p1 and p2 resolve to the same file system file/folder.
+		/// </summary>
+		/// <param name="p1">File/folder path.</param>
+		/// <param name="p2">File/folder path</param>
+		/// <returns>true if the p1 and p2 refer to the same file/folder, false otherwise.</returns>
+		static bool IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
 
     private:
 		/// <summary>

@@ -47,8 +47,7 @@ std::string TRAP::FS::ReadTextFile(const std::filesystem::path& path)
         if (!line.empty() && line.back() == '\r')
             line.pop_back();
 
-        result += line;
-        result += '\n';
+        result += line + '\n';
     }
     file.close();
 
@@ -65,7 +64,7 @@ bool TRAP::FS::WriteFile(const std::filesystem::path& path, std::vector<uint8_t>
         return false;
 
     const std::ios_base::openmode modeFlags = (mode == WriteMode::Overwrite) ? (std::ios::binary | std::ios::trunc) :
-	                                              (std::ios::binary | std::ios::ate);
+	                                                                           (std::ios::binary | std::ios::ate);
     std::ofstream file(path, modeFlags);
     if(!file.is_open() || !file.good())
     {
@@ -114,20 +113,17 @@ bool TRAP::FS::FileOrFolderExists(const std::filesystem::path& path)
     if(path.empty())
         return false;
 
-    try
+    std::error_code ec;
+    bool res = std::filesystem::exists(path, ec);
+
+    if(ec)
     {
-        if(!std::filesystem::exists(path))
-        {
-            TP_WARN(Log::FileSystemPrefix, "File/Folder: ", path.generic_u8string(), " doesn't exist!");
-            return false;
-        }
-    }
-    catch (std::exception&)
-    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if file or folder exists: \"", path.generic_u8string(),
+                 "\" (", ec.message(), ")");
         return false;
     }
 
-    return true;
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -140,33 +136,80 @@ uintmax_t TRAP::FS::GetFileOrFolderSize(const std::filesystem::path& path, const
         return 0;
 
     uintmax_t size = 0;
-    try
+    std::error_code ec;
+    bool res = std::filesystem::is_directory(path, ec);
+
+    if(ec)
     {
-        if(std::filesystem::is_directory(path))
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is a directory: \"", path.generic_u8string(),
+                 "\" (", ec.message(), ")");
+        return 0;
+    }
+    if(!res)
+        return 0;
+
+    const std::filesystem::recursive_directory_iterator rDIt(path, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't create recursive directory iterator: \"", path.generic_u8string(),
+                 "\" (", ec.message(), ")");
+        return 0;
+    }
+    const std::filesystem::directory_iterator dIt(path, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't create directory iterator: \"", path.generic_u8string(),
+                 "\" (", ec.message(), ")");
+        return 0;
+    }
+
+    if(recursive)
+    {
+        for(const auto& entry : rDIt)
         {
-	        const std::filesystem::recursive_directory_iterator rDIt(path);
-	        const std::filesystem::directory_iterator dIt(path);
-            if(recursive)
+            res = entry.is_regular_file(ec);
+            if(ec)
             {
-                for(const auto& entry : rDIt)
-                {
-                    if(!entry.is_directory() && entry.is_regular_file())
-                        size += entry.file_size();
-                }
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is a regular file: \"", entry.path().generic_u8string(),
+                         "\" (", ec.message(), ")");
+                return 0;
             }
-            else
+            if(res)
             {
-                for(const auto& entry : dIt)
+                std::uintmax_t fileSize = entry.file_size(ec);
+                if(ec)
                 {
-                    if(!entry.is_directory() && entry.is_regular_file())
-                        size += entry.file_size();
+                    TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size: \"", entry.path().generic_u8string(),
+                            "\" (", ec.message(), ")");
+                    return 0;
                 }
+                size += fileSize;
             }
         }
     }
-    catch (std::exception&)
+    else
     {
-        return 0;
+        for(const auto& entry : dIt)
+        {
+            res = entry.is_regular_file(ec);
+            if(ec)
+            {
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is a regular file: \"", entry.path().generic_u8string(),
+                         "\" (", ec.message(), ")");
+                return 0;
+            }
+            if(res)
+            {
+                std::uintmax_t fileSize = entry.file_size(ec);
+                if(ec)
+                {
+                    TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size: \"", entry.path().generic_u8string(),
+                            "\" (", ec.message(), ")");
+                    return 0;
+                }
+                size += fileSize;
+            }
+        }
     }
 
     return size;
@@ -181,14 +224,16 @@ std::filesystem::file_time_type TRAP::FS::GetLastWriteTime(const std::filesystem
     if(!FileOrFolderExists(path))
         return std::filesystem::file_time_type::min();
 
-    try
+    std::error_code ec;
+    auto res = std::filesystem::last_write_time(path, ec);
+    if(ec)
     {
-        return std::filesystem::last_write_time(path);
-    }
-    catch (std::exception&)
-    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.generic_u8string(),
+                 "\" (", ec.message(), ")");
         return std::filesystem::file_time_type::min();
     }
+
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -269,17 +314,16 @@ std::filesystem::path TRAP::FS::GetFolderPath(const std::filesystem::path& fileP
 
 std::filesystem::path TRAP::FS::GetTempFolderPath()
 {
-    std::string path;
-    try
+    std::error_code ec;
+    std::filesystem::path path = std::filesystem::temp_directory_path(ec);
+
+    if(ec)
     {
-        path = std::filesystem::temp_directory_path().generic_u8string();
-    }
-    catch (std::exception&)
-    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get temp directory path: \"", path, "\" (", ec.message(), ")");
         return {};
     }
 
-    return std::filesystem::path(path);
+    return path.generic_u8string();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -293,17 +337,16 @@ std::filesystem::path TRAP::FS::GetGameTempFolderPath()
 
 std::filesystem::path TRAP::FS::GetCurrentFolderPath()
 {
-    std::string path;
-    try
+    std::error_code ec;
+    std::filesystem::path path = std::filesystem::current_path(ec);
+
+    if(ec)
     {
-        path = std::filesystem::current_path().generic_u8string();
-    }
-    catch (std::exception&)
-    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get current directory path: \"", path, "\" (", ec.message(), ")");
         return {};
     }
 
-    return std::filesystem::path(path);
+    return path.generic_u8string();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -349,21 +392,79 @@ std::filesystem::path TRAP::FS::GetGameDocumentsFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::FS::IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
+{
+    std::error_code ec;
+    bool res = std::filesystem::equivalent(p1, p2, ec);
+
+    if(ec)
+        TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is equivalent: ", ec.message());
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::FS::Init()
 {
     TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::FileSystemPrefix, "Initializing File System");
 
+    std::error_code ec;
     std::filesystem::path p = GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName();
-    if(!std::filesystem::exists(p))
-        std::filesystem::create_directories(p);
+    bool res = std::filesystem::exists(p, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if temp directory exists: \"", p, "\" (", ec.message(), ")");
+        return;
+    }
+    if(!res)
+    {
+        res = std::filesystem::create_directories(p, ec);
+        if(ec || !res)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't create temp directory: \"", p, "\"",
+                     (res ? "" : (" (" + ec.message() + ")")));
+            return;
+        }
+    }
+
     p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName();
-    if(!std::filesystem::exists(p))
-        std::filesystem::create_directories(p);
+    res = std::filesystem::exists(p, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if games document directory exists: \"", p, "\" (", ec.message(), ")");
+        return;
+    }
+    if(!res)
+    {
+        res = std::filesystem::create_directories(p, ec);
+        if(ec || !res)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't create games document directory: \"", p, "\"",
+                     (res ? "" : (" (" + ec.message() + ")")));
+            return;
+        }
+    }
+
     p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "logs";
-    if(!std::filesystem::exists(p))
-        std::filesystem::create_directories(p);
+    res = std::filesystem::exists(p, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if games log directory exists: \"", p, "\" (", ec.message(), ")");
+        return;
+    }
+    if(!res)
+    {
+        res = std::filesystem::create_directories(p);
+        if(ec || !res)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't create games log directory: \"", p, "\"",
+                     (res ? "" : (" (" + ec.message() + ")")));
+            return;
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
