@@ -27,12 +27,16 @@ namespace TRAP::Utils::Memory
 template<>
 inline void TRAP::Utils::Memory::SwapBytes<float>(float& t)
 {
-	uint32_t ui32 = *reinterpret_cast<uint32_t*>(&t);
+	float res;
+    uint8_t* floatToConvert = reinterpret_cast<uint8_t*>(&t);
+    uint8_t* returnFloat = reinterpret_cast<uint8_t*>(&res);
 
-	ui32 = (((ui32 & 0xFF000000) >> 24) | ((ui32 & 0x00FF0000) >>  8) |
-	        ((ui32 & 0x0000FF00) <<  8) | ((ui32 & 0x000000FF) << 24));
+    returnFloat[0] = floatToConvert[3];
+    returnFloat[1] = floatToConvert[2];
+    returnFloat[2] = floatToConvert[1];
+    returnFloat[3] = floatToConvert[0];
 
-	t = *reinterpret_cast<float*>(&ui32);
+	t = res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -44,14 +48,20 @@ inline void TRAP::Utils::Memory::SwapBytes<float>(float& t)
 template<>
 inline void TRAP::Utils::Memory::SwapBytes<double>(double& t)
 {
-	uint64_t ui64 = *reinterpret_cast<uint64_t*>(&t);
+	double res;
+    uint8_t* floatToConvert = reinterpret_cast<uint8_t*>(&t);
+    uint8_t* returnFloat = reinterpret_cast<uint8_t*>(&res);
 
-	ui64 = ((ui64 <<  8) & 0xFF00FF00FF00FF00ULL) | ((ui64 >>  8) & 0x00FF00FF00FF00FFULL);
-	ui64 = ((ui64 << 16) & 0xFFFF0000FFFF0000ULL) | ((ui64 >> 16) & 0x0000FFFF0000FFFFULL);
+    returnFloat[0] = floatToConvert[7];
+    returnFloat[1] = floatToConvert[6];
+    returnFloat[2] = floatToConvert[5];
+    returnFloat[3] = floatToConvert[4];
+    returnFloat[4] = floatToConvert[3];
+    returnFloat[5] = floatToConvert[2];
+    returnFloat[6] = floatToConvert[1];
+    returnFloat[7] = floatToConvert[0];
 
-	ui64 = (ui64 << 32) | (ui64 >> 32);
-
-	t = *reinterpret_cast<double*>(&ui64);
+	t = res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

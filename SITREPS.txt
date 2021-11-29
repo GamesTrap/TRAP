@@ -2282,3 +2282,4 @@ SITREP 11/28/2021|21w47a2
 SITREP 11/29/2021|21w48a1
     - Changed TRAP Engine version to 21w48a1(0.7.98)
     - FileSystem now uses std::error_code instead of try/catch ~<20 mins
+    - ByteSwap Fixed float & double strict aliasing violation ~<15 mins
