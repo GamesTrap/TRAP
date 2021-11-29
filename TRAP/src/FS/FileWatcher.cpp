@@ -112,7 +112,18 @@ void TRAP::FileWatcher::Shutdown()
     SetEvent(m_killEvent);
 #elif defined(TRAP_PLATFORM_LINUX)
     uint64_t value = 1;
-    write(m_killEvent, &value, sizeof(value));
+    ssize_t toSend = sizeof(value);
+    do
+    {
+        ssize_t res = write(m_killEvent, &value, sizeof(value));
+        if(res == -1)
+        {
+            TP_ERROR(Log::FileWatcherLinuxPrefix, "Error writing to eventfd");
+            m_thread.detach();
+            return;
+        }
+        toSend -= res;
+    } while (toSend > 0);
 #endif
 
     if (m_thread.joinable())
