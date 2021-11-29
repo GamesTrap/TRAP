@@ -294,7 +294,7 @@ constexpr void TP_DEBUG(const Args& ... args)
 /// </summary>
 /// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
-constexpr void TP_DEBUG(const Args& ... args)
+constexpr void TP_DEBUG([[maybe_unused]] const Args& ... args)
 {
 }
 #endif
