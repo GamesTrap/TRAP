@@ -2292,3 +2292,4 @@ SITREP 12/01/2021|21w48a2
     - Moved TRAP::FileWatcher to TRAP::FS::FileWatcher ~<10 mins
     - FS Removed some deprecated functions related to hot reloading ~<5 mins
     - Application Added GetHotReloadingFileWatcher, IsHotReloadingEnabled & SetHotReloading ~<20 mins
+    - FS Added IsPathAbsolute, IsPathRelative, ToAbsolutePath & ToRelativePath ~<20 mins

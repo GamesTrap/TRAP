@@ -459,6 +459,82 @@ bool TRAP::FS::IsPathEquivalent(const std::filesystem::path& p1, const std::file
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::FS::IsPathAbsolute(const std::filesystem::path& p)
+{
+    try
+    {
+        return p.is_absolute();
+
+    }
+    catch(const std::exception& e)
+    {
+
+        TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is absolute: ", e.what());
+        return false;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::IsPathRelative(const std::filesystem::path& p)
+{
+    try
+    {
+        return p.is_relative();
+
+    }
+    catch(const std::exception& e)
+    {
+
+        TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is relative: ", e.what());
+        return false;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::filesystem::path TRAP::FS::ToAbsolutePath(const std::filesystem::path& p)
+{
+    if(p.is_absolute())
+        return p;
+
+    std::error_code ec;
+    std::filesystem::path res = std::filesystem::absolute(p, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to absolute: ", ec.message());
+        return {};
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::filesystem::path TRAP::FS::ToRelativePath(const std::filesystem::path& p)
+{
+    if(p.is_relative())
+        return p;
+
+    std::error_code ec;
+    std::filesystem::path res = std::filesystem::proximate(p, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Error while converting path to relative: ", ec.message());
+        return {};
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef TRAP_PLATFORM_LINUX
 
 /// <summary>

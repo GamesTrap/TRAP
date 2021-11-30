@@ -184,6 +184,31 @@ namespace TRAP
 		/// <param name="p2">File/folder path</param>
 		/// <returns>true if the p1 and p2 refer to the same file/folder, false otherwise.</returns>
 		bool IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
+		/// <summary>
+		/// Get whether the path p is an absolute path or not.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path is absolute, false otherwise.</returns>
+		bool IsPathAbsolute(const std::filesystem::path& p);
+		/// <summary>
+		/// Get whether the path p is a relative path or not.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path is relative, false otherwise.</returns>
+		bool IsPathRelative(const std::filesystem::path& p);
+
+		/// <summary>
+		/// Converts a path to an absolute path.
+		/// </summary>
+		/// <param name="p">Path to convert.</param>
+		/// <returns>Absolute path on success, empty path otherwise.</returns>
+		std::filesystem::path ToAbsolutePath(const std::filesystem::path& p);
+		/// <summary>
+		/// Converts a path to a relative path.
+		/// </summary>
+		/// <param name="p">Path to convert.</param>
+		/// <returns>Relative path on success, empty path otherwise.</returns>
+		std::filesystem::path ToRelativePath(const std::filesystem::path& p);
     };
 }
 
