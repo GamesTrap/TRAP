@@ -3,7 +3,7 @@
 
 #include "FS/FileWatcher.h"
 
-TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileWatcher::FileStatus status, std::filesystem::path path,
+TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FS::FileStatus status, std::filesystem::path path,
                                                std::filesystem::path oldName)
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
 {
@@ -11,7 +11,7 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileWatcher::FileStatus sta
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
+TRAP::FS::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
 {
     return m_status;
 }
@@ -68,20 +68,20 @@ TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FileWatcher::FileStatus status) const
+std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FS::FileStatus status) const
 {
     switch(status)
     {
-    case TRAP::FileWatcher::FileStatus::Created:
+    case TRAP::FS::FileStatus::Created:
         return "Created";
 
-    case TRAP::FileWatcher::FileStatus::Renamed:
+    case TRAP::FS::FileStatus::Renamed:
         return "Renamed";
 
-    case TRAP::FileWatcher::FileStatus::Modified:
+    case TRAP::FS::FileStatus::Modified:
         return "Modified";
 
-    case TRAP::FileWatcher::FileStatus::Erased:
+    case TRAP::FS::FileStatus::Erased:
         return "Erased";
 
     default:

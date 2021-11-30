@@ -162,11 +162,11 @@ TRAP::Application::~Application()
 
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 	TRAP::Utils::Discord::Destroy();
-	if(m_hotReloadingThread)
-	{
-		m_hotReloadingThread->join();
-		m_hotReloadingThread.reset();
-	}
+	// if(m_hotReloadingThread)
+	// {
+	// 	m_hotReloadingThread->join();
+	// 	m_hotReloadingThread.reset();
+	// }
 	Input::Shutdown();
 	TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
 	m_layerStack.reset();
@@ -259,14 +259,14 @@ void TRAP::Application::Run()
 			Graphics::RenderCommand::Present(m_window.get());
 		TRAP::Window::OnUpdate();
 
-		if (!m_hotReloadingThread && (FS::GetHotShaderReloading() || FS::GetHotTextureReloading()))
-		{
-			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading,
-			                                                    std::ref(m_hotReloadingShaderPaths),
-																std::ref(m_hotReloadingTexturePaths),
-																std::ref(m_running));
-		}
-		UpdateHotReloading();
+		// if (!m_hotReloadingThread && (FS::GetHotShaderReloading() || FS::GetHotTextureReloading()))
+		// {
+		// 	m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading,
+		// 	                                                    std::ref(m_hotReloadingShaderPaths),
+		// 														std::ref(m_hotReloadingTexturePaths),
+		// 														std::ref(m_running));
+		// }
+		// UpdateHotReloading();
 
 		//FPSLimiter
 		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))

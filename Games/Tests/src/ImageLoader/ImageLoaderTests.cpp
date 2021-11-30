@@ -100,7 +100,7 @@ void ImageLoaderTests::OnImGuiRender()
 void ImageLoaderTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("ImageLoader");
-	TRAP::FS::SetHotTextureReloading(true);
+	// TRAP::FS::SetHotTextureReloading(true);
 
 	//Load Textures
 	const TRAP::Utils::Timer loadingTimer;

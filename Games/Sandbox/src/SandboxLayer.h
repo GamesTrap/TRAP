@@ -50,8 +50,8 @@ public:
 
 		m_fileWatcher.SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
 
-		TRAP::FS::SetHotTextureReloading(true);
-		TRAP::FS::SetHotShaderReloading(true);
+		// TRAP::FS::SetHotTextureReloading(true);
+		// TRAP::FS::SetHotShaderReloading(true);
 
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 
@@ -300,7 +300,7 @@ private:
 	TRAP::Graphics::Texture* m_texture{};
 	TRAP::Graphics::Shader* m_shader{};
 
-	TRAP::FileWatcher m_fileWatcher;
+	TRAP::FS::FileWatcher m_fileWatcher;
 };
 
 #endif /*GAMESTRAP_SANDBOXLAYER_H*/

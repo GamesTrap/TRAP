@@ -1,27 +1,27 @@
 #ifndef TRAP_FILEWATCHER_H
 #define TRAP_FILEWATCHER_H
 
-namespace TRAP //TODO Put into FS namespace
+namespace TRAP::Events
 {
-    namespace Events
+    class Event;
+}
+
+namespace TRAP::FS
+{
+    /// <summary>
+    /// Specifies the status of a file.
+    /// </summary>
+    enum class FileStatus
     {
-        class Event;
-    }
+        Created,
+        Renamed,
+        Modified,
+        Erased
+    };
 
     class FileWatcher
     {
     public:
-        /// <summary>
-        /// Specifies the status of a file.
-        /// </summary>
-        enum class FileStatus
-        {
-            Created,
-            Renamed,
-            Modified,
-            Erased
-        };
-
         /// <summary>
 		/// Describes a callback function which gets called when an input event occurs.
 		/// </summary>

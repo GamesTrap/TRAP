@@ -1,6 +1,86 @@
 #include "TRAPPCH.h"
 #include "FS.h"
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string GetHomeFolderPathLinux();
+std::string GetDocumentsFolderPathLinux();
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::FS::Init()
+{
+    TP_PROFILE_FUNCTION();
+
+	TP_DEBUG(Log::FileSystemPrefix, "Initializing File System");
+
+    std::error_code ec;
+    std::filesystem::path p = GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName();
+    bool res = std::filesystem::exists(p, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if temp directory exists: \"", p, "\" (", ec.message(), ")");
+        return;
+    }
+    if(!res)
+    {
+        res = std::filesystem::create_directories(p, ec);
+        if(ec || !res)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't create temp directory: \"", p, "\"",
+                     (res ? "" : (" (" + ec.message() + ")")));
+            return;
+        }
+    }
+
+    p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName();
+    res = std::filesystem::exists(p, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if games document directory exists: \"", p, "\" (", ec.message(), ")");
+        return;
+    }
+    if(!res)
+    {
+        res = std::filesystem::create_directories(p, ec);
+        if(ec || !res)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't create games document directory: \"", p, "\"",
+                     (res ? "" : (" (" + ec.message() + ")")));
+            return;
+        }
+    }
+
+    p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "logs";
+    res = std::filesystem::exists(p, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if games log directory exists: \"", p, "\" (", ec.message(), ")");
+        return;
+    }
+    if(!res)
+    {
+        res = std::filesystem::create_directories(p);
+        if(ec || !res)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't create games log directory: \"", p, "\"",
+                     (res ? "" : (" (" + ec.message() + ")")));
+            return;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::FS::Shutdown()
+{
+    TP_PROFILE_FUNCTION();
+
+	TP_DEBUG(Log::FileSystemPrefix, "Shutting down File System");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<uint8_t> TRAP::FS::ReadFile(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
@@ -238,32 +318,6 @@ std::filesystem::file_time_type TRAP::FS::GetLastWriteTime(const std::filesystem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::GetHotShaderReloading()
-{
-    return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::FS::SetHotShaderReloading(const bool)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::FS::GetHotTextureReloading()
-{
-    return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::FS::SetHotTextureReloading(const bool)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::string TRAP::FS::GetFileNameWithEnding(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
@@ -405,87 +459,130 @@ bool TRAP::FS::IsPathEquivalent(const std::filesystem::path& p1, const std::file
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::Init()
+#ifdef TRAP_PLATFORM_LINUX
+
+/// <summary>
+/// Retrieves the effective user's home dir.
+/// If the user is running as root we ignore the HOME environment.
+/// It works badly with sudo.
+///
+/// Note: Writing to $HOME as root implies security concerns that a multiplatform program
+///       cannot be assumed to handle.
+/// </summary>
+/// <returns>
+/// The home directory.
+/// HOME environment is respected for non-root users if it exists.
+/// </returns>
+std::string GetHomeFolderPathLinux()
 {
-    TP_PROFILE_FUNCTION();
+    static std::string homeDir{};
 
-	TP_DEBUG(Log::FileSystemPrefix, "Initializing File System");
+    if(!homeDir.empty())
+        return homeDir;
 
-    std::error_code ec;
-    std::filesystem::path p = GetTempFolderPath() / "TRAP" / TRAP::Application::GetGameName();
-    bool res = std::filesystem::exists(p, ec);
-    if(ec)
+    int uid = getuid();
+    const char* homeEnv = std::getenv("HOME");
+    if(uid != 0 && homeEnv)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if temp directory exists: \"", p, "\" (", ec.message(), ")");
-        return;
-    }
-    if(!res)
-    {
-        res = std::filesystem::create_directories(p, ec);
-        if(ec || !res)
-        {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't create temp directory: \"", p, "\"",
-                     (res ? "" : (" (" + ec.message() + ")")));
-            return;
-        }
+        //We only acknowledge HOME if not root.
+        homeDir = homeEnv;
+        return homeDir;
     }
 
-    p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName();
-    res = std::filesystem::exists(p, ec);
-    if(ec)
+    passwd* pw = nullptr;
+    passwd pwd;
+    int32_t bufSize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if(bufSize < 0)
+        bufSize = 16384;
+    std::vector<char> buffer{};
+    buffer.resize(bufSize);
+    int32_t errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
+    if(errorCode)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if games document directory exists: \"", p, "\" (", ec.message(), ")");
-        return;
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")");
+        return {};
     }
-    if(!res)
+    const char* tempRes = pw->pw_dir;
+    if(!tempRes)
     {
-        res = std::filesystem::create_directories(p, ec);
-        if(ec || !res)
-        {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't create games document directory: \"", p, "\"",
-                     (res ? "" : (" (" + ec.message() + ")")));
-            return;
-        }
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")");
+        return {};
     }
+    homeDir = tempRes;
 
-    p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "logs";
-    res = std::filesystem::exists(p, ec);
-    if(ec)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if games log directory exists: \"", p, "\" (", ec.message(), ")");
-        return;
-    }
-    if(!res)
-    {
-        res = std::filesystem::create_directories(p);
-        if(ec || !res)
-        {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't create games log directory: \"", p, "\"",
-                     (res ? "" : (" (" + ec.message() + ")")));
-            return;
-        }
-    }
+    return homeDir;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::Shutdown()
+/// <summary>
+/// Retrieves the effective user's document dir.
+/// If the user is running as root we ignore the HOME environment.
+/// It works badly with sudo.
+///
+/// Note: Writing to $HOME as root implies security concerns that a multiplatform program
+///       cannot be assumed to handle.
+/// </summary>
+/// <returns>
+/// The document directory.
+/// HOME environment is respected for non-root users if it exists.
+/// </returns>
+std::string GetDocumentsFolderPathLinux()
 {
-    TP_PROFILE_FUNCTION();
+    static std::string documentsDir{};
 
-	TP_DEBUG(Log::FileSystemPrefix, "Shutting down File System");
+    if(!documentsDir.empty())
+        return documentsDir;
+
+    documentsDir = "$HOME/Documents";
+
+    //Get config folder
+    const char* tempRes = std::getenv("XDG_CONFIG_HOME");
+    std::string configPath{};
+    if(tempRes)
+        configPath = tempRes;
+    else
+        configPath = GetHomeFolderPathLinux() + "/.config";
+    configPath += "/user-dirs.dirs";
+
+    //Get Documents folder
+    std::ifstream file(configPath);
+    if(file.is_open() && file.good())
+    {
+        std::string line;
+        while(std::getline(file, line))
+        {
+            //Skip invalid entries and comments
+            if(line.empty() || line[0] == '#' || line.substr(0, 4) != "XDG_" || line.find("_DIR") == std::string::npos)
+                continue;
+            std::size_t splitPos = line.find('=');
+            if(splitPos == std::string::npos)
+                continue;
+            std::string key = line.substr(0, splitPos);
+            if(key != "XDG_DOCUMENTS_DIR") //Only interested in documents folder
+                continue;
+            std::size_t valueStart = line.find('"', splitPos);
+            if(valueStart == std::string::npos)
+                continue;
+            std::size_t valueEnd = line.find('"', valueStart + 1);
+            if(valueEnd == std::string::npos)
+                continue;
+            documentsDir = line.substr(valueStart + 1, valueEnd - valueStart - 1);
+            break;
+        }
+    }
+    else
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get documents folder path");
+        return {};
+    }
+    file.close();
+
+    if(documentsDir.compare(0, 5, "$HOME") == 0)
+        documentsDir = GetHomeFolderPathLinux() + documentsDir.substr(5, std::string::npos);
+    TP_TRACE("DocumentsDir: ", documentsDir);
+
+    //Finally
+    return documentsDir;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::FileWatcher* TRAP::FS::GetShaderFileWatcher()
-{
-    return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::FileWatcher* TRAP::FS::GetTextureFileWatcher()
-{
-    return nullptr;
-}
+#endif

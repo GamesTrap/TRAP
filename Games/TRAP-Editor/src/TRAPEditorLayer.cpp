@@ -134,8 +134,8 @@ void TRAPEditorLayer::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("TRAP Editor");
 
 	//Enable Developer features
-	TRAP::FS::SetHotShaderReloading(true);
-	TRAP::FS::SetHotTextureReloading(true);
+	// TRAP::FS::SetHotShaderReloading(true);
+	// TRAP::FS::SetHotTextureReloading(true);
 
 	//Setup Viewport FrameBuffer
 	const TRAP::Graphics::FrameBufferProps frameBufferProps{ 1280, 720, 1, false };

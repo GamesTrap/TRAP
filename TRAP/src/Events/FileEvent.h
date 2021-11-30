@@ -18,7 +18,7 @@ namespace TRAP::Events
         /// <param name="status">Status of the provided file or folder.</param>
         /// <param name="path">Path to a file or folder.</param>
         /// <param name="oldName">Old name of the file or folder. Only if FileStatus::Renamed.</param>
-		FileChangeEvent(TRAP::FileWatcher::FileStatus status, std::filesystem::path path,
+		FileChangeEvent(TRAP::FS::FileStatus status, std::filesystem::path path,
                         std::filesystem::path oldName = "");
 		/// <summary>
 		/// Destructor.
@@ -45,7 +45,7 @@ namespace TRAP::Events
         /// Get the status of the file.
         /// </summary>
         /// <returns>The status of the file.</returns>
-        TRAP::FileWatcher::FileStatus GetStatus() const;
+        TRAP::FS::FileStatus GetStatus() const;
         /// <summary>
         /// Get the path of the file.
         /// </summary>
@@ -86,9 +86,9 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-        std::string FileStatusToString(TRAP::FileWatcher::FileStatus status) const;
+        std::string FileStatusToString(TRAP::FS::FileStatus status) const;
 
-        TRAP::FileWatcher::FileStatus m_status;
+        TRAP::FS::FileStatus m_status;
         std::filesystem::path m_path;
         std::filesystem::path m_oldName;
 	};

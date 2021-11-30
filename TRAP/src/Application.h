@@ -12,8 +12,6 @@ int main();
 
 namespace TRAP
 {
-	class FS;
-
 	namespace Events
 	{
 		class WindowRestoreEvent;
@@ -228,7 +226,6 @@ namespace TRAP
 		/// Tries to reload every modified shader/texture that was set by ProcessHotReloading.
 		/// </summary>
 		void UpdateHotReloading();
-		Scope<std::thread> m_hotReloadingThread;
 		std::vector<std::string> m_hotReloadingShaderPaths;
 		std::vector<std::string> m_hotReloadingTexturePaths;
 		std::mutex m_hotReloadingMutex;
@@ -259,7 +256,6 @@ namespace TRAP
 		static Application* s_Instance;
 
 		friend int ::main();
-		friend class TRAP::FS;
 	};
 
 	//To be defined in CLIENT

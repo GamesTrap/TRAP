@@ -3,7 +3,7 @@
 
 #include "Events/FileEvent.h"
 
-TRAP::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
+TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
     AddFolders(paths);
@@ -12,7 +12,7 @@ TRAP::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
+TRAP::FS::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
     AddFolder(path);
@@ -21,42 +21,42 @@ TRAP::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool rec
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher::~FileWatcher()
+TRAP::FS::FileWatcher::~FileWatcher()
 {
     Shutdown();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::SkipNextFileChange()
+void TRAP::FS::FileWatcher::SkipNextFileChange()
 {
     m_skipNextFileChange = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
+void TRAP::FS::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
 {
     m_callback = callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher::EventCallbackFn TRAP::FileWatcher::GetEventCallback()
+TRAP::FS::FileWatcher::EventCallbackFn TRAP::FS::FileWatcher::GetEventCallback()
 {
     return m_callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::AddFolder(const std::filesystem::path& path)
+void TRAP::FS::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
     AddFolders({path});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
+void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
     for (const auto& path : paths)
     {
@@ -67,14 +67,14 @@ void TRAP::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::RemoveFolder(const std::filesystem::path& path)
+void TRAP::FS::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
     RemoveFolders({path});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
+void TRAP::FS::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
     Shutdown();
     for(const auto& path : paths)
@@ -84,14 +84,14 @@ void TRAP::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::filesystem::path> TRAP::FileWatcher::GetFolders() const
+std::vector<std::filesystem::path> TRAP::FS::FileWatcher::GetFolders() const
 {
     return m_paths;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::Init()
+void TRAP::FS::FileWatcher::Init()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
     m_killEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
@@ -99,12 +99,12 @@ void TRAP::FileWatcher::Init()
     m_killEvent = eventfd(0, 0);
 #endif
 
-    m_thread = std::thread(&TRAP::FileWatcher::Watch, this);
+    m_thread = std::thread(&TRAP::FS::FileWatcher::Watch, this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::Shutdown()
+void TRAP::FS::FileWatcher::Shutdown()
 {
     m_run = false;
 
@@ -132,7 +132,7 @@ void TRAP::FileWatcher::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::Watch()
+void TRAP::FS::FileWatcher::Watch()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
     WatchWindows();
@@ -143,7 +143,7 @@ void TRAP::FileWatcher::Watch()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::WatchWindows()
+void TRAP::FS::FileWatcher::WatchWindows()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
     std::vector<Events::FileChangeEvent> events;
@@ -277,7 +277,7 @@ void TRAP::FileWatcher::WatchWindows()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FileWatcher::WatchLinux()
+void TRAP::FS::FileWatcher::WatchLinux()
 {
 #ifdef TRAP_PLATFORM_LINUX
     std::vector<Events::FileChangeEvent> events;

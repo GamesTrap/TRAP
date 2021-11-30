@@ -33,38 +33,8 @@
 
 namespace TRAP
 {
-    class FS final //TODO Make this a namespace
+	namespace FS
     {
-    private:
-        /// <summary>
-		/// Constructor.
-		/// </summary>
-		FS() = default;
-
-	public:
-		/// <summary>
-		///	Destructor.
-		/// </summary>
-		~FS() = default;
-
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		FS(const FS&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		FS& operator=(const FS&) = delete;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		FS(FS&&) = delete;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		FS& operator=(FS&&) = delete;
-
-    public:
         /// <summary>
 		/// Write mode to be used by writing operations.
 		/// </summary>
@@ -73,6 +43,15 @@ namespace TRAP
 			Overwrite,
 			Append
 		};
+
+		/// <summary>
+		/// Initializes the File System.
+		/// </summary>
+		void Init();
+		/// <summary>
+		/// Shuts down the File System.
+		/// </summary>
+		void Shutdown();
 
         /// <summary>
 		/// Read the given binary file.
@@ -84,7 +63,7 @@ namespace TRAP
 		/// Vector with file content on success.
 		/// Empty vector if an error has occurred.
 		/// </returns>
-		static std::vector<uint8_t> ReadFile(const std::filesystem::path& path);
+		std::vector<uint8_t> ReadFile(const std::filesystem::path& path);
         /// <summary>
 		/// Read the given text file.
 		///
@@ -95,7 +74,7 @@ namespace TRAP
 		/// String with file content on success.
 		/// Empty string if an error has occurred.
 		/// </returns>
-		static std::string ReadTextFile(const std::filesystem::path& path);
+		std::string ReadTextFile(const std::filesystem::path& path);
 
         /// <summary>
 		/// Write the given data as binary to the given file path.
@@ -104,8 +83,8 @@ namespace TRAP
 		/// <param name="buffer">Data to be written.</param>
 		/// <param name="mode">Write mode to use.</param>
 		/// <returns>True if path could be resolved and data has been written, false otherwise.</returns>
-		static bool WriteFile(const std::filesystem::path& path, std::vector<uint8_t>& buffer,
-		                      WriteMode mode = WriteMode::Overwrite);
+		bool WriteFile(const std::filesystem::path& path, std::vector<uint8_t>& buffer,
+		               WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given file path.
 		/// </summary>
@@ -113,8 +92,8 @@ namespace TRAP
 		/// <param name="text">Text to be written.</param>
 		/// <param name="mode">Write mode to use.</param>
 		/// <returns>True if path could be resolved and text has been written, false otherwise.</returns>
-		static bool WriteTextFile(const std::filesystem::path& path, const std::string_view text,
-		                          WriteMode mode = WriteMode::Overwrite);
+		bool WriteTextFile(const std::filesystem::path& path, const std::string_view text,
+		                   WriteMode mode = WriteMode::Overwrite);
 
         /// <summary>
 		/// Check if a file or folder exists.
@@ -126,7 +105,7 @@ namespace TRAP
 		/// True if file or folder exists.
 		/// False if file or folder doesn't exist or an error has occurred.
 		/// </returns>
-		static bool FileOrFolderExists(const std::filesystem::path& path);
+		bool FileOrFolderExists(const std::filesystem::path& path);
 		/// <summary>
 		/// Get the size of an file or folder in bytes.
 		/// </summary>
@@ -135,7 +114,7 @@ namespace TRAP
 		/// File or folder size in bytes.
 		/// 0 if an error has occurred.
 		/// </returns>
-		static uintmax_t GetFileOrFolderSize(const std::filesystem::path& path, bool recursive = true);
+		uintmax_t GetFileOrFolderSize(const std::filesystem::path& path, bool recursive = true);
         /// <summary>
 		/// Get the last write time of a file or folder.
 		/// </summary>
@@ -144,85 +123,59 @@ namespace TRAP
 		/// Last write time of the file or folder.
 		/// std::filesystem::file_time_type::min() if an error has occurred.
 		/// </returns>
-		static std::filesystem::file_time_type GetLastWriteTime(const std::filesystem::path& path);
-
-        /// <summary>
-		/// Get status of hot shader reloading.
-		/// </summary>
-		/// <returns>True if hot shader reloading is enabled, false otherwise.</returns>
-        [[deprecated("Will soon be replaced by TRAP::FS::GetHotReloading()")]]
-		static bool GetHotShaderReloading();
-		/// <summary>
-		/// Set status of hot shader reloading.
-		/// </summary>
-		/// <param name="enabled">Whether to enable or disable hot shader reloading.</param>
-        [[deprecated("Will soon be replaced by TRAP::FS::SetHotReloading()")]]
-		static void SetHotShaderReloading(bool enabled);
-
-        /// <summary>
-		/// Get status of hot texture reloading.
-		/// </summary>
-		/// <returns>True if hot texture reloading is enabled, false otherwise.</returns>
-        [[deprecated("Will soon be replaced by TRAP::FS::GetHotReloading()")]]
-		static bool GetHotTextureReloading();
-		/// <summary>
-		/// Set status of hot texture reloading.
-		/// </summary>
-		/// <param name="enabled">Whether to enable or disable hot texture reloading.</param>
-        [[deprecated("Will soon be replaced by TRAP::FS::SetHotReloading()")]]
-		static void SetHotTextureReloading(bool enabled);
+		std::filesystem::file_time_type GetLastWriteTime(const std::filesystem::path& path);
 
         /// <summary>
 		/// Get only the filename without its folders from a file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <returns>String only containing the filename without its folders.</returns>
-		static std::string GetFileNameWithEnding(const std::filesystem::path& path);
+		std::string GetFileNameWithEnding(const std::filesystem::path& path);
         /// <summary>
 		/// Get only the filename without its folders and ending/suffix from a file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <returns>String only containing the filename without its folders and file ending.</returns>
-		static std::string GetFileName(const std::filesystem::path& path);
+		std::string GetFileName(const std::filesystem::path& path);
         /// <summary>
 		/// Get only the file ending without its name from a file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <returns>String only containing the file ending without its file name.</returns>
-		static std::string GetFileEnding(const std::filesystem::path& path);
+		std::string GetFileEnding(const std::filesystem::path& path);
 
 		/// <summary>
 		/// Get only the folders without the filename and its ending.
 		/// </summary>
 		/// <param name="filePath">File path.</param>
 		/// <returns>Folder path from file path.</returns>
-		static std::filesystem::path GetFolderPath(const std::filesystem::path& filePath);
+		std::filesystem::path GetFolderPath(const std::filesystem::path& filePath);
 
         /// <summary>
 		/// Get the path to the temp folder.
 		/// </summary>
 		/// <returns>Path to the temp folder.</returns>
-		static std::filesystem::path GetTempFolderPath();
+		std::filesystem::path GetTempFolderPath();
         /// <summary>
 		/// Get the path to the temp folder of the game.
 		/// </summary>
 		/// <returns>Path to the temp folder.</returns>
-		static std::filesystem::path GetGameTempFolderPath();
+		std::filesystem::path GetGameTempFolderPath();
 		/// <summary>
 		/// Get the path to the current working folder.
 		/// </summary>
 		/// <returns>Path to the current working folder.</returns>
-		static std::filesystem::path GetCurrentFolderPath();
+		std::filesystem::path GetCurrentFolderPath();
 		/// <summary>
 		/// Get the path to the users documents folder.
 		/// </summary>
 		/// <returns>Path to the users documents folder.</returns>
-		static std::filesystem::path GetDocumentsFolderPath();
+		std::filesystem::path GetDocumentsFolderPath();
 		/// <summary>
 		/// Get the path to the users documents folder for the game.
 		/// </summary>
 		/// <returns>Path to the users documents folder for the game.</returns>
-		static std::filesystem::path GetGameDocumentsFolderPath();
+		std::filesystem::path GetGameDocumentsFolderPath();
 
 		/// <summary>
 		/// Checks whether the paths p1 and p2 resolve to the same file system file/folder.
@@ -230,51 +183,7 @@ namespace TRAP
 		/// <param name="p1">File/folder path.</param>
 		/// <param name="p2">File/folder path</param>
 		/// <returns>true if the p1 and p2 refer to the same file/folder, false otherwise.</returns>
-		static bool IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
-
-    private:
-		/// <summary>
-		/// Initializes the File System.
-		/// </summary>
-		static void Init();
-		/// <summary>
-		/// Shuts down the File System.
-		/// </summary>
-		static void Shutdown();
-		friend TRAP::Application::Application(std::string);
-		friend TRAP::Application::~Application();
-
-#ifdef TRAP_PLATFORM_LINUX
-		/// <summary>
-		/// Retrieves the effective user's home dir.
-		/// If the user is running as root we ignore the HOME environment.
-		/// It works badly with sudo.
-		///
-		/// Note: Writing to $HOME as root implies security concerns that a multiplatform program
-		///       cannot be assumed to handle.
-		/// </summary>
-		/// <returns>
-		/// The home directory.
-		/// HOME environment is respected for non-root users if it exists.
-		/// </returns>
-		static std::string GetHomeFolderPathLinux();
-		static std::string GetDocumentsFolderPathLinux();
-#endif
-
-        /// <summary>
-		/// Get a pointer to the file watcher instance used for hot shader reloading.
-		/// </summary>
-		/// <returns>Pointer to the hot shader reloading file watcher.</returns>
-        [[deprecated("Will soon be removed")]]
-		static FileWatcher* GetShaderFileWatcher();
-		/// <summary>
-		/// Get a pointer to the file watcher instance used for hot texture reloading.
-		/// </summary>
-		/// <returns>Pointer to the hot texture reloading file watcher.</returns>
-		static FileWatcher* GetTextureFileWatcher();
-        [[deprecated("Will soon be removed")]]
-        friend void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders,
-		                                                   std::vector<std::string>& textures, const bool& run);
+		bool IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
     };
 }
 
