@@ -6,6 +6,12 @@
 TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
+    if(paths.empty())
+    {
+        m_run = false;
+        return;
+    }
+
     AddFolders(paths);
     Init();
 }
@@ -15,6 +21,12 @@ TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& pat
 TRAP::FS::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
+    if(path.empty())
+    {
+        m_run = false;
+        return;
+    }
+
     AddFolder(path);
     Init();
 }
@@ -51,6 +63,9 @@ TRAP::FS::FileWatcher::EventCallbackFn TRAP::FS::FileWatcher::GetEventCallback()
 
 void TRAP::FS::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
+    if(path.empty())
+        return;
+
     AddFolders({path});
 }
 
@@ -58,17 +73,26 @@ void TRAP::FS::FileWatcher::AddFolder(const std::filesystem::path& path)
 
 void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
+    if(paths.empty())
+        return;
+
+    Shutdown();
     for (const auto& path : paths)
     {
         if(std::find(m_paths.begin(), m_paths.end(), path) == m_paths.end())
             m_paths.emplace_back(path);
     }
+    if(!m_paths.empty())
+        Init();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::FS::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
+    if(path.empty())
+        return;
+
     RemoveFolders({path});
 }
 
@@ -76,10 +100,14 @@ void TRAP::FS::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 
 void TRAP::FS::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
+    if(paths.empty())
+        return;
+
     Shutdown();
     for(const auto& path : paths)
         m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), path.generic_u8string()), m_paths.end());
-    Init();
+    if(!m_paths.empty())
+        Init();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -93,6 +121,8 @@ std::vector<std::filesystem::path> TRAP::FS::FileWatcher::GetFolders() const
 
 void TRAP::FS::FileWatcher::Init()
 {
+    if(!m_run)
+        return;
 #ifdef TRAP_PLATFORM_WINDOWS
     m_killEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -106,6 +136,9 @@ void TRAP::FS::FileWatcher::Init()
 
 void TRAP::FS::FileWatcher::Shutdown()
 {
+    if(!m_run)
+        return;
+
     m_run = false;
 
 #ifdef TRAP_PLATFORM_WINDOWS

@@ -3,6 +3,7 @@
 
 #include "Core/Base.h"
 #include "FS/FS.h"
+#include "FS/FileWatcher.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
@@ -471,6 +472,35 @@ std::thread::id TRAP::Application::GetMainThreadID()
 std::string TRAP::Application::GetGameName()
 {
 	return s_Instance->m_gameName;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::FS::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+{
+	if(s_Instance->m_hotReloadingFileWatcher)
+		return s_Instance->m_hotReloadingFileWatcher.get();
+
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::IsHotReloadingEnabled()
+{
+	return s_Instance->m_hotReloadingEnabled;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::SetHotReloading(const bool enable)
+{
+	s_Instance->m_hotReloadingEnabled = enable;
+
+	if(enable && !s_Instance->m_hotReloadingFileWatcher)
+		s_Instance->m_hotReloadingFileWatcher = TRAP::MakeScope<FS::FileWatcher>("", false);
+	else if(s_Instance->m_hotReloadingFileWatcher)
+		s_Instance->m_hotReloadingFileWatcher.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -23,6 +23,11 @@ namespace TRAP
 		class KeyPressEvent;
 	}
 
+	namespace FS
+	{
+		class FileWatcher;
+	}
+
 	class Application
 	{
 	public:
@@ -160,6 +165,22 @@ namespace TRAP
 		/// </summary>
 		static std::string GetGameName();
 
+		/// <summary>
+		/// Get the hot reloading file watcher.
+		/// </summary>
+		/// <returns>TRAP::FS::FileWatcher* if file watcher is running, false otherwise.</returns>
+		static TRAP::FS::FileWatcher* GetHotReloadingFileWatcher();
+		/// <summary>
+		/// Get whether hot reloading is enabled or not.
+		/// </summary>
+		/// <returns>True if hot reloading is enabled, false otherwise.</returns>
+		static bool IsHotReloadingEnabled();
+		/// <summary>
+		/// Set whether to enable or disable hot reloading.
+		/// </summary>
+		/// <param name="enable">True to enable hot reloading, false otherwise.</param>
+		static void SetHotReloading(bool enable);
+
 	private:
 		/// <summary>
 		/// Game/Run loop.
@@ -246,6 +267,9 @@ namespace TRAP
 		uint32_t m_tickRate;
 		float m_timeScale;
 		std::string m_gameName;
+
+		Scope<FS::FileWatcher> m_hotReloadingFileWatcher;
+		bool m_hotReloadingEnabled;
 
 		ThreadPool m_threadPool;
 

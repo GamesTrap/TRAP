@@ -12,8 +12,7 @@ public:
 		m_wireFrame(false),
 		m_indexedDrawing(true),
 		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
-		                   static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
-		m_fileWatcher("Assets/Shaders")
+		                   static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))
 	{
 	}
 
@@ -48,10 +47,7 @@ public:
 	{
 		TP_PROFILE_FUNCTION();
 
-		m_fileWatcher.SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-
-		// TRAP::FS::SetHotTextureReloading(true);
-		// TRAP::FS::SetHotShaderReloading(true);
+		TRAP::Application::SetHotReloading(true);
 
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 
@@ -275,13 +271,6 @@ public:
 		{
 			return OnShaderReload(e);
 		});
-
-		dispatcher.Dispatch<TRAP::Events::FileChangeEvent>([this](TRAP::Events::FileChangeEvent& e)
-		{
-			TP_TRACE(e.ToString());
-
-			return true;
-		});
 	}
 
 private:
@@ -299,8 +288,6 @@ private:
 	TRAP::Ref<TRAP::Graphics::Sampler> m_sampler{};
 	TRAP::Graphics::Texture* m_texture{};
 	TRAP::Graphics::Shader* m_shader{};
-
-	TRAP::FS::FileWatcher m_fileWatcher;
 };
 
 #endif /*GAMESTRAP_SANDBOXLAYER_H*/
