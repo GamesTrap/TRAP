@@ -498,7 +498,10 @@ void TRAP::Application::SetHotReloading(const bool enable)
 	s_Instance->m_hotReloadingEnabled = enable;
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
+	{
 		s_Instance->m_hotReloadingFileWatcher = TRAP::MakeScope<FS::FileWatcher>("", false);
+		//TODO Set callback
+	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
 		s_Instance->m_hotReloadingFileWatcher.reset();
 }

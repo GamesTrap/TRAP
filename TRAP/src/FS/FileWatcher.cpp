@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
+#include "FS.h"
 #include "Events/FileEvent.h"
 
 TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
@@ -61,12 +62,23 @@ TRAP::FS::FileWatcher::EventCallbackFn TRAP::FS::FileWatcher::GetEventCallback()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::AddFolder(const std::filesystem::path& path)
+void TRAP::FS::FileWatcher::AddFolder(std::filesystem::path path)
 {
     if(path.empty())
         return;
 
-    AddFolders({path});
+    // AddFolders({path});
+    Shutdown();
+    //Always use absolute paths
+    path = FS::ToAbsolutePath(path);
+    if(!path.empty())
+    {
+        if(std::find(m_paths.begin(), m_paths.end(), path) == m_paths.end())
+            m_paths.emplace_back(path);
+    }
+
+    if(!m_paths.empty())
+        Init();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -77,8 +89,13 @@ void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>&
         return;
 
     Shutdown();
-    for (const auto& path : paths)
+    for (auto path : paths)
     {
+        //Always use absolute paths
+        path = FS::ToAbsolutePath(path);
+        if(path.empty()) //Skip
+            continue;
+
         if(std::find(m_paths.begin(), m_paths.end(), path) == m_paths.end())
             m_paths.emplace_back(path);
     }
@@ -88,12 +105,18 @@ void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::RemoveFolder(const std::filesystem::path& path)
+void TRAP::FS::FileWatcher::RemoveFolder(std::filesystem::path path)
 {
     if(path.empty())
         return;
 
-    RemoveFolders({path});
+    Shutdown();
+    //Always use absolute paths
+    path = FS::ToAbsolutePath(path);
+    if(!path.empty())
+        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), path.generic_u8string()), m_paths.end());
+    if(!m_paths.empty())
+        Init();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -104,8 +127,15 @@ void TRAP::FS::FileWatcher::RemoveFolders(const std::vector<std::filesystem::pat
         return;
 
     Shutdown();
-    for(const auto& path : paths)
+    for(auto path : paths)
+    {
+        //Always use absolute paths
+        path = FS::ToAbsolutePath(path);
+        if(path.empty()) //Skip
+            continue;
+
         m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), path.generic_u8string()), m_paths.end());
+    }
     if(!m_paths.empty())
         Init();
 }

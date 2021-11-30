@@ -89,14 +89,14 @@ namespace TRAP::FS
 
         /// <summary>Adds a new folder path to the tracked paths.</summary>
         /// <param name="path">Folder path to track.</param>
-        void AddFolder(const std::filesystem::path& path);
+        void AddFolder(std::filesystem::path path);
         /// <summary>Adds new folder paths to the tracked paths.</summary>
         /// <param name="paths">Folder paths to track.</param>
         void AddFolders(const std::vector<std::filesystem::path>& paths);
 
         /// <summary>Removes a folder path from the tracked paths.</summary>
         /// <param name="path">Folder path to untrack.</param>
-        void RemoveFolder(const std::filesystem::path& path);
+        void RemoveFolder(std::filesystem::path path);
         /// <summary>Removes folder paths from the tracked paths.</summary>
         /// <param name="paths">Folder paths to untrack.</param>
         void RemoveFolders(const std::vector<std::filesystem::path>& paths);
