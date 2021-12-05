@@ -18,6 +18,7 @@
 #include "Events/KeyEvent.h"
 #include "Events/WindowEvent.h"
 #include "Events/HotReloadEvent.h"
+#include "Events/FileEvent.h"
 #include "Input/Input.h"
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
@@ -26,7 +27,8 @@
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 TRAP::Application::Application(std::string gameName)
-	: m_timer(std::make_unique<Utils::Timer>()),
+	: m_hotReloadingEnabled(false),
+	  m_timer(std::make_unique<Utils::Timer>()),
 	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
@@ -260,14 +262,7 @@ void TRAP::Application::Run()
 			Graphics::RenderCommand::Present(m_window.get());
 		TRAP::Window::OnUpdate();
 
-		// if (!m_hotReloadingThread && (FS::GetHotShaderReloading() || FS::GetHotTextureReloading()))
-		// {
-		// 	m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading,
-		// 	                                                    std::ref(m_hotReloadingShaderPaths),
-		// 														std::ref(m_hotReloadingTexturePaths),
-		// 														std::ref(m_running));
-		// }
-		// UpdateHotReloading();
+		UpdateHotReloading();
 
 		//FPSLimiter
 		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
@@ -315,6 +310,10 @@ void TRAP::Application::OnEvent(Events::Event& e)
 	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& event)
 		{
 			return OnWindowRestore(event);
+		});
+	dispatcher.Dispatch<Events::FileChangeEvent>([this](Events::FileChangeEvent& event)
+		{
+			return OnFileChangeEvent(event);
 		});
 
 	if(!m_layerStack)
@@ -500,7 +499,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
 		s_Instance->m_hotReloadingFileWatcher = TRAP::MakeScope<FS::FileWatcher>("", false);
-		//TODO Set callback
+		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
 		s_Instance->m_hotReloadingFileWatcher.reset();
@@ -587,110 +586,119 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures,
-                                            const bool& run)
+void TRAP::Application::UpdateHotReloading()
 {
-	while (run)
+	//Shader reloading
+	std::vector<std::filesystem::path> shaderPaths;
+	//Hot code
 	{
-		// //Update Shaders if needed
-		// if (FS::GetHotShaderReloading() && FS::GetShaderFileWatcher())
-		// {
-		// 	//Check monitoring shader folders for changes and
-		// 	//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
-		// 	FS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
-		// 		const std::string& virtualPath,
-		// 		const FileWatcher::FileStatus status) -> void
-		// 		{
-		// 			//Process only regular files and FileStatus::Modified
-		// 			if (!std::filesystem::is_regular_file(physicalPath))
-		// 				return;
-		// 			if (status == FileWatcher::FileStatus::Erased)
-		// 				return;
+		std::lock_guard<std::mutex> lock(m_hotReloadingMutex);
+		shaderPaths = m_hotReloadingShaderPaths;
+		m_hotReloadingShaderPaths.clear();
+	}
+	for(const auto& p : shaderPaths)
+	{
+		if(Graphics::ShaderManager::ExistsPath(p))
+		{
+			TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
+			Graphics::RendererAPI::GetRenderer()->WaitIdle();
+			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(p);
 
-		// 			const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-		// 			if (suffix == "shader" || suffix == "spirv")
-		// 			{
-		// 				if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
-		// 				{
-		// 					{
-		// 						std::lock_guard<std::mutex> lock(s_Instance->m_hotReloadingMutex);
-		// 						shaders.emplace_back(virtualPath);
-		// 					}
-		// 				}
-		// 			}
-		// 		});
-		// }
-		// //Update Textures if needed
-		// if (FS::GetHotTextureReloading() && FS::GetTextureFileWatcher())
-		// {
-		// 	//Check monitoring texture folders for changes and
-		// 	//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
-		// 	FS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
-		// 		const std::string& virtualPath,
-		// 		const FileWatcher::FileStatus status) -> void
-		// 	{
-		// 		//Process only regular files and FileStatus::Modified
-		// 		if (!std::filesystem::is_regular_file(physicalPath))
-		// 			return;
-		// 		if (status == FileWatcher::FileStatus::Erased)
-		// 			return;
+			//BUG When reloading shader which is currently bound it won't get updated.
+			//because the Graphics Pipeline has to be rebuilt.
 
-		// 		const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-		// 		if(std::any_of(Image::SupportedImageFormatSuffixes.begin(),
-		// 		               Image::SupportedImageFormatSuffixes.end(), [suffix](const std::string& sfx)
-		// 		{
-		// 			return suffix == sfx;
-		// 		}))
-		// 		{
-		// 			if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
-		// 			{
-		// 				{
-		// 					std::lock_guard<std::mutex> lock(s_Instance->m_hotReloadingMutex);
-		// 					textures.emplace_back(virtualPath);
-		// 				}
-		// 			}
-		// 		}
-		// 	});
-		// }
+			//Send event
+			TRAP::Events::ShaderReloadEvent e(shader);
+			OnEvent(e);
+		}
+	}
+
+	//Texture reloading
+	std::vector<std::filesystem::path> texturePaths;
+	//Hot code
+	{
+		std::lock_guard<std::mutex> lock(m_hotReloadingMutex);
+		texturePaths = m_hotReloadingTexturePaths;
+		m_hotReloadingTexturePaths.clear();
+	}
+	for(const auto& p : texturePaths)
+	{
+		if(Graphics::TextureManager::ExistsPath(p))
+		{
+			TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
+			Graphics::RendererAPI::GetRenderer()->WaitIdle();
+			Graphics::Renderer2D::ClearTextures();
+			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(p);
+
+			//Send event
+			TRAP::Events::TextureReloadEvent e(texture);
+			OnEvent(e);
+		}
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::UpdateHotReloading()
+bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
-	//Shader Reloading
-	// for (const std::string& virtualPath : m_hotReloadingShaderPaths)
-	// {
-	// 	if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
-	// 	{
-	// 		TP_INFO(Log::ShaderManagerPrefix, "Shader modified reloading...");
-	// 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-	// 		TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(virtualPath);
+	if(event.GetStatus() != FS::FileStatus::Modified)
+		return true; //Only handle modified files
 
-	// 		//Send event
-	// 		TRAP::Events::ShaderReloadEvent e(shader);
-	// 		OnEvent(e);
-	// 	}
-	// }
-	// if(!m_hotReloadingShaderPaths.empty())
-	// 	m_hotReloadingShaderPaths.clear();
+	std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(event.GetPath()));
 
-	//Texture Reloading
-	// for (const std::string& virtualPath : m_hotReloadingTexturePaths)
-	// {
-	// 	if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
-	// 	{
-	// 		TP_INFO(Log::TextureManagerPrefix, "Texture modified reloading...");
-	// 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-	// 		Graphics::Renderer2D::ClearTextures();
-	// 		TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(virtualPath);
+	//Is it a texture?
+	bool texture = false;
+	for(const auto& fmt : Image::SupportedImageFormatSuffixes)
+	{
+		if(fEnding == fmt)
+		{
+			texture = true;
+			break;
+		}
+	}
 
-	// 		//Send event
-	// 		TRAP::Events::TextureReloadEvent e(texture);
-	// 		OnEvent(e);
-	// 	}
-	// }
-	// if(!m_hotReloadingTexturePaths.empty())
-	// 	m_hotReloadingTexturePaths.clear();
+	bool shader = false;
+	if(!texture) //Or is it a shader?
+	{
+		for(const auto& fmt : Graphics::Shader::SupportedShaderFormatSuffixes)
+		{
+			if(fEnding == fmt)
+			{
+				shader = true;
+				break;
+			}
+		}
+	}
+
+	if(!texture && !shader)
+		return true; //Not a texture or shader
+
+	if(texture)
+	{
+		std::lock_guard<std::mutex> lock(m_hotReloadingMutex); //Hot code
+
+		//Don't add duplicates!
+		for(const auto& p : m_hotReloadingTexturePaths)
+		{
+			if(FS::IsPathEquivalent(p, event.GetPath()))
+				return true;
+		}
+
+		m_hotReloadingTexturePaths.push_back(event.GetPath());
+	}
+	else if(shader)
+	{
+		std::lock_guard<std::mutex> lock(m_hotReloadingMutex); //Hot code
+
+		//Don't add duplicates!
+		for(const auto& p : m_hotReloadingShaderPaths)
+		{
+			if(FS::IsPathEquivalent(p, event.GetPath()))
+				return true;
+		}
+
+		m_hotReloadingShaderPaths.push_back(event.GetPath());
+	}
+
+	return true; //Don't send this event to other listeners
 }

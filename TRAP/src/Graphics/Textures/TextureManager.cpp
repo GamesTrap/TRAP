@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include "Texture2D.h"
 #include "TextureCube.h"
+#include "FS/FS.h"
 
 std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> TRAP::Graphics::TextureManager::s_Textures;
 
@@ -301,7 +302,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 		for (const auto& [name, texture] : s_Textures)
 			if (texture->GetType() == TextureType::Texture2D)
 			{
-				if (nameOrPath == dynamic_cast<Texture2D*>(texture.get())->GetFilePath())
+				if (FS::IsPathEquivalent(nameOrPath, dynamic_cast<Texture2D*>(texture.get())->GetFilePath()))
 					return Reload(texture);
 			}
 			else if (texture->GetType() == TextureType::TextureCube)
@@ -310,7 +311,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 				{
 					if (!dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i].empty())
 					{
-						if (nameOrPath == dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i])
+						if (FS::IsPathEquivalent(nameOrPath, dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i]))
 							return Reload(texture);
 					}
 				}
@@ -421,7 +422,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 	{
 		if (texture->GetType() == TextureType::Texture2D)
 		{
-			if (dynamic_cast<Texture2D*>(texture.get())->GetFilePath() == path)
+			if (FS::IsPathEquivalent(dynamic_cast<Texture2D*>(texture.get())->GetFilePath(), path))
 				return true;
 		}
 		else if(texture->GetType() == TextureType::TextureCube)
@@ -429,7 +430,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 			const std::array<std::filesystem::path, 6> imageFilePaths = reinterpret_cast<const Scope<TextureCube>&>(texture)->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
 			{
-				if (filePath == path)
+				if (FS::IsPathEquivalent(filePath, path))
 					return true;
 			}
 		}

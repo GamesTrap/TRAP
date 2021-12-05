@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderManager.h"
 
+#include "FS/FS.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders{};
@@ -156,7 +158,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 	{
 		for (const auto& [name, shader] : s_Shaders)
 		{
-			if (nameOrPath == shader->GetFilePath())
+			if (FS::IsPathEquivalent(nameOrPath, shader->GetFilePath()))
 				return Reload(shader);
 		}
 
@@ -229,7 +231,7 @@ bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path
 {
 	for(const auto& [name, shader] : s_Shaders)
 	{
-		if (shader->GetFilePath() == path)
+		if (FS::IsPathEquivalent(shader->GetFilePath(), path))
 			return true;
 	}
 

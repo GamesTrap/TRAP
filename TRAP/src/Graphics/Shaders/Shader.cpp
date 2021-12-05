@@ -7,6 +7,7 @@
 #include "Utils/String/String.h"
 
 bool TRAP::Graphics::Shader::s_glslangInitialized = false;
+std::array<std::string, 2> TRAP::Graphics::Shader::SupportedShaderFormatSuffixes{".shader", ".spirv"};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -81,10 +82,20 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
-		if (Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".spirv" &&
-		    Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".shader")
+		std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(filePath));
+		bool supportedFormat = false;
+		for(const auto& fmt : SupportedShaderFormatSuffixes)
 		{
-			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			if(fEnding == fmt)
+			{
+				supportedFormat = true;
+				break;
+			}
+		}
+
+		if(!supportedFormat)
+		{
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
 			return nullptr;
 		}
@@ -144,6 +155,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
 
 		result->m_filepath = filePath;
+
+		//Hot reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(filePath));
+
 		return result;
 	}
 
@@ -170,10 +186,20 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
-		if (Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".spirv" &&
-		    Utils::String::ToLower(FS::GetFileEnding(filePath)) != ".shader")
+		std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(filePath));
+		bool supportedFormat = false;
+		for(const auto& fmt : SupportedShaderFormatSuffixes)
 		{
-			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			if(fEnding == fmt)
+			{
+				supportedFormat = true;
+				break;
+			}
+		}
+
+		if(!supportedFormat)
+		{
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
 			return nullptr;
 		}
@@ -235,6 +261,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
 
 		result->m_filepath = filePath;
+
+		//Hot reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(filePath));
+
 		return result;
 	}
 
@@ -707,6 +738,8 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 	RendererAPI::BinaryShaderDesc desc{};
 	desc.Stages = shaderStages;
 
+	//TODO Reduce code redundancy
+	//pack messages into a list
 	for(uint32_t i = 0; i < shaders.size(); ++i)
 	{
 		if(shaders[i].empty())

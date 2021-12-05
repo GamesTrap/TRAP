@@ -124,7 +124,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[21w48a2]";
+		inline static constexpr auto WindowVersion =                        "[21w48a3]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -222,6 +222,7 @@ namespace TRAP
 		inline static constexpr auto NetworkSocketUnixPrefix =              "[Network][Socket][Unix] ";
 		inline static constexpr auto SceneSerializerPrefix =                "[SceneSerializer] ";
 		inline static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
+		inline static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:

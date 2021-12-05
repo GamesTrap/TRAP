@@ -21,6 +21,7 @@ namespace TRAP
 		class FrameBufferResizeEvent;
 		class WindowCloseEvent;
 		class KeyPressEvent;
+		class FileChangeEvent;
 	}
 
 	namespace FS
@@ -236,20 +237,15 @@ namespace TRAP
 		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		/// <summary>
-		/// ProcessHotReloading is used to offload the hot reloading system onto another thread.
-		/// </summary>
-		/// <param name="shaders">Reference to a vector for adding the virtual paths of modified shaders.</param>
-		/// <param name="textures">Reference to a vector for adding the virtual paths of modified textures.</param>
-		/// <param name="run">Whether to stop running the infinite loop or not.</param>
-		[[deprecated("Will be replaced or removed!")]]
-		static void ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& run);
-		/// <summary>
-		/// Tries to reload every modified shader/texture that was set by ProcessHotReloading.
+		/// Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
 		/// </summary>
 		void UpdateHotReloading();
-		std::vector<std::string> m_hotReloadingShaderPaths;
-		std::vector<std::string> m_hotReloadingTexturePaths;
+		bool OnFileChangeEvent(const Events::FileChangeEvent& e);
+		std::vector<std::filesystem::path> m_hotReloadingShaderPaths;
+		std::vector<std::filesystem::path> m_hotReloadingTexturePaths;
 		std::mutex m_hotReloadingMutex;
+		Scope<FS::FileWatcher> m_hotReloadingFileWatcher;
+		bool m_hotReloadingEnabled;
 
 		Scope<Window> m_window;
 		ImGuiLayer* m_ImGuiLayer;
@@ -267,9 +263,6 @@ namespace TRAP
 		uint32_t m_tickRate;
 		float m_timeScale;
 		std::string m_gameName;
-
-		Scope<FS::FileWatcher> m_hotReloadingFileWatcher;
-		bool m_hotReloadingEnabled;
 
 		ThreadPool m_threadPool;
 

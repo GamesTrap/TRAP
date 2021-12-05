@@ -425,6 +425,16 @@ TRAP::Graphics::TextureCube::TextureCube(std::string name, std::array<std::files
 	m_textureType = TextureType::TextureCube;
 	m_name = std::move(name);
 	m_filepaths = std::move(filepaths);
+
+	//Hot reloading
+	if(!TRAP::Application::IsHotReloadingEnabled())
+		return;
+	FS::FileWatcher* fw = TRAP::Application::GetHotReloadingFileWatcher();
+	for(const auto& filepath : m_filepaths)
+	{
+		if(!filepath.empty())
+			fw->AddFolder(FS::GetFolderPath(filepath));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -436,4 +446,9 @@ TRAP::Graphics::TextureCube::TextureCube(std::string name, std::filesystem::path
 	m_textureType = TextureType::TextureCube;
 	m_name = std::move(name);
 	m_filepaths[0] = std::move(filepath);
+
+	//Hot reloading
+	if(!TRAP::Application::IsHotReloadingEnabled())
+		return;
+	TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(m_filepaths[0]));
 }

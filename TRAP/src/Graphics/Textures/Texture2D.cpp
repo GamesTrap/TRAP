@@ -280,4 +280,9 @@ TRAP::Graphics::Texture2D::Texture2D(std::string name, std::filesystem::path fil
 	m_textureType = TextureType::Texture2D;
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
+
+	//Hot reloading
+	if(!TRAP::Application::IsHotReloadingEnabled())
+		return;
+	TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(m_filepath));
 }

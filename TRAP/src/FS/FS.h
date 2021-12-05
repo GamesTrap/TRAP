@@ -145,7 +145,7 @@ namespace TRAP
 		std::string GetFileEnding(const std::filesystem::path& path);
 
 		/// <summary>
-		/// Get only the folders without the filename and its ending.
+		/// Get only the folder without the filename and its ending.
 		/// </summary>
 		/// <param name="filePath">File path.</param>
 		/// <returns>Folder path from file path.</returns>

@@ -2294,3 +2294,13 @@ SITREP 12/01/2021|21w48a2
     - Application Added GetHotReloadingFileWatcher, IsHotReloadingEnabled & SetHotReloading ~<20 mins
     - FS Added IsPathAbsolute, IsPathRelative, ToAbsolutePath & ToRelativePath ~<20 mins
     - FileWatcher now uses absolute paths internally ~<10 mins
+
+SITREP 12/04/2021|21w48a3
+    - Changed TRAP Engine version to 21w48a3(0.7.98)
+    - Application Added events listener for OnFileChange events ~<10 mins
+    - Shader Added SupportedShaderFormatSuffixes ~5 mins
+    - HotReloading FileWatcher Added tracking of Shaders and Textures ~>20 mins
+    - Application Removed old ProcessHotReloading function ~<5 mins
+    - Application Updated UpdateHotReloading ~<15 mins
+    - Hot Texture Reloading fully working now!
+    - Hot Shader Reloading fully working now!

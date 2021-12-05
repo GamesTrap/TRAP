@@ -66,6 +66,8 @@ namespace TRAP::Graphics
 		static Scope<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
 		                                      const std::vector<Macro>* userMacros = nullptr);
 
+		static std::array<std::string, 2> SupportedShaderFormatSuffixes;
+
 	protected:
 		std::string m_name;
 		std::filesystem::path m_filepath;

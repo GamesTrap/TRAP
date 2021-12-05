@@ -8,10 +8,7 @@ TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& pat
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
     if(paths.empty())
-    {
-        m_run = false;
         return;
-    }
 
     AddFolders(paths);
     Init();
@@ -23,10 +20,7 @@ TRAP::FS::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
 {
     if(path.empty())
-    {
-        m_run = false;
         return;
-    }
 
     AddFolder(path);
     Init();
@@ -151,8 +145,11 @@ std::vector<std::filesystem::path> TRAP::FS::FileWatcher::GetFolders() const
 
 void TRAP::FS::FileWatcher::Init()
 {
-    if(!m_run)
+    if(m_paths.empty())
         return;
+
+    m_run = true;
+
 #ifdef TRAP_PLATFORM_WINDOWS
     m_killEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
 #elif defined(TRAP_PLATFORM_LINUX)
