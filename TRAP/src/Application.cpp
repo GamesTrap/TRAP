@@ -604,8 +604,9 @@ void TRAP::Application::UpdateHotReloading()
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
 			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(p);
 
-			//BUG When reloading shader which is currently bound it won't get updated.
-			//because the Graphics Pipeline has to be rebuilt.
+			//By binding the fallback shader, we can make sure that the
+			//new shader will trigger a pipeline rebuild.
+			TRAP::Graphics::ShaderManager::Get("Fallback")->Use();
 
 			//Send event
 			TRAP::Events::ShaderReloadEvent e(shader);
