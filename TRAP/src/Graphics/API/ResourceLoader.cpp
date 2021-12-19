@@ -95,18 +95,20 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 			case UpdateRequestType::BufferBarrier:
 			{
+				std::vector<RendererAPI::BufferBarrier> barrier{std::get<RendererAPI::BufferBarrier>(updateState.Desc)};
 				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(
-					{ std::get<RendererAPI::BufferBarrier>(updateState.Desc) },
-					{}, {});
+					&barrier,
+					nullptr, nullptr);
 				result = UploadFunctionResult::Completed;
 				break;
 			}
 
 			case UpdateRequestType::TextureBarrier:
 			{
+				std::vector<RendererAPI::TextureBarrier> barrier{std::get<RendererAPI::TextureBarrier>(updateState.Desc)};
 				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier
 					(
-						{}, {std::get<RendererAPI::TextureBarrier>(updateState.Desc)}, {}
+						nullptr, &barrier, nullptr
 					);
 				result = UploadFunctionResult::Completed;
 				break;
@@ -941,21 +943,21 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 		//TRAP_ASSERT(false, "Texture image format does not support linear blitting!");
 	}
 
-	RendererAPI::TextureBarrier barrier{};
-	barrier.Texture = texture;
-	barrier.ArrayLayer = 0;
-	barrier.SubresourceBarrier = true;
+	std::vector<RendererAPI::TextureBarrier> barriers(1);
+	barriers[0].Texture = texture;
+	barriers[0].ArrayLayer = 0;
+	barriers[0].SubresourceBarrier = true;
 
 	int32_t mipWidth = texture->GetWidth();
 	int32_t mipHeight = texture->GetHeight();
 
 	for(uint32_t i = 1; i < texture->GetMipLevels(); ++i)
 	{
-		barrier.MipLevel = static_cast<uint8_t>(i) - 1;
-		barrier.CurrentState = RendererAPI::ResourceState::CopyDestination;
-		barrier.NewState = RendererAPI::ResourceState::CopySource;
+		barriers[0].MipLevel = static_cast<uint8_t>(i) - 1;
+		barriers[0].CurrentState = RendererAPI::ResourceState::CopyDestination;
+		barriers[0].NewState = RendererAPI::ResourceState::CopySource;
 
-		cmd->ResourceBarrier({}, {barrier}, {});
+		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
 
 		VkImageBlit blit{};
 		blit.srcOffsets[0] = {0, 0, 0};
@@ -979,10 +981,10 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 			           1, &blit,
 			           VK_FILTER_LINEAR);
 
-		barrier.CurrentState = RendererAPI::ResourceState::CopySource;
-		barrier.NewState = RendererAPI::ResourceState::CopyDestination;
+		barriers[0].CurrentState = RendererAPI::ResourceState::CopySource;
+		barriers[0].NewState = RendererAPI::ResourceState::CopyDestination;
 
-		cmd->ResourceBarrier({}, {barrier}, {});
+		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
 
 		if(mipWidth > 1)
 			mipWidth /= 2;
@@ -1030,9 +1032,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
-		const RendererAPI::TextureBarrier barrier = {texture, RendererAPI::ResourceState::Undefined,
-		                                       RendererAPI::ResourceState::CopyDestination};
-		cmd->ResourceBarrier({}, {barrier}, {});
+		std::vector<RendererAPI::TextureBarrier> barriers{{texture, RendererAPI::ResourceState::Undefined,
+		                                       RendererAPI::ResourceState::CopyDestination}};
+		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
 	}
 
 	const RendererAPI::MappedMemoryRange upload = dataAlreadyFilled ? textureUpdateDesc.Range :
@@ -1122,9 +1124,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
-		const RendererAPI::TextureBarrier barrier = {texture, RendererAPI::ResourceState::CopyDestination,
-		                                       RendererAPI::ResourceState::ShaderResource};
-		cmd->ResourceBarrier({}, {barrier}, {});
+		std::vector<RendererAPI::TextureBarrier> barriers{{texture, RendererAPI::ResourceState::CopyDestination,
+		                                       RendererAPI::ResourceState::ShaderResource}};
+		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
 	}
 
 	return UploadFunctionResult::Completed;

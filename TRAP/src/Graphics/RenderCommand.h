@@ -97,6 +97,12 @@ namespace TRAP::Graphics
 		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
 									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
 									  Window* window = nullptr);
+		static void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window = nullptr);
+		static void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers, Window* window = nullptr);
+		static void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window = nullptr);
+		static void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers, Window* window = nullptr);
+		static void RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier, Window* window = nullptr);
+		static void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, Window* window = nullptr);
 	};
 }
 

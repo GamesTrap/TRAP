@@ -92,9 +92,9 @@ namespace TRAP::Graphics::API
 		void ResolveQuery(const TRAP::Ref<QueryPool>& queryPool, const TRAP::Ref<Buffer>& readBackBuffer,
 		                  uint32_t startQuery, uint32_t queryCount) const override;
 
-		void ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-		                     const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-		                     const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const override;
+		void ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
+		                     const std::vector<RendererAPI::TextureBarrier>* textureBarriers,
+		                     const std::vector<RendererAPI::RenderTargetBarrier>* renderTargetBarriers) const override;
 
 		void SetStencilReferenceValue(uint32_t val) const override;
 

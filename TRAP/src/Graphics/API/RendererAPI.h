@@ -68,6 +68,9 @@ namespace TRAP::Graphics
 		enum class IndexType;
 		enum class ClearBufferType;
 		struct LoadActionsDesc;
+		struct BufferBarrier;
+		struct TextureBarrier;
+		struct RenderTargetBarrier;
 	//protected:
 		struct PerWindowData;
 
@@ -162,6 +165,19 @@ namespace TRAP::Graphics
 									   std::vector<uint32_t>* colorMipSlices = nullptr,
 									   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
 									   Window* window = nullptr) = 0;
+
+		virtual void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+								           Window* window = nullptr) = 0;
+		virtual void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+									        Window* window = nullptr) = 0;
+		virtual void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+									        Window* window = nullptr) = 0;
+		virtual void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+									         Window* window = nullptr) = 0;
+		virtual void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
+									             Window* window = nullptr) = 0;
+		virtual void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
+									              Window* window = nullptr) = 0;
 
 		virtual const std::string& GetTitle() const = 0;
 

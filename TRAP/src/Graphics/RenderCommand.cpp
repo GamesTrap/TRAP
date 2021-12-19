@@ -289,3 +289,49 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr, -1, -1,
 	                                              window);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceBufferBarrier(bufferBarrier, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+                                                   Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceBufferBarriers(bufferBarriers, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceTextureBarrier(textureBarrier, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+           										    Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceTextureBarriers(textureBarriers, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
+ 														Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceRenderTargetBarrier(renderTargetBarrier, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
+ 														 Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceRenderTargetBarriers(renderTargetBarriers, window);
+}

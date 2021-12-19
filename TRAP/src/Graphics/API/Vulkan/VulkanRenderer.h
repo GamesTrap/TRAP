@@ -108,6 +108,17 @@ namespace TRAP::Graphics::API
 							   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
 							   Window* window = nullptr) override;
 
+		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window = nullptr) override;
+		void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+							        Window* window = nullptr) override;
+		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window = nullptr) override;
+		void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+							         Window* window = nullptr) override;
+		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
+		                                 Window* window = nullptr) override;
+		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
+								          Window* window = nullptr) override;
+
 		const std::string& GetTitle() const override;
 		bool GetVSync(Window* window = nullptr) override;
 

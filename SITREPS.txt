@@ -2318,3 +2318,9 @@ SITREP 12/19/2021|21w50a1
     - VulkanTextureTests Removed unused shader macro ~<5 mins
     - Added VulkanFrameBufferTests ~<30 mins
     - RenderCommand Added BindRenderTarget(s) ~<30 mins
+
+SITREP 12/20/2021|21w51a1
+    - Changed TRAP Engine version to 21w51a1(0.7.99)
+    - CommandBuffer Changed ResourceBarrier ~<20 mins
+    - RenderCommand Added BufferBarrier, TextureBarrier & RenderTargetBarrier ~<30 mins
+    - VulkanFrameBufferTests now uses RenderCommand::RenderTargetBarrier ~<5 mins

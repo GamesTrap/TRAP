@@ -92,9 +92,9 @@ namespace TRAP::Graphics
 		virtual void ResolveQuery(const TRAP::Ref<QueryPool>& queryPool, const TRAP::Ref<Buffer>& readBackBuffer,
 		                          uint32_t startQuery, uint32_t queryCount) const = 0;
 
-		virtual void ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-			                         const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-			                         const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const = 0;
+		virtual void ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
+			                         const std::vector<RendererAPI::TextureBarrier>* textureBarriers,
+			                         const std::vector<RendererAPI::RenderTargetBarrier>* renderTargetBarriers) const = 0;
 
 		virtual void SetStencilReferenceValue(uint32_t val) const = 0;
 

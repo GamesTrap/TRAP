@@ -98,10 +98,6 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
     if(!m_renderedFrame) //As this is a static scene just render once
     {
-        //TODO Should be unnecessary
-        const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
-        uint32_t imgIndex = TRAP::Graphics::RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow().get());
-
         //Bind render target/framebuffer for draw
         TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
         TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
@@ -123,7 +119,7 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
         barrier.RenderTarget = m_renderTarget;
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        winData->GraphicCommandBuffers[imgIndex]->ResourceBarrier({}, {}, {barrier}); //TODO Via RenderCommand
+        TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
         m_renderedFrame = true;
     }

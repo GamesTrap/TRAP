@@ -722,193 +722,206 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveQuery(const TRAP::Ref<Quer
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-	                                                           const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-	                                                           const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const
+void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>* bufferBarriers,
+	                                                           const std::vector<RendererAPI::TextureBarrier>* textureBarriers,
+	                                                           const std::vector<RendererAPI::RenderTargetBarrier>* renderTargetBarriers) const
 {
 	std::vector<VkImageMemoryBarrier> iBarriers;
-	if (!textureBarriers.empty() || !renderTargetBarriers.empty())
-		iBarriers.resize(textureBarriers.size() + renderTargetBarriers.size());
+	std::size_t iBarriersCount = 0;
+	if (textureBarriers)
+		iBarriersCount += textureBarriers->size();
+	if(renderTargetBarriers)
+		iBarriersCount += renderTargetBarriers->size();
+	iBarriers.resize(iBarriersCount);
 	uint32_t imageBarrierCount = 0;
 
 	std::vector<VkBufferMemoryBarrier> bBarriers;
-	if (!bufferBarriers.empty())
-		bBarriers.resize(bufferBarriers.size());
+	if (bufferBarriers)
+		bBarriers.resize(bufferBarriers->size());
 	uint32_t bufferBarrierCount = 0;
 
 	VkAccessFlags srcAccessFlags = 0;
 	VkAccessFlags dstAccessFlags = 0;
 
 	VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
-	for (const auto& trans : bufferBarriers)
+	if(bufferBarriers)
 	{
-		const TRAP::Ref<Buffer>& buffer = trans.Buffer;
-		VkBufferMemoryBarrier* bufferBarrier;
-
-		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
-			trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
+		for (const auto& trans : *bufferBarriers)
 		{
-			bufferBarrier = &bBarriers[bufferBarrierCount++];
-			bufferBarrier->sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
-			bufferBarrier->pNext = nullptr;
+			const TRAP::Ref<Buffer>& buffer = trans.Buffer;
+			VkBufferMemoryBarrier* bufferBarrier;
 
-			bufferBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-			bufferBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
-		}
-		else
-		{
-			bufferBarrier = &bBarriers[bufferBarrierCount++];
-			bufferBarrier->sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
-			bufferBarrier->pNext = nullptr;
-
-			bufferBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
-			bufferBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
-		}
-
-		if(bufferBarrier)
-		{
-			bufferBarrier->buffer = dynamic_cast<VulkanBuffer*>(buffer.get())->GetVkBuffer();
-			bufferBarrier->size = VK_WHOLE_SIZE;
-			bufferBarrier->offset = 0;
-
-			if(trans.Acquire)
+			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
+				trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
 			{
-				bufferBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
-				bufferBarrier->dstQueueFamilyIndex = queue->GetQueueFamilyIndex();
-			}
-			else if(trans.Release)
-			{
-				bufferBarrier->srcQueueFamilyIndex = queue->GetQueueFamilyIndex();
-				bufferBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				bufferBarrier = &bBarriers[bufferBarrierCount++];
+				bufferBarrier->sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+				bufferBarrier->pNext = nullptr;
+
+				bufferBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+				bufferBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
 			}
 			else
 			{
-				bufferBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-				bufferBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				bufferBarrier = &bBarriers[bufferBarrierCount++];
+				bufferBarrier->sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+				bufferBarrier->pNext = nullptr;
+
+				bufferBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
+				bufferBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
 			}
 
-			srcAccessFlags |= bufferBarrier->srcAccessMask;
-			dstAccessFlags |= bufferBarrier->dstAccessMask;
+			if(bufferBarrier)
+			{
+				bufferBarrier->buffer = dynamic_cast<VulkanBuffer*>(buffer.get())->GetVkBuffer();
+				bufferBarrier->size = VK_WHOLE_SIZE;
+				bufferBarrier->offset = 0;
+
+				if(trans.Acquire)
+				{
+					bufferBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+					bufferBarrier->dstQueueFamilyIndex = queue->GetQueueFamilyIndex();
+				}
+				else if(trans.Release)
+				{
+					bufferBarrier->srcQueueFamilyIndex = queue->GetQueueFamilyIndex();
+					bufferBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				}
+				else
+				{
+					bufferBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					bufferBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				}
+
+				srcAccessFlags |= bufferBarrier->srcAccessMask;
+				dstAccessFlags |= bufferBarrier->dstAccessMask;
+			}
 		}
 	}
 
-	for (const auto& trans : textureBarriers)
+	if(textureBarriers)
 	{
-		const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = trans.Texture;
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
-		VkImageMemoryBarrier* imageBarrier;
-
-		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
-			trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
+		for (const auto& trans : *textureBarriers)
 		{
-			imageBarrier = &iBarriers[imageBarrierCount++];
-			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-			imageBarrier->pNext = nullptr;
+			const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = trans.Texture;
+			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+			VkImageMemoryBarrier* imageBarrier;
 
-			imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-			imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
-			imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
-			imageBarrier->newLayout = VK_IMAGE_LAYOUT_GENERAL;
-		}
-		else
-		{
-			imageBarrier = &iBarriers[imageBarrierCount++];
-			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-			imageBarrier->pNext = nullptr;
-
-			imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
-			imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
-			imageBarrier->oldLayout = ResourceStateToVkImageLayout(trans.CurrentState);
-			imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
-		}
-
-		if(imageBarrier)
-		{
-			imageBarrier->image = vkTexture->GetVkImage();
-			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
-			imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
-			imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
-			imageBarrier->subresourceRange.baseArrayLayer = trans.SubresourceBarrier ? trans.ArrayLayer : 0;
-			imageBarrier->subresourceRange.layerCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_ARRAY_LAYERS;
-
-			if(trans.Acquire)
+			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
+				trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
 			{
-				imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
-				imageBarrier->dstQueueFamilyIndex = queue->GetQueueFamilyIndex();
-			}
-			else if(trans.Release)
-			{
-				imageBarrier->srcQueueFamilyIndex = queue->GetQueueFamilyIndex();
-				imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				imageBarrier = &iBarriers[imageBarrierCount++];
+				imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+				imageBarrier->pNext = nullptr;
+
+				imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+				imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
+				imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+				imageBarrier->newLayout = VK_IMAGE_LAYOUT_GENERAL;
 			}
 			else
 			{
-				imageBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-				imageBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				imageBarrier = &iBarriers[imageBarrierCount++];
+				imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+				imageBarrier->pNext = nullptr;
+
+				imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
+				imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
+				imageBarrier->oldLayout = ResourceStateToVkImageLayout(trans.CurrentState);
+				imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
 			}
 
-			srcAccessFlags |= imageBarrier->srcAccessMask;
-			dstAccessFlags |= imageBarrier->dstAccessMask;
+			if(imageBarrier)
+			{
+				imageBarrier->image = vkTexture->GetVkImage();
+				imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
+				imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
+				imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
+				imageBarrier->subresourceRange.baseArrayLayer = trans.SubresourceBarrier ? trans.ArrayLayer : 0;
+				imageBarrier->subresourceRange.layerCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_ARRAY_LAYERS;
+
+				if(trans.Acquire)
+				{
+					imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+					imageBarrier->dstQueueFamilyIndex = queue->GetQueueFamilyIndex();
+				}
+				else if(trans.Release)
+				{
+					imageBarrier->srcQueueFamilyIndex = queue->GetQueueFamilyIndex();
+					imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				}
+				else
+				{
+					imageBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					imageBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				}
+
+				srcAccessFlags |= imageBarrier->srcAccessMask;
+				dstAccessFlags |= imageBarrier->dstAccessMask;
+			}
 		}
 	}
 
-	for (const auto& trans : renderTargetBarriers)
+	if(renderTargetBarriers)
 	{
-		const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture;
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
-		VkImageMemoryBarrier* imageBarrier;
-
-		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
-			trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
+		for (const auto& trans : *renderTargetBarriers)
 		{
-			imageBarrier = &iBarriers[imageBarrierCount++];
-			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-			imageBarrier->pNext = nullptr;
+			const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture;
+			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+			VkImageMemoryBarrier* imageBarrier;
 
-			imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-			imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
-			imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
-			imageBarrier->newLayout = VK_IMAGE_LAYOUT_GENERAL;
-		}
-		else
-		{
-			imageBarrier = &iBarriers[imageBarrierCount++];
-			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-			imageBarrier->pNext = nullptr;
-
-			imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
-			imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
-			imageBarrier->oldLayout = ResourceStateToVkImageLayout(trans.CurrentState);
-			imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
-		}
-
-		if(imageBarrier)
-		{
-			imageBarrier->image = vkTexture->GetVkImage();
-			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
-			imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
-			imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
-			imageBarrier->subresourceRange.baseArrayLayer = trans.SubresourceBarrier ? trans.ArrayLayer : 0;
-			imageBarrier->subresourceRange.layerCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_ARRAY_LAYERS;
-
-			if(trans.Acquire)
+			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
+				trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
 			{
-				imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
-				imageBarrier->dstQueueFamilyIndex = queue->GetQueueFamilyIndex();
-			}
-			else if(trans.Release)
-			{
-				imageBarrier->srcQueueFamilyIndex = queue->GetQueueFamilyIndex();
-				imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				imageBarrier = &iBarriers[imageBarrierCount++];
+				imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+				imageBarrier->pNext = nullptr;
+
+				imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+				imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
+				imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+				imageBarrier->newLayout = VK_IMAGE_LAYOUT_GENERAL;
 			}
 			else
 			{
-				imageBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-				imageBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				imageBarrier = &iBarriers[imageBarrierCount++];
+				imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+				imageBarrier->pNext = nullptr;
+
+				imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
+				imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
+				imageBarrier->oldLayout = ResourceStateToVkImageLayout(trans.CurrentState);
+				imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
 			}
 
-			srcAccessFlags |= imageBarrier->srcAccessMask;
-			dstAccessFlags |= imageBarrier->dstAccessMask;
+			if(imageBarrier)
+			{
+				imageBarrier->image = vkTexture->GetVkImage();
+				imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
+				imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
+				imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
+				imageBarrier->subresourceRange.baseArrayLayer = trans.SubresourceBarrier ? trans.ArrayLayer : 0;
+				imageBarrier->subresourceRange.layerCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_ARRAY_LAYERS;
+
+				if(trans.Acquire)
+				{
+					imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+					imageBarrier->dstQueueFamilyIndex = queue->GetQueueFamilyIndex();
+				}
+				else if(trans.Release)
+				{
+					imageBarrier->srcQueueFamilyIndex = queue->GetQueueFamilyIndex();
+					imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				}
+				else
+				{
+					imageBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					imageBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				}
+
+				srcAccessFlags |= imageBarrier->srcAccessMask;
+				dstAccessFlags |= imageBarrier->dstAccessMask;
+			}
 		}
 	}
 
