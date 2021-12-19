@@ -588,14 +588,23 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 
 void TRAP::Application::UpdateHotReloading()
 {
-	//Shader reloading
 	std::vector<std::filesystem::path> shaderPaths;
+	std::vector<std::filesystem::path> texturePaths;
+
 	//Hot code
 	{
 		std::lock_guard<std::mutex> lock(m_hotReloadingMutex);
+
+		//Shader
 		shaderPaths = m_hotReloadingShaderPaths;
 		m_hotReloadingShaderPaths.clear();
+
+		//Textures
+		texturePaths = m_hotReloadingTexturePaths;
+		m_hotReloadingTexturePaths.clear();
 	}
+
+	//Shader reloading
 	for(const auto& p : shaderPaths)
 	{
 		if(Graphics::ShaderManager::ExistsPath(p))
@@ -615,13 +624,6 @@ void TRAP::Application::UpdateHotReloading()
 	}
 
 	//Texture reloading
-	std::vector<std::filesystem::path> texturePaths;
-	//Hot code
-	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex);
-		texturePaths = m_hotReloadingTexturePaths;
-		m_hotReloadingTexturePaths.clear();
-	}
 	for(const auto& p : texturePaths)
 	{
 		if(Graphics::TextureManager::ExistsPath(p))

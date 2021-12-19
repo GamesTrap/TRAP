@@ -31,18 +31,20 @@ namespace TRAP::Graphics
 		/// </summary>
 		RenderTarget& operator=(RenderTarget&&) = default;
 
-		virtual uint32_t GetWidth() const = 0;
-		virtual uint32_t GetHeight() const = 0;
-		virtual uint32_t GetDepth() const = 0;
-		virtual uint32_t GetArraySize() const = 0;
-		virtual uint32_t GetMipLevels() const = 0;
-		virtual RendererAPI::SampleCount GetSampleCount() const = 0;
-		virtual uint32_t GetSampleQuality() const = 0;
-		virtual TRAP::Graphics::API::ImageFormat GetImageFormat() const = 0;
-		virtual TRAP::Math::Vec4 GetClearColor() const = 0;
-		virtual float GetClearDepth() const = 0;
-		virtual uint32_t GetClearStencil() const = 0;
-		virtual RendererAPI::DescriptorType GetDescriptorType() const = 0;
+		uint32_t GetWidth() const;
+		uint32_t GetHeight() const;
+		uint32_t GetDepth() const;
+		uint32_t GetArraySize() const;
+		uint32_t GetMipLevels() const;
+		RendererAPI::SampleCount GetSampleCount() const;
+		uint32_t GetSampleQuality() const;
+		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
+		TRAP::Math::Vec4 GetClearColor() const;
+		float GetClearDepth() const;
+		uint32_t GetClearStencil() const;
+		RendererAPI::DescriptorType GetDescriptorType() const;
+
+		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
 
 	protected:
 		RenderTarget();

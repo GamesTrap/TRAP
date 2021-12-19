@@ -33,19 +33,6 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanRenderTarget& operator=(VulkanRenderTarget&&) = default;
 
-		uint32_t GetWidth() const override;
-		uint32_t GetHeight() const override;
-		uint32_t GetDepth() const override;
-		uint32_t GetArraySize() const override;
-		uint32_t GetMipLevels() const override;
-		RendererAPI::SampleCount GetSampleCount() const override;
-		uint32_t GetSampleQuality() const override;
-		TRAP::Graphics::API::ImageFormat GetImageFormat() const override;
-		TRAP::Math::Vec4 GetClearColor() const override;
-		float GetClearDepth() const override;
-		uint32_t GetClearStencil() const override;
-		RendererAPI::DescriptorType GetDescriptorType() const override;
-
 		VkImageView GetVkImageView() const;
 		const std::vector<VkImageView>& GetVkImageViewSlices() const;
 		uint32_t GetID() const;

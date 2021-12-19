@@ -49,3 +49,94 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(con
 		return nullptr;
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetWidth() const
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetHeight() const
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetDepth() const
+{
+	return m_depth;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetArraySize() const
+{
+	return m_arraySize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetMipLevels() const
+{
+	return m_mipLevels;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RenderTarget::GetSampleCount() const
+{
+	return m_sampleCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetSampleQuality() const
+{
+	return m_sampleQuality;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::RenderTarget::GetImageFormat() const
+{
+	return m_format;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec4 TRAP::Graphics::RenderTarget::GetClearColor() const
+{
+	return m_clearColor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RenderTarget::GetClearDepth() const
+{
+	return m_clearDepth;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderTarget::GetClearStencil() const
+{
+	return m_clearStencil;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::RenderTarget::GetDescriptorType() const
+{
+	return m_descriptors;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::RenderTarget::GetTexture() const
+{
+	return m_texture;
+}

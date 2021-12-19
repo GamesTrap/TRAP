@@ -18,7 +18,12 @@ layout(location = 0) in vec2 vUV;
 layout(UpdateFreqStatic, binding = 0) uniform texture2D Texture;
 layout(UpdateFreqStatic, binding = 1) uniform sampler Sampler;
 
+layout(push_constant) uniform PushConstantBlock
+{
+	uniform uint SamplerIndex;
+} SamplerRootConstant;
+
 void main()
 {
-    FragColor = texture(sampler2D(Texture, Sampler), vUV);
+    FragColor = textureLod(sampler2D(Texture, Sampler), vUV, SamplerRootConstant.SamplerIndex);
 }

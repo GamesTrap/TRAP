@@ -2309,3 +2309,11 @@ SITREP 12/05/2021|21w48a4
     - Changed TRAP Engine version to 21w48a4(0.7.99)
     - Fixed hot shader reloading not updating shader without pipeline recreation ~<5 mins
         - Pipeline recreation now forced by binding fallback shader
+
+SITREP 12/19/2021|21w50a1
+    - Changed TRAP Engine version to 21w50a1(0.7.99)
+    - RenderTarget Removed unnecessary virtual functions ~<5 mins
+    - Removed VulkanFrameBuffer & FrameBuffer ~<5 mins
+    - ImGuiLayer Added ImGui::Image support for TextureBase ~<10 mins
+    - VulkanTextureTests Removed unused shader macro ~<5 mins
+    - Added VulkanFrameBufferTests ~<30 mins

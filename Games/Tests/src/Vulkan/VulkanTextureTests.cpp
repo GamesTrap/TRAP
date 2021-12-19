@@ -47,10 +47,7 @@ void VulkanTextureTests::OnAttach()
     m_maxMipLevel = m_texture->GetMipLevels();
 
     //Load Shader
-    std::vector<TRAP::Graphics::Shader::Macro> macros{};
-    macros.emplace_back(TRAP::Graphics::Shader::Macro{"MAX_TEXTURE_MIP_LEVELS", std::to_string(m_maxMipLevel)});
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperate.shader",
-                                                       &macros).get();
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader").get();
 
     TRAP::Graphics::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
