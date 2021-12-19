@@ -215,8 +215,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipe
 void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 																 const TRAP::Ref<RenderTarget>& depthStencil,
 																 const RendererAPI::LoadActionsDesc* loadActions,
-																 const std::vector<uint32_t>& colorArraySlices,
-																 const std::vector<uint32_t>& colorMipSlices,
+																 std::vector<uint32_t>* colorArraySlices,
+																 std::vector<uint32_t>* colorMipSlices,
 																 uint32_t depthArraySlice, uint32_t depthMipSlice)
 {
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
@@ -268,10 +268,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 
 	}
-	if (!colorArraySlices.empty())
-		frameBufferHash = HashAlg<uint32_t>(colorArraySlices.data(), renderTargets.size(), frameBufferHash);
-	if (!colorMipSlices.empty())
-		frameBufferHash = HashAlg<uint32_t>(colorMipSlices.data(), renderTargets.size(), frameBufferHash);
+	if (colorArraySlices)
+		frameBufferHash = HashAlg<uint32_t>(colorArraySlices->data(), renderTargets.size(), frameBufferHash);
+	if (colorMipSlices)
+		frameBufferHash = HashAlg<uint32_t>(colorMipSlices->data(), renderTargets.size(), frameBufferHash);
 	if (depthArraySlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthArraySlice, 1, frameBufferHash);
 	if (depthMipSlice != std::numeric_limits<uint32_t>::max())
@@ -332,8 +332,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		desc.RenderTargets = renderTargets;
 		desc.DepthStencil = depthStencil;
 		desc.RenderPass = renderPass;
-		desc.ColorArraySlices = colorArraySlices;
-		desc.ColorMipSlices = colorMipSlices;
+		if(colorArraySlices)
+			desc.ColorArraySlices = *colorArraySlices;
+		if(colorMipSlices)
+			desc.ColorMipSlices = *colorMipSlices;
 		desc.DepthArraySlice = depthArraySlice;
 		desc.DepthMipSlice = depthMipSlice;
 		frameBuffer = TRAP::MakeRef<VulkanFrameBuffer>(m_device, desc);

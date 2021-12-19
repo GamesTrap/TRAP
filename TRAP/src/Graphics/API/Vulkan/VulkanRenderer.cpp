@@ -160,7 +160,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 	loadActions.ClearColorValues[0] = p->ClearColor;
 	loadActions.ClearDepth = p->ClearDepth;
 	loadActions.ClearStencil = p->ClearStencil;
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, {}, {},
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, nullptr, nullptr,
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
 
@@ -929,6 +929,51 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_
 	(
 		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
 		paramIndex, constantsData
+	);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+							                               const RendererAPI::LoadActionsDesc* loadActions,
+							                               std::vector<uint32_t>* colorArraySlices,
+							                               std::vector<uint32_t>* colorMipSlices,
+							                               const uint32_t depthArraySlice,
+														   const uint32_t depthMipSlice, Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
+
+	std::vector<TRAP::Ref<Graphics::RenderTarget>> targets;
+	if(colorTarget)
+		targets.push_back(colorTarget);
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets
+	(
+		targets, depthStencil, loadActions, colorArraySlices, colorMipSlices, depthArraySlice, depthMipSlice
+	);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+							                                const RendererAPI::LoadActionsDesc* loadActions,
+							                                std::vector<uint32_t>* colorArraySlices,
+							                                std::vector<uint32_t>* colorMipSlices,
+							                                const uint32_t depthArraySlice,
+														    const uint32_t depthMipSlice, Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
+
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets
+	(
+		colorTargets, depthStencil, loadActions, colorArraySlices, colorMipSlices, depthArraySlice, depthMipSlice
 	);
 }
 

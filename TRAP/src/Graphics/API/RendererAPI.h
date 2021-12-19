@@ -67,6 +67,7 @@ namespace TRAP::Graphics
 		enum class ClearFlags;
 		enum class IndexType;
 		enum class ClearBufferType;
+		struct LoadActionsDesc;
 	//protected:
 		struct PerWindowData;
 
@@ -147,6 +148,20 @@ namespace TRAP::Graphics
 		virtual void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) = 0;
 		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
 		                                      Window* window = nullptr) = 0;
+		virtual void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
+									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+									  std::vector<uint32_t>* colorArraySlices = nullptr,
+									  std::vector<uint32_t>* colorMipSlices = nullptr,
+									  uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
+									  Window* window = nullptr) = 0;
+		virtual void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+									   const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+									   std::vector<uint32_t>* colorArraySlices = nullptr,
+									   std::vector<uint32_t>* colorMipSlices = nullptr,
+									   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
+									   Window* window = nullptr) = 0;
 
 		virtual const std::string& GetTitle() const = 0;
 

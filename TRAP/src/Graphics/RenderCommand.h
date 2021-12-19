@@ -75,6 +75,28 @@ namespace TRAP::Graphics
 
 		//CommandBuffer functions
 		static void SetPushConstants(const char* name, const void* data, Window* window = nullptr);
+		// static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		//                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
+		// 							 const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+		// 							 std::vector<uint32_t>* colorArraySlices = nullptr,
+		// 							 std::vector<uint32_t>* colorMipSlices = nullptr,
+		// 							 uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
+		// 							 Window* window = nullptr);
+		// static void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		//                               const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+		// 							  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+		// 							  std::vector<uint32_t>* colorArraySlices = nullptr,
+		// 							  std::vector<uint32_t>* colorMipSlices = nullptr,
+		// 							  uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
+		// 							  Window* window = nullptr);
+		static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
+									 const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+									 Window* window = nullptr);
+		static void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+									  Window* window = nullptr);
 	};
 }
 

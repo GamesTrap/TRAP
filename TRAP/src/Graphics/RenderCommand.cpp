@@ -239,3 +239,53 @@ void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const voi
 {
 	RendererAPI::GetRenderer()->BindPushConstants(name, data, window);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+// void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+// 		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+// 									                 const RendererAPI::LoadActionsDesc* loadActions,
+// 									                 std::vector<uint32_t>* colorArraySlices,
+// 									                 std::vector<uint32_t>* colorMipSlices,
+// 									                 const uint32_t depthArraySlice, const uint32_t depthMipSlice,
+// 									                 Window* window)
+// {
+// 	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, colorArraySlices,
+// 												 colorMipSlices, depthArraySlice, depthMipSlice, window);
+// }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+// void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+// 		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+// 									                 const RendererAPI::LoadActionsDesc* loadActions,
+// 									                 std::vector<uint32_t>* colorArraySlices,
+// 									                 std::vector<uint32_t>* colorMipSlices,
+// 									                 const uint32_t depthArraySlice, const uint32_t depthMipSlice,
+// 									                 Window* window)
+// {
+// 	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, colorArraySlices,
+// 												 colorMipSlices, depthArraySlice, depthMipSlice, window);
+// }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+									                 const RendererAPI::LoadActionsDesc* loadActions,
+									                 Window* window)
+{
+	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr, -1, -1,
+	                                             window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		                                             const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+									                 const RendererAPI::LoadActionsDesc* loadActions,
+									                 Window* window)
+{
+	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr, -1, -1,
+	                                              window);
+}

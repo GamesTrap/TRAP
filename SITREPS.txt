@@ -2317,3 +2317,4 @@ SITREP 12/19/2021|21w50a1
     - ImGuiLayer Added ImGui::Image support for TextureBase ~<10 mins
     - VulkanTextureTests Removed unused shader macro ~<5 mins
     - Added VulkanFrameBufferTests ~<30 mins
+    - RenderCommand Added BindRenderTarget(s) ~<30 mins

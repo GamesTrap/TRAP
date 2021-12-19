@@ -91,7 +91,7 @@
 #include "../src/Graphics/Buffers/VertexBuffer.h"
 #include "../src/Graphics/Buffers/UniformBuffer.h"
 #include "../src/Graphics/Buffers/StorageBuffer.h"
-#include "../src/Graphics/Buffers/FrameBuffer.h"
+#include "../src/Graphics/API/Objects/RenderTarget.h"
 //-----------------------
 
 //----SHADERS------------

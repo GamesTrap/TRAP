@@ -40,6 +40,10 @@ private:
 
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
     bool m_renderedFrame = false;
+
+    std::array<float, 50> m_frameTimeHistory{};
+	TRAP::Utils::Timer m_fpsTimer{};
+	TRAP::Utils::Timer m_titleTimer{};
 };
 
 #endif /*GAMESTRAP_VULKANTEXTURETESTS_H*/

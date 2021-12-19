@@ -103,7 +103,7 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
         uint32_t imgIndex = TRAP::Graphics::RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow().get());
 
         //Bind render target/framebuffer for draw
-        winData->GraphicCommandBuffers[imgIndex]->BindRenderTargets({m_renderTarget}, nullptr, nullptr, {}, {}, -1, -1); //TODO Via RenderCommand
+        TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
         TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
         TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
@@ -116,7 +116,7 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
         TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
         //Unbind render target/framebuffer for transition
-        winData->GraphicCommandBuffers[imgIndex]->BindRenderTargets({}, nullptr, nullptr, {}, {}, -1, -1); //TODO Via RenderCommand
+        TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
         //Transition from RenderTarget to ShaderResource
         TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
@@ -127,6 +127,23 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
         m_renderedFrame = true;
     }
+
+    //Update FPS & FrameTime history
+    if (m_titleTimer.Elapsed() >= 0.025f)
+    {
+        m_titleTimer.Reset();
+        static int frameTimeIndex = 0;
+        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+        {
+            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+            frameTimeIndex++;
+        }
+        else
+        {
+            std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
+            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -135,6 +152,13 @@ void VulkanFrameBufferTests::OnImGuiRender()
 {
     ImGui::Begin("Vulkan FrameBuffer Test");
     ImGui::Text("Press ESC to close");
+    ImGui::Separator();
+    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
+    ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
+    ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
+    ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
+                        33, ImVec2(200, 50));
     ImGui::End();
 
     if(m_renderedFrame)

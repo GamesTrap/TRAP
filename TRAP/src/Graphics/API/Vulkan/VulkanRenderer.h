@@ -93,6 +93,20 @@ namespace TRAP::Graphics::API
 		void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) override;
 		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
 		                              Window* window = nullptr) override;
+		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
+		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
+							  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+							  std::vector<uint32_t>* colorArraySlices = nullptr,
+							  std::vector<uint32_t>* colorMipSlices = nullptr,
+							  uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
+							  Window* window = nullptr) override;
+		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
+		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+							   const RendererAPI::LoadActionsDesc* loadActions = nullptr,
+							   std::vector<uint32_t>* colorArraySlices = nullptr,
+							   std::vector<uint32_t>* colorMipSlices = nullptr,
+							   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
+							   Window* window = nullptr) override;
 
 		const std::string& GetTitle() const override;
 		bool GetVSync(Window* window = nullptr) override;

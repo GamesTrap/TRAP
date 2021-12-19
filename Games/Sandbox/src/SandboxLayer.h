@@ -180,7 +180,7 @@ public:
 		}
 		TRAP::Graphics::Renderer::EndScene();
 
-		//Update FPS & FrameTIme history
+		//Update FPS & FrameTime history
 		if (m_titleTimer.Elapsed() >= 0.025f)
 		{
 			m_titleTimer.Reset();
