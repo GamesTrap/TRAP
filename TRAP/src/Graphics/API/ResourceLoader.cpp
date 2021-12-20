@@ -95,21 +95,16 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 			case UpdateRequestType::BufferBarrier:
 			{
-				std::vector<RendererAPI::BufferBarrier> barrier{std::get<RendererAPI::BufferBarrier>(updateState.Desc)};
-				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(
-					&barrier,
-					nullptr, nullptr);
+				RendererAPI::BufferBarrier barrier = std::get<RendererAPI::BufferBarrier>(updateState.Desc);
+				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(&barrier, nullptr, nullptr);
 				result = UploadFunctionResult::Completed;
 				break;
 			}
 
 			case UpdateRequestType::TextureBarrier:
 			{
-				std::vector<RendererAPI::TextureBarrier> barrier{std::get<RendererAPI::TextureBarrier>(updateState.Desc)};
-				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier
-					(
-						nullptr, &barrier, nullptr
-					);
+				RendererAPI::TextureBarrier barrier = std::get<RendererAPI::TextureBarrier>(updateState.Desc);
+				loader->AcquireCmd(loader->m_nextSet)->ResourceBarrier(nullptr, &barrier, nullptr);
 				result = UploadFunctionResult::Completed;
 				break;
 			}
@@ -943,21 +938,21 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 		//TRAP_ASSERT(false, "Texture image format does not support linear blitting!");
 	}
 
-	std::vector<RendererAPI::TextureBarrier> barriers(1);
-	barriers[0].Texture = texture;
-	barriers[0].ArrayLayer = 0;
-	barriers[0].SubresourceBarrier = true;
+	RendererAPI::TextureBarrier barrier{};
+	barrier.Texture = texture;
+	barrier.ArrayLayer = 0;
+	barrier.SubresourceBarrier = true;
 
 	int32_t mipWidth = texture->GetWidth();
 	int32_t mipHeight = texture->GetHeight();
 
 	for(uint32_t i = 1; i < texture->GetMipLevels(); ++i)
 	{
-		barriers[0].MipLevel = static_cast<uint8_t>(i) - 1;
-		barriers[0].CurrentState = RendererAPI::ResourceState::CopyDestination;
-		barriers[0].NewState = RendererAPI::ResourceState::CopySource;
+		barrier.MipLevel = static_cast<uint8_t>(i) - 1;
+		barrier.CurrentState = RendererAPI::ResourceState::CopyDestination;
+		barrier.NewState = RendererAPI::ResourceState::CopySource;
 
-		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
+		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 
 		VkImageBlit blit{};
 		blit.srcOffsets[0] = {0, 0, 0};
@@ -981,10 +976,10 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 			           1, &blit,
 			           VK_FILTER_LINEAR);
 
-		barriers[0].CurrentState = RendererAPI::ResourceState::CopySource;
-		barriers[0].NewState = RendererAPI::ResourceState::CopyDestination;
+		barrier.CurrentState = RendererAPI::ResourceState::CopySource;
+		barrier.NewState = RendererAPI::ResourceState::CopyDestination;
 
-		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
+		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 
 		if(mipWidth > 1)
 			mipWidth /= 2;
@@ -1032,9 +1027,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
-		std::vector<RendererAPI::TextureBarrier> barriers{{texture, RendererAPI::ResourceState::Undefined,
-		                                       RendererAPI::ResourceState::CopyDestination}};
-		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
+		RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::Undefined,
+		                                    RendererAPI::ResourceState::CopyDestination};
+		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
 	const RendererAPI::MappedMemoryRange upload = dataAlreadyFilled ? textureUpdateDesc.Range :
@@ -1124,9 +1119,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
-		std::vector<RendererAPI::TextureBarrier> barriers{{texture, RendererAPI::ResourceState::CopyDestination,
-		                                       RendererAPI::ResourceState::ShaderResource}};
-		cmd->ResourceBarrier(nullptr, &barriers, nullptr);
+		RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::CopyDestination,
+		                                    RendererAPI::ResourceState::ShaderResource};
+		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
 	return UploadFunctionResult::Completed;

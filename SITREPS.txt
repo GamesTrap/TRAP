@@ -2324,3 +2324,4 @@ SITREP 12/20/2021|21w51a1
     - CommandBuffer Changed ResourceBarrier ~<20 mins
     - RenderCommand Added BufferBarrier, TextureBarrier & RenderTargetBarrier ~<30 mins
     - VulkanFrameBufferTests now uses RenderCommand::RenderTargetBarrier ~<5 mins
+    - RenderCommand Added non-vector versions of BufferBarrier, TextureBarrier & RenderTargetBarrier ~<30 mins

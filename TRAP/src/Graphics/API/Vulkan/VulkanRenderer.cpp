@@ -152,8 +152,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 
 	p->GraphicCommandBuffers[p->ImageIndex]->Begin();
 
-	std::vector<RenderTargetBarrier> barriers{{renderTarget, ResourceState::Present, ResourceState::RenderTarget}};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barriers);
+	RenderTargetBarrier barrier{renderTarget, ResourceState::Present, ResourceState::RenderTarget};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
@@ -186,9 +186,9 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
 
-	std::vector<RenderTargetBarrier> barriers{{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
-	                                      ResourceState::RenderTarget, ResourceState::Present}};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barriers);
+	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
+	                            ResourceState::RenderTarget, ResourceState::Present};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 
 	p->GraphicCommandBuffers[p->ImageIndex]->End();
 
@@ -987,8 +987,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAP
 
 	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
-	std::vector<RendererAPI::BufferBarrier> barriers{bufferBarrier};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&barriers, nullptr, nullptr);
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarrier, nullptr, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1014,8 +1013,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererA
 
 	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
-	std::vector<RendererAPI::TextureBarrier> barriers{textureBarrier};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &barriers, nullptr);
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarrier, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1041,8 +1039,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const Rend
 
 	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
-	std::vector<RendererAPI::RenderTargetBarrier> barriers{renderTargetBarrier};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barriers);
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &renderTargetBarrier);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1556,8 +1553,8 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(TRAP::Ref<TRAP::
 	VulkanCommandBuffer* cmd = s_NullDescriptors->InitialTransitionCmd;
 	s_NullDescriptors->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
-	std::vector<TextureBarrier> barriers{{std::move(texture), RendererAPI::ResourceState::Undefined, startState}};
-	cmd->ResourceBarrier(nullptr, &barriers, nullptr);
+	TextureBarrier barrier{std::move(texture), RendererAPI::ResourceState::Undefined, startState};
+	cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	cmd->End();
 	RendererAPI::QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds = {cmd};
