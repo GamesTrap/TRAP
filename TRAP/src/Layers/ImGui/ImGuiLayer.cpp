@@ -9,7 +9,10 @@
 #include "ImGuiWindowing.h"
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Textures/TextureBase.h"
+#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
+#include "Graphics/API/Objects/SwapChain.h"
 #include "Graphics/API/Objects/CommandPool.h"
 #include "Graphics/API/Objects/Fence.h"
 #include "Graphics/API/Objects/PipelineCache.h"
@@ -182,6 +185,14 @@ void TRAP::ImGuiLayer::Begin()
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
+		//Bind SwapChain RenderTarget if no RenderPass is active
+		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+		const auto* vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+		(
+			winData->GraphicCommandBuffers[winData->ImageIndex]
+		);
+		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
+			TRAP::Graphics::RenderCommand::BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex]);
 		ImGui_ImplVulkan_NewFrame();
 		INTERNAL::ImGuiWindowing::NewFrame();
 	}

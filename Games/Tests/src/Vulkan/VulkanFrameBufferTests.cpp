@@ -1,10 +1,5 @@
 #include "VulkanFrameBufferTests.h"
 
-#include "Graphics/API/Objects/CommandBuffer.h"
-#include "Graphics/API/Objects/RenderTarget.h"
-#include "Graphics/API/Objects/SwapChain.h"
-#include "Graphics/Textures/TextureBase.h"
-
 VulkanFrameBufferTests::VulkanFrameBufferTests()
     : Layer("VulkanFrameBufferTests"),
       m_vertexBuffer(nullptr),
@@ -73,7 +68,7 @@ void VulkanFrameBufferTests::OnAttach()
     desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
     desc.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
     desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+    desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
     desc.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::SampleCount1;
     desc.SampleQuality = 0;
     desc.Name = "Test Framebuffer";
@@ -96,33 +91,36 @@ void VulkanFrameBufferTests::OnDetach()
 
 void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
-    if(!m_renderedFrame) //As this is a static scene just render once
-    {
-        //Bind render target/framebuffer for draw
-        TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
-        TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
-        TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+    //Stop RenderPass (necessary for transition)
+    TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-        //Bind geometry and shader
-        m_vertexBuffer->Use();
-        m_indexBuffer->Use();
-        TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
+    TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
+    barrier.RenderTarget = m_renderTarget;
+    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+    TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
-        //Render Quad
-        TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
+    //Bind render target/framebuffer for draw
+    TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
+    TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+    TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
-        //Unbind render target/framebuffer for transition
-        TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+    //Bind geometry and shader
+    m_vertexBuffer->Use();
+    m_indexBuffer->Use();
+    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
 
-        //Transition from RenderTarget to ShaderResource
-        TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
-        barrier.RenderTarget = m_renderTarget;
-        barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-        barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+    //Render Quad
+    TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
-        m_renderedFrame = true;
-    }
+    //Stop RenderPass (necessary for transition)
+    TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+
+    //Transition from RenderTarget to ShaderResource
+    barrier.RenderTarget = m_renderTarget;
+    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
     //Update FPS & FrameTime history
     if (m_titleTimer.Elapsed() >= 0.025f)
@@ -157,15 +155,12 @@ void VulkanFrameBufferTests::OnImGuiRender()
                         33, ImVec2(200, 50));
     ImGui::End();
 
-    if(m_renderedFrame)
-    {
-        ImGui::Begin("COLOR_B8G8R8A8_UNORM_Framebuffer", nullptr, ImGuiWindowFlags_AlwaysAutoResize |
-                                                                  ImGuiWindowFlags_NoCollapse |
-                                                                  ImGuiWindowFlags_NoResize);
-        ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2(m_renderTarget->GetWidth(), m_renderTarget->GetHeight()), ImVec2(0, 0), ImVec2(1, 1));
-        ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
-        ImGui::End();
-    }
+    ImGui::Begin("COLOR_B8G8R8A8_UNORM_Framebuffer", nullptr, ImGuiWindowFlags_AlwaysAutoResize |
+                                                                ImGuiWindowFlags_NoCollapse |
+                                                                ImGuiWindowFlags_NoResize);
+    ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2(m_renderTarget->GetWidth(), m_renderTarget->GetHeight()), ImVec2(0, 0), ImVec2(1, 1));
+    ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
+    ImGui::End();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

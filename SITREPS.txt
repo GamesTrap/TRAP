@@ -2325,3 +2325,8 @@ SITREP 12/20/2021|21w51a1
     - RenderCommand Added BufferBarrier, TextureBarrier & RenderTargetBarrier ~<30 mins
     - VulkanFrameBufferTests now uses RenderCommand::RenderTargetBarrier ~<5 mins
     - RenderCommand Added non-vector versions of BufferBarrier, TextureBarrier & RenderTargetBarrier ~<30 mins
+
+SITREP 12/22/2021|21w51a2
+    - Changed TRAP Engine version to 21w51a2(0.7.99)
+    - Fixed ImGui not binding RenderTarget if no RenderPass is running ~>20 mins
+    - Updated TRAP-Editor to use RenderTarget for viewport rendering ~<10 mins

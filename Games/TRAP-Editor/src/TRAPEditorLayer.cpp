@@ -118,8 +118,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-	//const uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
-	//ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
+	ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
 	ImGui::End();
 	ImGui::PopStyleVar();
 
@@ -137,8 +136,16 @@ void TRAPEditorLayer::OnAttach()
 	TRAP::Application::SetHotReloading(true);
 
 	//Setup Viewport FrameBuffer
-	const TRAP::Graphics::FrameBufferProps frameBufferProps{ 1280, 720, 1, false };
-	//m_frameBuffer = TRAP::Graphics::FrameBuffer::Create(frameBufferProps);
+	TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
+    m_renderTargetDesc.Width = 1280;
+    m_renderTargetDesc.Height = 720;
+    m_renderTargetDesc.Depth = 1;
+    m_renderTargetDesc.ArraySize = 1;
+    m_renderTargetDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+    m_renderTargetDesc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
+    m_renderTargetDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    m_renderTargetDesc.Name = "Viewport Framebuffer";
+	m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
@@ -164,7 +171,7 @@ void TRAPEditorLayer::OnAttach()
 		void OnDestroy() override
 		{}
 
-		void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
+		void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
 		{
 			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
 			const float speed = 5.0f;
@@ -201,23 +208,44 @@ void TRAPEditorLayer::OnDetach()
 void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Resize Viewport
-	//const TRAP::Graphics::FrameBufferProps props = m_frameBuffer->GetProps();
-	//if (m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f && //Zero sized framebuffer is invalid
-	//	(props.Width != static_cast<uint32_t>(m_viewportSize.x) || props.Height != static_cast<uint32_t>(m_viewportSize.y)))
-	//{
-	//	m_frameBuffer->Resize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+	if (m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f && //Zero sized framebuffer is invalid
+		(m_renderTarget->GetWidth() != static_cast<uint32_t>(m_viewportSize.x) ||
+		 m_renderTarget->GetHeight() != static_cast<uint32_t>(m_viewportSize.y)))
+	{
+		m_renderTargetDesc.Width = static_cast<uint32_t>(m_viewportSize.x);
+		m_renderTargetDesc.Height = static_cast<uint32_t>(m_viewportSize.y);
+		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
-	//	m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
-	//}
+		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+	}
 
 	TRAP::Graphics::Renderer2D::ResetStats();
-	//Framebuffer
-	//m_frameBuffer->Bind();
+
+	//Stop RenderPass (necessary for transition)
+	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+
+	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
+	barrier.RenderTarget = m_renderTarget;
+	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+
+	//Framebuffer bind
+	TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
+	TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
 	//Update Scene
 	m_activeScene->OnUpdate(deltaTime);
 
-	//m_frameBuffer->Unbind();
+	//Stop RenderPass (necessary for transition)
+	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+
+	//Transition from RenderTarget to ShaderResource
+	barrier.RenderTarget = m_renderTarget;
+	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
+	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

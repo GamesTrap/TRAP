@@ -25,7 +25,8 @@ private:
 
 	//TRAP::Graphics::OrthographicCameraController m_cameraController;
 
-	//TRAP::Scope<TRAP::Graphics::FrameBuffer> m_frameBuffer;
+	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
 	TRAP::Math::Vec2 m_viewportSize;
 	bool m_viewportFocused;
 	bool m_viewportHovered;
