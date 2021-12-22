@@ -50,7 +50,7 @@ namespace TRAP::Graphics
 
 	private:
 		static void FlushAndReset();
-		static float GetTextureIndex(const Scope<Texture2D>& texture);
+		static float GetTextureIndex(Texture2D* texture);
 
 		static Renderer2DData s_data;
 	};

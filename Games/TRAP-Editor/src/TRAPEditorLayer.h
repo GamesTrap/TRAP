@@ -23,8 +23,9 @@ private:
 	void SaveScene();
 	void SaveSceneAs();
 
-	//TRAP::Graphics::OrthographicCameraController m_cameraController;
+	// TRAP::Graphics::OrthographicCameraController m_cameraController;
 
+	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions;
 	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
 	TRAP::Math::Vec2 m_viewportSize;

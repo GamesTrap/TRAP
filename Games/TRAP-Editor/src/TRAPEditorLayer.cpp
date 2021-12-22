@@ -147,6 +147,9 @@ void TRAPEditorLayer::OnAttach()
     m_renderTargetDesc.Name = "Viewport Framebuffer";
 	m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
+	m_renderTargetLoadActions.ClearColorValues[0] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_renderTargetLoadActions.LoadActionsColor[0] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
+
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
 #if 0
@@ -231,7 +234,7 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
 	//Framebuffer bind
-	TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
+	TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget, nullptr, &m_renderTargetLoadActions);
 	TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 

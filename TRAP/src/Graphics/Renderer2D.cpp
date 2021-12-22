@@ -261,7 +261,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		FlushAndReset();
 
-	const float textureIndex = GetTextureIndex(texture);
+	Texture2D* tex = texture ? texture.get() : s_data.WhiteTexture.get();
+	const float textureIndex = GetTextureIndex(tex);
 
 	for (uint64_t i = 0; i < quadVertexCount; i++)
 	{
@@ -279,16 +280,15 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& texture)
+float TRAP::Graphics::Renderer2D::GetTextureIndex(Texture2D* texture)
 {
-	float textureIndex = -1.0f;
+	TRAP_ASSERT(texture, "Texture is nullptr!");
 
-	if (!texture)
-		return textureIndex;
+	float textureIndex = -1.0f;
 
 	for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++)
 	{
-		if (s_data.TextureSlots[i] == texture.get())
+		if (s_data.TextureSlots[i] == texture)
 		{
 			textureIndex = static_cast<float>(i);
 			break;
@@ -298,7 +298,7 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& textur
 	if (textureIndex < 0.0f)
 	{
 		textureIndex = static_cast<float>(s_data.TextureSlotIndex);
-		s_data.TextureSlots[s_data.TextureSlotIndex] = texture.get();
+		s_data.TextureSlots[s_data.TextureSlotIndex] = texture;
 		s_data.TextureSlotIndex++;
 	}
 
