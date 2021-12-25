@@ -95,6 +95,56 @@ namespace TRAP
 		bool WriteTextFile(const std::filesystem::path& path, const std::string_view text,
 		                   WriteMode mode = WriteMode::Overwrite);
 
+		/// <summary>
+		/// Create a folder at the given path.
+		/// </summary>
+		/// <param name="path">Path to folder.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool CreateFolder(const std::filesystem::path& path);
+
+		/// <summary>
+		/// Delete the file or folder at the given path.
+		///
+		/// Note: Folder deletion is recursive.
+		/// </summary>
+		/// <param name="path">File or folder to delete.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool DeleteFileOrFolder(const std::filesystem::path& path);
+
+		/// <summary>
+		/// Move folder from oldPath to newPath.
+		///
+		/// Note: Only moves if newPath doesnt already exist.
+		/// </summary>
+		/// <param name="oldPath">Path to move from.</param>
+		/// <param name="newPath">Path to move to.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
+		/// <summary>
+		/// Move file to new folder.
+		///
+		/// Note: This doesn't move if file with the same filename already exists in destFolder.
+		/// </summary>
+		/// <param name="filePath">File to move.</param>
+		/// <param name="destFolder">Folder to move file to.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder);
+
+		/// <summary>
+		/// Rename folder from oldPath to newPath.
+		/// </summary>
+		/// <param name="oldPath">Folder path to rename.</param>
+		/// <param name="newPath">Path to New folder name.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
+		/// <summary>
+		/// Rename file excluding file extension.
+		/// </summary>
+		/// <param name="oldPath">File path to rename.</param>
+		/// <param name="newName">New filename.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool RenameFile(const std::filesystem::path& oldPath, const std::string& newName);
+
         /// <summary>
 		/// Check if a file or folder exists.
 		///
@@ -196,6 +246,20 @@ namespace TRAP
 		/// <param name="p">Path to check.</param>
 		/// <returns>True if path is relative, false otherwise.</returns>
 		bool IsPathRelative(const std::filesystem::path& p);
+		/// <summary>
+		/// Get whether the path p leads to a folder or not.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path leads to folder, false otherwise.</returns>
+		bool IsFolder(const std::filesystem::path& p);
+		/// <summary>
+		/// Get whether the path p leads to a regular file or not.
+		///
+		/// Note: False is returned if path leads to a symlink or any other non-regular file type.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path leads to regular file, false otherwise.</returns>
+		bool IsFile(const std::filesystem::path& p);
 
 		/// <summary>
 		/// Converts a path to an absolute path.

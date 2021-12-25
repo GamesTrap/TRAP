@@ -2332,7 +2332,9 @@ SITREP 12/22/2021|21w51a2
     - Updated TRAP-Editor to use RenderTarget for viewport rendering ~<10 mins
     - Renderer2D Fixed DrawQuad(Mat4, Vec4, Scope<Texture2D>) using wrong texture index for nullptr textures ~<10 mins
     - TRAP-Editor Added clearing of viewport render target ~<5 mins
+
 SITREP 12/25/2021|21w51a3
     - Changed TRAP Engine version to 21w51a3(0.7.100)
     - Simplified ConvertToSPIRV code ~<30 mins
     - Updated ConvertToSPIRV ~<10 mins
+    - FS Added more utility functions ~<30 min

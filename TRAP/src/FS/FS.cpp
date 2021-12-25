@@ -186,6 +186,115 @@ bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::FS::CreateFolder(const std::filesystem::path& path)
+{
+    TP_PROFILE_FUNCTION();
+
+    if(path.empty())
+        return false;
+
+    std::error_code ec;
+    bool res = std::filesystem::create_directories(path, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't create folder: \"", path.generic_u8string(), "\" (", ec.message(), ")");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::DeleteFileOrFolder(const std::filesystem::path& path)
+{
+    TP_PROFILE_FUNCTION();
+
+    if(path.empty())
+        return false;
+
+    if(!FileOrFolderExists(path))
+        return false;
+
+    std::error_code ec;
+    if(std::filesystem::is_directory(path, ec)) //Directory
+    {
+        if(ec)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.generic_u8string(),
+                     "\" (", ec.message(), ")");
+            return false;
+        }
+
+        bool res = std::filesystem::remove_all(path, ec) > 1;
+
+        if(ec)
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.generic_u8string(),
+                     "\" (", ec.message(), ")");
+            return false;
+        }
+
+        return res;
+    }
+
+    //File
+    bool res = std::filesystem::remove(path, ec);
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.generic_u8string(),
+                 "\" (", ec.message(), ")");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
+{
+    if(FileOrFolderExists(newPath))
+        return false;
+
+    std::error_code ec;
+    std::filesystem::rename(oldPath, newPath, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldPath.generic_u8string(),
+                 "\" to \"", newPath.generic_u8string(), "\"(", ec.message(), ")");
+        return false;
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder)
+{
+    return MoveFolder(filePath, destFolder / filePath.filename());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
+{
+    return MoveFolder(oldPath, newPath);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::RenameFile(const std::filesystem::path& oldPath, const std::string& newName)
+{
+    std::filesystem::path newPath = oldPath.parent_path() / newName / oldPath.extension();
+    return RenameFolder(oldPath, newPath);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::FS::FileOrFolderExists(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
@@ -493,6 +602,38 @@ bool TRAP::FS::IsPathRelative(const std::filesystem::path& p)
     }
 
     return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::IsFolder(const std::filesystem::path& p)
+{
+    std::error_code ec;
+    bool res = std::filesystem::is_directory(p, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to a folder: \"", p, "\" (", ec.message(), ")");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::IsFile(const std::filesystem::path& p)
+{
+    std::error_code ec;
+    bool res = std::filesystem::is_regular_file(p, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to a regular file: \"", p, "\" (", ec.message(), ")");
+        return false;
+    }
+
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
