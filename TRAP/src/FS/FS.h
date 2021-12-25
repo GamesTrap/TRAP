@@ -273,6 +273,32 @@ namespace TRAP
 		/// <param name="p">Path to convert.</param>
 		/// <returns>Relative path on success, empty path otherwise.</returns>
 		std::filesystem::path ToRelativePath(const std::filesystem::path& p);
+
+		/// <summary>
+		/// Opens the file browser at the given path.
+		///
+		/// Note: Linux uses xdg-open.
+		/// </summary>
+		/// <param name="p">Folder to open.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool OpenFolderInFileBrowser(const std::filesystem::path& p);
+		/// <summary>
+		/// Opens the file browser and selects the given file.
+		///
+		/// Note: On Linux this function doesn't select/highlight the file.
+		/// Note: Linux uses xdg-open.
+		/// </summary>
+		/// <param name="p">File to open.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool OpenFileInFileBrowser(const std::filesystem::path& p);
+		/// <summary>
+		/// Opens a file or folder with the default application.
+		///
+		/// Note: Linux uses xdg-open.
+		/// </summary>
+		/// <param name="p">File or folder to open.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool OpenExternally(const std::filesystem::path& p);
     };
 }
 

@@ -611,7 +611,7 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(p);
+			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(p.string());
 
 			//By binding the fallback shader, we can make sure that the
 			//new shader will trigger a pipeline rebuild.
@@ -631,7 +631,7 @@ void TRAP::Application::UpdateHotReloading()
 			TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
 			Graphics::Renderer2D::ClearTextures();
-			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(p);
+			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(p.string());
 
 			//Send event
 			TRAP::Events::TextureReloadEvent e(texture);

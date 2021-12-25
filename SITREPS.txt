@@ -2338,3 +2338,4 @@ SITREP 12/25/2021|21w51a3
     - Simplified ConvertToSPIRV code ~<30 mins
     - Updated ConvertToSPIRV ~<10 mins
     - FS Added more utility functions ~<30 min
+    - FS Added OpenFolderInFileBrowser, OpenFileInFileBrower, OpenExternally ~<30 mins

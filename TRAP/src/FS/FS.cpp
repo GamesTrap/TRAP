@@ -581,8 +581,6 @@ bool TRAP::FS::IsPathAbsolute(const std::filesystem::path& p)
         TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is absolute: ", e.what());
         return false;
     }
-
-    return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -600,8 +598,6 @@ bool TRAP::FS::IsPathRelative(const std::filesystem::path& p)
         TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is relative: ", e.what());
         return false;
     }
-
-    return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -672,6 +668,118 @@ std::filesystem::path TRAP::FS::ToRelativePath(const std::filesystem::path& p)
     }
 
     return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::OpenFolderInFileBrowser(const std::filesystem::path& p)
+{
+    if(!FileOrFolderExists(p) || !IsFolder(p))
+        return false;
+
+    std::filesystem::path absPath = ToAbsolutePath(p);
+    if(absPath.empty())
+        return false;
+
+#ifdef TRAP_PLATFORM_WINDOWS
+    absPath = absPath.make_preferred(); //Replaces all "/" with "\"
+
+    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+    const HINSTANCE res = ShellExecute(nullptr, L"explore", absPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+
+	if (initRes == S_OK || initRes == S_FALSE)
+		CoUninitialize();
+
+    return reinterpret_cast<const INT_PTR>(res) > 32;
+#elif defined(TRAP_PLATFORM_LINUX)
+    std::string cmd = "xdg-open ";
+    cmd += absPath.generic_string();
+    FILE* xdg = popen(cmd.c_str(), "r");
+    if(!xdg)
+        return false;
+    pclose(xdg);
+
+    return true;
+#endif
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::OpenFileInFileBrowser(const std::filesystem::path& p)
+{
+    if(!FileOrFolderExists(p) || !IsFile(p))
+        return false;
+
+    std::filesystem::path absPath = ToAbsolutePath(p);
+    if(absPath.empty())
+        return false;
+
+#ifdef TRAP_PLATFORM_WINDOWS
+    absPath = absPath.make_preferred(); //Replaces all "/" with "\"
+
+    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+    LPITEMIDLIST pidl = ILCreateFromPath(absPath.c_str());
+    if(!pidl)
+        return false;
+    const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
+    ILFree(pidl);
+
+	if (initRes == S_OK || initRes == S_FALSE)
+		CoUninitialize();
+
+    return res == S_OK;
+#elif defined(TRAP_PLATFORM_LINUX)
+    std::string cmd = "xdg-open ";
+    cmd += absPath.parent_path().generic_string();
+    FILE* xdg = popen(cmd.c_str(), "r");
+    if(!xdg)
+        return false;
+    pclose(xdg);
+
+    return true;
+#endif
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FS::OpenExternally(const std::filesystem::path& p)
+{
+    if(!FileOrFolderExists(p))
+        return false;
+
+    std::filesystem::path absPath = ToAbsolutePath(p);
+    if(absPath.empty())
+        return false;
+
+#ifdef TRAP_PLATFORM_WINDOWS
+    absPath = absPath.make_preferred(); //Replaces all "/" with "\"
+
+    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+    const HINSTANCE res = ShellExecute(nullptr, L"open", absPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+
+	if (initRes == S_OK || initRes == S_FALSE)
+		CoUninitialize();
+
+    return reinterpret_cast<const INT_PTR>(res) > 32;
+#elif defined(TRAP_PLATFORM_LINUX)
+    std::string cmd = "xdg-open ";
+    cmd += absPath.generic_string();
+    FILE* xdg = popen(cmd.c_str(), "r");
+    if(!xdg)
+        return false;
+    pclose(xdg);
+
+    return true;
+#endif
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
