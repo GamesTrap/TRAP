@@ -98,10 +98,6 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
 
 	VkCall(vkCreateRenderPass(m_device->GetVkDevice(), &info, nullptr, &m_renderPass));
-
-	attachments.clear();
-	colorAttachmentRefs.clear();
-	depthStencilAttachmentRefs.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

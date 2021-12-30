@@ -205,7 +205,7 @@ void TRAPEditorLayer::OnAttach()
 
 void TRAPEditorLayer::OnDetach()
 {
-	//m_frameBuffer.reset();
+	m_renderTarget.reset();
 	m_activeScene.reset();
 }
 
@@ -232,7 +232,7 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
 	barrier.RenderTarget = m_renderTarget;
-	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
 	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
 	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
@@ -247,10 +247,10 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Stop RenderPass (necessary for transition)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-	//Transition from RenderTarget to ShaderResource
+	//Transition from RenderTarget to PixelShaderResource
 	barrier.RenderTarget = m_renderTarget;
 	barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+	barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
 	TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 }
 

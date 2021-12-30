@@ -77,6 +77,8 @@ namespace TRAP
 		bool m_blockEvents;
 		float m_time = 0.0f;
 
+		std::string m_imguiIniPath;
+
 		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache;
 		VkDescriptorPool m_imguiDescriptorPool;
 

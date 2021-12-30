@@ -14,7 +14,6 @@ VulkanFrameBufferTests::VulkanFrameBufferTests()
 void VulkanFrameBufferTests::OnAttach()
 {
     TRAP::Application::GetWindow()->SetTitle("Vulkan FrameBuffer Test");
-    TRAP::Application::GetWindow()->SetResizable(false);
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
@@ -68,7 +67,7 @@ void VulkanFrameBufferTests::OnAttach()
     desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
     desc.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
     desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
-    desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     desc.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::SampleCount1;
     desc.SampleQuality = 0;
     desc.Name = "Test Framebuffer";
@@ -96,7 +95,7 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
     TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier{};
     barrier.RenderTarget = m_renderTarget;
-    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
@@ -116,10 +115,10 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-    //Transition from RenderTarget to ShaderResource
+    //Transition from RenderTarget to PixelShaderResource
     barrier.RenderTarget = m_renderTarget;
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
-    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
     //Update FPS & FrameTime history

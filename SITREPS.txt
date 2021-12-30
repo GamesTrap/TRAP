@@ -2339,3 +2339,9 @@ SITREP 12/25/2021|21w51a3
     - Updated ConvertToSPIRV ~<10 mins
     - FS Added more utility functions ~<30 min
     - FS Added OpenFolderInFileBrowser, OpenFileInFileBrower, OpenExternally ~<30 mins
+
+SITREP 12/30/2021|21w52a1
+    - Changed TRAP Engine version to 21w52a1(0.7.101)
+    - Moved imgui.ini files to documents/game folder ~<5 mins
+    - Vulkan SwapChain recreation fixed InvalidImageLayout errors ~>60 mins
+    

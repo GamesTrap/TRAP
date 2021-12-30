@@ -52,6 +52,10 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
+	//Set imgui.ini path
+	m_imguiIniPath = TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "imgui.ini";
+	io.IniFilename = m_imguiIniPath.c_str();
+
 	const auto contentScale = Application::GetWindow()->GetContentScale();
 	float scaleFactor = 1.0f;
 	if (contentScale.x > 1.0f || contentScale.y > 1.0f)
@@ -194,8 +198,10 @@ void TRAP::ImGuiLayer::Begin()
 		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
 			TRAP::Graphics::RenderCommand::BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex]);
 		ImGui_ImplVulkan_NewFrame();
-		INTERNAL::ImGuiWindowing::NewFrame();
 	}
+
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::Headless)
+		INTERNAL::ImGuiWindowing::NewFrame();
 
 	ImGui::NewFrame();
 }

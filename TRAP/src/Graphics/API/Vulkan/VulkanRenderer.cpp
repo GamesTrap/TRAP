@@ -205,6 +205,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 	presentDesc.SwapChain = p->SwapChain;
 	const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
 
+	p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
+
 	if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
 	{
 		if(presentStatus == PresentStatus::DeviceReset)
@@ -243,6 +245,9 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 		swapChainDesc.EnableVSync = p->CurrentVSync;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
+		p->CurrentSwapChainImageIndex = 0;
+		p->ImageIndex = 0;
+
 		if (!p->SwapChain)
 		{
 			TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create swapchain!\n"
@@ -252,8 +257,6 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 			TRAP::Application::Shutdown();
 		}
 	}
-
-	p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
 
 	p->Recording = false;
 }
