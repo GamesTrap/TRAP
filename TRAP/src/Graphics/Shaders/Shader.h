@@ -26,13 +26,13 @@ namespace TRAP::Graphics
 		};
 
 	protected:
-		Shader();
+		Shader() = default;
 	public:
 		Shader(const Shader&) = default;
 		Shader& operator=(const Shader&) = default;
 		Shader(Shader&&) = default;
 		Shader& operator=(Shader&&) = default;
-		virtual ~Shader();
+		virtual ~Shader() = default;
 
 		const std::string& GetName() const;
 
@@ -73,7 +73,7 @@ namespace TRAP::Graphics
 		std::filesystem::path m_filepath;
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
-		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets;
+		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 
 	private:
 		static bool CheckSPIRVMagicNumber(const std::filesystem::path& filePath);

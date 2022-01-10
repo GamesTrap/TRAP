@@ -6,21 +6,40 @@
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"
 
+static const std::unordered_map<TRAP::Graphics::RendererAPI::ShaderStage, std::string> StageToStr
+{
+	{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, "Vertex"},
+	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, "TessellationControl"},
+	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, "TessellationEvaluation"},
+	{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, "Geometry"},
+	{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, "Fragment"},
+	{TRAP::Graphics::RendererAPI::ShaderStage::Compute, "Compute"},
+	{TRAP::Graphics::RendererAPI::ShaderStage::RayTracing, "RayTracing"}
+};
+
+static const std::unordered_map<TRAP::Graphics::RendererAPI::ShaderStage, EShLanguage> StageToEShLang
+{
+	{TRAP::Graphics::RendererAPI::ShaderStage::Vertex, EShLangVertex},
+	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl, EShLangTessControl},
+	{TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation, EShLangTessEvaluation},
+	{TRAP::Graphics::RendererAPI::ShaderStage::Geometry, EShLangGeometry},
+	{TRAP::Graphics::RendererAPI::ShaderStage::Fragment, EShLangFragment},
+	{TRAP::Graphics::RendererAPI::ShaderStage::Compute, EShLangCompute}
+};
+
+static const std::vector<TRAP::Graphics::RendererAPI::ShaderStage> IndexToStage
+{
+	TRAP::Graphics::RendererAPI::ShaderStage::Vertex,
+	TRAP::Graphics::RendererAPI::ShaderStage::TessellationControl,
+	TRAP::Graphics::RendererAPI::ShaderStage::TessellationEvaluation,
+	TRAP::Graphics::RendererAPI::ShaderStage::Geometry,
+	TRAP::Graphics::RendererAPI::ShaderStage::Fragment,
+	TRAP::Graphics::RendererAPI::ShaderStage::Compute,
+	TRAP::Graphics::RendererAPI::ShaderStage::RayTracing
+};
+
 bool TRAP::Graphics::Shader::s_glslangInitialized = false;
 std::array<std::string, 2> TRAP::Graphics::Shader::SupportedShaderFormatSuffixes{".shader", ".spirv"};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Shader::Shader()
-	: m_descriptorSets()
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Shader::~Shader()
-{
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -419,45 +438,32 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 			TP_WARN(Log::ShaderGLSLPrefix, "Found tag: \"", lines[i], "\" this is unnecessary! Skipping line: ", i);
 		else if(currentShaderStage != RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
 		{
-			switch(currentShaderStage)
+			static const std::unordered_map<RendererAPI::ShaderStage, uint32_t> stageToIndex
 			{
-			case RendererAPI::ShaderStage::Vertex:
-				shaders[0].append(lines[i] + '\n');
-				break;
+				{RendererAPI::ShaderStage::Vertex, 0},
+				{RendererAPI::ShaderStage::TessellationControl, 1},
+				{RendererAPI::ShaderStage::TessellationEvaluation, 2},
+				{RendererAPI::ShaderStage::Geometry, 3},
+				{RendererAPI::ShaderStage::Fragment, 4},
+				{RendererAPI::ShaderStage::Compute, 5},
+				{RendererAPI::ShaderStage::RayTracing, 6}
+			};
 
-			case RendererAPI::ShaderStage::TessellationControl:
-			//case RendererAPI::ShaderStage::Hull:
-				shaders[1].append(lines[i] + '\n');
-				break;
+			auto it = stageToIndex.find(currentShaderStage);
+			if(it != stageToIndex.end())
+			{
+				if(currentShaderStage == RendererAPI::ShaderStage::RayTracing)
+				{
+					TP_WARN(Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
+					return false;
+				}
+				if(currentShaderStage == RendererAPI::ShaderStage::None)
+				{
+					TP_ERROR(Log::ShaderGLSLPrefix, "Unsupported shader type!");
+					return false;
+				}
 
-			case RendererAPI::ShaderStage::TessellationEvaluation:
-			//case RendererAPI::ShaderStage::Domain:
-				shaders[2].append(lines[i] + '\n');
-				break;
-
-			case RendererAPI::ShaderStage::Geometry:
-				shaders[3].append(lines[i] + '\n');
-				break;
-
-			case RendererAPI::ShaderStage::Fragment:
-				shaders[4].append(lines[i] + '\n');
-				break;
-
-			case RendererAPI::ShaderStage::Compute:
-				shaders[5].append(lines[i] + '\n');
-				break;
-
-			case RendererAPI::ShaderStage::RayTracing:
-				TP_WARN(Log::ShaderGLSLPrefix, "RayTracing shader support is WIP!");
-				return false;
-				break;
-
-			case RendererAPI::ShaderStage::AllGraphics:
-			case RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
-			case RendererAPI::ShaderStage::None:
-			default:
-				TP_ERROR(Log::ShaderGLSLPrefix, "Unsupported shader type!");
-				break;
+				shaders[it->second].append(lines[i] + '\n');
 			}
 		}
 	}
@@ -466,59 +472,10 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 	{
 		if (Utils::String::ToLower(shaders[i]).find("main") == std::string::npos)
 		{
-			switch (i)
+			if (static_cast<uint32_t>(IndexToStage[i] & shaderStages))
 			{
-			case 0:
-				if (static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages))
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "Vertex shader couldn't find \"main\" function!");
-					return false;
-				}
-				break;
-
-			case 1:
-				if (static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationControl & shaderStages))
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "Tessellation control shader couldn't find \"main\" function!");
-					return false;
-				}
-				break;
-
-			case 2:
-				if (static_cast<uint32_t>(RendererAPI::ShaderStage::TessellationEvaluation & shaderStages))
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix,
-					         "Tessellation evaluation shader couldn't find \"main\" function!");
-					return false;
-				}
-				break;
-
-			case 3:
-				if (static_cast<uint32_t>(RendererAPI::ShaderStage::Geometry & shaderStages))
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "Geometry shader couldn't find \"main\" function!");
-					return false;
-				}
-				break;
-
-			case 4:
-				if (static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages))
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "Fragment shader couldn't find \"main\" function!");
-					return false;
-				}
-				break;
-
-			case 5:
-				if (static_cast<uint32_t>(RendererAPI::ShaderStage::Compute & shaderStages))
-				{
-					TP_ERROR(Log::ShaderGLSLPrefix, "Compute shader couldn't find \"main\" function!");
-					return false;
-				}
-				break;
-
-			default:
-				break;
+				TP_ERROR(Log::ShaderGLSLPrefix, StageToStr.at(IndexToStage[i]), " shader couldn't find \"main\" function!");
+				return false;
 			}
 		}
 
@@ -562,44 +519,10 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversio
 	                                                                              const RendererAPI::ShaderStage stage,
 	                                                                              std::string& preProcessedSource)
 {
-	TRAP::Scope<glslang::TShader> shader;
+	TRAP::Scope<glslang::TShader> shader = TRAP::MakeScope<glslang::TShader>(StageToEShLang.at(stage));
+	shader->setStrings(&source, 1);
+	shader->setEnvInput(glslang::EShSourceGlsl, StageToEShLang.at(stage), glslang::EShClientVulkan, 460);
 
-	if(stage == RendererAPI::ShaderStage::Vertex)
-	{
-		shader = TRAP::MakeScope<glslang::TShader>(EShLangVertex);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangVertex, glslang::EShClientVulkan, 460);
-	}
-	else if (stage == RendererAPI::ShaderStage::TessellationControl)
-	{
-		shader = TRAP::MakeScope<glslang::TShader>(EShLangTessControl);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangTessControl, glslang::EShClientVulkan, 460);
-	}
-	else if (stage == RendererAPI::ShaderStage::TessellationEvaluation)
-	{
-		shader = TRAP::MakeScope<glslang::TShader>(EShLangTessEvaluation);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangTessEvaluation, glslang::EShClientVulkan, 460);
-	}
-	else if (stage == RendererAPI::ShaderStage::Geometry)
-	{
-		shader = TRAP::MakeScope<glslang::TShader>(EShLangGeometry);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangGeometry, glslang::EShClientVulkan, 460);
-	}
-	else if (stage == RendererAPI::ShaderStage::Fragment)
-	{
-		shader = TRAP::MakeScope<glslang::TShader>(EShLangFragment);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangFragment, glslang::EShClientVulkan, 460);
-	}
-	else if (stage == RendererAPI::ShaderStage::Compute)
-	{
-		shader = TRAP::MakeScope<glslang::TShader>(EShLangCompute);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangCompute, glslang::EShClientVulkan, 460);
-	}
 	//TODO RayTracing
 
 	if(!shader)
@@ -610,14 +533,9 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversio
 	glslang::TShader::ForbidIncluder includer;
 	constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
-	if(!shader->preprocess(&DefaultTBuiltInResource,
-		                   460,
-		                   ECoreProfile,
-		                   true,
-		                   true,
+	if(!shader->preprocess(&DefaultTBuiltInResource, 460, ECoreProfile, true, true,
 		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
-		                   &preProcessedSource,
-		                   includer))
+		                   &preProcessedSource, includer))
 	{
 		TP_ERROR(Log::ShaderSPIRVPrefix, "GLSL -> SPIR-V conversion preprocessing failed!");
 		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
@@ -738,8 +656,6 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 	RendererAPI::BinaryShaderDesc desc{};
 	desc.Stages = shaderStages;
 
-	//TODO Reduce code redundancy
-	//pack messages into a list
 	for(uint32_t i = 0; i < shaders.size(); ++i)
 	{
 		if(shaders[i].empty())
@@ -749,222 +665,60 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 		std::string preProcessedSource;
 
+		#ifdef ENABLE_GRAPHICS_DEBUG
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
+		#endif
+			glslShaders[i] = PreProcessGLSLForConversion(shaders[i].data(), IndexToStage[i],
+														 preProcessedSource);
+			if (preProcessedSource.empty())
+				return{};
+
+			const char* preProcessedCStr = preProcessedSource.c_str();
+			glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+		#ifdef ENABLE_GRAPHICS_DEBUG
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", StageToStr.at(IndexToStage[i]), " shader");
+		#endif
+			if (!ParseGLSLang(glslShaders[i].get()))
+				return{};
+
+		#ifdef ENABLE_GRAPHICS_DEBUG
+			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", StageToStr.at(IndexToStage[i]), " shader");
+		#endif
+			if (!LinkGLSLang(glslShaders[i].get(), program))
+				return{};
+
+		#ifdef ENABLE_GRAPHICS_DEBUG
+			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+		#endif
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[i].get(),
+															   IndexToStage[i], program);
+
 		switch(i)
 		{
 		case 0:
-		{
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing vertex shader");
-		#endif
-			glslShaders[0] = PreProcessGLSLForConversion(shaders[0].data(), RendererAPI::ShaderStage::Vertex,
-															preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
-
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[0]->setStrings(&preProcessedCStr, 1);
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing vertex shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[0].get()))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking vertex shader");
-		#endif
-			if (!LinkGLSLang(glslShaders[0].get(), program))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[0].get(),
-																RendererAPI::ShaderStage::Vertex, program);
-
 			desc.Vertex = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
 			break;
-		}
 
 		case 1:
-		{
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Tessellation control shader");
-		#endif
-			glslShaders[1] = PreProcessGLSLForConversion(shaders[1].data(),
-															RendererAPI::ShaderStage::TessellationControl,
-															preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
-
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[1]->setStrings(&preProcessedCStr, 1);
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Tessellation control shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[1].get()))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Tessellation control shader");
-		#endif
-			if (!LinkGLSLang(glslShaders[1].get(), program))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[1].get(),
-																RendererAPI::ShaderStage::TessellationControl,
-																program);
-
 			desc.TessellationControl = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
 			break;
-		}
 
 		case 2:
-		{
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing Tessellation evaluation shader");
-		#endif
-			glslShaders[2] = PreProcessGLSLForConversion(shaders[2].data(),
-															RendererAPI::ShaderStage::TessellationEvaluation,
-															preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
-
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[2]->setStrings(&preProcessedCStr, 1);
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing Tessellation evaluation shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[2].get()))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking Tessellation evaluation shader");
-		#endif
-			if (!LinkGLSLang(glslShaders[2].get(), program))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[2].get(),
-																RendererAPI::ShaderStage::TessellationEvaluation,
-																program);
-
 			desc.TessellationEvaluation = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
 			break;
-		}
 
 		case 3:
-		{
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing geometry shader");
-		#endif
-			glslShaders[3] = PreProcessGLSLForConversion(shaders[3].data(), RendererAPI::ShaderStage::Geometry,
-															preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
-
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[3]->setStrings(&preProcessedCStr, 1);
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing geometry shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[3].get()))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking geometry shader");
-		#endif
-			if (!LinkGLSLang(glslShaders[3].get(), program))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[3].get(),
-																RendererAPI::ShaderStage::Geometry, program);
-
 			desc.Geometry = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
 			break;
-		}
 
 		case 4:
-		{
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing fragment shader");
-		#endif
-			glslShaders[4] = PreProcessGLSLForConversion(shaders[4].data(),
-															RendererAPI::ShaderStage::Fragment, preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
-
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[4]->setStrings(&preProcessedCStr, 1);
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing fragment shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[4].get()))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking fragment shader");
-		#endif
-			if (!LinkGLSLang(glslShaders[4].get(), program))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[4].get(),
-																RendererAPI::ShaderStage::Fragment, program);
-
 			desc.Fragment = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
 			break;
-		}
 
 		case 5:
-		{
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing compute shader");
-		#endif
-			glslShaders[5] = PreProcessGLSLForConversion(shaders[5].data(),
-															RendererAPI::ShaderStage::Compute, preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
-
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[5]->setStrings(&preProcessedCStr, 1);
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing compute shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[5].get()))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking compute shader");
-		#endif
-			if (!LinkGLSLang(glslShaders[5].get(), program))
-				return{};
-
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[5].get(),
-																RendererAPI::ShaderStage::Compute,
-																program);
-
 			desc.Compute = RendererAPI::BinaryShaderStageDesc{ SPIRV, "main" };
 			break;
-		}
 
 			//TODO RayTracing Shaders
 
@@ -998,49 +752,11 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* s
 	spvOptions.optimizeSize = true;
 #endif
 
-	switch(stage)
-	{
-	case RendererAPI::ShaderStage::Vertex:
-		glslang::GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(Log::ShaderSPIRVPrefix, "Vertex shader: ", logger.getAllMessages());
-		break;
+	glslang::GlslangToSpv(*program.getIntermediate(StageToEShLang.at(stage)), SPIRV, &logger, &spvOptions);
+	if (logger.getAllMessages().length() > 0)
+		TP_ERROR(Log::ShaderSPIRVPrefix, StageToStr.at(stage), " shader: ", logger.getAllMessages());
 
-	case RendererAPI::ShaderStage::TessellationControl:
-		glslang::GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(Log::ShaderSPIRVPrefix, "Tessellation control shader: ", logger.getAllMessages());
-		break;
-
-	case RendererAPI::ShaderStage::TessellationEvaluation:
-		glslang::GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(Log::ShaderSPIRVPrefix, "Tessellation evaluation shader: ", logger.getAllMessages());
-		break;
-
-	case RendererAPI::ShaderStage::Geometry:
-		glslang::GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(Log::ShaderSPIRVPrefix, "Geometry shader: ", logger.getAllMessages());
-		break;
-
-	case RendererAPI::ShaderStage::Fragment:
-		glslang::GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(Log::ShaderSPIRVPrefix, "Fragment shader: ", logger.getAllMessages());
-		break;
-
-	case RendererAPI::ShaderStage::Compute:
-		glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV, &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			TP_ERROR(Log::ShaderSPIRVPrefix, "Compute shader: ", logger.getAllMessages());
-		break;
-
-		//TODO RayTracing shaders
-
-	default:
-		break;
-	}
+	//TODO RayTracing shaders
 
 	return SPIRV;
 }

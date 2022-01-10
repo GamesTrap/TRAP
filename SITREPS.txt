@@ -2344,4 +2344,7 @@ SITREP 12/30/2021|21w52a1
     - Changed TRAP Engine version to 21w52a1(0.7.101)
     - Moved imgui.ini files to documents/game folder ~<5 mins
     - Vulkan SwapChain recreation fixed InvalidImageLayout errors ~>60 mins
-    
+
+SITREP 01/10/2022|22w02a1
+    - Changed TRAP Engine version to 22w02a1(0.7.102)
+    - Simplified Shader functions ~<20 mins
