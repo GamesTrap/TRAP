@@ -2348,3 +2348,6 @@ SITREP 12/30/2021|21w52a1
 SITREP 01/10/2022|22w02a1
     - Changed TRAP Engine version to 22w02a1(0.7.102)
     - Simplified Shader functions ~<20 mins
+
+SITREP 01/13/2022|22w02a2
+    - Changed TRAP Engine version to 22w02a2(0.7.103)

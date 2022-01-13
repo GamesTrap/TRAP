@@ -53,7 +53,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
 	//Set imgui.ini path
-	m_imguiIniPath = TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "imgui.ini";
+	m_imguiIniPath = (TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "imgui.ini").generic_string();
 	io.IniFilename = m_imguiIniPath.c_str();
 
 	const auto contentScale = Application::GetWindow()->GetContentScale();
