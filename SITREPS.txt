@@ -2355,3 +2355,5 @@ SITREP 01/23/2022|22w03a1
     - Made VulkanMemoryAllocator a submodule ~<30 mins
     - Updated EnTT / Made EnTT a submodule ~<30 mins
     - Updated Licenses ~<5 mins
+    - Updated ImGui / Now using upstream ImGui ~<30 mins
+    - Updated YAMLCpp / Now using upstream YAMLCpp ~<30 mins

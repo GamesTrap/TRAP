@@ -40,7 +40,7 @@ include "TRAP"
 
 group "Dependencies"
 	include "Dependencies/ImGui.lua"
-	include "Dependencies/YAMLCpp"
+	include "Dependencies/YAMLCpp.lua"
 	include "Dependencies/ModernDialogs.lua"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang/SPIRV"
