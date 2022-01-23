@@ -34,6 +34,7 @@ IncludeDir["ENTT"] = "Dependencies/Entt"
 IncludeDir["YAMLCPP"] = "Dependencies/YAMLCpp/include"
 IncludeDir["MODERNDIALOGS"] = "Dependencies/ModernDialogs/ModernDialogs"
 IncludeDir["DISCORDGAMESDK"] = "Dependencies/DiscordGameSDK/cpp"
+IncludeDir["VMA"] = "Dependencies/VulkanMemoryAllocator/include"
 
 include "TRAP"
 

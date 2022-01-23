@@ -1,7 +1,7 @@
 #ifndef TRAP_VULKANMEMORYALLOCATOR_H
 #define TRAP_VULKANMEMORYALLOCATOR_H
 
-#include "Graphics/API/Vulkan/Utils/VMA.h"
+#include <vk_mem_alloc.h>
 
 namespace TRAP::Graphics::API
 {

@@ -31,7 +31,8 @@ project "TRAP-Editor"
 		"../../%{IncludeDir.SPIRVCROSS}",
 		"../../%{IncludeDir.ENTT}",
 		"../../%{IncludeDir.YAMLCPP}",
-		"../../%{IncludeDir.MODERNDIALOGS}"
+		"../../%{IncludeDir.MODERNDIALOGS}",
+		"../../%{IncludeDir.VMA}"
 	}
 
 	links

@@ -1,8 +1,9 @@
 #ifndef TRAP_VULKANBUFFER_H
 #define TRAP_VULKANBUFFER_H
 
+#include <vk_mem_alloc.h>
+
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/API/Vulkan/Utils/VMA.h"
 #include "Graphics/API/Objects/Buffer.h"
 
 namespace TRAP::Graphics::API

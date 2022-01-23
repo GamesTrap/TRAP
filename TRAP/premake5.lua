@@ -53,7 +53,8 @@ project "TRAP"
 		"../%{IncludeDir.VULKAN}/include/",
 		"../%{IncludeDir.ENTT}",
 		"../%{IncludeDir.YAMLCPP}",
-		"../%{IncludeDir.MODERNDIALOGS}"
+		"../%{IncludeDir.MODERNDIALOGS}",
+		"../%{IncludeDir.VMA}"
 	}
 
 	links

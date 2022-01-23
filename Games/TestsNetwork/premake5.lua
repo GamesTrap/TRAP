@@ -31,7 +31,8 @@ project "TestsNetwork"
 		"../../%{IncludeDir.SPIRVCROSS}",
 		"../../%{IncludeDir.ENTT}",
 		"../../%{IncludeDir.YAMLCPP}",
-		"../../%{IncludeDir.MODERNDIALOGS}"
+		"../../%{IncludeDir.MODERNDIALOGS}",
+		"../../%{IncludeDir.VMA}"
 	}
 
 	links

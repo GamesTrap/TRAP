@@ -1,4 +1,8 @@
 #include "TRAPPCH.h"
+
+#define VMA_IMPLEMENTATION
+#include <vk_mem_alloc.h>
+
 #include "VulkanMemoryAllocator.h"
 
 #include "VulkanInstance.h"

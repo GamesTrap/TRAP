@@ -177,7 +177,6 @@ docs/_build/
 Tests/*.json
 Sandbox/*.json
 TRAP/*.json
-Games/TRAPNES
 Games/FlappyRocket
 premake5Private.lua
 *.make

@@ -31,7 +31,8 @@ project "Tests3D"
 		"../../%{IncludeDir.SPIRVCROSS}",
 		"../../%{IncludeDir.ENTT}",
 		"../../%{IncludeDir.YAMLCPP}",
-		"../../%{IncludeDir.MODERNDIALOGS}"
+		"../../%{IncludeDir.MODERNDIALOGS}",
+		"../../%{IncludeDir.VMA}"
 	}
 
 	links

@@ -13,3 +13,6 @@
 [submodule "Dependencies/YAMLCpp"]
 	path = Dependencies/YAMLCpp
 	url = https://github.com/GamesTrap/yaml-cpp.git
+[submodule "Dependencies/VulkanMemoryAllocator"]
+	path = Dependencies/VulkanMemoryAllocator
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git

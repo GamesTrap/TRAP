@@ -2352,3 +2352,4 @@ SITREP 01/10/2022|22w02a1
 SITREP 01/23/2022|22w03a1
     - Changed TRAP Engine version to 22w03a1(0.7.103)
     - Updated VulkanMemoryAllocator ~<20 mins
+    - Made VulkanMemoryAllocator a submodule ~<30 mins
