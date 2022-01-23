@@ -1,6 +1,3 @@
-[submodule "Dependencies/ImGui"]
-	path = Dependencies/ImGui
-	url = https://github.com/GamesTrap/imgui.git
 [submodule "Dependencies/GLSLang"]
 	path = Dependencies/GLSLang
 	url = https://github.com/GamesTrap/glslang.git
