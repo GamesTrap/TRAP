@@ -2357,3 +2357,7 @@ SITREP 01/23/2022|22w03a1
     - Updated Licenses ~<5 mins
     - Updated ImGui / Now using upstream ImGui ~<30 mins
     - Updated YAMLCpp / Now using upstream YAMLCpp ~<30 mins
+
+SITREP 01/24/2022|22w04a1
+    - Changed TRAP Engine version to 22w04a1(0.7.104)
+    - Updated GLSLang / Now using upstream GLSLang ~<30 mins
