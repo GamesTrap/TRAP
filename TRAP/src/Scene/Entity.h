@@ -9,7 +9,7 @@
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
-#include <entt.h>
+#include <entt.hpp>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
@@ -47,7 +47,9 @@ namespace TRAP
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_scene->m_registry.has<T>(m_entityHandle);
+			//Renamed in EnTT v3.7.0 from registry::has<T...> to registry::all_of<T...>
+			return m_scene->m_registry.all_of<T>(m_entityHandle);
+			// return m_scene->m_registry.has<T>(m_entityHandle);
 		}
 
 		template<typename T>

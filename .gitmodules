@@ -16,3 +16,6 @@
 [submodule "Dependencies/VulkanMemoryAllocator"]
 	path = Dependencies/VulkanMemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
+[submodule "Dependencies/EnTT"]
+	path = Dependencies/EnTT
+	url = https://github.com/skypjack/entt.git
