@@ -16,3 +16,7 @@
 [submodule "Dependencies/EnTT"]
 	path = Dependencies/EnTT
 	url = https://github.com/skypjack/entt.git
+[submodule "Dependencies/ImGui"]
+	path = Dependencies/ImGui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking

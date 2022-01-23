@@ -39,7 +39,7 @@ IncludeDir["VMA"] = "Dependencies/VulkanMemoryAllocator/include"
 include "TRAP"
 
 group "Dependencies"
-	include "Dependencies/ImGui"
+	include "Dependencies/ImGui.lua"
 	include "Dependencies/YAMLCpp"
 	include "Dependencies/ModernDialogs.lua"
 	group "Dependencies/GLSLang"
