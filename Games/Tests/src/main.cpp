@@ -5,6 +5,7 @@
 #include "Cursor/CursorTests.h"
 #include "DragAndDrop/DragAndDropTests.h"
 #include "Events/EventTests.h"
+#include "FileSystem/FileSystemTests.h"
 #include "Icon/IconTests.h"
 #include "ImageLoader/ImageLoaderTests.h"
 #include "Monitors/MonitorTests.h"
@@ -28,8 +29,9 @@ public:
 		//PushLayer(TRAP::MakeScope<CursorTests>());
 		// PushLayer(TRAP::MakeScope<DragAndDropTests>());
 		//PushLayer(TRAP::MakeScope<EventTests>());
+		PushLayer(TRAP::MakeScope<FileSystemTests>());
 		//PushLayer(TRAP::MakeScope<IconTests>());
-		PushLayer(TRAP::MakeScope<ImageLoaderTests>());
+		// PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		// PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());

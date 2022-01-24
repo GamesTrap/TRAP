@@ -2367,3 +2367,4 @@ SITREP 01/24/2022|22w04a1
     - Updated Vulkan loader ~<5 mins
     - Updated Controller mappings ~<5 mins
     - Updated zlib inflate algorithm (PNG) ~<30 mins
+    - Added FileSystem tests for opening file/folder or externally ~<10 mins
