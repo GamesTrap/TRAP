@@ -1,6 +1,3 @@
-[submodule "Dependencies/GLSLang"]
-	path = Dependencies/GLSLang
-	url = https://github.com/GamesTrap/glslang.git
 [submodule "Dependencies/ModernDialogs"]
 	path = Dependencies/ModernDialogs
 	url = https://github.com/GamesTrap/ModernDialogs.git
@@ -20,3 +17,6 @@
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
 	url = https://github.com/KhronosGroup/SPIRV-Cross.git
+[submodule "Dependencies/GLSLang"]
+	path = Dependencies/GLSLang
+	url = https://github.com/KhronosGroup/glslang.git

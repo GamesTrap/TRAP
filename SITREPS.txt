@@ -2362,3 +2362,4 @@ SITREP 01/24/2022|22w04a1
     - Changed TRAP Engine version to 22w04a1(0.7.104)
     - Updated GLSLang / Now using upstream GLSLang ~<30 mins
     - Updated SPIRV-Cross / Now using upstream SPIRV-Cross ~<30 mins
+    - Updated GLSLang premake5 script ~<15 mins

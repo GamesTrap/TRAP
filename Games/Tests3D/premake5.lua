@@ -48,13 +48,11 @@ project "Tests3D"
 			"ModernDialogs",
 			"GLSLang",
 			"SPIRV",
+			"GLSLang-Default-Resource-Limits",
 
 			"dl",
 			"pthread",
 			"X11",
-			"HLSL",
-			"OGLCompiler",
-			"OSDependent",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL"
