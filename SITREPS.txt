@@ -2363,3 +2363,4 @@ SITREP 01/24/2022|22w04a1
     - Updated GLSLang / Now using upstream GLSLang ~<30 mins
     - Updated SPIRV-Cross / Now using upstream SPIRV-Cross ~<30 mins
     - Updated GLSLang premake5 script ~<15 mins
+    - Updated EnTT premake5 script (now compiles lib) ~<15 mins

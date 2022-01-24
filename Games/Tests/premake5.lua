@@ -49,6 +49,7 @@ project "Tests"
 			"GLSLang",
 			"SPIRV",
 			"GLSLang-Default-Resource-Limits",
+			"EnTT",
 
 			"dl",
 			"pthread",
