@@ -1,24 +1,20 @@
 /*
-Copyright (c) 2005-2018 Lode Vandevenne
-
+LodePNG version 20220109
+Copyright (c) 2005-2022 Lode Vandevenne
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
 arising from the use of this software.
-
 Permission is granted to anyone to use this software for any purpose,
 including commercial applications, and to alter it and redistribute it
 freely, subject to the following restrictions:
-
-	1. The origin of this software must not be misrepresented; you must not
-	claim that you wrote the original software. If you use this software
-	in a product, an acknowledgment in the product documentation would be
-	appreciated but is not required.
-
-	2. Altered source versions must be plainly marked as such, and must not be
-	misrepresented as being the original software.
-
-	3. This notice may not be removed or altered from any source
-	distribution.
+    1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software. If you use this software
+    in a product, an acknowledgment in the product documentation would be
+    appreciated but is not required.
+    2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+    3. This notice may not be removed or altered from any source
+    distribution.
 
 Modified by: Jan "GamesTrap" Schuerkamp
 */
@@ -54,7 +50,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9(const std::size_t
 
 	Buffer = 0;
 	if (start + 0u < size)
-		Buffer |= Data[start + 0];
+		Buffer = Data[start + 0];
 	Buffer >>= (BP & 7u);
 
 	return BP + nBits < BitSize;
@@ -68,8 +64,8 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_
 	const std::size_t size = Size;
 	if (start + 2u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) |
-		         static_cast<uint32_t>(Data[start + 2] << 16u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
+		         (static_cast<uint32_t>(Data[start + 2]) << 16u);
 		Buffer >>= (BP & 7u);
 
 		return true;
@@ -79,7 +75,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_
 	if (start + 0u < size)
 		Buffer |= Data[start + 0];
 	if (start + 1u < size)
-		Buffer |= static_cast<uint32_t>(Data[start + 1] << 8u);
+		Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
 	Buffer >>= (BP & 7u);
 
 	return BP + nBits < BitSize;
@@ -93,8 +89,8 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_
 	const std::size_t size = Size;
 	if (start + 3u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) |
-		         static_cast<uint32_t>(Data[start + 2] << 16u) | static_cast<uint32_t>(Data[start + 3] << 24u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
+		         (static_cast<uint32_t>(Data[start + 2]) << 16u) | (static_cast<uint32_t>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
 
 		return true;
@@ -104,9 +100,9 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_
 	if (start + 0u < size)
 		Buffer |= Data[start + 0];
 	if (start + 1u < size)
-		Buffer |= static_cast<uint32_t>(Data[start + 1] << 8u);
+		Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
 	if (start + 2u < size)
-		Buffer |= static_cast<uint32_t>(Data[start + 2] << 16u);
+		Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
 	Buffer >>= (BP & 7u);
 
 	return BP + nBits < BitSize;
@@ -120,10 +116,10 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_
 	const std::size_t size = Size;
 	if (start + 4u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u) |
-		         static_cast<uint32_t>(Data[start + 2] << 16u) | static_cast<uint32_t>(Data[start + 3] << 24u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1]) << 8u) |
+		         (static_cast<uint32_t>(Data[start + 2]) << 16u) | (static_cast<uint32_t>(Data[start + 3]) << 24u);
 		Buffer >>= (BP & 7u);
-		Buffer |= (static_cast<uint32_t>(Data[start + 4] << 24u) << (7u - (BP & 7u)));
+		Buffer |= ((static_cast<uint32_t>(Data[start + 4]) << 24u) << (8u - (BP & 7u)));
 
 		return true;
 	}
@@ -132,11 +128,11 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_
 	if (start + 0u < size)
 		Buffer |= Data[start + 0];
 	if (start + 1u < size)
-		Buffer |= static_cast<uint32_t>(Data[start + 1] << 8u);
+		Buffer |= (static_cast<uint32_t>(Data[start + 1]) << 8u);
 	if (start + 2u < size)
-		Buffer |= static_cast<uint32_t>(Data[start + 2] << 16u);
+		Buffer |= (static_cast<uint32_t>(Data[start + 2]) << 16u);
 	if (start + 3u < size)
-		Buffer |= static_cast<uint32_t>(Data[start + 3] << 24u);
+		Buffer |= (static_cast<uint32_t>(Data[start + 3]) << 24u);
 	Buffer >>= (BP & 7u);
 
 	return BP + nBits < BitSize;
@@ -207,7 +203,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
-	: MaxBitLength(0), NumCodes(0)
+	: Codes(), Lengths(), MaxBitLength(0), NumCodes(0), TableLength(), TableValue()
 {
 }
 
@@ -237,6 +233,9 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 	//See comments in deflateDynamic for explanation of the context and these variables, it is analogous
 	HuffmanTree treeCL; //The code tree for code length codes(the Huffman Tree for compressed Huffman Trees)
 
+	if(reader.BitSize - reader.BP < 14)
+		return false;
+
 	if (!reader.EnsureBits17(14))
 		return false; //Error: The bit pointer is or will go past memory
 
@@ -252,7 +251,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 
 	//Code length code lengths ("clcl"), the bit lengths of the Huffman Tree used to compress
 	//bitLengthLL and bitLengthD
-	std::array<uint32_t, 19> bitLengthCL{};
+	std::array<uint32_t, NumCodeLengthCodes> bitLengthCL{};
 
 	bool error = false;
 	while(!error)
@@ -409,7 +408,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 {
 	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
 	const uint16_t l = TableLength[code];
-	const uint16_t value = TableValue[code];
+	uint16_t value = TableValue[code];
 	if(l <= FirstBits)
 	{
 		reader.AdvanceBits(l);
@@ -418,10 +417,10 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 	}
 
 	reader.AdvanceBits(FirstBits);
-	const uint32_t index2 = value + reader.PeekBits(l - FirstBits);
-	reader.AdvanceBits(TableLength[index2] - FirstBits);
+	value += reader.PeekBits(l - FirstBits);
+	reader.AdvanceBits(TableLength[value] - FirstBits);
 
-	return TableValue[index2];
+	return TableValue[value];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -444,10 +443,8 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthT
 		bitLength[i] = 8;
 
 	//256 literals, the end code, some length codes, and 2 unused codes
-	if (!MakeFromLengths(bitLength.data(), NumDeflateCodeSymbols, 15))
-		return false;
 
-	return true;
+	return MakeFromLengths(bitLength.data(), NumDeflateCodeSymbols, 15);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -462,10 +459,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 	for (uint32_t i = 0; i != NumDistanceSymbols; ++i)
 		bitLength[i] = 5;
 
-	if (!MakeFromLengths(bitLength.data(), NumDistanceSymbols, 15))
-		return false;
-
-	return true;
+	return MakeFromLengths(bitLength.data(), NumDistanceSymbols, 15);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -482,10 +476,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint3
 	NumCodes = static_cast<uint32_t>(numCodes); //Number of symbols
 	MaxBitLength = maxBitLength;
 
-	if (!MakeFromLengths2())
-		return false;
-
-	return true;
+	return MakeFromLengths2();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -515,10 +506,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 		}
 	}
 
-	if (!MakeTable())
-		return false;
-
-	return true;
+	return MakeTable();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -631,7 +619,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 				//As Length, use a value smaller than FIRSTBITS(9u) for the head table, and a value larger
 				//than FIRSTBITS(9u) for the secondary table,
 				//to ensure valid behavior for advanceBits when reading this symbol.
-				TableLength[i] = i < headSize ? 1 : FirstBits + 1;
+				TableLength[i] = (i < headSize) ? 1 : (FirstBits + 1);
 				TableValue[i] = InvalidSymbol;
 			}
 		}
@@ -679,10 +667,10 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 	if (bytePos + 4 >= size)
 		return false; //Error, bit pointer will jump past memory
 	const uint32_t LEN = static_cast<uint32_t>(reader.Data[bytePos]) +
-	                     static_cast<uint32_t>(reader.Data[bytePos + 1] << 8u);
+	                     (static_cast<uint32_t>(reader.Data[bytePos + 1]) << 8u);
 	bytePos += 2;
 	const uint32_t NLEN = static_cast<uint32_t>(reader.Data[bytePos]) +
-	                      static_cast<uint32_t>(reader.Data[bytePos + 1] << 8u);
+	                      (static_cast<uint32_t>(reader.Data[bytePos + 1]) << 8u);
 	bytePos += 2;
 
 	//Check if 16-bit NLEN is really the ones complement of LEN
@@ -725,11 +713,23 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 		if (!HuffmanTree::GetTreeInflateDynamic(treeLL, treeD, reader))
 			return false;
 
-	uint32_t error = false;
-	while(!error) //Decode all symbols until end reached, breaks at end code
+	uint32_t error = false, done = false;
+	while(!error && !done) //Decode all symbols until end reached, breaks at end code
 	{
-		reader.EnsureBits25(20); //Up to 15 for the Huffman symbol, up to 5 for the length extra bits
-		const uint32_t codeLL = treeLL.DecodeSymbol(reader);
+		//Ensure enough bits for 2 huffman code reads (15 bits each): if the first is a literal,
+		//a second literal is read at once. This appears to be slightly faster, than ensuring 20
+		//bits here for 1 huffman symbol and the potential 5 extra bits for the length symbol.
+		reader.EnsureBits32(30);
+		uint32_t codeLL = treeLL.DecodeSymbol(reader);
+		if(codeLL <= 255)
+		{
+			//Slightly faster code path if multiple literals in a row
+			out.resize(pos + 1);
+			out[pos] = static_cast<uint8_t>(codeLL);
+			++(pos);
+			codeLL = treeLL.DecodeSymbol(reader);
+		}
+
 		if(codeLL <= 255) //Literal symbol
 		{
 			out.resize(pos + 1);
@@ -744,8 +744,11 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			//Part 2: Get Extra bits and add the value of that to length
 			const uint32_t numExtraBitsL = HuffmanTree::LengthExtra[codeLL - FirstLengthCodeIndex];
 			if (numExtraBitsL != 0)
+			{
 				//Bits already ensured above
+				reader.EnsureBits25(5);
 				length += reader.ReadBits(numExtraBitsL);
+			}
 
 			//Part 3: Get Distance code
 			reader.EnsureBits32(28); //Up to 15 for the Huffman symbol, up to 13 for the extra bits
@@ -793,7 +796,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			}
 		}
 		else if(codeLL == 256)
-			break; //End code, break the loop
+			done = true; //End code, break the loop
 		else //if(codeLL == 66535u)
 		{
 			error = true; //Error: Tried to read disallowed Huffman symbol
@@ -827,6 +830,8 @@ bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t s
 
 	while(!BFINAL)
 	{
+		if(reader.BitSize - reader.BP < 3) //Error, bit pointer will jump past memory
+			return false;
 		if (!reader.EnsureBits9(3))
 			return false;
 		BFINAL = reader.ReadBits(1);

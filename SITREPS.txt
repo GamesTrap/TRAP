@@ -2366,3 +2366,4 @@ SITREP 01/24/2022|22w04a1
     - Updated EnTT premake5 script (now compiles lib) ~<15 mins
     - Updated Vulkan loader ~<5 mins
     - Updated Controller mappings ~<5 mins
+    - Updated zlib inflate algorithm (PNG) ~<30 mins

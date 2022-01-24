@@ -68,7 +68,7 @@ void ControllerTests::OnImGuiRender()
 			bool cpy = buttons[i];
 			ImGui::Checkbox(std::to_string(i + 1).c_str(), &cpy);
 			if (i % 2 == 0)
-				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+				ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 		}
 
 		for(std::size_t i = 0; i < dpads.size(); i++)
@@ -78,7 +78,7 @@ void ControllerTests::OnImGuiRender()
 			bool dpadPressed = static_cast<bool>(dpads[i]);
 			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
 			if (i % 2 == 0)
-				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+				ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 		}
 
 		if (!buttons.empty())
@@ -119,19 +119,19 @@ void ControllerTests::OnImGuiRender()
 			bool guide = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Guide);
 
 			ImGui::Checkbox("A", &a);
-			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 			ImGui::Checkbox("B", &b);
 			ImGui::Checkbox("X", &x);
-			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 			ImGui::Checkbox("Y", &y);
 			ImGui::Checkbox("Left Bumper", &lb);
-			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 			ImGui::Checkbox("Right Bumper", &rb);
 			ImGui::Checkbox("Back", &back);
-			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 			ImGui::Checkbox("Start", &start);
 			ImGui::Checkbox("Left Thumb", &lt);
-			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::SameLine(ImGui::GetContentRegionAvail().x / 2.0f);
 			ImGui::Checkbox("Right Thumb", &rt);
 			ImGui::Checkbox("Guide", &guide);
 
