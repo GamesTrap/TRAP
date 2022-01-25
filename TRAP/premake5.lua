@@ -66,8 +66,7 @@ project "TRAP"
 		"SPIRV",
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL",
-		"EnTT"
+		"SPIRV-Cross-HLSL"
 	}
 
 	filter "system:windows"

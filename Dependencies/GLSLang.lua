@@ -1,3 +1,25 @@
+-- Create build_info.h which is neccessary for ShaderLang.cpp
+print("Checking Python")
+local res = true
+local out, errorCode = os.outputof("python3 --version")
+if(errorCode ~= 0) then
+    print("Unable to find Python 3")
+    res = false
+end
+
+if (res) then
+    local f = io.open("GLSLang/glslang/build_info.h", "r")
+    if (f ~= nil) then
+        io.close(f)
+    else
+        local out, errorCode = os.outputof("python3 GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
+        if(errorCode ~= 0) then
+            print("Unable to create GLSLang/glslang/build_info.h")
+            res = false
+        end
+    end
+end
+
 project "GLSLang"
     kind "StaticLib"
     language "C++"
