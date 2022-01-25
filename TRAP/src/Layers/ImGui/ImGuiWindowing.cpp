@@ -251,7 +251,8 @@ void TRAP::INTERNAL::ImGuiWindowing::InitPlatformInterface()
 	platformIO.Platform_SetWindowAlpha = SetWindowAlpha;
 	platformIO.Platform_CreateVkSurface = CreateVkSurface;
 #ifdef TRAP_PLATFORM_WINDOWS
-	platformIO.Platform_SetImeInputPos = SetIMEInputPos;
+	//Removed/Lost in an ImGui update
+	//platformIO.Platform_SetImeInputPos = SetIMEInputPos;
 #endif
 
 	UpdateMonitors();

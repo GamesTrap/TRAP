@@ -22,6 +22,11 @@ project "YAMLCpp"
 		"YAMLCpp/include"
 	}
 
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE"
+	}
+
     filter "configurations:Debug"
 	    runtime "Debug"
 		symbols "On"
