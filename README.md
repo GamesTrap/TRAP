@@ -16,7 +16,8 @@ First clone the repository with `git clone --recursive https://github.com/GamesT
 
 > Note: If the repository has already been cloned non-recursively, use `git submodule update --init` to clone the necessary submodules.
 
-TRAP uses _Premake 5_ as a build generation tool. Follow [these](https://premake.github.io/download.html) instructions in order to install it.
+TRAP uses _Premake 5_ as a build generation tool. Follow [these](https://premake.github.io/download.html) instructions in order to install it.  
+Also make sure you have [Python 3](https://www.python.org/downloads/) installed and accessible via ```python3``` as it is needed by some scripts.
 
 Then, execute one of the generator scripts in the GeneratorScripts folder.
 
@@ -24,27 +25,30 @@ Then, execute one of the generator scripts in the GeneratorScripts folder.
 
 To update the controller mappings run the `GenerateControllerMappings` file from the GeneratorScripts folder.
 
+## Updating Vulkan Loader
+
+To update the Vulkan Loader run the `GenerateVulkanLoader` file from the GeneratorScripts folder.
+
 ## Documentation
 
-Make sure you have [Doxygen](https://www.doxygen.nl/download.html) & [Python3](https://www.python.org/downloads/) installed.
 To generate the documentation run the `GenerateDocumentation` file from the GeneratorScripts folder.
 
 ## 3rd Party Libraries used by TRAP Engine
 
-- [ImGui](https://github.com/GamesTrap/imgui)
+- [ImGui](https://github.com/ocornut/imgui/tree/docking)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
-- [GLSLang](https://github.com/GamesTrap/glslang)
-- [SPIRV-Cross](https://github.com/GamesTrap/SPIRV-Cross)
+- [GLSLang](https://github.com/KhronosGroup/glslang)
+- [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross)
 - [YAML-Cpp](https://github.com/jbeder/yaml-cpp)
-- [Entt](https://github.com/skypjack/entt) (Embedded)
+- [Entt](https://github.com/skypjack/entt)
 - [GLFW](https://github.com/glfw/glfw) (Custom rewrite)
 - [GLM](https://github.com/g-truc/glm) (Custom rewrite)
-- [LodePNG](https://github.com/lvandeve/lodepng) (Embedded decompression)
-- [OpenSans](https://fonts.google.com/specimen/Open+Sans#standard-styles)(Embedded fonts)
+- [LodePNG](https://github.com/lvandeve/lodepng) (Embedded, only Inflate/decompression)
+- [OpenSans](https://fonts.google.com/specimen/Open+Sans#standard-styles) (Embedded fonts)
 - [Premake5](https://github.com/premake/premake-core) (Build system)
-- [SFML](https://github.com/SFML/SFML) (Networking)
-- [Volk](https://github.com/zeux/volk) (Embedded)
-- [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/) (Embedded)
+- [SFML](https://github.com/SFML/SFML) (Only Networking part)
+- [Volk](https://github.com/zeux/volk) (Embedded as VulkanLoader)
+- [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/)
 
 ## System Requirements
 
@@ -52,29 +56,23 @@ To generate the documentation run the `GenerateDocumentation` file from the Gene
 
 - OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
 - Processor: AVX2 support, TBD
-- Graphics Card: TBD
+- Graphics Card: Vulkan 1.2 support, TBD
 - Memory: 4 GB RAM
 - Storage: 5+ GB available space
-- Any of these RenderAPIs
-  - Vulkan: Version 1.2
-  - OpenGL: Version 4.6
 - Additional Notes: -
 
 ### Recommended System Requirements
 
 - OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
 - Processor: AVX2 support, TBD
-- Graphics Card: TBD
+- Graphics Card: Vulkan 1.2 support, TBD
 - Memory: 4 GB RAM
 - Storage: 10+ GB available space
-- Any of these RenderAPIs
-  - Vulkan: Version 1.2
-  - OpenGL: Version 4.6
 - Additional Notes: -
 
 ## License
 
-Copyright (c) 2019-2021 Jan "GamesTrap" Schürkamp
+Copyright (c) 2019-2022 Jan "GamesTrap" Schürkamp
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
