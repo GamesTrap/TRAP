@@ -1,9 +1,9 @@
 -- Create build_info.h which is neccessary for ShaderLang.cpp
 print("Checking Python")
 local res = true
-local out, errorCode = os.outputof("python3 --version")
+local out, errorCode = os.outputof("python --version")
 if(errorCode ~= 0) then
-    print("Unable to find Python 3")
+    print("Unable to find Python 3.\nMake sure it is accessible via python")
     res = false
 end
 
@@ -12,12 +12,14 @@ if (res) then
     if (f ~= nil) then
         io.close(f)
     else
-        local out, errorCode = os.outputof("python3 GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
+        local out, errorCode = os.outputof("python GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
         if(errorCode ~= 0) then
-            print("Unable to create GLSLang/glslang/build_info.h")
+            print("Unable to create Dependencies/GLSLang/glslang/build_info.h")
             res = false
         end
     end
+else
+    os.exit(-1)
 end
 
 project "GLSLang"
@@ -59,17 +61,8 @@ project "GLSLang"
 
     includedirs
     {
-        "%{IncludeDir.HLSL}",
-        "%{IncludeDir.OGLCOMPILER}",
-        "GLSLang/"
+        "../%{IncludeDir.GLSLANG}"
     }
-
-    -- links
-    -- {
-    --     "HLSL",
-    --     "OGLCompiler",
-    --     "OSDependent"
-    -- }
 
     defines
     {
@@ -158,8 +151,8 @@ project "SPIRV"
 
     includedirs
     {
-        "GLSLang/SPIRV/",
-        "GLSLang/",
+        "../%{IncludeDir.GLSLANG}",
+        "../%{IncludeDir.GLSLANG}/SPIRV",
     }
 
     links

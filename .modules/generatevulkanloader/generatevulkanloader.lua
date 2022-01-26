@@ -31,7 +31,7 @@ newaction
         local res = true
         if(os.host() == "linux") then
             print("Checking Python")
-            local out, errorCode = os.outputof("python3 --version")
+            local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
                 print("Unable to find Python 3")
                 res = false
@@ -75,11 +75,7 @@ newaction
         end
 
         print("Generating Vulkan Loader...")
-        if(os.host() == "linux") then
-            os.execute("python3 ../.modules/generatevulkanloader/generate.py")
-        elseif(os.host() == "windows") then
-            os.execute("python ../.modules/generatevulkanloader/generate.py")
-        end
+        os.execute("python ../.modules/generatevulkanloader/generate.py")
 
         if(os.host() == "linux") then
             os.execute("mv ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h")

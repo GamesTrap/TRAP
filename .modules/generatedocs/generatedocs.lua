@@ -25,7 +25,7 @@ newaction
             end
 
             print("Checking Python")
-            local out, errorCode = os.outputof("python3 --version")
+            local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
                 print("Unable to find Python 3")
                 res = false
@@ -69,7 +69,7 @@ newaction
             print("Checking Python")
             local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
-                print("Unable to find Python 3")
+                print("Unable to find Python")
                 res = false
             end
 

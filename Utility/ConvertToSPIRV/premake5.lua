@@ -27,20 +27,15 @@ project "ConvertToSPIRV"
 		links
 		{
 			"GLSLang",
-			"SPIRV"
+			"SPIRV",
+			"GLSLang-Default-Resource-Limits",
 		}
 
 	filter "system:linux"
 		links
 		{
-			"GLSLang",
-			"SPIRV",
-
 			"dl",
-			"pthread",
-			"HLSL",
-			"OGLCompiler",
-			"OSDependent"
+			"pthread"
 		}
 
 		filter "configurations:Debug"

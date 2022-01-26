@@ -17,7 +17,7 @@ First clone the repository with `git clone --recursive https://github.com/GamesT
 > Note: If the repository has already been cloned non-recursively, use `git submodule update --init` to clone the necessary submodules.
 
 TRAP uses _Premake 5_ as a build generation tool. Follow [these](https://premake.github.io/download.html) instructions in order to install it.  
-Also make sure you have [Python 3](https://www.python.org/downloads/) installed and accessible via ```python3``` as it is needed by some scripts.
+Also make sure you have [Python 3](https://www.python.org/downloads/) installed and accessible via ```python``` as it is needed by some scripts.
 
 Then, execute one of the generator scripts in the GeneratorScripts folder.
 

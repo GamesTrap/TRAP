@@ -19,7 +19,7 @@ project "YAMLCpp"
 
 	includedirs
 	{
-		"YAMLCpp/include"
+        "../%{IncludeDir.YAMLCPP}"
 	}
 
 	defines
