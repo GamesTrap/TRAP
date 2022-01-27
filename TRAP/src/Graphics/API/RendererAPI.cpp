@@ -46,6 +46,9 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 		s_Renderer = MakeScope<API::VulkanRenderer>();
 		break;
 
+	case RenderAPI::Headless:
+		return; //Do nothing
+
 	default:
 		Utils::Dialogs::ShowMsgBox("Unsupported device", "Device is unsupported!\nNo RenderAPI selected!\n"
 								   "Error code: 0x0002", Utils::Dialogs::Style::Error,
@@ -144,6 +147,8 @@ bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 {
 	if (api == RenderAPI::Vulkan)
 		return s_Renderer->IsVulkanCapable();
+	else if(api == RenderAPI::Headless)
+		return true; //Headless is always supported
 
 	return false;
 }

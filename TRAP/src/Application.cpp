@@ -96,6 +96,11 @@ TRAP::Application::Application(std::string gameName)
 	//Initialize Renderer
 	Graphics::RendererAPI::Init(m_gameName, renderAPI);
 
+	m_layerStack = std::make_unique<LayerStack>();
+
+	if(renderAPI == Graphics::RenderAPI::Headless)
+		return;
+
 	m_window = MakeScope<Window>
 	(
 		WindowProps
@@ -142,8 +147,6 @@ TRAP::Application::Application(std::string gameName)
 	//Initialize Renderer
 	Graphics::Renderer::Init();
 
-	m_layerStack = std::make_unique<LayerStack>();
-
 	//Initialize Input for Joysticks
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
@@ -164,38 +167,49 @@ TRAP::Application::~Application()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
-	TRAP::Utils::Discord::Destroy();
-	// if(m_hotReloadingThread)
-	// {
-	// 	m_hotReloadingThread->join();
-	// 	m_hotReloadingThread.reset();
-	// }
-	Input::Shutdown();
-	TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::Headless)
+	{
+		TRAP::Utils::Discord::Destroy();
+		// if(m_hotReloadingThread)
+		// {
+		// 	m_hotReloadingThread->join();
+		// 	m_hotReloadingThread.reset();
+		// }
+		Input::Shutdown();
+		TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
+	}
 	m_layerStack.reset();
-	if(m_window->GetWidth() > 0)
-		m_config.Set("Width", m_window->GetWidth());
-	if(m_window->GetHeight() > 0)
-		m_config.Set("Height", m_window->GetHeight());
-	m_config.Set("RefreshRate", m_window->GetRefreshRate());
-	m_config.Set("VSync", m_window->GetVSync());
+
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::Headless)
+	{
+		if(m_window->GetWidth() > 0)
+			m_config.Set("Width", m_window->GetWidth());
+		if(m_window->GetHeight() > 0)
+			m_config.Set("Height", m_window->GetHeight());
+		m_config.Set("RefreshRate", m_window->GetRefreshRate());
+		m_config.Set("VSync", m_window->GetVSync());
+		m_config.Set("DisplayMode", m_window->GetDisplayMode());
+		m_config.Set("Maximized", m_window->IsMaximized());
+		m_config.Set("Monitor", m_window->GetMonitor().GetID());
+		m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
+	}
+
 	m_config.Set("FPSLimit", m_fpsLimit);
-	m_config.Set("DisplayMode", m_window->GetDisplayMode());
-	m_config.Set("Maximized", m_window->IsMaximized());
-	m_config.Set("Monitor", m_window->GetMonitor().GetID());
-	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
 	m_config.Set("RenderAPI", (m_newRenderAPI != Graphics::RenderAPI::NONE) ? m_newRenderAPI :
 	                                                                          Graphics::RendererAPI::GetRenderAPI());
-	const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
+	{
+		const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
+	}
 	else
 	{
 		if (m_config.Get<std::string_view>("VulkanGPU").empty())
 			m_config.Set("VulkanGPU", "");
 	}
 	m_config.SaveToFile(FS::GetGameDocumentsFolderPath() / "engine.cfg");
-	m_window.reset();
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::Headless)
+		m_window.reset();
 	FS::Shutdown();
 
 	s_Instance = nullptr;
@@ -249,33 +263,45 @@ void TRAP::Application::Run()
 			}
 		}
 
-		ImGuiLayer::Begin();
+		if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::Headless)
 		{
-			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
+			ImGuiLayer::Begin();
+			{
+				TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-			for (const auto& layer : *m_layerStack)
-				layer->OnImGuiRender();
+				for (const auto& layer : *m_layerStack)
+					layer->OnImGuiRender();
+			}
+			ImGuiLayer::End();
+
+			if (!m_minimized)
+				Graphics::RenderCommand::Present(m_window.get());
+			TRAP::Window::OnUpdate();
+
+			UpdateHotReloading();
+
+			//FPSLimiter
+			if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+				std::this_thread::sleep_until(nextFrame);
+
+			if (!m_minimized)
+			{
+				m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+				m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
+			}
+
+			//Needed by Discord Game SDK
+			TRAP::Utils::Discord::RunCallbacks();
 		}
-		ImGuiLayer::End();
-
-		if (!m_minimized)
-			Graphics::RenderCommand::Present(m_window.get());
-		TRAP::Window::OnUpdate();
-
-		UpdateHotReloading();
-
-		//FPSLimiter
-		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
-			std::this_thread::sleep_until(nextFrame);
-
-		if (!m_minimized)
+		else if(Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Headless)
 		{
+			//FPSLimiter
+			if (m_fpsLimit)
+				std::this_thread::sleep_until(nextFrame);
+
 			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
 			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
 		}
-
-		//Needed by Discord Game SDK
-		TRAP::Utils::Discord::RunCallbacks();
 	}
 }
 
