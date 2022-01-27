@@ -2377,3 +2377,5 @@ SITREP 01/26/2022|22w04b1
     - Changed TRAP Engine version to 22w04b1(0.7.106)
     - Updated VulkanLoader to Vulkan 1.3 ~<5 mins
     - Updated README ~<5 mins
+    - Cleaned up Dependencies premake scripts ~<5 mins
+    - Made big portion of VulkanCommon constexpr ~<20 mins
