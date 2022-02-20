@@ -49,8 +49,7 @@ namespace TRAP::Graphics
 	enum class RenderAPI
 	{
 		NONE = 0,
-		Vulkan,
-		Headless
+		Vulkan
 	};
 
 	class RendererAPI

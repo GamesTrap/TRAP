@@ -19,13 +19,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Utility for Headless mode. This macro prevents the usage of specific classes/methods/functions which are not
-//usable in headless mode. For example: Window(s), RendererAPI, Input, etc.
-//NOTE: constexpr functions are untouched from this macro.
-#define ENABLE_HEADLESS_ASSERTS
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 /// <summary>
 /// Construct a version number.
 /// </summary>
@@ -47,7 +40,7 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 /// <returns>Major version number.</returns>
 constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) >> 22;
+	return version >> 22u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -59,7 +52,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 /// <returns>Minor version number.</returns>
 constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) >> 12;
+	return version >> 12u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -71,7 +64,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 /// <returns>Patch version number.</returns>
 constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) & 0xFFF;
+	return version & 0xFFFu;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -2379,3 +2379,8 @@ SITREP 01/26/2022|22w04b1
     - Updated README ~<5 mins
     - Cleaned up Dependencies premake scripts ~<5 mins
     - Made big portion of VulkanCommon constexpr ~<20 mins
+
+SITREP 02/20/2022|22w08a1
+    - Changed TRAP Engine version to 22w08a1(0.7.107)
+    - Removed Headless RenderAPI ~<30 mins
+    - Added TRAP-Server & Headless-Tests as separate projects (TRAP-Server shares code with TRAP) ~<30 mins

@@ -3,7 +3,7 @@
 
 #include <filesystem>
 
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO) || defined(ENABLE_HEADLESS_ASSERTS)
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#define TRAP_ENABLE_ASSERTS
 #endif
 
@@ -34,14 +34,6 @@
 #else
 template<typename... Args>
 constexpr void TRAP_ASSERT(const Args&...) {}
-#endif
-
-#ifdef ENABLE_HEADLESS_ASSERTS
-	#define TRAP_HEADLESS_ASSERT\
-	{\
-			TRAP_ASSERT(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Headless,\
-			"Called unavailable function in Headless mode!");\
-	}
 #endif
 
 #endif /*TRAP_TRAPASSERT_H*/
