@@ -19,6 +19,16 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+<<<<<<< HEAD
+=======
+//Headless mode.
+//This macro will relax the requirements checked by the RendererAPI.
+//TODO Documentation
+//#define TRAP_HEADLESS_MODE
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+>>>>>>> ebe28fefb8e8bf89bf60c4f394eb7ef2d139c305
 /// <summary>
 /// Construct a version number.
 /// </summary>
@@ -72,7 +82,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 106);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 107);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

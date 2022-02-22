@@ -37,7 +37,11 @@ project "Headless-Tests"
 
 	links
 	{
+<<<<<<< HEAD
 		"TRAP-Server"
+=======
+		"TRAP-Headless"
+>>>>>>> ebe28fefb8e8bf89bf60c4f394eb7ef2d139c305
 	}
 
 	defines
@@ -72,7 +76,10 @@ project "Headless-Tests"
 		defines "TRAP_RELEASE"
 		runtime "Release"
 		optimize "On"
+<<<<<<< HEAD
 		entrypoint "mainCRTStartup"
+=======
+>>>>>>> ebe28fefb8e8bf89bf60c4f394eb7ef2d139c305
 		kind "WindowedApp"
 
 	filter "configurations:RelWithDebInfo"

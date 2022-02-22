@@ -2380,7 +2380,22 @@ SITREP 01/26/2022|22w04b1
     - Cleaned up Dependencies premake scripts ~<5 mins
     - Made big portion of VulkanCommon constexpr ~<20 mins
 
+<<<<<<< HEAD
 SITREP 02/20/2022|22w08a1
     - Changed TRAP Engine version to 22w08a1(0.7.107)
     - Removed Headless RenderAPI ~<30 mins
     - Added TRAP-Server & Headless-Tests as separate projects (TRAP-Server shares code with TRAP) ~<30 mins
+=======
+SITREP 02/22/2022|22w08a1
+    - Changed TRAP Engine version to 22w08a1(0.7.107)
+    - Added WIP Headless mode (TRAP-Headless) ~<30 mins
+    - Relaxed RenderAPI requirements for Vulkan when using Headless mode ~<30 mins
+    - Added Headless-Tests project ~<30 mins
+    - Removed Headless RenderAPI ~<10 mins
+    - Relaxed IsVulkanCapable checks when using Headless mode ~<20 mins
+    - Config Added "NONE" RenderAPI to ConvertToString/Type ~<5 mins
+    - Added SIGINT capture routines for Headless mode to capture CTRL+C & [X] button
+      closes to normally shutdown ~<10 mins
+    - Made Log & Config paths local to executable in Headless mode ~<5 mins
+    - Allowed using RenderAPI::NONE when using Headless mode ~<10 mins
+>>>>>>> ebe28fefb8e8bf89bf60c4f394eb7ef2d139c305
