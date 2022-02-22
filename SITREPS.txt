@@ -2392,3 +2392,4 @@ SITREP 02/22/2022|22w08a1
       closes to normally shutdown ~<10 mins
     - Made Log & Config paths local to executable in Headless mode ~<5 mins
     - Allowed using RenderAPI::NONE when using Headless mode ~<10 mins
+    - Renderers now get correctly shutdown when using Headless mode ~<10 mins

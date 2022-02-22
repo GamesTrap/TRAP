@@ -967,7 +967,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	SetupEventCallbacks();
 
+#ifdef TRAP_HEADLESS_MODE
+	if(TRAP::Graphics::Renderer::GetRenderAPI() != Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
+#else
 	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

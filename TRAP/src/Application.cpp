@@ -28,6 +28,7 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_PLATFORM_WINDOWS
 static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 {
 	if (dwCtrlType == CTRL_C_EVENT)
@@ -44,6 +45,7 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 	return FALSE;
 }
+#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -65,7 +67,7 @@ TRAP::Application::Application(std::string gameName)
 	//Register SIGINT callback to capture CTRL+C
 #ifdef TRAP_HEADLESS_MODE
 #ifdef TRAP_PLATFORM_LINUX
-	signal(SIGINT, [](int signum) {TRAP::Application::Shutdown(); });
+	signal(SIGINT, [](int) {TRAP::Application::Shutdown(); });
 #elif defined(TRAP_PLATFORM_WINDOWS)
 	SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE);
 	//SetConsoleCtrlHandler(NULL, TRUE);
@@ -140,7 +142,6 @@ TRAP::Application::Application(std::string gameName)
 
 	//Initialize Renderer
 #ifdef TRAP_HEADLESS_MODE
-	renderAPI = Graphics::RenderAPI::NONE; //TODO REMOVE
 	if(renderAPI != Graphics::RenderAPI::NONE)
 		Graphics::RendererAPI::Init(m_gameName, renderAPI);
 #else
@@ -201,7 +202,10 @@ TRAP::Application::Application(std::string gameName)
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
 		//Always added as a fallback shader
-		Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
+		[[maybe_unused]] auto* shader = Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader).get();
+#ifndef TRAP_HEADLESS_MODE
+		shader->Use();
+#endif
 		//Always added as a fallback texture
 		Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 		Graphics::TextureManager::Add(Graphics::TextureCube::Create());
@@ -214,12 +218,11 @@ TRAP::Application::Application(std::string gameName)
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
-	if(renderAPI != Graphics::RenderAPI::NONE)
-	{
+#ifndef TRAP_HEADLESS_MODE
 		Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
 		m_ImGuiLayer = imguiLayer.get();
 		m_layerStack->PushOverlay(std::move(imguiLayer));
-	}
+#endif
 
 	TRAP::Utils::Discord::Create();
 }
@@ -266,6 +269,19 @@ TRAP::Application::~Application()
 	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
 #endif
 	m_config.SaveToFile(cfgPath);
+#ifdef TRAP_HEADLESS_MODE
+	if(!m_window)
+	{
+		TP_TRACE("Shutting down Renderer");
+		Graphics::Renderer::Shutdown();
+		TP_TRACE("Shutting down TextureManager");
+		Graphics::TextureManager::Shutdown();
+		TP_TRACE("Shutting down ShaderManager");
+		Graphics::ShaderManager::Shutdown();
+		TP_TRACE("Shutting down RendererAPI");
+		Graphics::RendererAPI::Shutdown();
+	}
+#endif
 	m_window.reset();
 	FS::Shutdown();
 
@@ -320,10 +336,7 @@ void TRAP::Application::Run()
 			}
 		}
 
-#ifdef TRAP_HEADLESS_MODE
-		if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-		{
-#endif
+#ifndef TRAP_HEADLESS_MODE
 		ImGuiLayer::Begin();
 		{
 			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
@@ -332,8 +345,6 @@ void TRAP::Application::Run()
 				layer->OnImGuiRender();
 		}
 		ImGuiLayer::End();
-#ifdef TRAP_HEADLESS_MODE
-		}
 #endif
 
 #ifndef TRAP_HEADLESS_MODE
