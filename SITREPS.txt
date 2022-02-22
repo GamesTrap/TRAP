@@ -2386,3 +2386,9 @@ SITREP 02/22/2022|22w08a1
     - Relaxed RenderAPI requirements for Vulkan when using Headless mode ~<30 mins
     - Added Headless-Tests project ~<30 mins
     - Removed Headless RenderAPI ~<10 mins
+    - Relaxed IsVulkanCapable checks when using Headless mode ~<20 mins
+    - Config Added "NONE" RenderAPI to ConvertToString/Type ~<5 mins
+    - Added SIGINT capture routines for Headless mode to capture CTRL+C & [X] button
+      closes to normally shutdown ~<10 mins
+    - Made Log & Config paths local to executable in Headless mode ~<5 mins
+    - Allowed using RenderAPI::NONE when using Headless mode ~<10 mins

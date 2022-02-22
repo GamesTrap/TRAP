@@ -126,6 +126,8 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 		return RenderAPI::Vulkan;
 	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
+
+#ifndef TRAP_HEADLESS_MODE
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible device (GPU)",
 		                             "TRAP™ was unable to detect a compatible RenderAPI!\n"
@@ -134,6 +136,10 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 	exit(-1);
+#else
+	TP_WARN(Log::RendererVulkanPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
+	return RenderAPI::NONE;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -217,20 +223,26 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			return s_isVulkanCapable;
 		}
 
-		//Instance Extensions
+		//Required: Instance Extensions
+		//Optional in Headless mode.
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
 			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 		{
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed surface extension test");
+#ifndef TRAP_HEADLESS_MODE
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
+#endif
 		}
-		instanceExtensions.push_back(reqExt[0]);
-		instanceExtensions.push_back(reqExt[1]);
+		else
+		{
+			instanceExtensions.push_back(reqExt[0]);
+			instanceExtensions.push_back(reqExt[1]);
+		}
 
 		//Create Instance
 		VkInstance instance;
