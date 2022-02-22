@@ -19,6 +19,13 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Headless mode.
+//This macro will relax the requirements checked by the RendererAPI.
+//TODO Documentation
+//#define TRAP_HEADLESS_MODE
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 /// <summary>
 /// Construct a version number.
 /// </summary>
@@ -40,7 +47,7 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 /// <returns>Major version number.</returns>
 constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 {
-	return version >> 22u;
+	return static_cast<uint32_t>(version) >> 22;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -52,7 +59,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 /// <returns>Minor version number.</returns>
 constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 {
-	return version >> 12u;
+	return static_cast<uint32_t>(version) >> 12;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -64,7 +71,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 /// <returns>Patch version number.</returns>
 constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 {
-	return version & 0xFFFu;
+	return static_cast<uint32_t>(version) & 0xFFF;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -72,7 +79,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 106);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 107);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

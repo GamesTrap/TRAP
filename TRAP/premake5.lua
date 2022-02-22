@@ -171,7 +171,7 @@ project "TRAP"
 		optimize "On"
 		symbols "On"
 
-project "TRAP-Server"
+project "TRAP-Headless"
 	location "."
 	kind "StaticLib"
 	language "C++"
@@ -209,9 +209,32 @@ project "TRAP-Server"
 		"src/Network/Sockets/Platform/SocketImplLinux.h",
 		"src/Network/Sockets/Platform/SocketImplLinux.cpp",
 		"src/Network/Sockets/Platform/SocketImplWinAPI.h",
-		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
+		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp",
 
 		--TODO More to come
+		-- "src/Events/ControllerEvent.h",
+		-- "src/Events/ControllerEvent.cpp",
+		-- "src/Events/HotReloadEvent.h",
+		-- "src/Events/HotReloadEvent.cpp",
+		-- "src/Events/MonitorEvent.h",
+		-- "src/Events/MonitorEvent.cpp",
+		-- "src/Events/WindowEvent.h",
+		-- "src/Events/WindowEvent.cpp",
+		-- "src/Events/KeyEvent.h",
+		-- "src/Events/KeyEvent.cpp",
+		-- "src/Events/MouseEvent.h",
+		-- "src/Events/MouseEvent.cpp",
+		-- "src/Graphics/**.h",
+		-- "src/Graphics/**.cpp",
+		-- "src/Input/ControllerMappings.h",
+		-- "src/Input/ControllerMappings.h.in",
+		-- "src/Layers/ImGui/**.h",
+		-- "src/Layers/ImGui/**.cpp",
+		-- "src/Scene/**.h",
+		-- "src/Scene/**.cpp",
+		-- "src/Utils/Discord/**.h",
+		-- "src/Utils/Discord/**.cpp",
+		-- "src/Embed.h",
 	}
 
 	includedirs

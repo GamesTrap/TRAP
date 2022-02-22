@@ -1,9 +1,8 @@
 #ifndef TRAP_TRAPPCH_H
 #define TRAP_TRAPPCH_H
 
-// #include "Core/Base.h"
-// #include "Core/PlatformDetection.h"
-// #include "TRAP_Assert.h"
+#include "Core/PlatformDetection.h"
+#include "TRAP_Assert.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	#ifndef NOMINMAX
@@ -61,7 +60,6 @@
 
 //TRAP
 #include "Core/Base.h"
-#include "Core/PlatformDetection.h"
 #include "TRAP_Assert.h"
 #include "Log/Log.h"
 #include "Utils/Profiler/Instrumentor.h"
