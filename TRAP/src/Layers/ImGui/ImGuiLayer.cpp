@@ -200,8 +200,7 @@ void TRAP::ImGuiLayer::Begin()
 		ImGui_ImplVulkan_NewFrame();
 	}
 
-	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::Headless)
-		INTERNAL::ImGuiWindowing::NewFrame();
+	INTERNAL::ImGuiWindowing::NewFrame();
 
 	ImGui::NewFrame();
 }

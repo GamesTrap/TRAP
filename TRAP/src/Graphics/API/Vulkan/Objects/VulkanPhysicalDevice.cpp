@@ -458,7 +458,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			continue;
 		}
 
-		//Required: Discrete GPUs have a significant performance advantage
+		//Required (dGPU or iGPU): Discrete GPUs have a significant performance advantage
 		if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			score += 5000;
 		else if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
@@ -487,6 +487,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		score += extensionsCount * 50;
 
 		//Required: Check if PhysicalDevice supports swapchains
+		//Optional in Headless mode.
 		const auto result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
 			{
 				return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0;
@@ -494,12 +495,17 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		if (result == extensions.end())
 		{
+#ifndef TRAP_HEADLESS_MODE
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 			         "\" Failed Required PhysicalDevice Extensions Test!");
 			continue;
+#else
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
+			         "\" Failed Optional PhysicalDevice Extensions Test!");
+#endif
 		}
 
-		//Create Instance
+		//Required: Create Vulkan Instance
 
 		//Init WindowingAPI needed here for instance extensions
 		if(!INTERNAL::WindowingAPI::Init())
@@ -527,7 +533,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			continue;
 		}
 
-		//Create Vulkan Surface Test Window
+		//Required: Create Vulkan Surface Test Window
+		//Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
@@ -542,8 +550,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			         "\" Failed Vulkan Surface Test Window creation!");
 			continue;
 		}
+#endif
 
 		//Required: Check if Surface can be created
+		//Disabled in Headless mode
+#ifndef TRAP_HEADLESS_MODE
 		VkSurfaceKHR surface;
 		VkResult res;
 		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr,
@@ -555,16 +566,19 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Surface creation!");
 			continue;
 		}
+#endif
 
-		//Get Queue Families
+		//Required: Get Queue Families
 		uint32_t queueFamilyPropertyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyPropertyCount, nullptr);
 		std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyPropertyCount, queueFamilyProperties.data());
 		if(queueFamilyProperties.empty())
 		{
+#ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+#endif
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 			         "\" Failed Querying Queue Family Properties!");
@@ -583,14 +597,18 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 		if(!foundGraphicsQueue)
 		{
+#ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+#endif
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Graphics Queue Test!");
 			continue;
 		}
 
 		//Required: Check if PhysicalDevice supports Presenting
+		//Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		VkBool32 foundPresentSupport = false;
 		for(std::size_t i = 0; i < queueFamilyProperties.size(); i++)
 		{
@@ -607,8 +625,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			         "\" Failed Present Queue Test!");
 			continue;
 		}
+#endif
 
 		//Required: Check if Surface contains present modes
+		//Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		uint32_t surfacePresentModeCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(dev, surface, &surfacePresentModeCount, nullptr));
 		std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
@@ -622,8 +643,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Present Mode Test!");
 			continue;
 		}
+#endif
 
 		//Required: Check if Surface contains formats
+		//Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		uint32_t surfaceFormatCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(dev, surface, &surfaceFormatCount, nullptr));
 		std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
@@ -637,6 +661,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			         "\" Failed Surface Format Test!");
 			continue;
 		}
+#endif
 
 		//Big Optionally: Check if PhysicalDevice supports Compute queue
 		bool foundComputeQueue = false;
@@ -723,6 +748,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			        "\" Failed fillModeNonSolid Test!");
 
 		//Optionally: Check if Surface has optimal surface format
+		//Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		bool optimalFormat = false;
 		for (auto& format : surfaceFormats)
 		{
@@ -737,9 +764,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 			        "\" Failed Optimal Surface Format Test!");
+#endif
 
+#ifndef TRAP_HEADLESS_MODE
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 		TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
+#endif
 		vkDestroyInstance(instance, nullptr);
 
 		//Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)

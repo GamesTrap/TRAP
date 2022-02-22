@@ -538,8 +538,6 @@ TRAP::Utils::Config::ConvertToType<TRAP::Graphics::RenderAPI>(const std::string&
 {
 	if (Utils::String::CompareAnyCase("Vulkan", input) || Utils::String::CompareAnyCase("VulkanAPI", input))
 		return Graphics::RenderAPI::Vulkan;
-	else if(Utils::String::CompareAnyCase("Headless", input))
-		return Graphics::RenderAPI::Headless;
 
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::API::RenderAPI!");
 	return Graphics::RenderAPI::NONE;
@@ -692,9 +690,6 @@ TRAP::Utils::Config::ConvertToString<TRAP::Graphics::RenderAPI>(const Graphics::
 	{
 	case Graphics::RenderAPI::Vulkan:
 		return "Vulkan";
-
-	case Graphics::RenderAPI::Headless:
-		return "Headless";
 
 	default:
 		return "";

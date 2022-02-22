@@ -19,10 +19,10 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Utility for Headless mode. This macro prevents the usage of specific classes/methods/functions which are not
-//usable in headless mode. For example: Window(s), RendererAPI, Input, etc.
-//NOTE: constexpr functions are untouched from this macro.
-#define ENABLE_HEADLESS_ASSERTS
+//Headless mode.
+//This macro will relax the requirements checked by the RendererAPI.
+//TODO Documentation
+//#define TRAP_HEADLESS_MODE
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -79,7 +79,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 106);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 107);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
