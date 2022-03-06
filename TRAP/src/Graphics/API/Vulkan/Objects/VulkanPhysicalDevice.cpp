@@ -158,6 +158,68 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	RendererAPI::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
 	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
+
+	//Surface & Present test
+	{
+		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
+		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
+		Scope<INTERNAL::WindowingAPI::InternalWindow> win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
+		INTERNAL::WindowingAPI::DefaultWindowHints();
+		if(win)
+		{
+			VkSurfaceKHR surface = VK_NULL_HANDLE;
+			VkResult res;
+			res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win.get(), nullptr, surface);
+
+			if(surface != VK_NULL_HANDLE && res == VK_SUCCESS)
+			{
+				//Passed Surface creation
+				//Check if Surface contains present modes
+				uint32_t surfPresModeCount = 0;
+				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, nullptr));
+				std::vector<VkPresentModeKHR> presModes(surfPresModeCount);
+				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, presModes.data()));
+				if(!presModes.empty())
+				{
+					//Passed present mode check
+					//Check if Surface contains formats
+					uint32_t surfFormatCount = 0;
+					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, nullptr));
+					std::vector<VkSurfaceFormatKHR> surfFormats(surfFormatCount);
+					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, surfFormats.data()));
+					if(!surfFormats.empty()) //Passed Surface format check
+						RendererAPI::GPUSettings.SurfaceSupported = true;
+					else
+						RendererAPI::GPUSettings.SurfaceSupported = false;
+				}
+				else
+					RendererAPI::GPUSettings.SurfaceSupported = false;
+
+				//Present test
+				VkBool32 presentSupport = false;
+				const auto& queueFam = GetQueueFamilyProperties();
+				for(std::size_t i = 0; i < queueFam.size(); ++i)
+				{
+					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, static_cast<uint32_t>(i), surface, &presentSupport));
+					if(presentSupport)
+					{
+						RendererAPI::GPUSettings.PresentSupported = true;
+						break;
+					}
+				}
+
+				//Cleanup
+				vkDestroySurfaceKHR(instance->GetVkInstance(), surface, nullptr);
+				TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(win));
+			}
+			else
+			{
+				RendererAPI::GPUSettings.SurfaceSupported = false;
+				//Cleanup
+				TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(win));
+			}
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -487,7 +549,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		score += extensionsCount * 50;
 
 		//Required: Check if PhysicalDevice supports swapchains
-		//Optional in Headless mode.
 		const auto result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
 			{
 				return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0;
@@ -495,14 +556,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		if (result == extensions.end())
 		{
-#ifndef TRAP_HEADLESS_MODE
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 			         "\" Failed Required PhysicalDevice Extensions Test!");
 			continue;
-#else
-			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Optional PhysicalDevice Extensions Test!");
-#endif
 		}
 
 		//Required: Create Vulkan Instance
@@ -517,8 +573,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-		instanceExtensions.push_back(reqExt[0]);
-		instanceExtensions.push_back(reqExt[1]);
+		for(const std::string& ext : reqExt)
+			instanceExtensions.push_back(ext);
 		VkInstance instance;
 		std::vector<const char*> instExtensions(instanceExtensions.size());
 		for (uint32_t i = 0; i < instExtensions.size(); i++)

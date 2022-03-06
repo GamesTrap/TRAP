@@ -2393,3 +2393,13 @@ SITREP 02/22/2022|22w08a1
     - Made Log & Config paths local to executable in Headless mode ~<5 mins
     - Allowed using RenderAPI::NONE when using Headless mode ~<10 mins
     - Renderers now get correctly shutdown when using Headless mode ~<10 mins
+
+SITREP 03/06/2022|22w09a1
+    - Changed TRAP Engine version to 22w09a1(0.7.108)
+    - Moved Headless-Tests into own project ~<20 mins
+    - Headless Added EnableGPU option to engine.cfg ~<20 mins
+    - Headless only enable ImGui if surface and present is supported ~<30 mins
+    - Headless Added WIP screenshot ability (EXPERIMENTAL) ~<20 mins
+    - Headless Added offline rendering ~<60 mins
+    - PPMImage Added ability to save image to disk (EXPERIMENTAL) ~<20 mins
+    - Headless various small bug fixes

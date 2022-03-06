@@ -230,6 +230,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
 			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 		{
+			GPUSettings.SurfaceSupported = false;
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed surface extension test");
 #ifndef TRAP_HEADLESS_MODE
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
@@ -240,6 +241,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		}
 		else
 		{
+			GPUSettings.SurfaceSupported = true;
 			instanceExtensions.push_back(reqExt[0]);
 			instanceExtensions.push_back(reqExt[1]);
 		}
@@ -295,14 +297,18 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 	SwapChain.reset();
 	ImageAcquiredSemaphore.reset();
 
-	for(uint32_t i = ImageCount; i > 0; i--)
+	for(int32_t i = ImageCount - 1; i >= 0; i--)
 	{
-		RenderCompleteSemaphores[i - static_cast<std::size_t>(1)].reset();
-		RenderCompleteFences[i - static_cast<std::size_t>(1)].reset();
+#ifdef TRAP_HEADLESS_MODE
+		RenderTargets[i].reset();
+#endif
 
-		GraphicCommandPools[i - static_cast<std::size_t>(1)]->FreeCommandBuffer(GraphicCommandBuffers[i - 1]);
-		GraphicCommandBuffers[i - static_cast<std::size_t>(1)] = nullptr;
-		GraphicCommandPools[i - static_cast<std::size_t>(1)].reset();
+		RenderCompleteSemaphores[i].reset();
+		RenderCompleteFences[i].reset();
+
+		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
+		GraphicCommandBuffers[i] = nullptr;
+		GraphicCommandPools[i].reset();
 	}
 }
 

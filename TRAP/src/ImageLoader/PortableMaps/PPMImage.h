@@ -45,6 +45,8 @@ namespace TRAP::INTERNAL
 		/// <returns>Size of the raw pixel data in bytes.</returns>
 		uint64_t GetPixelDataSize() const override;
 
+		static void Save(const Scope<Image>& img, const std::filesystem::path& filepath);
+
 	private:
 		std::vector<uint8_t> m_data;
 		std::vector<uint16_t> m_data2Byte;

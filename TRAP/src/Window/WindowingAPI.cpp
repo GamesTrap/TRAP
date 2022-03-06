@@ -1426,7 +1426,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 	if (!InitVulkan(2))
 		return VK_ERROR_INITIALIZATION_FAILED;
 
-	if constexpr (s_Data.VK.Extensions.empty())
+	if (s_Data.VK.Extensions[0].empty() || s_Data.VK.Extensions[1].empty())
 	{
 		InputError(Error::API_Unavailable, "[Vulkan] Window surface creation extensions not found");
 		return VK_ERROR_EXTENSION_NOT_PRESENT;

@@ -43,8 +43,6 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	TRAP_ASSERT(!((isDepth) && static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture)),
 	            "Cannot use depth stencil as UAV");
 
-	m_mipLevels = TRAP::Math::Max(1U, desc.MipLevels);
-
 	uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
 	uint32_t numRTVs = m_mipLevels;
 	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) ||

@@ -119,6 +119,17 @@ TRAP::Application::Application(std::string gameName)
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
 	const bool vsync = m_config.Get<bool>("VSync");
+	const bool visible = true;
+#else
+	const uint32_t width = 2;
+	const uint32_t height = 2;
+	const uint32_t refreshRate = 60;
+	const bool vsync = true;
+	const Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
+	const uint32_t monitor = 0;
+	const bool maximized = false;
+	const bool rawInput = false;
+	const bool visible = false;
 #endif
 	const uint32_t fpsLimit = m_config.Get<uint32_t>("FPSLimit");
 #ifndef TRAP_HEADLESS_MODE
@@ -126,6 +137,8 @@ TRAP::Application::Application(std::string gameName)
 	const bool maximized = m_config.Get<bool>("Maximized");
 	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
 	const bool rawInput = m_config.Get<bool>("RawMouseInput");
+#else
+	const bool enableGPU = m_config.Get<bool>("EnableGPU");
 #endif
 	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
@@ -137,8 +150,15 @@ TRAP::Application::Application(std::string gameName)
 			m_fpsLimit = 0;
 	}
 
+#ifdef TRAP_HEADLESS_MODE
+	if(enableGPU)
+	{
+#endif
 	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
 		renderAPI = Graphics::RendererAPI::AutoSelectRenderAPI();
+#ifdef TRAP_HEADLESS_MODE
+	}
+#endif
 
 	//Initialize Renderer
 #ifdef TRAP_HEADLESS_MODE
@@ -150,7 +170,6 @@ TRAP::Application::Application(std::string gameName)
 
 	m_layerStack = std::make_unique<LayerStack>();
 
-#ifndef TRAP_HEADLESS_MODE
 	m_window = MakeScope<Window>
 	(
 		WindowProps
@@ -165,7 +184,7 @@ TRAP::Application::Application(std::string gameName)
 			{
 				true,
 				maximized,
-				true,
+				visible,
 				true,
 				true,
 				true,
@@ -178,8 +197,16 @@ TRAP::Application::Application(std::string gameName)
 	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 	//Update Window Title (Debug/DebWithRelInfo)
+#ifdef TRAP_HEADLESS_MODE
+	if(renderAPI != Graphics::RenderAPI::NONE)
+	{
+#endif
 	m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+#ifdef TRAP_HEADLESS_MODE
+	}
+#endif
 
+#ifndef TRAP_HEADLESS_MODE
 	//Update Viewport
 	int32_t w, h;
 	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
@@ -187,25 +214,13 @@ TRAP::Application::Application(std::string gameName)
 			m_window->GetInternalWindow()
 		), w, h);
 	Graphics::RenderCommand::SetViewport(0, 0, static_cast<uint32_t>(w), static_cast<uint32_t>(h));
-#else
-	const int32_t success = INTERNAL::WindowingAPI::Init();
-	TRAP_ASSERT(success, "Couldn't initialize WindowingAPI!");
-	if (!success)
-	{
-		Utils::Dialogs::ShowMsgBox("WindowingAPI Error",
-			                       "Couldn't initialize WindowingAPI!\nError code: 0x0011",
-								   Utils::Dialogs::Style::Error,
-								   Utils::Dialogs::Buttons::Quit);
-	}
 #endif
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
 		//Always added as a fallback shader
-		[[maybe_unused]] auto* shader = Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader).get();
-#ifndef TRAP_HEADLESS_MODE
-		shader->Use();
-#endif
+		Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
+
 		//Always added as a fallback texture
 		Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 		Graphics::TextureManager::Add(Graphics::TextureCube::Create());
@@ -218,11 +233,13 @@ TRAP::Application::Application(std::string gameName)
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
-#ifndef TRAP_HEADLESS_MODE
+	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
+	   Graphics::RendererAPI::GPUSettings.PresentSupported)
+	{
 		Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
 		m_ImGuiLayer = imguiLayer.get();
 		m_layerStack->PushOverlay(std::move(imguiLayer));
-#endif
+	}
 
 	TRAP::Utils::Discord::Create();
 }
@@ -253,6 +270,8 @@ TRAP::Application::~Application()
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
+#else
+	m_config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI());
 #endif
 
 	m_config.Set("FPSLimit", m_fpsLimit);
@@ -269,19 +288,6 @@ TRAP::Application::~Application()
 	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
 #endif
 	m_config.SaveToFile(cfgPath);
-#ifdef TRAP_HEADLESS_MODE
-	if(!m_window)
-	{
-		TP_TRACE("Shutting down Renderer");
-		Graphics::Renderer::Shutdown();
-		TP_TRACE("Shutting down TextureManager");
-		Graphics::TextureManager::Shutdown();
-		TP_TRACE("Shutting down ShaderManager");
-		Graphics::ShaderManager::Shutdown();
-		TP_TRACE("Shutting down RendererAPI");
-		Graphics::RendererAPI::Shutdown();
-	}
-#endif
 	m_window.reset();
 	FS::Shutdown();
 
@@ -336,7 +342,11 @@ void TRAP::Application::Run()
 			}
 		}
 
-#ifndef TRAP_HEADLESS_MODE
+#ifdef TRAP_HEADLESS_MODE
+		if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
+	       Graphics::RendererAPI::GPUSettings.PresentSupported)
+		{
+#endif
 		ImGuiLayer::Begin();
 		{
 			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
@@ -345,22 +355,19 @@ void TRAP::Application::Run()
 				layer->OnImGuiRender();
 		}
 		ImGuiLayer::End();
+#ifdef TRAP_HEADLESS_MODE
+		}
 #endif
 
-#ifndef TRAP_HEADLESS_MODE
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window.get());
-#endif
+
 		TRAP::Window::OnUpdate();
 
 		UpdateHotReloading();
 
 		//FPSLimiter
-#ifndef TRAP_HEADLESS_MODE
 		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
-#else
-		if (m_fpsLimit || !m_focused)
-#endif
 			std::this_thread::sleep_until(nextFrame);
 
 		if (!m_minimized)
@@ -628,6 +635,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 	if(Window::GetActiveWindows() != 1)
 		return false;
 
+#ifndef TRAP_HEADLESS_MODE
 	if ((e.GetKey() == Input::Key::Enter || e.GetKey() == Input::Key::KP_Enter) &&
 	    Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
 	{
@@ -637,6 +645,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 		else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
 			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
 	}
+#endif
 
 	return false;
 }

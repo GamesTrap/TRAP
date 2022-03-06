@@ -184,6 +184,8 @@ namespace TRAP::Graphics
 		virtual std::string GetCurrentGPUName() = 0;
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
+		virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) = 0;
+
 		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
 		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
 		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
@@ -1348,6 +1350,8 @@ namespace TRAP::Graphics
 			uint32_t MaxPushConstantSize;
 			uint32_t MaxSamplerAllocationCount;
 			uint32_t MaxTessellationControlPoints;
+			bool SurfaceSupported;
+			bool PresentSupported;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
@@ -1380,6 +1384,9 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
+#ifdef TRAP_HEADLESS_MODE
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
+#endif
 			uint32_t CurrentSwapChainImageIndex;
 
 			TRAP::Math::Vec4 ClearColor{0.1f, 0.1f, 0.1f, 1.0f};

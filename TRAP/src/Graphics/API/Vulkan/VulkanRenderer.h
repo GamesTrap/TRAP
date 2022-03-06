@@ -126,6 +126,8 @@ namespace TRAP::Graphics::API
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
 
+		TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) override;
+
 		void InitPerWindowData(Window* window) override;
 		void RemovePerWindowData(Window* window) override;
 
