@@ -22,6 +22,7 @@
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
 #include "Objects/VulkanRootSignature.h"
+#include "Objects/VulkanTexture.h"
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/PipelineDescHash.h"
@@ -1141,6 +1142,93 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Helper function to generate screenshot data. See CaptureScreenshot.
+void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget> renderTarget, ResourceState currResState, void* outPixelData)
+{
+	CommandPoolDesc cmdPoolDesc{};
+	cmdPoolDesc.Queue = s_graphicQueue;
+	cmdPoolDesc.Transient = true;
+	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
+
+	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+
+	if(s_RenderAPI == RenderAPI::Vulkan)
+	{
+		//Add a staging buffer
+		uint16_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8;
+		BufferDesc bufferDesc{};
+		bufferDesc.Descriptors = DescriptorType::RWBuffer;
+		bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
+		bufferDesc.Size = renderTarget->GetWidth() * renderTarget->GetHeight() * formatByteWidth;
+		bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
+		bufferDesc.StartState = ResourceState::CopyDestination;
+		TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
+
+		//Start recording
+		cmd->Begin();
+
+		//Transition the render target to the correct state
+		RenderTargetBarrier srcBarrier = {renderTarget, currResState, ResourceState::CopySource};
+		cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+
+		uint32_t rowPitch = renderTarget->GetWidth() * formatByteWidth;
+		const uint32_t width = renderTarget->GetTexture()->GetWidth();
+		const uint32_t height = renderTarget->GetTexture()->GetHeight();
+		const uint32_t depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
+		const ImageFormat fmt = renderTarget->GetTexture()->GetImageFormat();
+		const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3);
+
+		//Copy the render target to the staging buffer
+		//TODO Move into VulkanInits
+		VkBufferImageCopy copy{};
+		copy.bufferOffset = 0;
+		copy.bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
+		copy.bufferImageHeight = 0;
+		copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
+		copy.imageSubresource.mipLevel = 0;
+		copy.imageSubresource.baseArrayLayer = 0;
+		copy.imageSubresource.layerCount = 1;
+		copy.imageOffset.x = 0;
+		copy.imageOffset.y = 0;
+		copy.imageOffset.z = 0;
+		copy.imageExtent.width = width;
+		copy.imageExtent.height = height;
+		copy.imageExtent.depth = depth;
+
+		VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+		VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture().get());
+		VulkanBuffer* vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
+
+		vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
+
+		//Transition the render target back to the previous state
+		srcBarrier = {renderTarget, ResourceState::CopySource, currResState};
+		cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+
+		//End recording
+		cmd->End();
+
+		//Submit the command buffer
+		QueueSubmitDesc submitDesc{};
+		submitDesc.Cmds = {cmd};
+
+		s_graphicQueue->Submit(submitDesc);
+
+		//Wait for work to finish on the GPU
+		s_graphicQueue->WaitQueueIdle();
+
+		//Copy to CPU memory.
+		std::memcpy(outPixelData, buffer->GetCPUMappedAddress(), renderTarget->GetWidth() * renderTarget->GetHeight() * formatByteWidth);
+
+		//Cleanup
+		cmdPool->FreeCommandBuffer(cmd);
+		cmdPool.reset();
+		buffer.reset();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(Window* window)
 {
 	//TODO Only works for non HDR RenderTarget/Swapchain
@@ -1151,19 +1239,50 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 	auto* winData = s_perWindowDataMap[window].get();
 	int32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
 
-	//TODO Check if last rendered frame is available
+	//Wait for queue to finish rendering
+	s_graphicQueue->WaitQueueIdle();
 
-
+	TRAP::Ref<RenderTarget> rT;
 #ifdef TRAP_HEADLESS_MODE
-	auto* rT = winData->RenderTargets[lastFrame].get();
-	std::vector<uint8_t> pixelData(rT->GetWidth() * rT->GetHeight() * 3, 0);
-
-	//TODO Now get pixel data from render target...
-
-	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), TRAP::Image::ColorFormat::RGB, pixelData);
+	rT = winData->RenderTargets[lastFrame];
+#else
+	rT = winData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
-	return TRAP::Image::LoadFromMemory(1, 1, TRAP::Image::ColorFormat::RGB, std::vector<uint8_t>{0, 0, 0});
+	uint8_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
+	std::vector<uint8_t> pixelData(rT->GetWidth() * rT->GetHeight() * channelCount);
+
+	//Generate image data buffer
+	ResourceState resState;
+#ifdef TRAP_HEADLESS_MODE
+	resState = ResourceState::RenderTarget;
+#else
+	resState = ResourceState::Present;
+#endif
+	MapRenderTarget(rT, resState, pixelData.data());
+
+	//Flip the BGRA to RGBA
+	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
+	if(flipRedBlue)
+	{
+		for(uint32_t y = 0; y < rT->GetHeight(); ++y)
+		{
+			for(uint32_t x = 0; x < rT->GetWidth(); ++x)
+			{
+				uint32_t pixelIndex = (y * rT->GetWidth() + x) * channelCount;
+
+				//Swap blue and red
+				int8_t red = pixelData[pixelIndex];
+				pixelData[pixelIndex] = pixelData[pixelIndex + 2];
+				pixelData[pixelIndex + 2] = red;
+			}
+		}
+	}
+
+	if(pixelData.empty())
+		return TRAP::Image::LoadFromMemory(1, 1, TRAP::Image::ColorFormat::RGB, std::vector<uint8_t>{0, 0, 0});
+
+	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

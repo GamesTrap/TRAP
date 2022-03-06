@@ -2403,3 +2403,5 @@ SITREP 03/06/2022|22w09a1
     - Headless Added offline rendering ~<60 mins
     - PPMImage Added ability to save image to disk (EXPERIMENTAL) ~<20 mins
     - Headless various small bug fixes
+    - Added RendererAPI::CaptureScreenshot to make screenshot of the last frame ~>30 mins
+    - Added ScreenshotTest to Tests project ~<15 mins

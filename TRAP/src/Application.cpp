@@ -158,6 +158,8 @@ TRAP::Application::Application(std::string gameName)
 		renderAPI = Graphics::RendererAPI::AutoSelectRenderAPI();
 #ifdef TRAP_HEADLESS_MODE
 	}
+	else
+		renderAPI = Graphics::RenderAPI::NONE;
 #endif
 
 	//Initialize Renderer
@@ -233,6 +235,7 @@ TRAP::Application::Application(std::string gameName)
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
+#ifndef TRAP_HEADLESS_MODE
 	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
 	   Graphics::RendererAPI::GPUSettings.PresentSupported)
 	{
@@ -240,6 +243,7 @@ TRAP::Application::Application(std::string gameName)
 		m_ImGuiLayer = imguiLayer.get();
 		m_layerStack->PushOverlay(std::move(imguiLayer));
 	}
+#endif
 
 	TRAP::Utils::Discord::Create();
 }
@@ -271,7 +275,7 @@ TRAP::Application::~Application()
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
 #else
-	m_config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI());
+	m_config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE);
 #endif
 
 	m_config.Set("FPSLimit", m_fpsLimit);
@@ -342,11 +346,7 @@ void TRAP::Application::Run()
 			}
 		}
 
-#ifdef TRAP_HEADLESS_MODE
-		if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
-	       Graphics::RendererAPI::GPUSettings.PresentSupported)
-		{
-#endif
+#ifndef TRAP_HEADLESS_MODE
 		ImGuiLayer::Begin();
 		{
 			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
@@ -355,8 +355,6 @@ void TRAP::Application::Run()
 				layer->OnImGuiRender();
 		}
 		ImGuiLayer::End();
-#ifdef TRAP_HEADLESS_MODE
-		}
 #endif
 
 		if (!m_minimized)

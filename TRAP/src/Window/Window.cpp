@@ -63,11 +63,12 @@ TRAP::Window::~Window()
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
+	if(TRAP::Graphics::RendererAPI::GetRenderer())
+		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
 
 	--s_windows;
 
-	if(!s_windows)
+	if(!s_windows && Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
 		TP_TRACE("Shutting down Renderer");
 		Graphics::Renderer::Shutdown();

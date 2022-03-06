@@ -840,6 +840,110 @@ namespace TRAP::Graphics::API
             return false;
         }
     }
+
+    static constexpr uint32_t ImageFormatChannelCount(const ImageFormat fmt)
+    {
+        switch(fmt)
+        {
+            case ImageFormat::Undefined: return 0;
+            case ImageFormat::R1_UNORM: return 1;
+            case ImageFormat::R2_UNORM: return 1;
+            case ImageFormat::R4_UNORM: return 1;
+            case ImageFormat::R4G4_UNORM: return 2;
+            case ImageFormat::G4R4_UNORM: return 2;
+            case ImageFormat::A8_UNORM: return 1;
+            case ImageFormat::R8_UNORM: return 1;
+            case ImageFormat::R8_SNORM: return 1;
+            case ImageFormat::R8_UINT: return 1;
+            case ImageFormat::R8_SINT: return 1;
+            case ImageFormat::R8_SRGB: return 1;
+            case ImageFormat::B2G3R3_UNORM: return 3;
+            case ImageFormat::R5G6B5_UNORM: return 3;
+            case ImageFormat::B5G6R5_UNORM: return 3;
+            case ImageFormat::R8G8_UNORM: return 2;
+            case ImageFormat::R8G8_SNORM: return 2;
+            case ImageFormat::G8R8_UNORM: return 2;
+            case ImageFormat::G8R8_SNORM: return 2;
+            case ImageFormat::R8G8_UINT: return 2;
+            case ImageFormat::R8G8_SINT: return 2;
+            case ImageFormat::R8G8_SRGB: return 2;
+            case ImageFormat::R16_UNORM: return 1;
+            case ImageFormat::R16_SNORM: return 1;
+            case ImageFormat::R16_UINT: return 1;
+            case ImageFormat::R16_SINT: return 1;
+            case ImageFormat::R16_SFLOAT: return 1;
+            case ImageFormat::R16_SBFLOAT: return 1;
+            case ImageFormat::R8G8B8_UNORM: return 3;
+            case ImageFormat::R8G8B8_SNORM: return 3;
+            case ImageFormat::R8G8B8_UINT: return 3;
+            case ImageFormat::R8G8B8_SINT: return 3;
+            case ImageFormat::R8G8B8_SRGB: return 3;
+            case ImageFormat::B8G8R8_UNORM: return 3;
+            case ImageFormat::B8G8R8_SNORM: return 3;
+            case ImageFormat::B8G8R8_UINT: return 3;
+            case ImageFormat::B8G8R8_SINT: return 3;
+            case ImageFormat::B8G8R8_SRGB: return 3;
+            case ImageFormat::R16G16_UNORM: return 2;
+            case ImageFormat::G16R16_UNORM: return 2;
+            case ImageFormat::R16G16_SNORM: return 2;
+            case ImageFormat::G16R16_SNORM: return 2;
+            case ImageFormat::R16G16_UINT: return 2;
+            case ImageFormat::R16G16_SINT: return 2;
+            case ImageFormat::R16G16_SFLOAT: return 2;
+            case ImageFormat::R16G16_SBFLOAT: return 2;
+            case ImageFormat::R32_UINT: return 1;
+            case ImageFormat::R32_SINT: return 1;
+            case ImageFormat::R32_SFLOAT: return 1;
+            case ImageFormat::B10G11R11_UFLOAT: return 3;
+            case ImageFormat::R16G16B16_UNORM: return 3;
+            case ImageFormat::R16G16B16_SNORM: return 3;
+            case ImageFormat::R16G16B16_UINT: return 3;
+            case ImageFormat::R16G16B16_SINT: return 3;
+            case ImageFormat::R16G16B16_SFLOAT: return 3;
+            case ImageFormat::R16G16B16_SBFLOAT: return 3;
+            case ImageFormat::R32G32_UINT: return 2;
+            case ImageFormat::R32G32_SINT: return 2;
+            case ImageFormat::R32G32_SFLOAT: return 2;
+            case ImageFormat::R32G32B32_UINT: return 3;
+            case ImageFormat::R32G32B32_SINT: return 3;
+            case ImageFormat::R32G32B32_SFLOAT: return 3;
+            case ImageFormat::R64_UINT: return 1;
+            case ImageFormat::R64_SINT: return 1;
+            case ImageFormat::R64_SFLOAT: return 1;
+            case ImageFormat::R64G64_UINT: return 2;
+            case ImageFormat::R64G64_SINT: return 2;
+            case ImageFormat::R64G64_SFLOAT: return 2;
+            case ImageFormat::R64G64B64_UINT: return 3;
+            case ImageFormat::R64G64B64_SINT: return 3;
+            case ImageFormat::R64G64B64_SFLOAT: return 3;
+            case ImageFormat::D16_UNORM: return 1;
+            case ImageFormat::X8_D24_UNORM: return 2;
+            case ImageFormat::D32_SFLOAT: return 1;
+            case ImageFormat::S8_UINT: return 1;
+            case ImageFormat::D16_UNORM_S8_UINT: return 2;
+            case ImageFormat::D24_UNORM_S8_UINT: return 2;
+            case ImageFormat::D32_SFLOAT_S8_UINT: return 2;
+            case ImageFormat::DXBC1_RGB_UNORM: return 3;
+            case ImageFormat::DXBC1_RGB_SRGB: return 3;
+            case ImageFormat::DXBC4_UNORM: return 1;
+            case ImageFormat::DXBC4_SNORM: return 1;
+            case ImageFormat::DXBC5_UNORM: return 2;
+            case ImageFormat::DXBC5_SNORM: return 2;
+            case ImageFormat::DXBC6H_UFLOAT: return 3;
+            case ImageFormat::DXBC6H_SFLOAT: return 3;
+            case ImageFormat::ETC2_R8G8B8_UNORM: return 3;
+            case ImageFormat::ETC2_R8G8B8_SRGB: return 3;
+            case ImageFormat::ETC2_EAC_R11_UNORM: return 1;
+            case ImageFormat::ETC2_EAC_R11_SNORM: return 1;
+            case ImageFormat::ETC2_EAC_R11G11_UNORM: return 2;
+            case ImageFormat::ETC2_EAC_R11G11_SNORM: return 2;
+            case ImageFormat::CLUT_P4: return 1;
+            case ImageFormat::CLUT_P4A4: return 2;
+            case ImageFormat::CLUT_P8: return 1;
+            case ImageFormat::CLUT_P8A8: return 2;
+            default: return 4;
+        }
+    }
 }
 
 #endif /*TRAP_IMAGEFORMAT_H*/

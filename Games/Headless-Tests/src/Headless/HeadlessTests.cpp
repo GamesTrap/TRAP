@@ -15,6 +15,5 @@ void HeadlessTests::OnAttach()
 	// TRAP::Scope<TRAP::Image> testImage = TRAP::Image::LoadFromMemory(2, 4, TRAP::Image::ColorFormat::RGB, pixelData);
 	// TRAP::INTERNAL::PPMImage::Save(testImage, "test.ppm");
 
-	TRAP::Scope<TRAP::Image> renderedImg = TRAP::Graphics::RendererAPI::GetRenderer()->CaptureScreenshot();
-	TRAP::INTERNAL::PPMImage::Save(renderedImg, "output.ppm");
+	TRAP::Application::Shutdown();
 }
