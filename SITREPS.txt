@@ -2410,3 +2410,4 @@ SITREP 03/10/2022|22w10a1
     - ImageFormat Added ImageFormatIsFloat ~<10 mins
     - VulkanInits Added VkBufferImageCopy initializer ~<5 mins
     - CaptureScreenshot now also works with HDR/Float32 images ~<20 mins
+    - CaptureScreenshot now also works with uint16_t images ~<15 mins

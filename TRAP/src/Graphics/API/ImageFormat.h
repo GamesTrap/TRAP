@@ -972,6 +972,33 @@ namespace TRAP::Graphics::API
             default: return false;
         }
     }
+    static constexpr bool ImageFormatIsU16(const ImageFormat fmt)
+    {
+        switch(fmt)
+        {
+            case ImageFormat::R16_UNORM: return true;
+            case ImageFormat::R16_SNORM: return true;
+            case ImageFormat::R16_UINT: return true;
+            case ImageFormat::R16_SINT: return true;
+            case ImageFormat::R16G16_UNORM: return true;
+            case ImageFormat::G16R16_UNORM: return true;
+            case ImageFormat::R16G16_SNORM: return true;
+            case ImageFormat::G16R16_SNORM: return true;
+            case ImageFormat::R16G16_UINT: return true;
+            case ImageFormat::R16G16_SINT: return true;
+            case ImageFormat::R16G16B16_UNORM: return true;
+            case ImageFormat::R16G16B16_SNORM: return true;
+            case ImageFormat::R16G16B16_UINT: return true;
+            case ImageFormat::R16G16B16_SINT: return true;
+            case ImageFormat::R16G16B16A16_UNORM: return true;
+            case ImageFormat::R16G16B16A16_SNORM: return true;
+            case ImageFormat::R16G16B16A16_UINT: return true;
+            case ImageFormat::R16G16B16A16_SINT: return true;
+            case ImageFormat::D16_UNORM: return true;
+            case ImageFormat::D16_UNORM_S8_UINT: return true;
+            default: return false;
+        }
+    }
 }
 
 #endif /*TRAP_IMAGEFORMAT_H*/

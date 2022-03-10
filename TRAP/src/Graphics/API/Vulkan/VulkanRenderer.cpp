@@ -1224,8 +1224,6 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget
 
 TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(Window* window)
 {
-	//TODO U16 Images
-
 	if(!window)
 		window = TRAP::Application::GetWindow().get();
 
@@ -1243,6 +1241,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 
 	const uint8_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
 	const bool hdr = ImageFormatIsFloat(rT->GetImageFormat());
+	const bool u16 = ImageFormatIsU16(rT->GetImageFormat());
 	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
 
 #ifdef TRAP_HEADLESS_MODE
@@ -1253,11 +1252,21 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 
 	std::vector<uint8_t> pixelDatau8{};
 	std::vector<uint8_t> pixelDataf32{};
-	if(!hdr)
+	std::vector<uint16_t> pixelDatau16{};
+	if(!hdr && u16)
+	{
+		pixelDatau16.resize(static_cast<std::size_t>(rT->GetWidth()) *
+						    static_cast<std::size_t>(rT->GetHeight()) *
+						    static_cast<std::size_t>(channelCount));
+
+		//Generate image data buffer
+		MapRenderTarget(rT, resState, pixelDatau16.data());
+	}
+	else if(!hdr)
 	{
 		pixelDatau8.resize(static_cast<std::size_t>(rT->GetWidth()) *
-							static_cast<std::size_t>(rT->GetHeight()) *
-							static_cast<std::size_t>(channelCount));
+						   static_cast<std::size_t>(rT->GetHeight()) *
+						   static_cast<std::size_t>(channelCount));
 
 		//Generate image data buffer
 		MapRenderTarget(rT, resState, pixelDatau8.data());
@@ -1282,7 +1291,13 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 				uint32_t pixelIndex = (y * rT->GetWidth() + x) * channelCount;
 
 				//Swap blue and red
-				if(!hdr)
+				if(!hdr && u16)
+				{
+					uint16_t red = pixelDatau8[pixelIndex];
+					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
+					pixelDatau8[pixelIndex + 2] = red;
+				}
+				else if(!hdr)
 				{
 					uint8_t red = pixelDatau8[pixelIndex];
 					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
@@ -1302,6 +1317,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 		return TRAP::Image::LoadFromMemory(1, 1, TRAP::Image::ColorFormat::RGB, std::vector<uint8_t>{0, 0, 0});
 	if(!pixelDataf32.empty()) //HDR
 		return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDataf32);
+	if(!pixelDatau16.empty()) //U16
+		return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDatau16);
 
 	//U8 Image
 	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDatau8);
