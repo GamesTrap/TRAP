@@ -97,6 +97,9 @@ namespace TRAP::Graphics::API::VulkanInits
 		                              VkSampleCountFlagBits sampleCount, VkImageTiling tiling,
 									  VkImageUsageFlags usage);
 
+	VkBufferImageCopy ImageCopy(uint32_t bufferRowLength, uint32_t width, uint32_t height, uint32_t depth,
+							    VkImageSubresourceLayers layers);
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	VkBufferCreateInfo BufferCreateInfo(uint64_t allocationSize, VkBufferUsageFlags usageFlags);

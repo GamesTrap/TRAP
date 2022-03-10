@@ -23,6 +23,7 @@
 #include "Objects/VulkanDebug.h"
 #include "Objects/VulkanRootSignature.h"
 #include "Objects/VulkanTexture.h"
+#include "Objects/VulkanInits.h"
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/PipelineDescHash.h"
@@ -1179,21 +1180,13 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget
 		const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3);
 
 		//Copy the render target to the staging buffer
-		//TODO Move into VulkanInits
-		VkBufferImageCopy copy{};
-		copy.bufferOffset = 0;
-		copy.bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
-		copy.bufferImageHeight = 0;
-		copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
-		copy.imageSubresource.mipLevel = 0;
-		copy.imageSubresource.baseArrayLayer = 0;
-		copy.imageSubresource.layerCount = 1;
-		copy.imageOffset.x = 0;
-		copy.imageOffset.y = 0;
-		copy.imageOffset.z = 0;
-		copy.imageExtent.width = width;
-		copy.imageExtent.height = height;
-		copy.imageExtent.depth = depth;
+		uint32_t bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
+		VkImageSubresourceLayers layers{};
+		layers.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
+		layers.mipLevel = 0;
+		layers.baseArrayLayer = 0;
+		layers.layerCount = 1;
+		VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
 
 		VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
 		VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture().get());
@@ -1231,7 +1224,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget
 
 TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(Window* window)
 {
-	//TODO Only works for non HDR RenderTarget/Swapchain
+	//TODO U16 Images
 
 	if(!window)
 		window = TRAP::Application::GetWindow().get();
@@ -1242,27 +1235,44 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 	//Wait for queue to finish rendering
 	s_graphicQueue->WaitQueueIdle();
 
-	TRAP::Ref<RenderTarget> rT;
 #ifdef TRAP_HEADLESS_MODE
-	rT = winData->RenderTargets[lastFrame];
+	TRAP::Ref<RenderTarget> rT = winData->RenderTargets[lastFrame];
 #else
-	rT = winData->SwapChain->GetRenderTargets()[lastFrame];
+	TRAP::Ref<RenderTarget> rT = winData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
-	uint8_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
-	std::vector<uint8_t> pixelData(rT->GetWidth() * rT->GetHeight() * channelCount);
+	const uint8_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
+	const bool hdr = ImageFormatIsFloat(rT->GetImageFormat());
+	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
 
-	//Generate image data buffer
-	ResourceState resState;
 #ifdef TRAP_HEADLESS_MODE
-	resState = ResourceState::RenderTarget;
+	constexpr ResourceState resState = ResourceState::RenderTarget;
 #else
-	resState = ResourceState::Present;
+	constexpr ResourceState resState = ResourceState::Present;
 #endif
-	MapRenderTarget(rT, resState, pixelData.data());
+
+	std::vector<uint8_t> pixelDatau8{};
+	std::vector<uint8_t> pixelDataf32{};
+	if(!hdr)
+	{
+		pixelDatau8.resize(static_cast<std::size_t>(rT->GetWidth()) *
+							static_cast<std::size_t>(rT->GetHeight()) *
+							static_cast<std::size_t>(channelCount));
+
+		//Generate image data buffer
+		MapRenderTarget(rT, resState, pixelDatau8.data());
+	}
+	else
+	{
+		pixelDataf32.resize(static_cast<std::size_t>(rT->GetWidth()) *
+							static_cast<std::size_t>(rT->GetHeight()) *
+							static_cast<std::size_t>(channelCount));
+
+		//Generate image data buffer
+		MapRenderTarget(rT, resState, pixelDataf32.data());
+	}
 
 	//Flip the BGRA to RGBA
-	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
 	if(flipRedBlue)
 	{
 		for(uint32_t y = 0; y < rT->GetHeight(); ++y)
@@ -1272,17 +1282,29 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 				uint32_t pixelIndex = (y * rT->GetWidth() + x) * channelCount;
 
 				//Swap blue and red
-				int8_t red = pixelData[pixelIndex];
-				pixelData[pixelIndex] = pixelData[pixelIndex + 2];
-				pixelData[pixelIndex + 2] = red;
+				if(!hdr)
+				{
+					uint8_t red = pixelDatau8[pixelIndex];
+					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
+					pixelDatau8[pixelIndex + 2] = red;
+				}
+				else
+				{
+					float red = pixelDataf32[pixelIndex];
+					pixelDataf32[pixelIndex] = pixelDataf32[pixelIndex + 2];
+					pixelDataf32[pixelIndex + 2] = red;
+				}
 			}
 		}
 	}
 
-	if(pixelData.empty())
+	if(pixelDatau8.empty() && pixelDataf32.empty()) //Error
 		return TRAP::Image::LoadFromMemory(1, 1, TRAP::Image::ColorFormat::RGB, std::vector<uint8_t>{0, 0, 0});
+	if(!pixelDataf32.empty()) //HDR
+		return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDataf32);
 
-	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelData);
+	//U8 Image
+	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDatau8);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -944,6 +944,34 @@ namespace TRAP::Graphics::API
             default: return 4;
         }
     }
+    static constexpr bool ImageFormatIsFloat(const ImageFormat fmt)
+    {
+        switch(fmt) {
+            case ImageFormat::R16_SFLOAT: return true;
+            case ImageFormat::R16_SBFLOAT: return true;
+            case ImageFormat::R16G16_SFLOAT: return true;
+            case ImageFormat::R16G16_SBFLOAT: return true;
+            case ImageFormat::R32_SFLOAT: return true;
+            case ImageFormat::B10G11R11_UFLOAT: return true;
+            case ImageFormat::E5B9G9R9_UFLOAT: return true;
+            case ImageFormat::R16G16B16_SFLOAT: return true;
+            case ImageFormat::R16G16B16_SBFLOAT: return true;
+            case ImageFormat::R16G16B16A16_SFLOAT: return true;
+            case ImageFormat::R16G16B16A16_SBFLOAT: return true;
+            case ImageFormat::R32G32_SFLOAT: return true;
+            case ImageFormat::R32G32B32_SFLOAT: return true;
+            case ImageFormat::R32G32B32A32_SFLOAT: return true;
+            case ImageFormat::R64_SFLOAT: return true;
+            case ImageFormat::R64G64_SFLOAT: return true;
+            case ImageFormat::R64G64B64_SFLOAT: return true;
+            case ImageFormat::R64G64B64A64_SFLOAT: return true;
+            case ImageFormat::D32_SFLOAT: return true;
+            case ImageFormat::D32_SFLOAT_S8_UINT: return true;
+            case ImageFormat::DXBC6H_UFLOAT: return true;
+            case ImageFormat::DXBC6H_SFLOAT: return true;
+            default: return false;
+        }
+    }
 }
 
 #endif /*TRAP_IMAGEFORMAT_H*/
