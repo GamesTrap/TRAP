@@ -49,6 +49,9 @@ namespace TRAP::Graphics::API
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) override;
 		void SetClearDepth(float depth = 1.0f, Window* window = nullptr) override;
 		void SetClearStencil(uint32_t stencil = 0, Window* window = nullptr) override;
+#ifdef TRAP_HEADLESS_MODE
+		void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr) override;
+#endif
 		void SetDepthTesting(bool enabled, Window* window = nullptr) override;
 		void SetDepthWriting(bool enabled, Window* window = nullptr) override;
 		void SetDepthFunction(CompareMode function, Window* window = nullptr) override;

@@ -11,9 +11,22 @@ HeadlessTests::HeadlessTests()
 
 void HeadlessTests::OnAttach()
 {
-	// const std::vector<uint8_t> pixelData{255, 0, 0,    0, 255, 0,    0, 0, 255,    255, 255, 0,    0, 255, 255,    255, 0, 255,    255, 255, 255,    0, 0, 0};
-	// TRAP::Scope<TRAP::Image> testImage = TRAP::Image::LoadFromMemory(2, 4, TRAP::Image::ColorFormat::RGB, pixelData);
-	// TRAP::INTERNAL::PPMImage::Save(testImage, "test.ppm");
+	TRAP::Graphics::RenderCommand::SetResolution(3840, 2160); //4K Resolution
 
-	TRAP::Application::Shutdown();
+	TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
+	TRAP::INTERNAL::PPMImage::Save(testImage, "testBefore.ppm");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void HeadlessTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
+{
+	//Give engine time to update resolution
+	static int count = 0;
+	if(++count > 1)
+	{
+		TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
+		TRAP::INTERNAL::PPMImage::Save(testImage, "testAfter.ppm");
+		TRAP::Application::Shutdown();
+	}
 }

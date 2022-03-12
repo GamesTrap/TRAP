@@ -103,6 +103,9 @@ namespace TRAP::Graphics
 		                           Window* window = nullptr) = 0;
 		virtual void SetClearDepth(float depth = 1.0f, Window* window = nullptr) = 0;
 		virtual void SetClearStencil(uint32_t stencil = 0, Window* window = nullptr) = 0;
+#ifdef TRAP_HEADLESS_MODE
+		virtual void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr) = 0;
+#endif
 
 		//Pipeline Stuff
 		virtual void SetDepthTesting(bool enabled, Window* window = nullptr) = 0;
@@ -1386,6 +1389,8 @@ namespace TRAP::Graphics
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
+			bool Resize = false;
+			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif
 			uint32_t CurrentSwapChainImageIndex;
 

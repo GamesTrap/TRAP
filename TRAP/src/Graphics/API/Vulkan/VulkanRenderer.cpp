@@ -281,6 +281,32 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 			TRAP::Application::Shutdown();
 		}
 	}
+#else /*TRAP_HEADLESS_MODE*/
+	if(p->Resize)
+	{
+		p->Resize = false;
+
+		if(p->NewWidth > 0 && p->NewHeight > 0)
+		{
+			RendererAPI::RenderTargetDesc rTDesc{};
+			rTDesc.Width = p->NewWidth;
+			rTDesc.Height = p->NewHeight;
+			rTDesc.Depth = 1;
+			rTDesc.ArraySize = 1;
+			rTDesc.MipLevels = 1;
+			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
+			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+
+			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+			{
+				p->RenderTargets[i].reset();
+				p->RenderTargets[i] = RenderTarget::Create(rTDesc);
+			}
+
+			p->CurrentSwapChainImageIndex = 0;
+			p->ImageIndex = 0;
+		}
+	}
 #endif
 
 	p->Recording = false;
@@ -415,6 +441,24 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil
 
 	s_perWindowDataMap[window]->ClearStencil = stencil;
 }
+
+//------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, const uint32_t height,
+														Window* window)
+{
+	TRAP_ASSERT(width > 0 && height > 0, "Invalid render target resolution!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	auto* p = s_perWindowDataMap[window].get();
+	p->Resize = true;
+	p->NewWidth = width;
+	p->NewHeight = height;
+}
+#endif
 
 //------------------------------------------------------------------------------------------------------------------//
 
@@ -1377,19 +1421,16 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		StartGraphicRecording(p);
 	}
 #else
+	RendererAPI::RenderTargetDesc rTDesc{};
+	rTDesc.Width = p->NewWidth;
+	rTDesc.Height = p->NewHeight;
+	rTDesc.Depth = 1;
+	rTDesc.ArraySize = 1;
+	rTDesc.MipLevels = 1;
+	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
+	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-	{
-		//TODO Ability to change resolution
-		RendererAPI::RenderTargetDesc desc{};
-		desc.Width = 1920;
-		desc.Height = 1080;
-		desc.Depth = 1;
-		desc.ArraySize = 1;
-		desc.MipLevels = 1;
-		desc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
-		desc.StartState = RendererAPI::ResourceState::RenderTarget;
-		p->RenderTargets[i] = RenderTarget::Create(desc);
-	}
+		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 
 	StartGraphicRecording(p);
 #endif

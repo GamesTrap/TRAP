@@ -201,6 +201,15 @@ void TRAP::Graphics::RenderCommand::SetScissor(const uint32_t x, const uint32_t 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Graphics::RenderCommand::SetResolution(const uint32_t width, const uint32_t height, Window* window)
+{
+	RendererAPI::GetRenderer()->SetResolution(width, height, window);
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::Draw(const uint32_t vertexCount, const uint32_t firstVertex, Window* window)
 {
 	RendererAPI::GetRenderer()->Draw(vertexCount, firstVertex, window);
@@ -334,4 +343,11 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
  														 Window* window)
 {
 	RendererAPI::GetRenderer()->ResourceRenderTargetBarriers(renderTargetBarriers, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(Window* window)
+{
+	return RendererAPI::GetRenderer()->CaptureScreenshot(window);
 }

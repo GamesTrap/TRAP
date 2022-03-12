@@ -2411,3 +2411,10 @@ SITREP 03/10/2022|22w10a1
     - VulkanInits Added VkBufferImageCopy initializer ~<5 mins
     - CaptureScreenshot now also works with HDR/Float32 images ~<20 mins
     - CaptureScreenshot now also works with uint16_t images ~<15 mins
+
+SITREP 03/12/2022|22w10b1
+    - Changed TRAP Engine version to 22w10b1(0.7.110)
+    - RenderCommand Added CaptureScreenshot ~<5 mins
+    - RenderCommand Added SetResolution (only available in Headless mode) ~<5 mins
+    - Renderer Added recreation of RenderTargets on resolution change (Headless mode) ~<10 mins
+    - HeadlessTests now captures a screenshot before and after a resolution change ~<10 mins

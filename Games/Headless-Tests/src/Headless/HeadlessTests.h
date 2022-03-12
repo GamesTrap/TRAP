@@ -9,6 +9,7 @@ public:
 	HeadlessTests();
 
 	void OnAttach() override;
+	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 };
 
 #endif /*GAMESTRAP_HEADLESSTESTS_H*/
