@@ -105,6 +105,10 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 const TRAP::Scope<TRAP::Graphics::RendererAPI>& TRAP::Graphics::RendererAPI::GetRenderer()
 {
+#ifdef TRAP_HEADLESS_MODE
+	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
+#endif
+
 	return s_Renderer;
 }
 
@@ -126,8 +130,8 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 		return RenderAPI::Vulkan;
 	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
-	//Never select RenderAPI::Headless as this auto selection is intended for normal users
 
+#ifndef TRAP_HEADLESS_MODE
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::ShowMsgBox("Incompatible device (GPU)",
 		                             "TRAP™ was unable to detect a compatible RenderAPI!\n"
@@ -136,6 +140,10 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 	exit(-1);
+#else
+	TP_WARN(Log::RendererVulkanPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
+	return RenderAPI::NONE;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -219,20 +227,28 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			return s_isVulkanCapable;
 		}
 
-		//Instance Extensions
+		//Required: Instance Extensions
+		//Optional in Headless mode.
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
 			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 		{
+			GPUSettings.SurfaceSupported = false;
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed surface extension test");
+#ifndef TRAP_HEADLESS_MODE
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
+#endif
 		}
-		instanceExtensions.push_back(reqExt[0]);
-		instanceExtensions.push_back(reqExt[1]);
+		else
+		{
+			GPUSettings.SurfaceSupported = true;
+			instanceExtensions.push_back(reqExt[0]);
+			instanceExtensions.push_back(reqExt[1]);
+		}
 
 		//Create Instance
 		VkInstance instance;
@@ -241,8 +257,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			extensions[i] = instanceExtensions[i].c_str();
 		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
 		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
-		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
-		if (instance)
+		VkResult res = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
+		if (res == VK_SUCCESS && instance)
 		{
 			VkLoadInstance(instance);
 
@@ -285,14 +301,18 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 	SwapChain.reset();
 	ImageAcquiredSemaphore.reset();
 
-	for(uint32_t i = ImageCount; i > 0; i--)
+	for(int32_t i = ImageCount - 1; i >= 0; i--)
 	{
-		RenderCompleteSemaphores[i - static_cast<std::size_t>(1)].reset();
-		RenderCompleteFences[i - static_cast<std::size_t>(1)].reset();
+#ifdef TRAP_HEADLESS_MODE
+		RenderTargets[i].reset();
+#endif
 
-		GraphicCommandPools[i - static_cast<std::size_t>(1)]->FreeCommandBuffer(GraphicCommandBuffers[i - 1]);
-		GraphicCommandBuffers[i - static_cast<std::size_t>(1)] = nullptr;
-		GraphicCommandPools[i - static_cast<std::size_t>(1)].reset();
+		RenderCompleteSemaphores[i].reset();
+		RenderCompleteFences[i].reset();
+
+		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
+		GraphicCommandBuffers[i] = nullptr;
+		GraphicCommandPools[i].reset();
 	}
 }
 

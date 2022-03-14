@@ -171,6 +171,10 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
+#ifdef TRAP_HEADLESS_MODE
+	TRAP_ASSERT(RendererAPI::GPUSettings.PresentSupported, "Present is not supported by the system!");
+#endif
+
 	const std::vector<TRAP::Ref<Semaphore>>& waitSemaphores = desc.WaitSemaphores;
 	RendererAPI::PresentStatus presentStatus = RendererAPI::PresentStatus::Failed;
 

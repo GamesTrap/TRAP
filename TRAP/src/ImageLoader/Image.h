@@ -254,6 +254,17 @@ namespace TRAP
 		/// <returns>Converted RGBA raw pixel data</returns>
 		template<typename T>
 		static std::vector<T> ConvertRGBToRGBA(uint32_t width, uint32_t height, ColorFormat format, const T* data);
+		/// <summary>
+		/// Converts raw RGBA pixel data to RGB.
+		/// </summary>
+		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
+		/// <param name="width">Width of image in pixels.</param>
+		/// <param name="height">Height of image in pixels.</param>
+		/// <param name="format">Color format of the image data.</param>
+		/// <param name="data">Raw pixel data.</param>
+		/// <returns>Converted RGB raw pixel data</returns>
+		template<typename T>
+		static std::vector<T> ConvertRGBAToRGB(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 
 		//Used by multiple image formats
 		static std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source,
@@ -401,6 +412,43 @@ std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_
 		newData[newDataIndex + 2] = data[oldDataIndex + 2];
 		newData[newDataIndex + 3] = whitePixelColor;
 		newDataIndex += 4;
+	}
+
+	return newData;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
+									         const T* data)
+{
+	if constexpr(!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	               std::is_same<T, float>::value))
+	{
+		TRAP_ASSERT(false, "Invalid type!");
+		return std::vector<T>();
+	}
+	if(format != ColorFormat::RGBA)
+	{
+		TRAP_ASSERT(false, "Invalid color format!");
+		return std::vector<T>();
+	}
+	if(!data)
+	{
+		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
+		return std::vector<T>();
+	}
+
+	std::vector<T> newData(width * height * static_cast<uint32_t>(ColorFormat::RGB));
+	std::size_t newDataIndex = 0;
+	for(std::size_t oldDataIndex = 0; oldDataIndex < width * height * static_cast<uint32_t>(ColorFormat::RGBA);
+		oldDataIndex += 4)
+	{
+		newData[newDataIndex + 0] = data[oldDataIndex + 0];
+		newData[newDataIndex + 1] = data[oldDataIndex + 1];
+		newData[newDataIndex + 2] = data[oldDataIndex + 2];
+		newDataIndex += 3;
 	}
 
 	return newData;

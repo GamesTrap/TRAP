@@ -120,3 +120,27 @@ uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 
 	return m_data.size();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::PPMImage::Save(const Scope<Image>& img, const std::filesystem::path& filepath)
+{
+	//NOTE Only supports 24/32BPP RGB(A) Input
+
+	std::ofstream file(filepath, std::ios::out | std::ios::binary);
+
+	//PPM Header
+	file << "P6\n" << img->GetWidth() << '\n' << img->GetHeight() << '\n' << 255 << '\n';
+
+	//PPM Data
+	std::vector<uint8_t> pixelData;
+	if(img->GetColorFormat() == ColorFormat::RGBA)
+	{
+		pixelData = ConvertRGBAToRGB<uint8_t>(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), reinterpret_cast<const uint8_t*>(img->GetPixelData()));
+		file.write(reinterpret_cast<const char*>(pixelData.data()), pixelData.size());
+	}
+	else
+		file.write(reinterpret_cast<const char*>(img->GetPixelData()), img->GetPixelDataSize());
+
+	file.close();
+}

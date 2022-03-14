@@ -10,6 +10,7 @@
 #include "ImageLoader/ImageLoaderTests.h"
 #include "Monitors/MonitorTests.h"
 #include "Opacity/OpacityTests.h"
+#include "Screenshot/ScreenshotTests.h"
 #include "Title/TitleTests.h"
 #include "Vulkan/VulkanFrameBufferTests.h"
 #include "Vulkan/VulkanIcoSphereTests.h"
@@ -34,9 +35,10 @@ public:
 		// PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		// PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
+		PushLayer(TRAP::MakeScope<ScreenshotTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());
 		// PushLayer(TRAP::MakeScope<VulkanFrameBufferTests>());
-		 PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
+		// PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
 		// PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
 		// PushLayer(TRAP::MakeScope<VulkanTests>());
 		// PushLayer(TRAP::MakeScope<VulkanTextureTests>());

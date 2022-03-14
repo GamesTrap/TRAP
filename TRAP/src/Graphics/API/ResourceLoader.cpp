@@ -935,7 +935,6 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 		TP_ERROR(Log::RendererVulkanTexturePrefix, "Texture image format does not support linear blitting! "
 		         "Skipping mip map generation");
 		return;
-		//TRAP_ASSERT(false, "Texture image format does not support linear blitting!");
 	}
 
 	RendererAPI::TextureBarrier barrier{};

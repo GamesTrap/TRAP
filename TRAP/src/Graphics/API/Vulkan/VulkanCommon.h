@@ -575,7 +575,7 @@ constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(Rend
 		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 	default:
-		TRAP_ASSERT(false, "Invalid Mip Map Mode");
+		// TRAP_ASSERT(false, "Invalid Mip Map Mode");
 		return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
 	}
 }
@@ -674,7 +674,7 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 			VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
 			VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
 
-	TRAP_ASSERT(res != 0);
+	// TRAP_ASSERT(res != 0);
 	return res;
 }
 

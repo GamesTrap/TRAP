@@ -26,6 +26,29 @@
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
+{
+	if (dwCtrlType == CTRL_C_EVENT)
+	{
+		TRAP::Application::Shutdown();
+		return TRUE;
+	}
+	else if (dwCtrlType == CTRL_CLOSE_EVENT)
+	{
+		TRAP::Application::Shutdown();
+		Sleep(10000);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Application::Application(std::string gameName)
 	: m_hotReloadingEnabled(false),
 	  m_timer(std::make_unique<Utils::Timer>()),
@@ -41,6 +64,16 @@ TRAP::Application::Application(std::string gameName)
 {
 	TP_PROFILE_FUNCTION();
 
+	//Register SIGINT callback to capture CTRL+C
+#ifdef TRAP_HEADLESS_MODE
+#ifdef TRAP_PLATFORM_LINUX
+	signal(SIGINT, [](int) {TRAP::Application::Shutdown(); });
+#elif defined(TRAP_PLATFORM_WINDOWS)
+	SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE);
+	//SetConsoleCtrlHandler(NULL, TRUE);
+#endif
+#endif
+
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");
 
 	TRAP_ASSERT(!s_Instance, "Application already exists!");
@@ -48,7 +81,12 @@ TRAP::Application::Application(std::string gameName)
 	m_mainThreadID = std::this_thread::get_id();
 
 	//Set main log file path
-	TRAP::TRAPLog.SetFilePath(FS::GetGameDocumentsFolderPath() / "logs/trap.log");
+	std::filesystem::path logFilePath = "logs/trap.log";
+#ifndef TRAP_HEADLESS_MODE
+	logFilePath = FS::GetGameDocumentsFolderPath() / "logs/trap.log";
+#endif
+	TRAP::FS::CreateFolder(TRAP::FS::GetFolderPath(logFilePath));
+	TRAP::TRAPLog.SetFilePath(logFilePath);
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
@@ -65,9 +103,15 @@ TRAP::Application::Application(std::string gameName)
 	}
 
 	FS::Init();
-	if (!m_config.LoadFromFile(FS::GetGameDocumentsFolderPath() / "engine.cfg"))
+
+	std::filesystem::path cfgPath = "engine.cfg";
+#ifndef TRAP_HEADLESS_MODE
+	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
+#endif
+	if (!m_config.LoadFromFile(cfgPath))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
 
+#ifndef TRAP_HEADLESS_MODE
 	uint32_t width = 1280;
 	uint32_t height = 720;
 	uint32_t refreshRate = 60;
@@ -75,11 +119,28 @@ TRAP::Application::Application(std::string gameName)
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
 	const bool vsync = m_config.Get<bool>("VSync");
+	const bool visible = true;
+#else
+	const uint32_t width = 2;
+	const uint32_t height = 2;
+	const uint32_t refreshRate = 60;
+	const bool vsync = true;
+	const Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
+	const uint32_t monitor = 0;
+	const bool maximized = false;
+	const bool rawInput = false;
+	const bool visible = false;
+#endif
 	const uint32_t fpsLimit = m_config.Get<uint32_t>("FPSLimit");
+#ifndef TRAP_HEADLESS_MODE
 	const Window::DisplayMode displayMode = m_config.Get<Window::DisplayMode>("DisplayMode");
 	const bool maximized = m_config.Get<bool>("Maximized");
 	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
 	const bool rawInput = m_config.Get<bool>("RawMouseInput");
+#else
+	bool enableGPU = true;
+	m_config.Get("EnableGPU", enableGPU);
+#endif
 	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
 	if (fpsLimit > 0)
@@ -90,11 +151,27 @@ TRAP::Application::Application(std::string gameName)
 			m_fpsLimit = 0;
 	}
 
+#ifdef TRAP_HEADLESS_MODE
+	if(enableGPU)
+	{
+#endif
 	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
 		renderAPI = Graphics::RendererAPI::AutoSelectRenderAPI();
+#ifdef TRAP_HEADLESS_MODE
+	}
+	else
+		renderAPI = Graphics::RenderAPI::NONE;
+#endif
 
 	//Initialize Renderer
+#ifdef TRAP_HEADLESS_MODE
+	if(renderAPI != Graphics::RenderAPI::NONE)
+		Graphics::RendererAPI::Init(m_gameName, renderAPI);
+#else
 	Graphics::RendererAPI::Init(m_gameName, renderAPI);
+#endif
+
+	m_layerStack = std::make_unique<LayerStack>();
 
 	m_window = MakeScope<Window>
 	(
@@ -110,7 +187,7 @@ TRAP::Application::Application(std::string gameName)
 			{
 				true,
 				maximized,
-				true,
+				visible,
 				true,
 				true,
 				true,
@@ -123,8 +200,16 @@ TRAP::Application::Application(std::string gameName)
 	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 	//Update Window Title (Debug/DebWithRelInfo)
+#ifdef TRAP_HEADLESS_MODE
+	if(renderAPI != Graphics::RenderAPI::NONE)
+	{
+#endif
 	m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+#ifdef TRAP_HEADLESS_MODE
+	}
+#endif
 
+#ifndef TRAP_HEADLESS_MODE
 	//Update Viewport
 	int32_t w, h;
 	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
@@ -132,25 +217,34 @@ TRAP::Application::Application(std::string gameName)
 			m_window->GetInternalWindow()
 		), w, h);
 	Graphics::RenderCommand::SetViewport(0, 0, static_cast<uint32_t>(w), static_cast<uint32_t>(h));
+#endif
 
-	//Always added as a fallback shader
-	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
-	//Always added as a fallback texture
-	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+	if(renderAPI != Graphics::RenderAPI::NONE)
+	{
+		//Always added as a fallback shader
+		Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
 
-	//Initialize Renderer
-	Graphics::Renderer::Init();
+		//Always added as a fallback texture
+		Graphics::TextureManager::Add(Graphics::Texture2D::Create());
+		Graphics::TextureManager::Add(Graphics::TextureCube::Create());
 
-	m_layerStack = std::make_unique<LayerStack>();
+		//Initialize Renderer
+		Graphics::Renderer::Init();
+	}
 
 	//Initialize Input for Joysticks
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
-	Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
-	m_ImGuiLayer = imguiLayer.get();
-	m_layerStack->PushOverlay(std::move(imguiLayer));
+#ifndef TRAP_HEADLESS_MODE
+	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
+	   Graphics::RendererAPI::GPUSettings.PresentSupported)
+	{
+		Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
+		m_ImGuiLayer = imguiLayer.get();
+		m_layerStack->PushOverlay(std::move(imguiLayer));
+	}
+#endif
 
 	TRAP::Utils::Discord::Create();
 }
@@ -165,36 +259,40 @@ TRAP::Application::~Application()
 
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 	TRAP::Utils::Discord::Destroy();
-	// if(m_hotReloadingThread)
-	// {
-	// 	m_hotReloadingThread->join();
-	// 	m_hotReloadingThread.reset();
-	// }
 	Input::Shutdown();
-	TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
 	m_layerStack.reset();
+
+#ifndef TRAP_HEADLESS_MODE
 	if(m_window->GetWidth() > 0)
 		m_config.Set("Width", m_window->GetWidth());
 	if(m_window->GetHeight() > 0)
 		m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
 	m_config.Set("VSync", m_window->GetVSync());
-	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
+#else
+	m_config.Set("EnableGPU", Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE);
+#endif
+
+	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("RenderAPI", (m_newRenderAPI != Graphics::RenderAPI::NONE) ? m_newRenderAPI :
 	                                                                          Graphics::RendererAPI::GetRenderAPI());
-	const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
-	else
 	{
-		if (m_config.Get<std::string_view>("VulkanGPU").empty())
-			m_config.Set("VulkanGPU", "");
+		const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
 	}
-	m_config.SaveToFile(FS::GetGameDocumentsFolderPath() / "engine.cfg");
+
+	std::filesystem::path cfgPath = "engine.cfg";
+#ifndef TRAP_HEADLESS_MODE
+	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
+#endif
+	m_config.SaveToFile(cfgPath);
 	m_window.reset();
 	FS::Shutdown();
 
@@ -249,6 +347,7 @@ void TRAP::Application::Run()
 			}
 		}
 
+#ifndef TRAP_HEADLESS_MODE
 		ImGuiLayer::Begin();
 		{
 			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
@@ -257,9 +356,11 @@ void TRAP::Application::Run()
 				layer->OnImGuiRender();
 		}
 		ImGuiLayer::End();
+#endif
 
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window.get());
+
 		TRAP::Window::OnUpdate();
 
 		UpdateHotReloading();
@@ -533,6 +634,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 	if(Window::GetActiveWindows() != 1)
 		return false;
 
+#ifndef TRAP_HEADLESS_MODE
 	if ((e.GetKey() == Input::Key::Enter || e.GetKey() == Input::Key::KP_Enter) &&
 	    Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
 	{
@@ -542,6 +644,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 		else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
 			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
 	}
+#endif
 
 	return false;
 }

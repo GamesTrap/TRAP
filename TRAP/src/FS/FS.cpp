@@ -905,7 +905,6 @@ std::string GetDocumentsFolderPathLinux()
 
     if(documentsDir.compare(0, 5, "$HOME") == 0)
         documentsDir = GetHomeFolderPathLinux() + documentsDir.substr(5, std::string::npos);
-    TP_TRACE("DocumentsDir: ", documentsDir);
 
     //Finally
     return documentsDir;

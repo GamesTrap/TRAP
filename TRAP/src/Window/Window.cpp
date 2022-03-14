@@ -63,11 +63,12 @@ TRAP::Window::~Window()
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
 
 	--s_windows;
 
-	if(!s_windows)
+	if(!s_windows && Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
 		TP_TRACE("Shutting down Renderer");
 		Graphics::Renderer::Shutdown();
@@ -967,7 +968,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	SetupEventCallbacks();
 
+#ifdef TRAP_HEADLESS_MODE
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+		TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
+#else
 	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

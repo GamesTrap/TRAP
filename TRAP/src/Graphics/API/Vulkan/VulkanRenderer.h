@@ -49,6 +49,9 @@ namespace TRAP::Graphics::API
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) override;
 		void SetClearDepth(float depth = 1.0f, Window* window = nullptr) override;
 		void SetClearStencil(uint32_t stencil = 0, Window* window = nullptr) override;
+#ifdef TRAP_HEADLESS_MODE
+		void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr) override;
+#endif
 		void SetDepthTesting(bool enabled, Window* window = nullptr) override;
 		void SetDepthWriting(bool enabled, Window* window = nullptr) override;
 		void SetDepthFunction(CompareMode function, Window* window = nullptr) override;
@@ -125,6 +128,8 @@ namespace TRAP::Graphics::API
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
+
+		TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) override;
 
 		void InitPerWindowData(Window* window) override;
 		void RemovePerWindowData(Window* window) override;
@@ -254,6 +259,8 @@ namespace TRAP::Graphics::API
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 
 	private:
+		void MapRenderTarget(TRAP::Ref<RenderTarget> renderTarget, ResourceState currResState, void* outPixelData);
+
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);

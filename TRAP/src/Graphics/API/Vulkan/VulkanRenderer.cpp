@@ -22,6 +22,8 @@
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
 #include "Objects/VulkanRootSignature.h"
+#include "Objects/VulkanTexture.h"
+#include "Objects/VulkanInits.h"
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/PipelineDescHash.h"
@@ -133,13 +135,19 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 {
 	TRAP_ASSERT(p);
 
-	if(p->Window->IsMinimized () || p->Recording)
+	if(p->Window->IsMinimized() || p->Recording)
 		return;
 
 	//Start Recording
+	TRAP::Ref<RenderTarget> renderTarget;
+#ifndef TRAP_HEADLESS_MODE
 	p->CurrentSwapChainImageIndex = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+	renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+#else
+	p->CurrentSwapChainImageIndex = (p->CurrentSwapChainImageIndex + 1) % RendererAPI::ImageCount;
+	renderTarget = p->RenderTargets[p->CurrentSwapChainImageIndex];
+#endif
 
-	const TRAP::Ref<RenderTarget> renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 	const TRAP::Ref<Semaphore> renderCompleteSemaphore = p->RenderCompleteSemaphores[p->ImageIndex];
 	TRAP::Ref<Fence> renderCompleteFence = p->RenderCompleteFences[p->ImageIndex];
 
@@ -152,8 +160,10 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 
 	p->GraphicCommandBuffers[p->ImageIndex]->Begin();
 
+#ifndef TRAP_HEADLESS_MODE
 	RenderTargetBarrier barrier{renderTarget, ResourceState::Present, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#endif
 
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
@@ -165,9 +175,16 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 															   std::numeric_limits<uint32_t>::max());
 
 	//Set Default Dynamic Viewport & Scissor
-	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, static_cast<float>(p->Window->GetWidth()),
-	                                                     static_cast<float>(p->Window->GetHeight()), 0.0f, 1.0f);
-	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, p->Window->GetWidth(), p->Window->GetHeight());
+	float width, height;
+#ifndef TRAP_HEADLESS_MODE
+	width = static_cast<float>(p->Window->GetWidth());
+	height = static_cast<float>(p->Window->GetHeight());
+#else
+	width = static_cast<float>(renderTarget->GetWidth());
+	height = static_cast<float>(renderTarget->GetHeight());
+#endif
+	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, width, height, 0.0f, 1.0f);
+	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, width, height);
 	if(p->CurrentGraphicsPipeline)
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
 
@@ -186,27 +203,34 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
 
+#ifndef TRAP_HEADLESS_MODE
 	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
 	                            ResourceState::RenderTarget, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#endif
 
 	p->GraphicCommandBuffers[p->ImageIndex]->End();
 
 	QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds = { p->GraphicCommandBuffers[p->ImageIndex] };
+#ifndef TRAP_HEADLESS_MODE
 	submitDesc.SignalSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 	submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphore };
+#endif
 	submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
 	s_graphicQueue->Submit(submitDesc);
 
+#ifndef TRAP_HEADLESS_MODE
 	QueuePresentDesc presentDesc{};
 	presentDesc.Index = static_cast<uint8_t>(p->CurrentSwapChainImageIndex);
 	presentDesc.WaitSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 	presentDesc.SwapChain = p->SwapChain;
 	const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
+#endif
 
 	p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
 
+#ifndef TRAP_HEADLESS_MODE
 	if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
 	{
 		if(presentStatus == PresentStatus::DeviceReset)
@@ -257,6 +281,33 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 			TRAP::Application::Shutdown();
 		}
 	}
+#else /*TRAP_HEADLESS_MODE*/
+	if(p->Resize)
+	{
+		p->Resize = false;
+
+		if(p->NewWidth > 0 && p->NewHeight > 0)
+		{
+			RendererAPI::RenderTargetDesc rTDesc{};
+			rTDesc.Width = p->NewWidth;
+			rTDesc.Height = p->NewHeight;
+			rTDesc.Depth = 1;
+			rTDesc.ArraySize = 1;
+			rTDesc.MipLevels = 1;
+			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
+			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+
+			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+			{
+				p->RenderTargets[i].reset();
+				p->RenderTargets[i] = RenderTarget::Create(rTDesc);
+			}
+
+			p->CurrentSwapChainImageIndex = 0;
+			p->ImageIndex = 0;
+		}
+	}
+#endif
 
 	p->Recording = false;
 }
@@ -340,12 +391,14 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
 	EndGraphicRecording(p);
+#ifndef TRAP_HEADLESS_MODE
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
 	{
 		if(p->SwapChain)
 			p->SwapChain->ToggleVSync();
 		p->CurrentVSync = p->NewVSync;
 	}
+#endif
 	StartGraphicRecording(p);
 }
 
@@ -388,6 +441,24 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil
 
 	s_perWindowDataMap[window]->ClearStencil = stencil;
 }
+
+//------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_HEADLESS_MODE
+void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, const uint32_t height,
+														Window* window)
+{
+	TRAP_ASSERT(width > 0 && height > 0, "Invalid render target resolution!");
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	auto* p = s_perWindowDataMap[window].get();
+	p->Resize = true;
+	p->NewWidth = width;
+	p->NewHeight = height;
+}
+#endif
 
 //------------------------------------------------------------------------------------------------------------------//
 
@@ -648,7 +719,13 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 		window = TRAP::Application::GetWindow().get();
 
 	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
-	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
+
+	TRAP::Ref<RenderTarget> renderTarget;
+#ifndef TRAP_HEADLESS_MODE
+	renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
+#else
+	renderTarget = data->RenderTargets[data->ImageIndex];
+#endif
 
 	if(static_cast<uint32_t>(clearType & ClearBufferType::Color) != 0)
 	{
@@ -1110,6 +1187,189 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Helper function to generate screenshot data. See CaptureScreenshot.
+void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget> renderTarget, ResourceState currResState, void* outPixelData)
+{
+	CommandPoolDesc cmdPoolDesc{};
+	cmdPoolDesc.Queue = s_graphicQueue;
+	cmdPoolDesc.Transient = true;
+	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
+
+	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+
+	if(s_RenderAPI == RenderAPI::Vulkan)
+	{
+		//Add a staging buffer
+		uint16_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8;
+		BufferDesc bufferDesc{};
+		bufferDesc.Descriptors = DescriptorType::RWBuffer;
+		bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
+		bufferDesc.Size = renderTarget->GetWidth() * renderTarget->GetHeight() * formatByteWidth;
+		bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
+		bufferDesc.StartState = ResourceState::CopyDestination;
+		TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
+
+		//Start recording
+		cmd->Begin();
+
+		//Transition the render target to the correct state
+		RenderTargetBarrier srcBarrier = {renderTarget, currResState, ResourceState::CopySource};
+		cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+
+		uint32_t rowPitch = renderTarget->GetWidth() * formatByteWidth;
+		const uint32_t width = renderTarget->GetTexture()->GetWidth();
+		const uint32_t height = renderTarget->GetTexture()->GetHeight();
+		const uint32_t depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
+		const ImageFormat fmt = renderTarget->GetTexture()->GetImageFormat();
+		const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3);
+
+		//Copy the render target to the staging buffer
+		uint32_t bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
+		VkImageSubresourceLayers layers{};
+		layers.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
+		layers.mipLevel = 0;
+		layers.baseArrayLayer = 0;
+		layers.layerCount = 1;
+		VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
+
+		VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+		VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture().get());
+		VulkanBuffer* vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
+
+		vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
+
+		//Transition the render target back to the previous state
+		srcBarrier = {renderTarget, ResourceState::CopySource, currResState};
+		cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+
+		//End recording
+		cmd->End();
+
+		//Submit the command buffer
+		QueueSubmitDesc submitDesc{};
+		submitDesc.Cmds = {cmd};
+
+		s_graphicQueue->Submit(submitDesc);
+
+		//Wait for work to finish on the GPU
+		s_graphicQueue->WaitQueueIdle();
+
+		//Copy to CPU memory.
+		std::memcpy(outPixelData, buffer->GetCPUMappedAddress(), renderTarget->GetWidth() * renderTarget->GetHeight() * formatByteWidth);
+
+		//Cleanup
+		cmdPool->FreeCommandBuffer(cmd);
+		cmdPool.reset();
+		buffer.reset();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	auto* winData = s_perWindowDataMap[window].get();
+	int32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
+
+	//Wait for queue to finish rendering
+	s_graphicQueue->WaitQueueIdle();
+
+#ifdef TRAP_HEADLESS_MODE
+	TRAP::Ref<RenderTarget> rT = winData->RenderTargets[lastFrame];
+#else
+	TRAP::Ref<RenderTarget> rT = winData->SwapChain->GetRenderTargets()[lastFrame];
+#endif
+
+	const uint8_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
+	const bool hdr = ImageFormatIsFloat(rT->GetImageFormat());
+	const bool u16 = ImageFormatIsU16(rT->GetImageFormat());
+	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
+
+#ifdef TRAP_HEADLESS_MODE
+	constexpr ResourceState resState = ResourceState::RenderTarget;
+#else
+	constexpr ResourceState resState = ResourceState::Present;
+#endif
+
+	std::vector<uint8_t> pixelDatau8{};
+	std::vector<uint8_t> pixelDataf32{};
+	std::vector<uint16_t> pixelDatau16{};
+	if(!hdr && u16)
+	{
+		pixelDatau16.resize(static_cast<std::size_t>(rT->GetWidth()) *
+						    static_cast<std::size_t>(rT->GetHeight()) *
+						    static_cast<std::size_t>(channelCount));
+
+		//Generate image data buffer
+		MapRenderTarget(rT, resState, pixelDatau16.data());
+	}
+	else if(!hdr)
+	{
+		pixelDatau8.resize(static_cast<std::size_t>(rT->GetWidth()) *
+						   static_cast<std::size_t>(rT->GetHeight()) *
+						   static_cast<std::size_t>(channelCount));
+
+		//Generate image data buffer
+		MapRenderTarget(rT, resState, pixelDatau8.data());
+	}
+	else
+	{
+		pixelDataf32.resize(static_cast<std::size_t>(rT->GetWidth()) *
+							static_cast<std::size_t>(rT->GetHeight()) *
+							static_cast<std::size_t>(channelCount));
+
+		//Generate image data buffer
+		MapRenderTarget(rT, resState, pixelDataf32.data());
+	}
+
+	//Flip the BGRA to RGBA
+	if(flipRedBlue)
+	{
+		for(uint32_t y = 0; y < rT->GetHeight(); ++y)
+		{
+			for(uint32_t x = 0; x < rT->GetWidth(); ++x)
+			{
+				uint32_t pixelIndex = (y * rT->GetWidth() + x) * channelCount;
+
+				//Swap blue and red
+				if(!hdr && u16)
+				{
+					uint16_t red = pixelDatau8[pixelIndex];
+					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
+					pixelDatau8[pixelIndex + 2] = red;
+				}
+				else if(!hdr)
+				{
+					uint8_t red = pixelDatau8[pixelIndex];
+					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
+					pixelDatau8[pixelIndex + 2] = red;
+				}
+				else
+				{
+					float red = pixelDataf32[pixelIndex];
+					pixelDataf32[pixelIndex] = pixelDataf32[pixelIndex + 2];
+					pixelDataf32[pixelIndex + 2] = red;
+				}
+			}
+		}
+	}
+
+	if(pixelDatau8.empty() && pixelDataf32.empty()) //Error
+		return TRAP::Image::LoadFromMemory(1, 1, TRAP::Image::ColorFormat::RGB, std::vector<uint8_t>{0, 0, 0});
+	if(!pixelDataf32.empty()) //HDR
+		return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDataf32);
+	if(!pixelDatau16.empty()) //U16
+		return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDatau16);
+
+	//U8 Image
+	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDatau8);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 {
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
@@ -1137,6 +1397,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 	//Image Acquire Semaphore
 	p->ImageAcquiredSemaphore = Semaphore::Create();
 
+#ifndef TRAP_HEADLESS_MODE
 	if (!p->Window->IsMinimized())
 	{
 		//Create Swapchain
@@ -1159,9 +1420,27 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 
 		StartGraphicRecording(p);
 	}
+#else
+	RendererAPI::RenderTargetDesc rTDesc{};
+	rTDesc.Width = p->NewWidth;
+	rTDesc.Height = p->NewHeight;
+	rTDesc.Depth = 1;
+	rTDesc.ArraySize = 1;
+	rTDesc.MipLevels = 1;
+	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
+	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 
-	//GraphicsPipeline
+	StartGraphicRecording(p);
+#endif
+
+	//Graphics Pipeline
+#ifndef TRAP_HEADLESS_MODE
 	const std::vector<TRAP::Ref<RenderTarget>>& rT = p->SwapChain->GetRenderTargets();
+#else
+	const std::array<TRAP::Ref<RenderTarget>, RendererAPI::ImageCount>& rT = p->RenderTargets;
+#endif
 	p->GraphicsPipelineDesc = {};
 	p->GraphicsPipelineDesc.Type = PipelineType::Graphics;
 	p->GraphicsPipelineDesc.Pipeline = GraphicsPipelineDesc();
@@ -1266,12 +1545,14 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 
 	if(!VulkanInstance::IsExtensionSupported(reqExt[0]) || !VulkanInstance::IsExtensionSupported(reqExt[1]))
 	{
+#ifndef TRAP_HEADLESS_MODE
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Mandatory Vulkan surface extensions are unsupported!\n"
 								   "Error code: 0x0003", Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan surface extensions are unsupported!");
 		TRAP::Application::Shutdown();
 		exit(-1);
+#endif
 	}
 	else
 	{

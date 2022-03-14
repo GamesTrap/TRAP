@@ -49,8 +49,7 @@ namespace TRAP::Graphics
 	enum class RenderAPI
 	{
 		NONE = 0,
-		Vulkan,
-		Headless
+		Vulkan
 	};
 
 	class RendererAPI
@@ -104,6 +103,9 @@ namespace TRAP::Graphics
 		                           Window* window = nullptr) = 0;
 		virtual void SetClearDepth(float depth = 1.0f, Window* window = nullptr) = 0;
 		virtual void SetClearStencil(uint32_t stencil = 0, Window* window = nullptr) = 0;
+#ifdef TRAP_HEADLESS_MODE
+		virtual void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr) = 0;
+#endif
 
 		//Pipeline Stuff
 		virtual void SetDepthTesting(bool enabled, Window* window = nullptr) = 0;
@@ -184,6 +186,8 @@ namespace TRAP::Graphics
 		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() = 0;
 		virtual std::string GetCurrentGPUName() = 0;
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
+
+		virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) = 0;
 
 		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
 		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
@@ -1349,6 +1353,8 @@ namespace TRAP::Graphics
 			uint32_t MaxPushConstantSize;
 			uint32_t MaxSamplerAllocationCount;
 			uint32_t MaxTessellationControlPoints;
+			bool SurfaceSupported;
+			bool PresentSupported;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
@@ -1381,6 +1387,11 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
+#ifdef TRAP_HEADLESS_MODE
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
+			bool Resize = false;
+			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
+#endif
 			uint32_t CurrentSwapChainImageIndex;
 
 			TRAP::Math::Vec4 ClearColor{0.1f, 0.1f, 0.1f, 1.0f};

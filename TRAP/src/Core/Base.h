@@ -9,11 +9,22 @@
 //      it conflicts with the RenderDoc capture layer.
 //#define USE_RENDER_DOC
 
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Enable graphics validation in debug builds by default.
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG
 	#define VERBOSE_GRAPHICS_DEBUG
 #endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Headless mode.
+//This macro will relax the requirements checked by the RendererAPI.
+//TODO Documentation
+//#define TRAP_HEADLESS_MODE
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 /// <summary>
 /// Construct a version number.
@@ -68,24 +79,24 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 106);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 111);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	static inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) \
+	static constexpr inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
 		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) \
+	static constexpr inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
 									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static inline ENUM_TYPE operator|=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a | b); }\
-	static inline ENUM_TYPE operator&=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a & b); }
+	static constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a | b); }\
+	static constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a & b); }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

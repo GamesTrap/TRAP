@@ -62,6 +62,9 @@ namespace TRAP::Graphics
 		//Viewport/Scissor functions
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr);
 		static void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr);
+#ifdef TRAP_HEADLESS_MODE
+		static void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr);
+#endif
 
 		//Drawing functions
 		static void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr);
@@ -103,6 +106,9 @@ namespace TRAP::Graphics
 		static void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers, Window* window = nullptr);
 		static void RenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier, Window* window = nullptr);
 		static void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, Window* window = nullptr);
+
+		//Screenshot
+		static TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr);
 	};
 }
 
