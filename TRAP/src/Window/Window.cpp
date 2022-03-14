@@ -63,7 +63,7 @@ TRAP::Window::~Window()
 {
 	TP_PROFILE_FUNCTION();
 
-	if(TRAP::Graphics::RendererAPI::GetRenderer())
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
 
 	--s_windows;

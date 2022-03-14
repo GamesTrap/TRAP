@@ -2422,3 +2422,4 @@ SITREP 03/12/2022|22w10b1
 SITREP 03/14/2022|22w11a1
     - Changed TRAP Engine version to 22w11a1(0.7.111)
     - Headless Added assert in RendererAPI::GetRenderer() for RenderAPI::NONE ~<5 mins
+    - Small bugfixes in Window Destructor and RendererAPI::IsVulkanCapable ~<5 mins

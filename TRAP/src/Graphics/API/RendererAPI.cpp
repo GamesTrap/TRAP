@@ -257,8 +257,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			extensions[i] = instanceExtensions[i].c_str();
 		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
 		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
-		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
-		if (instance)
+		VkResult res = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
+		if (res == VK_SUCCESS && instance)
 		{
 			VkLoadInstance(instance);
 
