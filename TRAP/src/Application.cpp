@@ -138,7 +138,8 @@ TRAP::Application::Application(std::string gameName)
 	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
 	const bool rawInput = m_config.Get<bool>("RawMouseInput");
 #else
-	const bool enableGPU = m_config.Get<bool>("EnableGPU");
+	bool enableGPU = true;
+	m_config.Get("EnableGPU", enableGPU);
 #endif
 	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
