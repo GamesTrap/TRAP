@@ -105,6 +105,10 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 const TRAP::Scope<TRAP::Graphics::RendererAPI>& TRAP::Graphics::RendererAPI::GetRenderer()
 {
+#ifdef TRAP_HEADLESS_MODE
+	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
+#endif
+
 	return s_Renderer;
 }
 

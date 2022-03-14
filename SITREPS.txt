@@ -2418,3 +2418,7 @@ SITREP 03/12/2022|22w10b1
     - RenderCommand Added SetResolution (only available in Headless mode) ~<5 mins
     - Renderer Added recreation of RenderTargets on resolution change (Headless mode) ~<10 mins
     - HeadlessTests now captures a screenshot before and after a resolution change ~<10 mins
+
+SITREP 03/14/2022|22w11a1
+    - Changed TRAP Engine version to 22w11a1(0.7.111)
+    - Headless Added assert in RendererAPI::GetRenderer() for RenderAPI::NONE ~<5 mins
