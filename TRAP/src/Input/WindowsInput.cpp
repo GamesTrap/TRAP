@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #define TRAP_BUILD_WIN32_MAPPINGS
 
+#include "Window/WindowingAPI.h"
+
 #include "Events/ControllerEvent.h"
 #include "ControllerMappings.h"
 
@@ -52,7 +54,7 @@ bool TRAP::Input::InitController()
 		return false;
 	}
 
-	if (!s_dinput8.Create || FAILED(s_dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION,
+	if (!s_dinput8.Create || FAILED(s_dinput8.Create(INTERNAL::WindowingAPI::GetWin32HInstance(), DIRECTINPUT_VERSION,
 														TRAP_IID_IDirectInput8W,
 														reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
 	{

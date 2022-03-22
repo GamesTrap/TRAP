@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Loewy
+Copyright (c) 2006-2022 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -67,7 +67,7 @@ BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10BuildOrGreaterWin32(const WORD bui
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Checks whether we are on at least Windows 10 Anniversary Update
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10AnniversaryUpdateOrGreaterWin32()
+BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10Version1607OrGreaterWin32()
 {
 	return IsWindows10BuildOrGreaterWin32(14393);
 }
@@ -75,7 +75,7 @@ BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10AnniversaryUpdateOrGreaterWin32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Checks whether we are on at least Windows 10 Creators Update
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10CreatorsUpdateOrGreaterWin32()
+BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10Version1703OrGreaterWin32()
 {
 	return IsWindows10BuildOrGreaterWin32(15063);
 }
@@ -169,67 +169,78 @@ std::wstring TRAP::INTERNAL::WindowingAPI::CreateWideStringFromUTF8StringWin32(c
 //Load necessary libraries (DLLs)
 bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 {
-	s_Data.User32.Instance = LoadLibraryA("user32.dll");
+	if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+	                       reinterpret_cast<const WCHAR*>(&s_Data), reinterpret_cast<HMODULE*>(&s_Data.Instance)))
+	{
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to retrieve own module handle");
+		return false;
+	}
+
+	s_Data.User32.Instance = static_cast<HINSTANCE>(PlatformLoadModule("user32.dll"));
 	if (!s_Data.User32.Instance)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to load user32.dll");
 		return false;
 	}
 
-	s_Data.User32.SetProcessDPIAware = reinterpret_cast<PFN_SetProcessDPIAware>(::GetProcAddress
+	s_Data.User32.SetProcessDPIAware = reinterpret_cast<PFN_SetProcessDPIAware>(PlatformGetModuleSymbol
 		(
 			s_Data.User32.Instance, "SetProcessDPIAware"
 		));
-	s_Data.User32.ChangeWindowMessageFilterEx = reinterpret_cast<PFN_ChangeWindowMessageFilterEx>(::GetProcAddress
+	s_Data.User32.ChangeWindowMessageFilterEx = reinterpret_cast<PFN_ChangeWindowMessageFilterEx>(PlatformGetModuleSymbol
 		(
 			s_Data.User32.Instance, "ChangeWindowMessageFilterEx"
 		));
-	s_Data.User32.EnableNonClientDPIScaling = reinterpret_cast<PFN_EnableNonClientDPIScaling>(::GetProcAddress
+	s_Data.User32.EnableNonClientDPIScaling = reinterpret_cast<PFN_EnableNonClientDPIScaling>(PlatformGetModuleSymbol
 		(
 			s_Data.User32.Instance, "EnableNonClientDpiScaling"
 		));
-	s_Data.User32.SetProcessDPIAwarenessContext = reinterpret_cast<PFN_SetProcessDPIAwarenessContext>(::GetProcAddress
+	s_Data.User32.SetProcessDPIAwarenessContext = reinterpret_cast<PFN_SetProcessDPIAwarenessContext>(PlatformGetModuleSymbol
 		(
 			s_Data.User32.Instance, "SetProcessDpiAwarenessContext"
 		));
-	s_Data.User32.GetDPIForWindow = reinterpret_cast<PFN_GetDPIForWindow>(::GetProcAddress(s_Data.User32.Instance,
+	s_Data.User32.GetDPIForWindow = reinterpret_cast<PFN_GetDPIForWindow>(PlatformGetModuleSymbol(s_Data.User32.Instance,
 																					       "GetDpiForWindow"));
-	s_Data.User32.AdjustWindowRectExForDPI = reinterpret_cast<PFN_AdjustWindowRectExForDPI>(::GetProcAddress
+	s_Data.User32.AdjustWindowRectExForDPI = reinterpret_cast<PFN_AdjustWindowRectExForDPI>(PlatformGetModuleSymbol
 		(
 			s_Data.User32.Instance, "AdjustWindowRectExForDpi"
 		));
+	s_Data.User32.GetSystemMetricsForDPI = reinterpret_cast<PFN_GetSystemMetricsForDPI>(PlatformGetModuleSymbol
+		(
+			s_Data.User32.Instance, "GetSystemMetricsForDpi"
+		));
 
-	s_Data.DWMAPI_.Instance = LoadLibraryA("dwmapi.dll");
+	s_Data.DWMAPI_.Instance = static_cast<HINSTANCE>(PlatformLoadModule("dwmapi.dll"));
 	if (s_Data.DWMAPI_.Instance)
 	{
-		s_Data.DWMAPI_.IsCompositionEnabled = reinterpret_cast<PFN_DwmIsCompositionEnabled>(::GetProcAddress
+		s_Data.DWMAPI_.IsCompositionEnabled = reinterpret_cast<PFN_DwmIsCompositionEnabled>(PlatformGetModuleSymbol
 			(
 				s_Data.DWMAPI_.Instance, "DwmIsCompositionEnabled"
 			));
-		s_Data.DWMAPI_.Flush = reinterpret_cast<PFN_DwmFlush>(::GetProcAddress(s_Data.DWMAPI_.Instance, "DwmFlush"));
-		s_Data.DWMAPI_.EnableBlurBehindWindow = reinterpret_cast<PFN_DwmEnableBlurBehindWindow>(::GetProcAddress
+		s_Data.DWMAPI_.Flush = reinterpret_cast<PFN_DwmFlush>(PlatformGetModuleSymbol(s_Data.DWMAPI_.Instance, "DwmFlush"));
+		s_Data.DWMAPI_.EnableBlurBehindWindow = reinterpret_cast<PFN_DwmEnableBlurBehindWindow>(PlatformGetModuleSymbol
 			(
 				s_Data.DWMAPI_.Instance, "DwmEnableBlurBehindWindow"
 			));
 	}
 
-	s_Data.SHCore.Instance = LoadLibraryA("shcore.dll");
+	s_Data.SHCore.Instance = static_cast<HINSTANCE>(PlatformLoadModule("shcore.dll"));
 	if (s_Data.SHCore.Instance)
 	{
-		s_Data.SHCore.SetProcessDPIAwareness = reinterpret_cast<PFN_SetProcessDPIAwareness>(::GetProcAddress
+		s_Data.SHCore.SetProcessDPIAwareness = reinterpret_cast<PFN_SetProcessDPIAwareness>(PlatformGetModuleSymbol
 			(
 				s_Data.SHCore.Instance, "SetProcessDpiAwareness"
 			));
-		s_Data.SHCore.GetDPIForMonitor = reinterpret_cast<PFN_GetDPIForMonitor>(::GetProcAddress
+		s_Data.SHCore.GetDPIForMonitor = reinterpret_cast<PFN_GetDPIForMonitor>(PlatformGetModuleSymbol
 			(
 				s_Data.SHCore.Instance, "GetDpiForMonitor"
 			));
 	}
 
-	s_Data.NTDLL.Instance = LoadLibraryA("ntdll.dll");
+	s_Data.NTDLL.Instance = static_cast<HINSTANCE>(PlatformLoadModule("ntdll.dll"));
 	if (s_Data.NTDLL.Instance)
 	{
-		s_Data.NTDLL.RtlVerifyVersionInfo = reinterpret_cast<PFN_RtlVerifyVersionInfo>(::GetProcAddress
+		s_Data.NTDLL.RtlVerifyVersionInfo = reinterpret_cast<PFN_RtlVerifyVersionInfo>(PlatformGetModuleSymbol
 			(
 				s_Data.NTDLL.Instance, "RtlVerifyVersionInfo"
 			));
@@ -252,16 +263,16 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 {
 	if (s_Data.User32.Instance)
-		FreeLibrary(s_Data.User32.Instance);
+		PlatformFreeModule(s_Data.User32.Instance);
 
 	if (s_Data.DWMAPI_.Instance)
-		FreeLibrary(s_Data.DWMAPI_.Instance);
+		PlatformFreeModule(s_Data.DWMAPI_.Instance);
 
 	if (s_Data.SHCore.Instance)
-		FreeLibrary(s_Data.SHCore.Instance);
+		PlatformFreeModule(s_Data.SHCore.Instance);
 
 	if (s_Data.NTDLL.Instance)
-		FreeLibrary(s_Data.NTDLL.Instance);
+		PlatformFreeModule(s_Data.NTDLL.Instance);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -316,7 +327,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 			virtualKey = virtualKeys[key - static_cast<uint32_t>(Input::Key::KP_0)];
 		}
 		else
-			virtualKey = MapVirtualKey(scanCode, MAPVK_VSC_TO_VK);
+			virtualKey = MapVirtualKeyW(scanCode, MAPVK_VSC_TO_VK);
 
 		int32_t length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(),
 		                           static_cast<int32_t>(chars.size()), 0);
@@ -362,7 +373,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		switch (uMsg)
 		{
 		case WM_NCCREATE:
-			if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+			if (IsWindows10Version1607OrGreaterWin32())
 				s_Data.User32.EnableNonClientDPIScaling(hWnd);
 			break;
 
@@ -549,6 +560,14 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			//HACK: Map the virtual key back to a usable scanCode
 			scanCode = MapVirtualKeyW(static_cast<UINT>(wParam), MAPVK_VK_TO_VSC);
 		}
+
+		//HACK: ALT+PrtSc has a different scanCode than just PrtSc
+		if(scanCode == 0x54)
+			scanCode = 0x137;
+
+		//HACK: CTRL+Pause has a different scanCode than just Pause
+		if(scanCode == 0x16)
+			scanCode = 0x45;
 
 		key = s_Data.KeyCodes[scanCode];
 
@@ -856,7 +875,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		if (windowPtr->Monitor)
 			break;
 
-		if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+		if (IsWindows10Version1607OrGreaterWin32())
 			DPI = s_Data.User32.GetDPIForWindow(windowPtr->Handle);
 
 		GetFullWindowSize(GetWindowStyle(windowPtr), GetWindowExStyle(windowPtr), 0, 0, xOffset, yOffset, DPI);
@@ -880,7 +899,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 			ZeroMemory(&mi, sizeof(mi));
 			mi.cbSize = sizeof(mi);
-			GetMonitorInfo(mh, &mi);
+			GetMonitorInfoW(mh, &mi);
 
 			mmi->ptMaxPosition.x = mi.rcWork.left - mi.rcMonitor.left;
 			mmi->ptMaxPosition.y = mi.rcWork.top - mi.rcMonitor.top;
@@ -914,7 +933,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	case WM_GETDPISCALEDSIZE:
 	{
 		//Adjust the window size to keep the content area size constant
-		if (IsWindows10CreatorsUpdateOrGreaterWin32())
+		if (IsWindows10Version1703OrGreaterWin32())
 		{
 			RECT source = { 0 }, target = { 0 };
 			SIZE* size = reinterpret_cast<SIZE*>(lParam);
@@ -941,7 +960,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 		//Only apply the suggested size if the OS is new enough to have
 		//sent a WM_GETDPISCALEDSIZE before this
-		if (IsWindows10CreatorsUpdateOrGreaterWin32())
+		if (IsWindows10Version1703OrGreaterWin32())
 		{
 			RECT windowArea, monitorArea;
 			GetWindowRect(windowPtr->Handle, &windowArea);
@@ -1017,12 +1036,12 @@ bool TRAP::INTERNAL::WindowingAPI::RegisterWindowClassWin32()
 	wc.cbSize = sizeof(wc);
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = static_cast<WNDPROC>(WindowProc);
-	wc.hInstance = GetModuleHandleW(nullptr);
+	wc.hInstance = s_Data.Instance;
 	wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
 	wc.lpszClassName = L"TRAP";
 
 	//Load user-provided icon if available
-	wc.hIcon = static_cast<HICON>(LoadImageW(GetModuleHandleW(nullptr), L"TRAP_ICON", IMAGE_ICON, 0, 0,
+	wc.hIcon = static_cast<HICON>(LoadImageW(s_Data.Instance, L"TRAP_ICON", IMAGE_ICON, 0, 0,
 		                                     LR_DEFAULTSIZE | LR_SHARED));
 	if (!wc.hIcon)
 	{
@@ -1045,7 +1064,7 @@ bool TRAP::INTERNAL::WindowingAPI::RegisterWindowClassWin32()
 //Unregisters the TRAP window class
 void TRAP::INTERNAL::WindowingAPI::UnregisterWindowClassWin32()
 {
-	UnregisterClassW(L"TRAP", GetModuleHandleW(nullptr));
+	UnregisterClassW(L"TRAP", s_Data.Instance);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1239,8 +1258,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 
 		//HACK: When mouse trails are enabled the cursor becomes invisible when
 		//      the OpenGL ICD switches to page flipping
-		SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
-		SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
+		SystemParametersInfoW(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
+		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0, nullptr, 0);
 	}
 
 	if (!window->Monitor->Window)
@@ -1285,7 +1304,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
 		SetThreadExecutionState(ES_CONTINUOUS);
 
 		//HACK: Restore mouse trail length saved in acquireMonitor
-		SystemParametersInfo(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0);
+		SystemParametersInfoW(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0);
 	}
 
 	window->Monitor->Window = nullptr;
@@ -1303,7 +1322,7 @@ void TRAP::INTERNAL::WindowingAPI::FitToMonitor(const InternalWindow* window)
 {
 	MONITORINFO mi = {};
 	mi.cbSize = sizeof(mi);
-	GetMonitorInfo(window->Monitor->Handle, &mi);
+	GetMonitorInfoW(window->Monitor->Handle, &mi);
 	::SetWindowPos(window->Handle, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
 	               mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
 		           SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOCOPYBITS);
@@ -1363,7 +1382,13 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 	UINT xDPI = 0, yDPI = 0;
 
 	if (IsWindows8Point1OrGreaterWin32())
-		s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI);
+	{
+		if(s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI) != S_OK)
+		{
+			InputError(Error::Platform_Error, "[WinAPI] Failed to query monitor DPI");
+			return;
+		}
+	}
 	else
 	{
 		HDC dc = GetDC(nullptr);
@@ -1454,7 +1479,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 
 	window->Handle = CreateWindowExW(exStyle, L"TRAP", wideTitle.data(), style, xPos, yPos, fullWidth, fullHeight,
 		                             nullptr /*No parent window*/, nullptr /*No window menu*/,
-									 GetModuleHandleW(nullptr),	nullptr);
+									 s_Data.Instance, nullptr);
 
 	if (!window->Handle)
 	{
@@ -1474,18 +1499,18 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 			WM_COPYGLOBALDATA, MSGFLT_ALLOW, nullptr);
 	}
 
-	//Adjust window rect to account for DPI scaling of the window frame and
-	//(if enabled) DPI scaling of the content area
-	//This cannot be done until we know what monitor the window was placed on
 	if (!window->Monitor)
 	{
 		RECT rect = { 0, 0, static_cast<LONG>(WNDConfig.Width), static_cast<LONG>(WNDConfig.Height) };
 		WINDOWPLACEMENT wp = { sizeof(wp) };
+		const HMONITOR mh = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
 
-		ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&rect.left));
-		ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&rect.right));
+		//Adjust window rect to account for DPI scaling of the window frame and
+		//(if enabled) DPI scaling of the content area.
+		//This cannot be done until we know what monitor the window was placed on.
+		//Only update the restored window rect as the window may be maximized
 
-		if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+		if (IsWindows10Version1607OrGreaterWin32())
 		{
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle,
 				s_Data.User32.GetDPIForWindow(window->Handle));
@@ -1493,14 +1518,87 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 		else
 			AdjustWindowRectEx(&rect, style, FALSE, exStyle);
 
-		//Only update the restored window rect as the window may be maximized
 		GetWindowPlacement(window->Handle, &wp);
+		OffsetRect(&rect,
+				   wp.rcNormalPosition.left - rect.left,
+				   wp.rcNormalPosition.top - rect.top);
 		wp.rcNormalPosition = rect;
 		wp.showCmd = SW_HIDE;
 		SetWindowPlacement(window->Handle, &wp);
+
+		//Adjust rect of maximized undecorated window, beacuse by default
+		//Windows will make such window cover the whole monitor instead of its workarea
+		if(WNDConfig.Maximized && !WNDConfig.Decorated)
+		{
+			MONITORINFO mi = { sizeof(mi) };
+			GetMonitorInfoW(mh, &mi);
+
+			::SetWindowPos(window->Handle, HWND_TOP,
+						   mi.rcWork.left, mi.rcWork.top,
+						   mi.rcWork.right - mi.rcWork.left,
+						   mi.rcWork.bottom - mi.rcWork.top,
+						   SWP_NOACTIVATE | SWP_NOZORDER);
+		}
 	}
 
+	PlatformGetWindowSize(window, window->Width, window->Height);
+
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::MaximizeWindowManually(const InternalWindow* window)
+{
+	RECT rect;
+	DWORD style;
+	MONITORINFO mi = {sizeof(mi)};
+
+	GetMonitorInfoW(MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST), &mi);
+
+	rect = mi.rcWork;
+
+	if(window->MaxWidth != -1 && window->MaxHeight != -1)
+	{
+		if(rect.right - rect.left > window->MaxWidth)
+			rect.right = rect.left + window->MaxWidth;
+		if(rect.bottom - rect.top > window->MaxHeight)
+			rect.bottom = rect.top + window->MaxHeight;
+	}
+
+	style = GetWindowLongW(window->Handle, GWL_STYLE);
+	style |= WS_MAXIMIZE;
+	SetWindowLongW(window->Handle, GWL_STYLE, style);
+
+	if(window->Decorated)
+	{
+		const DWORD exStyle = GetWindowLongW(window->Handle, GWL_EXSTYLE);
+
+		if(IsWindows10Version1607OrGreaterWin32())
+		{
+			const UINT dpi = s_Data.User32.GetDPIForWindow(window->Handle);
+			s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle, dpi);
+			OffsetRect(&rect, 0, s_Data.User32.GetSystemMetricsForDPI(SM_CYCAPTION, dpi));
+		}
+		else
+		{
+			AdjustWindowRectEx(&rect, style, FALSE, exStyle);
+			OffsetRect(&rect, 0, GetSystemMetrics(SM_CYCAPTION));
+		}
+
+		if(rect.bottom > mi.rcWork.bottom)
+			rect.bottom = mi.rcWork.bottom;
+	}
+
+	::SetWindowPos(window->Handle, HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+				   SWP_NOACTIVATE | SWP_NOZORDER | SWP_FRAMECHANGED);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+HINSTANCE TRAP::INTERNAL::WindowingAPI::GetWin32HInstance()
+{
+	return s_Data.Instance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1511,7 +1609,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 
 	s_Data.HelperWindowHandle = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW, L"TRAP", L"TRAP Message Window",
 		                                        WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 1, 1, nullptr, nullptr,
-		                                        GetModuleHandleW(nullptr), nullptr);
+		                                        s_Data.Instance, nullptr);
 
 	if (!s_Data.HelperWindowHandle)
 	{
@@ -1554,7 +1652,7 @@ void TRAP::INTERNAL::WindowingAPI::GetFullWindowSize(const DWORD style, const DW
 {
 	RECT rect = { 0, 0, contentWidth, contentHeight };
 
-	if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+	if (IsWindows10Version1607OrGreaterWin32())
 		s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle, dpi);
 	else
 		AdjustWindowRectEx(&rect, style, FALSE, exStyle);
@@ -1715,7 +1813,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* wind
 
 	GetClientRect(window->Handle, &rect);
 
-	if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+	if (IsWindows10Version1607OrGreaterWin32())
 		s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, GetWindowExStyle(window), s_Data.User32.GetDPIForWindow(window->Handle));
 	else
 		AdjustWindowRectEx(&rect, style, FALSE, GetWindowExStyle(window));
@@ -1773,7 +1871,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* wi
 {
 	RECT rect = { xPos, yPos, xPos, yPos };
 
-	if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+	if (IsWindows10Version1607OrGreaterWin32())
 	{
 		s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
 			                                   s_Data.User32.GetDPIForWindow(window->Handle));
@@ -1804,7 +1902,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		{
 			RECT rect = { xPos, yPos, xPos + width, yPos + height };
 
-			if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+			if (IsWindows10Version1607OrGreaterWin32())
 			{
 				s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE,
 				                                       GetWindowExStyle(window),
@@ -1843,7 +1941,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 
 		AcquireMonitor(window);
 
-		GetMonitorInfo(window->Monitor->Handle, &mi);
+		GetMonitorInfoW(window->Monitor->Handle, &mi);
 		::SetWindowPos(window->Handle, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
 		               mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, flags);
 	}
@@ -1868,7 +1966,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		else
 			after = HWND_NOTOPMOST;
 
-		if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+		if (IsWindows10Version1607OrGreaterWin32())
 		{
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
 				                                   s_Data.User32.GetDPIForWindow(window->Handle));
@@ -1996,7 +2094,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	CreateKeyTables();
 	UpdateKeyNamesWin32();
 
-	if (IsWindows10CreatorsUpdateOrGreaterWin32())
+	if (IsWindows10Version1703OrGreaterWin32())
 		s_Data.User32.SetProcessDPIAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	else if (IsWindows8Point1OrGreaterWin32())
 		s_Data.SHCore.SetProcessDPIAwareness(Process_DPI_Awareness::Process_Per_Monitor_DPI_Aware); //Process per monitor DPI aware
@@ -2302,8 +2400,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 		smallIcon = reinterpret_cast<HICON>(GetClassLongPtrW(window->Handle, GCLP_HICONSM));
 	}
 
-	SendMessage(window->Handle, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(bigIcon));
-	SendMessage(window->Handle, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(smallIcon));
+	SendMessageW(window->Handle, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(bigIcon));
+	SendMessageW(window->Handle, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(smallIcon));
 
 	if (window->BigIcon)
 		DestroyIcon(window->BigIcon);
@@ -2346,7 +2444,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 	{
 		RECT rect = { 0, 0, width, height };
 
-		if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+		if (IsWindows10Version1607OrGreaterWin32())
 		{
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
 				                                   s_Data.User32.GetDPIForWindow(window->Handle));
@@ -2731,7 +2829,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
 		nullptr,
 		0,
-		GetModuleHandle(nullptr),
+		s_Data.Instance,
 		window->Handle
 	};
 
@@ -2746,7 +2844,10 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* window)
 {
-	::ShowWindow(window->Handle, SW_MAXIMIZE);
+	if(IsWindowVisible(window->Handle))
+		::ShowWindow(window->Handle, SW_MAXIMIZE);
+	else
+		MaximizeWindowManually(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2907,7 +3008,6 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 	s_Data.KeyCodes[0x151] = Input::Key::Page_Down;
 	s_Data.KeyCodes[0x149] = Input::Key::Page_Up;
 	s_Data.KeyCodes[0x045] = Input::Key::Pause;
-	s_Data.KeyCodes[0x146] = Input::Key::Pause;
 	s_Data.KeyCodes[0x039] = Input::Key::Space;
 	s_Data.KeyCodes[0x00F] = Input::Key::Tab;
 	s_Data.KeyCodes[0x03A] = Input::Key::Caps_Lock;
@@ -2991,6 +3091,27 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow*
 void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window, const bool value)
 {
 	DragAcceptFiles(window->Handle, value);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void* TRAP::INTERNAL::WindowingAPI::PlatformLoadModule(const std::string& path)
+{
+	return LoadLibraryA(path.c_str());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformFreeModule(void* module)
+{
+	FreeLibrary(static_cast<HMODULE>(module));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void* TRAP::INTERNAL::WindowingAPI::PlatformGetModuleSymbol(void* module, const std::string& name)
+{
+	return ::GetProcAddress(static_cast<HMODULE>(module), name.c_str());
 }
 
 #endif

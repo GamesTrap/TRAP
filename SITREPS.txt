@@ -2428,3 +2428,8 @@ SITREP 03/14/2022|22w11a1
 SITREP 03/16/2022|22w11b1
     - Changed TRAP Engine version to 22w11b1(0.7.112)
     - Updated Dependencies ~<10 mins
+
+SITREP 03/22/2022|22w12a1
+    - Changed TRAP Engine version to 22w12a1(0.7.113)
+    - Updated WindowingAPI ~>45 mins
+

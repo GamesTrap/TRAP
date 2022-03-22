@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Loewy
+Copyright (c) 2006-2022 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -376,10 +376,14 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 {
 	Scope<InternalCursor> cursor;
 
-	TRAP_ASSERT(image.get(), "[Window] Image is nullptr!");
-
 	if(!image)
 		return nullptr;
+
+	if(image->GetWidth() <= 0 || image->GetHeight() <= 0)
+	{
+		InputError(Error::Invalid_Value, "[Cursor] Invalid image dimensions for cursor!");
+		return nullptr;
+	}
 
 	if (image->IsHDR())
 	{
@@ -470,6 +474,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 	if(!image)
 	{
 		PlatformSetWindowIcon(window, nullptr);
+		return;
+	}
+
+	if(image->GetWidth() <= 0 || image->GetHeight() <= 0)
+	{
+		InputError(Error::Invalid_Value, "[Window] Invalid image dimensions for window icon!");
 		return;
 	}
 

@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Loewy
+Copyright (c) 2006-2022 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -33,6 +33,11 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "WindowingAPI.h"
 #include "Application.h"
+
+//Action for EWMH client messages
+#define _NET_WM_STATE_REMOVE 0
+#define _NET_WM_STATE_ADD 1
+#define _NET_WM_STATE_TOGGLE 2
 
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
 int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* mi)
@@ -105,39 +110,118 @@ int32_t TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(Display*, XEvent* even
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Wait for data to arrive using select
-//This avoids blocking other threads via the per-display Xlib lock that also covers GLX functions
-bool TRAP::INTERNAL::WindowingAPI::WaitForEvent(double* timeout)
+//Wait for data to arrive on any of the specified file descriptors
+bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* fds, nfds_t count, double* timeout)
 {
-	fd_set fds;
-	const int32_t fd = ConnectionNumber(s_Data.display);
-	int32_t count = fd + 1;
-
 	while(true)
 	{
-		FD_ZERO(&fds);
-		FD_SET(fd, &fds);
-
 		if(timeout)
 		{
-			const long seconds = static_cast<long>(*timeout);
-			const long microSeconds = static_cast<long>((*timeout - seconds) * 1e6);
-			struct timeval tv = {seconds, microSeconds};
 			const uint64_t base = TRAP::Application::GetTime();
 
-			const int32_t result = select(count, &fds, nullptr, nullptr, &tv);
+#if defined(__linux__) || defined(__FreeBDS__) || defined(__OpenBSD__) || defined(__CYGWIN__)
+			const time_t seconds = static_cast<time_t>(*timeout);
+			const long nanoseconds = static_cast<long>((*timeout - seconds) * 1e9);
+			const timespec ts = {seconds, nanoseconds};
+			const int32_t result = ppoll(fds, count, &ts, nullptr);
+#elif defined(__NetBSD__)
+			const time_t seconds = static_cast<time_t>(*timeout);
+			const long nanoseconds = static_cast<long>((*timeout - seconds) * 1e9);
+			const timespec ts = {seconds, nanoseconds};
+			const int32_t result = pollts(fds, count, &ts, nullptr);
+#else
+			const int milliseconds = static_cast<int>(*timeout * 1e3);
+			const int32_t result = poll(fds, count, milliseconds);
+#endif
+
 			const int32_t error = errno;
 
 			*timeout -= (TRAP::Application::GetTime() - base) / 60.0;
 
 			if(result > 0)
 				return true;
-			if((result == -1 && error == EINTR) || *timeout <= 0.0)
+			else if(result == -1 && error != EINTR && error != EAGAIN)
+				return false;
+			else if(*timeout <= 0.0)
 				return false;
 		}
-		else if(select(count, &fds, nullptr, nullptr, nullptr) != -1 || errno != EINTR)
-			return true;
+		else
+		{
+			const int result = poll(fds, count, -1);
+			if(result > 0)
+				return true;
+			else if(result == -1 && errno != EINTR && errno != EAGAIN)
+				return false;
+		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* timeout)
+{
+	pollfd fd = {ConnectionNumber(s_Data.display), POLLIN, 0};
+
+	while(!s_Data.XLIB.Pending(s_Data.display))
+	{
+		if(!WaitForData(&fd, 1, timeout))
+			return false;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
+{
+	while(true)
+	{
+		const char byte = 0;
+		const int32_t result = write(s_Data.EmptyEventPipe[1], &byte, 1);
+		if(result == 1 || (result == -1 && errno != EINTR))
+			break;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
+{
+	while(true)
+	{
+		std::array<char, 64> dummy{};
+		const int32_t result = read(s_Data.EmptyEventPipe[0], dummy.data(), dummy.size());
+		if(result == -1 && errno != EINTR)
+			break;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::CreateEmptyEventPipe()
+{
+	if(pipe(s_Data.EmptyEventPipe.data()) != 0)
+	{
+		InputError(Error::Platform_Error, "X11: Failed to create empty event pipe: " + std::string(strerror(errno)));
+		return false;
+	}
+
+	for(int& fd : s_Data.EmptyEventPipe)
+	{
+		const int sf = fcntl(fd, F_GETFL, 0);
+		const int df = fcntl(fd, F_GETFD, 0);
+
+		if(sf == -1 || df == -1 ||
+		   fcntl(fd, F_SETFL, sf | O_NONBLOCK) == -1 ||
+		   fcntl(fd, F_SETFD, df | FD_CLOEXEC) == -1)
+		{
+			InputError(Error::Platform_Error, "X11: Failed to set flags for empty event pipe: " + std::string(strerror(errno)));
+			return false;
+		}
+	}
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -216,7 +300,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForVisibilityNotify(InternalWindow* windo
 
 	while(!s_Data.XLIB.CheckTypedWindowEvent(s_Data.display, window->Handle, VisibilityNotify, &dummy))
 	{
-		if(!WaitForEvent(&timeout))
+		if(!WaitForX11Event(&timeout))
 			return false;
 	}
 
@@ -357,14 +441,16 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 {
 #if defined(__CYGWIN__)
-	s_Data.XI.Handle = dlopen("libXi-6.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XI.Handle = PlatformLoadModule("libXi-6.so");
+#elif defined (__OpenBSD__) || defined(__NetBSD__)
+	s_Data.XI.Handle = PlatformLoadModule("libXi.so");
 #else
-	s_Data.XI.Handle = dlopen("libXi.so.6", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XI.Handle = PlatformLoadModule("libXi.so.6");
 #endif
 	if(s_Data.XI.Handle)
 	{
-		s_Data.XI.QueryVersion = reinterpret_cast<PFN_XIQueryVersion>(dlsym(s_Data.XI.Handle, "XIQueryVersion"));
-		s_Data.XI.SelectEvents = reinterpret_cast<PFN_XISelectEvents>(dlsym(s_Data.XI.Handle, "XISelectEvents"));
+		s_Data.XI.QueryVersion = reinterpret_cast<PFN_XIQueryVersion>(PlatformGetModuleSymbol(s_Data.XI.Handle, "XIQueryVersion"));
+		s_Data.XI.SelectEvents = reinterpret_cast<PFN_XISelectEvents>(PlatformGetModuleSymbol(s_Data.XI.Handle, "XISelectEvents"));
 
 		if(s_Data.XLIB.QueryExtension(s_Data.display,
 		                              "XInputExtension",
@@ -381,39 +467,41 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.RandR.Handle = dlopen("libXrandr-2.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.RandR.Handle = PlatformLoadModule("libXrandr-2.so");
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+	s_Data.RandR.Handle = PlatformLoadModule("libXrandr.so");
 #else
-	s_Data.RandR.Handle = dlopen("libXrandr.so.2", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.RandR.Handle = PlatformLoadModule("libXrandr.so.2");
 #endif
 	if(s_Data.RandR.Handle)
 	{
-		s_Data.RandR.FreeCrtcInfo = reinterpret_cast<PFN_XRRFreeCrtcInfo>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.FreeCrtcInfo = reinterpret_cast<PFN_XRRFreeCrtcInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                        "XRRFreeCrtcInfo"));
-		s_Data.RandR.FreeOutputInfo = reinterpret_cast<PFN_XRRFreeOutputInfo>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.FreeOutputInfo = reinterpret_cast<PFN_XRRFreeOutputInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                            "XRRFreeOutputInfo"));
-		s_Data.RandR.FreeScreenResources = reinterpret_cast<PFN_XRRFreeScreenResources>(dlsym
+		s_Data.RandR.FreeScreenResources = reinterpret_cast<PFN_XRRFreeScreenResources>(PlatformGetModuleSymbol
 			(
 				s_Data.RandR.Handle, "XRRFreeScreenResources"
 			));
-		s_Data.RandR.GetCrtcInfo = reinterpret_cast<PFN_XRRGetCrtcInfo>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.GetCrtcInfo = reinterpret_cast<PFN_XRRGetCrtcInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                      "XRRGetCrtcInfo"));
-		s_Data.RandR.GetOutputInfo = reinterpret_cast<PFN_XRRGetOutputInfo>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.GetOutputInfo = reinterpret_cast<PFN_XRRGetOutputInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                          "XRRGetOutputInfo"));
-		s_Data.RandR.GetOutputPrimary = reinterpret_cast<PFN_XRRGetOutputPrimary>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.GetOutputPrimary = reinterpret_cast<PFN_XRRGetOutputPrimary>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                                "XRRGetOutputPrimary"));
-		s_Data.RandR.GetScreenResourcesCurrent = reinterpret_cast<PFN_XRRGetScreenResourcesCurrent>(dlsym
+		s_Data.RandR.GetScreenResourcesCurrent = reinterpret_cast<PFN_XRRGetScreenResourcesCurrent>(PlatformGetModuleSymbol
 			(
 				s_Data.RandR.Handle, "XRRGetScreenResourcesCurrent"
 			));
-		s_Data.RandR.QueryExtension = reinterpret_cast<PFN_XRRQueryExtension>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.QueryExtension = reinterpret_cast<PFN_XRRQueryExtension>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                            "XRRQueryExtension"));
-		s_Data.RandR.QueryVersion = reinterpret_cast<PFN_XRRQueryVersion>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.QueryVersion = reinterpret_cast<PFN_XRRQueryVersion>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                        "XRRQueryVersion"));
-		s_Data.RandR.SelectInput = reinterpret_cast<PFN_XRRSelectInput>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.SelectInput = reinterpret_cast<PFN_XRRSelectInput>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                      "XRRSelectInput"));
-		s_Data.RandR.SetCrtcConfig = reinterpret_cast<PFN_XRRSetCrtcConfig>(dlsym(s_Data.RandR.Handle,
+		s_Data.RandR.SetCrtcConfig = reinterpret_cast<PFN_XRRSetCrtcConfig>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
 		                                                                          "XRRSetCrtcConfig"));
-		s_Data.RandR.UpdateConfiguration = reinterpret_cast<PFN_XRRUpdateConfiguration>(dlsym
+		s_Data.RandR.UpdateConfiguration = reinterpret_cast<PFN_XRRUpdateConfiguration>(PlatformGetModuleSymbol
 			(
 				s_Data.RandR.Handle, "XRRUpdateConfiguration"
 			));
@@ -449,44 +537,48 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 		s_Data.RandR.SelectInput(s_Data.display, s_Data.Root, RROutputChangeNotifyMask);
 
 #if defined(__CYGWIN__)
-	s_Data.XCursor.Handle = dlopen("libXcursor-1.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XCursor.Handle = PlatformLoadModule("libXcursor-1.so");
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+	s_Data.XCursor.Handle = PlatformLoadModule("libXcursor.so");
 #else
-	s_Data.XCursor.Handle = dlopen("libXcursor.so.1", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XCursor.Handle = PlatformLoadModule("libXcursor.so.1");
 #endif
 	if(s_Data.XCursor.Handle)
 	{
-		s_Data.XCursor.ImageCreate = reinterpret_cast<PFN_XcursorImageCreate>(dlsym(s_Data.XCursor.Handle,
+		s_Data.XCursor.ImageCreate = reinterpret_cast<PFN_XcursorImageCreate>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
 		                                                                            "XcursorImageCreate"));
-		s_Data.XCursor.ImageDestroy = reinterpret_cast<PFN_XcursorImageDestroy>(dlsym(s_Data.XCursor.Handle,
+		s_Data.XCursor.ImageDestroy = reinterpret_cast<PFN_XcursorImageDestroy>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
 		                                                                              "XcursorImageDestroy"));
-		s_Data.XCursor.ImageLoadCursor = reinterpret_cast<PFN_XcursorImageLoadCursor>(dlsym
+		s_Data.XCursor.ImageLoadCursor = reinterpret_cast<PFN_XcursorImageLoadCursor>(PlatformGetModuleSymbol
 			(
 				s_Data.XCursor.Handle, "XcursorImageLoadCursor"
 			));
-		s_Data.XCursor.GetTheme = reinterpret_cast<PFN_XcursorGetTheme>(dlsym(s_Data.XCursor.Handle,
+		s_Data.XCursor.GetTheme = reinterpret_cast<PFN_XcursorGetTheme>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
 													                          "XcursorGetTheme"));
-		s_Data.XCursor.GetDefaultSize = reinterpret_cast<PFN_XcursorGetDefaultSize>(dlsym(s_Data.XCursor.Handle,
+		s_Data.XCursor.GetDefaultSize = reinterpret_cast<PFN_XcursorGetDefaultSize>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
 		                                                                                  "XcursorGetDefaultSize"));
-		s_Data.XCursor.LibraryLoadImage = reinterpret_cast<PFN_XcursorLibraryLoadImage>(dlsym
+		s_Data.XCursor.LibraryLoadImage = reinterpret_cast<PFN_XcursorLibraryLoadImage>(PlatformGetModuleSymbol
 			(
 				s_Data.XCursor.Handle, "XcursorLibraryLoadImage"
 			));
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.Xinerama.Handle = dlopen("libXinerama-1.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.Xinerama.Handle = PlatformLoadModule("libXinerama-1.so");
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+	s_Data.Xinerama.Handle = PlatformLoadModule("libXinerama.so");
 #else
-	s_Data.Xinerama.Handle = dlopen("libXinerama.so.1", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.Xinerama.Handle = PlatformLoadModule("libXinerama.so.1");
 #endif
 	if(s_Data.Xinerama.Handle)
 	{
-		s_Data.Xinerama.IsActive = reinterpret_cast<PFN_XineramaIsActive>(dlsym(s_Data.Xinerama.Handle,
+		s_Data.Xinerama.IsActive = reinterpret_cast<PFN_XineramaIsActive>(PlatformGetModuleSymbol(s_Data.Xinerama.Handle,
 		                                                                        "XineramaIsActive"));
-		s_Data.Xinerama.QueryExtension = reinterpret_cast<PFN_XineramaQueryExtension>(dlsym
+		s_Data.Xinerama.QueryExtension = reinterpret_cast<PFN_XineramaQueryExtension>(PlatformGetModuleSymbol
 			(
 				s_Data.Xinerama.Handle, "XineramaQueryExtension"
 			));
-		s_Data.Xinerama.QueryScreens = reinterpret_cast<PFN_XineramaQueryScreens>(dlsym(s_Data.Xinerama.Handle,
+		s_Data.Xinerama.QueryScreens = reinterpret_cast<PFN_XineramaQueryScreens>(PlatformGetModuleSymbol(s_Data.Xinerama.Handle,
 		                                                                                "XineramaQueryScreens"));
 
 		if(s_Data.Xinerama.QueryExtension(s_Data.display, &s_Data.Xinerama.Major, &s_Data.Xinerama.Minor))
@@ -525,26 +617,30 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.XCB.Handle = dlopen("libX11-xcb-1.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XCB.Handle = PlatformLoadModule("libX11-xcb-1.so");
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+	s_Data.XCB.Handle = PlatformLoadModule("libX11-xcb.so");
 #else
-	s_Data.XCB.Handle = dlopen("libX11-xcb.so.1", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XCB.Handle = PlatformLoadModule("libX11-xcb.so.1");
 #endif
 	if(s_Data.XCB.Handle)
-		s_Data.XCB.GetXCBConnection = reinterpret_cast<PFN_XGetXCBConnection>(dlsym(s_Data.XCB.Handle,
+		s_Data.XCB.GetXCBConnection = reinterpret_cast<PFN_XGetXCBConnection>(PlatformGetModuleSymbol(s_Data.XCB.Handle,
 		                                                                            "XGetXCBConnection"));
 
 #if defined(__CYGWIN__)
-	s_Data.XRender.Handle = dlopen("libXrender-1.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XRender.Handle = PlatformLoadModule("libXrender-1.so");
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+	s_Data.XRender.Handle = PlatformLoadModule("libXrender.so");
 #else
-	s_Data.XRender.Handle = dlopen("libXrender.so.1", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XRender.Handle = PlatformLoadModule("libXrender.so.1");
 #endif
 	if(s_Data.XRender.Handle)
 	{
-		s_Data.XRender.QueryExtension = reinterpret_cast<PFN_XRenderQueryExtension>(dlsym(s_Data.XRender.Handle,
+		s_Data.XRender.QueryExtension = reinterpret_cast<PFN_XRenderQueryExtension>(PlatformGetModuleSymbol(s_Data.XRender.Handle,
 		                                                                                  "XRenderQueryExtension"));
-		s_Data.XRender.QueryVersion = reinterpret_cast<PFN_XRenderQueryVersion>(dlsym(s_Data.XRender.Handle,
+		s_Data.XRender.QueryVersion = reinterpret_cast<PFN_XRenderQueryVersion>(PlatformGetModuleSymbol(s_Data.XRender.Handle,
 		                                                                              "XRenderQueryVersion"));
-		s_Data.XRender.FindVisualFormat = reinterpret_cast<PFN_XRenderFindVisualFormat>(dlsym
+		s_Data.XRender.FindVisualFormat = reinterpret_cast<PFN_XRenderFindVisualFormat>(PlatformGetModuleSymbol
 			(
 				s_Data.XRender.Handle, "XRenderFindVisualFormat"
 			));
@@ -557,19 +653,21 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.XShape.Handle = dlopen("libXext-6.so", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XShape.Handle = PlatformLoadModule("libXext-6.so");
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+	s_Data.XShape.Handle = PlatformLoadModule("libXext.so");
 #else
-	s_Data.XShape.Handle = dlopen("libXext.so.6", RTLD_LAZY | RTLD_LOCAL);
+	s_Data.XShape.Handle = PlatformLoadModule("libXext.so.6");
 #endif
 	if(s_Data.XShape.Handle)
 	{
-		s_Data.XShape.QueryExtension = reinterpret_cast<PFN_XShapeQueryExtension>(dlsym(s_Data.XShape.Handle,
+		s_Data.XShape.QueryExtension = reinterpret_cast<PFN_XShapeQueryExtension>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
 		                                                                                "XShapeQueryExtension"));
-		s_Data.XShape.CombineRegion = reinterpret_cast<PFN_XShapeCombineRegion>(dlsym(s_Data.XShape.Handle,
+		s_Data.XShape.CombineRegion = reinterpret_cast<PFN_XShapeCombineRegion>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
 		                                                                              "XShapeCombineRegion"));
-		s_Data.XShape.CombineMask = reinterpret_cast<PFN_XShapeCombineMask>(dlsym(s_Data.XShape.Handle,
+		s_Data.XShape.CombineMask = reinterpret_cast<PFN_XShapeCombineMask>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
 		                                                                          "XShapeCombineMask"));
-		s_Data.XShape.QueryVersion = reinterpret_cast<PFN_XShapeQueryVersion>(dlsym(s_Data.XShape.Handle,
+		s_Data.XShape.QueryVersion = reinterpret_cast<PFN_XShapeQueryVersion>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
 		                                                                            "XShapeQueryVersion"));
 
 		if(s_Data.XShape.QueryExtension(s_Data.display, &s_Data.XShape.ErrorBase, &s_Data.XShape.EventBase))
@@ -1100,7 +1198,7 @@ void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 			}
 		}
 
-		WaitForEvent(nullptr);
+		WaitForX11Event(nullptr);
 	}
 }
 
@@ -1654,7 +1752,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 
 		while(!s_Data.XLIB.CheckTypedWindowEvent(s_Data.display, s_Data.HelperWindowHandle, SelectionNotify,
 		      &notification))
-			WaitForEvent(nullptr);
+			WaitForX11Event(nullptr);
 
 		if(notification.xselection.property == 0)
 			continue;
@@ -1676,7 +1774,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 			{
 				while(!s_Data.XLIB.CheckIfEvent(s_Data.display, &dummy, IsSelPropNewValueNotify,
 				                                reinterpret_cast<XPointer>(&notification)))
-					WaitForEvent(nullptr);
+					WaitForX11Event(nullptr);
 
 				s_Data.XLIB.Free(data);
 				s_Data.XLIB.GetWindowProperty(s_Data.display, notification.xselection.requestor,
@@ -1727,7 +1825,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Convert XKB KeySym to Unicode
-long TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(uint32_t keySym)
+uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(uint32_t keySym)
 {
 	int32_t min = 0;
 	int32_t max = KeySymTab.size() - 1;
@@ -1757,7 +1855,7 @@ long TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(uint32_t keySym)
 	}
 
 	//No matching Unicode value found
-	return -1;
+	return 0xFFFFFFFFu;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2010,9 +2108,11 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 #endif
 
 	#if defined(__CYGWIN__)
-		s_Data.XLIB.Handle = dlopen("libX11-6.so", RTLD_LAZY | RTLD_LOCAL);
+		s_Data.XLIB.Handle = PlatformLoadModule("libX11-6.so");
+	#elif defined(__OpenBSD__) || defined(__NetBSD__)
+		s_Data.XLIB.Handle = PlatformLoadModule("libX11.so");
 	#else
-        s_Data.XLIB.Handle = dlopen("libX11.so.6", RTLD_LAZY | RTLD_LOCAL);
+        s_Data.XLIB.Handle = PlatformLoadModule("libX11.so.6");
 	#endif
 
 	if(!s_Data.XLIB.Handle)
@@ -2021,151 +2121,151 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 		return false;
 	}
 
-	s_Data.XLIB.AllocClassHint = reinterpret_cast<PFN_XAllocClassHint>(dlsym(s_Data.XLIB.Handle, "XAllocClassHint"));
-	s_Data.XLIB.AllocSizeHints = reinterpret_cast<PFN_XAllocSizeHints>(dlsym(s_Data.XLIB.Handle, "XAllocSizeHints"));
-	s_Data.XLIB.AllocWMHints = reinterpret_cast<PFN_XAllocWMHints>(dlsym(s_Data.XLIB.Handle, "XAllocWMHints"));
-	s_Data.XLIB.ChangeProperty = reinterpret_cast<PFN_XChangeProperty>(dlsym(s_Data.XLIB.Handle, "XChangeProperty"));
-	s_Data.XLIB.ChangeWindowAttributes = reinterpret_cast<PFN_XChangeWindowAttributes>(dlsym
+	s_Data.XLIB.AllocClassHint = reinterpret_cast<PFN_XAllocClassHint>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XAllocClassHint"));
+	s_Data.XLIB.AllocSizeHints = reinterpret_cast<PFN_XAllocSizeHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XAllocSizeHints"));
+	s_Data.XLIB.AllocWMHints = reinterpret_cast<PFN_XAllocWMHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XAllocWMHints"));
+	s_Data.XLIB.ChangeProperty = reinterpret_cast<PFN_XChangeProperty>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XChangeProperty"));
+	s_Data.XLIB.ChangeWindowAttributes = reinterpret_cast<PFN_XChangeWindowAttributes>(PlatformGetModuleSymbol
 		(
 			s_Data.XLIB.Handle, "XChangeWindowAttributes"
 		));
-	s_Data.XLIB.CheckIfEvent = reinterpret_cast<PFN_XCheckIfEvent>(dlsym(s_Data.XLIB.Handle, "XCheckIfEvent"));
-	s_Data.XLIB.CheckTypedWindowEvent = reinterpret_cast<PFN_XCheckTypedWindowEvent>(dlsym
+	s_Data.XLIB.CheckIfEvent = reinterpret_cast<PFN_XCheckIfEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCheckIfEvent"));
+	s_Data.XLIB.CheckTypedWindowEvent = reinterpret_cast<PFN_XCheckTypedWindowEvent>(PlatformGetModuleSymbol
 		(
 			s_Data.XLIB.Handle, "XCheckTypedWindowEvent"
 		));
-	s_Data.XLIB.CloseDisplay = reinterpret_cast<PFN_XCloseDisplay>(dlsym(s_Data.XLIB.Handle, "XCloseDisplay"));
-	s_Data.XLIB.CloseIM = reinterpret_cast<PFN_XCloseIM>(dlsym(s_Data.XLIB.Handle, "XCloseIM"));
-	s_Data.XLIB.ConvertSelection = reinterpret_cast<PFN_XConvertSelection>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.CloseDisplay = reinterpret_cast<PFN_XCloseDisplay>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCloseDisplay"));
+	s_Data.XLIB.CloseIM = reinterpret_cast<PFN_XCloseIM>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCloseIM"));
+	s_Data.XLIB.ConvertSelection = reinterpret_cast<PFN_XConvertSelection>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                             "XConvertSelection"));
-	s_Data.XLIB.CreateColormap = reinterpret_cast<PFN_XCreateColormap>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.CreateColormap = reinterpret_cast<PFN_XCreateColormap>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                         "XCreateColormap"));
-	s_Data.XLIB.CreateFontCursor = reinterpret_cast<PFN_XCreateFontCursor>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.CreateFontCursor = reinterpret_cast<PFN_XCreateFontCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                             "XCreateFontCursor"));
-	s_Data.XLIB.CreateIC = reinterpret_cast<PFN_XCreateIC>(dlsym(s_Data.XLIB.Handle,"XCreateIC"));
-	s_Data.XLIB.CreateWindow = reinterpret_cast<PFN_XCreateWindow>(dlsym(s_Data.XLIB.Handle, "XCreateWindow"));
-	s_Data.XLIB.DefineCursor = reinterpret_cast<PFN_XDefineCursor>(dlsym(s_Data.XLIB.Handle, "XDefineCursor"));
-	s_Data.XLIB.DeleteContext = reinterpret_cast<PFN_XDeleteContext>(dlsym(s_Data.XLIB.Handle, "XDeleteContext"));
-	s_Data.XLIB.DeleteProperty = reinterpret_cast<PFN_XDeleteProperty>(dlsym(s_Data.XLIB.Handle, "XDeleteProperty"));
-	s_Data.XLIB.DestroyIC = reinterpret_cast<PFN_XDestroyIC>(dlsym(s_Data.XLIB.Handle, "XDestroyIC"));
-	s_Data.XLIB.DestroyWindow = reinterpret_cast<PFN_XDestroyWindow>(dlsym(s_Data.XLIB.Handle, "XDestroyWindow"));
-	s_Data.XLIB.DisplayKeycodes = reinterpret_cast<PFN_XDisplayKeycodes>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.CreateIC = reinterpret_cast<PFN_XCreateIC>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,"XCreateIC"));
+	s_Data.XLIB.CreateWindow = reinterpret_cast<PFN_XCreateWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCreateWindow"));
+	s_Data.XLIB.DefineCursor = reinterpret_cast<PFN_XDefineCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDefineCursor"));
+	s_Data.XLIB.DeleteContext = reinterpret_cast<PFN_XDeleteContext>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDeleteContext"));
+	s_Data.XLIB.DeleteProperty = reinterpret_cast<PFN_XDeleteProperty>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDeleteProperty"));
+	s_Data.XLIB.DestroyIC = reinterpret_cast<PFN_XDestroyIC>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDestroyIC"));
+	s_Data.XLIB.DestroyWindow = reinterpret_cast<PFN_XDestroyWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDestroyWindow"));
+	s_Data.XLIB.DisplayKeycodes = reinterpret_cast<PFN_XDisplayKeycodes>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                           "XDisplayKeycodes"));
-	s_Data.XLIB.EventsQueued = reinterpret_cast<PFN_XEventsQueued>(dlsym(s_Data.XLIB.Handle, "XEventsQueued"));
-	s_Data.XLIB.FilterEvent = reinterpret_cast<PFN_XFilterEvent>(dlsym(s_Data.XLIB.Handle, "XFilterEvent"));
-	s_Data.XLIB.FindContext = reinterpret_cast<PFN_XFindContext>(dlsym(s_Data.XLIB.Handle, "XFindContext"));
-	s_Data.XLIB.Flush = reinterpret_cast<PFN_XFlush>(dlsym(s_Data.XLIB.Handle, "XFlush"));
-	s_Data.XLIB.Free = reinterpret_cast<PFN_XFree>(dlsym(s_Data.XLIB.Handle, "XFree"));
-	s_Data.XLIB.FreeColormap = reinterpret_cast<PFN_XFreeColormap>(dlsym(s_Data.XLIB.Handle, "XFreeColormap"));
-	s_Data.XLIB.FreeCursor = reinterpret_cast<PFN_XFreeCursor>(dlsym(s_Data.XLIB.Handle, "XFreeCursor"));
-	s_Data.XLIB.FreeEventData = reinterpret_cast<PFN_XFreeEventData>(dlsym(s_Data.XLIB.Handle, "XFreeEventData"));
-	s_Data.XLIB.GetAtomName = reinterpret_cast<PFN_XGetAtomName>(dlsym(s_Data.XLIB.Handle, "XGetAtomName"));
-	s_Data.XLIB.GetErrorText = reinterpret_cast<PFN_XGetErrorText>(dlsym(s_Data.XLIB.Handle, "XGetErrorText"));
-	s_Data.XLIB.GetEventData = reinterpret_cast<PFN_XGetEventData>(dlsym(s_Data.XLIB.Handle, "XGetEventData"));
-	s_Data.XLIB.GetICValues = reinterpret_cast<PFN_XGetICValues>(dlsym(s_Data.XLIB.Handle, "XGetICValues"));
-	s_Data.XLIB.GetIMValues = reinterpret_cast<PFN_XGetIMValues>(dlsym(s_Data.XLIB.Handle, "XGetIMValues"));
-	s_Data.XLIB.GetInputFocus = reinterpret_cast<PFN_XGetInputFocus>(dlsym(s_Data.XLIB.Handle, "XGetInputFocus"));
-	s_Data.XLIB.GetKeyboardMapping = reinterpret_cast<PFN_XGetKeyboardMapping>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.EventsQueued = reinterpret_cast<PFN_XEventsQueued>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XEventsQueued"));
+	s_Data.XLIB.FilterEvent = reinterpret_cast<PFN_XFilterEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFilterEvent"));
+	s_Data.XLIB.FindContext = reinterpret_cast<PFN_XFindContext>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFindContext"));
+	s_Data.XLIB.Flush = reinterpret_cast<PFN_XFlush>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFlush"));
+	s_Data.XLIB.Free = reinterpret_cast<PFN_XFree>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFree"));
+	s_Data.XLIB.FreeColormap = reinterpret_cast<PFN_XFreeColormap>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFreeColormap"));
+	s_Data.XLIB.FreeCursor = reinterpret_cast<PFN_XFreeCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFreeCursor"));
+	s_Data.XLIB.FreeEventData = reinterpret_cast<PFN_XFreeEventData>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFreeEventData"));
+	s_Data.XLIB.GetAtomName = reinterpret_cast<PFN_XGetAtomName>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetAtomName"));
+	s_Data.XLIB.GetErrorText = reinterpret_cast<PFN_XGetErrorText>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetErrorText"));
+	s_Data.XLIB.GetEventData = reinterpret_cast<PFN_XGetEventData>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetEventData"));
+	s_Data.XLIB.GetICValues = reinterpret_cast<PFN_XGetICValues>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetICValues"));
+	s_Data.XLIB.GetIMValues = reinterpret_cast<PFN_XGetIMValues>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetIMValues"));
+	s_Data.XLIB.GetInputFocus = reinterpret_cast<PFN_XGetInputFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetInputFocus"));
+	s_Data.XLIB.GetKeyboardMapping = reinterpret_cast<PFN_XGetKeyboardMapping>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                 "XGetKeyboardMapping"));
-	s_Data.XLIB.GetScreenSaver = reinterpret_cast<PFN_XGetScreenSaver>(dlsym(s_Data.XLIB.Handle, "XGetScreenSaver"));
-	s_Data.XLIB.GetSelectionOwner = reinterpret_cast<PFN_XGetSelectionOwner>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.GetScreenSaver = reinterpret_cast<PFN_XGetScreenSaver>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetScreenSaver"));
+	s_Data.XLIB.GetSelectionOwner = reinterpret_cast<PFN_XGetSelectionOwner>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                               "XGetSelectionOwner"));
-	s_Data.XLIB.GetVisualInfo = reinterpret_cast<PFN_XGetVisualInfo>(dlsym(s_Data.XLIB.Handle, "XGetVisualInfo"));
-	s_Data.XLIB.GetWMNormalHints = reinterpret_cast<PFN_XGetWMNormalHints>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.GetVisualInfo = reinterpret_cast<PFN_XGetVisualInfo>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetVisualInfo"));
+	s_Data.XLIB.GetWMNormalHints = reinterpret_cast<PFN_XGetWMNormalHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                             "XGetWMNormalHints"));
-	s_Data.XLIB.GetWindowAttributes = reinterpret_cast<PFN_XGetWindowAttributes>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.GetWindowAttributes = reinterpret_cast<PFN_XGetWindowAttributes>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                   "XGetWindowAttributes"));
-	s_Data.XLIB.GetWindowProperty = reinterpret_cast<PFN_XGetWindowProperty>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.GetWindowProperty = reinterpret_cast<PFN_XGetWindowProperty>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                               "XGetWindowProperty"));
-	s_Data.XLIB.GrabPointer = reinterpret_cast<PFN_XGrabPointer>(dlsym(s_Data.XLIB.Handle, "XGrabPointer"));
-	s_Data.XLIB.IconifyWindow = reinterpret_cast<PFN_XIconifyWindow>(dlsym(s_Data.XLIB.Handle, "XIconifyWindow"));
-	s_Data.XLIB.InitThreads = reinterpret_cast<PFN_XInitThreads>(dlsym(s_Data.XLIB.Handle, "XInitThreads"));
-	s_Data.XLIB.InternAtom = reinterpret_cast<PFN_XInternAtom>(dlsym(s_Data.XLIB.Handle, "XInternAtom"));
-	s_Data.XLIB.LookupString = reinterpret_cast<PFN_XLookupString>(dlsym(s_Data.XLIB.Handle, "XLookupString"));
-	s_Data.XLIB.MapRaised = reinterpret_cast<PFN_XMapRaised>(dlsym(s_Data.XLIB.Handle, "XMapRaised"));
-	s_Data.XLIB.MapWindow = reinterpret_cast<PFN_XMapWindow>(dlsym(s_Data.XLIB.Handle, "XMapWindow"));
-	s_Data.XLIB.MoveResizeWindow = reinterpret_cast<PFN_XMoveResizeWindow>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.GrabPointer = reinterpret_cast<PFN_XGrabPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGrabPointer"));
+	s_Data.XLIB.IconifyWindow = reinterpret_cast<PFN_XIconifyWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XIconifyWindow"));
+	s_Data.XLIB.InitThreads = reinterpret_cast<PFN_XInitThreads>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XInitThreads"));
+	s_Data.XLIB.InternAtom = reinterpret_cast<PFN_XInternAtom>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XInternAtom"));
+	s_Data.XLIB.LookupString = reinterpret_cast<PFN_XLookupString>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XLookupString"));
+	s_Data.XLIB.MapRaised = reinterpret_cast<PFN_XMapRaised>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XMapRaised"));
+	s_Data.XLIB.MapWindow = reinterpret_cast<PFN_XMapWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XMapWindow"));
+	s_Data.XLIB.MoveResizeWindow = reinterpret_cast<PFN_XMoveResizeWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                             "XMoveResizeWindow"));
-	s_Data.XLIB.MoveWindow = reinterpret_cast<PFN_XMoveWindow>(dlsym(s_Data.XLIB.Handle, "XMoveWindow"));
-	s_Data.XLIB.NextEvent = reinterpret_cast<PFN_XNextEvent>(dlsym(s_Data.XLIB.Handle, "XNextEvent"));
-	s_Data.XLIB.OpenDisplay = reinterpret_cast<PFN_XOpenDisplay>(dlsym(s_Data.XLIB.Handle, "XOpenDisplay"));
-	s_Data.XLIB.OpenIM = reinterpret_cast<PFN_XOpenIM>(dlsym(s_Data.XLIB.Handle, "XOpenIM"));
-	s_Data.XLIB.PeekEvent = reinterpret_cast<PFN_XPeekEvent>(dlsym(s_Data.XLIB.Handle, "XPeekEvent"));
-	s_Data.XLIB.Pending = reinterpret_cast<PFN_XPending>(dlsym(s_Data.XLIB.Handle, "XPending"));
-	s_Data.XLIB.QueryExtension = reinterpret_cast<PFN_XQueryExtension>(dlsym(s_Data.XLIB.Handle, "XQueryExtension"));
-	s_Data.XLIB.QueryPointer = reinterpret_cast<PFN_XQueryPointer>(dlsym(s_Data.XLIB.Handle, "XQueryPointer"));
-	s_Data.XLIB.RaiseWindow = reinterpret_cast<PFN_XRaiseWindow>(dlsym(s_Data.XLIB.Handle, "XRaiseWindow"));
-	s_Data.XLIB.RegisterIMInstantiateCallback = reinterpret_cast<PFN_XRegisterIMInstantiateCallback>(dlsym
+	s_Data.XLIB.MoveWindow = reinterpret_cast<PFN_XMoveWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XMoveWindow"));
+	s_Data.XLIB.NextEvent = reinterpret_cast<PFN_XNextEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XNextEvent"));
+	s_Data.XLIB.OpenDisplay = reinterpret_cast<PFN_XOpenDisplay>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XOpenDisplay"));
+	s_Data.XLIB.OpenIM = reinterpret_cast<PFN_XOpenIM>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XOpenIM"));
+	s_Data.XLIB.PeekEvent = reinterpret_cast<PFN_XPeekEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XPeekEvent"));
+	s_Data.XLIB.Pending = reinterpret_cast<PFN_XPending>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XPending"));
+	s_Data.XLIB.QueryExtension = reinterpret_cast<PFN_XQueryExtension>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XQueryExtension"));
+	s_Data.XLIB.QueryPointer = reinterpret_cast<PFN_XQueryPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XQueryPointer"));
+	s_Data.XLIB.RaiseWindow = reinterpret_cast<PFN_XRaiseWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XRaiseWindow"));
+	s_Data.XLIB.RegisterIMInstantiateCallback = reinterpret_cast<PFN_XRegisterIMInstantiateCallback>(PlatformGetModuleSymbol
 		(
 			s_Data.XLIB.Handle, "XRegisterIMInstantiateCallback"
 		));
-	s_Data.XLIB.ResizeWindow = reinterpret_cast<PFN_XResizeWindow>(dlsym(s_Data.XLIB.Handle, "XResizeWindow"));
-	s_Data.XLIB.ResourceManagerString = reinterpret_cast<PFN_XResourceManagerString>(dlsym
+	s_Data.XLIB.ResizeWindow = reinterpret_cast<PFN_XResizeWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XResizeWindow"));
+	s_Data.XLIB.ResourceManagerString = reinterpret_cast<PFN_XResourceManagerString>(PlatformGetModuleSymbol
 		(
 			s_Data.XLIB.Handle, "XResourceManagerString"
 		));
-	s_Data.XLIB.SaveContext = reinterpret_cast<PFN_XSaveContext>(dlsym(s_Data.XLIB.Handle, "XSaveContext"));
-	s_Data.XLIB.SelectInput = reinterpret_cast<PFN_XSelectInput>(dlsym(s_Data.XLIB.Handle, "XSelectInput"));
-	s_Data.XLIB.SendEvent = reinterpret_cast<PFN_XSendEvent>(dlsym(s_Data.XLIB.Handle, "XSendEvent"));
-	s_Data.XLIB.SetClassHint = reinterpret_cast<PFN_XSetClassHint>(dlsym(s_Data.XLIB.Handle, "XSetClassHint"));
-	s_Data.XLIB.SetErrorHandler = reinterpret_cast<PFN_XSetErrorHandler>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.SaveContext = reinterpret_cast<PFN_XSaveContext>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSaveContext"));
+	s_Data.XLIB.SelectInput = reinterpret_cast<PFN_XSelectInput>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSelectInput"));
+	s_Data.XLIB.SendEvent = reinterpret_cast<PFN_XSendEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSendEvent"));
+	s_Data.XLIB.SetClassHint = reinterpret_cast<PFN_XSetClassHint>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetClassHint"));
+	s_Data.XLIB.SetErrorHandler = reinterpret_cast<PFN_XSetErrorHandler>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                           "XSetErrorHandler"));
-	s_Data.XLIB.SetICFocus = reinterpret_cast<PFN_XSetICFocus>(dlsym(s_Data.XLIB.Handle, "XSetICFocus"));
-	s_Data.XLIB.SetIMValues = reinterpret_cast<PFN_XSetIMValues>(dlsym(s_Data.XLIB.Handle, "XSetIMValues"));
-	s_Data.XLIB.SetInputFocus = reinterpret_cast<PFN_XSetInputFocus>(dlsym(s_Data.XLIB.Handle, "XSetInputFocus"));
-	s_Data.XLIB.SetLocaleModifiers = reinterpret_cast<PFN_XSetLocaleModifiers>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.SetICFocus = reinterpret_cast<PFN_XSetICFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetICFocus"));
+	s_Data.XLIB.SetIMValues = reinterpret_cast<PFN_XSetIMValues>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetIMValues"));
+	s_Data.XLIB.SetInputFocus = reinterpret_cast<PFN_XSetInputFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetInputFocus"));
+	s_Data.XLIB.SetLocaleModifiers = reinterpret_cast<PFN_XSetLocaleModifiers>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                 "XSetLocaleModifiers"));
-	s_Data.XLIB.SetScreenSaver = reinterpret_cast<PFN_XSetScreenSaver>(dlsym(s_Data.XLIB.Handle, "XSetScreenSaver"));
-	s_Data.XLIB.SetSelectionOwner = reinterpret_cast<PFN_XSetSelectionOwner>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.SetScreenSaver = reinterpret_cast<PFN_XSetScreenSaver>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetScreenSaver"));
+	s_Data.XLIB.SetSelectionOwner = reinterpret_cast<PFN_XSetSelectionOwner>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                               "XSetSelectionOwner"));
-	s_Data.XLIB.SetWMHints = reinterpret_cast<PFN_XSetWMHints>(dlsym(s_Data.XLIB.Handle, "XSetWMHints"));
-	s_Data.XLIB.SetWMNormalHints = reinterpret_cast<PFN_XSetWMNormalHints>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.SetWMHints = reinterpret_cast<PFN_XSetWMHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetWMHints"));
+	s_Data.XLIB.SetWMNormalHints = reinterpret_cast<PFN_XSetWMNormalHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                             "XSetWMNormalHints"));
-	s_Data.XLIB.SetWMProtocols = reinterpret_cast<PFN_XSetWMProtocols>(dlsym(s_Data.XLIB.Handle, "XSetWMProtocols"));
-	s_Data.XLIB.SupportsLocale = reinterpret_cast<PFN_XSupportsLocale>(dlsym(s_Data.XLIB.Handle, "XSupportsLocale"));
-	s_Data.XLIB.Sync = reinterpret_cast<PFN_XSync>(dlsym(s_Data.XLIB.Handle, "XSync"));
-	s_Data.XLIB.TranslateCoordinates = reinterpret_cast<PFN_XTranslateCoordinates>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.SetWMProtocols = reinterpret_cast<PFN_XSetWMProtocols>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetWMProtocols"));
+	s_Data.XLIB.SupportsLocale = reinterpret_cast<PFN_XSupportsLocale>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSupportsLocale"));
+	s_Data.XLIB.Sync = reinterpret_cast<PFN_XSync>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSync"));
+	s_Data.XLIB.TranslateCoordinates = reinterpret_cast<PFN_XTranslateCoordinates>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                     "XTranslateCoordinates"));
-	s_Data.XLIB.UndefineCursor = reinterpret_cast<PFN_XUndefineCursor>(dlsym(s_Data.XLIB.Handle, "XUndefineCursor"));
-	s_Data.XLIB.UngrabPointer = reinterpret_cast<PFN_XUngrabPointer>(dlsym(s_Data.XLIB.Handle, "XUngrabPointer"));
-	s_Data.XLIB.UnmapWindow = reinterpret_cast<PFN_XUnmapWindow>(dlsym(s_Data.XLIB.Handle, "XUnmapWindow"));
-	s_Data.XLIB.UnsetICFocus = reinterpret_cast<PFN_XUnsetICFocus>(dlsym(s_Data.XLIB.Handle, "XUnsetICFocus"));
-	s_Data.XLIB.VisualIDFromVisual = reinterpret_cast<PFN_XVisualIDFromVisual>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.UndefineCursor = reinterpret_cast<PFN_XUndefineCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUndefineCursor"));
+	s_Data.XLIB.UngrabPointer = reinterpret_cast<PFN_XUngrabPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUngrabPointer"));
+	s_Data.XLIB.UnmapWindow = reinterpret_cast<PFN_XUnmapWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUnmapWindow"));
+	s_Data.XLIB.UnsetICFocus = reinterpret_cast<PFN_XUnsetICFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUnsetICFocus"));
+	s_Data.XLIB.VisualIDFromVisual = reinterpret_cast<PFN_XVisualIDFromVisual>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                 "XVisualIDFromVisual"));
-	s_Data.XLIB.WarpPointer = reinterpret_cast<PFN_XWarpPointer>(dlsym(s_Data.XLIB.Handle, "XWarpPointer"));
-	s_Data.XLIB.UnregisterIMInstantiateCallback = reinterpret_cast<PFN_XUnregisterIMInstantiateCallback>(dlsym
+	s_Data.XLIB.WarpPointer = reinterpret_cast<PFN_XWarpPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XWarpPointer"));
+	s_Data.XLIB.UnregisterIMInstantiateCallback = reinterpret_cast<PFN_XUnregisterIMInstantiateCallback>(PlatformGetModuleSymbol
 		(
 			s_Data.XLIB.Handle, "XUnregisterIMInstantiateCallback"
 		));
-	s_Data.XLIB.UTF8LookupString = reinterpret_cast<PFN_Xutf8LookupString>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.UTF8LookupString = reinterpret_cast<PFN_Xutf8LookupString>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                             "Xutf8LookupString"));
-	s_Data.XLIB.UTF8SetWMProperties = reinterpret_cast<PFN_Xutf8SetWMProperties>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.UTF8SetWMProperties = reinterpret_cast<PFN_Xutf8SetWMProperties>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                   "Xutf8SetWMProperties"));
-	s_Data.XLIB.CreateRegion = reinterpret_cast<PFN_XCreateRegion>(dlsym(s_Data.XLIB.Handle, "XCreateRegion"));
-	s_Data.XLIB.DestroyRegion = reinterpret_cast<PFN_XDestroyRegion>(dlsym(s_Data.XLIB.Handle, "XDestroyRegion"));
-	s_Data.XKB.AllocKeyboard = reinterpret_cast<PFN_XkbAllocKeyboard>(dlsym(s_Data.XLIB.Handle, "XkbAllocKeyboard"));
-	s_Data.XKB.FreeKeyboard = reinterpret_cast<PFN_XkbFreeKeyboard>(dlsym(s_Data.XLIB.Handle, "XkbFreeKeyboard"));
-	s_Data.XKB.FreeNames = reinterpret_cast<PFN_XkbFreeNames>(dlsym(s_Data.XLIB.Handle, "XkbFreeNames"));
-	s_Data.XKB.GetMap = reinterpret_cast<PFN_XkbGetMap>(dlsym(s_Data.XLIB.Handle, "XkbGetMap"));
-	s_Data.XKB.GetNames = reinterpret_cast<PFN_XkbGetNames>(dlsym(s_Data.XLIB.Handle, "XkbGetNames"));
-	s_Data.XKB.GetState = reinterpret_cast<PFN_XkbGetState>(dlsym(s_Data.XLIB.Handle, "XkbGetState"));
-	s_Data.XKB.KeycodeToKeysym = reinterpret_cast<PFN_XkbKeycodeToKeysym>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XLIB.CreateRegion = reinterpret_cast<PFN_XCreateRegion>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCreateRegion"));
+	s_Data.XLIB.DestroyRegion = reinterpret_cast<PFN_XDestroyRegion>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDestroyRegion"));
+	s_Data.XKB.AllocKeyboard = reinterpret_cast<PFN_XkbAllocKeyboard>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbAllocKeyboard"));
+	s_Data.XKB.FreeKeyboard = reinterpret_cast<PFN_XkbFreeKeyboard>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbFreeKeyboard"));
+	s_Data.XKB.FreeNames = reinterpret_cast<PFN_XkbFreeNames>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbFreeNames"));
+	s_Data.XKB.GetMap = reinterpret_cast<PFN_XkbGetMap>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbGetMap"));
+	s_Data.XKB.GetNames = reinterpret_cast<PFN_XkbGetNames>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbGetNames"));
+	s_Data.XKB.GetState = reinterpret_cast<PFN_XkbGetState>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbGetState"));
+	s_Data.XKB.KeycodeToKeysym = reinterpret_cast<PFN_XkbKeycodeToKeysym>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                            "XkbKeycodeToKeysym"));
-	s_Data.XKB.QueryExtension = reinterpret_cast<PFN_XkbQueryExtension>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XKB.QueryExtension = reinterpret_cast<PFN_XkbQueryExtension>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                          "XkbQueryExtension"));
-	s_Data.XKB.SelectEventDetails = reinterpret_cast<PFN_XkbSelectEventDetails>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XKB.SelectEventDetails = reinterpret_cast<PFN_XkbSelectEventDetails>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                  "XkbSelectEventDetails"));
-	s_Data.XKB.SetDetectableAutoRepeat = reinterpret_cast<PFN_XkbSetDetectableAutoRepeat>(dlsym
+	s_Data.XKB.SetDetectableAutoRepeat = reinterpret_cast<PFN_XkbSetDetectableAutoRepeat>(PlatformGetModuleSymbol
 		(
 			s_Data.XLIB.Handle, "XkbSetDetectableAutoRepeat"
 		));
-	s_Data.XRM.DestroyDatabase = reinterpret_cast<PFN_XrmDestroyDatabase>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XRM.DestroyDatabase = reinterpret_cast<PFN_XrmDestroyDatabase>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                            "XrmDestroyDatabase"));
-	s_Data.XRM.GetResource = reinterpret_cast<PFN_XrmGetResource>(dlsym(s_Data.XLIB.Handle, "XrmGetResource"));
-	s_Data.XRM.GetStringDatabase = reinterpret_cast<PFN_XrmGetStringDatabase>(dlsym(s_Data.XLIB.Handle,
+	s_Data.XRM.GetResource = reinterpret_cast<PFN_XrmGetResource>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XrmGetResource"));
+	s_Data.XRM.GetStringDatabase = reinterpret_cast<PFN_XrmGetStringDatabase>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
 	                                                                                "XrmGetStringDatabase"));
-	s_Data.XRM.Initialize = reinterpret_cast<PFN_XrmInitialize>(dlsym(s_Data.XLIB.Handle, "XrmInitialize"));
-	s_Data.XRM.UniqueQuark = reinterpret_cast<PFN_XrmUniqueQuark>(dlsym(s_Data.XLIB.Handle, "XrmUniqueQuark"));
+	s_Data.XRM.Initialize = reinterpret_cast<PFN_XrmInitialize>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XrmInitialize"));
+	s_Data.XRM.UniqueQuark = reinterpret_cast<PFN_XrmUniqueQuark>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XrmUniqueQuark"));
 	if (s_Data.XLIB.UTF8LookupString && s_Data.XLIB.UTF8SetWMProperties)
 		s_Data.XLIB.UTF8 = true;
 
@@ -2189,6 +2289,9 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.Context = XUniqueContext();
 
 	GetSystemContentScale(s_Data.ContentScaleX, s_Data.ContentScaleY);
+
+	if(!CreateEmptyEventPipe())
+		return false;
 
 	if(!InitExtensions())
 		return false;
@@ -2280,44 +2383,50 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 
 	if(s_Data.XCB.Handle)
 	{
-		dlclose(s_Data.XCB.Handle);
+		PlatformFreeModule(s_Data.XCB.Handle);
 		s_Data.XCB.Handle = nullptr;
 	}
 
 	if(s_Data.XCursor.Handle)
 	{
-		dlclose(s_Data.XCursor.Handle);
+		PlatformFreeModule(s_Data.XCursor.Handle);
 		s_Data.XCursor.Handle = nullptr;
 	}
 
 	if(s_Data.RandR.Handle)
 	{
-		dlclose(s_Data.RandR.Handle);
+		PlatformFreeModule(s_Data.RandR.Handle);
 		s_Data.RandR.Handle = nullptr;
 	}
 
 	if(s_Data.Xinerama.Handle)
 	{
-		dlclose(s_Data.Xinerama.Handle);
+		PlatformFreeModule(s_Data.Xinerama.Handle);
 		s_Data.Xinerama.Handle = nullptr;
 	}
 
 	if(s_Data.XRender.Handle)
 	{
-		dlclose(s_Data.XRender.Handle);
+		PlatformFreeModule(s_Data.XRender.Handle);
 		s_Data.XRender.Handle = nullptr;
 	}
 
 	if(s_Data.XI.Handle)
 	{
-		dlclose(s_Data.XI.Handle);
+		PlatformFreeModule(s_Data.XI.Handle);
 		s_Data.XI.Handle = nullptr;
 	}
 
 	if(s_Data.XLIB.Handle)
 	{
-		dlclose(s_Data.XLIB.Handle);
+		PlatformFreeModule(s_Data.XLIB.Handle);
 		s_Data.XLIB.Handle = nullptr;
+	}
+
+	if(s_Data.EmptyEventPipe[0] || s_Data.EmptyEventPipe[1])
+	{
+		close(s_Data.EmptyEventPipe[0]);
+		close(s_Data.EmptyEventPipe[1]);
 	}
 }
 
@@ -2631,9 +2740,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 	{
 		uint32_t longCount = 2 + image->GetWidth() * image->GetHeight();
 
-		std::vector<long> icon{};
+		std::vector<uint64_t> icon{};
 		icon.resize(longCount);
-		long* target = icon.data();
+		uint64_t* target = icon.data();
 		std::vector<uint8_t> imgData(reinterpret_cast<const uint8_t*>(image->GetPixelData()),
 		                             reinterpret_cast<const uint8_t*>(image->GetPixelData()) +
 									 image->GetPixelDataSize());
@@ -2643,12 +2752,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 
 		for(uint32_t j = 0; j < image->GetWidth() * image->GetHeight(); j++)
 		{
-			*target++ = (imgData[j * 4 + 0] << 16) |
-						(imgData[j * 4 + 1] <<  8) |
-						(imgData[j * 4 + 2] <<  0) |
-						(imgData[j * 4 + 3] << 24);
+			*target++ = (static_cast<uint64_t>(imgData[j * 4 + 0]) << 16) |
+						(static_cast<uint64_t>(imgData[j * 4 + 1]) <<  8) |
+						(static_cast<uint64_t>(imgData[j * 4 + 2]) <<  0) |
+						(static_cast<uint64_t>(imgData[j * 4 + 3]) << 24);
 		}
 
+		//NOTE: XChangeProperty expects 32-bit values like the image data above to be
+		//      places in the 32 least significant bits of individual longs. This is true
+		//      even if long is 64-bit and a WM protocol calls for "packed" data.
+		//      This is because of a historical mistake that then became part of the Xlib ABI.
+		//      Xlib will pack these values into a regular array of 32-bit values before
+		//      sending it over the wire.
 		s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_ICON, XA_CARDINAL, 32,
 		                           PropModeReplace,	reinterpret_cast<uint8_t*>(icon.data()), longCount);
 	}
@@ -2732,7 +2847,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 	if(PlatformWindowVisible(window))
 	{
-		const long action = enabled ? 1 : 0;
+		const long action = enabled ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
 		SendEventToWM(window, s_Data.NET_WM_STATE, action, s_Data.NET_WM_STATE_ABOVE, 0, 1, 0);
 	}
 	else
@@ -2749,15 +2864,16 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 			unsigned long i;
 
 			for(i = 0; i < count; i++)
+			{
 				if(states[i] == s_Data.NET_WM_STATE_ABOVE)
 					break;
+			}
 
 			if(i == count)
 			{
 				s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32,
 										   PropModeAppend, reinterpret_cast<uint8_t*>(&s_Data.NET_WM_STATE_ABOVE), 1);
 			}
-
 		}
 		else if(states)
 		{
@@ -2983,6 +3099,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const InternalWindow*
 
 void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
+	DrainEmptyEvents();
+
 #ifdef TRAP_PLATFORM_LINUX
 	Input::DetectControllerConnectionLinux();
 #endif
@@ -3098,11 +3216,11 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(int32_t scanCo
 	if(keySym == NoSymbol)
 		return nullptr;
 
-	const long ch = KeySymToUnicode(keySym);
-	if(ch == -1)
+	const uint32_t ch = KeySymToUnicode(keySym);
+	if(ch == 0xFFFFFFFFu)
 		return nullptr;
 
-	const std::size_t count = EncodeUTF8(s_Data.KeyNames[key].data(), static_cast<uint32_t>(ch));
+	const std::size_t count = EncodeUTF8(s_Data.KeyNames[key].data(), ch);
 	if(count == 0)
 		return nullptr;
 
@@ -3510,7 +3628,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			//      (the server never sends a timestamp of zero)
 			//NOTE: Timestamp difference is compared to handle wrap-around
 			Time diff = event.xkey.time - window->KeyPressTimes[keyCode];
-			if(diff == event.xkey.time || (diff > 0 && diff < (1u << 31u)))
+			if(diff == event.xkey.time || (diff > 0 && diff < (static_cast<Time>(1u) << 31u)))
 			{
 				if(keyCode)
 					InputKey(window, (Input::Key)key, keyCode, true);
@@ -3551,8 +3669,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			InputKey(window, static_cast<Input::Key>(key), keyCode, true);
 
-			const long character = KeySymToUnicode(keySym);
-			if(character != -1)
+			const uint32_t character = KeySymToUnicode(keySym);
+			if(character != 0xFFFFFFFFu)
 				InputChar(window, character);
 		}
 

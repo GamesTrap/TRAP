@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Loewy
+Copyright (c) 2006-2022 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -234,6 +234,7 @@ namespace TRAP::INTERNAL
 		typedef BOOL(WINAPI* PFN_SetProcessDPIAwarenessContext)(HANDLE);
 		typedef UINT(WINAPI* PFN_GetDPIForWindow)(HWND);
 		typedef BOOL(WINAPI* PFN_AdjustWindowRectExForDPI)(LPRECT, DWORD, BOOL, DWORD, UINT);
+		typedef int(WINAPI* PFN_GetSystemMetricsForDPI)(int, UINT);
 
 		//dwmapi.dll function pointer typedefs
 		typedef HRESULT(WINAPI* PFN_DwmIsCompositionEnabled)(BOOL*);
@@ -610,11 +611,13 @@ namespace TRAP::INTERNAL
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
 			InternalWindow* DisabledCursorWindow = nullptr;
+			std::array<int, 2> EmptyEventPipe{};
 			//The window the cursor is captured in
 			InternalWindow* CapturedCursorWindow = nullptr;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			std::array<Input::Key, 512> KeyCodes{};
+			HINSTANCE Instance = nullptr;
 			HWND HelperWindowHandle = nullptr;
 			HDEVNOTIFY DeviceNotificationHandle = nullptr;
 			int32_t AcquiredMonitorCount = 0;
@@ -631,6 +634,7 @@ namespace TRAP::INTERNAL
 				PFN_SetProcessDPIAwarenessContext SetProcessDPIAwarenessContext = nullptr;
 				PFN_GetDPIForWindow GetDPIForWindow = nullptr;
 				PFN_AdjustWindowRectExForDPI AdjustWindowRectExForDPI = nullptr;
+				PFN_GetSystemMetricsForDPI GetSystemMetricsForDPI = nullptr;
 			} User32;
 
 			struct
@@ -2334,10 +2338,9 @@ namespace TRAP::INTERNAL
 		/// have been found.
 		///
 		/// The availability of a Vulkan loader and even an ICD does not by itself guarantee
-		/// that surface creation or even instance creation is possible. For example, on
-		/// Fermi systems NVIDIA will install an ICD that provides no actual Vulkan support.
-		/// Call WindowingAPI::GetRequiredInstanceExtensions to check whether the extensions
-		/// necessary for Vulkan surface creation are available.
+		/// that surface creation or even instance creation is possible. Call GetRequiredInstanceExtensions
+		/// to check whether the extensions necessary for Vulkan surface creation are available.
+		/// You still have to check whether a queue family of a physical device supports image presentation.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized.
 		/// Thread safety: This function may be called from any thread.
@@ -2727,12 +2730,17 @@ namespace TRAP::INTERNAL
 		/// Disables clip cursor
 		/// </summary>
 		static void ReleaseCursor();
+
+		static void* PlatformLoadModule(const std::string& path);
+		static void PlatformFreeModule(void* handle);
+		static void* PlatformGetModuleSymbol(void* module, const std::string& name);
 		//-------//
 		//Windows//
 		//-------//
 #ifdef TRAP_PLATFORM_WINDOWS
 		/// <summary>
-		/// Replacement for IsWindowsVersionOrGreater as MinGW lacks versionhelpers.h.
+		/// Replacement for IsWindowsVersionOrGreater, as we cannot rely on the application
+		/// having a correct embedded manifest.
 		/// </summary>
 		/// <param name="major">Major Windows version.</param>
 		/// <param name="minor">Minor Windows version.</param>
@@ -2749,12 +2757,12 @@ namespace TRAP::INTERNAL
 		/// Checks whether we are on at least Windows 10 Anniversary Update.
 		/// </summary>
 		/// <returns>Whether Windows 10 Anniversary version or newer.</returns>
-		static BOOL IsWindows10AnniversaryUpdateOrGreaterWin32();
+		static BOOL IsWindows10Version1607OrGreaterWin32();
 		/// <summary>
 		/// Checks whether we are on at least Windows 10 Creators Update.
 		/// </summary>
 		/// <returns>Whether Window 10 Creators version or newer.</returns>
-		static BOOL IsWindows10CreatorsUpdateOrGreaterWin32();
+		static BOOL IsWindows10Version1703OrGreaterWin32();
 		/// <summary>
 		/// Checks whether we are on at least Windows 8.1.
 		/// </summary>
@@ -2907,6 +2915,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static int32_t CreateNativeWindow(InternalWindow* window,
 			                              const WindowConfig& WNDConfig);
+		/// <summary>
+		/// Manually maximize the window, for when SW_MAXIMIZE cannot be used.
+		/// </summary>
+		static void MaximizeWindowManually(const InternalWindow* window);
+		static HINSTANCE GetWin32HInstance();
+
+		friend bool TRAP::Input::InitController();
 		//----------//
 		//Linux(X11)//
 		//----------//
@@ -2927,11 +2942,28 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static int32_t IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer);
 		/// <summary>
-		/// Wait for data to arrive using select.
-		/// This avoids blocking other threads via the per-display XLib lock that also covers GLX functions.
+		/// Wait for data to arrive on any of the specified file descriptors
 		/// </summary>
 		/// <param name="timeout">Time out in seconds.</param>
-		static bool WaitForEvent(double* timeout);
+		static bool WaitForData(pollfd* fds, nfds_t count, double* timeout);
+		/// <summary>
+		/// Wait for event data to arrive on the X11 display socket.
+		/// This avoids blocking other threads via the per-display Xlib lock.
+		/// </summary>
+		/// <param name="timeout">Time out in seconds.</param>
+		static bool WaitForX11Event(double* timeout);
+		/// <summary>
+		/// Writes a byte to the empty event pipe
+		/// </summary>
+		static void WriteEmptyEvent();
+		/// <summary>
+		/// Drains available data from the empty event pipe
+		/// </summary>
+		static void DrainEmptyEvents();
+		/// <summary>
+		/// Create the pipe for empty events without assuming the OS has pipe2(2)
+		/// </summary>
+		static bool CreateEmptyEventPipe();
 		/// <summary>
 		/// Retrieve a single window property of the specified type.
 		/// </summary>
@@ -3035,7 +3067,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Convert XKB KeySym to Unicode.
 		/// </summary>
-		static long KeySymToUnicode(uint32_t keySym);
+		static uint32_t KeySymToUnicode(uint32_t keySym);
 		struct CodePair
 		{
 			uint16_t keySym;
