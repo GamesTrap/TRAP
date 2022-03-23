@@ -28,21 +28,21 @@ void SocketTests::Sockets()
 	constexpr uint16_t port = 50001;
 
 	//IPv4 or IPv6?
-	char IPVersion;
+	char IPVersion = '4';
 	std::cout << "[Network][Sockets] Do you want to use IPv6(6) or IPv4(4)? ";
 	std::cin >> IPVersion;
 
 	//TCP, UDP or connected UDP?
-	char protocol;
+	char protocol = 't';
 	std::cout << "[Network][Sockets] Do you want to use TCP(t) or UDP(u)? ";
 	std::cin >> protocol;
 
 	//Client or server?
-	char who;
 	if (protocol == 't')
 		std::cout << "[Network][Sockets][TCP] Do you want to be a server(s) or a client(c)? ";
 	else
 		std::cout << "[Network][Sockets][UDP] Do you want to be a server(s) or a client(c)? ";
+	char who = 's';
 	std::cin >> who;
 
 	if(IPVersion == '6')
@@ -105,14 +105,14 @@ void SocketTests::RunTCPServerIPv4(const uint16_t port)
 	std::cout << "[Network][Sockets][TCP][IPv4] Client connected: " << socket.GetRemoteAddress() << std::endl;
 
 	//Send a message to the connected client
-	const char out[] = "Hi, I'm the server";
-	if (socket.Send(out, sizeof(out)) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm the server";
+	if (socket.Send(out.data(), out.size()) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv4] Message sent to the client: \"" << out << "\"" << std::endl;
 
 	//Receive a message back from the client
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv4] Answer received from the client: \"" << in.data() << "\"" <<
@@ -141,15 +141,15 @@ void SocketTests::RunTCPClientIPv4(const uint16_t port)
 
 	//Receive a message from the server
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv4] Message received from the server: \"" << in.data() << "\"" <<
 	             std::endl;
 
 	//Send an answer to the server
-	const char out[] = "Hi, I'm a client";
-	if (socket.Send(out, sizeof(out)) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm a client";
+	if (socket.Send(out.data(), out.size()) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv4] Message sent to the server: \"" << out << "\"" << std::endl;
 }
@@ -169,17 +169,17 @@ void SocketTests::RunUDPServerIPv4(const uint16_t port)
 
 	//Wait for a message
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	TRAP::Network::IPv4Address sender;
-	uint16_t senderPort;
+	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv4] Message received from client " << sender << ": \"" <<
 	             in.data() << "\"" << std::endl;
 
 	//Send an answer to the client
-	const char out[] = "Hi, I'm the server";
-	if (socket.Send(out, sizeof(out), sender, senderPort) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm the server";
+	if (socket.Send(out.data(), out.size(), sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv4] Message sent to the client: \"" << out << "\"" << std::endl;
 }
@@ -200,16 +200,16 @@ void SocketTests::RunUDPClientIPv4(const uint16_t port)
 	TRAP::Network::UDPSocket socket;
 
 	//Send a message to the server
-	const char out[] = "Hi, I'm a client";
-	if (socket.Send(out, sizeof(out), server, port) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm a client";
+	if (socket.Send(out.data(), out.size(), server, port) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv4] Message sent to the server: \"" << out << "\"" << std::endl;
 
 	//Receive an answer from anyone (but most likely from the server)
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	TRAP::Network::IPv4Address sender;
-	uint16_t senderPort;
+	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv4] Message received from " << sender << ": \"" << in.data() <<
@@ -238,14 +238,14 @@ void SocketTests::RunTCPServerIPv6(const uint16_t port)
 	std::cout << "[Network][Sockets][TCP][IPv6] Client connected: " << socket.GetRemoteAddress() << std::endl;
 
 	//Send a message to the connected client
-	const char out[] = "Hi, I'm the server";
-	if (socket.Send(out, sizeof(out)) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm the server";
+	if (socket.Send(out.data(), out.size()) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv6] Message sent to the client: \"" << out << "\"" << std::endl;
 
 	//Receive a message back from the client
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv6] Answer received from the client: \"" << in.data() <<
@@ -274,15 +274,15 @@ void SocketTests::RunTCPClientIPv6(const uint16_t port)
 
 	//Receive a message from the server
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	if (socket.Receive(in.data(), in.size(), received) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv6] Message received from the server: \"" << in.data() <<
 	             "\"" << std::endl;
 
 	//Send an answer to the server
-	const char out[] = "Hi, I'm a client";
-	if (socket.Send(out, sizeof(out)) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm the client";
+	if (socket.Send(out.data(), out.size()) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][TCP][IPv6] Message sent to the server: \"" << out << "\"" << std::endl;
 }
@@ -302,17 +302,17 @@ void SocketTests::RunUDPServerIPv6(const uint16_t port)
 
 	//Wait for a message
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	TRAP::Network::IPv6Address sender;
-	uint16_t senderPort;
+	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv6] Message received from client " << sender << ": \"" <<
 	             in.data() << "\"" << std::endl;
 
 	//Send an answer to the client
-	const char out[] = "Hi, I'm the server";
-	if (socket.Send(out, sizeof(out), sender, senderPort) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm a server";
+	if (socket.Send(out.data(), out.size(), sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv6] Message sent to the client: \"" << out << "\"" << std::endl;
 }
@@ -333,16 +333,16 @@ void SocketTests::RunUDPClientIPv6(const uint16_t port)
 	TRAP::Network::UDPSocketIPv6 socket;
 
 	//Send a message to the server
-	const char out[] = "Hi, I'm a client";
-	if (socket.Send(out, sizeof(out), server, port) != TRAP::Network::Socket::Status::Done)
+	const std::string out = "Hi, I'm a client";
+	if (socket.Send(out.data(), out.size(), server, port) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv6] Message sent to the server: \"" << out << "\"" << std::endl;
 
 	//Receive an answer from anyone (but most likely from the server)
 	std::array<char, 128> in{};
-	std::size_t received;
+	std::size_t received = 0;
 	TRAP::Network::IPv6Address sender;
-	uint16_t senderPort;
+	uint16_t senderPort = 0;
 	if (socket.Receive(in.data(), in.size(), received, sender, senderPort) != TRAP::Network::Socket::Status::Done)
 		return;
 	std::cout << "[Network][Sockets][UDP][IPv6] Message received from " << sender << ": \"" << in.data() <<

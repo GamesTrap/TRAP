@@ -1,7 +1,7 @@
 #include "IconTests.h"
 
 //Simple TRAP Logo
-std::array<std::string, 16> IconTests::s_iconStrings
+static constexpr std::array<std::array<char, 17>, 16> IconStrings
 {
 	 "................",
 	 "................",
@@ -23,7 +23,7 @@ std::array<std::string, 16> IconTests::s_iconStrings
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<std::array<uint8_t, 4>, 5> IconTests::s_iconColors
+static constexpr std::array<std::array<uint8_t, 4>, 5> IconColors
 {
 	{
 		{  0,   0,   0, 255}, //Black
@@ -82,17 +82,17 @@ void IconTests::OnEvent(TRAP::Events::Event& event)
 
 void IconTests::SetIcon(const TRAP::Scope<TRAP::Window>& window, const int32_t iconColor)
 {
-	std::vector<uint8_t> pixels(16 * 16 * 4, 0);
-	uint8_t* target = pixels.data();
+	std::vector<uint8_t> pixels(16ull * 16ull * 4ull, 0);
+	std::size_t target = 0;
 
 	for(int32_t y = 0; y < 16; y++)
 	{
 		for(int32_t x = 0; x < 16; x++)
 		{
-			if (s_iconStrings[y][x] == '0')
-				memcpy(target, s_iconColors[iconColor].data(), 4);
+			if (IconStrings[y][x] == '0')
+				memcpy(&pixels[target], IconColors[iconColor].data(), 4);
 			else
-				memset(target, 0, 4);
+				memset(&pixels[target], 0, 4);
 
 			target += 4;
 		}
@@ -115,7 +115,7 @@ bool IconTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::Space:
-		s_cursorIconColor = (s_cursorIconColor + 1) % s_iconColors.size();
+		s_cursorIconColor = static_cast<int32_t>((s_cursorIconColor + 1) % IconColors.size());
 		SetIcon(TRAP::Application::GetWindow(), s_cursorIconColor);
 		break;
 

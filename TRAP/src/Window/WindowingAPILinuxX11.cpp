@@ -35,9 +35,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Application.h"
 
 //Action for EWMH client messages
-#define _NET_WM_STATE_REMOVE 0
-#define _NET_WM_STATE_ADD 1
-#define _NET_WM_STATE_TOGGLE 2
+static constexpr int32_t _NET_WM_STATE_REMOVE = 0;
+static constexpr int32_t _NET_WM_STATE_ADD = 1;
+static constexpr int32_t _NET_WM_STATE_TOGGLE = 2;
 
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
 int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* mi)

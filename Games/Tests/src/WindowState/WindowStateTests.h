@@ -13,14 +13,14 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
-	bool OnWindowResize(const TRAP::Events::WindowResizeEvent& event);
-	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
-	bool OnWindowFocus(const TRAP::Events::WindowFocusEvent& event);
-	bool OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& event);
-	bool OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& event);
-	bool OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event);
-	bool OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event);
+	static bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	static bool OnWindowResize(const TRAP::Events::WindowResizeEvent& event);
+	static bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
+	static bool OnWindowFocus(const TRAP::Events::WindowFocusEvent& event);
+	static bool OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& event);
+	static bool OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& event);
+	static bool OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event);
+	static bool OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event);
 };
 
 #endif /*GAMESTRAP_MINIMIZETESTS_H*/

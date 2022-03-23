@@ -61,7 +61,7 @@ void ControllerTests::OnImGuiRender()
 		for(const float axis : axes)
 		{
 			float axisCpy = axis;
-			ImGui::SliderFloat("", &axisCpy, -1.0f, 1.0f);
+			ImGui::SliderFloat("##", &axisCpy, -1.0f, 1.0f);
 		}
 		for(std::size_t i = 0; i < (s_dpadButtons ? buttons.size() : buttons.size() - dpads.size() * 4); i++)
 		{
@@ -195,7 +195,7 @@ bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisco
 	{
 		if(s_controllers[i] == event.GetController())
 		{
-			s_controllers.erase(s_controllers.begin() + i);
+			s_controllers.erase(s_controllers.begin() + static_cast<int64_t>(i));
 			break;
 		}
 	}

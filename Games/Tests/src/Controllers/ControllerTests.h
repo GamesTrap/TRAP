@@ -13,9 +13,9 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event);
-	bool OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event);
-	bool OnWindowDrop(const TRAP::Events::WindowDropEvent& event);
+	static bool OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event);
+	static bool OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event);
+	static bool OnWindowDrop(const TRAP::Events::WindowDropEvent& event);
 
 	static std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad);
 	static std::string GetBatteryStatus(TRAP::Input::Controller controller);

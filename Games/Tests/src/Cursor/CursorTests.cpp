@@ -1,6 +1,6 @@
 #include "CursorTests.h"
 
-float CursorTests::Star(const int32_t x, const int32_t y, const float t) const
+float CursorTests::Star(const int32_t x, const int32_t y, const float t)
 {
 	constexpr float c = 64.0f / 2.0f;
 
@@ -19,10 +19,10 @@ float CursorTests::Star(const int32_t x, const int32_t y, const float t) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t) const
+TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t)
 {
 	int32_t i = 0;
-	std::vector<uint8_t> buffer(64 * 64 * 4, 0);
+	std::vector<uint8_t> buffer(64ull * 64ull * 4ull, 0);
 
 	for(int32_t y = 0; y < 64; y++)
 	{
@@ -76,7 +76,7 @@ void CursorTests::OnAttach()
 
 	m_starCursors.reserve(60);
 	for(uint32_t i = 0; i < 60; i++)
-		m_starCursors.push_back(CreateCursorFrame(i / 60.0f));
+		m_starCursors.push_back(CreateCursorFrame(static_cast<float>(i) / 60.0f));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -222,8 +222,8 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 	case TRAP::Input::Key::Down:
 	{
-		const int32_t width = TRAP::Application::GetWindow()->GetWidth();
-		const int32_t height = TRAP::Application::GetWindow()->GetHeight();
+		const uint32_t width = TRAP::Application::GetWindow()->GetWidth();
+		const uint32_t height = TRAP::Application::GetWindow()->GetHeight();
 		TRAP::Input::SetMousePosition(static_cast<float>(width) - 1.0f, static_cast<float>(height) - 1.0f);
 		m_cursorX = TRAP::Input::GetMouseX();
 		m_cursorY = TRAP::Input::GetMouseY();

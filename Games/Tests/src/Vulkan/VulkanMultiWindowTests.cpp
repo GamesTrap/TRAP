@@ -2,7 +2,6 @@
 
 VulkanMultiWindowTests::VulkanMultiWindowTests()
 	: Layer("VulkanMultiWindowTests"),
-	  m_fpsTimer(),
 	  m_vertexBuffer(nullptr),
 	  m_indexBuffer(nullptr),
 	  m_wireFrameMainWindow(false),
@@ -10,8 +9,6 @@ VulkanMultiWindowTests::VulkanMultiWindowTests()
 	  m_window(nullptr),
 	  m_colorData(),
 	  m_sizeMultiplicatorData(),
-	  m_colorTimer(),
-	  m_vertexTimer(),
 	  m_colorUniformBuffer(nullptr),
 	  m_sizeMultiplicatorUniformBuffer(nullptr),
 	  m_useUBO(false)

@@ -157,7 +157,8 @@ void VulkanFrameBufferTests::OnImGuiRender()
     ImGui::Begin("COLOR_B8G8R8A8_UNORM_Framebuffer", nullptr, ImGuiWindowFlags_AlwaysAutoResize |
                                                                 ImGuiWindowFlags_NoCollapse |
                                                                 ImGuiWindowFlags_NoResize);
-    ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2(m_renderTarget->GetWidth(), m_renderTarget->GetHeight()), ImVec2(0, 0), ImVec2(1, 1));
+    ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2(static_cast<float>(m_renderTarget->GetWidth()),
+                 static_cast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
     ImGui::End();
 }

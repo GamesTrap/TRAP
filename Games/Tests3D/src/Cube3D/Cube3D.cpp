@@ -40,7 +40,7 @@ void Cube3D::OnAttach()
 
 	//Cube
 	//XYZ
-    std::array<float, 11 * 24> cubeVertices
+    std::array<float, 11ull * 24ull> cubeVertices
     {
         //Positions             //Colors             //Textures      //Normals
         -1.0f, -1.0f, -1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 1.0f,     0.0f,  0.0f, -1.0f,
@@ -110,7 +110,7 @@ void Cube3D::OnAttach()
     };
     m_cubeVertexBuffer->SetLayout(cubeLayout);
 
-    std::array<float, 3 * 36> skyBoxVertices
+    std::array<float, 3ull * 36ull> skyBoxVertices
     {
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -237,7 +237,7 @@ void Cube3D::OnImGuiRender()
     float sensitivity = m_mouseSensitivity;
     float movement = m_translationSpeed;
 
-    ImGuiWindowFlags flags;
+    ImGuiWindowFlags flags = ImGuiWindowFlags_None;
 
 	//Make sure ImGui Windows do not get focused while using mouse for Camera
     if (m_ignoreImGui)

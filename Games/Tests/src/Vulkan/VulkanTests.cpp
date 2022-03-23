@@ -2,7 +2,6 @@
 
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
-	  m_fpsTimer(),
 	  m_vertexBuffer(nullptr),
 	  m_indexBuffer(nullptr),
 	  m_wireFrame(false),
@@ -12,8 +11,6 @@ VulkanTests::VulkanTests()
 	  m_pushConstantOrUBO(0),
 	  m_colorData(),
 	  m_sizeMultiplicatorData(),
-	  m_colorTimer(),
-	  m_vertexTimer(),
 	  m_colorUniformBuffer(nullptr),
 	  m_sizeMultiplicatorUniformBuffer(nullptr)
 {

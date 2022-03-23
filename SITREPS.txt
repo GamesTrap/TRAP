@@ -2433,3 +2433,6 @@ SITREP 03/22/2022|22w12a1
     - Changed TRAP Engine version to 22w12a1(0.7.113)
     - Updated WindowingAPI ~>45 mins
 
+SITREP 03/24/2022|22w12b1
+    - Changed TRAP Engine version to 22w12b1(0.7.114)
+    - Resolved clang-tidy warnings in Games/ ~<60 mins

@@ -8,6 +8,7 @@ VulkanTextureTests::VulkanTextureTests()
       m_currentMipLevel(0),
       m_maxMipLevel(0),
       m_updateTexture(false),
+      m_currentTexture(0),
 	  m_shader(nullptr),
       m_texture(nullptr)
 {

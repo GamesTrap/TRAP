@@ -12,7 +12,7 @@ public:
 	void OnAttach() override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	static bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 };
 
 #endif /*GAMESTRAP_TITLETESTS_H*/

@@ -12,7 +12,7 @@ public:
 	void OnAttach() override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	static bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 
 private:
 	float m_opacity = 1.0f;
