@@ -190,3 +190,4 @@ Dependencies/DiscordGameSDK/examples/**
 Dependencies/DiscordGameSDK/lib/**
 Dependencies/DiscordGameSDK/README.md
 TRAP.TODO
+compile_commands.json
