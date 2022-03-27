@@ -253,7 +253,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			{
 				//Update refresh rate for Fullscreen or Boderless use
 				m_data.windowModeParams.RefreshRate = m_data.RefreshRate;
-				m_data.RefreshRate = refreshRate;
+				m_data.RefreshRate = static_cast<int32_t>(refreshRate);
 			}
 
 			//Check if width or height differs from current
@@ -270,7 +270,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 
 			return;
 		}
-		else //if(m_data.displayMode != DisplayMode::Windowed)
+
+		//if(m_data.displayMode != DisplayMode::Windowed)
 		{
 			//Remove Window from FullscreenWindows as it gets windowed now
 			for(std::size_t i = 0; i < s_fullscreenWindows.size(); ++i)
@@ -290,9 +291,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			else
 			{
 				//Use provided window width, height and refresh rate
-				m_data.Width = width;
-				m_data.Height = height;
-				m_data.RefreshRate = refreshRate;
+				m_data.Width = static_cast<int32_t>(width);
+				m_data.Height = static_cast<int32_t>(height);
+				m_data.RefreshRate = static_cast<int32_t>(refreshRate);
 			}
 
 			INTERNAL::WindowingAPI::SetWindowMonitor(m_window.get(), nullptr, m_data.windowModeParams.XPos,
@@ -325,8 +326,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 				return;
 			}
 			//Or is the Monitor used by this monitor and the current and new display modes are the same
-			else if(s_fullscreenWindows[m_data.Monitor] == this && m_data.displayMode == mode &&
-			        mode == DisplayMode::Borderless)
+			if(s_fullscreenWindows[m_data.Monitor] == this && m_data.displayMode == mode &&
+			   mode == DisplayMode::Borderless)
 			{
 				TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" already uses display mode ",
 						GetModeStr(m_data.displayMode), " on monitor: ", m_data.Monitor,
@@ -393,9 +394,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 				refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 			}
 
-			m_data.Width = width;
-			m_data.Height = height;
-			m_data.RefreshRate = refreshRate;
+			m_data.Width = static_cast<int32_t>(width);
+			m_data.Height = static_cast<int32_t>(height);
+			m_data.RefreshRate = static_cast<int32_t>(refreshRate);
 		}
 
 		//Prevent RefreshRate = 0 inside Engine.cfg
@@ -805,9 +806,9 @@ void TRAP::Window::Restore() const
 void TRAP::Window::Init(const WindowProps& props)
 {
 	m_data.Title = props.Title;
-	m_data.Width = props.Width;
-	m_data.Height = props.Height;
-	m_data.RefreshRate = props.RefreshRate;
+	m_data.Width = static_cast<int32_t>(props.Width);
+	m_data.Height = static_cast<int32_t>(props.Height);
+	m_data.RefreshRate = static_cast<int32_t>(props.RefreshRate);
 	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
 	m_data.cursorMode = props.Advanced.CursorMode;

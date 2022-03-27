@@ -12,7 +12,6 @@
 #include "Utils/Hash/ConvertHashToString.h"
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
-	: m_data(), m_data2Byte()
 {
 	TP_PROFILE_FUNCTION();
 
@@ -60,7 +59,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		while (nextChunk.MagicNumber != "IEND")
 		{
 			file.read(reinterpret_cast<char*>(&nextChunk.Length), sizeof(uint32_t));
-			file.read(reinterpret_cast<char*>(nextChunk.MagicNumber.data()), nextChunk.MagicNumber.size());
+			file.read(reinterpret_cast<char*>(nextChunk.MagicNumber.data()),
+			          static_cast<std::streamsize>(nextChunk.MagicNumber.size()));
 			if (needSwap)
 				Utils::Memory::SwapBytes(nextChunk.Length);
 
@@ -204,8 +204,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	}
 
 	if (!DecompressData(data.CompressedData.data(),
-	                    static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(),
-						static_cast<uint32_t>(decompressedData.size())))
+	                    static_cast<int>(data.CompressedData.size()), decompressedData.data(),
+						static_cast<int>(decompressedData.size())))
 	{
 		decompressedData.clear();
 		return;
@@ -564,7 +564,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessiCCP(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unusedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()),
+	          static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -848,7 +849,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesshIST(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unusedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()),
+	          static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -947,7 +949,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 	{
 		std::vector<uint8_t> paletteAlpha(length);
 		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(paletteAlpha.data()), paletteAlpha.size());
+		file.read(reinterpret_cast<char*>(paletteAlpha.data()),
+		          static_cast<std::streamsize>(paletteAlpha.size()));
 		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -986,7 +989,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesspHYs(std::ifstream& file)
 {
 	std::vector<uint8_t> unusedData(9);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()),
+	          static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1017,7 +1021,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssPLT(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unusedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()),
+	          static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1079,10 +1084,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstIME(std::ifstream& file, const bool needS
 		return false;
 	}
 
-	if (!tIMECheck(timeChunk))
-		return false;
-
-	return true;
+	return tIMECheck(timeChunk);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1091,7 +1093,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessiTXt(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unusedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()), static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1122,7 +1124,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstEXt(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unusedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()), static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1153,7 +1155,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesszTXt(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unusedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
+	file.read(reinterpret_cast<char*>(unusedData.data()), static_cast<std::streamsize>(unusedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1247,7 +1249,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 {
 	std::vector<uint8_t> compressedData(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(compressedData.data()), compressedData.size());
+	file.read(reinterpret_cast<char*>(compressedData.data()), static_cast<std::streamsize>(compressedData.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1280,7 +1282,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesseXIf(std::ifstream& file, const uint32_t l
 {
 	std::vector<uint8_t> unused(length);
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unused.data()), unused.size());
+	file.read(reinterpret_cast<char*>(unused.data()), static_cast<std::streamsize>(unused.size()));
 	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
 	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
@@ -1507,7 +1509,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 	//Scanlines do NOT include the FilterType byte, that one is given in the parameter filterType instead
 	//recon and scanline MAY be the same memory address!
 	//precon must be disjoint.
-	std::size_t i;
+	std::size_t i = 0;
 	switch (filterType)
 	{
 	case 0:
@@ -1770,7 +1772,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
 
 	//The passStart values have 8 values: The 8th one indicates the byte after the end of the 7th(= last) pass
-	uint32_t i;
+	uint32_t i = 0;
 
 	//Calculate width and height in pixels of each pass
 	for (i = 0; i != 7; ++i)
@@ -1790,7 +1792,8 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 		filterPassStart[i + 1] = filterPassStart[i] + ((passW[i] && passH[i]) ?
 			passH[i] * (1u + (passW[i] * bitsPerPixel + 7u) / 8u) : 0);
 		//Bits padded if needed to fill full byte at the end of each scanline
-		paddedPassStart[i + 1] = paddedPassStart[i] + passH[i] * ((passW[i] * bitsPerPixel + 7u) / 8u);
+		paddedPassStart[i + 1] = paddedPassStart[i] + static_cast<std::size_t>(passH[i]) *
+		                         ((passW[i] * bitsPerPixel + 7u) / 8u);
 		//Only padded at end of reduced image
 		passStart[i + 1] = passStart[i] + (passH[i] * passW[i] * bitsPerPixel + 7u) / 8u;
 	}
@@ -1870,7 +1873,7 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
                                                               const uint32_t height, const Data& data)
 {
-	std::vector<uint8_t> result(width * height * 4, 0);
+	std::vector<uint8_t> result(static_cast<std::size_t>(width) * height * 4, 0);
 	uint32_t resultIndex = 0;
 	for (const uint8_t& element : raw)
 	{

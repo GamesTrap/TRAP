@@ -10,6 +10,12 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:
+		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
+		                    TRAP::Ref<VulkanRootSignature> rootSignature,
+		                    std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData,
+		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
+							uint32_t set);
+
 		~VulkanDescriptorSet() override;
 
 		/// <summary>
@@ -40,14 +46,6 @@ namespace TRAP::Graphics::API
 		void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) override;
 
 	private:
-		friend VulkanDescriptorPool;
-
-		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
-		                    TRAP::Ref<VulkanRootSignature> rootSignature,
-		                    std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData,
-		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
-							uint32_t set);
-
 		std::vector<VkDescriptorSet> m_vkDescriptorSetHandles;
 		TRAP::Ref<VulkanRootSignature> m_rootSignature;
 		//Values passed to vkUpdateDescriptorSetWithTemplate.

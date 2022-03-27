@@ -153,7 +153,7 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixe
 		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
 		return API::ImageFormat::Undefined;
 	}
-	else if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
+	if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
 	{
 		if(bpp == 16)
 			return API::ImageFormat::R8G8_UNORM;
@@ -165,12 +165,12 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixe
 		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
 		return API::ImageFormat::Undefined;
 	}
-	else if(colorFormat == Image::ColorFormat::RGB)
+	if(colorFormat == Image::ColorFormat::RGB)
 	{
 		TRAP_ASSERT(false, "Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
 		return API::ImageFormat::Undefined;
 	}
-	else if(colorFormat == Image::ColorFormat::RGBA)
+	if(colorFormat == Image::ColorFormat::RGBA)
 	{
 		if(bpp == 32)
 			return API::ImageFormat::R8G8B8A8_UNORM;
@@ -245,7 +245,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 {
 	if(img->GetBitsPerChannel() == 32)
 	{
-		std::vector<float> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
+		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+														    static_cast<std::size_t>(img->GetColorFormat()));
 		for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 		{
 			const uint32_t offset = y * img->GetWidth();
@@ -261,9 +262,10 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 		}
 		return TRAP::Image::LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
-	else if(img->GetBitsPerChannel() == 16)
+	if(img->GetBitsPerChannel() == 16)
 	{
-		std::vector<uint16_t> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
+		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+															   static_cast<std::size_t>(img->GetColorFormat()));
 		for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 		{
 			const uint32_t offset = y * img->GetWidth();
@@ -280,7 +282,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 		return TRAP::Image::LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 
-	std::vector<uint8_t> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
+	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+								 static_cast<std::size_t>(img->GetColorFormat()));
 	for(uint32_t y = 0, destCol = img->GetHeight() - 1; y < img->GetHeight(); ++y, --destCol)
 	{
 		const uint32_t offset = y * img->GetWidth();
@@ -304,7 +307,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 {
 	if(img->GetBitsPerChannel() == 32)
 	{
-		std::vector<float> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
+		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+								   static_cast<std::size_t>(img->GetColorFormat()));
 		std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
@@ -328,9 +332,9 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 
 		return TRAP::Image::LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
-	else if(img->GetBitsPerChannel() == 16)
+	if(img->GetBitsPerChannel() == 16)
 	{
-		std::vector<uint16_t> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
+		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() * static_cast<std::size_t>(img->GetColorFormat()));
 		std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
@@ -355,7 +359,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 		return TRAP::Image::LoadFromMemory(img->GetWidth(), img->GetHeight(), img->GetColorFormat(), rotated);
 	}
 
-	std::vector<uint8_t> rotated(img->GetWidth() * img->GetHeight() * static_cast<uint32_t>(img->GetColorFormat()));
+	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
+								 static_cast<std::size_t>(img->GetColorFormat()));
 	std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
 	for(uint32_t x = 0; x < img->GetWidth(); ++x)
 	{

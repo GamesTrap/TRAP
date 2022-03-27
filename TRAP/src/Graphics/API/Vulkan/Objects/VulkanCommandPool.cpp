@@ -58,7 +58,7 @@ VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
 
 TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {
-	m_commandBuffers.emplace_back(new VulkanCommandBuffer(m_device, m_queue, m_vkCommandPool, secondary));
+	m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary));
 	return m_commandBuffers.back().get();
 }
 

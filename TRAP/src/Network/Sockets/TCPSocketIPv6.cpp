@@ -159,9 +159,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 		FD_SET(GetHandle(), &selector);
 
 		//Setup the timeout
-		timeval time;
-		time.tv_sec = static_cast<long>(timeout.GetSeconds());
-		time.tv_usec = static_cast<long>(timeout.GetSeconds());
+		timeval time{};
+		time.tv_sec = static_cast<time_t>(timeout.GetSeconds());
+		time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
 
 		//Wait for something to write on our socket (which means that the connection request has returned)
 		if(select(static_cast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
@@ -201,7 +201,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* dat
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
 
-	std::size_t sent;
+	std::size_t sent = 0;
 
 	return Send(data, size, sent);
 }
@@ -219,7 +219,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* dat
 	}
 
 	//Loop until every byte has been sent
-	int32_t result;
+	ssize_t result = 0;
 	for(sent = 0; sent < size; sent += result)
 	{
 		//Send a chunk of data
@@ -257,7 +257,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* data, 
 	}
 
 	//Receive a chunk of bytes
-	const int32_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
+	const ssize_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
@@ -303,7 +303,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 		std::memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
 
 	//Send the data block
-	std::size_t sent;
+	std::size_t sent = 0;
 	const Status status = Send(&blockToSend[0] + packet.m_sendPos, blockToSend.size() - packet.m_sendPos, sent);
 
 	//In the case of a partial send, record the location to resume from
@@ -323,7 +323,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 	packet.Clear();
 
 	//We start by getting the size of the incoming packet
-	uint32_t packetSize;
+	uint32_t packetSize = 0;
 	std::size_t received = 0;
 	if(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 	{

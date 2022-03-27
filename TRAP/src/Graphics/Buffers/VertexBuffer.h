@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		static Scope<VertexBuffer> Create(uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
-		static Scope<VertexBuffer> Init(float* vertices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<VertexBuffer> Init(const float* vertices, uint64_t size, UpdateFrequency updateFrequency);
 
 		TRAP::Ref<TRAP::Graphics::Buffer> m_vertexBuffer;
 

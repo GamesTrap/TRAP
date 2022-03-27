@@ -204,7 +204,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="e">Framebuffer resize event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
+		static bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
 		/// <summary>
 		/// Handles key presses(ALT+Enter) for the main render window.
 		/// </summary>

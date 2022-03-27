@@ -295,7 +295,7 @@ int32_t TRAP::Events::WindowMoveEvent::GetY() const
 
 TRAP::Math::Vec2i TRAP::Events::WindowMoveEvent::GetPosition() const
 {
-	return Math::Vec2i(m_x, m_y);
+	return {m_x, m_y};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -532,7 +532,7 @@ float TRAP::Events::WindowContentScaleEvent::GetYScale() const
 
 TRAP::Math::Vec2 TRAP::Events::WindowContentScaleEvent::GetScale() const
 {
-	return Math::Vec2(m_XScale, m_YScale);
+	return {m_XScale, m_YScale};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -605,7 +605,7 @@ uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const
 
 TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const
 {
-	return Math::Vec2ui(m_width, m_height);
+	return {m_width, m_height};
 }
 
 

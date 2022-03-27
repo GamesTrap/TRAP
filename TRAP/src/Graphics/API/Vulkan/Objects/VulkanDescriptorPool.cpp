@@ -141,15 +141,15 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 		TRAP_ASSERT(dynamicOffsetCount == 1);
 	}
 
-	m_descriptorSets.emplace_back(new VulkanDescriptorSet(m_device, handles, rootSignature, updateData,
-	                                                      maxSets, dynamicOffsetCount, updateFreq));
+	m_descriptorSets.emplace_back(TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature, updateData,
+	                                                      			   maxSets, dynamicOffsetCount, updateFreq));
 
 	return m_descriptorSets.back().get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(const VkDescriptorSetLayout layout)
+VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
 {
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time

@@ -335,8 +335,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create()
 {
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
-	for(uint32_t i = 0; i < imgs.size(); ++i)
-		imgs[i] = TRAP::Image::LoadFallback();
+	for(auto& img : imgs)
+		img = TRAP::Image::LoadFallback();
 
 	return CreateFromImages("FallbackCube", imgs);
 }
@@ -420,11 +420,10 @@ void TRAP::Graphics::TextureCube::Update(const void* data, const uint32_t sizeIn
 
 TRAP::Graphics::TextureCube::TextureCube(std::string name, std::array<std::filesystem::path, 6> filepaths,
 										 const TextureCubeFormat format)
-	: m_textureFormat(format)
+	: m_filepaths(std::move(filepaths)), m_textureFormat(format)
 {
 	m_textureType = TextureType::TextureCube;
 	m_name = std::move(name);
-	m_filepaths = std::move(filepaths);
 
 	//Hot reloading
 	if(!TRAP::Application::IsHotReloadingEnabled())

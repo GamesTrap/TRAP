@@ -85,7 +85,7 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 	//Create the socket
 	const TRAP::Network::SocketHandle sock = socket(PF_INET6, SOCK_DGRAM, 0);
 	if (sock == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return IPv6Address();
+		return {};
 
 	//Connect the socket to localhost on any port
 	std::array<uint8_t, 16> loopback{};
@@ -98,7 +98,7 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 	if(connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return IPv6Address();
+		return {};
 	}
 
 	//Get the local address of the socket connection
@@ -106,7 +106,7 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 	if(getsockname(sock, reinterpret_cast<sockaddr*>(&address), &size) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return IPv6Address();
+		return {};
 	}
 
 	//Close the socket
@@ -135,7 +135,7 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Ut
 		return IPv6Address(page.GetBody());
 
 	//Something failed: return an invalid address
-	return IPv6Address();
+	return {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

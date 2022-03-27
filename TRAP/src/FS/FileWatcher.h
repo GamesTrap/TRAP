@@ -120,8 +120,8 @@ namespace TRAP::FS
         EventCallbackFn m_callback;
         std::vector<std::filesystem::path> m_paths;
         bool m_recursive;
-        bool m_run = true;
-        bool m_skipNextFileChange = false;
+        bool m_run;
+        bool m_skipNextFileChange;
 
 #ifdef TRAP_PLATFORM_WINDOWS
         HANDLE m_killEvent = nullptr;

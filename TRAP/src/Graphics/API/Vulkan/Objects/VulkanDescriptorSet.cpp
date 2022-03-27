@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 		: m_vkDescriptorSetHandles(std::move(vkDescriptorSetHandles)),
 		  m_rootSignature(std::move(rootSignature)),
 		  m_updateData(std::move(updateData)),
-		  m_dynamicSizeOffsets(dynamicOffsetCount * maxSets),
+		  m_dynamicSizeOffsets(static_cast<std::size_t>(dynamicOffsetCount) * maxSets),
 		  m_maxSets(maxSets),
 		  m_dynamicOffsetCount(dynamicOffsetCount),
 		  m_set(set),

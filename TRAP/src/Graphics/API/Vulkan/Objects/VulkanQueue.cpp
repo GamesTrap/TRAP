@@ -139,16 +139,17 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
 	std::size_t signalCount = 0;
-	for(std::size_t i = 0; i < desc.SignalSemaphores.size(); ++i)
+
+	for(const auto& signalSemaphore : desc.SignalSemaphores)
 	{
-		if(desc.SignalSemaphores[i]->IsSignaled())
+		if(signalSemaphore->IsSignaled())
 			continue;
 
 		signalSemaphores[signalCount] = dynamic_cast<VulkanSemaphore*>
 		(
-			desc.SignalSemaphores[i].get()
+			signalSemaphore.get()
 		)->GetVkSemaphore();
-		desc.SignalSemaphores[i]->m_signaled = true;
+		signalSemaphore->m_signaled = true;
 		++signalCount;
 	}
 

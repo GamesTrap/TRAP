@@ -111,7 +111,7 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(float* vertices, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* vertices, const uint64_t size,
  																		     const UpdateFrequency updateFrequency)
 {
 	TRAP::Scope<VertexBuffer> buffer = TRAP::Scope<VertexBuffer>(new VertexBuffer());

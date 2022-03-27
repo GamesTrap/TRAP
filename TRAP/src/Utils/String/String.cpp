@@ -119,13 +119,13 @@ std::string_view TRAP::Utils::String::GetBlockStringView(const char* str, const 
 {
 	const char* end = strstr(str, "}");
 	if (!end)
-		return std::string_view(str);
+		return {str};
 
 	if (outPosition)
 		*outPosition = end;
 	const auto length = static_cast<uint32_t>(end - str + 1);
 
-	return std::string_view(str, length);
+	return {str, length};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -143,13 +143,13 @@ std::string TRAP::Utils::String::GetBlock(const char* str, const char** outPosit
 {
 	const char* end = strstr(str, "}");
 	if (!end)
-		return std::string(str);
+		return {str};
 
 	if (outPosition)
 		*outPosition = end;
 	const auto length = static_cast<uint32_t>(end - str + 1);
 
-	return std::string(str, length);
+	return {str, length};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -167,13 +167,13 @@ std::string_view TRAP::Utils::String::GetStatementStringView(const char* str, co
 {
 	const char* end = strstr(str, ";");
 	if (!end)
-		return std::string_view(str);
+		return {str};
 
 	if (outPosition)
 		*outPosition = end;
 	const auto length = static_cast<uint32_t>(end - str + 1);
 
-	return std::string_view(str, length);
+	return {str, length};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -182,13 +182,13 @@ std::string TRAP::Utils::String::GetStatement(const char* str, const char** outP
 {
 	const char* end = strstr(str, ";");
 	if (!end)
-		return std::string(str);
+		return {str};
 
 	if (outPosition)
 		*outPosition = end;
 	const auto length = static_cast<uint32_t>(end - str + 1);
 
-	return std::string(str, length);
+	return {str, length};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

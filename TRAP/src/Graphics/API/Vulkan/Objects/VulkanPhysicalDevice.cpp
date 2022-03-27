@@ -168,8 +168,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 		if(win)
 		{
 			VkSurfaceKHR surface = VK_NULL_HANDLE;
-			VkResult res;
-			res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win.get(), nullptr, surface);
+			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win.get(), nullptr, surface);
 
 			if(surface != VK_NULL_HANDLE && res == VK_SUCCESS)
 			{
@@ -187,10 +186,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, nullptr));
 					std::vector<VkSurfaceFormatKHR> surfFormats(surfFormatCount);
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, surfFormats.data()));
-					if(!surfFormats.empty()) //Passed Surface format check
-						RendererAPI::GPUSettings.SurfaceSupported = true;
-					else
-						RendererAPI::GPUSettings.SurfaceSupported = false;
+					RendererAPI::GPUSettings.SurfaceSupported = !surfFormats.empty(); //Finished Surface format check
 				}
 				else
 					RendererAPI::GPUSettings.SurfaceSupported = false;
@@ -575,7 +571,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 		for(const std::string& ext : reqExt)
 			instanceExtensions.push_back(ext);
-		VkInstance instance;
+		VkInstance instance = VK_NULL_HANDLE;
 		std::vector<const char*> instExtensions(instanceExtensions.size());
 		for (uint32_t i = 0; i < instExtensions.size(); i++)
 			instExtensions[i] = instanceExtensions[i].c_str();
@@ -611,8 +607,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		//Required: Check if Surface can be created
 		//Disabled in Headless mode
 #ifndef TRAP_HEADLESS_MODE
-		VkSurfaceKHR surface;
-		VkResult res;
+		VkSurfaceKHR surface = VK_NULL_HANDLE;
+		VkResult res{};
 		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr,
 		                                                               surface));
 		if(!surface || res != VK_SUCCESS)

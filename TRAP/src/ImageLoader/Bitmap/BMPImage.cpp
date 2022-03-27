@@ -144,8 +144,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	std::vector<uint8_t> colorTable{};
 	if (m_bitsPerPixel <= 8 && infoHeader.CLRUsed)
 	{
-		colorTable.resize(4 * infoHeader.CLRUsed);
-		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * infoHeader.CLRUsed))
+		colorTable.resize(static_cast<std::size_t>(4u) * infoHeader.CLRUsed);
+		if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * static_cast<std::streamsize>(infoHeader.CLRUsed)))
 		{
 			file.close();
 			TP_ERROR(Log::ImageBMPPrefix, "Couldn't load color map data!");
@@ -178,12 +178,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	if ((m_bitsPerPixel != 32 && infoHeader.Compression == 0) &&
 	    4 - (((m_bitsPerPixel / 8) * m_width) % 4) != 4) //Padding
 	{
-		imageData.resize(m_width * m_height * (m_bitsPerPixel / 8));
+		imageData.resize(static_cast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
 		uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
 		uint32_t offset = 0;
 		for (uint32_t j = 0; j < m_height; j++)
 		{
-			if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset, m_width * (m_bitsPerPixel / 8)))
+			if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset,
+			              static_cast<std::streamsize>(m_width) * (m_bitsPerPixel / 8)))
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
@@ -201,8 +202,9 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	{
 		if (infoHeader.Compression != 1)
 		{
-			imageData.resize(m_width * m_height * (m_bitsPerPixel / 8));
-			if(!file.read(reinterpret_cast<char*>(imageData.data()), m_width * m_height * (m_bitsPerPixel / 8)))
+			imageData.resize(static_cast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
+			if(!file.read(reinterpret_cast<char*>(imageData.data()),
+						  static_cast<std::streamsize>(m_width) * m_height * (m_bitsPerPixel / 8)))
 			{
 				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Couldn't load pixel data!");
@@ -291,7 +293,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			//Compressed Grayscale
 			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 8;
-			m_data.resize(m_width * m_height);
+			m_data.resize(static_cast<std::size_t>(m_width) * m_height);
 
 			//Decode Single Channel RLE 8
 			DecodeRLE8(imageData, nullptr);
@@ -301,7 +303,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			//Compressed Palette
 			m_colorFormat = ColorFormat::RGBA;
 			m_bitsPerPixel = 32;
-			m_data.resize(m_width* m_height * 4);
+			m_data.resize(static_cast<std::size_t>(m_width) * m_height * 4);
 
 			//Decode Multi Channel RLE 8
 			DecodeRLE8(imageData, &colorTable);
@@ -451,8 +453,8 @@ bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFie
 
 bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask)
 {
-	uint32_t bit;
-	for (bit = 0; bit < 32 && !(mask & (static_cast<uint32_t>(1) << bit)); bit++);
+	uint32_t bit = 0;
+	for (; bit < 32 && !(mask & (static_cast<uint32_t>(1) << bit)); bit++);
 
 	if(bit >= 32)
 	{
@@ -466,10 +468,7 @@ bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mas
 	field.Span = bit - field.Start;
 
 	//If there are more set bits, there was a gap, which is invalid
-	if (bit < 32 && (mask & ~((static_cast<uint32_t>(1) << bit) - 1)))
-		return false;
-
-	return true;
+	return !(bit < 32 && (mask & ~((static_cast<uint32_t>(1) << bit) - 1)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -513,7 +512,7 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 	std::vector<uint8_t>* colorTable)
 {
 	int32_t x = 0, y = 0;
-	uint8_t t, r;
+	uint8_t t = 0, r = 0;
 
 	uint32_t dataIndex = 0;
 

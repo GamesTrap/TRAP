@@ -15,8 +15,8 @@ int64_t CurrentAppID = 639903785971613728;
 TRAP::Utils::Discord::Activity CurrentActivity{};
 
 //Forward declares
-void DiscordLogger(const discord::LogLevel logLevel, const char* msg);
-void DiscordLogResult(const discord::Result res);
+void DiscordLogger(discord::LogLevel logLevel, const char* msg);
+void DiscordLogResult(discord::Result res);
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

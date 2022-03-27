@@ -67,8 +67,10 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		//RGB
 		m_colorFormat = ColorFormat::RGB;
 		m_bitsPerPixel = 96;
-		m_data.resize(m_width * m_height * 3);
-		if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3 * sizeof(float)))
+		m_data.resize(static_cast<std::size_t>(m_width) * m_height * 3);
+		if (!file.read(reinterpret_cast<char*>(m_data.data()),
+					   static_cast<std::streamsize>(m_width) * m_height * 3 *
+                       static_cast<std::streamsize>(sizeof(float))))
 		{
 			file.close();
 			m_data.clear();
@@ -90,8 +92,10 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 		//GrayScale
 		m_colorFormat = ColorFormat::GrayScale;
 		m_bitsPerPixel = 32;
-		m_data.resize(m_width* m_height);
-		if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * sizeof(float)))
+		m_data.resize(static_cast<std::size_t>(m_width) * m_height);
+		if (!file.read(reinterpret_cast<char*>(m_data.data()),
+					   static_cast<std::streamsize>(m_width) * m_height *
+					   static_cast<std::streamsize>(sizeof(float))))
 		{
 			file.close();
 			m_data.clear();

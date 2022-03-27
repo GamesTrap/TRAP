@@ -133,7 +133,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& sour
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height * 3);
+	data.resize(static_cast<std::size_t>(width) * height * 3);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < width * height * 2; i += 2)
@@ -177,18 +177,18 @@ std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, co
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height * channels);
+	data.resize(static_cast<std::size_t>(width) * height * channels);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < width * height; i++)
 	{
 		if (channels == 1)
-			data[index++] = colorMap[source[i] * channels];
+			data[index++] = colorMap[static_cast<std::size_t>(source[i]) * channels];
 		else if (channels == 2)
 		{
 			data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
-			data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8;
-			data[index++] = (colorMap[source[i] * channels] << 3) & 0xF8;
+			data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2)) & 0xF8;
+			data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3) & 0xF8;
 		}
 		else if (channels == 3)
 		{

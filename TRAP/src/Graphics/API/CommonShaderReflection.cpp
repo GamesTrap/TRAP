@@ -25,7 +25,7 @@ bool ShaderVariableCmp(TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
 	isSame = isSame && (a.Name.size() == b.Name.size());
 
 	//Early exit before string cmp
-	if (isSame == false)
+	if (!isSame)
 		return isSame;
 
 	isSame = a.Name == b.Name;

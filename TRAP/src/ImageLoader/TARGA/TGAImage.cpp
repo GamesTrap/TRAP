@@ -69,9 +69,9 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	if (header.ColorMapType == 1)
 	{
-		colorMapData.ColorMap.resize((header.ColorMapDepth / 8) * header.NumOfColorMaps);
+		colorMapData.ColorMap.resize(static_cast<std::size_t>(header.ColorMapDepth / 8) * header.NumOfColorMaps);
 		if(!file.read(reinterpret_cast<char*>(colorMapData.ColorMap.data()),
-		              (header.ColorMapDepth / 8) * header.NumOfColorMaps))
+		              static_cast<std::streamsize>(header.ColorMapDepth / 8) * header.NumOfColorMaps))
 		{
 			file.close();
 			TP_ERROR(Log::ImageTGAPrefix, "Couldn't load color map!");
@@ -131,9 +131,11 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	else
 	{
-		colorMapData.ImageData.resize(header.Width* header.Height* (header.BitsPerPixel / 8));
+		colorMapData.ImageData.resize(static_cast<std::size_t>(header.Width) * header.Height *
+		                              (header.BitsPerPixel / 8));
 		if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()),
-		                                       header.Width * header.Height * (header.BitsPerPixel / 8)))
+		                                       static_cast<std::streamsize>(header.Width) *
+											   header.Height * (header.BitsPerPixel / 8)))
 		{
 			file.close();
 			TP_ERROR(Log::ImageTGAPrefix, "Couldn't read pixel data!");
@@ -338,7 +340,7 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height * channels);
+	data.resize(static_cast<std::size_t>(width) * height * channels);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -361,15 +363,16 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 		{
 			if (channels == 1)
 			{
-				data[index++] = colorMap[source[i] * channels];
+				data[index++] = colorMap[static_cast<std::size_t>(source[i]) * channels];
 				l++;
 			}
 			else if (channels == 2)
 			{
 				data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
-				data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2))
+				data[index++] = ((colorMap[source[i] * channels + 1] << 6) |
+				                (colorMap[static_cast<std::size_t>(source[i]) * channels] >> 2))
 				                & 0xF8;
-				data[index++] = (colorMap[source[i] * channels] << 3) & 0xF8;
+				data[index++] = (colorMap[static_cast<std::size_t>(source[i]) * channels] << 3) & 0xF8;
 			}
 			else if (channels == 3)
 			{
@@ -405,7 +408,7 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<ui
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height);
+	data.resize(static_cast<std::size_t>(width) * height);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -447,7 +450,7 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vecto
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height * 3);
+	data.resize(static_cast<std::size_t>(width) * height * 3);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -490,7 +493,7 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vecto
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height * 3);
+	data.resize(static_cast<std::size_t>(width) * height * 3);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)
@@ -533,7 +536,7 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vecto
 	TP_PROFILE_FUNCTION();
 
 	std::vector<uint8_t> data{};
-	data.resize(width * height * 4);
+	data.resize(static_cast<std::size_t>(width) * height * 4);
 
 	uint32_t index = 0;
 	for (uint32_t i = 0, l = 0; i < source.size();)

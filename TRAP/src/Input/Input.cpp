@@ -180,7 +180,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
 	TP_PROFILE_FUNCTION();
 
-	double xPos, yPos;
+	double xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), xPos, yPos);
 
@@ -199,7 +199,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
 		return TRAP::Math::Vec2{};
 	}
 
-	double xPos, yPos;
+	double xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (window->GetInternalWindow()), xPos, yPos);
 
@@ -545,7 +545,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 																	const int32_t buttonCount,
 																	const int32_t dpadCount)
 {
-	uint32_t cID;
+	uint32_t cID = 0;
 	for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
@@ -578,10 +578,10 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* con, const int
 {
 	const int32_t base = con->ButtonCount + dpad * 4;
 
-	con->Buttons[base + 0] = (value & BIT(0)) ? true : false; //Up
-	con->Buttons[base + 1] = (value & BIT(1)) ? true : false; //Right
-	con->Buttons[base + 2] = (value & BIT(2)) ? true : false; //Down
-	con->Buttons[base + 3] = (value & BIT(3)) ? true : false; //Left
+	con->Buttons[base + 0] = (value & BIT(0)); //Up
+	con->Buttons[base + 1] = (value & BIT(1)); //Right
+	con->Buttons[base + 2] = (value & BIT(2)); //Down
+	con->Buttons[base + 3] = (value & BIT(3)); //Left
 
 	if (con->Buttons[base + 1] && con->Buttons[base + 0])
 		con->DPads[dpad] = ControllerDPad::Right_Up;
@@ -626,7 +626,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 {
 	struct Fields
 	{
-		std::string Name = "";
+		std::string Name;
 		MapElement* Element = nullptr;
 	};
 	std::array<Fields, 22> fields =
@@ -720,7 +720,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 				        splittedString[1]);
 				return false;
 			}
-			else if (!std::isalnum(static_cast<int8_t>(c)))
+			if (!std::isalnum(static_cast<int8_t>(c)))
 			{
 				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", static_cast<uint32_t>(i),
 				         "! Mapping: ", splittedString[1]);
@@ -729,8 +729,8 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		}
 
 		bool found = false;
-		uint8_t j;
-		for (j = 0; j < fields.size(); j++)
+		uint8_t j = 0;
+		for (j = 0; j < static_cast<uint8_t>(fields.size()); j++)
 		{
 			if (fields[j].Name == splittedField[0])
 			{
@@ -779,13 +779,13 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 
 			if (e->Type == 1) //Axis
 			{
-				e->AxisScale = 2 / (maximum - minimum);
-				e->AxisOffset = -(maximum + minimum);
+				e->AxisScale = static_cast<int8_t>(2 / (maximum - minimum));
+				e->AxisOffset = static_cast<int8_t>(-(maximum + minimum));
 
 				if (splittedField[1][charOffset] == '~')
 				{
-					e->AxisScale = -e->AxisScale;
-					e->AxisOffset = -e->AxisOffset;
+					e->AxisScale = static_cast<int8_t>(-e->AxisScale);
+					e->AxisOffset = static_cast<int8_t>(-e->AxisOffset);
 				}
 			}
 		}
@@ -832,7 +832,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 	if(!mapping)
 		return nullptr;
 
-	uint8_t i;
+	uint8_t i = 0;
 
 	for(i = 0; i <= static_cast<uint8_t>(ControllerButton::DPad_Left); i++)
 	{

@@ -17,11 +17,14 @@
 #include "Vulkan/Objects/VulkanCommandBuffer.h"
 #include "Vulkan/Objects/VulkanTexture.h"
 
-#ifndef MIP_REDUCE
-#define MIP_REDUCE(s, mip) (TRAP::Math::Max(1u, static_cast<uint32_t>((s) >> (mip))))
-#endif /*MIP_REDUCE*/
-
 TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20, 2};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+static constexpr uint32_t MIP_REDUCE(uint32_t size, uint32_t mip)
+{
+	return TRAP::Math::Max(1u, size >> mip);
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -226,8 +229,8 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 															 uint64_t* outNumRows)
 {
 	uint64_t numBytes = 0;
-	uint64_t rowBytes;
-	uint64_t numRows;
+	uint64_t rowBytes = 0;
+	uint64_t numRows = 0;
 
 	const uint32_t bpp = TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt);
 	const bool compressed = TRAP::Graphics::API::ImageFormatIsCompressed(fmt);
@@ -246,7 +249,7 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 		if(height > 0)
 			numBlocksHigh = Math::Max(1u, (height + (blockHeight - 1)) / blockHeight);
 
-		rowBytes = numBlocksWide * (bpp >> 3);
+		rowBytes = static_cast<uint64_t>(numBlocksWide) * (bpp >> 3u);
 		numRows = numBlocksHigh;
 		numBytes = rowBytes * numBlocksHigh;
 	}
@@ -260,7 +263,7 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 		const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(fmt);
 
 		for(uint32_t i = 0; i < numOfPlanes; ++i)
-			numBytes += TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width) *
+			numBytes += static_cast<uint64_t>(TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width)) *
 			            TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height) *
 						TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
 
@@ -478,7 +481,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	desc.DstRowStride = ((desc.SrcRowStride + rowAlignment - 1) / rowAlignment) * rowAlignment;
 	desc.DstSliceStride = (((desc.DstRowStride * desc.RowCount) + alignment - 1) / alignment) * alignment;
 
-	const int64_t requiredSize = ((MIP_REDUCE(texture->GetDepth(), desc.MipLevel) *
+	const uint64_t requiredSize = ((MIP_REDUCE(texture->GetDepth(), desc.MipLevel) *
 	                               desc.DstRowStride * desc.RowCount + alignment - 1) / alignment) * alignment;
 
 	//We need to use a staging buffer
@@ -606,7 +609,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc,
                                                             SyncToken* token)
 {
-	SyncToken t;
+	SyncToken t{};
 	{
 		std::lock_guard<std::mutex> lock(m_queueMutex);
 
@@ -630,7 +633,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc,
 											               SyncToken* token)
 {
-	SyncToken t;
+	SyncToken t{};
 	{
 		std::lock_guard<std::mutex> lock(m_queueMutex);
 
@@ -653,7 +656,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 {
 	TRAP_ASSERT(textureUpdate.Range.Buffer);
 
-	SyncToken t;
+	SyncToken t{};
 	{
 		std::lock_guard<std::mutex> lock(m_queueMutex);
 
@@ -677,7 +680,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
                                                               const RendererAPI::ResourceState state, SyncToken* token)
 {
-	SyncToken t;
+	SyncToken t{};
 	{
 		std::lock_guard<std::mutex> lock(m_queueMutex);
 
@@ -867,10 +870,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 
 bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const
 {
-	if (!m_requestQueue.empty())
-		return true;
-
-	return false;
+	return !m_requestQueue.empty();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -917,7 +917,7 @@ TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<TRAP::Graphics::TextureBase> texture,
+void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
                                                                 CommandBuffer* cmd)
 {
 	//Check if image format supports linear blitting
@@ -942,8 +942,8 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 	barrier.ArrayLayer = 0;
 	barrier.SubresourceBarrier = true;
 
-	int32_t mipWidth = texture->GetWidth();
-	int32_t mipHeight = texture->GetHeight();
+	int32_t mipWidth = static_cast<int32_t>(texture->GetWidth());
+	int32_t mipHeight = static_cast<int32_t>(texture->GetHeight());
 
 	for(uint32_t i = 1; i < texture->GetMipLevels(); ++i)
 	{
@@ -1012,7 +1012,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 {
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
-	const bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer ? true : false;
+	const bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer != nullptr;
 	const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = textureUpdateDesc.Texture;
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
 	CommandBuffer* cmd = AcquireCmd(activeSet);
@@ -1202,8 +1202,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 					valid = false;
 					break;
 				}
-				else if (images[0]->GetColorFormat() != images[i]->GetColorFormat() ||
-					     images[0]->GetBitsPerPixel() != images[i]->GetBitsPerPixel())
+				if (images[0]->GetColorFormat() != images[i]->GetColorFormat() ||
+					images[0]->GetBitsPerPixel() != images[i]->GetBitsPerPixel())
 				{
 					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching color formats and/or bits per pixel!");
 					valid = false;

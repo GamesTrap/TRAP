@@ -33,6 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "WindowingAPI.h"
 #include "Application.h"
+#include "Utils/Utils.h"
 
 //Action for EWMH client messages
 static constexpr int32_t _NET_WM_STATE_REMOVE = 0;
@@ -43,11 +44,13 @@ static constexpr int32_t _NET_WM_STATE_TOGGLE = 2;
 int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* mi)
 {
 	if(mi->hTotal && mi->vTotal)
+	{
 		return static_cast<int32_t>(TRAP::Math::Round(static_cast<double>(mi->dotClock) /
 		                                              (static_cast<double>(mi->hTotal) *
 													  static_cast<double>(mi->vTotal))));
-	else
-		return 0;
+	}
+
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -59,13 +62,13 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Vi
 
 	if(ci->rotation == RR_Rotate_90 || ci->rotation == RR_Rotate_270)
 	{
-		mode.Width = mi->height;
-		mode.Height = mi->width;
+		mode.Width = static_cast<int32_t>(mi->height);
+		mode.Height = static_cast<int32_t>(mi->width);
 	}
 	else
 	{
-		mode.Width = mi->width;
-		mode.Height = mi->height;
+		mode.Width = static_cast<int32_t>(mi->width);
+		mode.Height = static_cast<int32_t>(mi->height);
 	}
 
 	mode.RefreshRate = CalculateRefreshRate(mi);
@@ -78,8 +81,8 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Vi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sends an EWMH or ICCCM event to the window manager
-void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* window, Atom type, long a, long b,
-                                                 long c, long d, long e)
+void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* window, Atom type, int64_t a, int64_t b,
+                                                 int64_t c, int64_t d, int64_t e)
 {
 	XEvent event = { ClientMessage };
 	event.xclient.window = window->Handle;
@@ -117,11 +120,11 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* fds, nfds_t count, double
 	{
 		if(timeout)
 		{
-			const uint64_t base = TRAP::Application::GetTime();
+			const uint64_t base = static_cast<uint64_t>(TRAP::Application::GetTime());
 
 #if defined(__linux__) || defined(__FreeBDS__) || defined(__OpenBSD__) || defined(__CYGWIN__)
 			const time_t seconds = static_cast<time_t>(*timeout);
-			const long nanoseconds = static_cast<long>((*timeout - seconds) * 1e9);
+			const int64_t nanoseconds = static_cast<int64_t>((*timeout - static_cast<double>(seconds)) * 1e9);
 			const timespec ts = {seconds, nanoseconds};
 			const int32_t result = ppoll(fds, count, &ts, nullptr);
 #elif defined(__NetBSD__)
@@ -136,13 +139,11 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* fds, nfds_t count, double
 
 			const int32_t error = errno;
 
-			*timeout -= (TRAP::Application::GetTime() - base) / 60.0;
+			*timeout -= (TRAP::Application::GetTime() - static_cast<float>(base)) / 60.0;
 
 			if(result > 0)
 				return true;
-			else if(result == -1 && error != EINTR && error != EAGAIN)
-				return false;
-			else if(*timeout <= 0.0)
+			if((result == -1 && error != EINTR && error != EAGAIN) || *timeout <= 0.0)
 				return false;
 		}
 		else
@@ -150,7 +151,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* fds, nfds_t count, double
 			const int result = poll(fds, count, -1);
 			if(result > 0)
 				return true;
-			else if(result == -1 && errno != EINTR && errno != EAGAIN)
+			if(result == -1 && errno != EINTR && errno != EAGAIN)
 				return false;
 		}
 	}
@@ -178,7 +179,7 @@ void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
 	while(true)
 	{
 		const char byte = 0;
-		const int32_t result = write(s_Data.EmptyEventPipe[1], &byte, 1);
+		const ssize_t result = write(s_Data.EmptyEventPipe[1], &byte, 1);
 		if(result == 1 || (result == -1 && errno != EINTR))
 			break;
 	}
@@ -191,7 +192,7 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 	while(true)
 	{
 		std::array<char, 64> dummy{};
-		const int32_t result = read(s_Data.EmptyEventPipe[0], dummy.data(), dummy.size());
+		const ssize_t result = read(s_Data.EmptyEventPipe[0], dummy.data(), dummy.size());
 		if(result == -1 && errno != EINTR)
 			break;
 	}
@@ -203,7 +204,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateEmptyEventPipe()
 {
 	if(pipe(s_Data.EmptyEventPipe.data()) != 0)
 	{
-		InputError(Error::Platform_Error, "X11: Failed to create empty event pipe: " + std::string(strerror(errno)));
+		InputError(Error::Platform_Error, "X11: Failed to create empty event pipe: " + Utils::GetStrError());
 		return false;
 	}
 
@@ -216,7 +217,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateEmptyEventPipe()
 		   fcntl(fd, F_SETFL, sf | O_NONBLOCK) == -1 ||
 		   fcntl(fd, F_SETFD, df | FD_CLOEXEC) == -1)
 		{
-			InputError(Error::Platform_Error, "X11: Failed to set flags for empty event pipe: " + std::string(strerror(errno)));
+			InputError(Error::Platform_Error, "X11: Failed to set flags for empty event pipe: " + Utils::GetStrError());
 			return false;
 		}
 	}
@@ -227,12 +228,12 @@ bool TRAP::INTERNAL::WindowingAPI::CreateEmptyEventPipe()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieve a single window property of the specified type
-unsigned long TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, Atom property, Atom type,
+uint64_t TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, Atom property, Atom type,
                                                                  uint8_t** value)
 {
 	Atom actualType{};
 	int32_t actualFormat{};
-	unsigned long itemCount{}, bytesAfter{};
+	uint64_t itemCount{}, bytesAfter{};
 
 	s_Data.XLIB.GetWindowProperty(s_Data.display,
 					              window,
@@ -330,7 +331,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 			SendEventToWM(window,
 						  s_Data.NET_WM_STATE,
 						  1,
-						  s_Data.NET_WM_STATE_FULLSCREEN,
+						  static_cast<int64_t>(s_Data.NET_WM_STATE_FULLSCREEN),
 						  0, 1, 0);
 		}
 		else
@@ -352,7 +353,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 		//Enable compositor bypass
 		if(!window->Transparent)
 		{
-			unsigned long value = 1;
+			uint64_t value = 1;
 
 			s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_BYPASS_COMPOSITOR, XA_CARDINAL,
 			                           32, PropModeReplace, reinterpret_cast<uint8_t*>(&value), 1);
@@ -368,7 +369,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 			SendEventToWM(window,
 						  s_Data.NET_WM_STATE,
 						  0,
-						  s_Data.NET_WM_STATE_FULLSCREEN,
+						  static_cast<int64_t>(s_Data.NET_WM_STATE_FULLSCREEN),
 						  0, 1, 0);
 		}
 		else
@@ -424,7 +425,7 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 			if(s_Data.XRM.GetResource(db, "Xft.dpi", "Xft.Dpi", &type, &value))
 			{
 				if(type && strcmp(type, "String") == 0)
-					xDPI = yDPI = std::atof(value.addr);
+					xDPI = yDPI = static_cast<float>(std::atof(value.addr));
 			}
 
 			s_Data.XRM.DestroyDatabase(db);
@@ -599,7 +600,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 
 	if(s_Data.XKB.Available)
 	{
-		int32_t supported;
+		int32_t supported = 0;
 
 		if(s_Data.XKB.SetDetectableAutoRepeat(s_Data.display, 1, &supported))
 		{
@@ -781,7 +782,7 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 	//It should contain a list of supported EWMH protocl and state atoms
 
 	Atom* supportedAtoms = nullptr;
-	const unsigned long atomCount = GetWindowPropertyX11(s_Data.Root, s_Data.NET_SUPPORTED, XA_ATOM,
+	const uint64_t atomCount = GetWindowPropertyX11(s_Data.Root, s_Data.NET_SUPPORTED, XA_ATOM,
 	                                                     reinterpret_cast<uint8_t**>(&supportedAtoms));
 
 	//See which of the atoms we support that are supported by the WM
@@ -843,11 +844,11 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Return the atom ID only if it is listed in the specified array
-Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(Atom* supportedAtoms, unsigned long atomCount, const char* atomName)
+Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, const char* atomName)
 {
 	const Atom atom = s_Data.XLIB.InternAtom(s_Data.display, atomName, 0);
 
-	for(unsigned long i = 0; i < atomCount; i++)
+	for(uint64_t i = 0; i < atomCount; i++)
 	{
 		if(supportedAtoms[i] == atom)
 			return atom;
@@ -861,10 +862,10 @@ Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(Atom* supportedAtoms, unsi
 //Create a blank cursor for hidden and disabled cursor modes
 Cursor TRAP::INTERNAL::WindowingAPI::CreateHiddenCursor()
 {
-	std::array<uint8_t, 16 * 16 * 4> pixels = {0};
-	return CreateCursorX11(std::move(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA,
-	                                                             std::vector<uint8_t>(pixels.begin(),
-																 pixels.end()))), 0, 0);
+	std::array<uint8_t, static_cast<std::size_t>(16) * 16 * 4> pixels = {0};
+	return CreateCursorX11(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA,
+	                                                           std::vector<uint8_t>(pixels.begin(),
+															   pixels.end())), 0, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -905,7 +906,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display*, XPoi
 	if(s_Data.IM)
 		return;
 
-	s_Data.IM = s_Data.XLIB.OpenIM(s_Data.display, 0, nullptr, nullptr);
+	s_Data.IM = s_Data.XLIB.OpenIM(s_Data.display, nullptr, nullptr, nullptr);
 	if(s_Data.IM)
 	{
 		if(!HasUsableInputMethodStyle())
@@ -918,7 +919,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display*, XPoi
 	if(s_Data.IM)
 	{
 		XIMCallback callback{};
-		callback.callback = (XIMProc)InputMethodDestroyCallback;
+		callback.callback = static_cast<XIMProc>(InputMethodDestroyCallback);
 		callback.client_data = nullptr;
 		s_Data.XLIB.SetIMValues(s_Data.IM, XNDestroyCallback, &callback, nullptr);
 
@@ -938,7 +939,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		return;
 	}
 
-	int32_t disconnectedCount, screenCount = 0;
+	int32_t disconnectedCount = 0, screenCount = 0;
 	std::vector<InternalMonitor*> disconnected{};
 	XineramaScreenInfo* screens = nullptr;
 	XRRScreenResources* sr = s_Data.RandR.GetScreenResourcesCurrent(s_Data.display, s_Data.Root);
@@ -947,7 +948,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(s_Data.Xinerama.Available)
 		screens = s_Data.Xinerama.QueryScreens(s_Data.display, &screenCount);
 
-	disconnectedCount = s_Data.Monitors.size();
+	disconnectedCount = static_cast<int32_t>(s_Data.Monitors.size());
 	if(disconnectedCount)
 	{
 		disconnected.resize(s_Data.Monitors.size());
@@ -957,7 +958,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 	for(int32_t i = 0; i < sr->noutput; i++)
 	{
-		int32_t j, type;
+		int32_t j = 0, type = 0;
 
 		XRROutputInfo* oi = s_Data.RandR.GetOutputInfo(s_Data.display, sr, sr->outputs[i]);
 		if(oi->connection != RR_Connected || oi->crtc == 0)
@@ -1075,12 +1076,12 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 
 		Atom* targets = nullptr;
 
-		unsigned long count = GetWindowPropertyX11(request->requestor, request->property, s_Data.ATOM_PAIR,
+		uint64_t count = GetWindowPropertyX11(request->requestor, request->property, s_Data.ATOM_PAIR,
 		                                      reinterpret_cast<uint8_t**>(&targets));
 
-		for(unsigned long i = 0; i < count; i += 2)
+		for(uint64_t i = 0; i < count; i += 2)
 		{
-			uint32_t j;
+			uint32_t j = 0;
 
 			for(j = 0; j < formats.size(); j++)
 				if(targets[i] == formats[j])
@@ -1089,13 +1090,13 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 			if(j < formats.size())
 				s_Data.XLIB.ChangeProperty(s_Data.display, request->requestor, targets[i + 1], targets[i], 8,
 				                           PropModeReplace, reinterpret_cast<uint8_t*>(selectionString.data()),
-										   selectionString.size());
+										   static_cast<int>(selectionString.size()));
 			else
 				targets[i + 1] = 0;
 		}
 
 		s_Data.XLIB.ChangeProperty(s_Data.display, request->requestor, request->property, s_Data.ATOM_PAIR, 32,
-                                   PropModeReplace, reinterpret_cast<uint8_t*>(targets), count);
+                                   PropModeReplace, reinterpret_cast<uint8_t*>(targets), static_cast<int>(count));
 
 		s_Data.XLIB.Free(targets);
 
@@ -1115,15 +1116,15 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 
 	//Conversion to a data target was requested
 
-	for(uint32_t i = 0; i < formats.size(); i++)
+	for(Atom format : formats)
 	{
-		if(request->target == formats[i])
+		if(request->target == format)
 		{
 			//The requested target is one we support
 
 			s_Data.XLIB.ChangeProperty(s_Data.display, request->requestor, request->property, request->target, 8,
 						               PropModeReplace, reinterpret_cast<uint8_t*>(selectionString.data()),
-									   selectionString.size());
+									   static_cast<int>(selectionString.size()));
 
 			return request->property;
 		}
@@ -1227,9 +1228,9 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow* window)
 	XWindowAttributes attribs;
 	s_Data.XLIB.GetWindowAttributes(s_Data.display, window->Handle, &attribs);
 
-	unsigned long filter = 0;
+	uint64_t filter = 0;
 	if(s_Data.XLIB.GetICValues(window->IC, XNFilterEvents, &filter, nullptr) == nullptr)
-		s_Data.XLIB.SelectInput(s_Data.display, window->Handle, attribs.your_event_mask | filter);
+		s_Data.XLIB.SelectInput(s_Data.display, window->Handle, static_cast<int64_t>(attribs.your_event_mask | filter));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1249,8 +1250,8 @@ bool TRAP::INTERNAL::WindowingAPI::IsVisualTransparentX11(Visual* visual)
 bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, WindowConfig& WNDConfig,
                                                       Visual* visual, int32_t depth)
 {
-	int32_t width = WNDConfig.Width;
-	int32_t height = WNDConfig.Height;
+	int32_t width = static_cast<int32_t>(WNDConfig.Width);
+	int32_t height = static_cast<int32_t>(WNDConfig.Height);
 
 	//Create a colormap based on the visual used by the current context
 	window->colormap = s_Data.XLIB.CreateColormap(s_Data.display, s_Data.Root, visual, AllocNone);
@@ -1326,7 +1327,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, Wi
 
 	//Declare our PID
 	{
-		long pid = getpid();
+		int64_t pid = getpid();
 		s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_PID, XA_CARDINAL, 32,
 		                           PropModeReplace, reinterpret_cast<uint8_t*>(&pid), 1);
 	}
@@ -1395,7 +1396,8 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const Scope<TRAP::Image>& i
 	if(!s_Data.XCursor.Handle)
 		return 0;
 
-	XcursorImage* native = s_Data.XCursor.ImageCreate(image->GetWidth(), image->GetHeight());
+	XcursorImage* native = s_Data.XCursor.ImageCreate(static_cast<int32_t>(image->GetWidth()),
+	                                                  static_cast<int32_t>(image->GetHeight()));
 	if(native == nullptr)
 		return 0;
 
@@ -1435,7 +1437,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::GetWindowState(const InternalWindow* windo
 
 	if(GetWindowPropertyX11(window->Handle, s_Data.WM_STATE, s_Data.WM_STATE,
 	                        reinterpret_cast<uint8_t**>(&state)) >= 2)
-		result = state->State;
+		result = static_cast<int32_t>(state->State);
 
 	if(state)
 		s_Data.XLIB.Free(state);
@@ -1695,24 +1697,24 @@ std::size_t TRAP::INTERNAL::WindowingAPI::EncodeUTF8(char* s, uint32_t ch)
 	std::size_t count = 0;
 
 	if(ch < 0x80)
-		s[count++] = static_cast<uint8_t>(ch);
+		s[count++] = static_cast<char>(ch);
 	else if(ch < 0x800)
 	{
-		s[count++] = (ch >> 6) | 0xC0;
-		s[count++] = (ch & 0x3F) | 0x80;
+		s[count++] = static_cast<char>((ch >> 6) | 0xC0);
+		s[count++] = static_cast<char>((ch & 0x3F) | 0x80);
 	}
 	else if(ch < 0x10000)
 	{
-		s[count++] = (ch >> 12) | 0xE0;
-		s[count++] = ((ch >> 6) & 0x3F) | 0x80;
-		s[count++] = (ch & 0x3F) | 0x80;
+		s[count++] = static_cast<char>((ch >> 12) | 0xE0);
+		s[count++] = static_cast<char>(((ch >> 6) & 0x3F) | 0x80);
+		s[count++] = static_cast<char>((ch & 0x3F) | 0x80);
 	}
 	else if(ch < 0x110000)
 	{
-		s[count++] = (ch >> 18) | 0xF0;
-		s[count++] = ((ch >> 12) & 0x3F) | 0x80;
-		s[count++] = ((ch >> 6) & 0x3F) | 0x80;
-		s[count++] = (ch & 0x3F) | 0x80;
+		s[count++] = static_cast<char>((ch >> 18) | 0xF0);
+		s[count++] = static_cast<char>(((ch >> 12) & 0x3F) | 0x80);
+		s[count++] = static_cast<char>(((ch >> 6) & 0x3F) | 0x80);
+		s[count++] = static_cast<char>((ch & 0x3F) | 0x80);
 	}
 
 	return count;
@@ -1739,15 +1741,15 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 
 	selectionString->clear();
 
-	for(std::size_t i = 0; i < targets.size(); i++)
+	for(const Atom& target : targets)
 	{
-		char* data;
-		Atom actualType;
-		int32_t actualFormat;
-		unsigned long itemCount, bytesAfter;
+		char* data = nullptr;
+		Atom actualType = 0;
+		int32_t actualFormat = 0;
+		uint64_t itemCount = 0, bytesAfter = 0;
 		XEvent notification, dummy;
 
-		s_Data.XLIB.ConvertSelection(s_Data.display, selection, targets[i], s_Data.TRAP_SELECTION,
+		s_Data.XLIB.ConvertSelection(s_Data.display, selection, target, s_Data.TRAP_SELECTION,
 		                             s_Data.HelperWindowHandle, CurrentTime);
 
 		while(!s_Data.XLIB.CheckTypedWindowEvent(s_Data.display, s_Data.HelperWindowHandle, SelectionNotify,
@@ -1790,7 +1792,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 
 				if(!itemCount)
 				{
-					if(targets[i] == XA_STRING)
+					if(target == XA_STRING)
 					{
 						*selectionString = ConvertLatin1ToUTF8(string.c_str());
 						string.clear();
@@ -1802,9 +1804,9 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 				}
 			}
 		}
-		else if(actualType == targets[i])
+		else if(actualType == target)
 		{
-			if(targets[i] == XA_STRING)
+			if(target == XA_STRING)
 				*selectionString = ConvertLatin1ToUTF8(data);
 			else
 				*selectionString = data;
@@ -1829,7 +1831,7 @@ uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(uint32_t keySym)
 {
 	int32_t min = 0;
 	int32_t max = KeySymTab.size() - 1;
-	int32_t mid;
+	int32_t mid = 0;
 
 	//First check for Latin-1 characters (1:1 mapping)
 	if((keySym >= 0x0020 && keySym <= 0x007E) ||
@@ -1877,7 +1879,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display*, XEvent* 
 std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const char* source)
 {
 	std::size_t size = 1;
-	const char* sp;
+	const char* sp = nullptr;
 
 	for(sp = source; *sp; sp++)
 		size += (*sp & 0x80) ? 2 : 1;
@@ -1946,7 +1948,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* wi
 	//      the position of unmapped windows
 	if(!PlatformWindowVisible(window))
 	{
-		long supplied;
+		int64_t supplied = 0;
 		XSizeHints* hints = s_Data.XLIB.AllocSizeHints();
 
 		if(s_Data.XLIB.GetWMNormalHints(s_Data.display, window->Handle, hints, &supplied))
@@ -2065,7 +2067,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 				continue;
 
 			InternalVideoMode mode = VideoModeFromModeInfo(mi, ci);
-			uint32_t j;
+			uint32_t j = 0;
 
 			for(j = 0; j < count; j++)
 			{
@@ -2492,7 +2494,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 			                                            WindowConfig& WNDConfig)
 {
 	Visual* visual = nullptr;
-	int32_t depth;
+	int32_t depth = 0;
 
 	if(!visual)
 	{
@@ -2540,8 +2542,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 					           s_Data.UTF8_STRING,
 					           8,
 					           PropModeReplace,
-					           (uint8_t*)title.data(),
-					           title.size());
+					           reinterpret_cast<uint8_t*>(title.data()),
+					           static_cast<int32_t>(title.size()));
 
 	s_Data.XLIB.ChangeProperty(s_Data.display,
 	                           window->Handle,
@@ -2549,8 +2551,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 					           s_Data.UTF8_STRING,
 					           8,
 					           PropModeReplace,
-					           (uint8_t*)title.data(),
-					           title.size());
+					           reinterpret_cast<uint8_t*>(title.data()),
+					           static_cast<int32_t>(title.size()));
 
 	s_Data.XLIB.Flush(s_Data.display);
 }
@@ -2567,7 +2569,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* cursor, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& shape)
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& type)
 {
 	if(s_Data.XCursor.Handle)
 	{
@@ -2577,25 +2579,25 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 			const int32_t size = s_Data.XCursor.GetDefaultSize(s_Data.display);
 			const char* name = nullptr;
 
-			if(shape == CursorType::Arrow)
+			if(type == CursorType::Arrow)
 				name = "default";
-			else if(shape == CursorType::Input)
+			else if(type == CursorType::Input)
 				name = "text";
-			else if(shape == CursorType::Crosshair)
+			else if(type == CursorType::Crosshair)
 				name = "crosshair";
-			else if(shape == CursorType::PointingHand)
+			else if(type == CursorType::PointingHand)
 				name = "pointer";
-			else if(shape == CursorType::ResizeHorizontal)
+			else if(type == CursorType::ResizeHorizontal)
 				name = "ew-resize";
-			else if(shape == CursorType::ResizeVertical)
+			else if(type == CursorType::ResizeVertical)
 				name = "ns-resize";
-			else if(shape == CursorType::ResizeDiagonalTopRightBottomLeft)
+			else if(type == CursorType::ResizeDiagonalTopRightBottomLeft)
 				name = "nwse-resize";
-			else if(shape == CursorType::ResizeDiagonalTopLeftBottomRight)
+			else if(type == CursorType::ResizeDiagonalTopLeftBottomRight)
 				name = "nesw-resize";
-			else if(shape == CursorType::ResizeAll)
+			else if(type == CursorType::ResizeAll)
 				name = "all-scroll";
-			else if(shape == CursorType::NotAllowed)
+			else if(type == CursorType::NotAllowed)
 				name = "not-allowed";
 
 			XcursorImage* image = s_Data.XCursor.LibraryLoadImage(name, theme, size);
@@ -2611,25 +2613,25 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 	{
 		uint32_t native = 0;
 
-		if(shape == CursorType::Arrow)
+		if(type == CursorType::Arrow)
 			native = XC_left_ptr;
-		else if(shape == CursorType::Input)
+		else if(type == CursorType::Input)
 			native = XC_xterm;
-		else if(shape == CursorType::Crosshair)
+		else if(type == CursorType::Crosshair)
 			native = XC_crosshair;
-		else if(shape == CursorType::PointingHand)
+		else if(type == CursorType::PointingHand)
 			native = XC_hand2;
-		else if(shape == CursorType::ResizeHorizontal)
+		else if(type == CursorType::ResizeHorizontal)
 			native = XC_sb_h_double_arrow;
-		else if(shape == CursorType::ResizeVertical)
+		else if(type == CursorType::ResizeVertical)
 			native = XC_sb_v_double_arrow;
-		else if(shape == CursorType::ResizeDiagonalTopRightBottomLeft)
+		else if(type == CursorType::ResizeDiagonalTopRightBottomLeft)
 			native = XC_top_left_corner;
-		else if(shape == CursorType::ResizeDiagonalTopLeftBottomRight)
+		else if(type == CursorType::ResizeDiagonalTopLeftBottomRight)
 			native = XC_top_right_corner;
-		else if(shape == CursorType::ResizeAll)
+		else if(type == CursorType::ResizeAll)
 			native = XC_fleur;
-		else if(shape == CursorType::NotAllowed)
+		else if(type == CursorType::NotAllowed)
 			native = XC_X_cursor;
 		else
 		{
@@ -2721,9 +2723,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow* window, 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow* window, double& xPos, double& yPos)
 {
-	::Window root, child;
-	int32_t rootX, rootY, childX, childY;
-	uint32_t mask;
+	::Window root = 0, child = 0;
+	int32_t rootX = 0, rootY = 0, childX = 0, childY = 0;
+	uint32_t mask = 0;
 
 	s_Data.XLIB.QueryPointer(s_Data.display, window->Handle, &root, &child, &rootX, &rootY, &childX, &childY,
 	                         &mask);
@@ -2765,7 +2767,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 		//      Xlib will pack these values into a regular array of 32-bit values before
 		//      sending it over the wire.
 		s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_ICON, XA_CARDINAL, 32,
-		                           PropModeReplace,	reinterpret_cast<uint8_t*>(icon.data()), longCount);
+		                           PropModeReplace,	reinterpret_cast<uint8_t*>(icon.data()),
+								   static_cast<int32_t>(longCount));
 	}
 	else
 		s_Data.XLIB.DeleteProperty(s_Data.display, window->Handle, s_Data.NET_WM_ICON);
@@ -2777,8 +2780,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos)
 {
-	::Window dummy;
-	int32_t x, y;
+	::Window dummy = 0;
+	int32_t x = 0, y = 0;
 
 	s_Data.XLIB.TranslateCoordinates(s_Data.display, window->Handle, s_Data.Root, 0, 0, &x, &y, &dummy);
 
@@ -2812,7 +2815,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* window, bool)
 {
-	int32_t width, height;
+	int32_t width = 0, height = 0;
 
 	PlatformGetWindowSize(window, width, height);
 	UpdateNormalHints(window, width, height);
@@ -2824,18 +2827,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWind
 {
 	struct Hints
 	{
-		unsigned long Flags = 0;
-		unsigned long Functions = 0;
-		unsigned long Decorations = 0;
-		long InputMode = 0;
-		unsigned long status = 0;
+		uint64_t Flags = 0;
+		uint64_t Functions = 0;
+		uint64_t Decorations = 0;
+		int64_t InputMode = 0;
+		uint64_t status = 0;
 	} hints{};
 
 	hints.Flags = 2; //MWM_HINTS_DECORATIONS
 	hints.Decorations = enabled ? 1 : 0; //1 = MWM_DECOR_ALL
 
 	s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.MOTIF_WM_HINTS, s_Data.MOTIF_WM_HINTS, 32,
-	                           PropModeReplace, reinterpret_cast<uint8_t*>(&hints), sizeof(hints) / sizeof(long));
+	                           PropModeReplace, reinterpret_cast<uint8_t*>(&hints), sizeof(hints) / sizeof(int64_t));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2847,21 +2850,21 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 	if(PlatformWindowVisible(window))
 	{
-		const long action = enabled ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
-		SendEventToWM(window, s_Data.NET_WM_STATE, action, s_Data.NET_WM_STATE_ABOVE, 0, 1, 0);
+		const int64_t action = static_cast<int64_t>(enabled ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE);
+		SendEventToWM(window, s_Data.NET_WM_STATE, action, static_cast<int64_t>(s_Data.NET_WM_STATE_ABOVE), 0, 1, 0);
 	}
 	else
 	{
 		Atom* states = nullptr;
 
-		const unsigned long count = GetWindowPropertyX11(window->Handle, s_Data.NET_WM_STATE, XA_ATOM,
+		const uint64_t count = GetWindowPropertyX11(window->Handle, s_Data.NET_WM_STATE, XA_ATOM,
 		                                                 reinterpret_cast<uint8_t**>(&states));
 
 		//NOTE: We don't check for failure as this property may not exist yet and that's fine (and we'll create
 		//      it implicitly with append)
 		if(enabled)
 		{
-			unsigned long i;
+			uint64_t i = 0;
 
 			for(i = 0; i < count; i++)
 			{
@@ -2877,13 +2880,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 		}
 		else if(states)
 		{
-			for(unsigned long i = 0; i < count; ++i)
+			for(uint64_t i = 0; i < count; ++i)
 			{
 				if(states[i] == s_Data.NET_WM_STATE_ABOVE)
 				{
 					states[i] = states[count - 1];
 					s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32,
-											PropModeReplace, reinterpret_cast<uint8_t*>(states), count - 1);
+											   PropModeReplace, reinterpret_cast<uint8_t*>(states),
+											   static_cast<int32_t>(count) - 1);
 					break;
 				}
 			}
@@ -2900,7 +2904,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow* window, float opacity)
 {
-	const CARD32 value = (CARD32)(0xFFFFFFFFu * static_cast<double>(opacity));
+	const CARD32 value = static_cast<CARD32>(0xFFFFFFFFu * static_cast<double>(opacity));
 	s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_WINDOW_OPACITY, XA_CARDINAL, 32,
 	                           PropModeReplace, reinterpret_cast<const uint8_t*>(&value), 1);
 }
@@ -2984,13 +2988,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
 		if(ci->rotation == RR_Rotate_90 || ci->rotation == RR_Rotate_270)
 		{
-			areaWidth = mi->height;
-			areaHeight = mi->width;
+			areaWidth = static_cast<int32_t>(mi->height);
+			areaHeight = static_cast<int32_t>(mi->width);
 		}
 		else
 		{
-			areaWidth = mi->width;
-			areaHeight = mi->height;
+			areaWidth = static_cast<int32_t>(mi->width);
+			areaHeight = static_cast<int32_t>(mi->height);
 		}
 
 		s_Data.RandR.FreeCrtcInfo(ci);
@@ -3006,18 +3010,18 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 	{
 		Atom* extents = nullptr;
 		Atom* desktop = nullptr;
-		const unsigned long extentCount = GetWindowPropertyX11(s_Data.Root, s_Data.NET_WORKAREA, XA_CARDINAL,
-		                                                       reinterpret_cast<uint8_t**>(&extents));
+		const uint64_t extentCount = GetWindowPropertyX11(s_Data.Root, s_Data.NET_WORKAREA, XA_CARDINAL,
+		                                                  reinterpret_cast<uint8_t**>(&extents));
 
 		if(GetWindowPropertyX11(s_Data.Root, s_Data.NET_CURRENT_DESKTOP, XA_CARDINAL,
 		                        reinterpret_cast<uint8_t**>(&desktop)) > 0)
 		{
 			if(extentCount >= 4 && *desktop < extentCount / 4)
 			{
-				const int32_t globalX = extents[*desktop * 4 + 0];
-				const int32_t globalY = extents[*desktop * 4 + 1];
-				const int32_t globalWidth = extents[*desktop * 4 + 2];
-				const int32_t globalHeight = extents[*desktop * 4 + 3];
+				const int32_t globalX = static_cast<int32_t>(extents[*desktop * 4 + 0]);
+				const int32_t globalY = static_cast<int32_t>(extents[*desktop * 4 + 1]);
+				const int32_t globalWidth = static_cast<int32_t>(extents[*desktop * 4 + 2]);
+				const int32_t globalHeight = static_cast<int32_t>(extents[*desktop * 4 + 3]);
 
 				if(areaX < globalX)
 				{
@@ -3064,16 +3068,16 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisible(const InternalWindow* w
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximized(const InternalWindow* window)
 {
-	Atom* states;
+	Atom* states = nullptr;
 	bool maximized = false;
 
 	if(!s_Data.NET_WM_STATE || !s_Data.NET_WM_STATE_MAXIMIZED_VERT || !s_Data.NET_WM_STATE_MAXIMIZED_HORZ)
 		return maximized;
 
-	const unsigned long count = GetWindowPropertyX11(window->Handle, s_Data.NET_WM_STATE, XA_ATOM,
-	                                                 reinterpret_cast<uint8_t**>(&states));
+	const uint64_t count = GetWindowPropertyX11(window->Handle, s_Data.NET_WM_STATE, XA_ATOM,
+	                                            reinterpret_cast<uint8_t**>(&states));
 
-	for(unsigned long i = 0; i < count; i++)
+	for(uint64_t i = 0; i < count; i++)
 	{
 		if(states[i] == s_Data.NET_WM_STATE_MAXIMIZED_VERT || states[i] == s_Data.NET_WM_STATE_MAXIMIZED_HORZ)
 		{
@@ -3101,9 +3105,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
 	DrainEmptyEvents();
 
-#ifdef TRAP_PLATFORM_LINUX
 	Input::DetectControllerConnectionLinux();
-#endif
 
 	s_Data.XLIB.Pending(s_Data.display);
 
@@ -3117,11 +3119,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 	InternalWindow* window = s_Data.DisabledCursorWindow;
 	if(window)
 	{
-		int32_t width, height;
+		int32_t width = 0, height = 0;
 		PlatformGetWindowSize(window, width, height);
 
 		if(window->LastCursorPosX != width / 2 || window->LastCursorPosY != height / 2)
-			PlatformSetCursorPos(window, width / 2, height / 2);
+			PlatformSetCursorPos(window, static_cast<double>(width) / 2, static_cast<double>(height) / 2);
 	}
 
 	s_Data.XLIB.Flush(s_Data.display);
@@ -3131,8 +3133,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* window)
 {
-	::Window focused;
-	int32_t state;
+	::Window focused = 0;
+	int32_t state = 0;
 
 	s_Data.XLIB.GetInputFocus(s_Data.display, &focused, &state);
 
@@ -3146,9 +3148,9 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHovered(const InternalWindow* w
 	::Window w = s_Data.Root;
 	while(w)
 	{
-		::Window root;
-		int32_t rootX, rootY, childX, childY;
-		uint32_t mask;
+		::Window root = 0;
+		int32_t rootX = 0, rootY = 0, childX = 0, childY = 0;
+		uint32_t mask = 0;
 
 		GrabErrorHandlerX11();
 
@@ -3212,7 +3214,8 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(int32_t scanCo
 	}
 
 	const int32_t key = static_cast<int32_t>(s_Data.KeyCodes[scanCode]);
-	KeySym keySym = s_Data.XKB.KeycodeToKeysym(s_Data.display, scanCode, s_Data.XKB.Group, 0);
+	KeySym keySym = s_Data.XKB.KeycodeToKeysym(s_Data.display, scanCode,
+											   static_cast<int32_t>(s_Data.XKB.Group), 0);
 	if(keySym == NoSymbol)
 		return nullptr;
 
@@ -3281,9 +3284,8 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 {
 	if(s_Data.VK.KHR_XCB_Surface && s_Data.XCB.Handle)
 	{
-		VkResult err;
-		VkXcbSurfaceCreateInfoKHR sci;
-		PFN_vkCreateXcbSurfaceKHR vkCreateXcbSurfaceKHR;
+		VkXcbSurfaceCreateInfoKHR sci{};
+		PFN_vkCreateXcbSurfaceKHR vkCreateXcbSurfaceKHR = nullptr;
 
 		xcb_connection_t* connection = s_Data.XCB.GetXCBConnection(s_Data.display);
 		if(!connection)
@@ -3307,41 +3309,38 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		sci.connection = connection;
 		sci.window = window->Handle;
 
-		err = vkCreateXcbSurfaceKHR(instance, &sci, allocator, &surface);
+		VkResult err = vkCreateXcbSurfaceKHR(instance, &sci, allocator, &surface);
 		if(err)
 			InputError(Error::Platform_Error,
 			           std::string("[X11] Failed to create Vulkan XCB surface: ") + GetVulkanResultString(err));
 
 		return err;
 	}
-	else
+
+	VkXlibSurfaceCreateInfoKHR sci{};
+	PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR = nullptr;
+
+	vkCreateXlibSurfaceKHR = reinterpret_cast<PFN_vkCreateXlibSurfaceKHR>(vkGetInstanceProcAddr
+		(
+			instance, "vkCreateXlibSurfaceKHR"
+		));
+	if(!vkCreateXlibSurfaceKHR)
 	{
-		VkResult err;
-		VkXlibSurfaceCreateInfoKHR sci;
-		PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR;
-
-		vkCreateXlibSurfaceKHR = reinterpret_cast<PFN_vkCreateXlibSurfaceKHR>(vkGetInstanceProcAddr
-			(
-				instance, "vkCreateXlibSurfaceKHR"
-			));
-		if(!vkCreateXlibSurfaceKHR)
-		{
-			InputError(Error::API_Unavailable, "[X11] Vulkan instance missing VK_KHR_xlib_surface extension");
-			return VK_ERROR_EXTENSION_NOT_PRESENT;
-		}
-
-		std::memset(&sci, 0, sizeof(sci));
-		sci.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-		sci.dpy = s_Data.display;
-		sci.window = window->Handle;
-
-		err = vkCreateXlibSurfaceKHR(instance, &sci, allocator, &surface);
-		if(err)
-			InputError(Error::Platform_Error,
-			           std::string("[X11] Failed to create Vulkan X11 surface: ") + GetVulkanResultString(err));
-
-		return err;
+		InputError(Error::API_Unavailable, "[X11] Vulkan instance missing VK_KHR_xlib_surface extension");
+		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
+
+	std::memset(&sci, 0, sizeof(sci));
+	sci.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+	sci.dpy = s_Data.display;
+	sci.window = window->Handle;
+
+	VkResult err = vkCreateXlibSurfaceKHR(instance, &sci, allocator, &surface);
+	if(err)
+		InputError(Error::Platform_Error,
+					std::string("[X11] Failed to create Vulkan X11 surface: ") + GetVulkanResultString(err));
+
+	return err;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3353,13 +3352,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* 
 
 	if(PlatformWindowVisible(window))
 	{
-		SendEventToWM(window, s_Data.NET_WM_STATE, 1, s_Data.NET_WM_STATE_MAXIMIZED_VERT,
-		              s_Data.NET_WM_STATE_MAXIMIZED_HORZ, 1, 0);
+		SendEventToWM(window, s_Data.NET_WM_STATE, 1, static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_VERT),
+		              static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
 	}
 	else
 	{
 		Atom* states = nullptr;
-		unsigned long count = GetWindowPropertyX11(window->Handle, s_Data.NET_WM_STATE, XA_ATOM,
+		uint64_t count = GetWindowPropertyX11(window->Handle, s_Data.NET_WM_STATE, XA_ATOM,
 		                                           reinterpret_cast<uint8_t**>(&states));
 
 		//NOTE: We don't check for failure as this property may not exist yet and that's fine (and we'll create it
@@ -3369,11 +3368,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* 
 			s_Data.NET_WM_STATE_MAXIMIZED_VERT,
 			s_Data.NET_WM_STATE_MAXIMIZED_HORZ
 		};
-		unsigned long missingCount = 2;
+		uint64_t missingCount = 2;
 
-		for(unsigned long i = 0; i < count; i++)
+		for(uint64_t i = 0; i < count; i++)
 		{
-			for(unsigned long j = 0; j < missingCount; j++)
+			for(uint64_t j = 0; j < missingCount; j++)
 			{
 				if(states[i] == missing[j])
 				{
@@ -3390,7 +3389,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* 
 			return;
 
 		s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_STATE, XA_ATOM, 32, PropModeAppend,
-		                           reinterpret_cast<uint8_t*>(missing.data()), missingCount);
+		                           reinterpret_cast<uint8_t*>(missing.data()), static_cast<int32_t>(missingCount));
 	}
 
 	s_Data.XLIB.Flush(s_Data.display);
@@ -3420,7 +3419,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(const Internal
 	if(!s_Data.NET_WM_STATE || !s_Data.NET_WM_STATE_DEMANDS_ATTENTION)
 		return;
 
-	SendEventToWM(window, s_Data.NET_WM_STATE, 1, s_Data.NET_WM_STATE_DEMANDS_ATTENTION, 0, 1, 0);
+	SendEventToWM(window, s_Data.NET_WM_STATE, 1, static_cast<int64_t>(s_Data.NET_WM_STATE_DEMANDS_ATTENTION), 0, 1, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3452,8 +3451,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* window)
 	else if(PlatformWindowVisible(window))
 	{
 		if(s_Data.NET_WM_STATE && s_Data.NET_WM_STATE_MAXIMIZED_VERT && s_Data.NET_WM_STATE_MAXIMIZED_HORZ)
-			SendEventToWM(window, s_Data.NET_WM_STATE, 0, s_Data.NET_WM_STATE_MAXIMIZED_VERT,
-			              s_Data.NET_WM_STATE_MAXIMIZED_HORZ, 1, 0);
+			SendEventToWM(window, s_Data.NET_WM_STATE, 0, static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_VERT),
+			              static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
 	}
 
 	s_Data.XLIB.Flush(s_Data.display);
@@ -3464,7 +3463,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* window)
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* window, int32_t, int32_t, int32_t,
                                                                int32_t)
 {
-	int32_t width, height;
+	int32_t width = 0, height = 0;
 	PlatformGetWindowSize(window, width, height);
 	UpdateNormalHints(window, width, height);
 	s_Data.XLIB.Flush(s_Data.display);
@@ -3508,7 +3507,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(Error error, const char* messag
 {
 	std::vector<char> buffer{};
 	buffer.resize(1024);
-	s_Data.XLIB.GetErrorText(s_Data.display, s_Data.ErrorCode, buffer.data(), buffer.size());
+	s_Data.XLIB.GetErrorText(s_Data.display, s_Data.ErrorCode, buffer.data(), static_cast<int32_t>(buffer.size()));
 
 	buffer.shrink_to_fit();
 
@@ -3525,7 +3524,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 	//HACK: Save scanCode as some IMs clear the field in s_Data.XLIB.FilterEvent
 	if(event.type == 2 || event.type == 3)
-		keyCode = event.xkey.keycode;
+		keyCode = static_cast<int32_t>(event.xkey.keycode);
 
 	filtered = s_Data.XLIB.FilterEvent(&event, 0);
 
@@ -3543,10 +3542,10 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	{
 		if(event.type == s_Data.XKB.EventBase + XkbEventCode)
 		{
-			if(((XkbEvent*)&event)->any.xkb_type == XkbStateNotify &&
-			   (((XkbEvent*)&event)->state.changed & XkbGroupStateMask))
+			if(reinterpret_cast<XkbEvent*>(&event)->any.xkb_type == XkbStateNotify &&
+			   (reinterpret_cast<XkbEvent*>(&event)->state.changed & XkbGroupStateMask))
 			{
-				s_Data.XKB.Group = ((XkbEvent*)&event)->state.group;
+				s_Data.XKB.Group = reinterpret_cast<XkbEvent*>(&event)->state.group;
 				InputKeyboardLayout();
 			}
 
@@ -3594,7 +3593,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		HandleSelectionClear(event);
 		return;
 	}
-	else if(event.type == SelectionRequest)
+	if(event.type == SelectionRequest)
 	{
 		HandleSelectionRequest(event);
 		return;
@@ -3631,21 +3630,22 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			if(diff == event.xkey.time || (diff > 0 && diff < (static_cast<Time>(1u) << 31u)))
 			{
 				if(keyCode)
-					InputKey(window, (Input::Key)key, keyCode, true);
+					InputKey(window, key, keyCode, true);
 
 				window->KeyPressTimes[keyCode] = event.xkey.time;
 			}
 
 			if(!filtered)
 			{
-				int32_t count;
-				int32_t status;
+				int32_t count = 0;
+				int32_t status = 0;
 
 				std::string buffer{};
 				buffer.resize(100);
 				char* chars = buffer.data();
 
-				count = s_Data.XLIB.UTF8LookupString(window->IC, &event.xkey, buffer.data(), buffer.size() - 1, nullptr, &status);
+				count = s_Data.XLIB.UTF8LookupString(window->IC, &event.xkey, buffer.data(),
+				                                     static_cast<int32_t>(buffer.size()) - 1, nullptr, &status);
 
 				if(status == XBufferOverflow)
 				{
@@ -3664,7 +3664,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		}
 		else
 		{
-			KeySym keySym;
+			KeySym keySym = 0;
 			s_Data.XLIB.LookupString(&event.xkey, nullptr, 0, &keySym, nullptr);
 
 			InputKey(window, static_cast<Input::Key>(key), keyCode, true);
@@ -3831,7 +3831,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		{
 			GrabErrorHandlerX11();
 
-			::Window dummy;
+			::Window dummy = 0;
 			s_Data.XLIB.TranslateCoordinates(s_Data.display, window->Parent, s_Data.Root, xPos, yPos, &xPos, &yPos, &dummy);
 
 			ReleaseErrorHandlerX11();
@@ -3884,12 +3884,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		else if(event.xclient.message_type == s_Data.XDNDEnter)
 		{
 			//A drag operation has entered the window
-			unsigned long count;
+			uint64_t count = 0;
 			Atom* formats = nullptr;
 			const bool list = event.xclient.data.l[1] & 1;
 
 			s_Data.XDND.Source = event.xclient.data.l[0];
-			s_Data.XDND.Version = event.xclient.data.l[1] >> 24;
+			s_Data.XDND.Version = static_cast<int32_t>(event.xclient.data.l[1] >> 24);
 			s_Data.XDND.Format = 0;
 
 			if(s_Data.XDND.Version > 5)
@@ -3939,7 +3939,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.window = s_Data.XDND.Source;
 				reply.xclient.message_type = s_Data.XDNDFinished;
 				reply.xclient.format = 32;
-				reply.xclient.data.l[0] = window->Handle;
+				reply.xclient.data.l[0] = static_cast<int64_t>(window->Handle);
 				reply.xclient.data.l[1] = 0; //The drag was rejected
 				reply.xclient.data.l[2] = 0;
 
@@ -3950,10 +3950,10 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		else if(event.xclient.message_type == s_Data.XDNDPosition)
 		{
 			//The drag operation has moved over the window
-			const int32_t xAbs = (event.xclient.data.l[2] >> 16) & 0xFFFF;
-			const int32_t yAbs = (event.xclient.data.l[2]) & 0xFFFF;
-			::Window dummy;
-			int32_t xPos, yPos;
+			const int32_t xAbs = static_cast<int32_t>((event.xclient.data.l[2] >> 16) & 0xFFFF);
+			const int32_t yAbs = static_cast<int32_t>((event.xclient.data.l[2]) & 0xFFFF);
+			::Window dummy = 0;
+			int32_t xPos = 0, yPos = 0;
 
 			if(s_Data.XDND.Version > 5)
 				return;
@@ -3967,7 +3967,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			reply.xclient.window = s_Data.XDND.Source;
 			reply.xclient.message_type = s_Data.XDNDStatus;
 			reply.xclient.format = 32;
-			reply.xclient.data.l[0] = window->Handle;
+			reply.xclient.data.l[0] = static_cast<int64_t>(window->Handle);
 			reply.xclient.data.l[2] = 0; //Specify an empty rectangle
 			reply.xclient.data.l[3] = 0;
 
@@ -3976,7 +3976,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				//Reply that we are ready to copy the dragged data
 				reply.xclient.data.l[1] = 1; //Accept with no rectangle
 				if(s_Data.XDND.Version >= 2)
-					reply.xclient.data.l[4] = s_Data.XDNDActionCopy;
+					reply.xclient.data.l[4] = static_cast<int64_t>(s_Data.XDNDActionCopy);
 			}
 
 			s_Data.XLIB.SendEvent(s_Data.display, s_Data.XDND.Source, 0, NoEventMask, &reply);
@@ -3991,15 +3991,15 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		if(event.xselection.property == s_Data.XDNDSelection)
 		{
 			//The converted data from the drag operation has arrived
-			char* data;
-			const unsigned long result = GetWindowPropertyX11(event.xselection.requestor,
-															  event.xselection.property,
-			                                                  event.xselection.target,
-														      reinterpret_cast<uint8_t**>(&data));
+			char* data = nullptr;
+			const uint64_t result = GetWindowPropertyX11(event.xselection.requestor,
+														 event.xselection.property,
+			                                             event.xselection.target,
+														 reinterpret_cast<uint8_t**>(&data));
 
 			if(result)
 			{
-				int32_t count;
+				int32_t count = 0;
 				std::vector<std::string> paths = ParseUriList(data, count);
 
 				InputDrop(window, paths);
@@ -4014,9 +4014,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.window = s_Data.XDND.Source;
 				reply.xclient.message_type = s_Data.XDNDFinished;
 				reply.xclient.format = 32;
-				reply.xclient.data.l[0] = window->Handle;
-				reply.xclient.data.l[1] = result;
-				reply.xclient.data.l[2] = s_Data.XDNDActionCopy;
+				reply.xclient.data.l[0] = static_cast<int64_t>(window->Handle);
+				reply.xclient.data.l[1] = static_cast<int64_t>(result);
+				reply.xclient.data.l[2] = static_cast<int64_t>(s_Data.XDNDActionCopy);
 
 				s_Data.XLIB.SendEvent(s_Data.display, s_Data.XDND.Source, 0, NoEventMask, &reply);
 				s_Data.XLIB.Flush(s_Data.display);
@@ -4199,7 +4199,7 @@ std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text, 
 			if(line[0] == '%' && line[1] && line[2])
 			{
 				const std::array<char, 3> digits = { line[1], line[2], '\0'};
-				*pathPtr = strtol(digits.data(), nullptr, 16);
+				*pathPtr = static_cast<char>(strtol(digits.data(), nullptr, 16));
 				line += 2;
 			}
 			else
@@ -4235,7 +4235,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 
 	if(window->OverrideRedirect)
 	{
-		int32_t xPos, yPos;
+		int32_t xPos = 0, yPos = 0;
 		InternalVideoMode mode;
 
 		//Manually position the window over its monitor
@@ -4358,7 +4358,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* wind
 
 	if(window->OverrideRedirect)
 	{
-		int32_t xPos, yPos;
+		int32_t xPos = 0, yPos = 0;
 		InternalVideoMode mode;
 
 		//Manually position the window over its monitor
@@ -4455,7 +4455,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 //Create key code translation tables
 void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 {
-	int32_t scanCode, scanCodeMin, scanCodeMax;
+	int32_t scanCode = 0, scanCodeMin = 0, scanCodeMax = 0;
 
 	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
 	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
@@ -4473,7 +4473,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 		struct Keys
 		{
 			TRAP::Input::Key Key = TRAP::Input::Key::Unknown;
-			std::string Name = "";
+			std::string Name;
 		};
 
 		std::array<Keys, 121> KeyMap =
@@ -4552,7 +4552,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 			//Note: We use the US keyboard layout.
 			//Because function keys aren't mapped correctly when using traditional KeySym translations,
 			//they are mapped here instead.
-			for(Keys keyMapKey : KeyMap)
+			for(const Keys& keyMapKey : KeyMap)
 			{
 				if(strncmp(desc->names->keys[scanCode].name, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
 				{
@@ -4570,7 +4570,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 				if(strncmp(desc->names->key_aliases[i].real, desc->names->keys[scanCode].name, XkbKeyNameLength) != 0)
 					continue;
 
-				for(Keys keyMapKey : KeyMap)
+				for(const Keys& keyMapKey : KeyMap)
 				{
 					if(strncmp(desc->names->key_aliases[i].alias, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
 					{
@@ -4589,7 +4589,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 	else
 		s_Data.XLIB.DisplayKeycodes(s_Data.display, &scanCodeMin, &scanCodeMax);
 
-	int32_t width;
+	int32_t width = 0;
 	KeySym* keySyms = s_Data.XLIB.GetKeyboardMapping(s_Data.display, scanCodeMin, scanCodeMax - scanCodeMin + 1,
 	                                                 &width);
 
@@ -4598,13 +4598,13 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 		//Translate the un-translated key codes using traditional X11 KeySym lookups
 		if(static_cast<int32_t>(s_Data.KeyCodes[scanCode]) < 0)
 		{
-			const std::size_t base = (scanCode - scanCodeMin) * width;
+			const std::size_t base = static_cast<std::size_t>((scanCode - scanCodeMin)) * width;
 			s_Data.KeyCodes[scanCode] = TranslateKeySyms(&keySyms[base], width);
 		}
 
 		//Store the reverse translation for faster key name lookup
 		if(static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
-			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = scanCode;
+			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = static_cast<int16_t>(scanCode);
 	}
 
 	s_Data.XLIB.Free(keySyms);

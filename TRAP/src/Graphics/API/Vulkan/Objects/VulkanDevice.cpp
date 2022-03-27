@@ -116,8 +116,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VkLoadDevice(m_device);
 
-	VulkanRenderer::s_debugMarkerSupport = (&vkCmdBeginDebugUtilsLabelEXT) && (&vkCmdEndDebugUtilsLabelEXT) &&
-		                                   (&vkCmdInsertDebugUtilsLabelEXT) && (&vkSetDebugUtilsObjectNameEXT);
+	VulkanRenderer::s_debugMarkerSupport = (vkCmdBeginDebugUtilsLabelEXT) && (vkCmdEndDebugUtilsLabelEXT) &&
+		                                   (vkCmdInsertDebugUtilsLabelEXT) && (vkSetDebugUtilsObjectNameEXT);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -200,7 +200,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	for(std::size_t index = 0; index < props.size(); ++index)
 	{
 		const VkQueueFlags queueFlags = props[index].queueFlags;
-		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) ? true : false;
+		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0;
 		const uint32_t flagAnd = (queueFlags & requiredFlags);
 		if(queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
 		{
@@ -276,7 +276,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 	for (uint32_t index = 0; index < props.size(); ++index)
 	{
 		const VkQueueFlags queueFlags = props[index].queueFlags;
-		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) ? true : false;
+		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0;
 		const uint32_t flagAnd = (queueFlags & requiredFlags);
 		if (queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
 		{

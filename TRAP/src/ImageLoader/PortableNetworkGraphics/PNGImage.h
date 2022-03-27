@@ -117,7 +117,7 @@ namespace TRAP::INTERNAL
 		static bool ProcesscHRM(std::ifstream& file);
 		static bool ProcessgAMA(std::ifstream& file);
 		static bool ProcessiCCP(std::ifstream& file, uint32_t length);
-		static bool ProcesssBIT(std::ifstream& file, const Data& date);
+		static bool ProcesssBIT(std::ifstream& file, const Data& data);
 		static bool ProcesssRGB(std::ifstream& file);
 		static bool ProcessbKGD(std::ifstream& file, const Data& data, bool needSwap);
 		static bool ProcesshIST(std::ifstream& file, uint32_t length);

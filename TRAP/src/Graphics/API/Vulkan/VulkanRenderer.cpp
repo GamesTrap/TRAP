@@ -175,15 +175,16 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 															   std::numeric_limits<uint32_t>::max());
 
 	//Set Default Dynamic Viewport & Scissor
-	float width, height;
+	uint32_t width = 0, height = 0;
 #ifndef TRAP_HEADLESS_MODE
-	width = static_cast<float>(p->Window->GetWidth());
-	height = static_cast<float>(p->Window->GetHeight());
+	width = p->Window->GetWidth();
+	height = p->Window->GetHeight();
 #else
-	width = static_cast<float>(renderTarget->GetWidth());
-	height = static_cast<float>(renderTarget->GetHeight());
+	width = renderTarget->GetWidth();
+	height = renderTarget->GetHeight();
 #endif
-	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, width, height, 0.0f, 1.0f);
+	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, static_cast<float>(width),
+														 static_cast<float>(height), 0.0f, 1.0f);
 	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, width, height);
 	if(p->CurrentGraphicsPipeline)
 		p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
@@ -1188,7 +1189,8 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Helper function to generate screenshot data. See CaptureScreenshot.
-void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget> renderTarget, ResourceState currResState, void* outPixelData)
+void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<RenderTarget>& renderTarget,
+														  ResourceState currResState, void* outPixelData)
 {
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = s_graphicQueue;
@@ -1204,7 +1206,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget
 		BufferDesc bufferDesc{};
 		bufferDesc.Descriptors = DescriptorType::RWBuffer;
 		bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
-		bufferDesc.Size = renderTarget->GetWidth() * renderTarget->GetHeight() * formatByteWidth;
+		bufferDesc.Size = static_cast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
 		bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
 		bufferDesc.StartState = ResourceState::CopyDestination;
 		TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
@@ -1255,7 +1257,8 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(TRAP::Ref<RenderTarget
 		s_graphicQueue->WaitQueueIdle();
 
 		//Copy to CPU memory.
-		std::memcpy(outPixelData, buffer->GetCPUMappedAddress(), renderTarget->GetWidth() * renderTarget->GetHeight() * formatByteWidth);
+		std::memcpy(outPixelData, buffer->GetCPUMappedAddress(), static_cast<std::size_t>(renderTarget->GetWidth()) *
+																 renderTarget->GetHeight() * formatByteWidth);
 
 		//Cleanup
 		cmdPool->FreeCommandBuffer(cmd);
@@ -1272,7 +1275,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 		window = TRAP::Application::GetWindow().get();
 
 	auto* winData = s_perWindowDataMap[window].get();
-	int32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
+	uint32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
 
 	//Wait for queue to finish rendering
 	s_graphicQueue->WaitQueueIdle();
@@ -1295,7 +1298,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 #endif
 
 	std::vector<uint8_t> pixelDatau8{};
-	std::vector<uint8_t> pixelDataf32{};
+	std::vector<float> pixelDataf32{};
 	std::vector<uint16_t> pixelDatau16{};
 	if(!hdr && u16)
 	{

@@ -62,8 +62,8 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 		}
 		else
 		{
-			uint8_t charDigit;
-			uint8_t uuidDigit;
+			uint8_t charDigit = 0;
+			uint8_t uuidDigit = 0;
 
 			if (digit >= '0' && digit <= '9')
 				charDigit = digit - '0';
@@ -157,7 +157,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 				switch (currentLevel)
 				{
 				case BIT(0):
-					numSMT = LVL_CORES & regs1[1];
+					numSMT = static_cast<int32_t>(LVL_CORES & regs1[1]);
 					break;
 
 				case BIT(1):
@@ -195,7 +195,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	}
 	else if (upVendorID.find("AMD") != std::string::npos)
 	{
-		uint32_t extFamily;
+		uint32_t extFamily = 0;
 		if (((regs[0] >> 8) & 0xF) < 0xF)
 			extFamily = (regs[0] >> 8) & 0xF;
 		else
@@ -313,3 +313,23 @@ std::string TRAP::Utils::LinuxWindowManagerToString(const TRAP::Utils::LinuxWind
 		return "Unknown";
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_LINUX
+std::string TRAP::Utils::GetStrError()
+{
+    std::string error(1024, '\0');
+    #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+        strerror_r(errno, error.data(), error.size());
+        //Remove trailing terminating null characters
+        error.resize(error.find('\0'));
+        return error;
+    #else
+        char* errorCStr = strerror_r(errno, error.data(), error.size());
+        return std::string(errorCStr);
+    #endif
+
+    return "";
+}
+#endif

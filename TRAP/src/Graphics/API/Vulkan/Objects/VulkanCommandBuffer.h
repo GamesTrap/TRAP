@@ -18,6 +18,9 @@ namespace TRAP::Graphics::API
 	class VulkanCommandBuffer final : public CommandBuffer
 	{
 	public:
+		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool& commandPool,
+		                    bool secondary);
+
 		~VulkanCommandBuffer() override;
 
 		/// <summary>
@@ -114,11 +117,6 @@ namespace TRAP::Graphics::API
 		VkRenderPass GetActiveVkRenderPass() const;
 
 	private:
-		friend VulkanCommandPool;
-
-		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool& commandPool,
-		                    bool secondary);
-
 		template<typename T>
 		static std::size_t HashAlg(const T* mem, std::size_t size, const std::size_t prev = 2166136261U)
 		{

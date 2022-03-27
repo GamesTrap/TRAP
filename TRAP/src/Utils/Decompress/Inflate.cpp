@@ -27,7 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* data, const std::size_t size)
 	: Data(data), Size(size), BitSize(0), BP(0), Buffer(0)
 {
-	std::size_t temp;
+	std::size_t temp = 0;
 	if (MultiplyOverflow(size, 8u, BitSize))
 		Error = true;
 	if (AddOverflow(BitSize, 64u, temp))
@@ -154,7 +154,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b,
                                                                    const std::size_t c)
 {
-	std::size_t d;
+	std::size_t d = 0;
 	if (AddOverflow(a, b, d))
 		return true;
 
@@ -203,7 +203,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
-	: Codes(), Lengths(), MaxBitLength(0), NumCodes(0), TableLength(), TableValue()
+	: MaxBitLength(0), NumCodes(0)
 {
 }
 
@@ -228,7 +228,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
                                                                            BitReader& reader)
 {
 	//Make sure that length values that arent filled in will be 0, or a wrong tree will be generated
-	uint32_t n, i;
+	uint32_t n = 0, i = 0;
 
 	//See comments in deflateDynamic for explanation of the context and these variables, it is analogous
 	HuffmanTree treeCL; //The code tree for code length codes(the Huffman Tree for compressed Huffman Trees)
@@ -257,7 +257,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 	while(!error)
 	{
 		//Read the code length codes out of 3 * (amount of code length codes) bits
-		if (BitReader::GreaterOverflow(reader.BP, HCLEN * 3, reader.BitSize))
+		if (BitReader::GreaterOverflow(reader.BP, static_cast<std::size_t>(HCLEN) * 3, reader.BitSize))
 		{
 			error = true; //Error: the bit pointer is or will go past the memory
 			break;
@@ -296,7 +296,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 			else if(code == 16) //Repeat previous
 			{
 				uint32_t repeatLength = 3; //Read in the 2 bits that indicate repeat length (3-6)
-				uint32_t value; //Set value to the previous code
+				uint32_t value = 0; //Set value to the previous code
 
 				if(i == 0)
 				{
@@ -428,7 +428,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 //Get the literal and length code of a deflated block with fixed tree, as per the deflate specification
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
 {
-	uint32_t i;
+	uint32_t i = 0;
 	//256 literals, the end code, some length codes, and 2 unused codes
 	std::array<uint32_t, NumDeflateCodeSymbols> bitLength{};
 
@@ -483,7 +483,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint3
 
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 {
-	uint32_t bits;
+	uint32_t bits = 0;
 
 	Codes.resize(NumCodes);
 	std::vector<uint32_t> bitLengthCount((MaxBitLength + 1), 0);
@@ -515,7 +515,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 {
 	static const uint32_t headSize = 1u << FirstBits; //Size of the first table
 	static const uint32_t mask = (1u << FirstBits) /*headSize*/ - 1u;
-	std::size_t i; //Total table size
+	std::size_t i = 0; //Total table size
 	std::vector<uint32_t> maxLengths(headSize, 0);
 
 	//Compute maxLengths: Max total bit length of symbols sharing prefix in the first table

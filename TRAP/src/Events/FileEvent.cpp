@@ -68,7 +68,7 @@ TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FS::FileStatus status) const
+std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FS::FileStatus status)
 {
     switch(status)
     {

@@ -2440,3 +2440,7 @@ SITREP 03/24/2022|22w12b1
 SITREP 03/26/2022|22w12b2
     - Changed TRAP Engine version to 22w12b2(0.7.115)
     - Premake Added script to create a compile_commands.json for clang-tidy ~<20 mins
+
+SITREP 03/27/2022|22w12b3
+    - Changed TRAP Engine version to 22w12b3(0.7.116)
+    - Fixed many clang-tidy warnings ~>60 mins

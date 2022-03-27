@@ -158,15 +158,15 @@ constexpr TBuiltInResource DefaultTBuiltInResource =
 	/* .maxDualSourceDrawBuffersEXT = */ 1,
 
 	/* .limits = */ {
-		/* .nonInductiveForLoops = */ 1,
-		/* .whileLoops = */ 1,
-		/* .doWhileLoops = */ 1,
-		/* .generalUniformIndexing = */ 1,
-		/* .generalAttributeMatrixVectorIndexing = */ 1,
-		/* .generalVaryingIndexing = */ 1,
-		/* .generalSamplerIndexing = */ 1,
-		/* .generalVariableIndexing = */ 1,
-		/* .generalConstantMatrixVectorIndexing = */ 1,
+		/* .nonInductiveForLoops = */ true,
+		/* .whileLoops = */ true,
+		/* .doWhileLoops = */ true,
+		/* .generalUniformIndexing = */ true,
+		/* .generalAttributeMatrixVectorIndexing = */ true,
+		/* .generalVaryingIndexing = */ true,
+		/* .generalSamplerIndexing = */ true,
+		/* .generalVariableIndexing = */ true,
+		/* .generalConstantMatrixVectorIndexing = */ true,
 }};
 
 bool FileOrFolderExists(const std::filesystem::path& path);
@@ -864,7 +864,7 @@ void SaveSPIRV(Shader& shader)
 
 				file.write(reinterpret_cast<char*>(&SPIRVSize), sizeof(uint32_t));
 				file.write(reinterpret_cast<char*>(&type), sizeof(uint32_t));
-				file.write(reinterpret_cast<char*>(shader.SubShaderSources[i].SPIRV.data()), shader.SubShaderSources[i].SPIRV.size() * sizeof(uint32_t));
+				file.write(reinterpret_cast<char*>(shader.SubShaderSources[i].SPIRV.data()), static_cast<std::streamsize>(shader.SubShaderSources[i].SPIRV.size() * sizeof(uint32_t)));
 			}
 		}
 

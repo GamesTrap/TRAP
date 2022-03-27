@@ -95,9 +95,10 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 		const VkFormat requestedFormat = ImageFormatToVkFormat(desc.ColorFormat);
 		const VkColorSpaceKHR requestedColorSpace = requestedFormat == HDRSurfaceFormat.format ?
 		                                            HDRSurfaceFormat.colorSpace : VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-		for (uint32_t i = 0; i < formats.size(); ++i)
+
+		for(const VkSurfaceFormatKHR& format : formats)
 		{
-			if ((requestedFormat == formats[i].format) && (requestedColorSpace == formats[i].colorSpace))
+			if ((requestedFormat == format.format) && (requestedColorSpace == format.colorSpace))
 			{
 				surfaceFormat.format = requestedFormat;
 				surfaceFormat.colorSpace = requestedColorSpace;
@@ -203,8 +204,8 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	}
 
 	//Find if GPU has a dedicated present queue
-	VkQueue presentQueue;
-	uint32_t finalPresentQueueFamilyIndex;
+	VkQueue presentQueue = VK_NULL_HANDLE;
+	uint32_t finalPresentQueueFamilyIndex = 0;
 	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() &&
 	    queueFamilyIndices[0] != presentQueueFamilyIndex)
 	{
@@ -219,7 +220,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 		presentQueue = VK_NULL_HANDLE;
 	}
 
-	VkSurfaceTransformFlagBitsKHR preTransform;
+	VkSurfaceTransformFlagBitsKHR preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 	if (caps.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
 		preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 	else
@@ -244,7 +245,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR);
 
-	VkSwapchainKHR swapChain;
+	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
 		                                                                               desc.ImageCount,
 		                                                                               surfaceFormat,
@@ -324,7 +325,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	TRAP_ASSERT(signalSemaphore || fence);
 
 	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
-	VkResult res;
+	VkResult res{};
 
 	if(fence != nullptr)
 	{

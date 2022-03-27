@@ -462,8 +462,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetScissor(const uint32_t x, cons
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
 	VkRect2D rect;
-	rect.offset.x = x;
-	rect.offset.y = y;
+	rect.offset.x = static_cast<int32_t>(x);
+	rect.offset.y = static_cast<int32_t>(y);
 	rect.extent.width = width;
 	rect.extent.height = height;
 
@@ -497,7 +497,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexed(const uint32_t indexC
 {
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
-	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, 1, firstIndex, firstVertex, 0);
+	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, 1, firstIndex, static_cast<int32_t>(firstVertex), 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -510,7 +510,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexedInstanced(const uint32
 {
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
-	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, instanceCount, firstIndex, firstVertex, firstInstance);
+	vkCmdDrawIndexed(m_vkCommandBuffer, indexCount, instanceCount, firstIndex, static_cast<int32_t>(firstVertex), firstInstance);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -594,7 +594,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
                                                                  const TRAP::Ref<Buffer>& srcBuffer,
                                                                  const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
-	const VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
+	VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
 	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
 
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
@@ -650,7 +650,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 			copy.imageExtent.width = TRAP::Graphics::API::ImageFormatPlaneWidth(fmt, i, width);
 			copy.imageExtent.height = TRAP::Graphics::API::ImageFormatPlaneHeight(fmt, i, height);
 			copy.imageExtent.depth = depth;
-			offset += copy.imageExtent.width * copy.imageExtent.height *
+			offset += static_cast<uint64_t>(copy.imageExtent.width) * copy.imageExtent.height *
 			          TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock(fmt, i);
 		}
 
@@ -685,11 +685,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryP
 		break;
 
 	case VK_QUERY_TYPE_PIPELINE_STATISTICS:
-		break;
-
 	case VK_QUERY_TYPE_OCCLUSION:
-		break;
-
 	default:
 		break;
 	}
@@ -749,7 +745,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 		for (const auto& trans : *bufferBarriers)
 		{
 			const TRAP::Ref<Buffer>& buffer = trans.Buffer;
-			VkBufferMemoryBarrier* bufferBarrier;
+			VkBufferMemoryBarrier* bufferBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
 				trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
@@ -805,7 +801,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 		{
 			const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = trans.Texture;
 			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
-			VkImageMemoryBarrier* imageBarrier;
+			VkImageMemoryBarrier* imageBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
 				trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
@@ -868,7 +864,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 		{
 			const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture;
 			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
-			VkImageMemoryBarrier* imageBarrier;
+			VkImageMemoryBarrier* imageBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
 				trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
@@ -1004,7 +1000,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 	{
 		const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = textureBarrier->Texture;
 		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
-		VkImageMemoryBarrier* imageBarrier;
+		VkImageMemoryBarrier* imageBarrier = nullptr;
 
 		if (textureBarrier->CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
 			textureBarrier->NewState == RendererAPI::ResourceState::UnorderedAccess)
@@ -1064,7 +1060,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 	{
 		const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(renderTargetBarrier->RenderTarget.get())->m_texture;
 		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
-		VkImageMemoryBarrier* imageBarrier;
+		VkImageMemoryBarrier* imageBarrier = nullptr;
 
 		if (renderTargetBarrier->CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
 			renderTargetBarrier->NewState == RendererAPI::ResourceState::UnorderedAccess)

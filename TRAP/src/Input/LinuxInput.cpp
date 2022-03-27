@@ -35,6 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Events/ControllerEvent.h"
 #include "Window/WindowingAPI.h"
 #include "ControllerMappings.h"
+#include "Utils/Utils.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
@@ -65,7 +66,7 @@ bool TRAP::Input::InitController()
 	DIR* dir = opendir(dirName);
 	if(dir)
 	{
-		struct dirent* entry;
+		dirent* entry = nullptr;
 
 		while((entry = readdir(dir)))
 		{
@@ -126,7 +127,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 	if(!con->LinuxCon.VibrationSupported)
 		return;
 
-	struct input_event play;
+	input_event play{};
 	//Delete any existing effect
 	if(con->LinuxCon.CurrentVibration != -1)
 	{
@@ -135,7 +136,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 		play.code = con->LinuxCon.CurrentVibration;
 		play.value = 0;
 
-		if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
+		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) == -1)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop vibration");
 			return;
@@ -148,7 +149,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 	//If VibrationSupported is true, start the new effect
 	if(leftMotor != 0.0f || rightMotor != 0.0f)
 	{
-		struct ff_effect ff;
+		ff_effect ff{};
 
 		//Define an effect for this vibration setting
 		ff.type = FF_RUMBLE;
@@ -167,7 +168,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 		play.code = con->LinuxCon.CurrentVibration;
 		play.value = 1;
 
-		if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
+		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) == -1)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start vibration");
 			return;
@@ -209,14 +210,14 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	std::array<char, (EV_CNT + 7) / 8> EVBits{};
 	std::array<char, (KEY_CNT + 7) / 8> keyBits{};
 	std::array<char, (ABS_CNT + 7) / 8> ABSBits{};
-	struct input_id ID;
+	input_id ID{};
 
 	if (ioctl(LinuxCon.FD, EVIOCGBIT(0, EVBits.size()), EVBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGBIT(EV_KEY, keyBits.size()), keyBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGID, &ID) < 0)
 	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", strerror(errno), "!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", Utils::GetStrError(), "!");
 		close(LinuxCon.FD);
 		return false;
 	}
@@ -304,7 +305,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		return false;
 
 	//Get index of our ControllerInternal
-	uint8_t index;
+	uint8_t index = 0;
 	for (index = 0; index <= static_cast<uint8_t>(Controller::Sixteen); index++)
 	{
 		if (&s_controllerInternal[index] == con)
@@ -363,9 +364,9 @@ void TRAP::Input::DetectControllerConnectionLinux()
 	while(size > offset)
 	{
 		regmatch_t match;
-		const struct inotify_event* e = (struct inotify_event*)(&buffer[offset]);
+		const inotify_event* e = reinterpret_cast<inotify_event*>(&buffer[offset]);
 
-		offset += sizeof(struct inotify_event) + e->len;
+		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
 
 		if (regexec(&s_linuxController.Regex, e->name, 1, &match, 0) != 0)
 			continue;
@@ -400,7 +401,7 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 		//Read all queued events (non-blocking)
 		while(true)
 		{
-			struct input_event e;
+			input_event e{};
 
 			errno = 0;
 			if(read(con->LinuxCon.FD, &e, sizeof(e)) < 0)
@@ -446,7 +447,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
 		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
 
-		struct input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		input_absinfo* info = &con->LinuxCon.ABSInfo[code];
 
 		if (ioctl(con->LinuxCon.FD, EVIOCGABS(code), info) < 0)
 			continue;
@@ -502,14 +503,14 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 	}
 	else
 	{
-		const struct input_absinfo* info = &con->LinuxCon.ABSInfo[code];
-		float normalized = value;
+		const input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		float normalized = static_cast<float>(value);
 
 		const int range = info->maximum - info->minimum;
 		if (range)
 		{
 			//Normalize to 0.0f -> 1.0f
-			normalized = (normalized - info->minimum) / range;
+			normalized = (normalized - static_cast<float>(info->minimum)) / static_cast<float>(range);
 			//Normalize to -1.0f -> 1.0f
 			normalized = normalized * 2.0f - 1.0f;
 		}
@@ -523,7 +524,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value)
 {
 	if(code - BTN_MISC >= 0)
-		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value ? true : false);
+		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -100,9 +100,10 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 			m_colorFormat = ColorFormat::RGBA;
 		}
 
-		m_data2Byte.resize(m_width * m_height * header.Depth);
+		m_data2Byte.resize(static_cast<std::size_t>(m_width) * m_height * header.Depth);
 		if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()),
-			           m_width * m_height * header.Depth * sizeof(uint16_t)))
+			           static_cast<std::streamsize>(m_width) * m_height * header.Depth *
+					   static_cast<std::streamsize>(sizeof(uint16_t))))
 		{
 			file.close();
 			m_data2Byte.clear();
@@ -148,8 +149,8 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 			m_colorFormat = ColorFormat::RGBA;
 		}
 
-		m_data.resize(m_width * m_height * header.Depth);
-		if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * header.Depth))
+		m_data.resize(static_cast<std::size_t>(m_width) * m_height * header.Depth);
+		if(!file.read(reinterpret_cast<char*>(m_data.data()), static_cast<std::streamsize>(m_width) * m_height * header.Depth))
 		{
 			file.close();
 			m_data.clear();

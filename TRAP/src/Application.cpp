@@ -211,7 +211,7 @@ TRAP::Application::Application(std::string gameName)
 
 #ifndef TRAP_HEADLESS_MODE
 	//Update Viewport
-	int32_t w, h;
+	int32_t w = 0, h = 0;
 	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 		(
 			m_window->GetInternalWindow()

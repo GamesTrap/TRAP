@@ -829,7 +829,7 @@ VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineC
 	                                                                                      const VkPipelineDepthStencilStateCreateInfo& ds,
 	                                                                                      const VkPipelineColorBlendStateCreateInfo& cb,
 	                                                                                      const VkPipelineDynamicStateCreateInfo& dy,
-	                                                                                      const VkPipelineLayout layout,
+	                                                                                      VkPipelineLayout layout,
 	                                                                                      VkRenderPass renderPass)
 {
 	VkGraphicsPipelineCreateInfo info;

@@ -97,7 +97,7 @@ TRAP::Network::Packet::operator TRAP::Network::Packet::BoolType() const
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
 {
-	uint8_t value;
+	uint8_t value = 0;
 	if (*this >> value)
 		data = (value != 0);
 
@@ -520,8 +520,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring& dat
 	//Then insert characters
 	if(length > 0)
 	{
-		for (std::wstring::const_iterator c = data.begin(); c != data.end(); ++c)
-			*this << static_cast<uint32_t>(*c);
+		for(const auto& c : data)
+			*this << static_cast<uint32_t>(c);
 	}
 
 	return *this;

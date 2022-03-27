@@ -42,6 +42,7 @@ namespace TRAP::Network
 		DataChannel operator=(const DataChannel&) = delete;
 		DataChannel(DataChannel&&) = delete;
 		DataChannel operator=(DataChannel&&) = delete;
+		~DataChannel() = default;
 
 		explicit DataChannel(FTP& owner);
 
@@ -390,7 +391,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 	{
 		//Receive the response from the server
 		std::array<char, 1024> buffer{};
-		std::size_t length;
+		std::size_t length = 0;
 
 		if(m_receiveBuffer.empty())
 		{
@@ -409,11 +410,11 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 		while(in)
 		{
 			//Try to extract the code
-			uint32_t code;
+			uint32_t code = 0;
 			if(in >> code)
 			{
 				//Extract the separator
-				char separator;
+				char separator = ' ';
 				in.get(separator);
 
 				//The '-' character means a multiline response
@@ -463,25 +464,23 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 						//Return the response code and message
 						return Response(static_cast<Response::Status>(code), message);
 					}
-					else
+
+					//The line we just read was actually not a response,
+					//only a new part of the current multiline response
+
+					//Extract the line
+					std::string line;
+					std::getline(in, line);
+
+					if(!line.empty())
 					{
-						//The line we just read was actually not a response,
-						//only a new part of the current multiline response
+						//Remove the ending '\r' (all lines are terminated by "\r\n")
+						line.erase(line.length() - 1);
 
-						//Extract the line
-						std::string line;
-						std::getline(in, line);
-
-						if(!line.empty())
-						{
-							//Remove the ending '\r' (all lines are terminated by "\r\n")
-							line.erase(line.length() - 1);
-
-							//Append it to the current message
-							std::ostringstream out;
-							out << code << separator << line << '\n';
-							message += out.str();
-						}
+						//Append it to the current message
+						std::ostringstream out;
+						out << code << separator << line << '\n';
+						message += out.str();
 					}
 				}
 			}
@@ -597,7 +596,7 @@ void TRAP::Network::FTP::DataChannel::Receive(std::ostream& stream)
 {
 	//Receive data
 	std::array<char, 1024> buffer{};
-	std::size_t received;
+	std::size_t received = 0;
 	while(m_dataSocket.Receive(buffer.data(), buffer.size(), received) == Socket::Status::Done)
 	{
 		stream.write(buffer.data(), static_cast<std::streamsize>(received));

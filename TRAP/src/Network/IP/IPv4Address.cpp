@@ -116,7 +116,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	//Create the socket
 	const SocketHandle sock = socket(PF_INET, SOCK_DGRAM, 0);
 	if (sock == INTERNAL::Network::SocketImpl::InvalidSocket())
-		return IPv4Address();
+		return {};
 
 	//Connect the socket to localhost on any port
 	uint32_t loopback = INADDR_LOOPBACK;
@@ -128,7 +128,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	if (connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return IPv4Address();
+		return {};
 	}
 
 	//Get the local address of the socket connection
@@ -136,7 +136,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	if(getsockname(sock, reinterpret_cast<sockaddr*>(&address), &size) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
-		return IPv4Address();
+		return {};
 	}
 
 	//Close the socket
@@ -168,7 +168,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Ut
 		return IPv4Address(page.GetBody());
 
 	//Something failed: return an invalid address
-	return IPv4Address();
+	return {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -152,7 +152,7 @@ bool TRAP::FS::WriteFile(const std::filesystem::path& path, std::vector<uint8_t>
         return false;
     }
 
-    file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
+    file.write(reinterpret_cast<char*>(buffer.data()), static_cast<int64_t>(buffer.size()));
     file.close();
 
     return true;
@@ -805,7 +805,7 @@ std::string GetHomeFolderPathLinux()
     if(!homeDir.empty())
         return homeDir;
 
-    int uid = getuid();
+    int uid = static_cast<int>(getuid());
     const char* homeEnv = std::getenv("HOME");
     if(uid != 0 && homeEnv)
     {
@@ -815,8 +815,8 @@ std::string GetHomeFolderPathLinux()
     }
 
     passwd* pw = nullptr;
-    passwd pwd;
-    int32_t bufSize = sysconf(_SC_GETPW_R_SIZE_MAX);
+    passwd pwd{};
+    int64_t bufSize = sysconf(_SC_GETPW_R_SIZE_MAX);
     if(bufSize < 0)
         bufSize = 16384;
     std::vector<char> buffer{};

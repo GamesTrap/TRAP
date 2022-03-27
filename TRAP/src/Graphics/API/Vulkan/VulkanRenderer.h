@@ -259,7 +259,7 @@ namespace TRAP::Graphics::API
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 
 	private:
-		void MapRenderTarget(TRAP::Ref<RenderTarget> renderTarget, ResourceState currResState, void* outPixelData);
+		void MapRenderTarget(const TRAP::Ref<RenderTarget>& renderTarget, ResourceState currResState, void* outPixelData);
 
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();

@@ -58,13 +58,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	char signOne, signTwo, axisOne, axisTwo;
-	signOne = static_cast<char>(file.get());
-	axisOne = static_cast<char>(file.get());
+	char signOne = static_cast<char>(file.get());
+	char axisOne = static_cast<char>(file.get());
 	file >> m_width;
 	file.ignore();
-	signTwo = static_cast<char>(file.get());
-	axisTwo = static_cast<char>(file.get());
+	char signTwo = static_cast<char>(file.get());
+	char axisTwo = static_cast<char>(file.get());
 	file >> m_height;
 	file.ignore();
 
@@ -109,14 +108,14 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	m_data.resize(m_width * m_height * 3, 0.0f);
+	m_data.resize(static_cast<std::size_t>(m_width) * m_height * 3, 0.0f);
 	uint32_t dataIndex = 0;
 
 	std::vector<std::array<uint8_t, 4>> scanline;
 	scanline.resize(m_width);
 
 	//Convert image
-	for(int32_t y = m_height - 1; y >= 0; y--)
+	for(int32_t y = static_cast<int32_t>(m_height) - 1; y >= 0; y--)
 	{
 		uint32_t scanlineIndex = 0;
 		if (!Decrunch(scanline, scanlineIndex, m_width, file))
@@ -260,11 +259,11 @@ bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 
 void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
                                                uint32_t scanlineIndex, std::vector<float>& data, uint32_t dataIndex)
 {
-	int32_t length = m_width;
+	int32_t length = static_cast<int32_t>(m_width);
 
 	while(length-- > 0)
 	{
-		const int8_t exponent = scanline[0 + scanlineIndex][E] - 128;
+		const int8_t exponent = static_cast<int8_t>(scanline[0 + scanlineIndex][E] - 128);
 		if (exponent > eMax)
 			eMax = exponent;
 		if (exponent != -128 && exponent < eMin)

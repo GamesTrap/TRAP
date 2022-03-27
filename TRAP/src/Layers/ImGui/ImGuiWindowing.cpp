@@ -88,8 +88,8 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 								     "e.g. ImGui_ImplOpenGL3_NewFrame().");
 
 	//Setup display size (every frame to accommodate for window resizing)
-	int32_t width, height;
-	int32_t displayWidth, displayHeight;
+	int32_t width = 0, height = 0;
+	int32_t displayWidth = 0, displayHeight = 0;
 	WindowingAPI::GetWindowSize(s_window, width, height);
 	WindowingAPI::GetFrameBufferSize(s_window, displayWidth, displayHeight);
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
@@ -290,7 +290,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	for(uint32_t n = 0; n < static_cast<uint32_t>(platformIO.Viewports.Size); n++)
 	{
-		ImGuiViewport* viewport = platformIO.Viewports[n];
+		ImGuiViewport* viewport = platformIO.Viewports[static_cast<int>(n)];
 		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>
 		(
 			viewport->PlatformHandle
@@ -363,7 +363,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 	{
 		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>
 		(
-			platformIO.Viewports[n]->PlatformHandle
+			platformIO.Viewports[static_cast<int>(n)]->PlatformHandle
 		);
 
 		if (!windowPtr)
@@ -461,13 +461,13 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 	for (const auto& n : monitors)
 	{
 		ImGuiPlatformMonitor monitor;
-		int32_t x, y;
+		int32_t x = 0, y = 0;
 		WindowingAPI::GetMonitorPos(n, x, y);
 		const WindowingAPI::InternalVideoMode videoMode = WindowingAPI::GetVideoMode(n);
 
 		monitor.MainPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 		monitor.MainSize = ImVec2(static_cast<float>(videoMode.Width), static_cast<float>(videoMode.Height));
-		int32_t width, height;
+		int32_t width = 0, height = 0;
 		WindowingAPI::GetMonitorWorkArea(n, x, y, width, height);
 		monitor.WorkPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 		monitor.WorkSize = ImVec2(static_cast<float>(width), static_cast<float>(height));
@@ -475,7 +475,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 		//Warning: The validity of monitor DPI information on Windows depends on the application
 		//DPI awareness settings,
 		//which generally needs to be set in the manifest or at runtime.
-		float xScale, yScale;
+		float xScale = 0.0f, yScale = 0.0f;
 		WindowingAPI::GetMonitorContentScale(n, xScale, yScale);
 		monitor.DpiScale = xScale;
 		platformIO.Monitors.push_back(monitor);
@@ -629,10 +629,8 @@ void TRAP::INTERNAL::ImGuiWindowing::CreateWindow(ImGuiViewport* viewport)
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Visible, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Focused, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::FocusOnShow, false);
-	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) ?
-		false : true);
-	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) ?
-		true : false);
+	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, !(viewport->Flags & ImGuiViewportFlags_NoDecoration));
+	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost));
 	WindowingAPI::WindowHint(WindowingAPI::Hint::MousePassthrough, true);
 	data->Window = WindowingAPI::CreateWindow(static_cast<int32_t>(viewport->Size.x),
 	                                          static_cast<int32_t>(viewport->Size.y), "No Title Yet", nullptr);

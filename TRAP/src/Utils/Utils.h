@@ -88,6 +88,10 @@ namespace TRAP::Utils
 	/// <param name="lwm">LinuxWindowManager to convert to a string.</param>
 	/// <returns>String representation.</returns>
 	std::string LinuxWindowManagerToString(LinuxWindowManager lwm);
+
+#ifdef TRAP_PLATFORM_LINUX
+	std::string GetStrError();
+#endif
 }
 
 #endif /*TRAP_UTILS_H*/

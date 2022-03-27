@@ -276,10 +276,10 @@ TRAP::Graphics::Texture2D::Texture2D()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture2D::Texture2D(std::string name, std::filesystem::path filepath)
+	: m_filepath(std::move(filepath))
 {
 	m_textureType = TextureType::Texture2D;
 	m_name = std::move(name);
-	m_filepath = std::move(filepath);
 
 	//Hot reloading
 	if(!TRAP::Application::IsHotReloadingEnabled())

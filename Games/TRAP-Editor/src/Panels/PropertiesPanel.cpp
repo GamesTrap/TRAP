@@ -12,7 +12,7 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
                             const float columnWidth = 100.0f)
 {
 	ImGuiIO& io = ImGui::GetIO();
-	const auto boldFont = io.Fonts->Fonts[0];
+	auto* const boldFont = io.Fonts->Fonts[0];
 
 	ImGui::PushID(label.c_str());
 

@@ -51,7 +51,7 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
 		resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize);
 
 	//Remove unused resources
-	filter = filter || (resource.IsUsed == false);
+	filter = filter || (!resource.IsUsed);
 
 	//Remove stage outputs
 	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Outputs);
@@ -86,10 +86,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	std::size_t resourceCount = 0;
 	std::size_t variablesCount = 0;
 
-	for(std::size_t i = 0; i < cc.ShaderResources.size(); ++i)
+	for(auto& resource : cc.ShaderResources)
 	{
-		SPIRVTools::Resource& resource = cc.ShaderResources[i];
-
 		if(!resource.IsUsed)
 		{
 			TP_WARN(TRAP::Log::ShaderSPIRVPrefix, "Found unused resource with name: ", resource.Name, "!");
@@ -134,10 +132,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		vertexInputs.resize(vertexInputCount);
 
 		std::size_t j = 0;
-		for(std::size_t i = 0; i < cc.ShaderResources.size(); ++i)
+		for(auto& resource : cc.ShaderResources)
 		{
-			SPIRVTools::Resource& resource = cc.ShaderResources[i];
-
 			//Filter out what we don't use
 			if(!FilterResource(resource, shaderStage) &&
 			   resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)

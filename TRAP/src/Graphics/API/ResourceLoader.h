@@ -112,7 +112,7 @@ namespace TRAP::Graphics::API
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
 
-		static void VulkanGenerateMipMaps(TRAP::Ref<TRAP::Graphics::TextureBase> texture, CommandBuffer* cmd);
+		static void VulkanGenerateMipMaps(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture, CommandBuffer* cmd);
 
 		enum class UploadFunctionResult
 		{
@@ -129,7 +129,7 @@ namespace TRAP::Graphics::API
 
 		UploadFunctionResult UpdateBuffer(std::size_t activeSet,
 		                                  const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
-		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc,
+		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
 		                                   std::array<TRAP::Scope<TRAP::Image>, 6>* images);
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 

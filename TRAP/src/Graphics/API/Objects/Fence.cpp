@@ -56,8 +56,6 @@ void TRAP::Graphics::Fence::WaitForFence(std::vector<Fence>& fences)
 		break;
 
 	case RenderAPI::NONE:
-		break;
-
 	default:
 		break;
 	}

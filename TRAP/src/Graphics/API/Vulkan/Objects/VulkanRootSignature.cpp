@@ -52,11 +52,11 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
 	//be considered the same resource)
-	for(std::size_t sh = 0; sh < desc.Shaders.size(); ++sh)
+	for(auto* sh : desc.Shaders)
 	{
 		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
 		(
-			desc.Shaders[sh]
+			sh
 		)->GetReflection();
 
 		if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::Compute))
@@ -66,10 +66,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		else
 			pipelineType = RendererAPI::PipelineType::Graphics;
 
-		for(std::size_t i = 0; i < reflection->ShaderResources.size(); ++i)
+		for(auto& res : reflection->ShaderResources)
 		{
-			ShaderReflection::ShaderResource& res = reflection->ShaderResources[i];
-
 			auto resNameIt = indexMap.Map.find(res.Name);
 			if(resNameIt == indexMap.Map.end())
 			{
@@ -330,7 +328,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			//Fill the write descriptors with default values during initialization so the only thing we change
 			//in CmdBindDescriptors are the VkBuffer / VKImageView objects
-			for (auto descInfo : layout.Descriptors)
+			for (auto* descInfo : layout.Descriptors)
 			{
 				const uint64_t offset = descInfo->HandleIndex * sizeof(VulkanRenderer::DescriptorUpdateData);
 
@@ -451,7 +449,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			//Consume empty descriptor sets from empty descriptor set pool
 			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<TRAP::Graphics::API::VulkanDescriptorPool*>
 			(
-				RendererAPI::GetRenderer().get()->GetDescriptorPool().get()
+				RendererAPI::GetDescriptorPool().get()
 			)->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
 		}
 	}

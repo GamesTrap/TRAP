@@ -262,7 +262,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 				TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", nameOrPath, "\"");
 				return s_Textures[nameOrPath].get();
 			}
-			else if (textureType == TextureType::TextureCube)
+			if (textureType == TextureType::TextureCube)
 			{
 				if (s_Textures[nameOrPath])
 				{
@@ -353,7 +353,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const Scope<Text
 			TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", name, "\"");
 			return s_Textures[name].get();
 		}
-		else if (textureType == TextureType::TextureCube)
+		if (textureType == TextureType::TextureCube)
 		{
 			const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>
 				(
@@ -375,8 +375,8 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const Scope<Text
 			TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
 			return s_Textures[name].get();
 		}
-		else
-			TP_WARN(Log::TextureManagerPrefix, "Unknown texture type: \"", name, "\"");
+
+		TP_WARN(Log::TextureManagerPrefix, "Unknown texture type: \"", name, "\"");
 	}
 	else
 		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", texture->GetName(), "\" to reload.");

@@ -231,8 +231,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 
 	s_Data.WindowList.emplace_front(window.get());
 
-	window->videoMode.Width = width;
-	window->videoMode.Height = height;
+	window->videoMode.Width = static_cast<int32_t>(width);
+	window->videoMode.Height = static_cast<int32_t>(height);
 	window->videoMode.RedBits = 8;
 	window->videoMode.GreenBits = 8;
 	window->videoMode.BlueBits = 8;
@@ -1713,7 +1713,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, cons
 
 	for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
 	{
-		if (window->Keys[key] == true)
+		if (window->Keys[key])
 		{
 			const int32_t scanCode = PlatformGetKeyScanCode(static_cast<Input::Key>(key));
 			InputKey(window, static_cast<Input::Key>(key), scanCode, false);
@@ -1766,7 +1766,7 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* monitor)
 
 bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 {
-	uint32_t count;
+	uint32_t count = 0;
 
 	if (s_Data.VK.Available)
 		return true;
@@ -1881,7 +1881,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
                                                                                                const InternalVideoMode& desired)
 {
 	uint32_t leastSizeDiff = UINT_MAX;
-	uint32_t rateDiff, leastRateDiff = UINT_MAX;
+	uint32_t rateDiff = 0, leastRateDiff = UINT_MAX;
 	uint32_t leastColorDiff = UINT_MAX;
 	InternalVideoMode* closest = nullptr;
 

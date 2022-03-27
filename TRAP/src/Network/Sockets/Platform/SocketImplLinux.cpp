@@ -29,7 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "SocketImplLinux.h"
 
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <cstring>
 #include "Core/PlatformDetection.h"
@@ -121,20 +121,10 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 		return TRAP::Network::Socket::Status::NotReady;
 
 	case ECONNABORTED:
-		return TRAP::Network::Socket::Status::Disconnected;
-
 	case ECONNRESET:
-		return TRAP::Network::Socket::Status::Disconnected;
-
 	case ETIMEDOUT:
-		return TRAP::Network::Socket::Status::Disconnected;
-
 	case ENETRESET:
-		return TRAP::Network::Socket::Status::Disconnected;
-
 	case ENOTCONN:
-		return TRAP::Network::Socket::Status::Disconnected;
-
 	case EPIPE:
 		return TRAP::Network::Socket::Status::Disconnected;
 

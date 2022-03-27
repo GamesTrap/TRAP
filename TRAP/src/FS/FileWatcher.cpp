@@ -3,6 +3,7 @@
 
 #include "FS.h"
 #include "Events/FileEvent.h"
+#include "Utils/Utils.h"
 
 TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
     : m_recursive(recursive), m_run(true), m_skipNextFileChange(false)
@@ -351,21 +352,24 @@ void TRAP::FS::FileWatcher::WatchLinux()
     fileDescriptors[0].fd = inotify_init();
     if(fileDescriptors[0].fd < 0)
     {
-        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to initialize inotify: ", strerror(errno));
+        std::string error(1024, '\0');
+        strerror_r(errno, error.data(), error.size());
+
+        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to initialize inotify: ", Utils::GetStrError());
         close(m_killEvent);
         return;
     }
 
     std::unordered_map<int32_t, std::filesystem::path> watchDescriptors;
 
-    for(auto it = m_paths.begin(); it != m_paths.end(); ++it)
+    for(const auto& path : m_paths)
     {
-        const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, (*it).generic_u8string().c_str(),
+        const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, path.generic_u8string().c_str(),
                                              IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
         if(wd < 0)
         {
-            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch: ", strerror(errno));
+            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch: ", Utils::GetStrError());
             for(auto& [wDesc, path] : watchDescriptors)
                 inotify_rm_watch(fileDescriptors[0].fd, wDesc);
             close(fileDescriptors[0].fd);
@@ -373,32 +377,37 @@ void TRAP::FS::FileWatcher::WatchLinux()
             return;
         }
 
-        watchDescriptors[wd] = *it;
+        watchDescriptors[wd] = path;
 
         //Also add sub dirs if recursive
         if(m_recursive)
         {
-            for(auto& p : std::filesystem::recursive_directory_iterator(*it))
+            std::error_code ec;
+            std::filesystem::recursive_directory_iterator it(path, ec);
+            if(!ec)
             {
-                const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, p.path().generic_u8string().c_str(),
-                                                     IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
-
-                if(wd < 0)
+                for(const auto& p : it)
                 {
-                    TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch: ", strerror(errno));
-                    for(auto& [wDesc, path] : watchDescriptors)
-                        inotify_rm_watch(fileDescriptors[0].fd, wDesc);
-                    close(fileDescriptors[0].fd);
-                    close(m_killEvent);
-                    return;
-                }
+                    const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, p.path().generic_u8string().c_str(),
+                                                        IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
-                watchDescriptors[wd] = p.path().generic_u8string();
+                    if(wd < 0)
+                    {
+                        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch: ", Utils::GetStrError());
+                        for(auto& [wDesc, path] : watchDescriptors)
+                            inotify_rm_watch(fileDescriptors[0].fd, wDesc);
+                        close(fileDescriptors[0].fd);
+                        close(m_killEvent);
+                        return;
+                    }
+
+                    watchDescriptors[wd] = p.path().generic_u8string();
+                }
             }
         }
     }
 
-    std::array<char, 2048> buf;
+    std::array<char, 2048> buf{};
     std::filesystem::path oldName;
 
     while(m_run)
@@ -406,7 +415,7 @@ void TRAP::FS::FileWatcher::WatchLinux()
         int32_t ready = poll(fileDescriptors.data(), fileDescriptors.size(), -1);
         if(ready < 0)
         {
-            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to poll events: ", strerror(errno));
+            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to poll events: ", Utils::GetStrError());
             for(auto& [wDesc, path] : watchDescriptors)
                 inotify_rm_watch(fileDescriptors[0].fd, wDesc);
             close(fileDescriptors[0].fd);
@@ -438,7 +447,7 @@ void TRAP::FS::FileWatcher::WatchLinux()
             const ssize_t len = read(fileDescriptors[1].fd, &value, sizeof(value));
             if(len < 0)
             {
-                TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to read kill event: ", strerror(errno));
+                TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to read kill event: ", Utils::GetStrError());
                 for(auto& [wDesc, path] : watchDescriptors)
                     inotify_rm_watch(fileDescriptors[0].fd, wDesc);
                 close(fileDescriptors[0].fd);
@@ -459,14 +468,14 @@ void TRAP::FS::FileWatcher::WatchLinux()
         const ssize_t len = read(fileDescriptors[0].fd, buf.data(), buf.size());
         if(len == 0)
         {
-            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to read inotify events: ", strerror(errno));
+            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to read inotify events: ", Utils::GetStrError());
             for(auto& [wDesc, path] : watchDescriptors)
                 inotify_rm_watch(fileDescriptors[0].fd, wDesc);
             close(fileDescriptors[0].fd);
             close(m_killEvent);
             return;
         }
-        else if(len < 0)
+        if(len < 0)
         {
             if(errno == EAGAIN)
             {
@@ -474,7 +483,7 @@ void TRAP::FS::FileWatcher::WatchLinux()
                 continue;
             }
 
-            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to read inotify events: ", strerror(errno));
+            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to read inotify events: ", Utils::GetStrError());
             for(auto& [wDesc, path] : watchDescriptors)
                 inotify_rm_watch(fileDescriptors[0].fd, wDesc);
             close(fileDescriptors[0].fd);
@@ -494,7 +503,7 @@ void TRAP::FS::FileWatcher::WatchLinux()
             inotify_event* event = reinterpret_cast<inotify_event*>(buf.data() + offset);
             if(event->len)
             {
-                FileStatus status;
+                FileStatus status = FileStatus::Created;
                 std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(event->name).generic_u8string();
                 bool isDir = std::filesystem::is_directory(filePath);
                 std::filesystem::path oldFileName = "";
@@ -508,7 +517,7 @@ void TRAP::FS::FileWatcher::WatchLinux()
 
                         if(wd < 0)
                         {
-                            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch: ", strerror(errno));
+                            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch: ", Utils::GetStrError());
                             for(auto& [wDesc, path] : watchDescriptors)
                                 inotify_rm_watch(fileDescriptors[0].fd, wDesc);
                             close(fileDescriptors[0].fd);
@@ -579,17 +588,17 @@ void TRAP::FS::FileWatcher::WatchLinux()
         int32_t res = inotify_rm_watch(fileDescriptors[0].fd, wd);
         if(res < 0)
         {
-            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to remove inotify watch: ", strerror(errno));
+            TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to remove inotify watch: ", Utils::GetStrError());
             continue;
         }
     }
 
     int32_t res = close(fileDescriptors[0].fd);
     if(res < 0)
-        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to close inotify: ", strerror(errno));
+        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to close inotify: ", Utils::GetStrError());
 
     res = close(m_killEvent);
     if(res < 0)
-        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to close eventfd: ", strerror(errno));
+        TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to close eventfd: ", Utils::GetStrError());
 #endif
 }

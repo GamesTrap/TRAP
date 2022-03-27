@@ -836,9 +836,9 @@ namespace TRAP
 		static constexpr std::string_view MappingName = "Linux";
 		struct ControllerInternal;
 		static bool OpenControllerDeviceLinux(const std::string& path);
-		static void PollABSStateLinux(ControllerInternal* js);
-		static void HandleABSEventLinux(ControllerInternal* js, int32_t code, int32_t value);
-		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);
+		static void PollABSStateLinux(ControllerInternal* con);
+		static void HandleABSEventLinux(ControllerInternal* con, int32_t code, int32_t value);
+		static void HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value);
 		struct ControllerLinuxLibrary
 		{
 			int32_t INotify = 0;

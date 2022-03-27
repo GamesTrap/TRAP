@@ -2732,7 +2732,7 @@ namespace TRAP::INTERNAL
 		static void ReleaseCursor();
 
 		static void* PlatformLoadModule(const std::string& path);
-		static void PlatformFreeModule(void* handle);
+		static void PlatformFreeModule(void* module);
 		static void* PlatformGetModuleSymbol(void* module, const std::string& name);
 		//-------//
 		//Windows//
@@ -2935,8 +2935,8 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Sends an EWMH or ICCCM event to the window manager.
 		/// </summary>
-		static void SendEventToWM(const InternalWindow* window, Atom type, long a, long b, long c,
-		                          long d, long e);
+		static void SendEventToWM(const InternalWindow* window, Atom type, int64_t a, int64_t b, int64_t c,
+		                          int64_t d, int64_t e);
 		/// <summary>
 		/// Returns whether it is a _NET_FRAME_EXTENTS event for the specified window.
 		/// </summary>
@@ -2967,7 +2967,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Retrieve a single window property of the specified type.
 		/// </summary>
-		static unsigned long GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
+		static uint64_t GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
 		/// <summary>
 		/// Updates the normal hints according to the window settings.
 		/// </summary>
@@ -3014,7 +3014,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Check whether the specified atom is supported.
 		/// </summary>
-		static Atom GetAtomIfSupported(Atom* supportedAtoms, unsigned long atomCount, const char* atomName);
+		static Atom GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, const char* atomName);
 		/// <summary>
 		/// Create a blank cursor for hidden and disabled cursor modes.
 		/// </summary>

@@ -251,7 +251,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		}
 
 		//Create Instance
-		VkInstance instance;
+		VkInstance instance = VK_NULL_HANDLE;
 		std::vector<const char*> extensions(instanceExtensions.size());
 		for (uint32_t i = 0; i < instanceExtensions.size(); i++)
 			extensions[i] = instanceExtensions[i].c_str();

@@ -151,64 +151,62 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 		//Connection succeeded
 		return Status::Done;
 	}
-	else
+
+	//We're using a timeout: we'll need a few tricks to make it work
+
+	//save the previous blocking state
+	const bool blocking = IsBlocking();
+
+	//Switch to non-blocking to enable our connection timeout
+	if (blocking)
+		SetBlocking(false);
+
+	//Try to connect to the remote address
+	if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
 	{
-		//We're using a timeout: we'll need a few tricks to make it work
-
-		//save the previous blocking state
-		const bool blocking = IsBlocking();
-
-		//Switch to non-blocking to enable our connection timeout
-		if (blocking)
-			SetBlocking(false);
-
-		//Try to connect to the remote address
-		if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
-		{
-			//We got instantly connected! (it may no happen a lot...)
-			SetBlocking(blocking);
-			return Status::Done;
-		}
-
-		//Get the error status
-		Status status = INTERNAL::Network::SocketImpl::GetErrorStatus();
-
-		//If we were in non-blocking mode, return immediately
-		if (!blocking)
-			return status;
-
-		//Otherwise, wait until something happens to our socket (success, timeout or error)
-		if(status == Status::NotReady)
-		{
-			//Setup the selector
-			fd_set selector;
-			FD_ZERO(&selector);
-			FD_SET(GetHandle(), &selector);
-
-			//Setup the timeout
-			timeval time;
-			time.tv_sec = static_cast<long>(timeout.GetSeconds());
-			time.tv_usec = static_cast<long>(timeout.GetSeconds());
-
-			//Wait for something to write on our socket (which means that the connection request has returned)
-			if(select(static_cast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
-			{
-				//At this point the connection may have been either accepted or refused.
-				//To know whether it's a success or a failure, we must check the address of the connected peer
-				if(GetRemoteAddress() != IPv4Address::None)
-					status = Status::Done; //Connection accepted
-				else
-					status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Conncetion refused
-			}
-			else
-				status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Failed to connect before timeout is over
-		}
-
-		//Switch back to blocking mode
-		SetBlocking(true);
-
-		return status;
+		//We got instantly connected! (it may no happen a lot...)
+		SetBlocking(blocking);
+		return Status::Done;
 	}
+
+	//Get the error status
+	Status status = INTERNAL::Network::SocketImpl::GetErrorStatus();
+
+	//If we were in non-blocking mode, return immediately
+	if (!blocking)
+		return status;
+
+	//Otherwise, wait until something happens to our socket (success, timeout or error)
+	if(status == Status::NotReady)
+	{
+		//Setup the selector
+		fd_set selector;
+		FD_ZERO(&selector);
+		FD_SET(GetHandle(), &selector);
+
+		//Setup the timeout
+		timeval time{};
+		time.tv_sec = static_cast<time_t>(timeout.GetSeconds());
+		time.tv_usec = static_cast<time_t>(timeout.GetSeconds());
+
+		//Wait for something to write on our socket (which means that the connection request has returned)
+		if(select(static_cast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
+		{
+			//At this point the connection may have been either accepted or refused.
+			//To know whether it's a success or a failure, we must check the address of the connected peer
+			if(GetRemoteAddress() != IPv4Address::None)
+				status = Status::Done; //Connection accepted
+			else
+				status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Conncetion refused
+		}
+		else
+			status = INTERNAL::Network::SocketImpl::GetErrorStatus(); //Failed to connect before timeout is over
+	}
+
+	//Switch back to blocking mode
+	SetBlocking(true);
+
+	return status;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -229,7 +227,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
 
-	std::size_t sent;
+	std::size_t sent = 0;
 
 	return Send(data, size, sent);
 }
@@ -247,7 +245,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 	}
 
 	//Loop until every byte has been sent
-	int32_t result;
+	ssize_t result = 0;
 	for(sent = 0; sent < size; sent += result)
 	{
 		//Send a chunk of data
@@ -285,7 +283,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, cons
 	}
 
 	//Receive a chunk of bytes
-	const int32_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
+	const ssize_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
@@ -331,7 +329,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 		std::memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
 
 	//Send the data block
-	std::size_t sent;
+	std::size_t sent = 0;
 	const Status status = Send(&blockToSend[0] + packet.m_sendPos, blockToSend.size() - packet.m_sendPos, sent);
 
 	//In the case of a partial send, record the location to resume from
@@ -351,7 +349,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 	packet.Clear();
 
 	//We start by getting the size of the incoming packet
-	uint32_t packetSize;
+	uint32_t packetSize = 0;
 	std::size_t received = 0;
 	if(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 	{
