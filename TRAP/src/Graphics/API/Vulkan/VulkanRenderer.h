@@ -44,92 +44,92 @@ namespace TRAP::Graphics::API
 
 		void Present(Window* window) override;
 
-		void SetVSync(bool vsync, Window* window = nullptr) override;
+		void SetVSync(bool vsync, Window* Window) override;
 
-		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) override;
-		void SetClearDepth(float depth = 1.0f, Window* window = nullptr) override;
-		void SetClearStencil(uint32_t stencil = 0, Window* window = nullptr) override;
+		void SetClearColor(const Math::Vec4& color, Window* window) override;
+		void SetClearDepth(float depth, Window* window) override;
+		void SetClearStencil(uint32_t stencil, Window* window) override;
 #ifdef TRAP_HEADLESS_MODE
-		void SetResolution(uint32_t width, uint32_t height, Window* window = nullptr) override;
+		void SetResolution(uint32_t width, uint32_t height, Window* window) override;
 #endif
-		void SetDepthTesting(bool enabled, Window* window = nullptr) override;
-		void SetDepthWriting(bool enabled, Window* window = nullptr) override;
-		void SetDepthFunction(CompareMode function, Window* window = nullptr) override;
+		void SetDepthTesting(bool enabled, Window* window) override;
+		void SetDepthWriting(bool enabled, Window* window) override;
+		void SetDepthFunction(CompareMode function, Window* window) override;
 		void SetDepthFail(StencilOp front, StencilOp back, Window* window) override;
-		void SetDepthBias(int32_t depthBias, Window* window = nullptr) override;
-		void SetDepthBiasSlopeFactor(float factor, Window* window = nullptr) override;
-		void SetStencilTesting(bool enabled, Window* window = nullptr) override;
-		void SetStencilFail(StencilOp front, StencilOp back, Window* window = nullptr) override;
-		void SetStencilPass(StencilOp front, StencilOp back, Window* window = nullptr) override;
-		void SetStencilFunction(CompareMode front, CompareMode back, Window* window = nullptr) override;
-		void SetStencilMask(uint8_t read, uint8_t write, Window* window = nullptr) override;
-		void SetCullMode(CullMode mode, Window* window = nullptr) override;
-		void SetFillMode(FillMode mode, Window* window = nullptr) override;
-		void SetPrimitiveTopology(PrimitiveTopology topology, Window* window = nullptr) override;
-		void SetFrontFace(FrontFace face, Window* window = nullptr) override;
-		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr) override;
+		void SetDepthBias(int32_t depthBias, Window* window) override;
+		void SetDepthBiasSlopeFactor(float factor, Window* window) override;
+		void SetStencilTesting(bool enabled, Window* window) override;
+		void SetStencilFail(StencilOp front, StencilOp back, Window* window) override;
+		void SetStencilPass(StencilOp front, StencilOp back, Window* window) override;
+		void SetStencilFunction(CompareMode front, CompareMode back, Window* window) override;
+		void SetStencilMask(uint8_t read, uint8_t write, Window* window) override;
+		void SetCullMode(CullMode mode, Window* window) override;
+		void SetFillMode(FillMode mode, Window* window) override;
+		void SetPrimitiveTopology(PrimitiveTopology topology, Window* window) override;
+		void SetFrontFace(FrontFace face, Window* window) override;
+		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window) override;
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
-							  Window* window = nullptr) override;
+							  Window* window) override;
 
-		void Clear(ClearBufferType clearType, Window* window = nullptr) override;
+		void Clear(ClearBufferType clearType, Window* window) override;
 
-		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth = 0.0f,
-		                 float maxDepth = 1.0f, Window* window = nullptr) override;
-		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) override;
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth,
+		                 float maxDepth, Window* window) override;
+		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window) override;
 
-		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window = nullptr) override;
+		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window) override;
 		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex,
-		                 Window* window = nullptr) override;
-		void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex = 0,
-		                   uint32_t firstInstance = 0, Window* window = nullptr) override;
+		                 Window* window) override;
+		void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex,
+		                   uint32_t firstInstance, Window* window) override;
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
-		                          uint32_t firstIndex = 0, uint32_t firstInstance = 0,
-							      uint32_t firstVertex = 0, Window* window = nullptr) override;
+		                          uint32_t firstIndex, uint32_t firstInstance,
+							      uint32_t firstVertex, Window* window) override;
 
-		void BindShader(Shader* shader, Window* window = nullptr) const;
+		void BindShader(Shader* shader, Window* window) const;
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
-		                      Window* window = nullptr) override;
+		                      Window* window) override;
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType,
-		                     Window* window = nullptr) override;
-		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window = nullptr) override;
-		void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) override;
+		                     Window* window ) override;
+		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window) override;
+		void BindPushConstants(const char* name, const void* constantsData, Window* window) override;
 		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-		                              Window* window = nullptr) override;
+		                              Window* window) override;
 		void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
-		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
-							  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
-							  std::vector<uint32_t>* colorArraySlices = nullptr,
-							  std::vector<uint32_t>* colorMipSlices = nullptr,
-							  uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
-							  Window* window = nullptr) override;
+		                      const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
+							  const RendererAPI::LoadActionsDesc* loadActions,
+							  std::vector<uint32_t>* colorArraySlices,
+							  std::vector<uint32_t>* colorMipSlices,
+							  uint32_t depthArraySlice, uint32_t depthMipSlice,
+							  Window* window) override;
 		void BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                       const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							   const RendererAPI::LoadActionsDesc* loadActions = nullptr,
-							   std::vector<uint32_t>* colorArraySlices = nullptr,
-							   std::vector<uint32_t>* colorMipSlices = nullptr,
-							   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
-							   Window* window = nullptr) override;
+							   const RendererAPI::LoadActionsDesc* loadActions,
+							   std::vector<uint32_t>* colorArraySlices,
+							   std::vector<uint32_t>* colorMipSlices,
+							   uint32_t depthArraySlice, uint32_t depthMipSlice,
+							   Window* window) override;
 
-		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window = nullptr) override;
+		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window) override;
 		void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-							        Window* window = nullptr) override;
-		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window = nullptr) override;
+							        Window* window) override;
+		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window) override;
 		void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-							         Window* window = nullptr) override;
+							         Window* window) override;
 		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-		                                 Window* window = nullptr) override;
+		                                 Window* window ) override;
 		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
-								          Window* window = nullptr) override;
+								          Window* window) override;
 
 		const std::string& GetTitle() const override;
-		bool GetVSync(Window* window = nullptr) override;
+		bool GetVSync(Window* window) override;
 
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
 
-		TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) override;
+		TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window) override;
 
 		void InitPerWindowData(Window* window) override;
 		void RemovePerWindowData(Window* window) override;

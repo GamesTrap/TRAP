@@ -219,7 +219,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* dat
 	}
 
 	//Loop until every byte has been sent
-	ssize_t result = 0;
+	int64_t result = 0;
 	for(sent = 0; sent < size; sent += result)
 	{
 		//Send a chunk of data
@@ -257,7 +257,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* data, 
 	}
 
 	//Receive a chunk of bytes
-	const ssize_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
+	const int64_t sizeReceived = recv(GetHandle(), static_cast<char*>(data), static_cast<int>(size), flags);
 
 	//Check the number of bytes received
 	if (sizeReceived > 0)
