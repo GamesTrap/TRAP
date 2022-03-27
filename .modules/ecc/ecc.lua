@@ -39,14 +39,18 @@
 	function m.generateFile()
 		p.push("[")
 		for wks in p.global.eachWorkspace() do
+			-- is this the last workspace?
+			local lastWks = wks == p.global.getWorkspace(#p.api.rootContainer().workspaces)
 			for prj in p.workspace.eachproject(wks) do
-				m.onProject(prj)
+				-- is this the last project?
+				local lastPrj = prj == p.workspace.getproject(wks, #wks.projects)
+				m.onProject(prj, lastWks and lastPrj)
 			end
 		end
 		p.pop("]")
 	end
 
-	function m.onProject(prj)
+	function m.onProject(prj, last)
 		if project.isc(prj) or project.iscpp(prj) then
 			local cfg = m.getConfig(prj)
 			local args = m.getArguments(prj, cfg)
@@ -58,10 +62,14 @@
 				p.push("\"arguments\": [")
 				m.writeArgs(args, obj, node.relpath)
 				p.pop("],")
-				p.w("\"directory\": \"%s\"", prj.location)
-				p.w("\"file\": \"%s\"", node.abspath)
+				p.w("\"directory\": \"%s\",", prj.location)
+				p.w("\"file\": \"%s\",", node.abspath)
 				p.w("\"output\": \"%s\"", output)
-				p.pop("},")
+				if last then
+					p.pop("}")
+				else
+					p.pop("},")
+				end
 			end)
 		end
 	end
