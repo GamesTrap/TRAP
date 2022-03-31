@@ -28,7 +28,7 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef TRAP_PLATFORM_WINDOWS
+#if defined(TRAP_PLATFORM_WINDOWS) && defined(TRAP_HEADLESS_MODE)
 static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 {
 	if (dwCtrlType == CTRL_C_EVENT)

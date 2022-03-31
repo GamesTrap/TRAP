@@ -2444,3 +2444,7 @@ SITREP 03/26/2022|22w12b2
 SITREP 03/27/2022|22w12b3
     - Changed TRAP Engine version to 22w12b3(0.7.116)
     - Fixed many clang-tidy warnings ~>60 mins
+
+SITREP 03/31/2022|22w13a1
+    - Changed TRAP Engine version to 22w13a1(0.7.117)
+    - Updated WindowingAPI::GetVulkanResultString ~<5 mins
