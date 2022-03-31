@@ -69,6 +69,8 @@ project "TRAP"
 		"SPIRV-Cross-HLSL"
 	}
 
+	defines "YAML_CPP_STATIC_DEFINE"
+
 	filter "system:windows"
 		files
 		{
@@ -244,7 +246,8 @@ project "TRAP-Headless"
 
 	defines
 	{
-		"TRAP_HEADLESS_MODE"
+		"TRAP_HEADLESS_MODE",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	filter "system:windows"

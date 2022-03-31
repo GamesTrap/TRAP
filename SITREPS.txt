@@ -2448,3 +2448,4 @@ SITREP 03/27/2022|22w12b3
 SITREP 03/31/2022|22w13a1
     - Changed TRAP Engine version to 22w13a1(0.7.117)
     - Updated WindowingAPI::GetVulkanResultString ~<5 mins
+    - Fixed Windows YAMLCpp linker errors ~<15 mins
