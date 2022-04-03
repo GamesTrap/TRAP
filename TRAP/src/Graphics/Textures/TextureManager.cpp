@@ -427,7 +427,8 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 		}
 		else if(texture->GetType() == TextureType::TextureCube)
 		{
-			const std::array<std::filesystem::path, 6> imageFilePaths = reinterpret_cast<const Scope<TextureCube>&>(texture)->GetFilePaths();
+			const auto* textureCube = dynamic_cast<const TextureCube*>(texture.get());
+			const std::array<std::filesystem::path, 6> imageFilePaths = textureCube->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
 			{
 				if (FS::IsPathEquivalent(filePath, path))

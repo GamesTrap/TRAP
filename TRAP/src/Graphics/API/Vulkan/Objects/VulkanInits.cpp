@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName)
+VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName) noexcept
 {
 	VkApplicationInfo info;
 
@@ -23,7 +23,7 @@ VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::s
 
 VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const VkApplicationInfo& appInfo,
 	                                                                      const std::vector<const char*>& instanceLayers,
-	                                                                      const std::vector<const char*>& instanceExtensions)
+	                                                                      const std::vector<const char*>& instanceExtensions) noexcept
 {
 	VkInstanceCreateInfo info;
 
@@ -41,7 +41,7 @@ VkInstanceCreateInfo TRAP::Graphics::API::VulkanInits::InstanceCreateInfo(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback)
+VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo(const PFN_vkDebugUtilsMessengerCallbackEXT callback) noexcept
 {
 	VkDebugUtilsMessengerCreateInfoEXT info;
 
@@ -64,7 +64,7 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 
 VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
 	                                                                                     const uint64_t handle,
-	                                                                                     const std::string_view name)
+	                                                                                     const std::string_view name) noexcept
 {
 	VkDebugUtilsObjectNameInfoEXT info;
 
@@ -80,7 +80,7 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g,
-                                                                          const float b, const char* name)
+                                                                          const float b, const char* name) noexcept
 {
 	VkDebugUtilsLabelEXT info{};
 
@@ -98,7 +98,7 @@ VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const 
 
 VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* pNext,
                                                                       const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
-																	  const std::vector<const char*>& deviceExtensions)
+																	  const std::vector<const char*>& deviceExtensions) noexcept
 {
 	VkDeviceCreateInfo info;
 
@@ -121,7 +121,7 @@ VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void
 VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(VkDevice device,
 	                                                                            VkPhysicalDevice physicalDevice,
 	                                                                            VkInstance instance,
-	                                                                            const VmaVulkanFunctions& vulkanFunctions)
+	                                                                            const VmaVulkanFunctions& vulkanFunctions) noexcept
 {
 	VmaAllocatorCreateInfo info{};
 
@@ -143,7 +143,7 @@ VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
-                                                                                      const uint32_t numDescriptorSets)
+                                                                                      const uint32_t numDescriptorSets) noexcept
 {
 	VkDescriptorPoolCreateInfo info;
 
@@ -160,7 +160,7 @@ VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreat
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
-	                                                                                    const VkDescriptorSetLayout& descriptorLayout)
+	                                                                                    const VkDescriptorSetLayout& descriptorLayout) noexcept
 {
 	VkDescriptorSetAllocateInfo info;
 
@@ -175,7 +175,7 @@ VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAlloc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings)
+VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings) noexcept
 {
 	VkDescriptorSetLayoutCreateInfo info;
 
@@ -195,7 +195,7 @@ VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::Descripto
 	                                                                                                      VkDescriptorUpdateTemplateEntry* entries,
 	                                                                                                      const VkPipelineBindPoint bindPoint,
 	                                                                                                      VkPipelineLayout pipelineLayout,
-	                                                                                                      const uint32_t setIndex)
+	                                                                                                      const uint32_t setIndex) noexcept
 {
 	VkDescriptorUpdateTemplateCreateInfo info;
 
@@ -215,7 +215,7 @@ VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::Descripto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo()
+VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo() noexcept
 {
 	VkFenceCreateInfo info;
 
@@ -228,7 +228,7 @@ VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo()
+VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo() noexcept
 {
 	VkSemaphoreCreateInfo info;
 
@@ -248,7 +248,7 @@ VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(
 	                                                                            const VkAttachmentLoadOp stencilLoadOp,
 	                                                                            const VkAttachmentStoreOp stencilStoreOp,
 	                                                                            const VkImageLayout layout,
-	                                                                            const VkImageLayout finalLayout)
+	                                                                            const VkImageLayout finalLayout) noexcept
 {
 	VkAttachmentDescription desc;
 
@@ -270,7 +270,7 @@ VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(
 VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
 	                                                                      const std::vector<VkAttachmentReference>& inputAttachments,
 	                                                                      const std::vector<VkAttachmentReference>& colorAttachments,
-	                                                                      VkAttachmentReference& depthStencilAttachment)
+	                                                                      VkAttachmentReference& depthStencilAttachment) noexcept
 {
 	VkSubpassDescription subpass;
 
@@ -292,7 +292,7 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 
 VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
 	                                                                      const std::vector<VkAttachmentReference>& inputAttachments,
-	                                                                      const std::vector<VkAttachmentReference>& colorAttachments)
+	                                                                      const std::vector<VkAttachmentReference>& colorAttachments) noexcept
 {
 	VkSubpassDescription subpass;
 
@@ -313,7 +313,7 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
-	                                                                          const VkSubpassDescription& subpassDescription)
+	                                                                          const VkSubpassDescription& subpassDescription) noexcept
 {
 	VkRenderPassCreateInfo info;
 
@@ -332,7 +332,7 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions)
+VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept
 {
 	VkRenderPassCreateInfo info;
 
@@ -354,7 +354,7 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
 	                                                                        VkFramebuffer frameBuffer,
 	                                                                        const VkRect2D renderArea,
-	                                                                        const std::vector<VkClearValue>& colorValues)
+	                                                                        const std::vector<VkClearValue>& colorValues) noexcept
 {
 	VkRenderPassBeginInfo info;
 
@@ -375,7 +375,7 @@ VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(
 	                                                                            const std::vector<VkImageView>& attachments,
 	                                                                            const uint32_t width,
 	                                                                            const uint32_t height,
-	                                                                            const uint32_t layerCount)
+	                                                                            const uint32_t layerCount) noexcept
 {
 	VkFramebufferCreateInfo info;
 
@@ -394,30 +394,11 @@ VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(VkBuffer buffer, const VkFormat format,
-	                                                                          const uint64_t offset,
-	                                                                          const uint64_t range)
-{
-	VkBufferViewCreateInfo info;
-
-	info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-	info.pNext = nullptr;
-	info.flags = 0;
-	info.buffer = buffer;
-	info.format = format;
-	info.offset = offset;
-	info.range = range;
-
-	return info;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkImage image,
 	                                                                        const VkImageViewType imageViewType,
 	                                                                        const VkFormat format,
 																			const uint32_t levelCount,
-	                                                                        const uint32_t layerCount)
+	                                                                        const uint32_t layerCount) noexcept
 {
 	VkImageViewCreateInfo info;
 
@@ -449,7 +430,7 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 																	const uint32_t arrayLayers,
 																	const VkSampleCountFlagBits sampleCount,
 																	const VkImageTiling tiling,
-																	const VkImageUsageFlags usage)
+																	const VkImageUsageFlags usage) noexcept
 {
 	VkImageCreateInfo info;
 
@@ -478,7 +459,7 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 
 VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t bufferRowLength, const uint32_t width,
 															  const uint32_t height, const uint32_t depth,
-							    							  const VkImageSubresourceLayers layers)
+							    							  const VkImageSubresourceLayers layers) noexcept
 {
 	VkBufferImageCopy copy;
 
@@ -499,7 +480,7 @@ VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t buf
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint64_t allocationSize,
-                                                                      const VkBufferUsageFlags usageFlags)
+                                                                      const VkBufferUsageFlags usageFlags) noexcept
 {
 	VkBufferCreateInfo info;
 
@@ -517,7 +498,26 @@ VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex)
+VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(VkBuffer buffer, const VkFormat format,
+	                                                                          const uint64_t offset,
+	                                                                          const uint64_t range) noexcept
+{
+	VkBufferViewCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.buffer = buffer;
+	info.format = format;
+	info.offset = offset;
+	info.range = range;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex) noexcept
 {
 	VkCommandPoolCreateInfo info;
 
@@ -532,7 +532,7 @@ VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(VkCommandPool commandPool,
-                                                                                        const bool secondary)
+                                                                                        const bool secondary) noexcept
 {
 	VkCommandBufferAllocateInfo info;
 
@@ -547,7 +547,7 @@ VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAlloc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo()
+VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo() noexcept
 {
 	VkCommandBufferBeginInfo info;
 
@@ -569,7 +569,7 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 	                                                                    const VkSamplerAddressMode w,
 	                                                                    const float mipLodBias,
 	                                                                    const float maxAnisotropy,
-	                                                                    const VkCompareOp compareOp)
+	                                                                    const VkCompareOp compareOp) noexcept
 {
 	VkSamplerCreateInfo info;
 
@@ -600,7 +600,7 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const uint32_t layoutCount,
 	                                                                                  VkDescriptorSetLayout* layouts,
 	                                                                                  const uint32_t pushConstantRangeCount,
-	                                                                                  VkPushConstantRange* pushConstants)
+	                                                                                  VkPushConstantRange* pushConstants) noexcept
 {
 	VkPipelineLayoutCreateInfo info;
 
@@ -617,7 +617,7 @@ VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments) noexcept
 {
 	VkPipelineColorBlendStateCreateInfo info{};
 
@@ -643,7 +643,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 	                                                                                                    const float blendConstR,
 	                                                                                                    const float blendConstG,
 	                                                                                                    const float blendConstB,
-	                                                                                                    const float blendConstA)
+	                                                                                                    const float blendConstA) noexcept
 {
 	VkPipelineColorBlendStateCreateInfo info{};
 
@@ -665,7 +665,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
-	                                                                                const VkPipelineCacheCreateFlags flags)
+	                                                                                const VkPipelineCacheCreateFlags flags) noexcept
 {
 	VkPipelineCacheCreateInfo info;
 
@@ -682,7 +682,7 @@ VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateI
 
 VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
 	                                                                                            VkShaderModule module,
-	                                                                                            const char* name)
+	                                                                                            const char* name) noexcept
 {
 	VkPipelineShaderStageCreateInfo info;
 
@@ -702,7 +702,7 @@ VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShader
 VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const uint32_t inputBindingCount,
 	                                                                                                      VkVertexInputBindingDescription* inputBindings,
 	                                                                                                      const uint32_t inputAttributeCount,
-	                                                                                                      VkVertexInputAttributeDescription* inputAttributes)
+	                                                                                                      VkVertexInputAttributeDescription* inputAttributes) noexcept
 {
 	VkPipelineVertexInputStateCreateInfo info;
 
@@ -720,7 +720,7 @@ VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineV
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(const VkPrimitiveTopology topology,
-                                                                                                              const bool primitiveRestart)
+                                                                                                              const bool primitiveRestart) noexcept
 {
 	VkPipelineInputAssemblyStateCreateInfo info;
 
@@ -735,7 +735,7 @@ VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::Pipelin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints)
+VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints) noexcept
 {
 	VkPipelineTessellationStateCreateInfo info;
 
@@ -749,7 +749,7 @@ VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::Pipeline
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo()
+VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo() noexcept
 {
 	VkPipelineViewportStateCreateInfo info;
 
@@ -767,7 +767,7 @@ VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineView
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
-	                                                                                                      const bool sampleShading)
+	                                                                                                      const bool sampleShading) noexcept
 {
 	VkPipelineMultisampleStateCreateInfo info;
 
@@ -786,7 +786,7 @@ VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineM
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates)
+VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates) noexcept
 {
 	VkPipelineDynamicStateCreateInfo info;
 
@@ -802,7 +802,7 @@ VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynam
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
-	                                                                                    VkPipelineLayout layout)
+	                                                                                    VkPipelineLayout layout) noexcept
 {
 	VkComputePipelineCreateInfo info;
 
@@ -830,7 +830,7 @@ VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineC
 	                                                                                      const VkPipelineColorBlendStateCreateInfo& cb,
 	                                                                                      const VkPipelineDynamicStateCreateInfo& dy,
 	                                                                                      VkPipelineLayout layout,
-	                                                                                      VkRenderPass renderPass)
+	                                                                                      VkRenderPass renderPass) noexcept
 {
 	VkGraphicsPipelineCreateInfo info;
 
@@ -864,7 +864,7 @@ VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineC
 VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
                                                           const std::vector<VkPipelineStageFlags>& waitMasks,
                                                           const std::vector<VkCommandBuffer>& cmds,
-                                                          const std::vector<VkSemaphore>& signalSemaphore)
+                                                          const std::vector<VkSemaphore>& signalSemaphore) noexcept
 {
 	VkSubmitInfo info;
 
@@ -884,7 +884,7 @@ VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSe
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count,
-                                                                            const VkQueryType queryType)
+                                                                            const VkQueryType queryType) noexcept
 {
 	VkQueryPoolCreateInfo info;
 
@@ -909,7 +909,7 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 	                                                                              const std::array<uint32_t, 2>& queueFamilyIndices,
 	                                                                              const VkSurfaceTransformFlagBitsKHR preTransform,
 	                                                                              const VkCompositeAlphaFlagBitsKHR compositeAlpha,
-	                                                                              const VkPresentModeKHR presentMode)
+	                                                                              const VkPresentModeKHR presentMode) noexcept
 {
 	VkSwapchainCreateInfoKHR info;
 
@@ -939,7 +939,7 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 
 VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores,
                                                                const VkSwapchainKHR& swapChain,
-															   uint32_t& presentIndex)
+															   uint32_t& presentIndex) noexcept
 {
 	VkPresentInfoKHR info;
 
@@ -958,7 +958,7 @@ VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const VkDeviceSize allocSize,
-                                                                          const uint32_t memoryTypeIndex)
+                                                                          const uint32_t memoryTypeIndex) noexcept
 {
 	VkMemoryAllocateInfo info;
 

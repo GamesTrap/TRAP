@@ -25,7 +25,7 @@ public:
 	explicit Tests(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		// PushLayer(TRAP::MakeScope<ClipboardTests>());
+		PushLayer(TRAP::MakeScope<ClipboardTests>());
 		// PushLayer(TRAP::MakeScope<ControllerTests>());
 		// PushLayer(TRAP::MakeScope<CursorTests>());
 		// PushLayer(TRAP::MakeScope<DragAndDropTests>());
@@ -42,7 +42,7 @@ public:
 		// PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
 		// PushLayer(TRAP::MakeScope<VulkanTests>());
 		// PushLayer(TRAP::MakeScope<VulkanTextureTests>());
-		PushLayer(TRAP::MakeScope<WindowStateTests>());
+		// PushLayer(TRAP::MakeScope<WindowStateTests>());
 	}
 };
 

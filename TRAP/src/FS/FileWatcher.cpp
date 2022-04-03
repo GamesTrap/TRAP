@@ -500,7 +500,7 @@ void TRAP::FS::FileWatcher::WatchLinux()
         std::size_t offset = 0;
         while(offset < static_cast<std::size_t>(len))
         {
-            inotify_event* event = reinterpret_cast<inotify_event*>(buf.data() + offset);
+            const inotify_event* event = reinterpret_cast<const inotify_event*>(buf.data() + offset);
             if(event->len)
             {
                 FileStatus status = FileStatus::Created;

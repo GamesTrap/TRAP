@@ -187,7 +187,7 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Renderer::SceneData::SceneData()
+TRAP::Graphics::Renderer::SceneData::SceneData() noexcept
 	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
 {
 }

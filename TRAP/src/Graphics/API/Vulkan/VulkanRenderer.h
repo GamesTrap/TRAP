@@ -259,13 +259,13 @@ namespace TRAP::Graphics::API
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 
 	private:
-		void MapRenderTarget(const TRAP::Ref<RenderTarget>& renderTarget, ResourceState currResState, void* outPixelData);
+		static void MapRenderTarget(const TRAP::Ref<RenderTarget>& renderTarget, ResourceState currResState, void* outPixelData);
 
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
 
-		void AddDefaultResources() const;
+		static void AddDefaultResources();
 		static void RemoveDefaultResources();
 
 		static void StartGraphicRecording(const TRAP::Scope<PerWindowData>& p);

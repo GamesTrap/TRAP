@@ -364,7 +364,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 	while(size > offset)
 	{
 		regmatch_t match;
-		const inotify_event* e = reinterpret_cast<inotify_event*>(&buffer[offset]);
+		const inotify_event* e = reinterpret_cast<const inotify_event*>(&buffer[offset]);
 
 		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
 

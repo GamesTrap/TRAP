@@ -163,7 +163,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, 
 
 	io.SetClipboardTextFn = SetClipboardText;
 	io.GetClipboardTextFn = GetClipboardText;
-	io.ClipboardUserData = static_cast<void*>(&s_window);
+	//io.ClipboardUserData = static_cast<void*>(&s_window); //Unused
 
 	s_mouseCursors[ImGuiMouseCursor_Arrow] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Arrow);
 	s_mouseCursors[ImGuiMouseCursor_TextInput] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Input);
@@ -573,6 +573,7 @@ void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const WindowingAPI::InternalWi
 
 void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const WindowingAPI::InternalWindow* window)
 {
+	//const_cast is safe because window only gets compared inside ImGui::FindViewportByPlatformHandle()
 	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle
 	(
 		const_cast<WindowingAPI::InternalWindow*>(window))
@@ -584,6 +585,7 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const WindowingAPI::Int
 
 void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t, int32_t)
 {
+	//const_cast is safe because window only gets compared inside ImGui::FindViewportByPlatformHandle()
 	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle
 	(
 		const_cast<WindowingAPI::InternalWindow*>(window))
@@ -595,6 +597,7 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::Inter
 
 void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t, int32_t)
 {
+	//const_cast is safe because window only gets compared inside ImGui::FindViewportByPlatformHandle()
 	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle
 	(
 		const_cast<WindowingAPI::InternalWindow*>(window)

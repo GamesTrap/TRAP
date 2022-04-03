@@ -1656,7 +1656,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources() const
+void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 {
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Creating DefaultResources");
