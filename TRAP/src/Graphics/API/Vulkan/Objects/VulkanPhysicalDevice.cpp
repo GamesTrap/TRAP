@@ -13,8 +13,8 @@ std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance>& instance,
-																const std::array<uint8_t, 16>& physicalDeviceUUID)
+TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<VulkanInstance> &instance,
+																const std::array<uint8_t, 16> &physicalDeviceUUID)
 	: m_physicalDevice(VK_NULL_HANDLE),
 	  m_physicalDeviceProperties(),
 	  m_physicalDeviceSubgroupProperties(),
@@ -32,10 +32,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
 
-	if(!m_physicalDevice)
+	if (!m_physicalDevice)
 	{
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "Vulkan physical device creation failed!\n"
-								   "Error code: 0x0006", Utils::Dialogs::Style::Error,
+													   "Error code: 0x0006",
+								   Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPhysicalDevicePrefix, "Physical device creation failed!");
 		TRAP::Application::Shutdown();
@@ -78,9 +79,9 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);
 	m_queueFamilyProperties.resize(queueFamilyPropertyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount,
-	                                         m_queueFamilyProperties.data());
+											 m_queueFamilyProperties.data());
 
-	//Copy UUID
+	// Copy UUID
 	std::memcpy(m_deviceUUID.data(), m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size());
 
 	VkPhysicalDeviceFeatures2 features{};
@@ -98,8 +99,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	VulkanRenderer::s_shaderDrawParameters = m_physicalDeviceVulkan11Features.shaderDrawParameters;
 	VulkanRenderer::s_subgroupBroadcastDynamicID = m_physicalDeviceVulkan12Features.subgroupBroadcastDynamicId;
 
-	//Capabilities for VulkanRenderer
-	for(uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+	// Capabilities for VulkanRenderer
+	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
 		VkFormatProperties formatSupport;
 		VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
@@ -108,11 +109,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 		vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &formatSupport);
 		VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[i] = (formatSupport.optimalTilingFeatures &
-		                                                     VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
+															 VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
 		VulkanRenderer::s_GPUCapBits.CanShaderWriteTo[i] = (formatSupport.optimalTilingFeatures &
-		                                                    VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) != 0;
+															VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) != 0;
 		VulkanRenderer::s_GPUCapBits.CanRenderTargetWriteTo[i] = (formatSupport.optimalTilingFeatures &
-			                                                      (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT |
+																  (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT |
 																   VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)) != 0;
 	}
 
@@ -133,7 +134,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
 	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
 
-	//maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
+	// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
 	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
 	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;
@@ -159,59 +160,59 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
 	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
 
-	//Surface & Present test
+	// Surface & Present test
 	{
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		Scope<INTERNAL::WindowingAPI::InternalWindow> win = INTERNAL::WindowingAPI::CreateWindow(2, 2, "Vulkan Surface Tester", nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
-		if(win)
+		if (win)
 		{
 			VkSurfaceKHR surface = VK_NULL_HANDLE;
 			VkResult res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), win.get(), nullptr, surface);
 
-			if(surface != VK_NULL_HANDLE && res == VK_SUCCESS)
+			if (surface != VK_NULL_HANDLE && res == VK_SUCCESS)
 			{
-				//Passed Surface creation
-				//Check if Surface contains present modes
+				// Passed Surface creation
+				// Check if Surface contains present modes
 				uint32_t surfPresModeCount = 0;
 				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, nullptr));
 				std::vector<VkPresentModeKHR> presModes(surfPresModeCount);
 				VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(m_physicalDevice, surface, &surfPresModeCount, presModes.data()));
-				if(!presModes.empty())
+				if (!presModes.empty())
 				{
-					//Passed present mode check
-					//Check if Surface contains formats
+					// Passed present mode check
+					// Check if Surface contains formats
 					uint32_t surfFormatCount = 0;
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, nullptr));
 					std::vector<VkSurfaceFormatKHR> surfFormats(surfFormatCount);
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(m_physicalDevice, surface, &surfFormatCount, surfFormats.data()));
-					RendererAPI::GPUSettings.SurfaceSupported = !surfFormats.empty(); //Finished Surface format check
+					RendererAPI::GPUSettings.SurfaceSupported = !surfFormats.empty(); // Finished Surface format check
 				}
 				else
 					RendererAPI::GPUSettings.SurfaceSupported = false;
 
-				//Present test
+				// Present test
 				VkBool32 presentSupport = false;
-				const auto& queueFam = GetQueueFamilyProperties();
-				for(std::size_t i = 0; i < queueFam.size(); ++i)
+				const auto &queueFam = GetQueueFamilyProperties();
+				for (std::size_t i = 0; i < queueFam.size(); ++i)
 				{
 					VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, static_cast<uint32_t>(i), surface, &presentSupport));
-					if(presentSupport)
+					if (presentSupport)
 					{
 						RendererAPI::GPUSettings.PresentSupported = true;
 						break;
 					}
 				}
 
-				//Cleanup
+				// Cleanup
 				vkDestroySurfaceKHR(instance->GetVkInstance(), surface, nullptr);
 				TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(win));
 			}
 			else
 			{
 				RendererAPI::GPUSettings.SurfaceSupported = false;
-				//Cleanup
+				// Cleanup
 				TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(win));
 			}
 		}
@@ -239,77 +240,77 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const
+const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const
 {
 	return m_physicalDeviceProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceSubgroupProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const
+const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const
 {
 	return m_physicalDeviceSubgroupProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceIDProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const
+const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const
 {
 	return m_physicalDeviceIDProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceMemoryProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const
+const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const
 {
 	return m_physicalDeviceMemoryProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceFeatures& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const
+const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const
 {
 	return m_physicalDeviceFeatures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceVulkan11Features& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Features() const
+const VkPhysicalDeviceVulkan11Features &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Features() const
 {
 	return m_physicalDeviceVulkan11Features;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceVulkan12Features& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Features() const
+const VkPhysicalDeviceVulkan12Features &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Features() const
 {
 	return m_physicalDeviceVulkan12Features;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceVulkan11Properties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Properties() const
+const VkPhysicalDeviceVulkan11Properties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Properties() const
 {
 	return m_physicalDeviceVulkan11Properties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceVulkan12Properties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Properties() const
+const VkPhysicalDeviceVulkan12Properties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Properties() const
 {
 	return m_physicalDeviceVulkan12Properties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const
+const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const
 {
 	return m_physicalDeviceFragmentShaderInterlockFeatures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkQueueFamilyProperties>& TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const
+const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const
 {
 	return m_queueFamilyProperties;
 }
@@ -318,21 +319,21 @@ const std::vector<VkQueueFamilyProperties>& TRAP::Graphics::API::VulkanPhysicalD
 
 bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension)
 {
-	if(m_availablePhysicalDeviceExtensions.empty())
+	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
 
 	const auto result = std::find_if(m_availablePhysicalDeviceExtensions.begin(),
-		                             m_availablePhysicalDeviceExtensions.end(),
-		                             [extension](const VkExtensionProperties& props)
-		{
-			return std::strcmp(extension.data(), props.extensionName) == 0;
-		});
+									 m_availablePhysicalDeviceExtensions.end(),
+									 [extension](const VkExtensionProperties &props)
+									 {
+										 return std::strcmp(extension.data(), props.extensionName) == 0;
+									 });
 
-	if(result == m_availablePhysicalDeviceExtensions.end())
+	if (result == m_availablePhysicalDeviceExtensions.end())
 	{
 		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
 			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension: \"", extension,
-			        "\" is not supported(Vulkan SDK installed?)");
+					"\" is not supported(Vulkan SDK installed?)");
 		else
 			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension: \"", extension, "\" is not supported");
 
@@ -345,13 +346,13 @@ bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMemoryType(uint32_t typeBits,
-                                                                  const VkMemoryPropertyFlags properties) const
+																  const VkMemoryPropertyFlags properties) const
 {
-	for(uint32_t i = 0; i < m_physicalDeviceMemoryProperties.memoryTypeCount; i++)
+	for (uint32_t i = 0; i < m_physicalDeviceMemoryProperties.memoryTypeCount; i++)
 	{
-		if((typeBits & 1) == 1)
+		if ((typeBits & 1) == 1)
 		{
-			if((m_physicalDeviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+			if ((m_physicalDeviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
 				return i;
 		}
 		typeBits >>= 1;
@@ -363,7 +364,7 @@ uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMemoryType(uint32_t typeB
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
+const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
 {
 	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
@@ -373,7 +374,7 @@ const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanPhysicalDev
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<uint8_t, 16>& TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const
+const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const
 {
 	return m_deviceUUID;
 }
@@ -394,11 +395,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance>& instance)
+const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
 {
 	TRAP_ASSERT(instance, "instance is nullptr");
 
-	if(!s_availablePhysicalDeviceUUIDs.empty())
+	if (!s_availablePhysicalDeviceUUIDs.empty())
 		return s_availablePhysicalDeviceUUIDs;
 
 	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
@@ -408,7 +409,8 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 	else
 	{
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
-								   "Error code: 0x0007", Utils::Dialogs::Style::Error,
+													   "Error code: 0x0007",
+								   Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!!");
 		TRAP::Application::Shutdown();
@@ -420,14 +422,14 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
-	                                                                                  const std::array<uint8_t, 16>& physicalDeviceUUID)
+VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance> &instance,
+																					  const std::array<uint8_t, 16> &physicalDeviceUUID)
 {
 	TRAP_ASSERT(instance, "instance is nullptr");
 
 	const auto physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
 
-	for (const auto& device : physicalDevices)
+	for (const auto &device : physicalDevices)
 	{
 		std::array<uint8_t, 16> testUUID{};
 
@@ -439,7 +441,7 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 		physicalDeviceIDProperties.pNext = nullptr;
 		vkGetPhysicalDeviceProperties2(device, &props2);
 
-		//Copy UUID
+		// Copy UUID
 		std::memcpy(testUUID.data(), physicalDeviceIDProperties.deviceUUID, testUUID.size());
 
 		bool same = true;
@@ -461,9 +463,9 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance& instance)
+const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
 {
-	if(!s_availablePhysicalDeviceUUIDs.empty())
+	if (!s_availablePhysicalDeviceUUIDs.empty())
 		return s_availablePhysicalDeviceUUIDs;
 
 	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance);
@@ -473,7 +475,8 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 	else
 	{
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
-								   "Error code: 0x0007", Utils::Dialogs::Style::Error,
+													   "Error code: 0x0007",
+								   Utils::Dialogs::Style::Error,
 								   Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::RendererVulkanPrefix, "No Vulkan capable physical device was found!");
 		TRAP::Application::Shutdown();
@@ -485,7 +488,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::Vul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllVkPhysicalDevices(const VkInstance& instance)
+std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllVkPhysicalDevices(const VkInstance &instance)
 {
 	uint32_t physicalDeviceCount = 0;
 	VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr));
@@ -498,25 +501,25 @@ std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices)
+void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice> &physicalDevices)
 {
-	//Score each Physical Device and insert into multimap
+	// Score each Physical Device and insert into multimap
 	uint32_t score = 0;
 	for (VkPhysicalDevice dev : physicalDevices)
 	{
-		//Get PhysicalDeviceProperties
+		// Get PhysicalDeviceProperties
 		VkPhysicalDeviceProperties devProps;
 		vkGetPhysicalDeviceProperties(dev, &devProps);
 
-		//Required: Vulkan 1.2 is minimum
-		if(devProps.apiVersion < VK_API_VERSION_1_2)
+		// Required: Vulkan 1.2 is minimum
+		if (devProps.apiVersion < VK_API_VERSION_1_2)
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Vulkan Version Test!");
+					 "\" Failed Vulkan Version Test!");
 			continue;
 		}
 
-		//Required (dGPU or iGPU): Discrete GPUs have a significant performance advantage
+		// Required (dGPU or iGPU): Discrete GPUs have a significant performance advantage
 		if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			score += 5000;
 		else if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
@@ -524,19 +527,19 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		else
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Dedicated/Internal GPU Test!");
+					 "\" Failed Dedicated/Internal GPU Test!");
 			continue;
 		}
 
-		//Required: Minimum 4 simultaneously bound descriptor sets support
-		if(devProps.limits.maxBoundDescriptorSets < 4)
+		// Required: Minimum 4 simultaneously bound descriptor sets support
+		if (devProps.limits.maxBoundDescriptorSets < 4)
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Max bound descriptor set Test!");
+					 "\" Failed Max bound descriptor set Test!");
 			continue;
 		}
 
-		//Get all PhysicalDevice Extensions
+		// Get all PhysicalDevice Extensions
 		uint32_t extensionsCount = 0;
 		std::vector<VkExtensionProperties> extensions;
 		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionsCount, nullptr));
@@ -544,74 +547,72 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionsCount, extensions.data()));
 		score += extensionsCount * 50;
 
-		//Required: Check if PhysicalDevice supports swapchains
-		const auto result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties& props)
-			{
-				return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0;
-			});
+		// Required: Check if PhysicalDevice supports swapchains
+		const auto result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties &props)
+										 { return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0; });
 
 		if (result == extensions.end())
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Required PhysicalDevice Extensions Test!");
+					 "\" Failed Required PhysicalDevice Extensions Test!");
 			continue;
 		}
 
-		//Required: Create Vulkan Instance
+		// Required: Create Vulkan Instance
 
-		//Init WindowingAPI needed here for instance extensions
-		if(!INTERNAL::WindowingAPI::Init())
+		// Init WindowingAPI needed here for instance extensions
+		if (!INTERNAL::WindowingAPI::Init())
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed to initialize WindowingAPI!");
+					 "\" Failed to initialize WindowingAPI!");
 			TRAP::Application::Shutdown();
 		}
 
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-		for(const std::string& ext : reqExt)
+		for (const std::string &ext : reqExt)
 			instanceExtensions.push_back(ext);
 		VkInstance instance = VK_NULL_HANDLE;
-		std::vector<const char*> instExtensions(instanceExtensions.size());
+		std::vector<const char *> instExtensions(instanceExtensions.size());
 		for (uint32_t i = 0; i < instExtensions.size(); i++)
 			instExtensions[i] = instanceExtensions[i].c_str();
 		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Surface Tester");
 		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, instExtensions);
 		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
-		if(!instance)
+		if (!instance)
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Instance Creation Test!");
+					 "\" Failed Instance Creation Test!");
 			continue;
 		}
 
-		//Required: Create Vulkan Surface Test Window
-		//Disabled in Headless mode.
+		// Required: Create Vulkan Surface Test Window
+		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
-			                                                                                                  400,
-			                                                                                                  "TRAP Vulkan Surface Tester",
-			                                                                                                  nullptr);
+																											  400,
+																											  "TRAP Vulkan Surface Tester",
+																											  nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (!vulkanTestWindow)
 		{
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Vulkan Surface Test Window creation!");
+					 "\" Failed Vulkan Surface Test Window creation!");
 			continue;
 		}
 #endif
 
-		//Required: Check if Surface can be created
-		//Disabled in Headless mode
+		// Required: Check if Surface can be created
+		// Disabled in Headless mode
 #ifndef TRAP_HEADLESS_MODE
 		VkSurfaceKHR surface = VK_NULL_HANDLE;
 		VkResult res{};
 		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr,
-		                                                               surface));
-		if(!surface || res != VK_SUCCESS)
+																	   surface));
+		if (!surface || res != VK_SUCCESS)
 		{
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
@@ -620,12 +621,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 #endif
 
-		//Required: Get Queue Families
+		// Required: Get Queue Families
 		uint32_t queueFamilyPropertyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyPropertyCount, nullptr);
 		std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyPropertyCount, queueFamilyProperties.data());
-		if(queueFamilyProperties.empty())
+		if (queueFamilyProperties.empty())
 		{
 #ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -633,13 +634,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #endif
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Querying Queue Family Properties!");
+					 "\" Failed Querying Queue Family Properties!");
 			continue;
 		}
 
-		//Required: Check if PhysicalDevice supports Graphics queue
+		// Required: Check if PhysicalDevice supports Graphics queue
 		bool foundGraphicsQueue = false;
-		for(const VkQueueFamilyProperties& props : queueFamilyProperties)
+		for (const VkQueueFamilyProperties &props : queueFamilyProperties)
 		{
 			if (props.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
@@ -647,7 +648,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 				break;
 			}
 		}
-		if(!foundGraphicsQueue)
+		if (!foundGraphicsQueue)
 		{
 #ifndef TRAP_HEADLESS_MODE
 			vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -658,11 +659,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			continue;
 		}
 
-		//Required: Check if PhysicalDevice supports Presenting
-		//Disabled in Headless mode.
+		// Required: Check if PhysicalDevice supports Presenting
+		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		VkBool32 foundPresentSupport = false;
-		for(std::size_t i = 0; i < queueFamilyProperties.size(); i++)
+		for (std::size_t i = 0; i < queueFamilyProperties.size(); i++)
 		{
 			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, static_cast<uint32_t>(i), surface, &foundPresentSupport));
 			if (foundPresentSupport)
@@ -674,20 +675,20 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Present Queue Test!");
+					 "\" Failed Present Queue Test!");
 			continue;
 		}
 #endif
 
-		//Required: Check if Surface contains present modes
-		//Disabled in Headless mode.
+		// Required: Check if Surface contains present modes
+		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		uint32_t surfacePresentModeCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(dev, surface, &surfacePresentModeCount, nullptr));
 		std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
 		VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(dev, surface, &surfacePresentModeCount,
-		                                                 presentModes.data()));
-		if(presentModes.empty())
+														 presentModes.data()));
+		if (presentModes.empty())
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
@@ -697,8 +698,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 #endif
 
-		//Required: Check if Surface contains formats
-		//Disabled in Headless mode.
+		// Required: Check if Surface contains formats
+		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		uint32_t surfaceFormatCount = 0;
 		VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(dev, surface, &surfaceFormatCount, nullptr));
@@ -710,14 +711,14 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			         "\" Failed Surface Format Test!");
+					 "\" Failed Surface Format Test!");
 			continue;
 		}
 #endif
 
-		//Big Optionally: Check if PhysicalDevice supports Compute queue
+		// Big Optionally: Check if PhysicalDevice supports Compute queue
 		bool foundComputeQueue = false;
-		for (const VkQueueFamilyProperties& props : queueFamilyProperties)
+		for (const VkQueueFamilyProperties &props : queueFamilyProperties)
 		{
 			if (props.queueFlags & VK_QUEUE_COMPUTE_BIT)
 			{
@@ -729,9 +730,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (!foundComputeQueue)
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Compute Queue Test!");
 
-		//Big Optionally: Check if PhysicalDevice supports Transfer queue
+		// Big Optionally: Check if PhysicalDevice supports Transfer queue
 		bool foundTransferQueue = false;
-		for (const VkQueueFamilyProperties& props : queueFamilyProperties)
+		for (const VkQueueFamilyProperties &props : queueFamilyProperties)
 		{
 			if (props.queueFlags & VK_QUEUE_TRANSFER_BIT)
 			{
@@ -743,25 +744,24 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (!foundTransferQueue)
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Transfer Queue Test!");
 
-		//Big Optionally: Check if Raytracing extensions are supported
+		// Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = true;
 		const std::vector<std::string> raytracingExt =
-		{
-			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
-			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-			VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
-			VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
-			VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME,
-			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-			VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME
-		};
+			{
+				VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
+				VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+				VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
+				VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
+				VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME,
+				VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+				VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME};
 		for (const std::string_view str : raytracingExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
-			                                 [str](const VkExtensionProperties& props)
-				{
-					return std::strcmp(str.data(), props.extensionName) == 0;
-				});
+											 [str](const VkExtensionProperties &props)
+											 {
+												 return std::strcmp(str.data(), props.extensionName) == 0;
+											 });
 
 			if (extRes == extensions.end())
 			{
@@ -775,35 +775,35 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Raytracing Test!");
 
-		//Get PhysicalDevice Features
+		// Get PhysicalDevice Features
 		VkPhysicalDeviceFeatures devFeatures;
 		vkGetPhysicalDeviceFeatures(dev, &devFeatures);
 
-		//Big Optionally: Check if Geometry Shaders are supported
+		// Big Optionally: Check if Geometry Shaders are supported
 		if (devFeatures.geometryShader)
 			score += 1000;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Geometry Shader Test!");
 
-		//Big Optionally: Check if Tessellation Shaders are supported
+		// Big Optionally: Check if Tessellation Shaders are supported
 		if (devFeatures.tessellationShader)
 			score += 1000;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			        "\" Failed Tessellation Shader Test!");
+					"\" Failed Tessellation Shader Test!");
 
-		//Optionally: Check if device support fill mode non solid
+		// Optionally: Check if device support fill mode non solid
 		if (devFeatures.fillModeNonSolid)
 			score += 250;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			        "\" Failed fillModeNonSolid Test!");
+					"\" Failed fillModeNonSolid Test!");
 
-		//Optionally: Check if Surface has optimal surface format
-		//Disabled in Headless mode.
+			// Optionally: Check if Surface has optimal surface format
+			// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		bool optimalFormat = false;
-		for (auto& format : surfaceFormats)
+		for (auto &format : surfaceFormats)
 		{
 			if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
@@ -811,11 +811,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 				break;
 			}
 		}
-		if(optimalFormat)
+		if (optimalFormat)
 			score += 250;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			        "\" Failed Optimal Surface Format Test!");
+					"\" Failed Optimal Surface Format Test!");
 #endif
 
 #ifndef TRAP_HEADLESS_MODE
@@ -824,28 +824,28 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 #endif
 		vkDestroyInstance(instance, nullptr);
 
-		//Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)
-		//Get PhysicalDevice Memory Properties
+		// Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)
+		// Get PhysicalDevice Memory Properties
 		VkPhysicalDeviceMemoryProperties memProps;
 		vkGetPhysicalDeviceMemoryProperties(dev, &memProps);
-		for(uint32_t i = 0; i < memProps.memoryHeapCount; i++)
+		for (uint32_t i = 0; i < memProps.memoryHeapCount; i++)
 		{
 			if (VK_MEMORY_HEAP_DEVICE_LOCAL_BIT & memProps.memoryHeaps[i].flags)
 				score += static_cast<uint32_t>(memProps.memoryHeaps[i].size) / static_cast<uint32_t>(1e+9) * 100u;
 		}
 
-		//Optionally: Check 2D & Cube Image Max Size
+		// Optionally: Check 2D & Cube Image Max Size
 		score += devProps.limits.maxImageDimension2D;
 		score += devProps.limits.maxImageDimensionCube;
 
-		//Optionally: Check if Anisotropic Filtering is supported
+		// Optionally: Check if Anisotropic Filtering is supported
 		if (devFeatures.samplerAnisotropy)
 			score += 500;
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-			        "\" Failed Anisotropic Filtering Test!");
+					"\" Failed Anisotropic Filtering Test!");
 
-		//Get PhysicalDevice UUID
+		// Get PhysicalDevice UUID
 		std::array<uint8_t, 16> physicalDeviceUUID{};
 
 		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties;
@@ -856,7 +856,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		physicalDeviceIDProperties.pNext = nullptr;
 		vkGetPhysicalDeviceProperties2(dev, &props2);
 
-		//Copy UUID
+		// Copy UUID
 		std::memcpy(physicalDeviceUUID.data(), physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size());
 
 		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, "\" Score: ", score);
@@ -873,5 +873,5 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount, nullptr));
 	m_availablePhysicalDeviceExtensions.resize(extensionsCount);
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount,
-	                                            m_availablePhysicalDeviceExtensions.data()));
+												m_availablePhysicalDeviceExtensions.data()));
 }

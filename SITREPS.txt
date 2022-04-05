@@ -2453,3 +2453,7 @@ SITREP 03/31/2022|22w13a1
 SITREP 04/03/2022|22w13a2
     - Changed TRAP Engine version to 22w13a2(0.7.118)
     - More clang-tidy cleanup ~<10 mins
+
+SITREP 04/05/2022|22w14a1
+    - Changed TRAP Engine version to 22w14a1(0.7.119)
+    - Updated WindowingAPI documentation ~<60 mins

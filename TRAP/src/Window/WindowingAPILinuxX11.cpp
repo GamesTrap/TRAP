@@ -101,7 +101,7 @@ void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* window, A
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
-int32_t TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(Display*, XEvent* event, XPointer pointer)
+bool TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(Display*, XEvent* event, XPointer pointer)
 {
 	InternalWindow* window = reinterpret_cast<InternalWindow*>(pointer);
 

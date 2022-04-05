@@ -1444,7 +1444,7 @@ DWORD TRAP::INTERNAL::WindowingAPI::GetWindowExStyle(const InternalWindow* windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates the TRAP window
-int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig)
+bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig)
 {
 	int32_t xPos, yPos, fullWidth, fullHeight;
 	DWORD style = GetWindowStyle(window);
@@ -1830,6 +1830,12 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* wind
 
 HWND TRAP::INTERNAL::WindowingAPI::GetWin32Window(const InternalWindow* window)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return nullptr;
+	}
+
 	return window->Handle;
 }
 

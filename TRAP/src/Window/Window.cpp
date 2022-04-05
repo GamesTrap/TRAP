@@ -840,7 +840,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		TP_ERROR(Log::WindowPrefix, "\"", m_data.Title, "\" Invalid monitor!");
 		TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" Using primary monitor!");
 		m_data.Monitor = 0;
-		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor().get();
+		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor();
 	}
 
 	if(s_baseVideoModes.empty())

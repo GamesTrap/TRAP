@@ -131,7 +131,7 @@ namespace TRAP
 		/// <summary>
 		/// Get the Main Render window.
 		/// </summary>
-		/// <returns>Constant feference to a Scope containing the main render window.</returns>
+		/// <returns>Constant reference to a Scope containing the main render window.</returns>
 		static const Scope<Window>& GetWindow();
 		/// <summary>
 		/// Get the Time since the Engine was started.

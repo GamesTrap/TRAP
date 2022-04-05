@@ -216,6 +216,12 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 
 	s_isVulkanCapableFirstTest = false;
 
+	if (!INTERNAL::WindowingAPI::Init())
+	{
+		TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
+		TRAP::Application::Shutdown();
+	}
+
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
 		if(VkGetInstanceVersion() < VK_API_VERSION_1_2)

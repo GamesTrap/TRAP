@@ -84,6 +84,12 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	if (window == nullptr)
 		return;
 
@@ -102,6 +108,12 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 
 void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	//The default is a focused, visible and resizable window with decorations
 	s_Data.Hints.Window = {};
 	s_Data.Hints.Window.Resizable = true;
@@ -116,6 +128,12 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 
 void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	switch(hint)
 	{
 	case Hint::Resizable:
@@ -159,22 +177,40 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* monitor)
+std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* monitor)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return {};
+	}
+
 	return monitor->Name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor>& TRAP::INTERNAL::WindowingAPI::GetPrimaryMonitor()
+TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::GetPrimaryMonitor()
 {
-	return s_Data.Monitors[0];
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return nullptr;
+	}
+
+	return s_Data.Monitors[0].get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::WindowingAPI::GetMonitors()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return {};
+	}
+
 	std::vector<InternalMonitor*> monitors{};
 
 	for (const Scope<InternalMonitor>& monitor : s_Data.Monitors)
@@ -185,8 +221,14 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::INTERNAL::WindowingAPI::InternalVideoMode& TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return {};
+	}
+
 	monitor->CurrentMode = PlatformGetVideoMode(monitor);
 	return monitor->CurrentMode;
 }
@@ -195,6 +237,12 @@ const TRAP::INTERNAL::WindowingAPI::InternalVideoMode& TRAP::INTERNAL::Windowing
 
 std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return {};
+	}
+
 	if (!monitor)
 		return std::vector<InternalVideoMode>{};
 	if (!RefreshVideoModes(monitor))
@@ -213,6 +261,12 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	TRAP_ASSERT(!title.empty(), "[Window] Empty title provided!");
 	TRAP_ASSERT(width > 0, "[Window] Invalid width provided!");
 	TRAP_ASSERT(height > 0, "[Window] Invalid height provided!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return nullptr;
+	}
 
 	if(width <= 0 || height <= 0)
 	{
@@ -283,6 +337,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	window->ShouldClose = value;
 }
 
@@ -292,6 +352,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformSetWindowTitle(window, title);
 }
 
@@ -300,6 +366,17 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, 
 void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor* monitor, float& xScale,
                                                           float& yScale)
 {
+	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
+	xScale = 0.0f;
+	yScale = 0.0f;
+
 	PlatformGetMonitorContentScale(monitor, xScale, yScale);
 }
 
@@ -349,6 +426,12 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 
 void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	if (cursor == nullptr)
 		return;
 
@@ -378,6 +461,12 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 	if(!image)
 		return nullptr;
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return nullptr;
+	}
 
 	if(image->GetWidth() <= 0 || image->GetHeight() <= 0)
 	{
@@ -441,6 +530,12 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return nullptr;
+	}
+
 	Scope<InternalCursor> cursor = MakeScope<InternalCursor>();
 
 	s_Data.CursorList.emplace_front(cursor.get());
@@ -460,6 +555,12 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCur
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Cursor = cursor;
 
 	PlatformSetCursor(window, cursor);
@@ -470,6 +571,12 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCur
 void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const Scope<Image>& image)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	if(!image)
 	{
@@ -518,6 +625,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, co
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	if (window->Monitor)
 		return;
 
@@ -534,6 +647,12 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, in
 	xPos = 0;
 	yPos = 0;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformGetWindowPos(window, xPos, yPos);
 }
 
@@ -545,6 +664,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const i
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 	TRAP_ASSERT(width > 0, "[Window] Width is smaller than or equal to 0!");
 	TRAP_ASSERT(height > 0, "[Window] Height is smaller than or equal to 0!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	window->videoMode.Width = width;
 	window->videoMode.Height = height;
@@ -562,6 +687,12 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, i
 	width = 0;
 	height = 0;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformGetWindowSize(window, width, height);
 }
 
@@ -575,6 +706,12 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* wind
 	width = 0;
 	height = 0;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformGetFrameBufferSize(window, width, height);
 }
 
@@ -584,6 +721,12 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* wind
 void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window, const float opacity)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	if(opacity < 0.0f || opacity > 1.0f)
 	{
@@ -601,6 +744,12 @@ float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* windo
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return 1.0f;
+	}
+
 	return PlatformGetWindowOpacity(window);
 }
 
@@ -614,6 +763,12 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 	xScale = 0.0f;
 	yScale = 0.0f;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformGetWindowContentScale(window, xScale, yScale);
 }
 
@@ -623,6 +778,12 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const Hint hint, const bool value)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	switch(hint)
 	{
@@ -671,6 +832,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, const Hint hint)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return false;
+	}
 
 	switch(hint)
 	{
@@ -724,6 +891,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
 	TRAP_ASSERT(width > 0, "[Window] Width is smaller than or equal to 0!");
 	TRAP_ASSERT(height > 0, "[Window] Height is smaller than or equal to 0!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	if (width <= 0 || height <= 0)
 	{
 		InputError(Error::Invalid_Value, " Invalid window size " + std::to_string(width) + "x" +
@@ -769,6 +942,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* window, 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	window->UserPointer = pointer;
 }
 
@@ -779,6 +958,12 @@ void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* w
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return nullptr;
+	}
+
 	return window->UserPointer;
 }
 
@@ -786,6 +971,12 @@ void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* w
 
 void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	s_Data.Callbacks.Monitor = callback;
 }
 
@@ -796,6 +987,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Pos = callback;
 }
 
@@ -805,6 +1002,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, 
 void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window, const WindowSizeFunc callback)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	window->Callbacks.Size = callback;
 }
@@ -817,6 +1020,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* win
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Minimize = callback;
 }
 
@@ -828,6 +1037,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* win
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Maximize = callback;
 }
 
@@ -838,6 +1053,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Close = callback;
 }
 
@@ -847,6 +1068,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window
 void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* window, const WindowFocusFunc callback)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	window->Callbacks.Focus = callback;
 }
@@ -859,6 +1086,12 @@ void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* wi
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.FBSize = callback;
 }
 
@@ -870,6 +1103,12 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* windo
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Scale = callback;
 }
 
@@ -879,6 +1118,12 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* windo
 void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const KeyFunc callback)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	window->Callbacks.Key = callback;
 }
@@ -890,6 +1135,12 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Character = callback;
 }
 
@@ -899,6 +1150,12 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const
 void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window, const MouseButtonFunc callback)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	window->Callbacks.MouseButton = callback;
 }
@@ -910,6 +1167,12 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.CursorPos = callback;
 }
 
@@ -919,6 +1182,12 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, 
 void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window, const CursorEnterFunc callback)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	window->Callbacks.CursorEnter = callback;
 }
@@ -930,6 +1199,12 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, con
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	window->Callbacks.Scroll = callback;
 }
 
@@ -939,6 +1214,12 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, con
 void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* window, const DropFunc callback)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	window->Callbacks.Drop = callback;
 }
@@ -1085,6 +1366,12 @@ TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCall
 //Processes all pending events.
 void TRAP::INTERNAL::WindowingAPI::PollEvents()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformPollEvents();
 }
 
@@ -1119,6 +1406,12 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 //Returns whether raw mouse motion is supported.
 bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return false;
+	}
+
 	return PlatformRawMouseMotionSupported();
 }
 
@@ -1128,7 +1421,7 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* window,
 {
 	if (!PlatformRawMouseMotionSupported())
 	{
-		InputError(Error::Platform_Error, " Raw mouse motion is not supported on this system");
+		InputError(Error::Platform_Error, "[Window] Raw mouse motion is not supported on this system");
 		return;
 	}
 
@@ -1154,6 +1447,12 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* w
 //Returns the layout-specific name of the specified printable key.
 const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return nullptr;
+	}
+
 	if (key != Input::Key::Unknown)
 	{
 		if (key != Input::Key::KP_Equal &&
@@ -1174,6 +1473,12 @@ bool TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::K
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return false;
+	}
+
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
 		InputError(Error::Invalid_Enum, " Invalid key: " + std::to_string(static_cast<int32_t>(key)));
@@ -1190,6 +1495,12 @@ bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return false;
+	}
+
 	return window->MouseButtons[static_cast<uint32_t>(button)];
 }
 
@@ -1199,6 +1510,12 @@ bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, 
 void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const double xPos, const double yPos)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
 
 	if (xPos < -DBL_MAX || xPos > DBL_MAX ||
 	    yPos < -DBL_MAX || yPos > DBL_MAX)
@@ -1232,6 +1549,12 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, do
 	xPos = 0.0;
 	yPos = 0.0;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	if (window->cursorMode == CursorMode::Disabled)
 	{
 		xPos = window->VirtualCursorPosX;
@@ -1251,6 +1574,12 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor,
 	xPos = 0;
 	yPos = 0;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	PlatformGetMonitorPos(monitor, xPos, yPos);
 }
 
@@ -1266,6 +1595,12 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* mon
 	width = 0;
 	height = 0;
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	PlatformGetMonitorWorkArea(monitor, xPos, yPos, width, height);
 }
 
@@ -1275,6 +1610,12 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* mon
 void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	if (window->Monitor)
 		return;
@@ -1292,6 +1633,12 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformFocusWindow(window);
 }
 
@@ -1301,6 +1648,12 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	if (window->Monitor || !window->Resizable)
 		return;
@@ -1315,6 +1668,12 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformMinimizeWindow(window);
 }
 
@@ -1325,6 +1684,12 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformRequestWindowAttention(window);
 }
 
@@ -1334,6 +1699,12 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	if (window->Monitor)
 		return;
@@ -1347,6 +1718,12 @@ void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
 	PlatformRestoreWindow(window);
 }
 
@@ -1359,6 +1736,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
                                                        const int32_t maxHeight)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
 
 	if(minWidth != -1 && minHeight != -1 && (minWidth < 0 || minHeight < 0))
 	{
@@ -1389,6 +1772,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
 //Sets the clipboard to the specified string.
 void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return;
+	}
+
 	PlatformSetClipboardString(string);
 }
 
@@ -1397,6 +1786,12 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //Returns the contents of the clipboard as a string.
 std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return "";
+	}
+
 	return PlatformGetClipboardString();
 }
 
@@ -1405,6 +1800,12 @@ std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 //Returns whether the Vulkan loader and an ICD have been found.
 bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return false;
+	}
+
 	return InitVulkan(1);
 }
 
@@ -1413,6 +1814,12 @@ bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 //Returns the Vulkan instance extensions required by TRAP.
 std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
 {
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return {};
+	}
+
 	if (!InitVulkan(2))
 		return {};
 
@@ -1432,6 +1839,12 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 {
 	TRAP_ASSERT(instance, "[Vulkan] Instance is nullptr!");
 	TRAP_ASSERT(window, " Window is nullptr!");
+
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+		return VK_ERROR_INITIALIZATION_FAILED;
+	}
 
 	if (!InitVulkan(2))
 		return VK_ERROR_INITIALIZATION_FAILED;

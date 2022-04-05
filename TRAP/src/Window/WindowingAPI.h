@@ -85,7 +85,7 @@ namespace TRAP::INTERNAL
 		enum class Monitor_DPI_Type;
 		enum class Process_DPI_Awareness;
 #elif defined(TRAP_PLATFORM_LINUX)
-		typedef struct xcb_connection_t xcb_connection_t;
+		struct xcb_connection_t;
 		typedef XID xcb_window_t;
 		typedef XID xcb_visualid_t;
 #endif
@@ -99,7 +99,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// The function pointer type for window position callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window that was moved.</param>
 		/// <param name="xPos">
 		/// The new x-coordinate, in screen coordinates, of the upper-left corner of the content area.
 		/// </param>
@@ -110,14 +110,14 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// The function pointer type for window size callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window that was resized.</param>
 		/// <param name="width">The new width, in screen coordinates.</param>
 		/// <param name="height">The new height, in screen coordinates.</param>
 		typedef void (*WindowSizeFunc)(const InternalWindow* window, int32_t width, int32_t height);
 		/// <summary>
 		/// The function pointer type for window minimize/iconfiy callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window that was minimized/iconified or restored.</param>
 		/// <param name="restored">
 		/// True if the window was minimized/iconified, or false if it was restored.
 		/// </param>
@@ -125,7 +125,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// The function pointer type for window maximize callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window that was maximized or restored.</param>
 		/// <param name="restored">True if the window was maximized, or false if it was restored.</param>
 		typedef void (*WindowMaximizeFunc)(const InternalWindow* window, bool restored);
 		/// <summary>
@@ -136,20 +136,20 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// The function pointer type for window focus callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window that gained or lost input focus.</param>
 		/// <param name="focused">True if the window was given input focus, or false if it lost it.</param>
 		typedef void (*WindowFocusFunc)(const InternalWindow* window, bool focused);
 		/// <summary>
 		/// The function pointer type for framebuffer size callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window whose framebuffer was resized.</param>
 		/// <param name="width">The new width, in pixels, of the framebuffer.</param>
 		/// <param name="height">The new height, in pixels, of the framebuffer.</param>
 		typedef void (*FrameBufferSizeFunc)(const InternalWindow* window, int32_t width, int32_t height);
 		/// <summary>
 		/// The function pointer type for window content scale callbacks.
 		/// </summary>
-		/// <param name="window">The window that received the event.</param>
+		/// <param name="window">The window whose content scale changed.</param>
 		/// <param name="xScale">The new x-axis content scale of the window.</param>
 		/// <param name="yScale">The new y-axis content scale of the window.</param>
 		typedef void (*WindowContentScaleFunc)(const InternalWindow* window, float xScale, float yScale);
@@ -202,7 +202,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// The function pointer type for monitor configuration callbacks.
 		/// </summary>
-		/// <param name="monitor">The monitor that was connceted or disconnceted.</param>
+		/// <param name="monitor">The monitor that was connected or disconnected.</param>
 		/// <param name="connceted">True if monitor got connceted or false if it got disconnceted.</param>
 		typedef void (*MonitorFunc)(const InternalMonitor* monitor, bool connected);
 	private:
@@ -428,13 +428,17 @@ namespace TRAP::INTERNAL
 		enum class Error
 		{
 			No_Error, // No error has occurred.
+			Not_Initialized, //WindowingAPI has not been initialized.
 			Invalid_Enum, //One of the arguments to the function was an invalid enum value.
 			Invalid_Value, //One of the arguments to the function was an invalid value.
 			Out_Of_Memory, //A memory allocation failed. A bug in the WindowingAPI or the underlying operating system.
 			API_Unavailable, //The WindowingAPI could not find support for the requested API on the system.
 			Platform_Error, //A platform-specific error occurred that does not match any of the more specific categories.
-			Format_Unavailable, //The contents of the clipboard could no be converted to the requested format.
-			Cursor_Unavailable //The requested cursor is not support on the underlying operating system.
+			Format_Unavailable, //The requested format is not supported or available.
+			Cursor_Unavailable, //The specified cursor shape is not available.
+			Feature_Unavailable, //The requested feature is not provided by the platform.
+			Feature_Unimplemented, //The requested feature is not yet implemented for the platform.
+			Platform_Unavailable //Platform unavailable or no matching platform was found.
 		};
 
 		/// <summary>
@@ -459,10 +463,11 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		enum class CursorMode
 		{
-			Normal,
-			Hidden,
-			Disabled,
-			Captured
+			Normal,   //Makes the cursor visible and behaving normally.
+			Hidden,   //Makes the cursor invisible when it is over the
+			          //content area of the window but does not restrict the cursor from leaving.
+			Disabled, //Hides and grabs the cursor, providing virtual and unlimited cursor movement.
+			Captured  //Hides and grabs the cursor, without providing virtual cursor movement.
 		};
 
 		/// <summary>
@@ -470,16 +475,16 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		enum class CursorType
 		{
-			Arrow = 0,
-			Input = 1,
-			Crosshair = 2,
-			PointingHand = 3,
-			ResizeHorizontal = 4,
-			ResizeVertical = 5,
-			ResizeDiagonalTopLeftBottomRight = 6,
-			ResizeDiagonalTopRightBottomLeft = 7,
-			ResizeAll = 8,
-			NotAllowed = 9
+			Arrow = 0, //Regular arrow cursor shape.
+			Input = 1, //Text input I-beasm cursor shape.
+			Crosshair = 2, //Crosshair cursor shape.
+			PointingHand = 3, //Pointing hand cursor shape.
+			ResizeHorizontal = 4, //Horizontal resize/move arrow shape.
+			ResizeVertical = 5, //Vertical resize/move arrow shape.
+			ResizeDiagonalTopLeftBottomRight = 6, //Top-left to bottom-right diagonal resize/move arrow shape.
+			ResizeDiagonalTopRightBottomLeft = 7, //Top-right to bottom-left diagonal resize/move arrow shape.
+			ResizeAll = 8, //Omni-directional resize/move cursor shape.
+			NotAllowed = 9 //Operation-not-allowed cursor shape.
 		};
 	private:
 		//-------//
@@ -1141,7 +1146,7 @@ namespace TRAP::INTERNAL
 		/// Additional calls to this function after successful initialization but before terminiation will return true
 		/// immediately.
 		///
-		/// Errors: Possible errors include Error::Platform_Error.
+		/// Errors: Possible errors include Error::Platform_Unavailable and Error::Platform_Error.
 		/// Remarks:
 		/// X11: This function will set the LC_CTYPE category of the engine locale according to the current environment
 		///      if that category is still "C". This is because the "C" locale breaks Unicode text input.
@@ -1209,7 +1214,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">InternalMonitor to query name from.</param>
 		/// <returns>Name of the provided monitor.</returns>
-		static const std::string& GetMonitorName(const InternalMonitor* monitor);
+		static std::string GetMonitorName(const InternalMonitor* monitor);
 		/// <summary>
 		/// This function returns the primary monitor. This is usually the monitor
 		/// where elements like the task bar or global menu bar are located.
@@ -1221,7 +1226,7 @@ namespace TRAP::INTERNAL
 		/// <returns>
 		/// Primary internal monitor, or nullptr if no monitors were found or if an error occurred.
 		/// </returns>
-		static const Scope<InternalMonitor>& GetPrimaryMonitor();
+		static InternalMonitor* GetPrimaryMonitor();
 		/// <summary>
 		/// This function returns a vector of handles for all currently connceted
 		/// monitors. The primary monitor is always first in the returned vector.
@@ -1237,7 +1242,7 @@ namespace TRAP::INTERNAL
 		static std::vector<InternalMonitor*> GetMonitors();
 		/// <summary>
 		/// This function returns the current video mode of the specified monitor.
-		/// If you have create a full screen window for that monitor, the return
+		/// If you have created a full screen window for that monitor, the return
 		/// value will depend on whether that window is minimized/iconified.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
@@ -1247,7 +1252,7 @@ namespace TRAP::INTERNAL
 		/// <returns>
 		/// Current video mode of the specified monitor, or an empty one if an error occurred.
 		/// </returns>
-		static const InternalVideoMode& GetVideoMode(InternalMonitor* monitor);
+		static InternalVideoMode GetVideoMode(InternalMonitor* monitor);
 		/// <summary>
 		/// This function returns a vector of all video modes supported by the specified monitor.
 		/// The returned vector is sorted in ascending order, first by color bit depth
@@ -1267,7 +1272,7 @@ namespace TRAP::INTERNAL
 		/// This function creates a window.
 		/// Most of the options controlling how the window should be created are specified with window hints.
 		///
-		/// The created window and framebuffer may differ from what you requested, as not all parameters and
+		/// The created window may differ from what you requested, as not all parameters and
 		/// hints are hard constraints. This includes the size of the window, especially for full screen windows.
 		/// To query the actual attributes of the create window, see WindowingAPI::GetWindowHint,
 		/// WindowingAPI::GetWindowSize and WindowingAPI::GetFramebufferSize.
@@ -1330,7 +1335,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// This function sets the window title, encoded as UTF-8, of the specified window.
 		///
-		/// Errors: Possible errors include Error::Not_Initialize and Error::Platform_Error.
+		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
@@ -1509,7 +1514,7 @@ namespace TRAP::INTERNAL
 		/// The opacity (or alpha) value is a positive finite number between zero and one,
 		/// where zero is fully transparent and one is fully opaque.
 		///
-		/// The initial opacity value for newly created windows is one.
+		/// The initial opacity value for newly created windows is 1.0f.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
@@ -1524,7 +1529,7 @@ namespace TRAP::INTERNAL
 		/// where zero is fully transparent and one is fully opaque. If the system does not
 		/// support whole window transparency, this function always returns one.
 		///
-		/// The initial opacity value for newly created windows is one.
+		/// The initial opacity value for newly created windows is 1.0f.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
@@ -1984,7 +1989,16 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static void PollEvents();
 		/// <summary>
-		/// Sets the cursor mode for the specified window.
+		/// This function sets a cursor mode for the specified window.
+		///
+		/// The mode must be one of the following CursorModes:
+		/// - Normal makes the cursor visible and behaving normally.
+		/// - Hidden makes the cursor invisible when it is over the content area of the
+		///   window but does not restrict the cursor from leaving.
+		/// - Disabled hides and grabs the cursor, providing virtual and unlimited cursor movement.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Enum and Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set the cursor mode for.</param>
 		/// <param name="mode">Cursor mode to be set.</param>
@@ -2014,6 +2028,13 @@ namespace TRAP::INTERNAL
 		static bool RawMouseMotionSupported();
 		/// <summary>
 		/// Sets the raw mouse motion mode for the specified window.
+		///
+		/// If raw (unscaled and unaccelerated) mouse motion is not supported, attempting to set this
+		/// will emit Error::Feature_Unavailable.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Enum,
+		///         Error::Platform_Error and Error::Feature_Unavailable.
+		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set raw mouse input for.</param>
 		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
@@ -2173,7 +2194,7 @@ namespace TRAP::INTERNAL
 		///
 		/// If an error occurs, xPos, yPos, width and height will be set to zero.
 		///
-		/// Errors: Possible errors include: Error::Not_Initialized and Error::Platform_Error.
+		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="monitor">Internal monitor to query.</param>
@@ -2451,69 +2472,860 @@ namespace TRAP::INTERNAL
 		/// Create key code translation tables.
 		/// </summary>
 		static void CreateKeyTables();
-
+		/// <summary>
+		/// This function returns the current video mode of the specified monitor.
+		/// If you have create a full screen window for that monitor, the return
+		/// value will depend on whether that window is minimized/iconified.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="monitor">Internal monitor to get internal video mode from.</param>
+		/// <returns>
+		/// Current video mode of the specified monitor, or an empty one if an error occurred.
+		/// </returns>
 		static InternalVideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
+		/// <summary>
+		/// This function retrieves the size, in screen coordinates, of the content area of
+		/// the specified window. If you wish to retrieve the size of the framebuffer of the window
+		/// in pixels, see WindowingAPI::GetFrameBufferSize.
+		///
+		/// If an error occurs, width and height will be set to zero.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get the size from.</param>
+		/// <param name="width">Output variable for the internal windows current width.</param>
+		/// <param name="height">Output variable for the internal windows current height.</param>
 		static void PlatformGetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		/// <summary>
+		/// This function sets the position, in screen coordinates, of the upper-left corner of the
+		/// content area of the specifed windowed mode window. If the window is a full screen window,
+		/// this function does nothing.
+		///
+		/// DO NOT USE THIS FUNCTION to move an already visible window unless you have very
+		/// good reasons for doing so, as it will confuse and annoy the user.
+		///
+		/// The window manager may put limits on what positions are allowed. The WindowingAPI
+		/// cannot and should not override these limits.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the position for.</param>
+		/// <param name="xPos">X position to be set.</param>
+		/// <param name="yPos">Y position to be set.</param>
 		static void PlatformSetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		/// <summary>
+		/// This function sets the monitor that the window uses for full screen mode or,
+		/// if the monitor is nullptr, makes it windowed mode.
+		///
+		/// When setting a monitor, this function updates the width, height and
+		/// refresh rate of the desired video mode and switches to the video mode
+		/// closest to it. The window position is ignored when setting a monitor.
+		///
+		/// When the monitor is nullptr, the position, width and height are used to place the
+		/// window content area. The refresh rate is ignored when no monitor is specified.
+		///
+		/// If you only wish to update the resolution of a full screen window
+		/// or the size of a windowed mode window, see WindowingAPI::SetWindowSize.
+		///
+		/// When a window transitions from full screen to windowed mode, this function
+		/// restores any previous window settings such as whether it is decorated,
+		/// floating, resizable, has size limits, etc.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the monitor for.</param>
+		/// <param name="monitor">Internal monitor to use or nullptr.</param>
+		/// <param name="xPos">New x position for the window.</param>
+		/// <param name="yPos">New y position for the window.</param>
+		/// <param name="width">New width for the window.</param>
+		/// <param name="height">New height for the window.</param>
+		/// <param name="refreshRate">New refresh rate for the window.</param>
 		static void PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
 											 int32_t refreshRate);
+		/// <summary>
+		/// This function sets the monitor that the window uses for borderless full screen mode.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the monitor for.</param>
+		/// <param name="monitor">Internal monitor to use.</param>
 		static void PlatformSetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
+		/// <summary>
+		/// This function returns a vector of all video modes supported by the specified monitor.
+		/// The returned vector is sorted in ascending order, first by color bit depth
+		/// (the sum of all channel depths) and then by resolution area (the product of
+		/// width and height).
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="monitor">Internal monitor to get all internal video modes from.</param>
+		/// <returns>
+		/// Vector with all available video modes of the specified monitor, or an empty vector
+		/// if an error occurred.
+		/// </returns>
 		static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
+		/// <summary>
+		/// Initializes the windowing API.
+		/// Before most WindowingAPI functions can be used, the WindowingAPI must be initialized, and before the engine
+		/// terminates the WindowingAPI should be terminated in order to free any resources allocated during or after
+		/// initialization.
+		///
+		/// If this function fails, it calls WindowingAPI::Shutdown before returning.
+		/// If it succeeds, WindowingAPI::Shutdown should be called before the engine exits.
+		///
+		/// Additional calls to this function after successful initialization but before terminiation will return true
+		/// immediately.
+		///
+		/// Errors: Possible errors include Error::Platform_Unavailable and Error::Platform_Error.
+		/// Remarks:
+		/// X11: This function will set the LC_CTYPE category of the engine locale according to the current environment
+		///      if that category is still "C". This is because the "C" locale breaks Unicode text input.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <returns>True if windowing API was successfully initialized, false otherwise.</returns>
 		static bool PlatformInit();
+		/// <summary>
+		/// This function destroys the specified window. On calling this function, no
+		/// further callbacks will be called for that window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Reentrancy: This function must not be called from a callback.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to destroy.</param>
 		static void PlatformDestroyWindow(InternalWindow* window);
+		/// <summary>
+		/// This function destroys all remaining windows and cursor, and frees any other allocated resources.
+		/// Once this function is called, you must again call WindowingAPI::Init successfully before you
+		/// will be able to use most WindowingAPI functions.
+		///
+		/// If the WindowingAPI has been successfully initialized, this function should be called before the
+		/// engine exits.
+		/// If initialization fails, there is no need to call this function, as it is called by WindowingAPI::Init
+		/// before it returns failure.
+		/// This function has no effect if the WindowingAPI is not initialized.
+		///
+		/// Possible errors include Error::Platform_Error.
+		///
+		/// Remarks: This function may be called before WindowingAPI::Init.
+		/// Reentrancy: This function must not be called from a callback.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
 		static void PlatformShutdown();
+		/// <summary>
+		/// This function retrieves the content scale for the specified monitor.
+		/// The content scale is the ratio between the current DPI and the platform's default DPI.
+		/// This is especially important for text and any UI elements. If the pixel dimensions
+		/// of your UI scaled by this look appropriate on your machine then it should appear
+		/// at a reasonable size on other machines regardless of their DPI and scaling settings.
+		/// This relies on the system DPI and scaling settings being somewhat correct.
+		///
+		/// The content scale may depend on both the monitor resolution and pixel density and
+		/// on user settings. It may be very different from the raw DPI calculated from the
+		/// physical size and current resolution.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="monitor">Internal monitor.</param>
+		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
+		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
 		static void PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
+		/// <summary>
+		/// Returns the position of the monitor's viewport on the virtual screen.
+		/// This function returns the position, in screen coordinates, of the upper-left corner
+		/// of the specified monitor.
+		///
+		/// If an error occurs, xPos and yPos will be set to zero.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="monitor">Internal monitor to query.</param>
+		/// <param name="xPos">Output variable for the x position of the monitor.</param>
+		/// <param name="yPos">Output variable for the y position of the monitor.</param>
 		static void PlatformGetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
+		/// <summary>
+		/// This function makes the specified window visible if it was previously
+		/// hidden. If the window is already visible or is in full screen mode,
+		/// this function does nothing.
+		///
+		/// By default, windowed mode window are focused when shown. Set the Hint::FocusOnShow
+		/// window hint to change this behaviour for all newly created windows, or change
+		/// the behaviour for and existing window with WindowingAPI::SetWindowHint.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to display.</param>
 		static void PlatformShowWindow(InternalWindow* window);
+		/// <summary>
+		/// This function brings the specified window to front and sets input focus.
+		/// The window should already be visible and not minimized/iconified.
+		///
+		/// By default, both windowed and full screen mode windows are focused
+		/// when initially created. Set the Hint::Focused hint to disable
+		/// this behaviour.
+		///
+		/// Also by default windowed mode windows are focused when shown
+		/// with WindowingAPI::ShowWindow. Set the Hint::FocusOnShow hint to
+		/// disable this behaviour.
+		///
+		/// DO NOT USE THIS FUNCTION to steal focus from other applications
+		/// unless you are certain that is what the user wants. Focus
+		/// stealing can be extremely disruptive.
+		///
+		/// For a less disruptive way of gettings the user's attention, see
+		/// WindowingAPI::RequestWindowAttention.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to focus.</param>
 		static void PlatformFocusWindow(const InternalWindow* window);
+		/// <summary>
+		/// This function creates a window.
+		/// Most of the options controlling how the window should be created are specified with window hints.
+		///
+		/// The created window may differ from what you requested, as not all parameters and
+		/// hints are hard constraints. This includes the size of the window, especially for full screen windows.
+		/// To query the actual attributes of the create window, see WindowingAPI::GetWindowHint,
+		/// WindowingAPI::GetWindowSize and WindowingAPI::GetFramebufferSize.
+		///
+		/// To create a full screen window, you need to specify the monitor the window will cover.
+		/// If no monitor is specified, the window will be windowed mode. Unless you have a way
+		/// for the user to choose a specific monitor, it is recommended that you pick the
+		/// primary monitor.
+		///
+		/// For full screen windows, the specified size becomes the resolution of the window's desired
+		/// video mode. As long as a full screen window is not minimized/iconified, the supported
+		/// video mode most closely matching the desired video mode is set for the specified monitor.
+		///
+		/// Once you have create the window, you can switch it between windowed, borderless full screen (windowed)
+		/// and full screen mode with WindowingAPI::SetWindowMonitor and WindowingAPI::SetWindowMonitorBorderless.
+		///
+		/// By default, newly created windows use the placement recommended by the window system.
+		/// To create the window at a specific position, make it initially invisible using the Hint::Visibile
+		/// window hint, set its position and then show it.
+		///
+		/// As long as at least one full screen window is not minimized/iconified, the screensaver is prohibited
+		/// from starting.
+		///
+		/// Window systems put limits on window sizes. Very large or very small window dimensions
+		/// may be overriden by the window system on creation. Check the actual size after creation.
+		///
+		/// Errors: Possible errors include Error::Invalid_Enum, Error::Invalid_Value,
+		///         Error::Format_Unavailable and Error::Platform_Error.
+		/// Remarks:
+		///     Windows: If the executable has an icon resource named 'TRAP_ICON', it will be set as the initial
+		///              icon for the window. If no such icon is present, the IDI_APPLICATION icon will be used
+		///              instead. To set a different icon, see WindowingAPI::SetWindowIcon.
+		///     X11: Some window managers will not respect the placement of initially hidden windows.
+		///          Due to the asynchronous nature of X11, it may take a moment for a window to reach its
+		///          requested state. This means you may not be able to query the final size, position or
+		///          other attributes directly after window creation.
+		///          The class part of the WM_CLASS window property will by default be set to the window
+		///          title passed to this function. The instance part will use the contents of the
+		///          RESOURCE_NAME environment variable, if present and not empty, or fall back to the
+		///          window title.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to create.</param>
+		/// <param name="WNDConfig">Configuration of the window to create.</param>
+		/// <returns>True if the window was created successfully.</returns>
 		static bool PlatformCreateWindow(InternalWindow* window,
 			                             WindowConfig& WNDConfig);
+		/// <summary>
+		/// This function sets the window title, encoded as UTF-8, of the specified window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window whose title to change.</param>
+		/// <param name="title">New UTF-8 encoded title for the window.</param>
 		static void PlatformSetWindowTitle(const InternalWindow* window, std::string& title);
+		/// <summary>
+		/// Creates a new custom cursor image that can be set for a window with SetCursor. The cursor can
+		/// be destroyed with DestroyCursor. Any remaining cursors are destroyed by WindowingAPI::Shutdown.
+		///
+		/// The cursor hotspot is specified in pixels, relative to the upper-left corner of the cursor image.
+		/// Like all other coordinate system in the WindowingAPI, the X-axis points to the right and the
+		/// Y-axis points down.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be caled from the main thread.
+		/// </summary>
+		/// <param name="cursor">Internal cursor to create.</param>
+		/// <param name="image">Non HDR RGB 24BPP or RGBA 32 BPP image.</param>
+		/// <param name="xHotspot">Center x coordinate of the image.</param>
+		/// <param name="yHotspot">Center y coordinate of the image.</param>
+		/// <returns>True if the cursor was created successfully.</returns>
 		static bool PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image, int32_t xHotspot,
 		                                 int32_t yHotspot);
+		/// <summary>
+		/// Creates a cursor with a standard shape.
+		///
+		/// Errors: Possible errors include Error::Invalid_Enum and Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="cursor">Internal cursor to create.</param>
+		/// <param name="type">Cursor type to get.</param>
+		/// <returns>True if the cursor was created successfully.</returns>
 		static bool PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& type);
+		/// <summary>
+		/// This function destroys a cursor previously created with CreateCursor. Any remaining cursors
+		/// will be destroyed by WindowingAPI::Shutdown.
+		///
+		/// If the specified cursor is current for any window, that window will be reverted to the default
+		/// cursor. This does not affect the cursor mode.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Reentrancy: This function must not be called from a callback.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="cursor">Internal cursor to be destroyed.</param>
 		static void PlatformDestroyCursor(InternalCursor* cursor);
+		/// <summary>
+		/// This function sets the cursor image to be used when the cursor is over the content are of the
+		/// specified window. The set cursor will only be visible when the CursorMode of the window is
+		/// CursorMode::Normal.
+		///
+		/// On some platforms, the set cursor may not be visible unless the window also has input focus.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the cursor for.</param>
+		/// <param name="cursor">
+		/// Internal cursor to set, or nullptr to switch back to the default arrow cursor.
+		/// </param>
 		static void PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor);
+		/// <summary>
+		/// This function sets a cursor mode for the specified window.
+		///
+		/// The mode must be one of the following CursorModes:
+		/// - Normal makes the cursor visible and behaving normally.
+		/// - Hidden makes the cursor invisible when it is over the content area of the
+		///   window but does not restrict the cursor from leaving.
+		/// - Disabled hides and grabs the cursor, providing virtual and unlimited cursor movement.
+		///
+		/// Errors: Possible errors include Error::Invalid_Enum and Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the cursor mode for.</param>
+		/// <param name="mode">Cursor mode to be set.</param>
 		static void PlatformSetCursorMode(InternalWindow* window, CursorMode mode);
+		/// <summary>
+		/// This function sets the position, in screen coordinates, of the cursor relative to the
+		/// upper-left corner of the content area of the specified window. The window must have
+		/// input focus. If the window does not have input focus when this function is called,
+		/// it fails silently.
+		///
+		/// DO NOT USE THIS FUNCTION to implement things like camera controls. The WindowingAPI already
+		/// provides the CursorMode::Disabled that hides the cursor, transparently re-centers it and
+		/// provides unconstrained cursor motion. See SetCursorMode for more information.
+		///
+		/// If the cursor mode is CursorMode::Disabled then the cursor position is unconstrained and
+		/// limited only by the minimum and maximum values of a double.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the cursor position for.</param>
+		/// <param name="xPos">New x position, relative to the left edge of the content area, for the cursor.</param>
+		/// <param name="yPos">New y position, relative to the top edge of the content area, for the cursor.</param>
 		static void PlatformSetCursorPos(InternalWindow* window, double xPos, double yPos);
+		/// <summary>
+		/// This function returns the position of the cursor, in screen coordinates, relative
+		/// to the upper-left corner of the content area of the specified window.
+		///
+		/// If the cursor is disabled (with CursorMode::Disabled) then the cursor position is unbounded and limited
+		/// only by the minimum and maximum values of a double.
+		///
+		/// The coordinate can be converted to their integer equivalents with the TRAP::Math::Floor function.
+		/// Casting directly to an integer type works for positive coordinates, but fails for negative ones.
+		///
+		/// If an error occurs, xPos and yPos will be set to zero.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window from which to get the current cursor position.</param>
+		/// <param name="xPos">
+		/// Output variable for the current x position, relative to the left edge of the content area, of the cursor.
+		/// </param>
+		/// <param name="yPos">
+		/// Output variable for the current y position, relative to the top edge of the content area, of the cursor.
+		/// </param>
 		static void PlatformGetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
+		/// <summary>
+		/// This function sets the icon of the specified window. If no image is specified, the window
+		/// reverts to its default icon.
+		///
+		/// The image mustbe RGB 24BPP or RGBA 32BPP.
+		///
+		/// The desired image size varies depending on platform and system settings.
+		/// Good sizes include 16x16, 32x32 and 48x48.
+		///
+		/// Errors: Possible errors Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window whose icon to set.</param>
+		/// <param name="image">
+		/// Image to be set as window icon or nullptr to revert back to the default icon.
+		/// </param>
 		static void PlatformSetWindowIcon(InternalWindow* window, const Scope<Image>& image);
+		/// <summary>
+		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
+		/// content area of the specified window.
+		///
+		/// If an error occurs, xPos and yPos will be set to zero.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get the current position from.</param>
+		/// <param name="xPos">Output variable for the current x position of the internal window.</param>
+		/// <param name="yPos">Output variable for the current y position of the internal window.</param>
 		static void PlatformGetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
+		/// <summary>
+		/// This function sets the size, in screen coordinates, of the content area of the specified window.
+		///
+		/// For full screen windows, this function updates the resolution of its desired video mode
+		/// and switches to the video mdoe closest to it.
+		///
+		/// If you wish to update the refresh rate of the desired video mode in addition
+		/// to its resolution, see WindowingAPI::SetWindowMonitor.
+		///
+		/// The window manager may put limits on what sizes are allowed. The WindowingAPI
+		/// cannot and should not override these limits.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the size for.</param>
+		/// <param name="width">New width for the internal window.</param>
+		/// <param name="height">New height for the internal window.</param>
 		static void PlatformSetWindowSize(InternalWindow* window, int32_t width, int32_t height);
+		/// <summary>
+		/// This function toggles the resizeability of the specified window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the size for.</param>
+		/// <param name="enabled">Enable or disable resizing for the internal window.</param>
 		static void PlatformSetWindowResizable(InternalWindow* window, bool enabled);
+		/// <summary>
+		/// This function toggles the decorations of the specified window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the size for.</param>
+		/// <param name="enabled">Enable or disable decorations for the internal window.</param>
 		static void PlatformSetWindowDecorated(const InternalWindow* window, bool enabled);
+		/// <summary>
+		/// This function toggles whether the specified window is floating.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the size for.</param>
+		/// <param name="enabled">Enable or disable floating mode for the internal window.</param>
 		static void PlatformSetWindowFloating(const InternalWindow* window, bool enabled);
+		/// <summary>
+		/// This function sets the opacity of the window, including any decorations.
+		///
+		/// The opacity (or alpha) value is a positive finite number between zero and one,
+		/// where zero is fully transparent and one is fully opaque.
+		///
+		/// The initial opacity value for newly created windows is 1.0f.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set opacity for.</param>
+		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
 		static void PlatformSetWindowOpacity(const InternalWindow* window, float opacity);
+		/// <summary>
+		/// This function toggles mouse passthrough for the specified window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set the size for.</param>
+		/// <param name="enabled">Enable or disable mouse passthrough for the internal window.</param>
 		static void PlatformSetWindowMousePassthrough(InternalWindow* window, bool enabled);
+		/// <summary>
+		/// Hides the specified window from the taskbar.
+		/// </summary>
+		/// <param name="window">Internal window to hide from the taskbar.</param>
 		static void PlatformHideWindowFromTaskbar(InternalWindow* window);
+		/// <summary>
+		/// This function returns the opacity of the window, including any decorations.
+		///
+		/// The opacity (or alpha) value is a positive finite number between zero and one,
+		/// where zero is fully transparent and one is fully opaque. If the system does not
+		/// support whole window transparency, this function always returns one.
+		///
+		/// The initial opacity value for newly created windows is 1.0f.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get the opacity from.</param>
+		/// <returns>Opacity of the given internal window.</returns>
 		static float PlatformGetWindowOpacity(const InternalWindow* window);
+		/// <summary>
+		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
+		/// If you wish to retrieve the size of the window in screen coordinates, see
+		/// WindowingAPI::GetWindowSize.
+		///
+		/// If an error occcurs, width and height will be set to zero.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get the framebuffer size from.</param>
+		/// <param name="width">Output variable for the internal windows current framebuffer width.</param>
+		/// <param name="height">Output variable for the internal windows current framebuffer height.</param>
 		static void PlatformGetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		/// <summary>
+		/// This function retrieves the content scale for the specified window.
+		/// The content scale is the reatio between the current DPI and the platform's
+		/// default DPI. This is especially important for text and any UI elements.
+		/// If the pixel dimensions of your UI scaled by this look appropriate
+		/// on your machine then it should appear at a reasonable size on other
+		/// machines regardless of their DPI and scaling settings. This relies
+		/// on the system DPI and scaling settings being somewhat correct.
+		///
+		/// On systems where each monitor can have its own content scale, the window
+		/// content scale will depend on which monitor the system considers the window
+		/// to be on.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get the content scale from.</param>
+		/// <param name="xScale">Output variable for the internal windows content scale x.</param>
+		/// <param name="yScale">Output variable for the internal windows content scale y.</param>
 		static void PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
+		/// <summary>
+		/// This function returns the position, in screen coordinates, of the upper-left corner
+		/// of the work area of the specified monitor along with the work area size in screen
+		/// coordinates. The work area is defined as the area of the monitor not occluded by
+		/// the operating system task bar where present. If no task bar exists then the work
+		/// area is the monitor resolution in screen coordinates.
+		///
+		/// If an error occurs, xPos, yPos, width and height will be set to zero.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="monitor">Internal monitor to query.</param>
+		/// <param name="xPos">Output variable for the x position of the monitor.</param>
+		/// <param name="yPos">Output variable for the y position of the monitor.</param>
+		/// <param name="width">Output variable for the width of the monitor.</param>
+		/// <param name="height">Output variable for the height of the monitor.</param>
 		static void PlatformGetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
 		                                       int32_t& width, int32_t& height);
+		/// <summary>
+		/// This function returns whether the window is visible or not.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get visibility state from.</param>
+		/// <returns>True if the window is visible, false otherwise.</returns>
 		static bool PlatformWindowVisible(const InternalWindow* window);
+		/// <summary>
+		/// This function returns whether the window is maximized or not.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get maximization state from.</param>
+		/// <returns>True if the window is maximized, false otherwise.</returns>
 		static bool PlatformWindowMaximized(const InternalWindow* window);
+		/// <summary>
+		/// This function returns whether the window is minimized or not.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get minimization state from.</param>
+		/// <returns>True if the window is minimized, false otherwise.</returns>
 		static bool PlatformWindowMinimized(const InternalWindow* window);
+		/// <summary>
+		/// This function processes only those events that are already in the event queue and then
+		/// returns immediately. Processing events will cause the window and input callbacks
+		/// associated with those events to be called.
+		///
+		/// On some platforms, a window move, resize or menu operation will cause event processing
+		/// to block. This is due to how event processing is designed on those platforms.
+		///
+		/// Do not assume that callbacks you set will only be called in response to event
+		/// processing functions like this one. While it is necessary to poll for events, window
+		/// systems that require the WindowingAPI to register callbacks of its own can pass evnts
+		/// to the WindowingAPI in response to many window system function calls. The WindowingAPI
+		/// will pass those events on to the application callbacks before returning.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Reentrancy: This function must not be called from a callback.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
 		static void PlatformPollEvents();
+		/// <summary>
+		/// This function returns whether the window is focused or not.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get focused state from.</param>
+		/// <returns>True if the window is focused, false otherwise.</returns>
 		static bool PlatformWindowFocused(const InternalWindow* window);
+		/// <summary>
+		/// This function returns whether the window is hovered or not.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to get hovered state from.</param>
+		/// <returns>True if the window is hovered, false otherwise.</returns>
 		static bool PlatformWindowHovered(const InternalWindow* window);
+		/// <summary>
+		/// This function returns whether raw mouse motion is supported on the current system.
+		/// This status does not change after the WindowingAPI has been initialized so you
+		/// only need to check this once. If you attemp to enable raw motion on a system
+		/// that does not support it, Error::Platform_Error will be emitted.
+		///
+		/// Raw mouse motion is closer to the actual motion of the mouse across a surface.
+		/// It is not affected by the scaling and acceleration applied to the motion of
+		/// the desktop cursor. That processing is suitable for a cursor while raw motion
+		/// is better for controlling for example a 3D camera. Because of this, raw mouse
+		/// motion is only provided when the cursor is disabled.
+		///
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <returns>True if raw mouse input is supported, false otherwise.</returns>
 		static bool PlatformRawMouseMotionSupported();
+		/// <summary>
+		/// Sets the raw mouse motion mode for the specified window.
+		///
+		/// If raw (unscaled and unaccelerated) mouse motion is not supported, attempting to set this
+		/// will emit Error::Feature_Unavailable.
+		///
+		/// Errors: Possible errors include Error::Invalid_Enum,
+		///         Error::Platform_Error and Error::Feature_Unavailable.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set raw mouse input for.</param>
+		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
 		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
+		/// <summary>
+		/// This function returns the platform-specific scancode of the specified key.
+		///
+		/// If the key is TRAP::Input::Key::Unknown or does not exist on the keyboard this
+		/// method will return -1.
+		///
+		/// Errors: Possible errors include Error::Invalid_Enum, Error::Platform_Error.
+		/// Thread safety: This function may be called from any thread.
+		/// </summary>
+		/// <param name="key">Key to get scancode for.</param>
+		/// <returns>The platform-specific scancode of the specified key or -1 if an error occured.</returns>
 		static int32_t PlatformGetKeyScanCode(Input::Key key);
+		/// <summary>
+		/// This function returns a string representation for the platform-specific scancode.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function may be called from any thread.
+		/// </summary>
+		/// <param name="scanCode">Scancode to get string representation for.</param>
+		/// <returns>String representation of scancode or nullptr if an error occured.</returns>
 		static const char* PlatformGetScanCodeName(int32_t scanCode);
+		/// <summary>
+		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
+		///
+		/// Errors: Possible errors include Error::Format_Unavailable and Error::Platform_Error.
+		/// Pointer lifetime: The specified string is copied before this function returns.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="string">UTF-8 encoded string to be set for the clipboard.</param>
 		static void PlatformSetClipboardString(const std::string& string);
+		/// <summary>
+		/// This function returns the contents of the system clipboard, if it contains or
+		/// is convertible to a UTF-8 encoded string. If the clipboard is empty or if its
+		/// content cannot be converted, an empty string is returned and a Error::Format_Unavailable
+		/// error is generated.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <returns>
+		/// UTF-8 encoded string containing clipboard contents, or empty string if an error occurred.
+		/// </returns>
 		static std::string PlatformGetClipboardString();
+		/// <summary>
+		/// This function returns an array of names of Vulkan instance extensions required
+		/// by the WindowingAPI for creating Vulkan surface for WindowingAPI windows.
+		/// If successful, the list will always contain VK_KHR_surface, so if you don't
+		/// require any additional extensions you can pass this list directly to the
+		/// VkInstanceCreateInfo struct.
+		///
+		/// If Vulkan is not available on the machine, this function return an array with
+		/// empty strings and generates a Error::API_Unavailable error.
+		/// Call WindowingAPI::VulkanSupported to check whether Vulkan is at least
+		/// minimally available.
+		///
+		/// If Vulkan is available but no set of extensions allowing window surface creation
+		/// was found, this function returns an array with empty strings. You may still use
+		/// Vulkan for off-screen rendering and compute work.
+		///
+		/// Errors: Possible errors include Error::API_Unavailable.
+		/// Remarks: Additional extensions may be required by future versions of the WindowingAPI.
+		///          You should check if any extensions you wish to enable are already in the
+		///          returned array, as it is an error to specify an extension more than once
+		///          in the VkInstanceCreateInfo struct.
+		/// Thread safety: This function may be called from any thread.
+		/// </summary>
+		/// <param name="extensions">output array for the required instance extensions.</param>
 		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions);
+		/// <summary>
+		/// Creates a Vulkan surface for the specified window.
+		/// This function create a Vulkan surface for the specified window.
+		///
+		/// If the Vulkan loader or at least one minimally functiona ICD were not found,
+		/// this function return VK_ERROR_INITIALIZATION_FAILED and generates a Error::API_Unavilable error.
+		/// Call WindowingAPI::VulkanSupported to check whether Vulkan is at least minimally available.
+		///
+		/// If the required window surface creation instance extensions are not available or if the
+		/// specified instance was not created with these extensions enabled, this function
+		/// returns VK_ERROR_EXTENSION_NOT_PRESENT and generates a Error::API_Unavailable error.
+		/// Call WindowingAPI::GetRequiredInstanceExtensions to check what instance extensions
+		/// are required.
+		///
+		/// The window surface must be destroyed before the specified Vulkan instance.
+		/// It is the responsibility of the caller to destroy the window surface.
+		/// The WindowingAPI does not destroy it for you.
+		/// Call vkDestroySurfaceKHR to destroy the surface.
+		///
+		/// Errors: Possible errors include Error::API_Unavailable, Error::Platform_Error and Error::Invalid_Value.
+		/// Remarks: If an error occurs before the creation call is made, the WindowingAPI returns
+		///          the Vulkan error code most appropriate for the error. Appropriate use of
+		///          WindowingAPI::VulkanSupported and WindowingAPI::GetRequiredInstanceExtensions
+		///          should eliminate almost all occurrences of these errors.
+		/// Thread safety: This function may be called from any thread. For synchronization details
+		///                of Vulkan objects, see the Vulkan specification.
+		/// </summary>
+		/// <param name="instance">Vulkan instance.</param>
+		/// <param name="window">Internal window for which to create the surface for.</param>
+		/// <param name="allocator">Optional allocator.</param>
+		/// <param name="surface">Output variable for the new Vulkan surface.</param>
+		/// <returns>VK_SUCCESS if successful, or a Vulkan error code if an error occurred.</returns>
 		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow* window,
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
+		/// <summary>
+		/// This function maximizes the specified window if it was previously not
+		/// maximized. If the window is already maximized, this function does nothing.
+		///
+		/// If the specified window is a full screen window, this function does nothing.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function may only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to maximize.</param>
 		static void PlatformMaximizeWindow(const InternalWindow* window);
+		/// <summary>
+		/// This function minimizes (iconifies) the specified window if it was previously
+		/// restored. If the window is already minimized (iconified), this function does
+		/// nothing.
+		///
+		/// If the specified window is a full screen window, the original monitor resolution
+		/// is restored util the window is restored.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to minimize/iconify.</param>
 		static void PlatformMinimizeWindow(const InternalWindow* window);
+		/// <summary>
+		/// This function requests user attention to the specified window.
+		/// On platforms where this is not supported, attention is requested
+		/// to the application as a whole.
+		///
+		/// Once the user has given attention, usually by focusing the window
+		/// or application, the system will end the request automatically.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to request user attention for.</param>
 		static void PlatformRequestWindowAttention(const InternalWindow* window);
+		/// <summary>
+		/// This function hides the specified window if it was previously visible. If
+		/// the window is already hidden or is in full screen mode, this function
+		/// does nothing.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to hide.</param>
 		static void PlatformHideWindow(const InternalWindow* window);
+		/// <summary>
+		/// Restores the specified window.
+		/// This function restores the specified window if it was previously
+		/// minimized (iconified) or maximized. If the window is already restored,
+		/// this function does nothing.
+		///
+		/// If the specified window is a full screen window, the resolution chosen
+		/// for the window is restored on the selected monitor.
+		///
+		/// Errors: Possible errors include Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to be restored.</param>
 		static void PlatformRestoreWindow(InternalWindow* window);
+		/// <summary>
+		/// Sets the size limits of the specified window.
+		///
+		/// Wayland: The size limits will not be applied until the window is actually resized, either by the
+		///          user or by the compositor.
+		/// This function sets the size limits of the content area of the specified window. If the
+		/// window is full screen, the size limits only take effect once it is made windowed.
+		/// If the window is not resizable, this function does nothing.
+		///
+		/// The size limits are applied immediately to a windowed mode window and may cause it
+		/// to be resized.
+		///
+		/// The maximum dimensions must be greater than or equal to the minimum dimensions
+		/// and all must be greater than zero.
+		///
+		/// Use -1 to disable to minimum and/or maximum size constraints.
+		///
+		/// Errors: Possible errors include Error::Invalid_Value and Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set size limits for.</param>
+		/// <param name="minWidth">New minimum window width.</param>
+		/// <param name="minHeight">New minimum window height.</param>
+		/// <param name="maxWidth">New maximum window width.</param>
+		/// <param name="maxHeight">New maximum window height.</param>
 		static void PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight,
 		                                        int32_t maxWidth, int32_t maxHeight);
+		/// <summary>
+		/// Enable/Disable drag and drop feature for the specified window.
+		/// </summary>
+		/// <param name="window">Internal window for which to set drag and drop.</param>
+		/// <param name="value">Whether to enable or disable drag and drop.</param>
 		static void PlatformSetDragAndDrop(InternalWindow* window, bool value);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
@@ -2706,7 +3518,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="monitor">Internal monitor to query.</param>
 		/// <param name="desired">Desired internal video mode.</param>
-		/// <returns>Closest matching internal video mode from the desired one.</returns>
+		/// <returns>Pointer to closest matching internal video mode from the desired one.</returns>
 		static InternalVideoMode* ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired);
 		/// <summary>
 		/// Notifies shared code of a monitor connection or disconnection.
@@ -2731,8 +3543,23 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static void ReleaseCursor();
 
+		/// <summary>
+		/// Loads a dynamic library into memory.
+		/// </summary>
+		/// <param name="path">Path to the library.</param>
+		/// <returns>Pointer to the loaded library.</returns>
 		static void* PlatformLoadModule(const std::string& path);
+		/// <summary>
+		/// Unloads a dynamic library from memory.
+		/// </summary>
+		/// <param name="module">Pointer to the library to unload.</param>
 		static void PlatformFreeModule(void* module);
+		/// <summary>
+		/// Gets a function pointer from a dynamic library.
+		/// </summary>
+		/// <param name="module">Pointer to the library.</param>
+		/// <param name="name">Name of the function.</param>
+		/// <returns>Pointer to the function.</returns>
 		static void* PlatformGetModuleSymbol(void* module, const std::string& name);
 		//-------//
 		//Windows//
@@ -2825,6 +3652,11 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Window callback function (handles window messages).
 		/// </summary>
+		/// <param name="hwnd">Window handle.</param>
+		/// <param name="uMsg">Message.</param>
+		/// <param name="wParam">Message parameter.</param>
+		/// <param name="lParam">Message parameter.</param>
+		/// <returns>True if the message was handled, false otherwise.</returns>
 		static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		/// <summary>
 		/// Registers the TRAP window class.
@@ -2838,10 +3670,17 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Callback for EnumDisplayMonitors in CreateMonitor.
 		/// </summary>
+		/// <param name="handle">Monitor handle.</param>
+		/// <param name="dc">Monitor device context.</param>
+		/// <param name="rect">Monitor rectangle.</param>
+		/// <param name="data">User data.</param>
+		/// <returns>True to continue enumeration, false to stop.</returns>
 		static BOOL CALLBACK MonitorCallback(HMONITOR handle, HDC dc, RECT* rect, LPARAM data);
 		/// <summary>
 		/// Create monitor from an adapter and (optionally) a display.
 		/// </summary>
+		/// <param name="adapter">Adapter to create monitor from.</param>
+		/// <param name="display">Display to create monitor from.</param>
 		/// <returns>New Internal monitor.</returns>
 		static Scope<InternalMonitor> CreateMonitor(DISPLAY_DEVICEW* adapter, DISPLAY_DEVICEW* display);
 		/// <summary>
@@ -2881,6 +3720,13 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Translate content area size to full window size according to styles and DPI.
 		/// </summary>
+		/// <param name="style">Window style.</param>
+		/// <param name="exStyle">Window Ex style.</param>
+		/// <param name="contentWidth">Content width.</param>
+		/// <param name="contentHeight">Content height.</param>
+		/// <param name="fullWidth">Full width.</param>
+		/// <param name="fullHeight">Full height.</param>
+		/// <param name="dpi">DPI.</param>
 		static void GetFullWindowSize(DWORD style, DWORD exStyle,
 									  int32_t contentWidth, int32_t contentHeight,
 									  int32_t& fullWidth, int32_t& fullHeight,
@@ -2913,12 +3759,20 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Creates the TRAP window.
 		/// </summary>
-		static int32_t CreateNativeWindow(InternalWindow* window,
-			                              const WindowConfig& WNDConfig);
+		/// <param name="window">Internal window to create.</param>
+		/// <param name="WNDConfig">Window configuration.</param>
+		/// <returns>True if creation was successful, false otherwise.</returns>
+		static bool CreateNativeWindow(InternalWindow* window,
+			                           const WindowConfig& WNDConfig);
 		/// <summary>
 		/// Manually maximize the window, for when SW_MAXIMIZE cannot be used.
 		/// </summary>
+		/// <param name="window">Internal window to maximize manually.</param>
 		static void MaximizeWindowManually(const InternalWindow* window);
+		/// <summary>
+		/// Retrieve the Win32 HInstance for the application.
+		/// </summary>
+		/// <returns>HInstance.</returns>
 		static HINSTANCE GetWin32HInstance();
 
 		friend bool TRAP::Input::InitController();
@@ -2929,28 +3783,50 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Calculates the refresh rate, in Hz, from the specified RandR mode info.
 		/// </summary>
+		/// <param name="mi">RandR mode info.</param>
 		/// <returns>Refresh rate.</returns>
 		static int32_t CalculateRefreshRate(const XRRModeInfo* mi);
+		/// <summary>
+		/// Create InternalVideoMode from RandR mode info.
+		/// </summary>
+		/// <param name="mi">RandR mode info.</param>
+		/// <param name="ci">RandR CRTC info.</param>
+		/// <returns>Newly created InternalVideoMode.</returns>
 		static InternalVideoMode VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
 		/// <summary>
 		/// Sends an EWMH or ICCCM event to the window manager.
 		/// </summary>
+		/// <param name="window">Internal window to send event for.</param>
+		/// <param name="type">Event type.</param>
+		/// <param name="a">Event data a.</param>
+		/// <param name="b">Event data b.</param>
+		/// <param name="c">Event data c.</param>
+		/// <param name="d">Event data d.</param>
+		/// <param name="e">Event data e.</param>
 		static void SendEventToWM(const InternalWindow* window, Atom type, int64_t a, int64_t b, int64_t c,
 		                          int64_t d, int64_t e);
 		/// <summary>
 		/// Returns whether it is a _NET_FRAME_EXTENTS event for the specified window.
 		/// </summary>
-		static int32_t IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer);
+		/// <param name="display">X11 display.</param>
+		/// <param name="event">X11 event.</param>
+		/// <param name="pointer">Pointer to the window.</param>
+		/// <returns>True if it is a _NET_FRAME_EXTENTS event for the specified window, false otherwise.</returns>
+		static bool IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer);
 		/// <summary>
 		/// Wait for data to arrive on any of the specified file descriptors
 		/// </summary>
+		/// <param name="fds">Array of file descriptors to wait for.</param>
+		/// <param name="count">Number of file descriptors to wait for.</param>
 		/// <param name="timeout">Time out in seconds.</param>
+		/// <returns>Number of file descriptors with data.</returns>
 		static bool WaitForData(pollfd* fds, nfds_t count, double* timeout);
 		/// <summary>
 		/// Wait for event data to arrive on the X11 display socket.
 		/// This avoids blocking other threads via the per-display Xlib lock.
 		/// </summary>
 		/// <param name="timeout">Time out in seconds.</param>
+		/// <returns>True if data was received, false otherwise.</returns>
 		static bool WaitForX11Event(double* timeout);
 		/// <summary>
 		/// Writes a byte to the empty event pipe
@@ -2963,26 +3839,41 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Create the pipe for empty events without assuming the OS has pipe2(2)
 		/// </summary>
+		/// <returns>True if the pipe was created, false otherwise.</returns>
 		static bool CreateEmptyEventPipe();
 		/// <summary>
 		/// Retrieve a single window property of the specified type.
 		/// </summary>
+		/// <param name="window">X11 window.</param>
+		/// <param name="property">Property to retrieve.</param>
+		/// <param name="type">Property type.</param>
+		/// <param name="value">Output property value.</param>
+		/// <returns>Amount of bytes retrieved.</returns>
 		static uint64_t GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
 		/// <summary>
 		/// Updates the normal hints according to the window settings.
 		/// </summary>
+		/// <param name="window">Internal window to update hints for.</param>
+		/// <param name="width">Width of the window.</param>
+		/// <param name="height">Height of the window.</param>
 		static void UpdateNormalHints(InternalWindow* window, int32_t width, int32_t height);
 		/// <summary>
 		/// Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses.
 		/// </summary>
+		/// <param name="window">Internal window to wait for.</param>
+		/// <returns>True if a VisibilityNotify event was received, false otherwise.</returns>
 		static bool WaitForVisibilityNotify(InternalWindow* window);
 		/// <summary>
 		/// Updates the full screen status of the window.
 		/// </summary>
+		/// <param name="window">Internal window to update window mode for.</param>
 		static void UpdateWindowMode(InternalWindow* window);
 		/// <summary>
 		/// Returns the mode info for a RandR mode XID.
 		/// </summary>
+		/// <param name="sr">RandR screen resource.</param>
+		/// <param name="id">RandR mode XID.</param>
+		/// <returns>RandR mode info.</returns>
 		static const XRRModeInfo* GetModeInfo(const XRRScreenResources* sr, RRMode id);
 		/// <summary>
 		/// Retrieve system content scale via folklore heuristics.
@@ -3006,6 +3897,9 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// X error handler.
 		/// </summary>
+		/// <param name="display">X11 display.</param>
+		/// <param name="event">X11 error event.</param>
+		/// <returns>True if the error was handled, false otherwise.</returns>
 		static int32_t ErrorHandler(Display* display, XErrorEvent* event);
 		/// <summary>
 		/// Clears the X error handler callback.
@@ -3014,6 +3908,10 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Check whether the specified atom is supported.
 		/// </summary>
+		/// <param name="supportedAtoms">List of supported atoms.</param>
+		/// <param name="atomCount">Number of supported atoms.</param>
+		/// <param name="atomName">Atom to check.</param>
+		/// <returns>Atom on success, 0 otherwise.</returns>
 		static Atom GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, const char* atomName);
 		/// <summary>
 		/// Create a blank cursor for hidden and disabled cursor modes.
@@ -3025,7 +3923,19 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <returns>True if an input method was found, false otherwise.</returns>
 		static bool HasUsableInputMethodStyle();
+		/// <summary>
+		/// Input method destroy callback.
+		/// </summary>
+		/// <param name="im">Input method.</param>
+		/// <param name="clientData">User data.</param>
+		/// <param name="callData">Input method call data.</param>
 		static void InputMethodDestroyCallback(XIM im, XPointer clientData, XPointer callData);
+		/// <summary>
+		/// Input method instantiate callback.
+		/// </summary>
+		/// <param name="display">X11 display.</param>
+		/// <param name="clientData">User data.</param>
+		/// <param name="callData">Input method call data.</param>
 		static void InputMethodInstantiateCallback(Display* display, XPointer clientData, XPointer callData);
 		/// <summary>
 		/// Poll for changes in the set of connected monitors.
@@ -3034,22 +3944,50 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Returns whether the event is a selection event.
 		/// </summary>
+		/// <param name="display">X11 display.</param>
+		/// <param name="event">X11 event.</param>
+		/// <param name="pointer">Pointer to the event.</param>
+		/// <returns>True if the event is a selection event, false otherwise.</returns>
 		static int32_t IsSelectionEvent(Display* display, XEvent* event, XPointer pointer);
 		/// <summary>
 		/// Set the specified property to the selection converted to the requested target.
 		/// </summary>
+		/// <param name="request">Selection request.</param>
+		/// <returns>Atom on success, 0 otherwise.</returns>
 		static Atom WriteTargetToProperty(const XSelectionRequestEvent* request);
+		/// <summary>
+		/// Handles a selection request.
+		/// </summary>
+		/// <param name="event">Selection request event.</param>
 		static void HandleSelectionRequest(XEvent& event);
+		/// <summary>
+		/// Handles a selection clear event.
+		/// </summary>
+		/// <param name="event">Selection clear event.</param>
 		static void HandleSelectionClear(XEvent& event);
 		/// <summary>
 		/// Push contents of our selection to clipboard manager.
 		/// </summary>
 		static void PushSelectionToManagerX11();
+		/// <summary>
+		/// Create X11 input context.
+		/// </summary>
+		/// <param name="window">Internal window to create input context for.</param>
 		static void CreateInputContextX11(InternalWindow* window);
+		/// <summary>
+		/// Check whether the specified visual is transparent.
+		/// </summary>
+		/// <param name="visual">X11 visual.</param>
+		/// <returns>True if the visual is a transparent visual.</returns>
 		static bool IsVisualTransparentX11(Visual* visual);
 		/// <summary>
 		/// Create the X11 window (and its colormap).
 		/// </summary>
+		/// <param name="window">Internal window to create window for.</param>
+		/// <param name="WNDConfig">Window configuration.</param>
+		/// <param name="visual">X11 visual.</param>
+		/// <param name="depth">Window depth.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool CreateNativeWindow(InternalWindow* window, WindowConfig& WNDConfig, Visual* visual,
 		                               int32_t depth);
 		/// <summary>
@@ -3063,10 +4001,14 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Returns whether the window is iconified/minimized
 		/// </summary>
+		/// <param name="window">Internal window to check.</param>
+		/// <returns>Window state.</returns>
 		static int32_t GetWindowState(const InternalWindow* window);
 		/// <summary>
 		/// Convert XKB KeySym to Unicode.
 		/// </summary>
+		/// <param name="keysym">XKB KeySym.</param>
+		/// <returns>Unicode character.</returns>
 		static uint32_t KeySymToUnicode(uint32_t keySym);
 		struct CodePair
 		{
@@ -3077,15 +4019,29 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Encode a Unicode code point to a UTF-8 stream.
 		/// </summary>
+		/// <param name="s">UTF-8 stream.</param>
+		/// <param name="ch">Unicode code point.</param>
+		/// <returns>Number of bytes written.</returns>
 		static std::size_t EncodeUTF8(char* s, uint32_t ch);
+		/// <summary>
+		/// Return selection string from specified selection.
+		/// </summary>
+		/// <param name="selection">Selection to retrieve.</param>
+		/// <returns>Selection string.</returns>
 		static std::string GetSelectionString(Atom selection);
 		/// <summary>
 		/// Returns whether it is a property event for the specified selection transfer.
 		/// </summary>
+		/// <param name="display">X11 display.</param>
+		/// <param name="event">X11 event.</param>
+		/// <param name="pointer">Pointer to the event.</param>
+		/// <returns>True if the event is a property new value event for the specified selection, false otherwise.</returns>
 		static int32_t IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer pointer);
 		/// <summary>
 		/// Convert the specified Latin-1 string to UTF-8.
 		/// </summary>
+		/// <param name="source">Latin-1 string.</param>
+		/// <returns>UTF-8 string.</returns>
 		static std::string ConvertLatin1ToUTF8(const char* source);
 		/// <summary>
 		/// Reports the specified error, appending information about the last X error.
@@ -3096,48 +4052,69 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Process the specified X event.
 		/// </summary>
+		/// <param name="event">X event.</param>
 		static void ProcessEvent(XEvent& event);
 		/// <summary>
 		/// Translates an X11 key code to a TRAP key token.
 		/// </summary>
+		/// <param name="scanCode">X11 key code.</param>
+		/// <returns>Translated TRAP::Input::Key.</returns>
 		static Input::Key TranslateKey(int32_t scanCode);
 #ifdef X_HAVE_UTF8_STRING
 		/// <summary>
 		/// Decode a Unicode code point from a UTF-8 stream.
 		/// </summary>
+		/// <param name="s">UTF-8 stream.</param>
+		/// <returns>Unicode code point.</returns>
 		static uint32_t DecodeUTF8(const char** s);
 #endif
 		/// <summary>
 		/// Splits and translates a text/uri-list into separate file paths.
 		/// </summary>
+		/// <param name="text">Text to split.</param>
+		/// <param name="count">Number of file paths.</param>
+		/// <returns>Vector of file paths.</returns>
 		static std::vector<std::string> ParseUriList(char* text, int32_t& count);
 		/// <summary>
 		/// Set the current video mode for the specified monitor.
 		/// </summary>
+		/// <param name="monitor">Monitor to set video mode for.</param>
+		/// <param name="desired">Desired video mode.</param>
 		static void SetVideoModeX11(InternalMonitor* monitor, const InternalVideoMode& desired);
 		/// <summary>
 		/// Restore the saved(original) video mode for the specified monitor.
 		/// </summary>
+		/// <param name="monitor">Monitor to restore video mode for.</param>
 		static void RestoreVideoModeX11(InternalMonitor* monitor);
 		/// <summary>
-		/// Allocates and returns a monitor object with the specified name and dimensions.
+		/// Allocates and returns a monitor object with the specified name.
 		/// </summary>
+		/// <param name="name">Monitor name.</param>
+		/// <returns>Newly created monitor object.</returns>
 		static Scope<InternalMonitor> CreateMonitor(std::string name);
 		/// <summary>
 		/// Creates a dummy window for behind-the-scenes work.
 		/// </summary>
+		/// <returns>Newly created X11 Window.</returns>
 		static ::Window CreateHelperWindow();
 		/// <summary>
 		/// Translate the X11 KeySyms for a key to a TRAP key.
 		/// </summary>
+		/// <param name="keySyms">X11 KeySyms.</param>
+		/// <param name="width">Width of KeySyms.</param>
+		/// <returns>Translated TRAP::Input::Key.</returns>
 		static Input::Key TranslateKeySyms(const KeySym* keySyms, int32_t width);
 		/// <summary>
 		/// Clear its handle when the input context has been destroyed.
 		/// </summary>
+		/// <param name="ic">Input context.</param>
+		/// <param name="clientData">Client data.</param>
+		/// <param name="callData">Call data.</param>
 		static void InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData);
 		/// <summary>
-		/// Translate an X11 key code to a TRAP key.
+		/// Retrieve the current keyboard layout name.
 		/// </summary>
+		/// <returns>Current keyboard layout name.</returns>
 		static std::string GetX11KeyboardLayoutName();
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
