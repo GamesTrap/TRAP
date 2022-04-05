@@ -2288,7 +2288,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 	s_Data.Screen = DefaultScreen(s_Data.display);
 	s_Data.Root = RootWindow(s_Data.display, s_Data.Screen);
-	s_Data.Context = XUniqueContext();
+	s_Data.Context = static_cast<XContext>(s_Data.XRM.UniqueQuark()); //Same as calling XUniqueContext();
 
 	GetSystemContentScale(s_Data.ContentScaleX, s_Data.ContentScaleY);
 

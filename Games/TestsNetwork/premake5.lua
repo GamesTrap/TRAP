@@ -52,7 +52,6 @@ project "TestsNetwork"
 
 			"dl",
 			"pthread",
-			"X11",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL"
