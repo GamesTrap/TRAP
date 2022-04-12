@@ -507,7 +507,7 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::UpdateControllerMappings(const std::string_view map)
+void TRAP::Input::UpdateControllerMappings(const std::string& map)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -622,7 +622,7 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* con, const i
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
-bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
+bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 {
 	struct Fields
 	{

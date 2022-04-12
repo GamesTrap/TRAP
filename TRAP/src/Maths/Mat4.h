@@ -45,9 +45,21 @@ namespace TRAP::Math
 	template<typename T>
 	struct Mat<4, 4, T>
 	{
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
 		constexpr Mat(Mat&&) = default;
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~Mat() = default;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
 		constexpr Mat<4, 4, T>& operator=(Mat&&) = default;
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
 		constexpr Mat<4, 4, T>& operator=(const Mat&) = default;
 
 		typedef Vec<4, T> colType;
@@ -60,18 +72,34 @@ namespace TRAP::Math
 		std::array<colType, 4> value{};
 
 	public:
-		//Constructors
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		constexpr Mat() = default;
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
 		constexpr Mat(const Mat<4, 4, T> & m) = default;
 
+		/// <summary>
+		/// Scalar constructor.
+		/// </summary>
 		explicit constexpr Mat(const T & scalar);
+		/// <summary>
+		/// Value constructor.
+		/// </summary>
 		constexpr Mat(const T & x0, const T & y0, const T & z0, const T & w0,
 			          const T & x1, const T & y1, const T & z1, const T & w1,
 			          const T & x2, const T & y2, const T & z2, const T & w2,
 			          const T & x3, const T & y3, const T & z3, const T & w3);
+		/// <summary>
+		/// Column constructor.
+		/// </summary>
 		constexpr Mat(const colType & v0, const colType & v1, const colType & v2, const colType & v3);
 
-		//Conversions
+		/// <summary>
+		/// Value conversion constructor.
+		/// </summary>
 		template<typename X1, typename Y1, typename Z1, typename W1,
 				 typename X2, typename Y2, typename Z2, typename W2,
 				 typename X3, typename Y3, typename Z3, typename W3,
@@ -81,24 +109,39 @@ namespace TRAP::Math
 			          X3 x3, Y3 y3, Z3 z3, W3 w3,
 			          X4 x4, Y4 y4, Z4 z4, W4 w4);
 
+		/// <summary>
+		/// Column conversion constructor.
+		/// </summary>
 		template<typename V1, typename V2, typename V3, typename V4>
 		constexpr Mat(const Vec<4, V1> & v1, const Vec<4, V2> & v2, const Vec<4, V3> & v3, const Vec<4, V4> & v4);
 
-		//Matrix conversions
+		/// <summary>
+		/// Copy conversion constructor.
+		/// </summary>
 		template<typename U>
 		explicit constexpr Mat(const Mat<4, 4, U> & m);
 
+		/// <summary>
+		/// Copy conversion constructor.
+		/// </summary>
 		explicit constexpr Mat(const Mat<3, 3, T> & x);
 
 		/// <summary>
 		/// Retrieve the length of the matrix.
 		/// </summary>
 		/// <returns>Length.</returns>
-		static constexpr int Length();
+		static constexpr int32_t Length();
 
-		//Accesses
-		colType& operator[](int i);
-		constexpr const colType& operator[](int i) const;
+		/// <summary>
+		/// Retrieve a column of the matrix.
+		/// </summary>
+		/// <param name="i">Column to retrieve.</param>
+		colType& operator[](int32_t i);
+		/// <summary>
+		/// Retrieve a column of the matrix.
+		/// </summary>
+		/// <param name="i">Column to retrieve.</param>
+		constexpr const colType& operator[](int32_t i) const;
 
 		//Unary arithmetic operators
 		template<typename U>
@@ -189,6 +232,25 @@ namespace TRAP::Math
 
 	template<typename T>
 	bool operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//Hash---------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace std
+{
+	template<typename T>
+	struct hash<TRAP::Math::Mat<4, 4, T>>
+	{
+		constexpr std::size_t operator()(const TRAP::Math::Mat<4, 4, T>& m) const
+		{
+			std::size_t seed = 0;
+			hash<TRAP::Math::Vec<4, T>> hasher;
+			TRAP::Utils::HashCombine(seed, hasher(m[0]), hasher(m[1]), hasher(m[2]), hasher(m[3]));
+			return seed;
+		}
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -308,7 +370,7 @@ constexpr int TRAP::Math::Mat<4, 4, T>::Length()
 //Accesses
 
 template<typename T>
-typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](int i)
+typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i)
 {
 	TRAP_ASSERT(i < this->Length());
 
@@ -316,7 +378,7 @@ typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[]
 }
 
 template<typename T>
-constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](int i) const
+constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i) const
 {
 	TRAP_ASSERT(i < this->Length());
 

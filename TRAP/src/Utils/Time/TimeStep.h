@@ -15,27 +15,6 @@ namespace TRAP::Utils
 		explicit TimeStep(float time);
 
 		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~TimeStep() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		TimeStep(const TimeStep&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		TimeStep(TimeStep&&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		TimeStep& operator=(const TimeStep&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		TimeStep& operator=(TimeStep&&) = default;
-
-		/// <summary>
 		/// Convenience operator.
 		/// Same as GetSeconds();
 		/// </summary>

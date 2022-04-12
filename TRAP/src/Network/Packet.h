@@ -60,6 +60,23 @@ namespace TRAP::Network
 		virtual ~Packet() = default;
 
 		/// <summary>
+		/// Copy constructor.
+		/// </summary>
+		Packet(const Packet&) = default;
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
+		Packet& operator=(const Packet&) = default;
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
+		Packet(Packet&&) = default;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
+		Packet& operator=(Packet&&) = default;
+
+		/// <summary>
 		/// Append data to the end of the packet.
 		/// </summary>
 		/// <param name="data">Pointer to the sequence of bytes to append.</param>

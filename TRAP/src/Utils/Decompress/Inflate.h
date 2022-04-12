@@ -36,27 +36,6 @@ namespace TRAP::Utils::Decompress
 			/// <param name="size">Size of data in bytes.</param>
 			BitReader(const uint8_t* data, std::size_t size);
 
-			/// <summary>
-			/// Destructor.
-			/// </summary>
-			~BitReader() = default;
-			/// <summary>
-			/// Copy constructor.
-			/// </summary>
-			BitReader(const BitReader&) = default;
-			/// <summary>
-			/// Move constructor.
-			/// </summary>
-			BitReader(BitReader&&) = default;
-			/// <summary>
-			/// Copy assignment operator.
-			/// </summary>
-			BitReader& operator=(const BitReader&) = default;
-			/// <summary>
-			/// Move assignment operator.
-			/// </summary>
-			BitReader& operator=(BitReader&&) = default;
-
 			const uint8_t* Data;
 			std::size_t Size; //Size of data in bytes
 			std::size_t BitSize; // Size of data in bits, end of valid BP values, should be 8 * size
@@ -144,27 +123,6 @@ namespace TRAP::Utils::Decompress
 			/// Constructor.
 			/// </summary>
 			HuffmanTree();
-
-			/// <summary>
-			/// Destructor.
-			/// </summary>
-			~HuffmanTree() = default;
-			/// <summary>
-			/// Copy constructor.
-			/// </summary>
-			HuffmanTree(const HuffmanTree&) = default;
-			/// <summary>
-			/// Move constructor.
-			/// </summary>
-			HuffmanTree(HuffmanTree&&) = default;
-			/// <summary>
-			/// Copy assignment operator.
-			/// </summary>
-			HuffmanTree& operator=(const HuffmanTree&) = default;
-			/// <summary>
-			/// Move assignment operator.
-			/// </summary>
-			HuffmanTree& operator=(HuffmanTree&&) = default;
 
 			std::vector<uint32_t> Codes; //The Huffman codes(bit patterns representing the symbols)
 			std::vector<uint32_t> Lengths; //The lengths of the huffman codes

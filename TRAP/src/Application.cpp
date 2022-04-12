@@ -294,6 +294,19 @@ TRAP::Application::~Application()
 #endif
 	m_config.SaveToFile(cfgPath);
 	m_window.reset();
+
+	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+	{
+		TP_TRACE(Log::ApplicationPrefix, "Shutting down Renderer");
+		Graphics::Renderer::Shutdown();
+		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
+		Graphics::TextureManager::Shutdown();
+		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");
+		Graphics::ShaderManager::Shutdown();
+		TP_TRACE(Log::ApplicationPrefix, "Shutting down RendererAPI");
+		Graphics::RendererAPI::Shutdown();
+	}
+
 	FS::Shutdown();
 
 	s_Instance = nullptr;

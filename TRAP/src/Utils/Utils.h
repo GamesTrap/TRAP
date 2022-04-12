@@ -16,13 +16,18 @@ namespace TRAP::Utils
 	/// <returns>16 byte long UUID.</returns>
 	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
 
-	//TODO Document
-	inline void HashCombine(std::size_t&)
+	inline constexpr void HashCombine(std::size_t&)
 	{}
 
-	//TODO Document
+	/// <summary>
+	/// Called repeatedly to incrementally create a hash value from several variables.
+	/// Based on https://www.boost.org/doc/libs/1_55_0/doc/html/hash/reference.html#boost.hash_combine
+	/// </summary>
+	/// <param name="seed">Seed.</param>
+	/// <param name="v">Value to hash.</param>
+	/// <param name="rest">Optional variadic for more values.</param>
 	template<typename T, typename... Rest>
-	void HashCombine(std::size_t& seed, const T& v, Rest... rest)
+	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest)
 	{
 		std::hash<T> hasher;
 		seed ^= hasher(v) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
@@ -90,6 +95,10 @@ namespace TRAP::Utils
 	std::string LinuxWindowManagerToString(LinuxWindowManager lwm);
 
 #ifdef TRAP_PLATFORM_LINUX
+	/// <summary>
+	/// Retrieve the errno string in a thread safe way.
+	/// </summary>
+	/// <returns>errno string.</returns>
 	std::string GetStrError();
 #endif
 }

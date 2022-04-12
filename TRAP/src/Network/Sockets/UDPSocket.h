@@ -51,26 +51,6 @@ namespace TRAP::Network
 		/// Constructor.
 		/// </summary>
 		UDPSocket();
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~UDPSocket() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		UDPSocket(const UDPSocket&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		UDPSocket& operator=(const UDPSocket&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		UDPSocket(UDPSocket&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		UDPSocket& operator=(UDPSocket&&) = default;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.

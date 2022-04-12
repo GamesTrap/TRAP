@@ -35,6 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Types.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
+#include "Utils/Utils.h"
 
 namespace TRAP::Math
 {
@@ -351,6 +352,25 @@ namespace TRAP::Math
 	constexpr Vec<2, bool> operator&&(const Vec<2, bool>& v1, const Vec<2, bool>& v2);
 
 	constexpr Vec<2, bool> operator||(const Vec<2, bool>& v1, const Vec<2, bool>& v2);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//Hash---------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace std
+{
+	template<typename T>
+	struct hash<TRAP::Math::Vec<2, T>>
+	{
+		constexpr std::size_t operator()(const TRAP::Math::Vec<2, T>& v) const
+		{
+			std::size_t seed = 0;
+			hash<T> hasher;
+			TRAP::Utils::HashCombine(seed, hasher(v.x), hasher(v.y));
+			return seed;
+		}
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

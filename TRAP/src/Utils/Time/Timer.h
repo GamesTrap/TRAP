@@ -16,27 +16,6 @@ namespace TRAP::Utils
 		Timer();
 
 		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~Timer() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		Timer(const Timer&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		Timer(Timer&&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		Timer& operator=(const Timer&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		Timer& operator=(Timer&&) = default;
-
-		/// <summary>
 		/// Resets and restarts the timer.
 		/// </summary>
 		void Reset();

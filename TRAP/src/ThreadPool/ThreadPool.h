@@ -6,7 +6,7 @@
 namespace TRAP
 {
 	/// <summary>
-	/// ThreadPool is a multi-thread task scheduler.
+	/// ThreadPool is a multi-threading task scheduler.
 	/// Note: ThreadPool should only be used for small tasks!
 	/// </summary>
 	class ThreadPool

@@ -28,33 +28,13 @@ namespace TRAP
 		};
 
 		/// <summary>
-		/// Same as:
-		/// enum class CursorMode
-		/// {
-		///	    Normal,
-		///     Hidden,
-		///     Disabled,
-		///     Captured
-		/// };
+		/// Same as WindowingAPI::CursorMode.
 		/// Specifies the cursor mode of a window.
 		/// </summary>
 		using CursorMode = INTERNAL::WindowingAPI::CursorMode;
 
 		/// <summary>
-		/// Same as:
-		/// enum class CursorType
-		/// {
-		///     Arrow = 0,
-		///		Input = 1,
-		///		Crosshair = 2,
-		///		PointingHand = 3,
-		///		ResizeHorizontal = 4,
-		///		ResizeVertical = 5,
-		///		ResizeDiagonalTopLeftBottomRight = 6,
-		///		ResizeDiagonalTopRightBottomLeft = 7,
-		///		ResizeAll = 8,
-		///		NotAllowed = 9
-		/// };
+		/// Same as WindowingAPI::CursorType.
 		/// Specifies the cursor type (visual appearance) of a window.
 		/// </summary>
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
@@ -62,7 +42,7 @@ namespace TRAP
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
 		/// <summary>
-		/// Constructor.
+		/// Create a new Window.
 		/// </summary>
 		/// <param name="props">Properties to be applied to the new window.</param>
 		/// <returns>New window object.</returns>
@@ -97,38 +77,38 @@ namespace TRAP
 		/// Get the amount of all active windows.
 		/// </summary>
 		/// <returns>Total amount of active windows.</returns>
-		static uint32_t GetActiveWindows();
+		static uint32_t GetActiveWindows() noexcept;
 
 		/// <summary>
 		/// Get the current title of the window.
 		/// </summary>
 		/// <returns>Title of the window.</returns>
-		const std::string& GetTitle() const;
+		const std::string& GetTitle() const noexcept;
 		/// <summary>
 		/// Get the current width of the window.
 		/// </summary>
 		/// <returns>Width of the window.</returns>
-		uint32_t GetWidth() const;
+		uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Get the current height of the window.
 		/// </summary>
 		/// <returns>Height of the window.</returns>
-		uint32_t GetHeight() const;
+		uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Get the current width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the width and height of the window.</returns>
-		Math::Vec2ui GetSize() const;
+		Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Get the current refresh rate of the window.
 		/// </summary>
 		/// <returns>Refresh rate of the window.</returns>
-		uint32_t GetRefreshRate() const;
+		uint32_t GetRefreshRate() const noexcept;
 		/// <summary>
 		/// Get the current display mode of the window.
 		/// </summary>
 		/// <returns>Display mode of the window.</returns>
-		DisplayMode GetDisplayMode() const;
+		DisplayMode GetDisplayMode() const noexcept;
 		/// <summary>
 		/// Get the current monitor used by the window
 		/// (only for display modes fullscreen and borderless).
@@ -139,12 +119,12 @@ namespace TRAP
 		/// Get the current cursor mode of the window.
 		/// </summary>
 		/// <returns>Cursor mode of the window.</returns>
-		CursorMode GetCursorMode() const;
+		CursorMode GetCursorMode() const noexcept;
 		/// <summary>
 		/// Get the current raw mouse input (false = off, true = on) usage of the window.
 		/// </summary>
 		/// <returns>Raw mouse input status of the window.</returns>
-		bool GetRawMouseInput() const;
+		bool GetRawMouseInput() const noexcept;
 		/// <summary>
 		/// Get the ratio between the current DPI and the platforms DPI.
 		/// </summary>
@@ -159,7 +139,7 @@ namespace TRAP
 		/// Get whether VSync is enabled or disabled.
 		/// </summary>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		bool GetVSync() const;
+		bool GetVSync() const noexcept;
 
 		/// <summary>
 		/// Get the internal handle of the window.
@@ -226,7 +206,7 @@ namespace TRAP
 		/// Set the function where events should be reported to from the window.
 		/// </summary>
 		/// <param name="callback">Callback function used to report events to.</param>
-		void SetEventCallback(const EventCallbackFn& callback);
+		void SetEventCallback(const EventCallbackFn& callback) noexcept;
 		/// <summary>
 		/// Set whether resizing of the window should be allowed.
 		/// </summary>
@@ -294,6 +274,7 @@ namespace TRAP
 
 		/// <summary>
 		/// Maximize the window.
+		/// Note: This function only affects the window when using DisplayMode::Windowed.
 		/// </summary>
 		void Maximize() const;
 		/// <summary>
@@ -423,7 +404,7 @@ namespace TRAP
 			                       bool focusOnShow = true,
 			                       bool decorated = true,
 			                       bool rawMouseInput = false,
-			                       Window::CursorMode cursorMode = Window::CursorMode::Normal);
+			                       Window::CursorMode cursorMode = Window::CursorMode::Normal) noexcept;
 		} Advanced{};
 
 		/// <summary>
@@ -443,7 +424,7 @@ namespace TRAP
 							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
 							 AdvancedProps advanced = AdvancedProps{},
-		                     uint32_t monitor = 0);
+		                     uint32_t monitor = 0) noexcept;
 	};
 }
 

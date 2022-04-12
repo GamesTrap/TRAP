@@ -3,21 +3,21 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view string,
+std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                    const std::string_view delimiters)
 {
 	std::size_t start = 0;
-	std::size_t end = string.find_first_of(delimiters);
+	std::size_t end = str.find_first_of(delimiters);
 
 	std::vector<std::string_view> result;
 
-	while (end <= std::string_view::npos && start < string.size())
+	while (end <= std::string_view::npos && start < str.size())
 	{
 		std::string_view token;
 		if (end != std::string_view::npos)
-			token = std::string_view(string.data() + start, end - start);
+			token = std::string_view(str.data() + start, end - start);
 		else
-			token = std::string_view(string.data() + start, string.size() - start);
+			token = std::string_view(str.data() + start, str.size() - start);
 
 		if (!token.empty())
 			result.push_back(token);
@@ -26,7 +26,7 @@ std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::st
 			break;
 
 		start = end + 1;
-		end = string.find_first_of(delimiters, start);
+		end = str.find_first_of(delimiters, start);
 	}
 
 	return result;
@@ -34,25 +34,25 @@ std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view string,
+std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                    const char delimiter)
 {
-	return SplitStringView(string, std::string_view(&delimiter, 1));
+	return SplitStringView(str, std::string_view(&delimiter, 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string> TRAP::Utils::String::SplitString(const std::string_view string,
+std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str,
                                                           const std::string_view delimiters)
 {
 	std::size_t start = 0;
-	std::size_t end = string.find_first_of(delimiters);
+	std::size_t end = str.find_first_of(delimiters);
 
 	std::vector<std::string> result;
 
 	while (end <= std::string::npos)
 	{
-		std::string token = std::string(string.substr(start, end - start));
+		std::string token = std::string(str.substr(start, end - start));
 
 		if (!token.empty())
 			result.push_back(token);
@@ -61,7 +61,7 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string_view
 			break;
 
 		start = end + 1;
-		end = string.find_first_of(delimiters, start);
+		end = str.find_first_of(delimiters, start);
 	}
 
 	return result;
@@ -69,23 +69,23 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string_view
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string> TRAP::Utils::String::SplitString(const std::string_view string, const char delimiter)
+std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str, const char delimiter)
 {
-	return SplitString(string, std::string_view(&delimiter, 1));
+	return SplitString(str, std::string_view(&delimiter, 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std::string_view string)
+std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std::string_view str)
 {
-	return SplitStringView(string, "\n");
+	return SplitStringView(str, "\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string> TRAP::Utils::String::GetLines(const std::string_view string)
+std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 {
-	return SplitString(string, "\n");
+	return SplitString(str, "\n");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,108 +108,16 @@ const char* TRAP::Utils::String::FindToken(const char* str, const std::string_vi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::Utils::String::FindToken(const std::string_view string, const std::string_view token)
+const char* TRAP::Utils::String::FindToken(const std::string_view str, const std::string_view token)
 {
-	return FindToken(string.data(), token);
+	return FindToken(str.data(), token);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Utils::String::GetBlockStringView(const char* str, const char** outPosition)
+bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::string_view start)
 {
-	const char* end = strstr(str, "}");
-	if (!end)
-		return {str};
-
-	if (outPosition)
-		*outPosition = end;
-	const auto length = static_cast<uint32_t>(end - str + 1);
-
-	return {str, length};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Utils::String::GetBlockStringView(const std::string_view string, const uint32_t offset)
-{
-	const char* str = string.data() + offset;
-
-	return GetBlockStringView(str);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Utils::String::GetBlock(const char* str, const char** outPosition)
-{
-	const char* end = strstr(str, "}");
-	if (!end)
-		return {str};
-
-	if (outPosition)
-		*outPosition = end;
-	const auto length = static_cast<uint32_t>(end - str + 1);
-
-	return {str, length};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Utils::String::GetBlock(const std::string_view string, const uint32_t offset)
-{
-	const char* str = string.data() + offset;
-
-	return GetBlock(str);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Utils::String::GetStatementStringView(const char* str, const char** outPosition)
-{
-	const char* end = strstr(str, ";");
-	if (!end)
-		return {str};
-
-	if (outPosition)
-		*outPosition = end;
-	const auto length = static_cast<uint32_t>(end - str + 1);
-
-	return {str, length};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Utils::String::GetStatement(const char* str, const char** outPosition)
-{
-	const char* end = strstr(str, ";");
-	if (!end)
-		return {str};
-
-	if (outPosition)
-		*outPosition = end;
-	const auto length = static_cast<uint32_t>(end - str + 1);
-
-	return {str, length};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<std::string_view> TRAP::Utils::String::TokenizeStringView(const std::string_view string)
-{
-	return SplitStringView(string, " \t\n");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<std::string> TRAP::Utils::String::Tokenize(const std::string_view string)
-{
-	return SplitString(string, " \t\n");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Utils::String::StartsWith(const std::string_view string, const std::string_view start)
-{
-	return string.find(start) == 0;
+	return str.find(start) == 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -218,49 +126,47 @@ std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view
 {
 	const std::size_t pos = name.rfind('.');
 
-	return (pos == std::string::npos) ? std::string_view() : std::string_view(name.substr(pos + 1));
+	return (pos == std::string::npos) ? std::string_view() : name.substr(pos + 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::GetSuffix(const std::string_view name)
+std::string TRAP::Utils::String::GetSuffix(const std::string& name)
 {
 	const std::size_t pos = name.rfind('.');
 
-	return (pos == std::string::npos) ? "" : std::string(name.substr(pos + 1));
+	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::ToLower(const std::string& string)
+std::string TRAP::Utils::String::ToLower(std::string str)
 {
-	std::string result(string);
-	std::transform(result.begin(), result.end(), result.begin(), [](const int32_t c) -> char
+	std::transform(str.begin(), str.end(), str.begin(), [](const int32_t c) -> char
 	{
 		return static_cast<char>(::tolower(c));
 	});
 
-	return result;
+	return str;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::ToUpper(const std::string& string)
+std::string TRAP::Utils::String::ToUpper(std::string str)
 {
-	std::string result(string);
-	std::transform(result.begin(), result.end(), result.begin(), [](const int32_t c) -> char
+	std::transform(str.begin(), str.end(), str.begin(), [](const int32_t c) -> char
 	{
 		return static_cast<char>(::toupper(c));
 	});
 
-	return result;
+	return str;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Utils::String::GetCount(const std::string_view string, const char delimiter)
+int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
 {
-	return static_cast<uint32_t>(std::count(string.begin(), string.end(), delimiter));
+	return std::count(str.begin(), str.end(), delimiter);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -270,7 +176,7 @@ bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std:
 	if (left.size() != right.size())
 		return false;
 
-	for (std::string_view::const_iterator c1 = left.begin(), c2 = right.begin(); c1 != left.end(); ++c1, ++c2)
+	for (auto c1 = left.cbegin(), c2 = right.cbegin(); c1 != left.cend(); ++c1, ++c2)
 	{
 		if (::tolower(*c1) != ::tolower(*c2))
 			return false;

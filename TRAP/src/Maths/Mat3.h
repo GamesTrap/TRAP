@@ -45,9 +45,21 @@ namespace TRAP::Math
 	template<typename T>
 	struct Mat<3, 3, T>
 	{
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
 		constexpr Mat(Mat&&) = default;
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~Mat() = default;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
 		constexpr Mat<3, 3, T>& operator=(Mat&&) = default;
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
 		constexpr Mat<3, 3, T>& operator=(const Mat&) = default;
 
 		typedef Vec<3, T> colType;
@@ -60,17 +72,33 @@ namespace TRAP::Math
 		std::array<colType, 3> value{};
 
 	public:
-		//Constructors
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		constexpr Mat() = default;
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
 		constexpr Mat(const Mat<3, 3, T> & m) = default;
 
+		/// <summary>
+		/// Scalar constructor.
+		/// </summary>
 		explicit constexpr Mat(T scalar);
+		/// <summary>
+		/// Value constructor.
+		/// </summary>
 		constexpr Mat(T x0, T y0, T z0,
 			          T x1, T y1, T z1,
 			          T x2, T y2, T z2);
+		/// <summary>
+		/// Column constructor.
+		/// </summary>
 		constexpr Mat(const colType & v0, const colType & v1, const colType & v2);
 
-		//Conversions
+		/// <summary>
+		/// Value conversion constructor.
+		/// </summary>
 		template<typename X1, typename Y1, typename Z1,
 			     typename X2, typename Y2, typename Z2,
 			     typename X3, typename Y3, typename Z3>
@@ -78,24 +106,39 @@ namespace TRAP::Math
 			          X2 x2, Y2 y2, Z2 z2,
 			          X3 x3, Y3 y3, Z3 z3);
 
+		/// <summary>
+		/// Column conversion constructor.
+		/// </summary>
 		template<typename V1, typename V2, typename V3>
 		constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3);
 
-		//Matrix conversions
+		/// <summary>
+		/// Copy conversion constructor.
+		/// </summary>
 		template<typename U>
 		explicit constexpr Mat(const Mat<3, 3, U> & m);
 
+		/// <summary>
+		/// Copy conversion constructor.
+		/// </summary>
 		explicit constexpr Mat(const Mat<4, 4, T> & x);
 
 		/// <summary>
 		/// Retrieve the length of the matrix.
 		/// </summary>
 		/// <returns>Length.</returns>
-		static constexpr int Length();
+		static constexpr int32_t Length();
 
-		//Accesses
-		colType& operator[](int i);
-		constexpr const colType& operator[](int i) const;
+		/// <summary>
+		/// Retrieve a column of the matrix.
+		/// </summary>
+		/// <param name="i">Column to retrieve.</param>
+		colType& operator[](int32_t i);
+		/// <summary>
+		/// Retrieve a column of the matrix.
+		/// </summary>
+		/// <param name="i">Column to retrieve.</param>
+		constexpr const colType& operator[](int32_t i) const;
 
 		//Unary arithmetic operators
 		template<typename U>
@@ -120,8 +163,8 @@ namespace TRAP::Math
 		//Increment and decrement operators
 		Mat<3, 3, T>& operator++();
 		Mat<3, 3, T>& operator--();
-		Mat<3, 3, T> operator++(int);
-		Mat<3, 3, T> operator--(int);
+		Mat<3, 3, T> operator++(int32_t);
+		Mat<3, 3, T> operator--(int32_t);
 	};
 
 	//Unary operators
@@ -186,6 +229,25 @@ namespace TRAP::Math
 
 	template<typename T>
 	bool operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//Hash---------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace std
+{
+	template<typename T>
+	struct hash<TRAP::Math::Mat<3, 3, T>>
+	{
+		constexpr std::size_t operator()(const TRAP::Math::Mat<3, 3, T>& m) const
+		{
+			std::size_t seed = 0;
+			hash<TRAP::Math::Vec<3, T>> hasher;
+			TRAP::Utils::HashCombine(seed, hasher(m[0]), hasher(m[1]), hasher(m[2]));
+			return seed;
+		}
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -255,7 +317,7 @@ constexpr int TRAP::Math::Mat<3, 3, T>::Length()
 //Accesses
 
 template<typename T>
-typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](int i)
+typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const int32_t i)
 {
 	TRAP_ASSERT(i < this->Length());
 
@@ -263,7 +325,7 @@ typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[]
 }
 
 template<typename T>
-constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](int i) const
+constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const int32_t i) const
 {
 	TRAP_ASSERT(i < this->Length());
 

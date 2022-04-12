@@ -60,6 +60,15 @@ namespace TRAP::Network
 		~SocketSelector();
 
 		/// <summary>
+		/// Move constructor.
+		/// </summary>
+		SocketSelector(SocketSelector&&);
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
+		SocketSelector& operator=(SocketSelector&&);
+
+		/// <summary>
 		/// Add a new socket to the selector.
 		///
 		/// This function keeps a weak reference to the socket,

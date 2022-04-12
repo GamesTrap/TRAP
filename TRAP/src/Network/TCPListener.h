@@ -46,26 +46,6 @@ namespace TRAP::Network
 		/// Constructor.
 		/// </summary>
 		TCPListener();
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~TCPListener() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		TCPListener(const TCPListener&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		TCPListener& operator=(const TCPListener&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		TCPListener(TCPListener&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		TCPListener& operator=(TCPListener&&) = default;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.

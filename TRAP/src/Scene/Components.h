@@ -7,23 +7,25 @@
 
 namespace TRAP
 {
-	//TODO Document
+	/// <summary>
+	/// Tag component.
+	/// Every entity has a tag component containing the name for the entity.
+	/// This component may not be added/remove to/from an entity.
+	/// </summary>
 	struct TagComponent
 	{
 		std::string Tag;
 
 		TagComponent() = default;
-		~TagComponent() = default;
-		TagComponent(const TagComponent&) = default;
-		TagComponent(TagComponent&&) = default;
-		TagComponent& operator=(const TagComponent&) = default;
-		TagComponent& operator=(TagComponent&&) = default;
 		explicit TagComponent(std::string tag)
 			: Tag(std::move(tag))
 		{}
 	};
 
-	//TODO Document
+	/// <summary>
+	/// Transform component.
+	/// Every entity has a transform component containing position, rotation and scale.
+	/// </summary>
 	struct TransformComponent
 	{
 		Math::Vec3 Position{ 0.0f, 0.0f, 0.0f };
@@ -31,15 +33,21 @@ namespace TRAP
 		Math::Vec3 Scale{ 1.0f, 1.0f, 1.0f };
 
 		TransformComponent() = default;
-		~TransformComponent() = default;
-		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(TransformComponent&&) = default;
-		TransformComponent& operator=(const TransformComponent&) = default;
-		TransformComponent& operator=(TransformComponent&&) = default;
 		explicit TransformComponent(const TRAP::Math::Vec3& position)
 			: Position(position)
 		{}
+		TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians)
+			: Position(position), Rotation(rotationInRadians)
+		{}
+		TransformComponent(const TRAP::Math::Vec3& position, const TRAP::Math::Vec3& rotationInRadians,
+		                   const TRAP::Math::Vec3& scale)
+			: Position(position), Rotation(rotationInRadians), Scale(scale)
+		{}
 
+		/// <summary>
+		/// Retrieve the transform calculated from current position, rotation and scale.
+		/// </summary>
+		/// <returns>Transform as Math::Mat4.</returns>
 		Math::Mat4 GetTransform() const
 		{
 			if(Rotation.x != 0.0f || Rotation.y != 0.0f || Rotation.z != 0.0f)
@@ -52,23 +60,24 @@ namespace TRAP
 		}
 	};
 
-	//TODO Document
+	/// <summary>
+	/// Sprite renderer component.
+	/// Optional component containing sprite renderer data.
+	/// </summary>
 	struct SpriteRendererComponent
 	{
 		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 		SpriteRendererComponent() = default;
-		~SpriteRendererComponent() = default;
-		SpriteRendererComponent(const SpriteRendererComponent&) = default;
-		SpriteRendererComponent(SpriteRendererComponent&&) = default;
-		SpriteRendererComponent& operator=(const SpriteRendererComponent&) = default;
-		SpriteRendererComponent& operator=(SpriteRendererComponent&&) = default;
 		explicit SpriteRendererComponent(const TRAP::Math::Vec4& color)
 			: Color(color)
 		{}
 	};
 
-	//TODO Document
+	/// <summary>
+	/// Camera component.
+	/// Optional component containing camera data.
+	/// </summar>
 	struct CameraComponent
 	{
 		SceneCamera Camera;
@@ -76,11 +85,6 @@ namespace TRAP
 		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
-		~CameraComponent() = default;
-		CameraComponent(const CameraComponent&) = delete;
-		CameraComponent(CameraComponent&&) = default;
-		CameraComponent& operator=(const CameraComponent&) = delete;
-		CameraComponent& operator=(CameraComponent&&) = default;
 	};
 
 	//TODO Document

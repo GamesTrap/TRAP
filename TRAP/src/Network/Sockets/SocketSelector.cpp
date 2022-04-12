@@ -74,6 +74,21 @@ TRAP::Network::SocketSelector::~SocketSelector()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other)
+	: m_impl(std::move(other.m_impl))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other)
+{
+	m_impl = std::move(other.m_impl);
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Network::SocketSelector::Add(Socket& socket)
 {
 	const SocketHandle handle = socket.GetHandle();

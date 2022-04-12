@@ -183,6 +183,25 @@ namespace TRAP::Math
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+//Hash---------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+namespace std
+{
+	template<typename T>
+	struct hash<TRAP::Math::tQuaternion<T>>
+	{
+		constexpr std::size_t operator()(const TRAP::Math::tQuaternion<T>& q) const
+		{
+			std::size_t seed = 0;
+			hash<T> hasher;
+			TRAP::Utils::HashCombine(seed, hasher(q.x), hasher(q.y), hasher(q.z), hasher(q.w));
+			return seed;
+		}
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //Explicit basic constructors
 template <typename T>
 constexpr TRAP::Math::tQuaternion<T>::tQuaternion(T s, const Vec<3, T>& v)

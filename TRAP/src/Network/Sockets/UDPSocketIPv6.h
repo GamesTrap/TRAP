@@ -23,26 +23,6 @@ namespace TRAP::Network
 		/// Constructor.
 		/// </summary>
 		UDPSocketIPv6();
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~UDPSocketIPv6() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		UDPSocketIPv6(const UDPSocketIPv6&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		UDPSocketIPv6& operator=(const UDPSocketIPv6&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		UDPSocketIPv6(UDPSocketIPv6&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		UDPSocketIPv6& operator=(UDPSocketIPv6&&) = default;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.

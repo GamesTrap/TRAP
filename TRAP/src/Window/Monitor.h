@@ -31,27 +31,6 @@ namespace TRAP
 		};
 
 		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~Monitor() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		Monitor(const Monitor&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		Monitor(Monitor&&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		Monitor& operator=(const Monitor&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		Monitor& operator=(Monitor&&) = default;
-
-		/// <summary>
 		/// Retrieve the name of a monitor.
 		/// </summary>
 		/// <returns>Name of the monitor.</returns>

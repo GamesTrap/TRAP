@@ -68,17 +68,6 @@ TRAP::Window::~Window()
 
 	--s_windows;
 
-	if(!s_windows && Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-	{
-		TP_TRACE("Shutting down Renderer");
-		Graphics::Renderer::Shutdown();
-		TP_TRACE("Shutting down TextureManager");
-		Graphics::TextureManager::Shutdown();
-		TP_TRACE("Shutting down ShaderManager");
-		Graphics::ShaderManager::Shutdown();
-		TP_TRACE("Shutting down RendererAPI");
-		Graphics::RendererAPI::Shutdown();
-	}
 	TP_DEBUG(Log::WindowPrefix, "Destroying window: \"", m_data.Title, "\"");
 	Shutdown();
 }
@@ -94,49 +83,49 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetActiveWindows()
+uint32_t TRAP::Window::GetActiveWindows() noexcept
 {
 	return s_windows;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Window::GetTitle() const
+const std::string& TRAP::Window::GetTitle() const noexcept
 {
 	return m_data.Title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetWidth() const
+uint32_t TRAP::Window::GetWidth() const noexcept
 {
 	return m_data.Width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetHeight() const
+uint32_t TRAP::Window::GetHeight() const noexcept
 {
 	return m_data.Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Window::GetSize() const
+TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 {
 	return { m_data.Width, m_data.Height };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetRefreshRate() const
+uint32_t TRAP::Window::GetRefreshRate() const noexcept
 {
 	return m_data.RefreshRate;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const
+TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
 {
 	return m_data.displayMode;
 }
@@ -150,14 +139,14 @@ TRAP::Monitor TRAP::Window::GetMonitor() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const
+TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
 {
 	return m_data.cursorMode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::GetRawMouseInput() const
+bool TRAP::Window::GetRawMouseInput() const noexcept
 {
 	return m_data.RawMouseInput;
 }
@@ -185,7 +174,7 @@ float TRAP::Window::GetOpacity() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::GetVSync() const
+bool TRAP::Window::GetVSync() const noexcept
 {
 	return m_data.VSync;
 }
@@ -216,8 +205,10 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifdef TRAP_PLATFORM_LINUX
 		newTitle += "[" + Utils::LinuxWindowManagerToString(Utils::GetLinuxWindowManager()) + "]";
 #endif
+	//Add additional information to the given title for non release builds
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
+	//Only set given title for release builds
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), m_data.Title);
 #endif
 }
@@ -271,7 +262,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			return;
 		}
 
-		//if(m_data.displayMode != DisplayMode::Windowed)
+		//else
 		{
 			//Remove Window from FullscreenWindows as it gets windowed now
 			for(std::size_t i = 0; i < s_fullscreenWindows.size(); ++i)
@@ -446,7 +437,8 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 	m_data.Monitor = monitor.GetID();
 	m_useMonitor = static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(monitor.GetInternalMonitor());
 
-	s_fullscreenWindows[oldMonitor] = nullptr;
+	if(s_fullscreenWindows[oldMonitor] == this)
+		s_fullscreenWindows[oldMonitor] = nullptr;
 
 	if (m_data.displayMode == DisplayMode::Windowed)
 		return;
@@ -467,6 +459,7 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 {
 	TP_PROFILE_FUNCTION();
 
+#ifndef TRAP_RELEASE
 	if (mode == CursorMode::Normal)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Normal");
 	else if (mode == CursorMode::Hidden)
@@ -475,6 +468,7 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Disabled");
 	else if(mode == CursorMode::Captured)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Captured");
+#endif
 
 	INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), mode);
 	m_data.cursorMode = mode;
@@ -574,7 +568,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetEventCallback(const EventCallbackFn& callback)
+void TRAP::Window::SetEventCallback(const EventCallbackFn& callback) noexcept
 {
 	m_data.EventCallback = callback;
 }
@@ -1343,7 +1337,7 @@ TRAP::WindowProps::WindowProps(std::string title,
 							   const bool vsync,
 							   const Window::DisplayMode displayMode,
 							   AdvancedProps advanced,
-							   const uint32_t monitor)
+							   const uint32_t monitor) noexcept
 	: Title(std::move(title)),
 	  Width(width),
 	  Height(height),
@@ -1365,7 +1359,7 @@ TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
                                                 const bool focusOnShow,
                                                 const bool decorated,
                                                 const bool rawMouseInput,
-                                                const Window::CursorMode cursorMode)
+                                                const Window::CursorMode cursorMode) noexcept
 	: Resizable(resizable),
 	  Maximized(maximized),
 	  Visible(visible),

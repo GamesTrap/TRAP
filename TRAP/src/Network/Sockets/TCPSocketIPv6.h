@@ -20,26 +20,6 @@ namespace TRAP::Network
 		/// Constructor.
 		/// </summary>
 		TCPSocketIPv6();
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~TCPSocketIPv6() = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		TCPSocketIPv6(const TCPSocketIPv6&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		TCPSocketIPv6& operator=(const TCPSocketIPv6&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		TCPSocketIPv6(TCPSocketIPv6&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		TCPSocketIPv6& operator=(TCPSocketIPv6&&) = default;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.

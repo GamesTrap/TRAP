@@ -560,7 +560,7 @@ namespace TRAP
 		/// Possible values are "Windows" and "Linux".
 		/// </summary>
 		/// <param name="map">Controller mapping to update or add.</param>
-		static void UpdateControllerMappings(std::string_view map);
+		static void UpdateControllerMappings(const std::string& map);
 
 		/// <summary>
 		/// Describes a callback function which gets called when an input event occurs.
@@ -949,7 +949,7 @@ namespace TRAP
 		/// <param name="mapping">Output variable for the new mapping.</param>
 		/// <param name="str">Mapping as a string representation.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		static bool ParseMapping(Mapping& mapping, std::string_view str);
+		static bool ParseMapping(Mapping& mapping, const std::string& str);
 		/// <summary>
 		/// Find a loaded mapping via its GUID.
 		/// </summary>

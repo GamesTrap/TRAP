@@ -2458,3 +2458,15 @@ SITREP 04/05/2022|22w14a1
     - Changed TRAP Engine version to 22w14a1(0.7.119)
     - Updated WindowingAPI documentation ~<60 mins
     - WindowingAPI got rid of X11 linker dependency ~<10 mins
+
+SITREP 04/12/2022|22w15a1
+    - Changed TRAP Engine version to 22w15a1(0.7.120)
+    - Moved RendererAPI Shutdown to Application destructor ~<10 mins
+    - Added std::hash overloads for Vec2,3,4 & Mat3,4 ~<20 mins
+    - Math Added conversion functions for RGB to HSV & reverse ~<10 mins
+    - Math Added conversion functions for sRGB to linear & reverse ~<10 mins
+    - Applied rule of zero to some classes ~<10 mins
+    - Config renamed IsChanged to HasChanged ~<5 mins
+    - Config Moved ConvertToType & ConvertToString to TRAP::Utils ~<15 mins
+    - String Removed unused functions ~<10 mins
+    - Documented code ~>180 mins

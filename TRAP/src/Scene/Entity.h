@@ -16,16 +16,20 @@
 
 namespace TRAP
 {
-	//TODO Document
+	/// <summary>
+	/// Entity class.
+	/// </summary>
 	class Entity
 	{
 	public:
 		Entity() = default;
+		/// <summary>
+		/// Constructor.
+		/// Creates a new Entity.
+		/// </summary>
+		/// <param name="handle">Handle to entt::entity.</param>
+		/// <param name="scene">Scene which the new Entity is associated with.</param>
 		Entity(entt::entity handle, Scene* scene);
-		Entity(const Entity&) = default;
-		Entity(Entity&&) = default;
-		Entity& operator=(const Entity&) = default;
-		Entity& operator=(Entity&&) = default;
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
