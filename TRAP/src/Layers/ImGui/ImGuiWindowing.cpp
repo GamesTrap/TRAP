@@ -47,15 +47,6 @@ TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::ImGuiWindowing::s_prevUse
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::InitForVulkan(WindowingAPI::InternalWindow* window, const bool installCallbacks)
-{
-	TP_PROFILE_FUNCTION();
-
-	return Init(window, installCallbacks, TRAP::Graphics::RenderAPI::Vulkan);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
@@ -124,6 +115,9 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, 
                                           const TRAP::Graphics::RenderAPI renderAPI)
 {
 	TP_PROFILE_FUNCTION();
+
+	if(renderAPI == Graphics::RenderAPI::NONE)
+		return true; //Do nothing when not using any RenderAPI
 
 	s_window = window;
 	s_time = 0.0;

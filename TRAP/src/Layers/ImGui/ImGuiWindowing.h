@@ -1,6 +1,6 @@
 /*The MIT License(MIT)
 
-Copyright(c) 2014 - 2020 Omar Cornut
+Copyright(c) 2014 - 2022 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this softwareand associated documentation files(the "Software"), to deal
@@ -36,14 +36,40 @@ namespace TRAP::Graphics
 
 namespace TRAP::INTERNAL
 {
+	/// <summary>
+	/// Interfacing class between ImGui and the TRAP::INTERNAL::WindowingAPI.
+	/// </summary>
 	class ImGuiWindowing
 	{
 	public:
-		static bool InitForVulkan(WindowingAPI::InternalWindow* window, bool installCallbacks);
+		/// <summary>
+		/// Initialize the ImGui TRAP::INTERNAL::WindowingAPI interface.
+		/// </summary>
+		/// <param name="window">Handle to the internal main window.</param>
+		/// <param name="installCallbacks">Whether to set ImGui callbacks or not.</param>
+		/// <param name="renderAPI">RenderAPI to be used by ImGui.</param>
+		/// <returns>True on successful initialization, false otherwise.</returns>
+		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
+		                 Graphics::RenderAPI renderAPI);
+		/// <summary>
+		/// Shutdown the ImGui TRAP::INTERNAL::WindowingAPI interface.
+		/// </summary>
 		static void Shutdown();
+		/// <summary>
+		/// Starts a new ImGui frame.
+		/// </summary>
 		static void NewFrame();
+		/// <summary>
+		/// Set a custom cursor to be shown in ImGui UIs.
+		/// </summary>
+		/// <param name="cursor">Cursor to show.</param>
 		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
 
+		/// <summary>
+		/// Callback to notify ImGui that a monitor was connected or disconnected.
+		/// </summary>
+		/// <param name="unused1">Monitor whose status changed.</param>
+		/// <param name="unused2">Whether monitor got connected or disconnected.</param>
 		static void MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2);
 	private:
 		static WindowingAPI::InternalWindow* s_window; //Main Window
@@ -62,6 +88,9 @@ namespace TRAP::INTERNAL
 		static WindowingAPI::KeyFunc s_prevUserCallbackKey;
 		static WindowingAPI::CharFunc s_prevUserCallbackChar;
 
+		/// <summary>
+		/// Data struct for an ImGuiViewport.
+		/// </summary>
 		struct ImGuiViewportDataTRAP
 		{
 			Scope<WindowingAPI::InternalWindow> Window = nullptr;
@@ -69,22 +98,53 @@ namespace TRAP::INTERNAL
 			bool WindowOwned = false;
 			int32_t IgnoreWindowSizeEventFrame = -1;
 
+			/// <summary>
+			/// Destructor
+			/// </summary>
 			~ImGuiViewportDataTRAP()
 			{
 				IM_ASSERT(Window == nullptr);
 			}
 		};
 
+		/// <summary>
+		/// Initialize the platform interface.
+		/// </summary>
 		static void InitPlatformInterface();
+		/// <summary>
+		/// Update the mouse button states and the position.
+		/// </summary>
 		static void UpdateMousePosAndButtons();
+		/// <summary>
+		/// Update mouse cursor mode and shape.
+		/// </summary>
 		static void UpdateMouseCursor();
+		/// <summary>
+		/// Update gamepad states.
+		/// </summary>
 		static void UpdateGamepads();
+		/// <summary>
+		/// Update all ImGui monitor states.
+		/// </summary>
 		static void UpdateMonitors();
 
-		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks,
-		                 Graphics::RenderAPI renderAPI);
+		/// <summary>
+		/// Retrieve data from clipboard as string.
+		/// </summary>
+		/// <param name="userData">Unused user data.</param>
+		/// <returns>Clipboard string.</returns>
 		static const char* GetClipboardText(void* userData);
+		/// <summary>
+		/// Set clipboard text.
+		/// </summary>
+		/// <param name="userData">Unused user data.</param>
+		/// <param name="text">Text to set.</param>
 		static void SetClipboardText(void* userData, const char* text);
+		/// <summary>
+		/// </summary>
+		/// <param name="window"></param>
+		/// <param name="mouseButton"></param>
+		/// <param name="pressed"></param>
 		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton,
 		                                bool pressed);
 		static void ScrollCallback(const WindowingAPI::InternalWindow* window, double xOffset, double yOffset);

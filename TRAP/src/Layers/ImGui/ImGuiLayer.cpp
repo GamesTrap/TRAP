@@ -92,11 +92,10 @@ void TRAP::ImGuiLayer::OnAttach()
 	//Setup Platform/Renderer bindings
 	const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
 
+	TP_TRACE(Log::ImGuiPrefix, "Init...");
+	TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI());
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		TRAP::INTERNAL::ImGuiWindowing::InitForVulkan(window, true);
-
-		TP_TRACE(Log::ImGuiPrefix, "Vulkan init...");
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer().get()

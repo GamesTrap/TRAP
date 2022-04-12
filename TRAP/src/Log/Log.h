@@ -13,6 +13,9 @@
 
 namespace TRAP
 {
+	/// <summary>
+	/// Utility class to log messages to console.
+	/// </summary>
 	class Log final
 	{
 	public:
@@ -110,9 +113,9 @@ namespace TRAP
 		void Critical(Args&& ... args);
 
 		/// <summary>
-		/// Get all saved log messages and their importance level.
+		/// Get all saved log messages and their associated importance level.
 		/// </summary>
-		/// <returns>Messages and importance level in a vector.</returns>
+		/// <returns>Messages with importance level.</returns>
 		const std::vector<std::pair<Level, std::string>>& GetBuffer() const;
 
 		/// <summary>
@@ -120,7 +123,7 @@ namespace TRAP
 		/// </summary>
 		void Save();
 		/// <summary>
-		/// Clears all collected messages.
+		/// Clears all buffered messages.
 		/// </summary>
 		void Clear();
 
@@ -144,7 +147,6 @@ namespace TRAP
 		inline static constexpr auto EngineLinuxX11Prefix =                 "[Engine][Linux][X11] ";
 		inline static constexpr auto EngineLinuxWaylandPrefix =             "[Engine][Linux][Wayland] ";
 		inline static constexpr auto EngineWindowsPrefix =                  "[Engine][Windows] ";
-		inline static constexpr auto VFSPrefix =                            "[VFS] ";
 		inline static constexpr auto FileSystemPrefix =                     "[FileSystem] ";
 		inline static constexpr auto FileWatcherWindowsPrefix =             "[FileWatcher][Windows] ";
 		inline static constexpr auto FileWatcherLinuxPrefix =               "[FileWatcher][Linux] ";
@@ -226,14 +228,27 @@ namespace TRAP
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:
+		/// <summary>
+		/// Retrieves information about the specified console screen buffer.
+		/// </summary>
 		static void GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &m_csbi); }
+		/// <summary>
+		/// Set the new color for the following console output.
+		/// </summary>
+		/// <param name="wRGBI">New console color.</param>
 		static void SetColor(WORD wRGBI);
+		/// <summary>
+		/// Reset the console color to the default for the following output.
+		/// </summary>
 		static void ResetColor() { SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); }
 
 		static HANDLE m_handleConsole;
 		static CONSOLE_SCREEN_BUFFER_INFO m_csbi;
 #else
 	private:
+		/// <summary>
+		/// Check whether the terminal supports ANSI color codes.
+		/// </summary>
 		static bool IsColorTerminal() noexcept;
 #endif
 		/// <summary>
