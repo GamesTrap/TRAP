@@ -241,13 +241,9 @@ void TRAP::INTERNAL::ImGuiWindowing::InitPlatformInterface()
 	platformIO.Platform_GetWindowMinimized = GetWindowMinimized;
 	platformIO.Platform_SetWindowTitle = SetWindowTitle;
 	platformIO.Platform_RenderWindow = RenderWindow;
-	platformIO.Platform_SwapBuffers = SwapBuffers;
+	platformIO.Platform_SwapBuffers = nullptr; //Unused because we don't use OpenGL.
 	platformIO.Platform_SetWindowAlpha = SetWindowAlpha;
 	platformIO.Platform_CreateVkSurface = CreateVkSurface;
-#ifdef TRAP_PLATFORM_WINDOWS
-	//Removed/Lost in an ImGui update
-	//platformIO.Platform_SetImeInputPos = SetIMEInputPos;
-#endif
 
 	UpdateMonitors();
 
@@ -805,38 +801,6 @@ void TRAP::INTERNAL::ImGuiWindowing::RenderWindow(ImGuiViewport* viewport, void*
 	else
 		WindowingAPI::SetWindowHint(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, false);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::ImGuiWindowing::SwapBuffers(ImGuiViewport*, void*)
-{
-	TP_PROFILE_FUNCTION();
-
-	//ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-//IME (Input Method Editor) basic support for e.g. Asian language users
-//-------------------------------------------------------------------------------------------------------------------//
-
-//We provide a Win32 implementation because this is such a common issue for IME users
-#ifdef TRAP_PLATFORM_WINDOWS
-void TRAP::INTERNAL::ImGuiWindowing::SetIMEInputPos(ImGuiViewport* viewport, const ImVec2 pos)
-{
-	TP_PROFILE_FUNCTION();
-
-	COMPOSITIONFORM cf = { CFS_FORCE_POSITION, {static_cast<LONG>(pos.x - viewport->Pos.x),
-	                                            static_cast<LONG>(pos.y - viewport->Pos.y)}, {0, 0, 0, 0} };
-	if(HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw))
-	{
-		if(HIMC himc = ::ImmGetContext(hwnd))
-		{
-			::ImmSetCompositionWindow(himc, &cf);
-			::ImmReleaseContext(hwnd, himc);
-		}
-	}
-}
-#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 // Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)

@@ -1564,7 +1564,7 @@ namespace TRAP::INTERNAL
 		/// will take effect if the window is later made windowed.
 		///
 		/// Some of these hints are ignored for windowed mode windows. The new value
-		/// will take ffect if the window is later made full screen.
+		/// will take effect if the window is later made full screen.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized, Error::Invaild_Enum,
 		///         Error::Invalid_Value and Error::Platform_Error.

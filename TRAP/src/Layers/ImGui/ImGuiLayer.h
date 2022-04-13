@@ -22,26 +22,6 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		ImGuiLayer();
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		ImGuiLayer(const ImGuiLayer&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		ImGuiLayer& operator=(const ImGuiLayer&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		ImGuiLayer(ImGuiLayer&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		ImGuiLayer& operator=(ImGuiLayer&&) = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~ImGuiLayer() override = default;
 
 		/// <summary>
 		/// Called when pushed to a layer stack.
