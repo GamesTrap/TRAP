@@ -52,6 +52,9 @@ namespace TRAP
 		/// <param name="block">Whether to block events or not</param>
 		void BlockEvents(bool block);
 
+		/// <summary>
+		/// Sets a dark theme for ImGui.
+		/// </summary>
 		static void SetDarkThemeColors();
 	private:
 		bool m_blockEvents;
@@ -81,29 +84,84 @@ namespace TRAP
 
 namespace ImGui
 {
+	/// <summary>
+	/// Draw an image with ImGui.
+	/// </summary>
+	/// <param name="image">Image to draw.</param>
+	/// <param name="sampler">Sampler to use.</param>
+	/// <param name="size">Size for the image.</param>
+	/// <param name="uv0">UV0 coordinates.</param>
+	/// <param name="uv1">UV1 coordinates.</param>
+	/// <param name="tint_col">Tint color.</param>
+	/// <param name="border_col">Border color.</param>
 	void Image(TRAP::Graphics::Texture2D* image, TRAP::Graphics::Sampler* sampler,
 	           const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
+	/// <summary>
+	/// Draw an image with ImGui.
+	/// </summary>
+	/// <param name="image">Image to draw.</param>
+	/// <param name="size">Size for the image.</param>
+	/// <param name="uv0">UV0 coordinates.</param>
+	/// <param name="uv1">UV1 coordinates.</param>
+	/// <param name="tint_col">Tint color.</param>
+	/// <param name="border_col">Border color.</param>
 	void Image(TRAP::Graphics::Texture2D* image, const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
 
+	/// <summary>
+	/// Draw an image with ImGui.
+	/// </summary>
+	/// <param name="image">Image to draw.</param>
+	/// <param name="sampler">Sampler to use.</param>
+	/// <param name="size">Size for the image.</param>
+	/// <param name="uv0">UV0 coordinates.</param>
+	/// <param name="uv1">UV1 coordinates.</param>
+	/// <param name="tint_col">Tint color.</param>
+	/// <param name="border_col">Border color.</param>
 	void Image(TRAP::Graphics::TextureBase* image, TRAP::Graphics::Sampler* sampler,
 	           const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
+	/// <summary>
+	/// Draw an image with ImGui.
+	/// </summary>
+	/// <param name="image">Image to draw.</param>
+	/// <param name="size">Size for the image.</param>
+	/// <param name="uv0">UV0 coordinates.</param>
+	/// <param name="uv1">UV1 coordinates.</param>
+	/// <param name="tint_col">Tint color.</param>
+	/// <param name="border_col">Border color.</param>
 	void Image(TRAP::Graphics::TextureBase* image, const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
 
+	/// <summary>
+	/// Add a TTF font to ImGui from file.
+	/// </summary>
+	/// <param name="filename">Path to TTF file.</param>
+	/// <param name="sizePixels">Font size in pixels.</param>
+	/// <param name="fontCfgTemplate">Font configuration template.</param>
+	/// <param name="glyphRanges">Glyph ranges.</param>
+	/// <returns>Pointer to the new font.</returns>
 	ImFont* AddFontFromFileTTF(const std::string_view filename, float sizePixels,
 		                       const ImFontConfig* fontCfgTemplate = nullptr,
 						       const ImWchar* glyphRanges = nullptr);
+	/// <summary>
+	/// Add a TTF font to ImGui from memory.
+	/// </summary>
+	/// <param name="fontData">Pointer to TTF data.</param>
+	/// <param name="fontSize">Size of the TTF data.</param>
+	/// <param name="sizePixels">Font size in pixels.</param>
+	/// <param name="fontCfg">Font configuration.</param>
+	/// <param name="glyphRanges">Glyph ranges.</param>
+	/// <returns>Pointer to the new font.</returns>
 	ImFont* AddFontFromMemoryTTF(void* fontData, int32_t fontSize, float sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
