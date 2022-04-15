@@ -153,11 +153,12 @@ void TRAP::FS::FileWatcher::Init()
 
 #ifdef TRAP_PLATFORM_WINDOWS
     m_killEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+    m_thread = std::thread(&TRAP::FS::FileWatcher::WatchWindows, this);
 #elif defined(TRAP_PLATFORM_LINUX)
     m_killEvent = eventfd(0, 0);
+    m_thread = std::thread(&TRAP::FS::FileWatcher::WatchLinux, this);
 #endif
 
-    m_thread = std::thread(&TRAP::FS::FileWatcher::Watch, this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -189,17 +190,6 @@ void TRAP::FS::FileWatcher::Shutdown()
 
     if (m_thread.joinable())
         m_thread.join();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::FS::FileWatcher::Watch()
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-    WatchWindows();
-#elif defined(TRAP_PLATFORM_LINUX)
-    WatchLinux();
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

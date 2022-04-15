@@ -416,7 +416,7 @@ uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields,
-	std::array<uint32_t, 4>& masks) const
+	                                             std::array<uint32_t, 4>& masks) const
 {
 	BitField* bf = bitFields.data();
 
@@ -482,7 +482,7 @@ uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSp
 	if (bitSpan > 8)
 		return static_cast<uint8_t>(value >> (bitSpan - 8));
 
-	value <<= (8 - bitSpan); //Shift it up intro the most significant bits.
+	value <<= (8 - bitSpan); //Shift it up into the most significant bits.
 	while(value)
 	{
 		output |= value;

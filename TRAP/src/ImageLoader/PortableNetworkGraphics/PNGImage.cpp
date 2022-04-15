@@ -1759,16 +1759,6 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	const uint32_t height,
 	const uint32_t bitsPerPixel)
 {
-	//Outputs various dimensions and positions in the image related to the Adam7 reduced images.
-	//passW: Output containing the width of the 7 passes
-	//passH: Output containing the height of the 7 passes
-	//filterPassStart: Output containing the index of the start and end of each reduced image with filter bytes
-	//paddedPassStat: Output containing the index of the start and end of each
-	//reduced image when without filter bytes but with padded scanlines
-	//passStart: Output containing the index of the start and end of each
-	//reduced image without padding between scanlines, but still padding between the images
-	//width, height: Width and Height of non-interlaced image
-	//bitsPerPixel: bits per pixel
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
 
 	//The passStart values have 8 values: The 8th one indicates the byte after the end of the 7th(= last) pass
@@ -1804,10 +1794,6 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in, const uint32_t width,
                                                 const uint32_t height, const uint32_t bitsPerPixel)
 {
-	//in: Adam7 Interlaced Image, with no padding bits between scanlines, but
-	//between reduced images so that each reduced image starts at a byte.
-	//out: The same pixels, but re-ordered so that they are now a non-interlaced image with size width * height
-	//bitsPerPixel: bits per pixel
 	//out has the following size in bits: width * height * bitsPerPixel.
 	//in is possibly bigger due to padding bits between reduced images.
 	//out must be big enough AND must be 0 everywhere

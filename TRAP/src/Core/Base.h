@@ -20,8 +20,10 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Headless mode.
-//This macro will relax the requirements checked by the RendererAPI.
-//TODO Documentation
+//This macro changes Window and RendererAPI behaviour.
+//By default the Main Window will be hidden.
+//The RendererAPI uses relaxed requirements to allow for offline rendering or compute
+//if the hardware supports an RenderAPI.
 //#define TRAP_HEADLESS_MODE
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -79,7 +81,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 121);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 122);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

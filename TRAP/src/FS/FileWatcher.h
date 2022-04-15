@@ -108,12 +108,24 @@ namespace TRAP::FS
         std::vector<std::filesystem::path> GetFolders() const;
 
     private:
+        /// <summary>
+        /// Initialize FileWatcher.
+        /// </summary>
         void Init();
+        /// <summary>
+        /// Shutdown FileWatcher.
+        /// </summary>
         void Shutdown();
 
-        void Watch();
-
+        /// <summary>
+        /// Watch over files.
+        /// Used by Windows.
+        /// </summary>
         void WatchWindows();
+        /// <summary>
+        /// Watch over files.
+        /// Used by Linux.
+        /// </summary>
         void WatchLinux();
 
         std::thread m_thread;

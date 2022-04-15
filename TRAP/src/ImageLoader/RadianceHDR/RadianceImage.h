@@ -46,12 +46,42 @@ namespace TRAP::INTERNAL
 		uint64_t GetPixelDataSize() const override;
 
 	private:
+		/// <summary>
+		/// Convert exponent and value to floating point.
+		/// As specified in the Radiance HDR specification.
+		/// </summary>
+		/// <param name="exponent">Exponent.</param>
+		/// <param name="value">Value.</param>
+		/// <returns>Floating point value.</returns>
 		static float ConvertComponent(int8_t exponent, int32_t value);
-		static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		/// <summary>
+		/// Decode the given scanline.
+		/// Used for RLE encoding and uncompressed data.
+		/// </summary>
+		/// <param name="scanline">Storage for the decoded scanline.</param>
+		/// <param name="length">Scanline length.</param>
+		/// <param name="file">Open Radiance HDR file.</param>
+		/// <returns>True if successful, false otherwise.</returns>
+		static bool Decrunch(std::vector<std::array<uint8_t, 4>>& scanline,
 		                     uint32_t length, std::ifstream& file);
+		/// <summary>
+		/// Decode the given scanline.
+		/// Used for old RLE encoding.
+		/// </summary>
+		/// <param name="scanline">Storage for the decoded scanline.</param>
+		/// <param name="scanlineIndex">Start index for decoding.</param>
+		/// <param name="length">Scanline length.</param>
+		/// <param name="file">Open Radiance HDR file.</param>
+		/// <returns>True if successful, false otherwise.</returns>
 		static bool OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
 		                        uint32_t length, std::ifstream& file);
-		void WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline, uint32_t scanlineIndex,
+		/// <summary>
+		/// Extract color values from the scanlines.
+		/// </summary>
+		/// <param name="scanlines">Scanlines.</param>
+		/// <param name="data">Output storage for color data.</param>
+		/// <param name="dataIndex">Index in the output storage to store data at.</param>
+		void WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
 		                std::vector<float>& data, uint32_t dataIndex);
 
 		int8_t eMax, eMin;

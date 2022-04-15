@@ -117,8 +117,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	//Convert image
 	for(int32_t y = static_cast<int32_t>(m_height) - 1; y >= 0; y--)
 	{
-		uint32_t scanlineIndex = 0;
-		if (!Decrunch(scanline, scanlineIndex, m_width, file))
+		if (!Decrunch(scanline, m_width, file))
 		{
 			m_data.clear();
 			file.close();
@@ -126,7 +125,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 			TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 			return;
 		}
-		WorkOnRGBE(scanline, scanlineIndex, m_data, dataIndex);
+		WorkOnRGBE(scanline, m_data, dataIndex);
 		dataIndex += m_width * 3;
 	}
 
@@ -168,18 +167,17 @@ float TRAP::INTERNAL::RadianceImage::ConvertComponent(const int8_t exponent, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>& scanline,
-                                             const uint32_t scanlineIndex,
                                              const uint32_t length,
                                              std::ifstream& file)
 {
 	if (length < MinEncodingLength || length > MaxEncodingLength)
-		return OldDecrunch(scanline, scanlineIndex, length, file);
+		return OldDecrunch(scanline, 0, length, file);
 
 	int32_t i = static_cast<int32_t>(file.get());
 	if(i != 2)
 	{
 		file.seekg(-1, std::ifstream::cur);
-		return OldDecrunch(scanline, scanlineIndex, length, file);
+		return OldDecrunch(scanline, 0, length, file);
 	}
 
 	scanline[0][G] = static_cast<uint8_t>(file.get());
@@ -190,7 +188,7 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 	{
 		scanline[0][R] = 2;
 		scanline[0][E] = static_cast<uint8_t>(i);
-		return OldDecrunch(scanline, scanlineIndex + 1, length - 1, file);
+		return OldDecrunch(scanline, 1, length - 1, file);
 	}
 
 	//read each component
@@ -199,14 +197,14 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 		for(uint32_t j = 0; j < length;)
 		{
 			uint8_t code = static_cast<uint8_t>(file.get());
-			if(code > 128)
+			if(code > 128) //RLE
 			{
 				code &= 127;
 				const uint8_t value = static_cast<uint8_t>(file.get());
 				while (code--)
 					scanline[j++][i] = value;
 			}
-			else
+			else //Non-RLE
 			{
 				while (code--)
 					scanline[j++][i] = static_cast<uint8_t>(file.get());
@@ -219,6 +217,7 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Old RLE
 bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline,
                                                 uint32_t scanlineIndex, uint32_t length, std::ifstream& file)
 {
@@ -257,9 +256,10 @@ bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
-                                               uint32_t scanlineIndex, std::vector<float>& data, uint32_t dataIndex)
+                                               std::vector<float>& data, uint32_t dataIndex)
 {
 	int32_t length = static_cast<int32_t>(m_width);
+	uint32_t scanlineIndex = 0;
 
 	while(length-- > 0)
 	{

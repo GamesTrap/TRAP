@@ -266,13 +266,43 @@ namespace TRAP
 		template<typename T>
 		static std::vector<T> ConvertRGBAToRGB(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 
-		//Used by multiple image formats
+		/// <summary>
+		/// Converts BGR16 pixel data to RGB24.
+		/// </summary>
+		/// <param name="source">BGR16 pixel data.</param>
+		/// <param name="width">Width of the image.</param>
+		/// <param name="height">Height of the image.</param>
+		/// <returns>RGB24 pixel data.</returns>
 		static std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source,
 		                                                uint32_t width, uint32_t height);
+		/// <summary>
+		/// Converts BGR24 pixel data to RGB24.
+		/// </summary>
+		/// <param name="source">BGR24 pixel data.</param>
+		/// <param name="width">Width of the image.</param>
+		/// <param name="height">Height of the image.</param>
+		/// <returns>RGB24 pixel data.</returns>
 		static std::vector<uint8_t> ConvertBGR24ToRGB24(std::vector<uint8_t>& source,
 		                                                uint32_t width, uint32_t height);
+		/// <summary>
+		/// Converts BGR32 pixel data to RGB32.
+		/// </summary>
+		/// <param name="source">BGR32 pixel data.</param>
+		/// <param name="width">Width of the image.</param>
+		/// <param name="height">Height of the image.</param>
+		/// <returns>RGB32 pixel data.</returns>
 		static std::vector<uint8_t> ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source,
 		                                                  uint32_t width, uint32_t height);
+		/// <summary>
+		/// Decode BGRA indexed pixel data to RGBA.
+		/// Output format depends on channel count, if it is 4, output is RGBA, if it is 3, output is RGB and so on.
+		/// </summary>
+		/// <param name="source">Indexed BGRA pixel data.</param>
+		/// <param name="width">Width of the image.</param>
+		/// <param name="height">Height of the image.</param>
+		/// <param name="channels">Amount of channels, i.e. 4 = RGBA, 3 = RGB.</param>
+		/// <param name="colorMap">Color table.</param>
+		/// <returns>Decoded pixel data.</returns>
 		static std::vector<uint8_t> DecodeBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height,
 		                                          uint32_t channels, std::vector<uint8_t>& colorMap);
 

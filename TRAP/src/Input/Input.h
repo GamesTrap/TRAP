@@ -591,9 +591,18 @@ namespace TRAP
 		friend class TRAP::Application;
 
 #ifdef TRAP_PLATFORM_WINDOWS
+		/// <summary>
+		/// Check for new DirectInput & XInput controller connections.
+		/// </summary>
 		static void DetectControllerConnectionWin32();
+		/// <summary>
+		/// Check for disconnections of DirectInput & XInput controllers.
+		/// </summary>
 		static void DetectControllerDisconnectionWin32();
 #elif defined(TRAP_PLATFORM_LINUX)
+		/// <summary>
+		/// Check for new connections and disconnection of controllers.
+		/// </summary>
 		static void DetectControllerConnectionLinux();
 #endif
 		friend class TRAP::INTERNAL::WindowingAPI;
@@ -790,10 +799,38 @@ namespace TRAP
 		typedef DWORD(WINAPI* PFN_XInputGetStateSecret)(DWORD, XINPUT_STATE*);
 		typedef DWORD(WINAPI* PFN_XInputSetState)(DWORD, XINPUT_VIBRATION*);
 		typedef DWORD(WINAPI* PFN_XInputGetBatteryInformation)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
+		/// <summary>
+		/// DirectInput device object enumeration callback.
+		/// </summary>
+		/// <param name="doi">DirectInput device object instance.</param>
+		/// <param name="user">User data.</param>
+		/// <returns>True to continue enumeration, false to stop.</returns>
 		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
+		/// <summary>
+		/// Lexically compare DirectInput device objects.
+		/// </summary>
+		/// <param name="first">First object.</param>
+		/// <param name="second">Second object.</param>
+		/// <returns>Difference between the two objects.</returns>
 		static int CompareControllerObjects(const void* first, const void* second);
+		/// <summary>
+		/// DirectInput device enumeration callback.
+		/// </summary>
+		/// <param name="deviceInstance">DirectInput device instance.</param>
+		/// <param name="user">User data.</param>
+		/// <returns>True to continue enumeration, false to stop.</returns>
 		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
+		/// <summary>
+		/// Checks whether the specified device supports XInput.
+		/// <summary>
+		/// <param name="guid">Device GUID to test.</param>
+		/// <returns>True if the device supports XInput, false otherwise.</returns>
 		static bool SupportsXInput(const GUID* guid);
+		/// <summary>
+		/// Retrieve a description fitting to the specified XInput capabilities.
+		/// </summary>
+		/// <param name="xic">XInput controller capabilities.</param>
+		/// <returns>Device description.</returns>
 		static std::string GetDeviceDescription(const XINPUT_CAPABILITIES* xic);
 		struct XInput
 		{
@@ -835,9 +872,30 @@ namespace TRAP
 #define TRAP_BUILD_LINUX_MAPPINGS
 		static constexpr std::string_view MappingName = "Linux";
 		struct ControllerInternal;
+		/// <summary>
+		/// Attempt to open the specified controller device.
+		/// </summary>
+		/// <param name="path">Path to the controller file.</param>
+		/// <returns>True if the controller was opened successfully, false otherwise.</returns>
 		static bool OpenControllerDeviceLinux(const std::string& path);
+		/// <summary>
+		/// Poll state of absolute axes for the specified controller.
+		/// </summary>
+		/// <param name="con">Controller to poll.</param>
 		static void PollABSStateLinux(ControllerInternal* con);
+		/// <summary>
+		/// Handle absolute event for to the specified controller.
+		/// </summary>
+		/// <param name="con">Controller to handle event.</param>
+		/// <param name="code">Event code.</param>
+		/// <param name="value">Event value.</param>
 		static void HandleABSEventLinux(ControllerInternal* con, int32_t code, int32_t value);
+		/// <summary>
+		/// Handle key event for the specified controller.
+		/// </summary>
+		/// <param name="con">Controller to handle event.</param>
+		/// <param name="code">Event code.</param>
+		/// <param name="value">Event value.</param>
 		static void HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value);
 		struct ControllerLinuxLibrary
 		{

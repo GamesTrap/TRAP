@@ -86,6 +86,11 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
+		/// <summary>
+		/// Convert TRAP::FS::FileStatus to string.
+		/// </summary>
+		/// <param name="status">File status.</param>
+		/// <returns>File status as string.</returns>
         static std::string FileStatusToString(TRAP::FS::FileStatus status);
 
         TRAP::FS::FileStatus m_status;

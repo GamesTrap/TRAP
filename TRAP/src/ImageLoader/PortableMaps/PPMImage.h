@@ -45,6 +45,11 @@ namespace TRAP::INTERNAL
 		/// <returns>Size of the raw pixel data in bytes.</returns>
 		uint64_t GetPixelDataSize() const override;
 
+		/// <summary>
+		/// Save an TRAP::Image as a Portable Pixmap (PPM) file.
+		/// </summary>
+		/// <param name="img">Image to save.</param>
+		/// <param name="filepath">File path to save the image to.</param>
 		static void Save(const Scope<Image>& img, const std::filesystem::path& filepath);
 
 	private:

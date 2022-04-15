@@ -74,11 +74,46 @@ namespace TRAP::INTERNAL
 			//uint32_t CLRImportant = 0; //Amount of important colors in palette
 		};
 
+		/// <summary>
+		/// Validate bit fields via the given masks.
+		/// </summary>
+		/// <param name="bitFields">Bit fields to validate.</param>
+		/// <param name="masks">Mask to validate the bit fields against.</param>
+		/// <returns>True if the bit fields are valid, false otherwise.</returns>
 		bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const;
+		/// <summary>
+		/// Parse a bit field.
+		/// </summary>
+		/// <param name="field">Bit field to parse.</param>
+		/// <param name="mask">Mask.</param>
+		/// <returns>True if the bit field was parsed successfully, false otherwise.</returns>
 		static bool ParseBitfield(BitField& field, uint32_t mask);
+		/// <summary>
+		/// Convert given value to 8 bits.
+		/// </summary>
+		/// <param name="value">Value to convert.</param>
+		/// <param name="bitSpan">Bit span.</param>
+		/// <returns>Value as 8 bits.</returns>
 		static uint8_t Make8Bits(uint32_t value, uint32_t bitSpan);
+		/// <summary>
+		/// Applies a bit field on the given value.
+		/// </summary>
+		/// <param name="x">Value to apply bit field to.</param>
+		/// <param name="bitField">Bit field to apply.</param>
+		/// <returns>Value with bit field applied.</returns>
 		static uint32_t ApplyBitField(uint32_t x, BitField& bitField);
+		/// <summary>
+		/// Applies a bit field on the given value.
+		/// </summary>
+		/// <param name="x">Value to apply bit field to.</param>
+		/// <param name="bitField">Bit field to apply.</param>
+		/// <returns>Value with bit field applied.</returns>
 		static uint32_t ApplyBitField(uint16_t x, BitField& bitField);
+		/// <summary>
+		/// Decode run length encoded 8-bit BMP data.
+		/// </summary>
+		/// <param name="compressedImageData">Compressed image data.</param>
+		/// <param name="colorTable">Color table.</param>
 		void DecodeRLE8(std::vector<uint8_t>& compressedImageData, std::vector<uint8_t>* colorTable);
 
 		std::vector<uint8_t> m_data;
