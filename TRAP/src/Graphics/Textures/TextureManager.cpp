@@ -223,6 +223,13 @@ const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures()
+{
+	return s_Textures;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::TextureManager::Clean()
 {
 	s_Textures.clear();

@@ -38,6 +38,21 @@ void TRAP::Graphics::Renderer::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Renderer::Shutdown()
+{
+	TP_PROFILE_FUNCTION();
+
+	Renderer2D::Shutdown();
+
+	if(s_uniformBuffer)
+		s_uniformBuffer.reset();
+
+	if(s_modelStorageBuffer)
+	   s_modelStorageBuffer.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const std::string& TRAP::Graphics::Renderer::GetTitle()
 {
 	return RendererAPI::GetRenderer()->GetTitle();
@@ -66,7 +81,7 @@ uint32_t TRAP::Graphics::Renderer::GetTickRate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::Renderer::GetCurrentGPUName()
+std::string TRAP::Graphics::Renderer::GetGPUName()
 {
 	return RendererAPI::GetRenderer()->GetCurrentGPUName();
 }
@@ -168,21 +183,6 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 
 	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Renderer::Shutdown()
-{
-	TP_PROFILE_FUNCTION();
-
-	Renderer2D::Shutdown();
-
-	if(s_uniformBuffer)
-		s_uniformBuffer.reset();
-
-	if(s_modelStorageBuffer)
-	   s_modelStorageBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

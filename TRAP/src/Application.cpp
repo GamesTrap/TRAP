@@ -55,7 +55,7 @@ TRAP::Application::Application(std::string gameName)
 	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
-	  m_tickRate(100),
+	  m_tickRate(64),
 	  m_timeScale(1.0f),
 	  m_gameName(std::move(gameName)),
 	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :

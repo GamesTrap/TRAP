@@ -515,9 +515,9 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversion(const char* source,
-	                                                                              const RendererAPI::ShaderStage stage,
-	                                                                              std::string& preProcessedSource)
+TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConversion(const char* source,
+	                                                                              	   const RendererAPI::ShaderStage stage,
+	                                                                              	   std::string& preProcessedSource)
 {
 	TRAP::Scope<glslang::TShader> shader = TRAP::MakeScope<glslang::TShader>(StageToEShLang.at(stage));
 	shader->setStrings(&source, 1);
@@ -531,14 +531,14 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversio
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
 	glslang::TShader::ForbidIncluder includer;
-	constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->preprocess(&DefaultTBuiltInResource, 460, ECoreProfile, true, true,
 		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
 		                   &preProcessedSource, includer))
 	{
 		TP_ERROR(Log::ShaderSPIRVPrefix, "GLSL -> SPIR-V conversion preprocessing failed!");
-		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
+		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoLog());
 		TP_ERROR(Log::ShaderSPIRVPrefix, shader->getInfoDebugLog());
 
 		return nullptr;
@@ -551,7 +551,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversio
 
 bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
 {
-	constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->parse(&DefaultTBuiltInResource, 460, true,
 	                  static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
@@ -668,8 +668,8 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
 		#endif
-			glslShaders[i] = PreProcessGLSLForConversion(shaders[i].data(), IndexToStage[i],
-														 preProcessedSource);
+			glslShaders[i] = PreProcessGLSLForSPIRVConversion(shaders[i].data(), IndexToStage[i],
+														      preProcessedSource);
 			if (preProcessedSource.empty())
 				return{};
 

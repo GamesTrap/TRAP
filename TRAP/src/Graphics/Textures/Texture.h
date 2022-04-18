@@ -13,6 +13,9 @@ namespace TRAP::Graphics
 {
 	class TextureBase;
 
+	/// <summary>
+	/// Different texture types.
+	/// </summary>
 	enum class TextureType
 	{
 		Texture2D,
@@ -22,47 +25,184 @@ namespace TRAP::Graphics
 	class Texture
 	{
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		Texture();
 
 	public:
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~Texture() = default;
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
 		Texture(const Texture&) = default;
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
 		Texture& operator=(const Texture&) = default;
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
 		Texture(Texture&&) = default;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
 		Texture& operator=(Texture&&) = default;
 
+		/// <summary>
+		/// Retrieve the name of the texture.
+		/// </summary>
+		/// <returns>Name of the texture.</returns>
 		const std::string& GetName() const;
+		/// <summary>
+		/// Retrieve the texture type.
+		/// </summary>
+		/// <returns>Texture type.</returns>
 		TextureType GetType() const;
+		/// <summary>
+		/// Retrieve the texture width.
+		/// </summary>
+		/// <returns>Texture width.</returns>
 		uint32_t GetWidth() const;
+		/// <summary>
+		/// Retrieve the texture height.
+		/// </summary>
+		/// <returns>Texture height.</returns>
 		uint32_t GetHeight() const;
+		/// <summary>
+		/// Retrieve the texture depth.
+		/// </summary>
+		/// <returns>Texture depth.</returns>
 		virtual uint32_t GetDepth() const = 0;
+		/// <summary>
+		/// Retrieve the texture array size.
+		/// </summary>
+		/// <returns>Texture array size.</returns>
 		virtual uint32_t GetArraySize() const = 0;
+		/// <summary>
+		/// Retrieve the textures mip level count.
+		/// </summary>
+		/// <returns>Textures mip level count.</returns>
 		uint32_t GetMipLevels() const;
+		/// <summary>
+		/// Retrieve the textures color format.
+		/// </summary>
+		/// <returns>Textures color format.</returns>
 		Image::ColorFormat GetColorFormat() const;
+		/// <summary>
+		/// Retrieve the textures bits per channel.
+		/// </summary>
+		/// <returns>Textures bits per channel.</returns>
 		uint32_t GetBitsPerChannel() const;
+		/// <summary>
+		/// Retrieve the textures bytes per channel.
+		/// </summary>
+		/// <returns>Textures bytes per channel.</returns>
 		uint32_t GetBytesPerChannel() const;
+		/// <summary>
+		/// Retrieve the textures bits per pixel.
+		/// </summary>
+		/// <returns>Textures bits per pixel.</returns>
 		uint32_t GetBitsPerPixel() const;
+		/// <summary>
+		/// Retrieve the textures bytes per pixel.
+		/// </summary>
+		/// <returns>Textures bytes per pixel.</returns>
 		uint32_t GetBytesPerPixel() const;
+		/// <summary>
+		/// Retrieve the textures mip width of a specific level.
+		/// </summary>
+		/// <param name="mipLevel">Mip level.</param>
+		/// <returns>Mip width.</returns>
 		uint32_t GetMipWidth(uint32_t mipLevel) const;
+		/// <summary>
+		/// Retrieve the textures mip height of a specific level.
+		/// </summary>
+		/// <param name="mipLevel">Mip level.</param>
+		/// <returns>Mip height.</returns>
 		uint32_t GetMipHeight(uint32_t mipLevel) const;
+		/// <summary>
+		/// Retrieve the textures mip size of a specific level.
+		/// </summary>
+		/// <param name="mipLevel">Mip level.</param>
+		/// <returns>Mip size.</returns>
 		Math::Vec2ui GetMipSize(uint32_t mipLevel) const;
 
+		/// <summary>
+		/// Retrieve the base texture.
+		/// </summary>
+		/// <returns>Base texture.</returns>
 		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
 
-		//Data array length and sizeInBytes must match the textures current size or it won't update
+		/// <summary>
+		/// Update the texture with raw pixel data.
+		///
+		/// Note: Data array length and sizeInBytes must match the textures current size or it won't update
+		/// </summary>
+		/// <param name="data">Raw pixel data.</param>
+		/// <param name="sizeInBytes">Size of the data array in bytes.</param>
+		/// <param name="mipLevel">Mip level to update. Default: 0</param>
+		/// <param name="arrayLayer">Array layer to update. Default: 0</param>
 		virtual void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) = 0;
 
+		/// <summary>
+		/// Check if texture finished loading.
+		/// </summary>
+		/// <returns>True if texture finished loading, false otherwise.</returns>
 		bool IsLoaded() const;
+		/// <summary>
+		/// Wait for texture to finish loading.
+		/// </summary>
 		void AwaitLoading() const;
 
+		/// <summary>
+		/// Calculate the size of a mip level.
+		/// </summary>
+		/// <param name="width">Width of the texture.</param>
+		/// <param name="height">Height of the texture.</param>
+		/// <returns>Size of the mip level.</returns>
 		static uint32_t CalculateMipLevels(uint32_t width, uint32_t height);
+		/// <summary>
+		/// Split a horizontal or vertical cross texture into multiple textures.
+		/// </summary>
+		/// <param name="image">Image to split.</param>
+		/// <returns>Array of splitted textures.</returns>
 		template<typename T>
 		static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image);
 	protected:
+		/// <summary>
+		/// Convert color format and bits per pixel to image format.
+		/// </summary>
+		/// <param name="colorFormat">Color format.</param>
+		/// <param name="bpp">Bits per pixel.</param>
+		/// <returns>Image format.</returns>
 		static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		/// <summary>
+		/// Convert image format to color format.
+		/// </summary>
+		/// <param name="imageFormat">Image format.</param>
+		/// <returns>Color format.</returns>
 		static Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat);
+		/// <summary>
+		/// Retrieve bits per channel from image format.
+		/// </summary>
+		/// <param name="imageFormat">Image format.</param>
+		/// <returns>Bits per channel.</returns>
 		static uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat);
+		/// <summary>
+		/// Rotate image 90 degrees clockwise.
+		/// </summary>
+		/// <param name="img">Image to rotate.</param>
+		/// <returns>Rotated image.</returns>
 		static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Scope<TRAP::Image>& img);
+		/// <summary>
+		/// Rotate image 90 degrees counter clockwise.
+		/// </summary>
+		/// <param name="img">Image to rotate.</param>
+		/// <returns>Rotated image.</returns>
 		static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Scope<TRAP::Image>& img);
 
 		std::string m_name;
