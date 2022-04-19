@@ -30,7 +30,7 @@ uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 
 TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,
                                                          const bool normalized)
-	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized)
+	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 {
 }
 

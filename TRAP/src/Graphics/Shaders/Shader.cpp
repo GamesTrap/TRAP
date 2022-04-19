@@ -635,6 +635,13 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 		TP_ERROR(Log::ShaderGLSLPrefix, "Only vertex shader stage provided! Missing fragment/pixel shader stage");
 		return false;
 	}
+	//Check for Fragment/Pixel Shader Stage & required Vertex Shader Stage
+	if(static_cast<uint32_t>(RendererAPI::ShaderStage::Fragment & shaderStages) &&
+	   !(static_cast<uint32_t>(RendererAPI::ShaderStage::Vertex & shaderStages)))
+	{
+		TP_ERROR(Log::ShaderGLSLPrefix, "Only fragment/pixel shader stage provided! Missing vertex shader stage");
+		return false;
+	}
 
 	//Shader Stages should be valid
 	return true;
@@ -661,13 +668,10 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 		if(shaders[i].empty())
 			continue;
 
-		glslang::TProgram program;
-
-		std::string preProcessedSource;
-
 		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
 		#endif
+			std::string preProcessedSource;
 			glslShaders[i] = PreProcessGLSLForSPIRVConversion(shaders[i].data(), IndexToStage[i],
 														      preProcessedSource);
 			if (preProcessedSource.empty())
@@ -685,14 +689,14 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", StageToStr.at(IndexToStage[i]), " shader");
 		#endif
+			glslang::TProgram program;
 			if (!LinkGLSLang(glslShaders[i].get(), program))
 				return{};
 
 		#ifdef ENABLE_GRAPHICS_DEBUG
 			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
 		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(glslShaders[i].get(),
-															   IndexToStage[i], program);
+			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(IndexToStage[i], program);
 
 		switch(i)
 		{
@@ -732,14 +736,10 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(glslang::TShader* shader,
-                                                             const RendererAPI::ShaderStage stage,
+std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::ShaderStage stage,
 															 glslang::TProgram& program)
 {
 	std::vector<uint32_t> SPIRV{};
-
-	if(!shader)
-		return SPIRV;
 
 	spv::SpvBuildLogger logger{};
 	glslang::SpvOptions spvOptions{};
