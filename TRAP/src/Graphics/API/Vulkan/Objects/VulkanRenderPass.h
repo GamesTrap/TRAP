@@ -11,7 +11,15 @@ namespace TRAP::Graphics::API
 	class VulkanRenderPass
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="device">Vulkan device.</param>
+		/// <param name="desc">Render pass description.</param>
 		VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanRenderPass();
 
 		/// <summary>
@@ -31,15 +39,46 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanRenderPass& operator=(VulkanRenderPass&&) = default;
 
+		/// <summary>
+		/// Retrieve the Vulkan render pass handle.
+		/// </summary>
+		/// <returns>Vulkan render pass handle.</returns>
 		VkRenderPass GetVkRenderPass() const;
 
+		/// <summary>
+		/// Retrieve the used color formats.
+		/// </summary>
+		/// <returns>Used color formats.</returns>
 		const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const;
+		/// <summary>
+		/// Retrieve the used color load action types.
+		/// </summary>
+		/// <returns>Used color load action types.</returns>
 		const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const;
-		const std::vector<bool>& GetSRGBValues() const;
+		/// <summary>
+		/// Retrieve the number of used render targets.
+		/// </summary>
+		/// <returns>Number of used render targets.</returns>
 		uint32_t GetRenderTargetCount() const;
+		/// <summary>
+		/// Retrieve the used sample count.
+		/// </summary>
+		/// <returns>Used sample count.</returns>
 		RendererAPI::SampleCount GetSampleCount() const;
+		/// <summary>
+		/// Retrieve the used depth stencil format.
+		/// </summary>
+		/// <returns>Used depth stencil format.</returns>
 		TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const;
+		/// <summary>
+		/// Retrieve the used depth load action type.
+		/// </summary>
+		/// <returns>Used depth load action type.</returns>
 		RendererAPI::LoadActionType GetLoadActionTypeDepth() const;
+		/// <summary>
+		/// Retrieve the used stencil load action type.
+		/// </summary>
+		/// <returns>Used stencil load action type.</returns>
 		RendererAPI::LoadActionType GetLoadActionTypeStencil() const;
 
 	private:
@@ -47,7 +86,6 @@ namespace TRAP::Graphics::API
 
 		std::vector<TRAP::Graphics::API::ImageFormat> m_colorFormats;
 		std::vector<RendererAPI::LoadActionType> m_loadActionsColor;
-		std::vector<bool> m_SRGBValues;
 		uint32_t m_renderTargetCount;
 		RendererAPI::SampleCount m_sampleCount;
 		TRAP::Graphics::API::ImageFormat m_depthStencilFormat;

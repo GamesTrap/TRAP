@@ -45,8 +45,6 @@ TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
 #endif
-
-	m_stride = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

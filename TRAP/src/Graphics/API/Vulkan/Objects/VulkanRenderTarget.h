@@ -13,7 +13,14 @@ namespace TRAP::Graphics::API
 	class VulkanRenderTarget final : public RenderTarget
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Render target description.</param>
 		explicit VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanRenderTarget() override;
 
 		/// <summary>
@@ -33,8 +40,20 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanRenderTarget& operator=(VulkanRenderTarget&&) = default;
 
+		/// <summary>
+		/// Retrieve the render target's Vulkan image view.
+		/// </summary>
+		/// <returns>Vulkan image view.</returns>
 		VkImageView GetVkImageView() const;
+		/// <summary>
+		/// Retrieve the render target's Vulkan image view slices.
+		/// </summary>
+		/// <returns>Vulkan image view slices.</returns>
 		const std::vector<VkImageView>& GetVkImageViewSlices() const;
+		/// <summary>
+		/// Retrieve the render target's ID.
+		/// </summary>
+		/// <returns>Render target ID.</returns>
 		uint32_t GetID() const;
 
 	private:
@@ -52,6 +71,10 @@ namespace TRAP::Graphics::API
 			                                                                    uint32_t depthArraySlice,
 			                                                                    uint32_t depthMipSlice);
 
+		/// <summary>
+		/// Set the name of the render target.
+		/// </summary>
+		/// <param name="name">Name to use.</param>
 		void SetRenderTargetName(const char* name) const;
 
 		TRAP::Ref<VulkanDevice> m_device;

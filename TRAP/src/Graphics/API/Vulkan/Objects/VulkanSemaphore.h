@@ -12,7 +12,13 @@ namespace TRAP::Graphics::API
 	class VulkanSemaphore final : public Semaphore
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		explicit VulkanSemaphore();
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanSemaphore() override;
 
 		/// <summary>
@@ -32,6 +38,10 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanSemaphore& operator=(VulkanSemaphore&&) = default;
 
+		/// <summary>
+		/// Retrieve the Vulkan semaphore handle.
+		/// </summary>
+		/// <returns>Vulkan semaphore handle.</returns>
 		VkSemaphore GetVkSemaphore() const;
 
 	private:

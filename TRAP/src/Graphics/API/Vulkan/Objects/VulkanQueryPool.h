@@ -11,7 +11,14 @@ namespace TRAP::Graphics::API
 	class VulkanQueryPool final : public QueryPool
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Query pool description.</param>
 		explicit VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanQueryPool() override;
 
 		/// <summary>
@@ -31,8 +38,20 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanQueryPool& operator=(VulkanQueryPool&&) = default;
 
+		/// <summary>
+		/// Retrieve the Vulkan query pool handle.
+		/// </summary>
+		/// <returns>Vulkan query pool handle</returns>
 		VkQueryPool GetVkQueryPool() const;
+		/// <summary>
+		/// Retrieve the Vulkan query type.
+		/// </summary>
+		/// <returns>Vulkan query type</returns>
 		VkQueryType GetVkQueryType() const;
+		/// <summary>
+		/// Retrieve the number of queries managed by the pool.
+		/// </summary>
+		/// <returns>Number of queries</returns>
 		uint32_t GetCount() const;
 
 	private:

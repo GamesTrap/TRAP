@@ -11,7 +11,15 @@ namespace TRAP::Graphics::API
 	class VulkanMemoryAllocator
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="device">Logical Vulkan device.</param>
+		/// <param name="instance">Vulkan instance.</param>
 		VulkanMemoryAllocator(const TRAP::Ref<VulkanDevice>& device, const TRAP::Ref<VulkanInstance>& instance);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanMemoryAllocator();
 
 		/// <summary>
@@ -31,6 +39,10 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) = default;
 
+		/// <summary>
+		/// Retrieve the Vulkan memory allocator (VMA) allocator handle.
+		/// </summary>
+		/// <returns>VMA allocator handle.</returns>
 		VmaAllocator GetVMAAllocator() const;
 
 	private:

@@ -1,5 +1,6 @@
 #ifndef TRAP_SHADERREFLECTION_H
 #define TRAP_SHADERREFLECTION_H
+
 #include "RendererAPI.h"
 
 namespace TRAP::Graphics::API::ShaderReflection
@@ -109,6 +110,12 @@ namespace TRAP::Graphics::API::ShaderReflection
 		std::vector<ShaderVariable> Variables;
 	};
 
+	/// <summary>
+	/// Create a pipeline reflection from shader reflection data.
+	/// </summary>
+	/// <param name="reflection">Shader reflection data.</param>
+	/// <param name="stageCount">Number of used shader stages.</param>
+	/// <returns>Pipeline reflection.</returns>
 	TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection,
 	                                                       static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 														   uint32_t stageCount);

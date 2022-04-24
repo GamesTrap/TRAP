@@ -11,7 +11,14 @@ namespace TRAP::Graphics::API
 	class VulkanQueue final : public Queue
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Queue description.</param>
 		explicit VulkanQueue(const RendererAPI::QueueDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanQueue() override;
 
 		/// <summary>
@@ -31,18 +38,61 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanQueue& operator=(VulkanQueue&&) = delete;
 
+		/// <summary>
+		/// Retrieve the Vulkan queue handle.
+		/// </summary>
+		/// <returns>Vulkan queue handle.</returns>
 		VkQueue GetVkQueue() const;
+		/// <summary>
+		/// Retrieve the queue family index.
+		/// </summary>
+		/// <returns>Queue family index.</returns>
 		uint8_t GetQueueFamilyIndex() const;
+		/// <summary>
+		/// Retrieve the queue index.
+		/// </summary>
+		/// <returns>Queue index.</returns>
 		uint8_t GetQueueIndex() const;
+		/// <summary>
+		/// Retrieve the queue type.
+		/// </summary>
+		/// <returns>Queue type.</returns>
 		RendererAPI::QueueType GetQueueType() const;
+		/// <summary>
+		/// Retrieve the queue flags.
+		/// Indicates capabilities of the queue.
+		/// </summary>
+		/// <returns>Queue flags.</returns>
 		uint32_t GetFlags() const;
+		/// <summary>
+		/// Retrieve the number of nanoseconds required
+		/// for a timestamp to be incremented by 1.
+		/// </summary>
+		/// <returns>Nanoseconds per timestamp increment.</returns>
 		float GetTimestampPeriod() const;
+		/// <summary>
+		/// Retrieve the number of ticks per second
+		/// required to increment a timestamp by 1.
+		/// </summary>
+		/// <returns>Ticks per second.</returns>
 		double GetTimestampFrequency() const;
 
+		/// <summary>
+		/// Wait for the queue to finish all submitted commands.
+		/// </summary>
 		void WaitQueueIdle() const override;
 
+		/// <summary>
+		/// Submit work to the queue.
+		/// </summary>
+		/// <param name="desc">Queue submit description.</param>
 		void Submit(const RendererAPI::QueueSubmitDesc& desc) const override;
 
+		/// <summary>
+		/// Queue an image for presentation.
+		/// </summary>
+		/// <param name="desc">Queue presentation description.</param>
+		/// <returns>Presentation status.</returns>
 		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
 
 	private:

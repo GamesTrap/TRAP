@@ -11,7 +11,15 @@ namespace TRAP::Graphics::API
 	class VulkanFrameBuffer
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="device">Vulkan device.</param>
+		/// <param name="desc">Framebuffer description.</param>
 		VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::FrameBufferDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanFrameBuffer();
 
 		/// <summary>
@@ -31,10 +39,26 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanFrameBuffer& operator=(VulkanFrameBuffer&&) = default;
 
+		/// <summary>
+		/// Retrieve the VkFramebuffer handle.
+		/// </summary>
+		/// <returns>VkFramebuffer handle.</returns>
 		VkFramebuffer GetVkFrameBuffer() const;
 
+		/// <summary>
+		/// Retrieve the width of the framebuffer.
+		/// </summary>
+		/// <returns>Framebuffer width.</returns>
 		uint32_t GetWidth() const;
+		/// <summary>
+		/// Retrieve the height of the framebuffer.
+		/// </summary>
+		/// <returns>Framebuffer height.</returns>
 		uint32_t GetHeight() const;
+		/// <summary>
+		/// Retrieve the array size of the framebuffer.
+		/// </summary>
+		/// <returns>Framebuffer array size.</returns>
 		uint32_t GetArraySize() const;
 
 	private:

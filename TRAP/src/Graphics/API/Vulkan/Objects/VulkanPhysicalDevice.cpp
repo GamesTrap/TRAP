@@ -345,25 +345,6 @@ bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMemoryType(uint32_t typeBits,
-																  const VkMemoryPropertyFlags properties) const
-{
-	for (uint32_t i = 0; i < m_physicalDeviceMemoryProperties.memoryTypeCount; i++)
-	{
-		if ((typeBits & 1) == 1)
-		{
-			if ((m_physicalDeviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
-				return i;
-		}
-		typeBits >>= 1;
-	}
-
-	TP_ERROR(Log::RendererVulkanPhysicalDevicePrefix, "Could not find a matching memory type!");
-	return 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
 {
 	if (m_availablePhysicalDeviceExtensions.empty())
@@ -548,6 +529,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		score += extensionsCount * 50;
 
 		// Required: Check if PhysicalDevice supports swapchains
+		// Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		const auto result = std::find_if(extensions.begin(), extensions.end(), [](const VkExtensionProperties &props)
 										 { return std::strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, props.extensionName) == 0; });
 
@@ -557,6 +540,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 					 "\" Failed Required PhysicalDevice Extensions Test!");
 			continue;
 		}
+#endif
 
 		// Required: Create Vulkan Instance
 
@@ -568,16 +552,20 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TRAP::Application::Shutdown();
 		}
 
+		VkInstance instance = VK_NULL_HANDLE;
+		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Surface Tester");
+#ifndef TRAP_HEADLESS_MODE
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 		for (const std::string &ext : reqExt)
 			instanceExtensions.push_back(ext);
-		VkInstance instance = VK_NULL_HANDLE;
 		std::vector<const char *> instExtensions(instanceExtensions.size());
 		for (uint32_t i = 0; i < instExtensions.size(); i++)
 			instExtensions[i] = instanceExtensions[i].c_str();
-		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Surface Tester");
 		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, instExtensions);
+#else
+		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, {});
+#endif
 		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
 		if (!instance)
 		{

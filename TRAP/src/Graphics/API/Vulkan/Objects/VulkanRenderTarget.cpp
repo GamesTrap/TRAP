@@ -8,7 +8,7 @@
 #include "Graphics/Textures/TextureBase.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
-std::atomic_int32_t TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
+std::atomic<int32_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
 
 //-------------------------------------------------------------------------------------------------------------------//
 

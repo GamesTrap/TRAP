@@ -16,7 +16,14 @@ namespace TRAP::Graphics::API
 		inline static constexpr uint32_t DESCRIPTOR_TYPE_RANGE_SIZE = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 2;
 
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="numDescriptorSets">Max number of descriptor sets that can be allocated from the pool.</param>
 		explicit VulkanDescriptorPool(uint32_t numDescriptorSets);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanDescriptorPool() override;
 
 		/// <summary>
@@ -36,16 +43,42 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanDescriptorPool& operator=(VulkanDescriptorPool&&) = delete;
 
+		/// <summary>
+		/// Reset the descriptor pool.
+		/// Note: This implicitly frees all descriptor sets allocated from the pool.
+		/// </summary>
 		void Reset() override;
 
+		/// <summary>
+		/// Retrieve the current VkDescriptorPool handle.
+		/// </summary>
+		/// <returns>VkDescriptorPool handle.</returns>
 		VkDescriptorPool GetCurrentVkDescriptorPool() const;
+		/// <summary>
+		/// Retrieve the descriptor pool sizes for each descriptor type.
+		/// </summary>
+		/// <returns>Descriptor pool sizes.</returns>
 		const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const;
+		/// <summary>
+		/// Retrieve the count of used descriptor sets.
+		/// </summary>
+		/// <returns>Count of used descriptor sets.</returns>
 		uint32_t GetUsedDescriptorSetsCount() const;
 
+		/// <summary>
+		/// Retrieve a new descriptor set from description.
+		/// </summary>
+		/// <param name="desc">Descriptor set description.</param>
+		/// <returns>New descriptor set.</returns>
 		DescriptorSet* RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
 		inline static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
+		/// <summary>
+		/// Retrieve a new VkDescriptorSet with the given layout.
+		/// </summary>
+		/// <param name="layout">Descriptor set layout.</param>
+		/// <returns>VkDescriptorSet handle.</returns>
 		VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 
 		VkDescriptorPool m_currentPool;

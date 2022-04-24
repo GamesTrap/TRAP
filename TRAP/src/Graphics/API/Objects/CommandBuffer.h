@@ -56,8 +56,8 @@ namespace TRAP::Graphics
 			                           std::vector<uint32_t>* colorMipSlices,
 			                           uint32_t depthArraySlice, uint32_t depthMipSlice) = 0;
 
-		virtual void AddDebugMarker(float r, float g, float b, const char* name) const = 0;
-		virtual void BeginDebugMarker(float r, float g, float b, const char* name) const = 0;
+		virtual void AddDebugMarker(const TRAP::Math::Vec3& color, const char* name) const = 0;
+		virtual void BeginDebugMarker(const TRAP::Math::Vec3& color, const char* name) const = 0;
 		virtual void EndDebugMarker() const = 0;
 
 		virtual void Begin() = 0;

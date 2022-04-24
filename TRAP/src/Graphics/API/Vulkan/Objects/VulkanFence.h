@@ -13,7 +13,14 @@ namespace TRAP::Graphics::API
 	class VulkanFence final : public Fence
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// Fence is not signaled.
+		/// </summary>
 		explicit VulkanFence();
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanFence() override;
 
 		/// <summary>
@@ -33,12 +40,30 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanFence& operator=(VulkanFence&&) = default;
 
+		/// <summary>
+		/// Retrieve the VkFence handle.
+		/// </summary>
+		/// <returns>VkFence handle.</returns>
 		VkFence GetVkFence() const;
 
+		/// <summary>
+		/// Retrieve the current status of the fence.
+		/// </summary>
+		/// <returns>Fence status.</returns>
 		RendererAPI::FenceStatus GetStatus() override;
 
+		/// <summary>
+		/// Wait for the fence to be signaled.
+		///
+		/// 1. Waits for the fence to be signaled.
+		/// 2. Resets the fence.
+		/// </summary>
 		void Wait() override;
 
+		/// <summary>
+		/// Utility function to wait for multiple fences.
+		/// </summary>
+		/// <param name="fences">Fences to wait for.</param>
 		static void WaitForFences(std::vector<VulkanFence>& fences);
 
 	private:

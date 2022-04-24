@@ -14,8 +14,17 @@ namespace TRAP::Graphics::API
 	class VulkanTexture : public TextureBase
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="device">Vulkan device.</param>
+		/// <param name="desc">Texture description.</param>
+		/// <param name="vma">Vulkan memory allocator.</param>
 		VulkanTexture(TRAP::Ref<VulkanDevice> device, const RendererAPI::TextureDesc& desc,
 			          TRAP::Ref<VulkanMemoryAllocator> vma);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanTexture() override;
 
 		/// <summary>
@@ -35,15 +44,47 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanTexture& operator=(VulkanTexture&&) = default;
 
+		/// <summary>
+		/// Retrieve the read only color Vulkan image view handle of the texture.
+		/// </summary>
+		/// <returns>Vulkan image view handle.</returns>
 		VkImageView GetSRVVkImageView() const;
+		/// <summary>
+		/// Retrieve the read only  stencil Vulkan image view handle of the texture.
+		/// </summary>
+		/// <returns>Vulkan image view handle.</returns>
 		VkImageView GetSRVStencilVkImageView() const;
+		/// <summary>
+		/// Retrieve all read-writable Vulkan image view handles of the texture.
+		/// </summary>
+		/// <returns>
 		const std::vector<VkImageView>& GetUAVVkImageViews() const;
+		/// <summary>
+		/// Retrieve the Vulkan image handle.
+		/// </summary>
+		/// <returns>Vulkan image handle.</returns>
 		VkImage GetVkImage();
+		/// <summary>
+		/// Retrieve the VMA allocation handle used by the texture.
+		/// </summary>
+		/// <returns>VMA allocation handle.</returns>
 		VmaAllocation GetVMAAllocation() const;
 
+		/// <summary>
+		/// Set the name of the texture.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
 		void SetTextureName(const std::string_view name) const override;
 
 	private:
+		/// <summary>
+		/// Retrieve the memory type index via the given parameters.
+		/// </summary>
+		/// <param name="typeBits">Memory type bits from Vulkan memory requirements.</param>
+		/// <param name="memProps">Vulkan physical device memory properties.</param>
+		/// <param name="props">Vulkan memory property flags.</param>
+		/// <param name="memTypeFound">Output: True if memory type found, false otherwise.</param>
+		/// <returns>Index of memory type.</returns>
 		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps,
 		                              VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 

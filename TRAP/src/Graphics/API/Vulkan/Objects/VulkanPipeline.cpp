@@ -24,13 +24,13 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	{
 	case RendererAPI::PipelineType::Compute:
 	{
-		AddComputePipeline(desc);
+		InitComputePipeline(desc);
 		break;
 	}
 
 	case RendererAPI::PipelineType::Graphics:
 	{
-		AddGraphicsPipeline(desc);
+		InitGraphicsPipeline(desc);
 		break;
 	}
 
@@ -68,7 +68,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::PipelineDesc& desc)
+void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
 	VkPipelineCache psoCache = desc.Cache ?
@@ -103,7 +103,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
+void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
 	VkPipelineCache psoCache = desc.Cache ?

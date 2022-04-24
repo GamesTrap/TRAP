@@ -109,7 +109,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 	const uint32_t updateFreq = desc.Set;
 	const uint8_t dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[updateFreq];
 	const uint32_t maxSets = desc.MaxSets;
-	std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData{};
+	std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData{};
 	const std::vector<VulkanRenderer::SizeOffset> dynamicSizeOffsets{};
 	std::vector<VkDescriptorSetLayout> layouts{};
 	std::vector<VkDescriptorSet> handles{};

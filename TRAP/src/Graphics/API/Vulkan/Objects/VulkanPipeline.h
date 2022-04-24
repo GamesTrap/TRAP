@@ -11,7 +11,14 @@ namespace TRAP::Graphics::API
 	class VulkanPipeline final : public Pipeline
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Pipeline description</param>
 		explicit VulkanPipeline(const RendererAPI::PipelineDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanPipeline() override;
 
 		/// <summary>
@@ -31,12 +38,28 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanPipeline& operator=(VulkanPipeline&&) = default;
 
+		/// <summary>
+		/// Retrieve the Vulkan pipeline handle.
+		/// </summary>
+		/// <returns>Vulkan pipeline handle</returns>
 		VkPipeline GetVkPipeline() const;
+		/// <summary>
+		/// Retrieve the pipeline type.
+		/// </summary>
+		/// <returns>Pipeline type</returns>
 		RendererAPI::PipelineType GetPipelineType() const;
 
 	private:
-		void AddComputePipeline(const RendererAPI::PipelineDesc& desc);
-		void AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
+		/// <summary>
+		/// Initialize compute pipeline.
+		/// </summary>
+		/// <param name="desc">Pipeline description</param>
+		void InitComputePipeline(const RendererAPI::PipelineDesc& desc);
+		/// <summary>
+		/// Initialize graphics pipeline.
+		/// </summary>
+		/// <param name="desc">Pipeline description</param>
+		void InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
 
 		VkPipeline m_vkPipeline;
 		RendererAPI::PipelineType m_type;

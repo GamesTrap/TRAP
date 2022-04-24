@@ -10,12 +10,24 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="device">Vulkan device.</param>
+		/// <param name="vkDescriptorSetHandles">Vulkan descriptor set handles.</param>
+		/// <param name="rootSignature">Root signature.</param>
+		/// <param name="updateData">Update template data.</param>
+		/// <param name="maxSets">Max number of sets for the descriptor set.</param>
+		/// <param name="dynamicOffsetCount">Number of dynamic offsets.</param>
+		/// <param name="set">Update frequency.</param>
 		VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device, std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 		                    TRAP::Ref<VulkanRootSignature> rootSignature,
-		                    std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData,
+		                    std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData,
 		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
 							uint32_t set);
-
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanDescriptorSet() override;
 
 		/// <summary>
@@ -35,14 +47,47 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) = default;
 
+		/// <summary>
+		/// Retrieve the VkDescriptorSet handles.
+		/// </summary>
+		/// <returns>VkDescriptorSet handles.</returns>
 		const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const;
+		/// <summary>
+		/// Retrieve the root signature.
+		/// </summary>
+		/// <returns>Root signature.</returns>
 		TRAP::Ref<VulkanRootSignature> GetRootSignature() const;
+		/// <summary>
+		/// Retrieve the update frequency used by the descriptor set.
+		/// </summary>
+		/// <returns>Update frequency.</returns>
 		RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const;
+		/// <summary>
+		/// Retrieve the amount of dynamic offsets used by the descriptor set.
+		/// </summary>
+		/// <returns>Amount of dynamic offsets.</returns>
 		uint8_t GetDynamicOffsetCount() const;
+		/// <summary>
+		/// Retrieve the dynamic size offsets used by the descriptor set.
+		/// </summary>
+		/// <returns>Dynamic size offsets.</returns>
 		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
+		/// <summary>
+		/// Retrieve the max number of sets for the descriptor set.
+		/// </summary>
+		/// <returns>Max number of sets.</returns>
 		uint32_t GetMaxSets() const;
+		/// <summary>
+		/// Retrieve the index of the set for the descriptor set.
+		/// </summary>
+		/// <returns>Index of the set.</returns>
 		uint32_t GetSet() const;
 
+		/// <summary>
+		/// Update the descriptor set.
+		/// </summary>
+		/// <param name="index">Index of the set to update.</param>
+		/// <param name="params">Data to update.</param>
 		void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) override;
 
 	private:

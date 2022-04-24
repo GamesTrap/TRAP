@@ -10,7 +10,6 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	: m_renderPass(VK_NULL_HANDLE),
 	  m_colorFormats(desc.ColorFormats),
 	  m_loadActionsColor(desc.LoadActionsColor),
-	  m_SRGBValues(desc.SRGBValues),
 	  m_renderTargetCount(desc.RenderTargetCount),
 	  m_sampleCount(desc.SampleCount),
 	  m_depthStencilFormat(desc.DepthStencilFormat),
@@ -132,13 +131,6 @@ const std::vector<TRAP::Graphics::API::ImageFormat>& TRAP::Graphics::API::Vulkan
 const std::vector<TRAP::Graphics::RendererAPI::LoadActionType>& TRAP::Graphics::API::VulkanRenderPass::GetLoadActionsColor() const
 {
 	return m_loadActionsColor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const std::vector<bool>& TRAP::Graphics::API::VulkanRenderPass::GetSRGBValues() const
-{
-	return m_SRGBValues;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

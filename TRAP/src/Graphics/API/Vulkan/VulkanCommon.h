@@ -1,3 +1,31 @@
+// MIT License
+
+// Copyright (c) 2019 DeanoC
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+// The license above only applies to the following functions:
+// - ImageFormatToVkFormat
+// - ImageFormatFromVkFormat
+//
+// Modified by Jan "GamesTrap" Schuerkamp
+
 #ifndef TRAP_VULKANCOMMON_H
 #define TRAP_VULKANCOMMON_H
 
@@ -8,38 +36,184 @@ namespace TRAP::Graphics::API
 	class VulkanQueue;
 	class VulkanPhysicalDevice;
 
+	/// <summary>
+	/// Check the if given VkResult contains an error.
+	/// If the given VkResult contains an error, the function will log information about the error.
+	/// </summary>
+	/// <param name="result">VkResult to check.</param>
+	/// <param name="function">Name of the function that called the error checker.</param>
+	/// <param name="file">Name of the file where the function is in that called the error checker.</param>
+	/// <param name="line">Line number of the error check call.</param>
+	/// <returns>True for non error codes, otherwise false.</returns>
 	constexpr bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
+	/// <summary>
+	/// Convert the RendererAPI::QueueType to VkQueueFlags.
+	/// </summary>
+	/// <param name="queueType">QueueType to convert.</param>
+	/// <returns>Converted VkQueueFlags.</returns>
 	constexpr VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);
 
+	/// <summary>
+	/// Convert the RendererAPI::SampleCount to VkSampleCountFlagBits.
+	/// </summary>
+	/// <param name="sampleCount">SampleCount to convert.</param>
+	/// <returns>Converted VkSampleCountFlagBits.</returns>
 	constexpr VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount);
+	/// <summary>
+	/// Convert the ImageFormat to VkFormat.
+	/// </summary>
+	/// <param name="imageFormat">ImageFormat to convert.</param>
+	/// <returns>Converted VkFormat.</returns>
 	constexpr VkFormat ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat);
+	/// <summary>
+	/// Determine the aspect mask for an image.
+	/// </summary>
+	/// <param name="format">ImageFormat.</param>
+	/// <param name="includeStencilBit">Whether to include the stencil bit in the aspect mask.</param>
+	/// <returns>VkImageAspectFlags.</returns>
 	constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
+	/// <summary>
+	/// Convert the RendererAPI::DescriptorType to VkImageUsageFlags.
+	/// </summary>
+	/// <param name="type">DescriptorType to convert.</param>
+	/// <returns>Converted VkImageUsageFlags.</returns>
 	constexpr VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type);
+	/// <summary>
+	/// Convert the VkImageUsageFlags to VkFormatFeatureFlags.
+	/// </summary>
+	/// <param name="usage">VkImageUsageFlags to convert.</param>
+	/// <returns>Converted VkFormatFeatureFlags.</returns>
 	constexpr VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage);
+	/// <summary>
+	/// Convert the RendererAPI::DescriptorType to VkBufferUsage.
+	/// </summary>
+	/// <param name="usage">DescriptorType to convert.</param>
+	/// <param name="typed">Whether the buffer is a typed buffer.</param>
+	/// <returns>Converted VkBufferUsageFlags.</returns>
 	constexpr VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed);
+	/// <summary>
+	/// Convert the RendererAPI::FilterType to VkFilter.
+	/// </summary>
+	/// <param name="filter">FilterType to convert.</param>
+	/// <returns>Converted VkFilter.</returns>
 	constexpr VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter);
+	/// <summary>
+	/// Convert the RendererAPI::MipMapMode to VkSamplerMipmapMode.
+	/// </summary>
+	/// <param name="mipMapMode">MipMapMode to convert.</param>
+	/// <returns>Converted VkSamplerMipmapMode.</returns>
 	constexpr VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode);
+	/// <summary>
+	/// Convert the RendererAPI::AddressMode to VkSamplerAddressMode.
+	/// </summary>
+	/// <param name="addressMode">AddressMode to convert.</param>
+	/// <returns>Converted VkSamplerAddressMode.</returns>
 	constexpr VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode);
+	/// <summary>
+	/// Convert the RendererAPI::DescriptorType to VkDescriptorType.
+	/// </summary>
+	/// <param name="type">DescriptorType to convert.</param>
+	/// <returns>Converted VkDescriptorType.</returns>
 	constexpr VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type);
+	/// <summary>
+	/// Convert the RendererAPI::ShaderStage to VkShaderStageFlags.
+	/// </summary>
+	/// <param name="stages">ShaderStage(s) to convert.</param>
+	/// <returns>Converted VkShaderStageFlags.</returns>
 	constexpr VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages);
+	/// <summary>
+	/// Convert the RendererAPI::PipelineCacheFlags to VkPipelineCacheCreateFlags.
+	/// </summary>
+	/// <param name="flags">PipelineCacheFlag to convert.</param>
+	/// <returns>Converted VkPipelineCacheCreateFlags.</returns>
 	constexpr VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags);
+	/// <summary>
+	/// Convert the RendererAPI::ResourceState to VkAccessFlags.
+	/// </summary>
+	/// <param name="state">ResourceState to convert.</param>
+	/// <returns>Converted VkAccessFlags.</returns>
 	constexpr VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state);
+	/// <summary>
+	/// Convert the RendererAPI::ResourceState to VkImageLayout.
+	/// </summary>
+	/// <param name="usage">ResourceState to convert.</param>
+	/// <returns>Converted VkImageLayout.</returns>
 	constexpr VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage);
+	/// <summary>
+	/// Determine the VkPipelineStageFlags from VkAccessFlags and RendererAPI::QueueType.
+	/// </summary>
+	/// <param name="accessFlags">VkAccessFlags.</param>
+	/// <param name="queueType">QueueType.</param>
+	/// <returns>Determined VkPipelineStageFlags.</returns>
 	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType);
+	/// <summary>
+	/// Convert the RendererAPI::QueryType to VkQueryType.
+	/// </summary>
+	/// <param name="type">QueryType to convert.</param>
+	/// <returns>Converted VkQueryType.</returns>
 	constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type);
+	/// <summary>
+	/// Convert the RendererAPI::ClearFlags to VkImageAspectFlags.
+	/// </summary>
+	/// <param name="flags">ClearFlags to convert.</param>
+	/// <returns>Converted VkImageAspectFlags.</returns>
 	constexpr VkImageAspectFlags ClearFlagsToVKImageAspectFlags(RendererAPI::ClearFlags flags);
 
+	/// <summary>
+	/// Utility to create the VkPipelineColorBlendStateCreateInfo struct from
+	/// a RendererAPI::BlendStateDesc and color blend attachments.
+	/// </summary>
+	/// <param name="desc">BlendStateDesc.</param>
+	/// <param name="attachments">Color blend attachments.</param>
+	/// <returns>Created VkPipelineColorBlendStateCreateInfo.</returns>
 	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
 	                                                    std::vector<VkPipelineColorBlendAttachmentState>& attachments);
+	/// <summary>
+	/// Utility to create the VkPipelineDepthStencilStateCreateInfo struct from
+	/// a RendererAPI::DepthStateDesc.
+	/// </summary>
+	/// <param name="desc">DepthStateDesc.</param>
+	/// <returns>Created VkPipelineDepthStencilStateCreateInfo.</returns>
 	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
+	/// <summary>
+	/// Utility to create the VkPipelineRasterizationStateCreateInfo struct from
+	/// a RendererAPI::RasterizerStateDesc.
+	/// </summary>
+	/// <param name="desc">RasterizerStateDesc.</param>
+	/// <returns>Created VkPipelineRasterizationStateCreateInfo.</returns>
 	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+	/// <summary>
+	/// Utility to retrieve the planar image memory requirement for Vulkan.
+	/// </summary>
+	/// <param name="device">Vulkan device.</param>
+	/// <param name="image">Vulkan image.</param>
+	/// <param name="planesCount">Number of planes.</param>
+	/// <param name="memReq">Output Vulkan memory requirement.</param>
+	/// <param name="planesOffsets">Output plane offsets.</param>
 	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount,
 	                                           VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
 
+	/// <summary>
+	/// Retrieve the recommended swapchain format for Vulkan.
+	/// </summary>
+	/// <param name="HDR">True if HDR is desired.</param>
+	/// <returns>Recommended swapchain format.</returns>
 	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
 
+	/// <summary>
+	/// Convert the VkFormat to ImageFormat.
+	/// </summary>
+	/// <param name="format">VkFormat to convert.</param>
+	/// <returns>Converted ImageFormat.</returns>
 	constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 
+	/// <summary>
+	/// Set a name for a Vulkan object.
+	/// </summary>
+	/// <param name="device">Vulkan device.</param>
+	/// <param name="handle">Vulkan object.</param>
+	/// <param name="type">Vulkan object type.</param>
+	/// <param name="name">Name to set.</param>
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string_view name);
 
 	inline static constexpr std::array<VkAttachmentLoadOp,
@@ -139,12 +313,17 @@ namespace TRAP::Graphics::API
 
 #ifdef TRAP_DEBUG
 #if __cplusplus > 201703L
+	//Utility to check VkResult for errors and log them.
 	#define VkCall(x) std::source_location loc = std::source_location::current();\
 	                  ::TRAP::Graphics::API::ErrorCheck(x, #x, loc.file_name, loc.line);
 #else
+	//Utility to check VkResult for errors and log them.
 	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
 #endif
 #else
+	/// <summary>
+	/// Utility to check VkResult for errors and log them.
+	/// </summary>
 	constexpr void VkCall(VkResult)
 	{}
 #endif

@@ -30,7 +30,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
 #endif
 
-	AddSwapchain(desc);
+	InitSwapchain(desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -43,12 +43,12 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
 #endif
 
-	RemoveSwapchain();
+	DeInitSwapchain();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDesc& desc)
+void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc)
 {
 	//////////////////
 	//Create Surface//
@@ -303,7 +303,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanSwapChain::RemoveSwapchain()
+void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 {
 	m_device->WaitIdle();
 
@@ -373,8 +373,8 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 	//Toggle VSync on or off
 	//For Vulkan we need to remove the SwapChain and recreate it with correct VSync option
-	RemoveSwapchain();
-	AddSwapchain(desc);
+	DeInitSwapchain();
+	InitSwapchain(desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

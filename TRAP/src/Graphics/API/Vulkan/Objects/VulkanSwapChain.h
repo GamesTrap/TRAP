@@ -15,7 +15,14 @@ namespace TRAP::Graphics::API
 	class VulkanSwapChain final : public SwapChain
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Swap chain description.</param>
 		explicit VulkanSwapChain(RendererAPI::SwapChainDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanSwapChain() override;
 
 		/// <summary>
@@ -35,17 +42,41 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanSwapChain& operator=(VulkanSwapChain&&) = default;
 
+		/// <summary>
+		/// Acquire the next presentable image from the swapchain to render to.
+		/// </summary>
+		/// <param name="signalSemaphore">Semaphore to signal when the image is ready to be presented.</param>
+		/// <param name="fence">Fence to wait for the image to be ready to be presented.</param>
+		/// <returns>Acuired image index.</returns>
 		uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                          const TRAP::Ref<Fence>& fence) const override;
 
+		/// <summary>
+		/// Toggle Vsync on and off.
+		/// </summary>
 		void ToggleVSync() override;
 
+		/// <summary>
+		/// Retrieve the Vulkan swap chain handle.
+		/// </summary>
+		/// <returns>Vulkan swap chain handle.</returns>
 		VkSwapchainKHR GetVkSwapChain() const;
+		/// <summary>
+		/// Retrieve the Vulkan queue used for presentation.
+		/// </summary>
+		/// <returns>Vulkan queue used for presentation.</returns>
 		VkQueue GetPresentVkQueue() const;
 
 	private:
-		void AddSwapchain(RendererAPI::SwapChainDesc& desc);
-		void RemoveSwapchain();
+		/// <summary>
+		/// Initialize the swap chain.
+		/// </summary>
+		/// <param name="desc">Swap chain description.</param>
+		void InitSwapchain(RendererAPI::SwapChainDesc& desc);
+		/// <summary>
+		/// Uninitialize the swap chain.
+		/// </summary>
+		void DeInitSwapchain();
 
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanInstance> m_instance;

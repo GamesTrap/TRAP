@@ -11,7 +11,14 @@ namespace TRAP::Graphics::API
 	class VulkanPipelineCache final : public PipelineCache
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Pipeline cache description.</param>
 		explicit VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanPipelineCache() override;
 
 		/// <summary>
@@ -31,10 +38,25 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanPipelineCache& operator=(VulkanPipelineCache&&) = default;
 
+		/// <summary>
+		/// Retrieve the cached pipeline data.
+		///
+		/// To retrieve the size of cached data call this function with data = nullptr.
+		/// </summary>
+		/// <param name="size">Output: Size of the data.</param>
+		/// <param name="data">Output: Pointer to store the data.</param>
 		void GetPipelineCacheData(std::size_t* size, void* data) const override;
 
+		/// <summary>
+		/// Save a pipeline to disk.
+		/// </summary>
+		/// <param name="path">Path to save the pipeline to.</param>
 		void Save(const std::filesystem::path& path) override;
 
+		/// <summary>
+		/// Retrieve the Vulkan pipeline cache handle.
+		/// </summary>
+		/// <returns>Vulkan pipeline cache handle</returns>
 		VkPipelineCache GetVkPipelineCache() const;
 
 	private:

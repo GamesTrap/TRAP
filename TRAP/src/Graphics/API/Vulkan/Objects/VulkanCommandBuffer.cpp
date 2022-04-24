@@ -380,20 +380,18 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const float r, const float g, const float b,
-                                                              const char* name) const
+void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::Vec3& color, const char* name) const
 {
-	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(r, g, b, name);
+	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
 
 	vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const float r, const float g, const float b,
-                                                                const char* name) const
+void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math::Vec3& color, const char* name) const
 {
-	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(r, g, b, name);
+	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
 
 	vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 }

@@ -13,7 +13,14 @@ namespace TRAP::Graphics::API
 	class VulkanCommandPool final : public CommandPool
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Command pool description.</param>
 		explicit VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanCommandPool() override;
 
 		/// <summary>
@@ -33,11 +40,27 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanCommandPool& operator=(VulkanCommandPool&&) = default;
 
+		/// <summary>
+		/// Retrieve the VkCommandPool handle.
+		/// </summary>
+		/// <returns>VkCommandPool handle.</returns>
 		VkCommandPool GetVkCommandPool() const;
 
+		/// <summary>
+		/// Allocate a new command buffer.
+		/// </summary>
+		/// <param name="secondary">Should the command buffer be a secondary command buffer.</param>
+		///<returns>New command buffer.</returns>
 		CommandBuffer* AllocateCommandBuffer(bool secondary) override;
+		/// <summary>
+		/// Free a command buffer
+		/// </summary>
+		/// <param name="cmdBuffer">Command buffer to free.</param>
 		void FreeCommandBuffer(CommandBuffer* cmdBuffer) override;
 
+		/// <summary>
+		/// Reset the command pool.
+		/// </summary>
 		void Reset() const override;
 
 	private:

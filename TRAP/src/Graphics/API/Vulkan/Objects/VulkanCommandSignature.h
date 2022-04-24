@@ -9,7 +9,14 @@ namespace TRAP::Graphics::API
 	class VulkanCommandSignature final : public CommandSignature
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Command signature description.</param>
 		explicit VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanCommandSignature() override;
 
 		/// <summary>
@@ -29,7 +36,15 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanCommandSignature& operator=(VulkanCommandSignature&&) = default;
 
+		/// <summary>
+		/// Retrieve the draw type used for indirect drawing.
+		/// </summary>
+		/// <returns>Draw type.</returns>
 		RendererAPI::IndirectArgumentType GetDrawType() const;
+		/// <summary>
+		/// Retrieve the byte stride between successive sets of draw parameters.
+		/// </summary>
+		/// <returns>Byte stride.</returns>
 		uint32_t GetStride() const;
 
 	private:

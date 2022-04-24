@@ -11,7 +11,14 @@ namespace TRAP::Graphics::API
 	class VulkanSampler final : public Sampler
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="desc">Sampler description.</param>
 		explicit VulkanSampler(const RendererAPI::SamplerDesc& desc);
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~VulkanSampler() override;
 
 		/// <summary>
@@ -31,6 +38,10 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		VulkanSampler& operator=(VulkanSampler&&) = default;
 
+		/// <summary>
+		/// Retrieve the Vulkan sampler handle.
+		/// </summary>
+		/// <returns>Vulkan sampler handle.</returns>
 		VkSampler GetVkSampler() const;
 
 	private:

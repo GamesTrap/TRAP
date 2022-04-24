@@ -188,7 +188,6 @@ namespace TRAP::Graphics::API
 		{
 			std::vector<ImageFormat> ColorFormats;
 			std::vector<LoadActionType> LoadActionsColor;
-			std::vector<bool> SRGBValues;
 			uint32_t RenderTargetCount;
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount;
 			ImageFormat DepthStencilFormat;

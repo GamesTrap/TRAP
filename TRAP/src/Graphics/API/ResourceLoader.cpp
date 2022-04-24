@@ -51,7 +51,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 		}
 
 		loader->m_nextSet = (loader->m_nextSet + 1) % loader->m_desc.BufferCount;
-		loader->WaitCopyEngineSet(loader->m_nextSet, true);
+		loader->WaitCopyEngineSet(loader->m_nextSet);
 		loader->ResetCopyEngineSet(loader->m_nextSet);
 
 		//Signal pending tokens from previous frames
@@ -807,17 +807,13 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t activeSet, const bool wait)
+void TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t activeSet)
 {
 	TRAP_ASSERT(!m_copyEngine.IsRecording);
 	CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
-	bool completed = true;
 
-	completed = resSet.Fence->GetStatus() != RendererAPI::FenceStatus::Incomplete;
-	if (wait && !completed)
+	if (resSet.Fence->GetStatus() == RendererAPI::FenceStatus::Incomplete)
 		resSet.Fence->Wait();
-
-	return completed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
