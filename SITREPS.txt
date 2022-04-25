@@ -2486,3 +2486,7 @@ SITREP 04/19/2022|22w16a1
 SITREP 04/24/2022|22w16a2
     - Changed TRAP Engine version to 22w16a2(0.7.124)
     - Documented code ~>480 mins
+
+SITREP 04/25/2022|22w17a1
+    - Changed TRAP Engine version to 22w17a1(0.7.125)
+    - Documented code ~>120 mins

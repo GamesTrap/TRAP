@@ -60,7 +60,6 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	//Create Graphic Queue
 	QueueDesc queueDesc{};
 	queueDesc.Type = QueueType::Graphics;
-	queueDesc.Flag = QueueFlag::InitMicroprofile;
 	s_graphicQueue = Queue::Create(queueDesc);
 
 	//Create Compute Queue

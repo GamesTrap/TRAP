@@ -152,12 +152,6 @@ namespace TRAP::Graphics::API
 	/// <param name="type">QueryType to convert.</param>
 	/// <returns>Converted VkQueryType.</returns>
 	constexpr VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type);
-	/// <summary>
-	/// Convert the RendererAPI::ClearFlags to VkImageAspectFlags.
-	/// </summary>
-	/// <param name="flags">ClearFlags to convert.</param>
-	/// <returns>Converted VkImageAspectFlags.</returns>
-	constexpr VkImageAspectFlags ClearFlagsToVKImageAspectFlags(RendererAPI::ClearFlags flags);
 
 	/// <summary>
 	/// Utility to create the VkPipelineColorBlendStateCreateInfo struct from
@@ -950,26 +944,6 @@ constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(RendererAPI::Q
 	default:
 		// TRAP_ASSERT(false, "Invalid query heap type");
 		return VK_QUERY_TYPE_MAX_ENUM;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr VkImageAspectFlags TRAP::Graphics::API::ClearFlagsToVKImageAspectFlags(RendererAPI::ClearFlags flags)
-{
-	switch(flags)
-	{
-	case RendererAPI::ClearFlags::Color:
-		return VK_IMAGE_ASPECT_COLOR_BIT;
-
-	case RendererAPI::ClearFlags::Depth:
-		return VK_IMAGE_ASPECT_DEPTH_BIT;
-
-	case RendererAPI::ClearFlags::Stencil:
-		return VK_IMAGE_ASPECT_STENCIL_BIT;
-
-	default:
-		return VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 	}
 }
 
