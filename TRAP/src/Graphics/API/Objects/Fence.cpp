@@ -47,16 +47,11 @@ bool TRAP::Graphics::Fence::IsSubmitted() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Fence::WaitForFence(std::vector<Fence>& fences)
+void TRAP::Graphics::Fence::WaitForFences(std::vector<Fence>& fences)
 {
-	switch(RendererAPI::GetRenderAPI())
-	{
-	case RenderAPI::Vulkan:
-		API::VulkanFence::WaitForFence(fences);
-		break;
+	if(fences.empty())
+		return;
 
-	case RenderAPI::NONE:
-	default:
-		break;
-	}
+	for(Fence& f : fences)
+		f.Wait();
 }

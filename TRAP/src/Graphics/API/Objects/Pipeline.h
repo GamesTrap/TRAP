@@ -8,8 +8,16 @@ namespace TRAP::Graphics
 	class Pipeline
 	{
 	public:
+		/// <summary>
+		/// Create a new pipeline from the given description.
+		/// </summary>
+		/// <param name="desc">Pipeline description.</param>
+		/// <returns>Created pipeline.</returns>
 		static TRAP::Ref<Pipeline> Create(const RendererAPI::PipelineDesc& desc);
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~Pipeline();
 
 		/// <summary>
@@ -30,6 +38,9 @@ namespace TRAP::Graphics
 		Pipeline& operator=(Pipeline&&) = default;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		Pipeline();
 
 		//No Graphic API independent data

@@ -8,8 +8,16 @@ namespace TRAP::Graphics
 	class QueryPool
 	{
 	public:
+		/// <summary>
+		/// Create a new query pool from the given description.
+		/// </summary>
+		/// <param name="desc">Query pool description.</param>
+		/// <returns>Created query pool.</returns>
 		static TRAP::Ref<QueryPool> Create(const RendererAPI::QueryPoolDesc& desc);
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~QueryPool();
 
 		/// <summary>
@@ -30,6 +38,9 @@ namespace TRAP::Graphics
 		QueryPool& operator=(QueryPool&&) = default;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		QueryPool();
 
 		//No Graphic API independent data

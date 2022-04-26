@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	}
 
 	RendererAPI::PipelineType pipelineType = RendererAPI::PipelineType::Undefined;
-	VulkanRenderer::DescriptorIndexMap indexMap;
+	RendererAPI::DescriptorIndexMap indexMap;
 
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
@@ -68,8 +68,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 		for(auto& res : reflection->ShaderResources)
 		{
-			auto resNameIt = indexMap.Map.find(res.Name);
-			if(resNameIt == indexMap.Map.end())
+			auto resNameIt = indexMap.find(res.Name);
+			if(resNameIt == indexMap.end())
 			{
 				auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
 				                          [res](const ShaderReflection::ShaderResource& a)
@@ -79,7 +79,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				});
 				if(resIt == shaderResources.end())
 				{
-					indexMap.Map.insert({ res.Name, static_cast<uint32_t>(shaderResources.size()) });
+					indexMap.insert({ res.Name, static_cast<uint32_t>(shaderResources.size()) });
 					shaderResources.push_back(res);
 				}
 				else
@@ -96,7 +96,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						return;
 					}
 
-					indexMap.Map.insert({ res.Name, indexMap.Map[resIt->Name] });
+					indexMap.insert({ res.Name, indexMap[resIt->Name] });
 					resIt->UsedStages |= res.UsedStages;
 				}
 			}
@@ -131,13 +131,11 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		}
 	}
 
-	m_descriptorNameToIndexMap = TRAP::MakeScope<VulkanRenderer::DescriptorIndexMap>();
-
 	if(!shaderResources.empty())
 		m_descriptors.resize(shaderResources.size());
 
 	m_pipelineType = pipelineType;
-	m_descriptorNameToIndexMap->Map = indexMap.Map;
+	m_descriptorNameToIndexMap = indexMap;
 
 	//Fill the descriptor array to be stored in the root signature
 	for(std::size_t i = 0; i < shaderResources.size(); ++i)
@@ -474,7 +472,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 		m_updateTemplateData = {};
 	}
 
-	m_descriptorNameToIndexMap->Map.clear();
+	m_descriptorNameToIndexMap.clear();
 
 	vkDestroyPipelineLayout(m_device->GetVkDevice(), m_pipelineLayout, nullptr);
 }
@@ -562,8 +560,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
 
 TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* resName)
 {
-	const std::unordered_map<std::string, uint32_t>::const_iterator it = m_descriptorNameToIndexMap->Map.find(resName);
-	if (it != m_descriptorNameToIndexMap->Map.end())
+	const auto it = m_descriptorNameToIndexMap.find(resName);
+	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
 
 	return nullptr;
@@ -585,7 +583,7 @@ const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const
+const TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const
 {
 	return m_descriptorNameToIndexMap;
 }

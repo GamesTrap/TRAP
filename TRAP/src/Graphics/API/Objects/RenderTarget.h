@@ -10,8 +10,16 @@ namespace TRAP::Graphics
 	class RenderTarget
 	{
 	public:
+		/// <summary>
+		/// Create a new render target from the given description.
+		/// </summary>
+		/// <param name="desc">Render target description.</param>
+		/// <returns>Created render target.</returns>
 		static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~RenderTarget();
 
 		/// <summary>
@@ -31,22 +39,77 @@ namespace TRAP::Graphics
 		/// </summary>
 		RenderTarget& operator=(RenderTarget&&) = default;
 
+		/// <summary>
+		/// Retrieve the width of the render target.
+		/// </summary>
+		/// <returns>Render target width.</returns>
 		uint32_t GetWidth() const;
+		/// <summary>
+		/// Retrieve the height of the render target.
+		/// </summary>
+		/// <returns>Render target height.</returns>
 		uint32_t GetHeight() const;
+		/// <summary>
+		/// Retrieve the depth of the render target.
+		/// </summary>
+		/// <returns>Render target depth.</returns>
 		uint32_t GetDepth() const;
+		/// <summary>
+		/// Retrieve the array size of the render target.
+		/// </summary>
+		/// <returns>Render target array size.</returns>
 		uint32_t GetArraySize() const;
+		/// <summary>
+		/// Retrieve the mip levels of the render target.
+		/// </summary>
+		/// <returns>Render target mip levels.</returns>
 		uint32_t GetMipLevels() const;
+		/// <summary>
+		/// Retrieve the sample count of the render target.
+		/// </summary>
+		/// <returns>Render target sample count.</returns>
 		RendererAPI::SampleCount GetSampleCount() const;
+		/// <summary>
+		/// Retrieve the sample quality of the render target.
+		/// </summary>
+		/// <returns>Render target sample quality.</returns>
 		uint32_t GetSampleQuality() const;
+		/// <summary>
+		/// Retrieve the image format of the render target.
+		/// </summary>
+		/// <returns>Render target image format.</returns>
 		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
+		/// <summary>
+		/// Retrieve the clear color of the render target.
+		/// </summary>
+		/// <returns>Render target clear color.</returns>
 		TRAP::Math::Vec4 GetClearColor() const;
+		/// <summary>
+		/// Retrieve the clear depth value of the render target.
+		/// </summary>
+		/// <returns>Render target clear depth value.</returns>
 		float GetClearDepth() const;
+		/// <summary>
+		/// Retrieve the clear stencil value of the render target.
+		/// </summary>
+		/// <returns>Render target clear stencil value.</returns>
 		uint32_t GetClearStencil() const;
+		/// <summary>
+		/// Retrieve the descriptor type of the render target.
+		/// </summary>
+		/// <returns>Render target descriptor type.</returns>
 		RendererAPI::DescriptorType GetDescriptorType() const;
 
+		/// <summary>
+		/// Retrieve the texture base of the render target.
+		/// </summary>
+		/// <returns>Render target texture base.</returns>
 		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		RenderTarget();
 
 		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;

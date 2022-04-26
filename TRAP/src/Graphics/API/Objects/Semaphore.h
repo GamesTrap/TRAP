@@ -9,8 +9,15 @@ namespace TRAP::Graphics
 	class Semaphore
 	{
 	public:
+		/// <summary>
+		/// Create a new semaphore.
+		/// </summary>
+		/// <returns>Created semaphore.</returns>
 		static TRAP::Ref<Semaphore> Create();
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~Semaphore();
 
 		/// <summary>
@@ -30,9 +37,16 @@ namespace TRAP::Graphics
 		/// </summary>
 		Semaphore& operator=(Semaphore&&) = default;
 
+		/// <summary>
+		/// Is the semaphore signaled?
+		/// </summary>
+		/// <returns>True if the semaphore is signaled, false otherwise.</returns>
 		virtual bool IsSignaled() const;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		Semaphore();
 
 		bool m_signaled;

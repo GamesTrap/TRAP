@@ -116,7 +116,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the map which converts a descriptor name to its index.
 		/// </summary>
 		/// <returns>Map which converts a descriptor name to its index.</returns>
-		const TRAP::Scope<RendererAPI::DescriptorIndexMap>& GetDescriptorNameToIndexMap() const override;
+		const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const override;
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
 

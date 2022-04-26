@@ -60,12 +60,6 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		void Wait() override;
 
-		/// <summary>
-		/// Utility function to wait for multiple fences.
-		/// </summary>
-		/// <param name="fences">Fences to wait for.</param>
-		static void WaitForFences(std::vector<VulkanFence>& fences);
-
 	private:
 		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
 		                                                                       const TRAP::Ref<Fence>& fence) const;

@@ -7,8 +7,16 @@ namespace TRAP::Graphics
 	class Buffer
 	{
 	public:
+		/// <summary>
+		/// Create a new buffer from the given description.
+		/// </summary>
+		/// <param name="desc">Buffer description.</param>
+		/// <returns>Created buffer.</returns>
 		static TRAP::Ref<Buffer> Create(const RendererAPI::BufferDesc& desc);
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~Buffer();
 
 		/// <summary>
@@ -28,16 +36,48 @@ namespace TRAP::Graphics
 		/// </summary>
 		Buffer& operator=(Buffer&&) = default;
 
+		/// <summary>
+		/// Retrieve the size of the buffer in bytes.
+		/// </summary>
+		/// <returns>Size of the buffer in bytes.</returns>
 		virtual uint64_t GetSize() const = 0;
+		/// <summary>
+		/// Retrieve the type of descriptor.
+		/// </summary>
+		/// <returns>Type of descriptor.</returns>
 		virtual RendererAPI::DescriptorType GetDescriptors() const = 0;
+		/// <summary>
+		/// Retrieve the usage of the buffer memory.
+		/// </summary>
+		/// <returns>Usage of the buffer memory.</returns>
 		virtual RendererAPI::ResourceMemoryUsage GetMemoryUsage() const = 0;
 
+		/// <summary>
+		/// Retrieve the CPU mapped address of the buffer.
+		///
+		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
+		/// </summary>
+		/// <returns>CPU mapped address of the buffer.</returns>
 		virtual void* GetCPUMappedAddress() const = 0;
 
+		/// <summary>
+		/// Map a region of the buffer to the CPU.
+		///
+		/// Note: MapBuffer must not be called if memory usage is GPU only.
+		/// </summary>
+		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
 		virtual void MapBuffer(RendererAPI::ReadRange* range) = 0;
+		/// <summary>
+		/// Unmap CPU mapped memory region.
+		///
+		/// Note: UnMapBuffer must not be called if memory usage is GPU only.
+		/// </summary>
 		virtual void UnMapBuffer() = 0;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		Buffer();
 
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps

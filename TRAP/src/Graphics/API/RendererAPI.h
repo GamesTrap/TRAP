@@ -1969,16 +1969,23 @@ namespace TRAP::Graphics
 			//User can either set name of descriptor or index (index in RootSignature->Descriptors array)
 			//Name of descriptor
 			const char* Name{};
+			/// <summary>
+			/// Range(s) to bind (buffer, offset, size)
+			/// </summary>
 			struct BufferOffset
 			{
 				//Offset to bind the buffer descriptor
 				std::vector<uint64_t> Offsets{};
+				//Size of the buffer to bind
 				std::vector<uint64_t> Sizes{};
 			};
 
-			//Descriptor set buffer extraction options
+			/// <summary>
+			/// Descriptor set buffer extraction options
+			/// </summary>
 			struct DescriptorSetExtraction
 			{
+				//Index of the descriptor set to extract
 				uint32_t DescriptorSetBufferIndex{};
 				Shader* DescriptorSetShader{};
 				ShaderStage DescriptorSetShaderStage{};
@@ -1986,63 +1993,99 @@ namespace TRAP::Graphics
 
 			struct TextureSlice
 			{
+				//When binding UAV, control the mip slice to bind for UAV (example - generating mipmaps in a compute shader)
 				uint32_t UAVMipSlice{};
+				//Binds entire mip chain as array of UAV
 				bool BindMipChain{};
 			};
 			std::variant<BufferOffset, DescriptorSetExtraction, TextureSlice, bool> Offset{false};
 			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
 			//DescriptorRange can hold only one resource type array
-			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
+			//Can be one of the following:
+			//Array of texture descriptors (SRV and UAV textures)
+			//Array of sampler descriptors
+			//Array of buffer descriptors (SRV, UAV and CBV buffers)
+			//Array of pipeline descriptors
+			//DescriptorSet buffer extraction
+			//Custom binding (RayTracing acceleration structure ...)
 			std::variant<std::vector<TRAP::Graphics::TextureBase*>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::TextureBase*>()};
+				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::TextureBase*>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
+			//Index into RootSignature->Descriptors array
 			uint32_t Index = static_cast<uint32_t>(-1);
-			bool ExtractBuffer = false;
 		};
 
+		/// <summary>
+		/// Description of a queue presentation.
+		/// </summary>
 		struct QueuePresentDesc
 		{
+			//Swapchain to preesent
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain{};
+			//Semaphores to wait on before presenting
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
+			//Render target of the swapchain to present
 			uint8_t Index{};
 		};
 
+		/// <summary>
+		/// Description of actions to perform on load.
+		/// </summary>
 		struct LoadActionsDesc
 		{
+			//Clear color(s)
 			std::array<TRAP::Math::Vec4, 8> ClearColorValues{};
+			//Action to perform on the color attachment(s) on load.
 			std::array<LoadActionType, 8> LoadActionsColor{};
+			//Clear depth value
 			float ClearDepth = 1.0f;
+			//Clear stencil value
 			uint32_t ClearStencil = 0;
+			//Action to perform on the depth attachment on load.
 			LoadActionType LoadActionDepth{};
+			//Action to perform on the stencil attachment on load.
 			LoadActionType LoadActionStencil{};
 		};
 
-		struct DescriptorIndexMap
-		{
-			std::unordered_map<std::string, uint32_t> Map;
-		};
+		/// <summary>
+		/// Map resolving a name to its descriptor index in a root signature.
+		/// </summary>
+		using DescriptorIndexMap = std::unordered_map<std::string, uint32_t>;
 
+		/// <summary>
+		/// Struct holding data about a mapped memory range.
+		/// </summary>
 		struct MappedMemoryRange
 		{
+			//Pointer to mapped buffer data with offset already applied to
 			uint8_t* Data = nullptr;
+			//Mapped buffer
 			TRAP::Ref<TRAP::Graphics::Buffer> Buffer = nullptr;
+			//Offset in the buffer to start at
 			uint64_t Offset = 0;
+			//Mapped size
 			uint64_t Size = 0;
 			uint32_t Flags = 0;
 		};
 
-		//Note: Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
+		/// <summary>
+		/// Description for a texture update.
+		/// Note: Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
+		/// </summary>
 		struct TextureUpdateDesc
 		{
+			//Texture to update
 			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
+			//Mip level to update
 			uint32_t MipLevel = 0;
+			//Array layer to update
 			uint32_t ArrayLayer = 0;
 
 			//To be filled by the caller
-			//Example
+			//Example:
 			//TRAP::Graphics::RendererAPI::TextureUpdateDesc update = {Texture};
 			//TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(update);
 			//Row by row copy is required if DstRowStride > SrcRowStride.
@@ -2078,26 +2121,44 @@ namespace TRAP::Graphics
 				MappedMemoryRange MappedRange;
 			} Internal;
 		};
+
+		/// <summary>
+		/// Description for the resource loader.
+		/// </summary>
 		struct ResourceLoaderDesc
 		{
+			//Size for each staging buffer
 			uint64_t BufferSize;
+			//Amount of staging buffers to create
 			uint32_t BufferCount;
 		};
 
+		/// <summary>
+		/// Description for a buffer load.
+		/// </summary>
 		struct BufferLoadDesc
 		{
+			//Output buffer with uploaded data.
 			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
+			//Data to upload
 			const void* Data;
+			//Description for the buffer
 			BufferDesc Desc;
 
-			//Force Reset Buffer to nullptr
+			//Force Reset Buffer to 0
 			bool ForceReset;
 		};
 
+		/// <summary>
+		/// Description for a buffer update.
+		/// </summary>
 		struct BufferUpdateDesc
 		{
+			//Buffer to update
 			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
+			//Offset into buffer to update data at
 			uint64_t DstOffset;
+			//Size of data to update
 			uint64_t Size;
 
 			//To be filled by the caller
@@ -2110,6 +2171,9 @@ namespace TRAP::Graphics
 			} Internal;
 		};
 
+		/// <summary>
+		/// Struct holding data about a GPUs features, limits and other properties.
+		/// </summary>
 		inline static struct GPUSettings
 		{
 			uint64_t UniformBufferAlignment;
@@ -2140,6 +2204,11 @@ namespace TRAP::Graphics
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
 
+		/// <summary>
+		/// Retrieve the image index currently used for rendering from the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve image index from.</param>
+		/// <returns>Image index.</returns>
 		static uint32_t GetCurrentImageIndex(TRAP::Window* window);
 
 	protected:
@@ -2154,8 +2223,14 @@ namespace TRAP::Graphics
 		static std::array<CommandBuffer*, ImageCount> s_computeCommandBuffers;
 
 	public:
+		/// <summary>
+		/// Per window data used for rendering.
+		/// </summary>
 		struct PerWindowData
 		{
+			/// <summary>
+			/// Destructor.
+			/// </summary>
 			~PerWindowData();
 
 			TRAP::Window* Window;

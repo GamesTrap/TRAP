@@ -7,8 +7,16 @@ namespace TRAP::Graphics
 	class RootSignature
 	{
 	public:
+		/// <summary>
+		/// Create a new root signature from the given description.
+		/// </summary>
+		/// <param name="desc">Root signature description.</param>
+		/// <returns>Created root signature.</returns>
 		static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~RootSignature();
 
 		/// <summary>
@@ -28,12 +36,31 @@ namespace TRAP::Graphics
 		/// </summary>
 		RootSignature& operator=(RootSignature&&) = default;
 
+		/// <summary>
+		/// Retrieve the pipeline type used by the shaders of the root signature.
+		/// </summary>
+		/// <returns>Pipeline type.</returns>
 		virtual RendererAPI::PipelineType GetPipelineType() const = 0;
+		/// <summary>
+		/// Retrieve the amount of descriptors contained in the root signature.
+		/// </summary>
+		/// <returns>Amount of descriptors.</returns>
 		virtual uint32_t GetDescriptorCount() const = 0;
+		/// <summary>
+		/// Retrieve the list of descriptors contained in the root signature.
+		/// </summary>
+		/// <returns>List of descriptors.</returns>
 		virtual const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const = 0;
-		virtual const TRAP::Scope<RendererAPI::DescriptorIndexMap>& GetDescriptorNameToIndexMap() const = 0;
+		/// <summary>
+		/// Retrieve the map which converts a descriptor name to its index.
+		/// </summary>
+		/// <returns>Map which converts a descriptor name to its index.</returns>
+		virtual const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const = 0;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		RootSignature();
 
 		//Graphics or Compute
@@ -41,7 +68,7 @@ namespace TRAP::Graphics
 		//Array of all descriptors declared in the root signature layout
 		std::vector<RendererAPI::DescriptorInfo> m_descriptors;
 		//Translates hash of descriptor name to descriptor index in m_descriptors array
-		TRAP::Scope<RendererAPI::DescriptorIndexMap> m_descriptorNameToIndexMap;
+		RendererAPI::DescriptorIndexMap m_descriptorNameToIndexMap;
 	};
 }
 

@@ -67,14 +67,3 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 
 	m_submitted = false;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanFence::WaitForFences(std::vector<VulkanFence>& fences)
-{
-	if(fences.empty())
-		return;
-
-	for(VulkanFence& f : fences)
-		f.Wait();
-}

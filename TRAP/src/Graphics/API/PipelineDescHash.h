@@ -45,8 +45,7 @@ namespace std
 					g.SampleCount,
 					g.SampleQuality,
 					g.DepthStencilFormat,
-					g.PrimitiveTopology,
-					g.SupportIndirectCommandBuffer
+					g.PrimitiveTopology
                 );
 
 				if (g.VertexLayout)

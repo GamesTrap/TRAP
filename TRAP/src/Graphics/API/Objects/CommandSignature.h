@@ -8,8 +8,16 @@ namespace TRAP::Graphics
 	class CommandSignature
 	{
 	public:
+		/// <summary>
+		/// Create a new command signature from the given description.
+		/// </summary>
+		/// <param name="desc">Command signature description.</param>
+		/// <returns>Created command signature.</returns>
 		static TRAP::Ref<CommandSignature> Create(const RendererAPI::CommandSignatureDesc& desc);
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~CommandSignature();
 
 		/// <summary>
@@ -30,6 +38,9 @@ namespace TRAP::Graphics
 		CommandSignature& operator=(CommandSignature&&) = default;
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		CommandSignature();
 
 		//No Graphic API independent data

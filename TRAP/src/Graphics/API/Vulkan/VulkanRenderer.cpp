@@ -1199,72 +1199,69 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
 
-	if(s_RenderAPI == RenderAPI::Vulkan)
-	{
-		//Add a staging buffer
-		uint16_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8;
-		BufferDesc bufferDesc{};
-		bufferDesc.Descriptors = DescriptorType::RWBuffer;
-		bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
-		bufferDesc.Size = static_cast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
-		bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
-		bufferDesc.StartState = ResourceState::CopyDestination;
-		TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
+	//Add a staging buffer
+	uint16_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8;
+	BufferDesc bufferDesc{};
+	bufferDesc.Descriptors = DescriptorType::RWBuffer;
+	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
+	bufferDesc.Size = static_cast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
+	bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
+	bufferDesc.StartState = ResourceState::CopyDestination;
+	TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
 
-		//Start recording
-		cmd->Begin();
+	//Start recording
+	cmd->Begin();
 
-		//Transition the render target to the correct state
-		RenderTargetBarrier srcBarrier = {renderTarget, currResState, ResourceState::CopySource};
-		cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+	//Transition the render target to the correct state
+	RenderTargetBarrier srcBarrier = {renderTarget, currResState, ResourceState::CopySource};
+	cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
-		uint32_t rowPitch = renderTarget->GetWidth() * formatByteWidth;
-		const uint32_t width = renderTarget->GetTexture()->GetWidth();
-		const uint32_t height = renderTarget->GetTexture()->GetHeight();
-		const uint32_t depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
-		const ImageFormat fmt = renderTarget->GetTexture()->GetImageFormat();
-		const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3);
+	uint32_t rowPitch = renderTarget->GetWidth() * formatByteWidth;
+	const uint32_t width = renderTarget->GetTexture()->GetWidth();
+	const uint32_t height = renderTarget->GetTexture()->GetHeight();
+	const uint32_t depth = Math::Max(1u, renderTarget->GetTexture()->GetDepth());
+	const ImageFormat fmt = renderTarget->GetTexture()->GetImageFormat();
+	const uint32_t numBlocksWide = rowPitch / (ImageFormatBitSizeOfBlock(fmt) >> 3);
 
-		//Copy the render target to the staging buffer
-		uint32_t bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
-		VkImageSubresourceLayers layers{};
-		layers.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
-		layers.mipLevel = 0;
-		layers.baseArrayLayer = 0;
-		layers.layerCount = 1;
-		VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
+	//Copy the render target to the staging buffer
+	uint32_t bufferRowLength = numBlocksWide * ImageFormatWidthOfBlock(fmt);
+	VkImageSubresourceLayers layers{};
+	layers.aspectMask = static_cast<VkImageAspectFlags>(renderTarget->GetTexture()->GetAspectMask());
+	layers.mipLevel = 0;
+	layers.baseArrayLayer = 0;
+	layers.layerCount = 1;
+	VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
 
-		VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
-		VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture().get());
-		VulkanBuffer* vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
+	VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+	VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture().get());
+	VulkanBuffer* vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
 
-		vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
+	vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
 
-		//Transition the render target back to the previous state
-		srcBarrier = {renderTarget, ResourceState::CopySource, currResState};
-		cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
+	//Transition the render target back to the previous state
+	srcBarrier = {renderTarget, ResourceState::CopySource, currResState};
+	cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
-		//End recording
-		cmd->End();
+	//End recording
+	cmd->End();
 
-		//Submit the command buffer
-		QueueSubmitDesc submitDesc{};
-		submitDesc.Cmds = {cmd};
+	//Submit the command buffer
+	QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds = {cmd};
 
-		s_graphicQueue->Submit(submitDesc);
+	s_graphicQueue->Submit(submitDesc);
 
-		//Wait for work to finish on the GPU
-		s_graphicQueue->WaitQueueIdle();
+	//Wait for work to finish on the GPU
+	s_graphicQueue->WaitQueueIdle();
 
-		//Copy to CPU memory.
-		std::memcpy(outPixelData, buffer->GetCPUMappedAddress(), static_cast<std::size_t>(renderTarget->GetWidth()) *
-																 renderTarget->GetHeight() * formatByteWidth);
+	//Copy to CPU memory.
+	std::memcpy(outPixelData, buffer->GetCPUMappedAddress(), static_cast<std::size_t>(renderTarget->GetWidth()) *
+																renderTarget->GetHeight() * formatByteWidth);
 
-		//Cleanup
-		cmdPool->FreeCommandBuffer(cmd);
-		cmdPool.reset();
-		buffer.reset();
-	}
+	//Cleanup
+	cmdPool->FreeCommandBuffer(cmd);
+	cmdPool.reset();
+	buffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1596,6 +1593,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 {
 	std::vector<std::string> extensions{};
 
+	//TODO do we need this extension in headless mode?
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 	else
@@ -1631,7 +1629,6 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		physicalDevice->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);

@@ -9,8 +9,16 @@ namespace TRAP::Graphics
 	class Fence
 	{
 	public:
+		/// <summary>
+		/// Create a new fence.
+		/// Fence is not signaled.
+		/// </summary>
+		/// <returns>Created fence.</returns>
 		static TRAP::Ref<Fence> Create();
 
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		virtual ~Fence();
 
 		/// <summary>
@@ -32,12 +40,30 @@ namespace TRAP::Graphics
 
 		virtual bool IsSubmitted() const;
 
+		/// <summary>
+		/// Retrieve the current status of the fence.
+		/// </summary>
+		/// <returns>Fence status.</returns>
 		virtual RendererAPI::FenceStatus GetStatus() = 0;
+		/// <summary>
+		/// Wait for the fence to be signaled.
+		///
+		/// 1. Waits for the fence to be signaled.
+		/// 2. Resets the fence.
+		/// </summary>
 		virtual void Wait() = 0;
 
-		static void WaitForFence(std::vector<Fence>& fences);
+		/// <summary>
+		/// Utility function to wait for multiple fences.
+		/// </summary>
+		/// <param name="fences">Fences to wait for.</param>
+		static void WaitForFences(std::vector<Fence>& fences);
 
 	protected:
+		/// <summary>
+		/// Constructor.
+		/// Fence is not signaled.
+		/// </summary>
 		Fence();
 
 		bool m_submitted;

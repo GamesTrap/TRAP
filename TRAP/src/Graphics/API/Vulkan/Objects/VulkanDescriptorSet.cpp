@@ -184,8 +184,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + desc->Name + ")");
 
-			std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap()->Map.find(desc->Name);
-			if(it == m_rootSignature->GetDescriptorNameToIndexMap()->Map.end())
+			std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap().find(desc->Name);
+			if(it == m_rootSignature->GetDescriptorNameToIndexMap().end())
 			{
 				TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "No Static Sampler called (", desc->Name, ")");
 				TRAP_ASSERT(false);
@@ -321,8 +321,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 									std::string(" which exceeds max size ") +
 									std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange)));
 
-				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? static_cast<uint32_t>(off.Offsets[0]) :
-				                                     0;
+				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? static_cast<uint32_t>(off.Offsets[0]) : 0;
 				VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
 				updateData[desc->HandleIndex + static_cast<std::size_t>(0)].BufferInfo =
 				{
