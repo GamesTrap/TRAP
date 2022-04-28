@@ -2494,3 +2494,9 @@ SITREP 04/25/2022|22w17a1
 SITREP 04/26/2022|22w17a2
     - Changed TRAP Engine version to 22w17a2(0.7.126)
     - Documented code ~>120 mins
+
+SITREP 04/28/2022|22w17b1
+    - Changed TRAP Engine version to 22w17b1(0.7.127)
+    - ImageLoader Added support for QOI ~<60 mins
+    - Added QOIConv to convert PNG<->QOI ~<10 mins
+    - Tests ImageLoader test Added QOI tests ~<10 mins

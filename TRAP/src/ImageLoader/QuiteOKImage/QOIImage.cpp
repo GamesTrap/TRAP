@@ -32,7 +32,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
     file.seekg(0, std::ios::end);
     const std::size_t fileSize = file.tellg();
-    file.seekg(0, std::ios::beg);
+    file.seekg(0);
 
     if(fileSize < sizeof(Header) + EndMarker.size())
     {
@@ -131,79 +131,89 @@ struct Pixel
     uint8_t Alpha;
 };
 
-static constexpr uint8_t QOI_RGB = 0xFE;
-static constexpr uint8_t QOI_RGBA = 0xFF;
 static constexpr uint8_t QOI_OP_INDEX = 0x00;
-static constexpr uint8_t QOI_OP_DIFF = 0x40;
-static constexpr uint8_t QOI_OP_LUMA = 0x80;
-static constexpr uint8_t QOI_OP_RUN = 0xC0;
-static constexpr uint8_t QOI_MASK_2 = 0xC0;
+static constexpr uint8_t QOI_OP_DIFF  = 0x40;
+static constexpr uint8_t QOI_OP_LUMA  = 0x80;
+static constexpr uint8_t QOI_OP_RUN   = 0xC0;
+static constexpr uint8_t QOI_OP_RGB   = 0xFE;
+static constexpr uint8_t QOI_OP_RGBA  = 0xFF;
 
-static constexpr int32_t QOI_COLOR_HASH(const Pixel& p)
+static constexpr uint8_t QOI_MASK_2   = 0xC0;
+
+static constexpr uint32_t QOI_COLOR_HASH(const Pixel& p)
 {
     return p.Red * 3 + p.Green * 5 + p.Blue * 7 + p.Alpha * 11;
 }
 
 void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_t& fileSize)
 {
-    Pixel px{0, 0, 0, 255};
-    std::array<Pixel, 64> index{};
+    Pixel prevPixel{0, 0, 0, 255};
+    std::array<Pixel, 64> prevPixels{};
 
-    int32_t totalChunksLength = fileSize - EndMarker.size();
-    int32_t pxLen = m_width * m_height * m_bitsPerPixel / 8;
-    int32_t run = 0;
-    int32_t p = 0;
+    const std::size_t size = static_cast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8);
+    std::size_t index = sizeof(Header);
 
-    for(int32_t pxPos = 0; pxPos < pxLen; pxPos += m_bitsPerPixel / 8)
+    for(std::size_t pixelIndex = 0; pixelIndex < size;)
     {
-        if(run > 0)
-            --run;
-        else if(p < totalChunksLength)
+        if(index < (fileSize - EndMarker.size()))
         {
-            int8_t b1 = 0;
-            file.read(reinterpret_cast<char*>(&b1), 1);
+            const uint8_t tag = file.get();
 
-            if(b1 == QOI_RGB)
+            if(tag == QOI_OP_RGB)
             {
-                file.read(reinterpret_cast<char*>(&px.Red), 1);
-                file.read(reinterpret_cast<char*>(&px.Green), 1);
-                file.read(reinterpret_cast<char*>(&px.Blue), 1);
+                prevPixel.Red = file.get();
+                prevPixel.Green = file.get();
+                prevPixel.Blue = file.get();
             }
-            else if(b1 == QOI_RGBA)
+            else if(tag == QOI_OP_RGBA)
             {
-                file.read(reinterpret_cast<char*>(&px.Red), 1);
-                file.read(reinterpret_cast<char*>(&px.Green), 1);
-                file.read(reinterpret_cast<char*>(&px.Blue), 1);
-                file.read(reinterpret_cast<char*>(&px.Alpha), 1);
+                prevPixel.Red = file.get();
+                prevPixel.Green = file.get();
+                prevPixel.Blue = file.get();
+                prevPixel.Alpha = file.get();
             }
-            else if((b1 & QOI_MASK_2) == QOI_OP_INDEX)
-                px = index[b1];
-            else if((b1 & QOI_MASK_2) == QOI_OP_DIFF)
+            else
             {
-				px.Red   += ((static_cast<int32_t>(b1) >> 4) & 0x03) - 2;
-				px.Green += ((static_cast<int32_t>(b1) >> 2) & 0x03) - 2;
-				px.Blue  += ( static_cast<int32_t>(b1)       & 0x03) - 2;
-            }
-            else if((b1 & QOI_MASK_2) == QOI_OP_LUMA)
-            {
-				int8_t b2 = 0;
-                file.read(reinterpret_cast<char*>(&b2), 1);
-				int32_t vg = (static_cast<int32_t>(b1) & 0x3f) - 32;
-				px.Red   += vg - 8 + ((static_cast<int32_t>(b2) >> 4) & 0x0f);
-				px.Green += vg;
-				px.Blue  += vg - 8 +  (static_cast<int32_t>(b2)       & 0x0f);
-            }
-            else if((b1 & QOI_MASK_2) == QOI_OP_RUN)
-                run = (static_cast<int32_t>(b1) & 0x3F);
+                if((tag & QOI_MASK_2) == QOI_OP_INDEX)
+                    prevPixel = prevPixels[tag & 0x3F];
+                else if((tag & QOI_MASK_2) == QOI_OP_DIFF)
+                {
+                    prevPixel.Red   += static_cast<uint8_t>((((tag & 0x30u) >> 4u) & 0x03u) - 2);
+                    prevPixel.Green += static_cast<uint8_t>((((tag & 0x0Cu) >> 2u) & 0x03u) - 2);
+                    prevPixel.Blue  += static_cast<uint8_t>((((tag & 0x03u) >> 0u) & 0x03u) - 2);
+                }
+                else if((tag & QOI_MASK_2) == QOI_OP_LUMA)
+                {
+                    const uint8_t data = file.get();
+                    const uint8_t vg = static_cast<uint8_t>((tag & 0x3Fu) - 32);
+                    prevPixel.Red   += (vg - 8 + static_cast<uint8_t>((data >> 4u) & 0xFu));
+                    prevPixel.Green += vg;
+                    prevPixel.Blue  += (vg - 8 + static_cast<uint8_t>((data >> 0u) & 0xFu));
+                }
+                else if((tag & QOI_MASK_2) == QOI_OP_RUN)
+                {
+                    const uint8_t run = tag & 0x3Fu;
+                    for(std::size_t j = 0; j < run; ++j)
+                    {
+                        m_data[pixelIndex++] = prevPixel.Red;
+                        m_data[pixelIndex++] = prevPixel.Green;
+                        m_data[pixelIndex++] = prevPixel.Blue;
 
-            index[QOI_COLOR_HASH(px) % 64] = px;
+                        if(m_bitsPerPixel / 8 == 4)
+                            m_data[pixelIndex++] = prevPixel.Alpha;
+                    }
+                }
+            }
+
+            const uint32_t pixelHashIndex = (QOI_COLOR_HASH(prevPixel) % 64);
+            prevPixels[static_cast<std::size_t>(pixelHashIndex)] = prevPixel;
         }
 
-        m_data[pxPos + 0] = px.Red;
-        m_data[pxPos + 1] = px.Green;
-        m_data[pxPos + 2] = px.Blue;
+        m_data[pixelIndex++] = prevPixel.Red;
+        m_data[pixelIndex++] = prevPixel.Green;
+        m_data[pixelIndex++] = prevPixel.Blue;
 
         if(m_bitsPerPixel / 8 == 4)
-            m_data[pxPos + 3] = px.Alpha;
+            m_data[pixelIndex++] = prevPixel.Alpha;
     }
 }
