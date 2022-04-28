@@ -2500,3 +2500,4 @@ SITREP 04/28/2022|22w17b1
     - ImageLoader Added support for QOI ~<60 mins
     - Added QOIConv to convert PNG<->QOI ~<10 mins
     - Tests ImageLoader test Added QOI tests ~<10 mins
+    - Optimized PNG loading (removed unused chunks loading/validation) ~<90 mins

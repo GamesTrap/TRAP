@@ -316,6 +316,10 @@ uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+static std::array<std::string, 11> UnusedChunks
+{
+	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
+};
 bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
                                             AlreadyLoaded& alreadyLoaded, const bool needSwap)
 {
@@ -328,85 +332,38 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 
 	if (alreadyLoaded.IHDR)
 	{
-		if (nextChunk.MagicNumber == "cHRM" && !alreadyLoaded.cHRM && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+		bool unusedChunk = std::any_of(UnusedChunks.begin(), UnusedChunks.end(), [&nextChunk](const std::string_view magicNum)
 		{
-			alreadyLoaded.cHRM = true;
-			if (ProcesscHRM(file))
-				return true;
+			return magicNum == nextChunk.MagicNumber;
+		});
+		if(unusedChunk)
+		{
+			//Optional chunk (ignored)
+			file.seekg(4 + nextChunk.Length, std::ios_base::cur); //4 = Magic number.
+			return true;
 		}
-		if (nextChunk.MagicNumber == "gAMA" && !alreadyLoaded.gAMA && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
+
+		if (nextChunk.MagicNumber == "sBIT" && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
 		{
-			alreadyLoaded.gAMA = true;
-			if (ProcessgAMA(file))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "iCCP" && !alreadyLoaded.iCCP && !alreadyLoaded.sRGB && !alreadyLoaded.PLTE &&
-		    !alreadyLoaded.IDAT)
-		{
-			alreadyLoaded.iCCP = true;
-			if (ProcessiCCP(file, nextChunk.Length))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "sBIT" && !alreadyLoaded.sBIT && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
-		{
-			alreadyLoaded.sBIT = true;
 			if (ProcesssBIT(file, data))
 				return true;
 		}
-		if (nextChunk.MagicNumber == "sRGB" && !alreadyLoaded.sRGB && !alreadyLoaded.iCCP && !alreadyLoaded.PLTE &&
+		if (nextChunk.MagicNumber == "sRGB" && !alreadyLoaded.sRGB && !alreadyLoaded.PLTE &&
 		    !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.sRGB = true;
 			if (ProcesssRGB(file))
 				return true;
 		}
-		if (nextChunk.MagicNumber == "bKGD" && !alreadyLoaded.bKGD && !alreadyLoaded.IDAT)
+		if (nextChunk.MagicNumber == "bKGD" && !alreadyLoaded.IDAT)
 		{
-			alreadyLoaded.bKGD = true;
-			if (ProcessbKGD(file, data, needSwap))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "hIST" && !alreadyLoaded.hIST && !alreadyLoaded.IDAT)
-		{
-			alreadyLoaded.hIST = true;
-			if (ProcesshIST(file, nextChunk.Length))
+			if (ProcessbKGD(file, data))
 				return true;
 		}
 		if (nextChunk.MagicNumber == "tRNS" && !alreadyLoaded.tRNS && !alreadyLoaded.IDAT)
 		{
 			alreadyLoaded.tRNS = true;
 			if (ProcesstRNS(file, nextChunk.Length, data))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "pHYs" && !alreadyLoaded.pHYs && !alreadyLoaded.IDAT)
-		{
-			alreadyLoaded.pHYs = true;
-			if (ProcesspHYs(file))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "sPLT" && !alreadyLoaded.IDAT)
-		{
-			if (ProcesssPLT(file, nextChunk.Length))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "tIME" && !alreadyLoaded.tIME)
-		{
-			if (ProcesstIME(file, needSwap))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "iTXt")
-		{
-			if (ProcessiTXt(file, nextChunk.Length))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "tEXt")
-		{
-			if (ProcesstEXt(file, nextChunk.Length))
-				return true;
-		}
-		if (nextChunk.MagicNumber == "zTXt")
-		{
-			if (ProcesszTXt(file, nextChunk.Length))
 				return true;
 		}
 		if (nextChunk.MagicNumber == "PLTE" && !alreadyLoaded.PLTE && !alreadyLoaded.IDAT)
@@ -421,12 +378,6 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 		}
 		if (nextChunk.MagicNumber == "IEND")
 			return true;
-		//Extension
-		if (nextChunk.MagicNumber == "eXIf" && !alreadyLoaded.eXIf)
-		{
-			if (ProcesseXIf(file, nextChunk.Length))
-				return true;
-		}
 	}
 
 	TP_ERROR(Log::ImagePNGPrefix, "Invalid or multiple usage of chunk magic number: ", nextChunk.MagicNumber, "!");
@@ -442,15 +393,12 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 	//Read in IHDR Chunk
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Width), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Height), sizeof(uint32_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.BitDepth), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.ColorType), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.CompressionMethod), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.FilterMethod), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.InterlaceMethod), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&ihdrChunk.CRC[3]), sizeof(uint8_t));
+	ihdrChunk.BitDepth = file.get();
+	ihdrChunk.ColorType = file.get();
+	ihdrChunk.CompressionMethod = file.get();
+	ihdrChunk.FilterMethod = file.get();
+	ihdrChunk.InterlaceMethod = file.get();
+	file.read(reinterpret_cast<char*>(ihdrChunk.CRC.data()), ihdrChunk.CRC.size());
 
 	//Convert to machines endian
 	if (needSwap)
@@ -495,230 +443,52 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesscHRM(std::ifstream& file)
-{
-	std::array<uint8_t, 32> unusedData{};
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::array<uint8_t, 36> CRCData
-	{
-		'c', 'H', 'R', 'M',
-		unusedData[0], unusedData[1], unusedData[2], unusedData[3], unusedData[4],
-		unusedData[5], unusedData[6], unusedData[7], unusedData[8], unusedData[9],
-		unusedData[10], unusedData[11], unusedData[12], unusedData[13],
-		unusedData[14], unusedData[15], unusedData[16], unusedData[17],
-		unusedData[18], unusedData[19], unusedData[20], unusedData[21],
-		unusedData[22], unusedData[23], unusedData[24], unusedData[25],
-		unusedData[26], unusedData[27], unusedData[28], unusedData[29],
-		unusedData[30], unusedData[31]
-	};
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "cHRM CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcessgAMA(std::ifstream& file)
-{
-	std::array<uint8_t, 4> unusedData{};
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), unusedData.size());
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::array<uint8_t, 8> CRCData
-	{
-		'g', 'A', 'M', 'A',
-		unusedData[0], unusedData[1], unusedData[2], unusedData[3]
-	};
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "gAMA CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcessiCCP(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unusedData(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()),
-	          static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(length + 4);
-	CRCData[0] = 'i';
-	CRCData[1] = 'C';
-	CRCData[2] = 'C';
-	CRCData[3] = 'P';
-	for (uint32_t i = 0; i < length; i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "iCCP CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
 {
 	switch (data.ColorType)
 	{
 	case 0:
 	{
-		uint8_t significantGrayScaleBits = 0;
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&significantGrayScaleBits), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		std::array<uint8_t, 5> CRCData{ 's', 'B', 'I', 'T', significantGrayScaleBits };
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 1, std::ios::cur);
 		return true;
 	}
 
 	case 2:
 	case 3:
 	{
-		std::array<uint8_t, 3> significantRGBBits{};
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&significantRGBBits), significantRGBBits.size());
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-		std::array<uint8_t, 7> CRCData
-		{
-			's', 'B', 'I', 'T',
-			significantRGBBits[0], significantRGBBits[1], significantRGBBits[2]
-		};
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 3, std::ios::cur);
 		return true;
 	}
 
 	case 4:
 	{
-		std::array<uint8_t, 2> significantGrayScaleAlphaBits{};
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&significantGrayScaleAlphaBits), significantGrayScaleAlphaBits.size());
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		std::array<uint8_t, 6> CRCData
-		{
-			's', 'B', 'I', 'T',
-			significantGrayScaleAlphaBits[0], significantGrayScaleAlphaBits[1]
-		};
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 2, std::ios::cur);
 		return true;
 	}
 
 	case 6:
 	{
-		std::array<uint8_t, 4> significantRGBAlphaBits{};
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&significantRGBAlphaBits), significantRGBAlphaBits.size());
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		std::array<uint8_t, 8> CRCData
-		{
-			's', 'B', 'I', 'T',
-			significantRGBAlphaBits[0], significantRGBAlphaBits[1],
-			significantRGBAlphaBits[2], significantRGBAlphaBits[3]
-		};
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 4, std::ios::cur);
 		return true;
 	}
 
 	default:
 		return false;
 	}
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 {
-	uint8_t renderingIntent = 0;
+	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(&renderingIntent), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
+	const uint8_t renderingIntent = file.get();
+	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
-	std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B' };
+	std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
 
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
@@ -733,142 +503,31 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data, const bool needSwap)
+bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
 {
 	switch (data.ColorType)
 	{
 	case 0:
 	case 4:
 	{
-		uint16_t backgroundColor = 0;
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&backgroundColor), sizeof(uint16_t));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		//Convert to machines endian
-		if (needSwap)
-			Utils::Memory::SwapBytes(backgroundColor);
-
-		std::array<uint8_t, 6> CRCData
-		{
-			'b', 'K', 'G', 'D',
-			reinterpret_cast<uint8_t*>(&backgroundColor)[1], reinterpret_cast<uint8_t*>(&backgroundColor)[0]
-		};
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 2, std::ios::cur);
 		return true;
 	}
 
 	case 2:
 	case 6:
 	{
-		uint16_t Red = 0;
-		uint16_t Green = 0;
-		uint16_t Blue = 0;
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&Red), sizeof(uint16_t));
-		file.read(reinterpret_cast<char*>(&Green), sizeof(uint16_t));
-		file.read(reinterpret_cast<char*>(&Blue), sizeof(uint16_t));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		//Convert to machines endian
-		if (needSwap)
-		{
-			Utils::Memory::SwapBytes(Red);
-			Utils::Memory::SwapBytes(Green);
-			Utils::Memory::SwapBytes(Blue);
-		}
-
-		std::array<uint8_t, 10> CRCData
-		{
-			'b', 'K', 'G', 'D',
-			reinterpret_cast<uint8_t*>(&Red)[1], reinterpret_cast<uint8_t*>(&Red)[0],
-			reinterpret_cast<uint8_t*>(&Green)[1], reinterpret_cast<uint8_t*>(&Green)[0],
-			reinterpret_cast<uint8_t*>(&Blue)[1], reinterpret_cast<uint8_t*>(&Blue)[0]
-		};
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 6, std::ios::cur);
 		return true;
 	}
 
 	case 3:
 	{
-		uint8_t paletteIndex = 0;
-		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&paletteIndex), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-		std::array<uint8_t, 5> CRCData
-		{
-			'b', 'K', 'G', 'D',
-			paletteIndex
-		};
-
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-		{
-			TP_ERROR(Log::ImagePNGPrefix, "bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-			return false;
-		}
-
+		file.seekg(4 + 1, std::ios::cur);
 		return true;
 	}
 
 	default:
-		return false;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcesshIST(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unusedData(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()),
-	          static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(length + 4);
-	CRCData[0] = 'h';
-	CRCData[1] = 'I';
-	CRCData[2] = 'S';
-	CRCData[3] = 'T';
-	for (uint32_t i = 0; i < length; i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "hIST CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 		return false;
 	}
 
@@ -879,19 +538,15 @@ bool TRAP::INTERNAL::PNGImage::ProcesshIST(std::ifstream& file, const uint32_t l
 
 bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
 {
+	//TODO Use this chunk!
 	switch (data.ColorType)
 	{
 	case 0:
 	{
-		uint8_t grayAlpha1 = 0;
-		uint8_t grayAlpha2 = 0;
 		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&grayAlpha1), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&grayAlpha2), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
+		const uint8_t grayAlpha1 = file.get();
+		const uint8_t grayAlpha2 = file.get();
+		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
 
@@ -908,23 +563,14 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 	case 2:
 	{
-		uint8_t redAlpha1 = 0;
-		uint8_t redAlpha2 = 0;
-		uint8_t greenAlpha1 = 0;
-		uint8_t greenAlpha2 = 0;
-		uint8_t blueAlpha1 = 0;
-		uint8_t blueAlpha2 = 0;
 		std::array<uint8_t, 4> CRC{};
-		file.read(reinterpret_cast<char*>(&redAlpha1), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&redAlpha2), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&greenAlpha1), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&greenAlpha2), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&blueAlpha1), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&blueAlpha2), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
+		const uint8_t redAlpha1 = file.get();
+		const uint8_t redAlpha2 = file.get();
+		const uint8_t greenAlpha1 = file.get();
+		const uint8_t greenAlpha2 = file.get();
+		const uint8_t blueAlpha1 = file.get();
+		const uint8_t blueAlpha2 = file.get();
+		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		std::array<uint8_t, 10> CRCData
 		{
@@ -951,10 +597,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		std::array<uint8_t, 4> CRC{};
 		file.read(reinterpret_cast<char*>(paletteAlpha.data()),
 		          static_cast<std::streamsize>(paletteAlpha.size()));
-		file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-		file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
+		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		std::vector<uint8_t> CRCData(paletteAlpha.size() + 4);
 		CRCData[0] = 't';
@@ -985,203 +628,6 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::ProcesspHYs(std::ifstream& file)
-{
-	std::vector<uint8_t> unusedData(9);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()),
-	          static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(unusedData.size() + 4);
-	CRCData[0] = 'p';
-	CRCData[1] = 'H';
-	CRCData[2] = 'Y';
-	CRCData[3] = 's';
-	for (uint32_t i = 0; i < unusedData.size(); i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "pHYs CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcesssPLT(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unusedData(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()),
-	          static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(unusedData.size() + 4);
-	CRCData[0] = 's';
-	CRCData[1] = 'P';
-	CRCData[2] = 'L';
-	CRCData[3] = 'T';
-	for (uint32_t i = 0; i < unusedData.size(); i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "sPLT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcesstIME(std::ifstream& file, const bool needSwap)
-{
-	tIMEChunk timeChunk{};
-	std::array<uint8_t, 4> CRC{};
-
-	file.read(reinterpret_cast<char*>(&timeChunk.Year), sizeof(uint16_t));
-	file.read(reinterpret_cast<char*>(&timeChunk.Month), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&timeChunk.Day), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&timeChunk.Hour), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&timeChunk.Minute), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&timeChunk.Second), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	//Convert to machines endian
-	if (needSwap)
-		Utils::Memory::SwapBytes(timeChunk.Year);
-
-	std::array<uint8_t, 11> CRCData
-	{
-		't', 'I', 'M', 'E',
-		reinterpret_cast<uint8_t*>(&timeChunk.Year)[1], reinterpret_cast<uint8_t*>(&timeChunk.Year)[0],
-		timeChunk.Month, timeChunk.Day, timeChunk.Hour, timeChunk.Minute, timeChunk.Second
-	};
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "tIME CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return tIMECheck(timeChunk);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcessiTXt(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unusedData(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(unusedData.size() + 4);
-	CRCData[0] = 'i';
-	CRCData[1] = 'T';
-	CRCData[2] = 'X';
-	CRCData[3] = 't';
-	for (uint32_t i = 0; i < unusedData.size(); i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "iTXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcesstEXt(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unusedData(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(unusedData.size() + 4);
-	CRCData[0] = 't';
-	CRCData[1] = 'E';
-	CRCData[2] = 'X';
-	CRCData[3] = 't';
-	for (uint32_t i = 0; i < unusedData.size(); i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "tEXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcesszTXt(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unusedData(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unusedData.data()), static_cast<std::streamsize>(unusedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(unusedData.size() + 4);
-	CRCData[0] = 'z';
-	CRCData[1] = 'T';
-	CRCData[2] = 'X';
-	CRCData[3] = 't';
-	for (uint32_t i = 0; i < unusedData.size(); i++)
-		CRCData[i + 4] = unusedData[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "zTXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
 {
 	if (length % 3 != 0)
@@ -1204,18 +650,15 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 	for (uint32_t i = 0; i < length; i++)
 	{
 		RGBA rgba{};
-		file.read(reinterpret_cast<char*>(&rgba.Red), sizeof(uint8_t));
+		rgba.Red = file.get();
 		i++;
-		file.read(reinterpret_cast<char*>(&rgba.Green), sizeof(uint8_t));
+		rgba.Green = file.get();
 		i++;
-		file.read(reinterpret_cast<char*>(&rgba.Blue), sizeof(uint8_t));
+		rgba.Blue = file.get();
 
 		paletteData[paletteIndex++] = rgba;
 	}
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
+	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 	std::vector<uint8_t> CRCData(paletteData.size() * 3 + 4);
 	CRCData[0] = 'P';
@@ -1250,10 +693,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 	std::vector<uint8_t> compressedData(length);
 	std::array<uint8_t, 4> CRC{};
 	file.read(reinterpret_cast<char*>(compressedData.data()), static_cast<std::streamsize>(compressedData.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
+	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 	std::vector<uint8_t> CRCData(compressedData.size() + 4);
 	CRCData[0] = 'I';
@@ -1272,37 +712,6 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 	}
 
 	data.CompressedData.insert(data.CompressedData.end(), compressedData.begin(), compressedData.end());
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::ProcesseXIf(std::ifstream& file, const uint32_t length)
-{
-	std::vector<uint8_t> unused(length);
-	std::array<uint8_t, 4> CRC{};
-	file.read(reinterpret_cast<char*>(unused.data()), static_cast<std::streamsize>(unused.size()));
-	file.read(reinterpret_cast<char*>(&CRC[0]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[1]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[2]), sizeof(uint8_t));
-	file.read(reinterpret_cast<char*>(&CRC[3]), sizeof(uint8_t));
-
-	std::vector<uint8_t> CRCData(unused.size() + 4);
-	CRCData[0] = 'e';
-	CRCData[1] = 'X';
-	CRCData[2] = 'I';
-	CRCData[3] = 'f';
-	for (uint32_t i = 0; i < unused.size(); i++)
-		CRCData[i + 4] = unused[i];
-
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
-	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "eXIf CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
 
 	return true;
 }

@@ -56,7 +56,7 @@ namespace TRAP::INTERNAL
 
 		struct Header
 		{
-            std::array<char, 4> MagicNumber{};
+            std::string MagicNumber = std::string(4, '\0');
 			uint32_t Width = 0;
 			uint32_t Height = 0;
             uint8_t Channels = 0;

@@ -42,13 +42,13 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     }
 
     Header header{};
-    file.read(header.MagicNumber.data(), 4);
+    file.read(header.MagicNumber.data(), header.MagicNumber.size());
     file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint32_t));
     file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint32_t));
     file >> header.Channels >> header.ColorSpace;
 
     //Magic number must be "qoif"
-    if(strcmp(header.MagicNumber.data(), "qoif") != 0)
+    if(header.MagicNumber != "qoif")
     {
         TP_ERROR(Log::ImageQOIPrefix, "Invalid magic number: ", header.MagicNumber.data(), "!");
         TP_WARN(Log::ImageQOIPrefix, "Using default image!");
@@ -101,6 +101,16 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     m_data.resize(header.Width * header.Height * header.Channels);
     m_bitsPerPixel = header.Channels * 8;
     m_colorFormat = header.Channels == 3 ? ColorFormat::RGB : ColorFormat::RGBA;
+
+    //TODO Treat as sRGB
+    // if(header.ColorSpace == 0)
+    // {
+
+    // }
+    // else
+    // {
+
+    // }
 
     DecodeImage(file, fileSize);
 

@@ -68,19 +68,10 @@ namespace TRAP::INTERNAL
 		struct AlreadyLoaded
 		{
 			bool IHDR = false;
-			bool cHRM = false;
-			bool gAMA = false;
-			bool iCCP = false;
-			bool sBIT = false;
 			bool sRGB = false;
-			bool bKGD = false;
-			bool hIST = false;
 			bool tRNS = false;
-			bool pHYs = false;
-			bool tIME = false;
 			bool PLTE = false;
 			bool IDAT = false;
-			bool eXIf = false;
 		};
 
 		struct NextChunk
@@ -134,28 +125,6 @@ namespace TRAP::INTERNAL
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
 		static bool ProcessIHDR(std::ifstream& file, Data& data, bool needSwap);
 		/// <summary>
-		/// Process the optional cHRM chunk.
-		/// cHRM contains the chromaticities of the red, green and blue primaries and the referenced white point.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesscHRM(std::ifstream& file);
-		/// <summary>
-		/// Process the optional gAMA chunk.
-		/// gAMA contains the images gamma value.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcessgAMA(std::ifstream& file);
-		/// <summary>
-		/// Process the optional iCCP chunk.
-		/// iCCP contains the ICC profile name and the ICC profile data.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Length of the chunk.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcessiCCP(std::ifstream& file, uint32_t length);
-		/// <summary>
 		/// Process the optional sBIT chunk.
 		/// sBIT contains the significant bits for each sample.
 		/// </summary>
@@ -176,17 +145,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="file">Open PNG file.</param>
 		/// <param name="data">Data containing information about the image.</param>
-		/// <param name="needSwap">Flag to indicate if the data needs to be swapped.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcessbKGD(std::ifstream& file, const Data& data, bool needSwap);
-		/// <summary>
-		/// Process the optional hIST chunk.
-		/// hIST contains the palette histogram.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesshIST(std::ifstream& file, uint32_t length);
+		static bool ProcessbKGD(std::ifstream& file, const Data& data);
 		/// <summary>
 		/// Process the optional tRNS chunk.
 		/// tRNS contains the transparency data.
@@ -196,53 +156,6 @@ namespace TRAP::INTERNAL
 		/// <param name="data">Data containing information about the image.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
 		static bool ProcesstRNS(std::ifstream& file, uint32_t length, Data& data);
-		/// <summary>
-		/// Process the optional pHYs chunk.
-		/// pHYs contains the physical pixel dimensions.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesspHYs(std::ifstream& file);
-		/// <summary>
-		/// Process the optional sPLT chunk.
-		/// sPLT contains the suggested palette.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesssPLT(std::ifstream& file, uint32_t length);
-		/// <summary>
-		/// Process the optional tIME chunk.
-		/// tIME contains the last modification time.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="needSwap">Flag to indicate if the data needs to be swapped.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesstIME(std::ifstream& file, bool needSwap);
-		/// <summary>
-		/// Process the optional iTXt chunk.
-		/// iTXt contains the international textual data.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcessiTXt(std::ifstream& file, uint32_t length);
-		/// <summary>
-		/// Process the optional tEXt chunk.
-		/// tEXt contains the textual data.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesstEXt(std::ifstream& file, uint32_t length);
-		/// <summary>
-		/// Process the optional zTXt chunk.
-		/// zTXt contains the compressed textual data.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesszTXt(std::ifstream& file, uint32_t length);
 		/// <summary>
 		/// Process the optional PLTE chunk.
 		/// PLTE contains the palette.
@@ -261,14 +174,6 @@ namespace TRAP::INTERNAL
 		/// <param name="length">Chunk length.</param>
 		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
 		static bool ProcessIDAT(std::ifstream& file, Data& data, uint32_t length);
-		/// <summary>
-		/// Process the optional eXIf chunk.
-		/// eXIf contains the extended image information.
-		/// </summary>
-		/// <param name="file">Open PNG file.</param>
-		/// <param name="length">Chunk length.</param>
-		/// <returns>True if the chunk was processed successfully, false otherwise.</returns>
-		static bool ProcesseXIf(std::ifstream& file, uint32_t length);
 
 		/// <summary>
 		/// Check IHDR validity.
