@@ -167,6 +167,7 @@ namespace TRAP
 		inline static constexpr auto ImagePGMPrefix =                       "[Image][PGM] ";
 		inline static constexpr auto ImagePFMPrefix =                       "[Image][PFM] ";
 		inline static constexpr auto ImagePAMPrefix =                       "[Image][PAM] ";
+		inline static constexpr auto ImageQOIPrefix =                       "[Image][QOI] ";
 		inline static constexpr auto ImageBMPPrefix =                       "[Image][BMP] ";
 		inline static constexpr auto ImageRadiancePrefix =                  "[Image][Radiance] ";
 		inline static constexpr auto Renderer2DPrefix =                     "[Renderer2D] ";

@@ -13,12 +13,18 @@
 #include "Bitmap/BMPImage.h"
 #include "PortableNetworkGraphics/PNGImage.h"
 #include "RadianceHDR/RadianceImage.h"
+#include "QuiteOKImage/QOIImage.h"
 #include "CustomImage.h"
 #include "Embed.h"
 
-const std::array<std::string, 14> TRAP::Image::SupportedImageFormatSuffixes
+const std::array<std::string, 15> TRAP::Image::SupportedImageFormatSuffixes
 {
-	".pgm", ".ppm", ".pnm", ".pam", ".pfm", ".tga", ".icb", ".vda", ".vst", ".bmp", ".dib", ".png", ".hdr", ".pic"
+	".pgm", ".ppm", ".pnm", ".pam", ".pfm",
+	".tga", ".icb", ".vda", ".vst",
+	".bmp", ".dib",
+	".png",
+	".hdr", ".pic",
+	".qoi"
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -238,6 +244,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 		result = MakeScope<INTERNAL::PNGImage>(filepath);
 	else if (fileFormat == ".hdr" || fileFormat == ".pic")
 		result = MakeScope<INTERNAL::RadianceImage>(filepath);
+	else if (fileFormat == ".qoi")
+		result = MakeScope<INTERNAL::QOIImage>(filepath);
 	else
 	{
 		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image format ", fileFormat, "!");

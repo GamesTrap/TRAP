@@ -23,6 +23,7 @@ private:
 	bool m_bmp;
 	bool m_pm;
 	bool m_radiance;
+	bool m_qoi;
 };
 
 #endif /*GAMESTRAP_IMAGELOADERTESTS_H*/

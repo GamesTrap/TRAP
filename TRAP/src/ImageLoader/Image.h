@@ -218,7 +218,7 @@ namespace TRAP
 		/// <returns>Converted image</returns>
 		static Scope<Image> ConvertRGBToRGBA(const Scope<Image>& img);
 
-		static const std::array<std::string, 14> SupportedImageFormatSuffixes;
+		static const std::array<std::string, 15> SupportedImageFormatSuffixes;
 
 	protected:
 		/// <summary>

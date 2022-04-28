@@ -11,7 +11,8 @@ ImageLoaderTests::ImageLoaderTests()
       m_tga(true),
       m_bmp(false),
       m_pm(false),
-	  m_radiance(false)
+	  m_radiance(false),
+	  m_qoi(false)
 {
 }
 
@@ -22,7 +23,7 @@ void ImageLoaderTests::OnImGuiRender()
 	ImGui::Begin("Images", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
-	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance)");
+	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance), 6(QOI)");
 	if(m_tga)
 	{
 		ImGui::Text("Current: TGA");
@@ -91,6 +92,14 @@ void ImageLoaderTests::OnImGuiRender()
 	{
 		ImGui::Text("Current: Radiance");
 		ImGui::Text("1. TestHDR");
+	}
+	else if(m_qoi)
+	{
+		ImGui::Text("Current: Quite OK Image");
+		ImGui::Text("1. Test24BPPsRGB");
+		ImGui::Text("2. Test24BPPLinear");
+		ImGui::Text("3. Test32BPPsRGB");
+		ImGui::Text("4. Test32BPPLinear");
 	}
 	ImGui::End();
 }
@@ -172,6 +181,12 @@ void ImageLoaderTests::OnAttach()
 
 	//Radiance
 	TRAP::Graphics::TextureManager::Load("RadianceTestHDR", "./Assets/Textures/Radiance/TestHDR.hdr");
+
+	//QOI
+	TRAP::Graphics::TextureManager::Load("QOITest24BPPsRGB", "./Assets/Textures/QOI/Test24BPPsRGB.qoi");
+	TRAP::Graphics::TextureManager::Load("QOITest24BPPLinear", "./Assets/Textures/QOI/Test24BPPLinear.qoi");
+	TRAP::Graphics::TextureManager::Load("QOITest32BPPsRGB", "./Assets/Textures/QOI/Test32BPPsRGB.qoi");
+	TRAP::Graphics::TextureManager::Load("QOITest32BPPLinear", "./Assets/Textures/QOI/Test32BPPLinear.qoi");
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
@@ -304,6 +319,17 @@ void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
 		                                     TRAP::Graphics::TextureManager::Get2D("RadianceTestHDR"));
 	}
+	else if(m_qoi)
+	{
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("QOITest24BPPsRGB"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("QOITest24BPPLinear"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.75f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("QOITest32BPPsRGB"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} },
+		                                     TRAP::Graphics::TextureManager::Get2D("QOITest32BPPLinear"));
+	}
 	TRAP::Graphics::Renderer2D::EndScene();
 }
 
@@ -347,13 +373,15 @@ bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		event.GetKey() == TRAP::Input::Key::Two ||
 		event.GetKey() == TRAP::Input::Key::Three ||
 		event.GetKey() == TRAP::Input::Key::Four ||
-		event.GetKey() == TRAP::Input::Key::Five)
+		event.GetKey() == TRAP::Input::Key::Five ||
+		event.GetKey() == TRAP::Input::Key::Six)
 	{
 		m_tga = false;
 		m_png = false;
 		m_bmp = false;
 		m_pm = false;
 		m_radiance = false;
+		m_qoi = false;
 	}
 
 	if (event.GetKey() == TRAP::Input::Key::One)
@@ -366,6 +394,8 @@ bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		m_pm = true;
 	else if (event.GetKey() == TRAP::Input::Key::Five)
 		m_radiance = true;
+	else if (event.GetKey() == TRAP::Input::Key::Six)
+		m_qoi = true;
 
 	return true;
 }
