@@ -35,9 +35,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 namespace TRAP::Network
 {
 #ifdef TRAP_PLATFORM_WINDOWS
-	typedef UINT_PTR SocketHandle;
+	using SocketHandle = UINT_PTR;
 #else
-	typedef int32_t SocketHandle;
+	using SocketHandle = int32_t;
 #endif
 }
 

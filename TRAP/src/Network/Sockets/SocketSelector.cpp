@@ -43,9 +43,9 @@ namespace TRAP::Network
 {
 	struct SocketSelector::SocketSelectorImpl
 	{
-		fd_set AllSockets; //Set containing all the sockets handles
+		fd_set AllSockets;   //Set containing all the sockets handles
 		fd_set SocketsReady; //Set containing handles of the sockets that are ready
-		int32_t MaxSockets; //Maximum socket handle
+		int32_t MaxSockets;  //Maximum socket handle
 		int32_t SocketCount; //Number of socket handles
 	};
 }
@@ -60,16 +60,16 @@ TRAP::Network::SocketSelector::SocketSelector()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
-	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
+TRAP::Network::SocketSelector::~SocketSelector()
 {
+	m_impl.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketSelector::~SocketSelector()
+TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
+	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
 {
-	m_impl.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

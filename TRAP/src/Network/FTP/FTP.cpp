@@ -39,9 +39,9 @@ namespace TRAP::Network
 	{
 	public:
 		DataChannel(const DataChannel&) = delete;
-		DataChannel operator=(const DataChannel&) = delete;
-		DataChannel(DataChannel&&) = delete;
-		DataChannel operator=(DataChannel&&) = delete;
+		DataChannel& operator=(const DataChannel&) = delete;
+		DataChannel(DataChannel&&) = default;
+		DataChannel& operator=(DataChannel&&) = default;
 		~DataChannel() = default;
 
 		explicit DataChannel(FTP& owner);
@@ -119,7 +119,7 @@ TRAP::Network::FTP::ListingResponse::ListingResponse(const Response& response, c
 	std::string::size_type lastPos = 0;
 	for(std::string::size_type pos = data.find("\r\n"); pos != std::string::npos; pos = data.find("\r\n", lastPos))
 	{
-		m_listing.emplace_back(data.substr(lastPos, pos - lastPos));
+		m_listing.push_back(data.substr(lastPos, pos - lastPos));
 		lastPos = pos + 2;
 	}
 }
@@ -135,7 +135,7 @@ const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::G
 
 TRAP::Network::FTP::~FTP()
 {
-	Disconnect();
+	auto response = Disconnect();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -540,7 +540,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 				//Extract the current number
 				while(std::isdigit(str[index]))
 				{
-					i = i * 10 + (str[index] - '0');
+					i = static_cast<uint8_t>(static_cast<uint8_t>(i * 10) + static_cast<uint8_t>(str[index] - '0'));
 					index++;
 				}
 
@@ -549,7 +549,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 			}
 
 			//Reconstruct connection port and address
-			const uint16_t port = data[4] * 256 + data[5];
+			const uint16_t port = static_cast<uint8_t>(data[4] * 256) + data[5];
 			const IPv4Address address(data[0], data[1], data[2], data[3]);
 
 			//Connect the data channel to the server

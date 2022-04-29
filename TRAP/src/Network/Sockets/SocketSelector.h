@@ -50,14 +50,14 @@ namespace TRAP::Network
 		SocketSelector();
 
 		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		SocketSelector(const SocketSelector& copy);
-
-		/// <summary>
 		/// Destructor.
 		/// </summary>
 		~SocketSelector();
+
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
+		SocketSelector(const SocketSelector& copy);
 
 		/// <summary>
 		/// Move constructor.
@@ -108,7 +108,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="timeout">Maximum time to wait, (use TRAP::Utils::TimeStep(0.0f) for infinity).</param>
 		/// <returns>True if there are sockets ready, false otherwise.</returns>
-		bool Wait(Utils::TimeStep timeout) const;
+		[[nodiscard]] bool Wait(Utils::TimeStep timeout) const;
 
 		/// <summary>
 		/// Test a socket to know if it is ready to receive data.

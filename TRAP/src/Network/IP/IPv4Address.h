@@ -144,8 +144,8 @@ namespace TRAP::Network
 		/// <returns>Public IP address of the computer.</returns>
 		static IPv4Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
-		static const IPv4Address None; //Value representing an empty/invalid address
-		static const IPv4Address Any; //Value representing any address (0.0.0.0)
+		static const IPv4Address None;      //Value representing an empty/invalid address
+		static const IPv4Address Any;       //Value representing any address (0.0.0.0)
 		static const IPv4Address LocalHost; //The "localhost" address (for connecting a computer to itself locally)
 		static const IPv4Address Broadcast; //The "broadcast" address (for sending UDP messages to everyone on a local network)
 

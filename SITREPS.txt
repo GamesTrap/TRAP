@@ -2501,3 +2501,7 @@ SITREP 04/28/2022|22w17b1
     - Added QOIConv to convert PNG<->QOI ~<10 mins
     - Tests ImageLoader test Added QOI tests ~<10 mins
     - Optimized PNG loading (removed unused chunks loading/validation) ~<90 mins
+
+SITREP 04/29/2022|22w17b2
+    - Changed TRAP Engine version to 22w17b2(0.7.128)
+    - Updated Networking ~<20 mins

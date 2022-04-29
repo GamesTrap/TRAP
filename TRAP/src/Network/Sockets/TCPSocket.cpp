@@ -77,6 +77,7 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 		return port;
 	}
 
+	//Failed to retrieve the port
 	return 0;
 }
 

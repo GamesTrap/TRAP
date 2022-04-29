@@ -60,8 +60,8 @@ namespace TRAP::Network
 		/// <param name="remotePort">Port of the remote peer.</param>
 		/// <param name="timeout">Optional maximum time to wait.</param>
 		/// <returns>Status code.</returns>
-		Status Connect(const IPv6Address& remoteAddress, uint16_t remotePort,
-		               Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] Status Connect(const IPv6Address& remoteAddress, uint16_t remotePort,
+		                             Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
 		/// Disconnect the socket from its remote peer.
@@ -82,7 +82,7 @@ namespace TRAP::Network
 		/// <param name="data">Pointer to the sequence of bytes to send.</param>
 		/// <param name="size">Number of bytes to send.</param>
 		/// <returns>Status code.</returns>
-		Status Send(const void* data, std::size_t size) const;
+		[[nodiscard]] Status Send(const void* data, std::size_t size) const;
 
 		/// <summary>
 		/// Send raw data to the remote peer.
@@ -93,7 +93,7 @@ namespace TRAP::Network
 		/// <param name="size">Number of bytes to send.</param>
 		/// <param name="sent">The number of bytes sent will be written here.</param>
 		/// <returns>Status code.</returns>
-		Status Send(const void* data, std::size_t size, std::size_t& sent) const;
+		[[nodiscard]] Status Send(const void* data, std::size_t size, std::size_t& sent) const;
 
 		/// <summary>
 		/// Receive raw data from the remote peer.
@@ -106,7 +106,7 @@ namespace TRAP::Network
 		/// <param name="size">Maximum number of bytes that can be received.</param>
 		/// <param name="received">This variable is filled with the actual number of bytes received.</param>
 		/// <returns>Status code.</returns>
-		Status Receive(void* data, std::size_t size, std::size_t& received) const;
+		[[nodiscard]] Status Receive(void* data, std::size_t size, std::size_t& received) const;
 
 		/// <summary>
 		/// Send a formatted packet of data to the remote peer.
@@ -119,7 +119,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="packet">Packet to send.</param>
 		/// <returns>Status code.</returns>
-		Status Send(Packet& packet) const;
+		[[nodiscard]] Status Send(Packet& packet) const;
 
 		/// <summary>
 		/// Receive a formatted packet of data from the remote peer.
@@ -130,7 +130,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="packet">Packet to fill with the received data.</param>
 		/// <returns>Status code.</returns>
-		Status Receive(Packet& packet);
+		[[nodiscard]] Status Receive(Packet& packet);
 
 	private:
 		friend class TCPListenerIPv6;

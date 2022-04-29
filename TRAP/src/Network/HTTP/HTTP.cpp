@@ -117,8 +117,8 @@ std::string TRAP::Network::HTTP::Request::Prepare() const
 	out << "HTTP/" << m_majorVersion << '.' << m_minorVersion << "\r\n";
 
 	//Write fields
-	for (const auto& m_field : m_fields)
-		out << m_field.first << ": " << m_field.second << "\r\n";
+	for (const auto& [fieldKey, fieldValue] : m_fields)
+		out << fieldKey << ": " << fieldValue << "\r\n";
 
 	//Use an extra \r\n to separate the header from the body
 	out << "\r\n";
@@ -196,11 +196,11 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 	if(in >> version)
 	{
 		if((version.size() >= 8) && (version[6] == '.') &&
-			(Utils::String::ToLower(version.substr(0, 5)) == "http/") &&
+		   (Utils::String::ToLower(version.substr(0, 5)) == "http/") &&
 			std::isdigit(version[5]) && std::isdigit(version[7]))
 		{
-			m_majorVersion = version[5] - '0';
-			m_minorVersion = version[7] - '0';
+			m_majorVersion = static_cast<uint32_t>(version[5] - '0');
+			m_minorVersion = static_cast<uint32_t>(version[7] - '0');
 		}
 		else
 		{

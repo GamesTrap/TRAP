@@ -80,62 +80,62 @@ namespace TRAP::Network
 			{
 				//1XX: The requested action is being initialized,
 				//     expect another reply before proceeding with a new command
-				RestartMarkerReply = 110, //Restart marker reply
-				ServiceReadySoon = 120, //Service ready in N minutes
+				RestartMarkerReply          = 110, //Restart marker reply
+				ServiceReadySoon            = 120, //Service ready in N minutes
 				DataConnectionAlreadyOpened = 125, //Data connection already opened, transfer starting
-				OpeningDataConnection = 150, //File status ok, about to open data connection
+				OpeningDataConnection       = 150, //File status ok, about to open data connection
 
 				//2XX: The requested action has been successfully completed
-				OK = 200, //Command OK
-				PointlessCommand = 202, //Command not implemented
-				SystemStatus = 211, //System status, or system help reply
-				DirectoryStatus = 212, //Directory status
-				FileStatus = 213, //File status
-				HelpMessage = 214, //Help message
-				SystemType = 215, //NAME system type, where NAME is an official system name from the list in the Assigned Numbers doc
-				ServiceReady = 220, //Service ready for new user
-				ClosingConnection = 221, //Service closing control connection
-				DataConnectionOpened = 225, //Data connection open, no transfer in progress
+				OK                    = 200, //Command OK
+				PointlessCommand      = 202, //Command not implemented
+				SystemStatus          = 211, //System status, or system help reply
+				DirectoryStatus       = 212, //Directory status
+				FileStatus            = 213, //File status
+				HelpMessage           = 214, //Help message
+				SystemType            = 215, //NAME system type, where NAME is an official system name from the list in the Assigned Numbers doc
+				ServiceReady          = 220, //Service ready for new user
+				ClosingConnection     = 221, //Service closing control connection
+				DataConnectionOpened  = 225, //Data connection open, no transfer in progress
 				ClosingDataConnection = 226, //Closing data connection, requested file action successful
-				EnteringPassiveMode = 227, //Entering passive mode
-				LoggedIn = 230, //User logged in, proceed. Logged out if appropriate
-				FileActionOK = 250, //Requested file action OK
-				DirectoryOK = 257, //PATHNAME created
+				EnteringPassiveMode   = 227, //Entering passive mode
+				LoggedIn              = 230, //User logged in, proceed. Logged out if appropriate
+				FileActionOK          = 250, //Requested file action OK
+				DirectoryOK           = 257, //PATHNAME created
 
 				//3XX: The command has been accepted, but the requested action
 				//     is dormant, pending receipt of further information
-				NeedPassword = 331, //User name OK, need password
+				NeedPassword       = 331, //User name OK, need password
 				NeedAccountToLogIn = 332, //Need account for login
-				NeedInformation = 350, //Requested file action pending further information
+				NeedInformation    = 350, //Requested file action pending further information
 
 				//4XX: The command was not accepted and the requested action did not take place,
 				//     but the error condition is temporary and the action may be requested again
-				ServiceUnavailable = 421, //Service not available, closing control connection
+				ServiceUnavailable        = 421, //Service not available, closing control connection
 				DataConnectionUnavailable = 425, //Can't open data connection
-				TransferAborted = 426, //Connection closed, transfer aborted
-				FileActionAborted = 450, //Requested file action not taken
-				LocalError = 451, //Requested action aborted, local error in processing
-				InsufficientStorageSpace = 452, //Requested action not taken; insufficient storage space in system, file unavailable
+				TransferAborted           = 426, //Connection closed, transfer aborted
+				FileActionAborted         = 450, //Requested file action not taken
+				LocalError                = 451, //Requested action aborted, local error in processing
+				InsufficientStorageSpace  = 452, //Requested action not taken; insufficient storage space in system, file unavailable
 
 				//5XX: The command was not accepted and
 				//     the requested action did not take place
-				CommandUnknown = 500, //Syntax error, command unrecognized
-				ParametersUnknown = 501, //Syntax error in parameters or arguments
-				CommandNotImplemented = 502, //Command not implemented
-				BadCommandSequence = 503, //Bad sequence of commands
+				CommandUnknown          = 500, //Syntax error, command unrecognized
+				ParametersUnknown       = 501, //Syntax error in parameters or arguments
+				CommandNotImplemented   = 502, //Command not implemented
+				BadCommandSequence      = 503, //Bad sequence of commands
 				ParameterNotImplemented = 504, //Command not implemented for that parameter
-				NotLoggedIn = 530, //Not logged in
-				NeedAccountToStore = 532, //Need account for storing files
-				FileUnavailable = 550, //Requested action not taken, file unavailable
-				PageTypeUnknown = 551, //Requested action aborted, page type unknown
-				NotEnoughMemory = 552, //Requested file action aborted, exceeded storage allocation
-				FilenameNotAllowed = 553, //Requested action not taken, file name not allowed
+				NotLoggedIn             = 530, //Not logged in
+				NeedAccountToStore      = 532, //Need account for storing files
+				FileUnavailable         = 550, //Requested action not taken, file unavailable
+				PageTypeUnknown         = 551, //Requested action aborted, page type unknown
+				NotEnoughMemory         = 552, //Requested file action aborted, exceeded storage allocation
+				FilenameNotAllowed      = 553, //Requested action not taken, file name not allowed
 
 				//10XX: Custom codes
-				InvalidResponse = 1000, //Not part of the FTP standard, generated by TRAP when a received response cannot be parsed
+				InvalidResponse  = 1000, //Not part of the FTP standard, generated by TRAP when a received response cannot be parsed
 				ConnectionFailed = 1001, //Not part of the FTP standard, generated by TRAP when the low-level socket connection with the server fails
 				ConnectionClosed = 1002, //Not part of the FTP standard, generated by TRAP when the low-level socket connection is unexpectedly closed
-				InvalidFile = 1003 //Not part of the FTP standard, generated by TRAP when a local file cannot be read or written
+				InvalidFile      = 1003  //Not part of the FTP standard, generated by TRAP when a local file cannot be read or written
 			};
 
 			/// <summary>
@@ -227,6 +227,26 @@ namespace TRAP::Network
 		~FTP();
 
 		/// <summary>
+		/// Copy constructor.
+		/// </summary>
+		FTP(const FTP&) = delete;
+
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
+		FTP& operator=(const FTP&) = delete;
+
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
+		FTP(FTP&&) = default;
+
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
+		FTP& operator=(FTP&&) = default;
+
+		/// <summary>
 		/// Connect to the specified FTP server.
 		///
 		/// The port has a default value of 21, which is the standard
@@ -244,14 +264,14 @@ namespace TRAP::Network
 		/// <param name="port">Port used for the connection.</param>
 		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns>Server response to the request.</returns>
-		Response Connect(const IPv4Address& server, uint16_t port = 21,
-		                 Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] Response Connect(const IPv4Address& server, uint16_t port = 21,
+		                               Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
 		/// Close the connection with the server.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		Response Disconnect();
+		[[nodiscard]] Response Disconnect();
 
 		/// <summary>
 		/// Log in using an anonymous account.
@@ -260,7 +280,7 @@ namespace TRAP::Network
 		/// Users that are not logged in cannot perform any operation.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		Response Login();
+		[[nodiscard]] Response Login();
 
 		/// <summary>
 		/// Log in using a username and a password.
@@ -271,7 +291,7 @@ namespace TRAP::Network
 		/// <param name="name">User name.</param>
 		/// <param name="password">Password.</param>
 		/// <returns>Server response to the request.</returns>
-		Response Login(const std::string& name, const std::string& password);
+		[[nodiscard]] Response Login(const std::string& name, const std::string& password);
 
 		/// <summary>
 		/// Send a null command to keep the connection alive.
@@ -280,7 +300,7 @@ namespace TRAP::Network
 		/// connection automatically if no command is sent.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		Response KeepAlive();
+		[[nodiscard]] Response KeepAlive();
 
 		/// <summary>
 		/// Get the current working directory.
@@ -289,7 +309,7 @@ namespace TRAP::Network
 		/// operations involving directories and/or filenames.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		DirectoryResponse GetWorkingDirectory();
+		[[nodiscard]] DirectoryResponse GetWorkingDirectory();
 
 		/// <summary>
 		/// Get the contents of the given directory.
@@ -301,7 +321,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="directory">Directory to list.</param>
 		/// <returns>Server response to the request.</returns>
-		ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
+		[[nodiscard]] ListingResponse GetDirectoryListing(const std::filesystem::path& directory = "");
 
 		/// <summary>
 		/// Change the current working directory.
@@ -310,13 +330,13 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="directory">New working directory.</param>
 		/// <returns>Server response to the request.</returns>
-		Response ChangeDirectory(const std::filesystem::path& directory);
+		[[nodiscard]] Response ChangeDirectory(const std::filesystem::path& directory);
 
 		/// <summary>
 		/// Go to the parent directory of the current one.
 		/// </summary>
 		/// <returns>Server response to the request.</returns>
-		Response ParentDirectory();
+		[[nodiscard]] Response ParentDirectory();
 
 		/// <summary>
 		/// Create a new directory.
@@ -325,7 +345,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="name">Name of the directory to create.</param>
 		/// <returns>Server response to the request.</returns>
-		Response CreateDirectory(const std::filesystem::path& name);
+		[[nodiscard]] Response CreateDirectory(const std::filesystem::path& name);
 
 		/// <summary>
 		/// Remove an existing directory.
@@ -337,7 +357,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="name">Name of the directory to remove.</param>
 		/// <returns>Server response to the request.</returns>
-		Response DeleteDirectory(const std::filesystem::path& name);
+		[[nodiscard]] Response DeleteDirectory(const std::filesystem::path& name);
 
 		/// <summary>
 		/// Rename an existing file.
@@ -347,7 +367,7 @@ namespace TRAP::Network
 		/// <param name="file">File to rename.</param>
 		/// <param name="newName">New name of the file.</param>
 		/// <returns>Server response to the request.</returns>
-		Response RenameFile(const std::filesystem::path& file, const std::filesystem::path& newName);
+		[[nodiscard]] Response RenameFile(const std::filesystem::path& file, const std::filesystem::path& newName);
 
 		/// <summary>
 		/// Remove an existing file.
@@ -358,7 +378,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="name">File to remove.</param>
 		/// <returns>Server response to the request.</returns>
-		Response DeleteFile(const std::filesystem::path& name);
+		[[nodiscard]] Response DeleteFile(const std::filesystem::path& name);
 
 		/// <summary>
 		/// Download a file from the server.
@@ -377,8 +397,9 @@ namespace TRAP::Network
 		/// </param>
 		/// <param name="mode">Transfer mode.</param>
 		/// <returns>Server response to the request.</returns>
-		Response Download(const std::filesystem::path& remoteFile, const std::filesystem::path& path,
-		                  TransferMode mode = TransferMode::Binary);
+		[[nodiscard]] Response Download(const std::filesystem::path& remoteFile,
+										const std::filesystem::path& path,
+		                                TransferMode mode = TransferMode::Binary);
 
 		/// <summary>
 		/// Upload a file to the server.
@@ -398,9 +419,9 @@ namespace TRAP::Network
 		/// Pass true to append to or false to overwrite the remote file if it already exists.
 		/// </param>
 		/// <returns>Server response to the request.</returns>
-		Response Upload(const std::filesystem::path& localFile,
-		                const std::filesystem::path& remotePath,
-		                TransferMode mode = TransferMode::Binary, bool append = false);
+		[[nodiscard]] Response Upload(const std::filesystem::path& localFile,
+		                			  const std::filesystem::path& remotePath,
+		                			  TransferMode mode = TransferMode::Binary, bool append = false);
 
 		/// <summary>
 		/// Send a command to the FTP server.
@@ -416,7 +437,7 @@ namespace TRAP::Network
 		/// <param name="command">Command to send.</param>
 		/// <param name="parameter">Command parameter.</param>
 		/// <returns>Server response to the request.</returns>
-		Response SendCommand(const std::string& command, const std::string& parameter = "");
+		[[nodiscard]] Response SendCommand(const std::string& command, const std::string& parameter = "");
 
 	private:
 		/// <summary>

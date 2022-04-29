@@ -66,7 +66,7 @@ TRAP::Network::IPv4Address::IPv4Address(const char* address)
 
 TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
                                         const uint8_t byte3)
-	: m_address((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3), m_valid(true)
+	: m_address(static_cast<uint32_t>((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
 {
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);

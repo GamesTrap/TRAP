@@ -88,9 +88,9 @@ bool TRAP::Network::Packet::EndOfPacket() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet::operator TRAP::Network::Packet::BoolType() const
+TRAP::Network::Packet::operator bool() const
 {
-	return m_isValid ? &Packet::CheckSize : nullptr;
+	return m_isValid;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

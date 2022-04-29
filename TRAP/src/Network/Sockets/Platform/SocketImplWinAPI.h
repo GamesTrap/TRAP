@@ -47,7 +47,7 @@ namespace TRAP::INTERNAL::Network
 		/// <summary>
 		/// Types.
 		/// </summary>
-		typedef int32_t AddressLength;
+		using AddressLength = int32_t;
 
 		/// <summary>
 		/// Create an internal sockaddr_in address.

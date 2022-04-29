@@ -44,27 +44,6 @@ namespace TRAP::Network
 	{
 	public:
 		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		HTTP(HTTP&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		HTTP& operator=(HTTP&&) = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		HTTP(const HTTP&) = delete;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		HTTP& operator=(const HTTP&) = delete;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~HTTP() = default;
-
-		/// <summary>
 		/// Define a HTTP request.
 		/// </summary>
 		class Request
@@ -75,10 +54,10 @@ namespace TRAP::Network
 			/// </summary>
 			enum class Method
 			{
-				GET, //Request in get mode, standard method to retrieve a page
-				POST, //Request in post mode, usually to send data to a page
-				HEAD, //Request a page's header only
-				PUT, //Request in put mode, useful for a REST API
+				GET,   //Request in get mode, standard method to retrieve a page
+				POST,  //Request in post mode, usually to send data to a page
+				HEAD,  //Request a page's header only
+				PUT,   //Request in put mode, useful for a REST API
 				DELETE //Request in delete mode, useful for a REST API
 			};
 
@@ -156,7 +135,7 @@ namespace TRAP::Network
 			/// request to the web server.
 			/// </summary>
 			/// <returns>String containing the request, ready to be sent.</returns>
-			std::string Prepare() const;
+			[[nodiscard]] std::string Prepare() const;
 
 			/// <summary>
 			/// Check if the request defines a field.
@@ -167,14 +146,14 @@ namespace TRAP::Network
 			/// <returns>True if the field exists, false otherwise.</returns>
 			bool HasField(const std::string& field) const;
 
-			typedef std::map<std::string, std::string> FieldTable;
+			using FieldTable = std::map<std::string, std::string>;
 
-			FieldTable m_fields; //Fields of the header associated to their value
-			Method m_method; //Method to use for the request
-			std::string m_uri; //Target URI of the request
+			FieldTable m_fields;     //Fields of the header associated to their value
+			Method m_method;         //Method to use for the request
+			std::string m_uri;       //Target URI of the request
 			uint32_t m_majorVersion; //Major HTTP version
 			uint32_t m_minorVersion; //Minor HTTP version
-			std::string m_body; //Body of the request
+			std::string m_body;      //Body of the request
 		};
 
 		/// <summary>
@@ -189,37 +168,37 @@ namespace TRAP::Network
 			enum class Status
 			{
 				//2XX: Success
-				OK = 200, //Most common code returned when operation was successful
-				Created = 201, //The resource has successfully been created
-				Accepted = 202, //The request has been accepted, but will be processed later by the server
-				NoContent = 204, //The server didn't send any data in return
-				ResetContent = 205, //The server informs the client that it should clear the view (form) that caused the request to be sent
+				OK             = 200, //Most common code returned when operation was successful
+				Created        = 201, //The resource has successfully been created
+				Accepted       = 202, //The request has been accepted, but will be processed later by the server
+				NoContent      = 204, //The server didn't send any data in return
+				ResetContent   = 205, //The server informs the client that it should clear the view (form) that caused the request to be sent
 				PartialContent = 206, //The server has sent a part of the resource, as a response to a partial GET request
 
 				//3XX: Redirection
-				MultipleChoices = 300, //The requested page can be accessed from several locations
+				MultipleChoices  = 300, //The requested page can be accessed from several locations
 				MovedPermanently = 301, //The requested page has permanently moved to a new location
 				MovedTemporarily = 302, //The requested page has temporarily moved to a new location
-				NotModified = 304, //For conditional requests, means the requested page hasn't changed and doesn't need to be refreshed
+				NotModified      = 304, //For conditional requests, means the requested page hasn't changed and doesn't need to be refreshed
 
 				//4XX: Client error
-				BadRequest = 400, //The server couldn't understand the request (syntax error)
-				Unauthorized = 401, //The requested page needs an authentication to be accessed
-				Forbidden = 403, //The requested page cannot be accessed at all, event with authentication
-				NotFound = 404, //The requested page doesn't exist
+				BadRequest          = 400, //The server couldn't understand the request (syntax error)
+				Unauthorized        = 401, //The requested page needs an authentication to be accessed
+				Forbidden           = 403, //The requested page cannot be accessed at all, event with authentication
+				NotFound            = 404, //The requested page doesn't exist
 				RangeNotSatisfiable = 407, //The server can't satisfy the partial GET request (with a "Range" header field)
 
 				//5XX: Server error
 				InternalServerError = 500, //The server encountered an unexpected error
-				NotImplemented = 501, //The server doesn't implement a requested feature
-				BadGateway = 502, //The gateway server has received an error from the source server
+				NotImplemented      = 501, //The server doesn't implement a requested feature
+				BadGateway          = 502, //The gateway server has received an error from the source server
 				ServiceNotAvailable = 503, //The server is temporarily unavailable (overloaded, in maintenance, ...)
-				GatewayTimeout = 504, //The gateway server couldn't receive a response from the source server
+				GatewayTimeout      = 504, //The gateway server couldn't receive a response from the source server
 				VersionNotSupported = 505, //The server doesn't support the requested HTTP version
 
 				//10XX: Custom codes
-				InvalidResponse = 1000, //Response is not a valid HTTP one
-				ConnectionFailed = 1001 //Connection with server failed
+				InvalidResponse  = 1000, //Response is not a valid HTTP one
+				ConnectionFailed = 1001  //Connection with server failed
 			};
 
 			/// <summary>
@@ -294,13 +273,13 @@ namespace TRAP::Network
 			/// <param name="in">String stream containing the header values.</param>
 			void ParseFields(std::istream& in);
 
-			typedef std::map<std::string, std::string> FieldTable;
+			using FieldTable = std::map<std::string, std::string>;
 
-			FieldTable m_fields; //Fields of the header
-			Status m_status; //Status code
+			FieldTable m_fields;     //Fields of the header
+			Status m_status;         //Status code
 			uint32_t m_majorVersion; //Major HTTP version
 			uint32_t m_minorVersion; //Minor HTTP version
-			std::string m_body; //Body of the response
+			std::string m_body;      //Body of the response
 		};
 
 		/// <summary>
@@ -321,6 +300,27 @@ namespace TRAP::Network
 		/// <param name="host">Web server to connect to.</param>
 		/// <param name="port">Port to use for connection.</param>
 		explicit HTTP(const std::string& host, uint16_t port = 0);
+
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
+		HTTP(HTTP&&) = default;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
+		HTTP& operator=(HTTP&&) = default;
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
+		HTTP(const HTTP&) = delete;
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
+		HTTP& operator=(const HTTP&) = delete;
+		/// <summary>
+		/// Destructor.
+		/// </summary>
+		~HTTP() = default;
 
 		/// <summary>
 		/// Set target host.
@@ -352,15 +352,15 @@ namespace TRAP::Network
 		/// <param name="request">Request to send.</param>
 		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns>Server response.</returns>
-		Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
+		[[nodiscard]] Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 	private:
-		TCPSocket m_connection; //Connection to the host
+		TCPSocket m_connection;         //Connection to the host
 		TCPSocketIPv6 m_connectionIPv6; //Connection to the host
-		IPv4Address m_host; //Web host address
-		IPv6Address m_hostIPv6; //Web host address
-		std::string m_hostName; //Web host name
-		uint16_t m_port; //Port used for connection with host
+		IPv4Address m_host;             //Web host address
+		IPv6Address m_hostIPv6;         //Web host address
+		std::string m_hostName;         //Web host name
+		uint16_t m_port;                //Port used for connection with host
 	};
 }
 

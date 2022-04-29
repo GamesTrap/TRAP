@@ -44,7 +44,7 @@ namespace TRAP::Network
 		/// <param name="port">Port to listen on for incoming connection attempts.</param>
 		/// <param name="address">Address of the interface to listen on.</param>
 		/// <returns>Status code.</returns>
-		Status Listen(uint16_t port, const IPv6Address& address = IPv6Address::Any);
+		[[nodiscard]] Status Listen(uint16_t port, const IPv6Address& address = IPv6Address::Any);
 
 		/// <summary>
 		/// Stop listening and close the socket.
@@ -62,7 +62,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="socket">Socket that will hold the new connection.</param>
 		/// <returns>Status code.</returns>
-		Status Accept(TCPSocketIPv6& socket) const;
+		[[nodiscard]] Status Accept(TCPSocketIPv6& socket) const;
 	};
 }
 

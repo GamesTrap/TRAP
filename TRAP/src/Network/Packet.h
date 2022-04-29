@@ -42,11 +42,6 @@ namespace TRAP::Network
 	/// </summary>
 	class Packet
 	{
-		/// <summary>
-		/// A bool-like type that cannot be converted to integer or pointer types.
-		/// </summary>
-		typedef bool (Packet::*BoolType)(std::size_t);
-
 	public:
 		/// <summary>
 		/// Constructor.
@@ -70,11 +65,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Packet(Packet&&) = default;
+		Packet(Packet&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Packet& operator=(Packet&&) = default;
+		Packet& operator=(Packet&&) noexcept = default ;
 
 		/// <summary>
 		/// Append data to the end of the packet.
@@ -143,7 +138,7 @@ namespace TRAP::Network
 		/// pointer types.
 		/// </summary>
 		/// <returns>True if last data extraction from packet was successful.</returns>
-		operator BoolType() const;
+		explicit operator bool() const;
 
 		/// <summary>
 		/// Overload of operator >> to read data from the packet.
@@ -240,9 +235,9 @@ namespace TRAP::Network
 		bool CheckSize(std::size_t size);
 
 		std::vector<char> m_data; //Data stored in the packet
-		std::size_t m_readPos; //Current reading position in the packet
-		std::size_t m_sendPos; //Current send position in the packet (for handling partial sends)
-		bool m_isValid; //Reading state of the packet
+		std::size_t m_readPos;    //Current reading position in the packet
+		std::size_t m_sendPos;    //Current send position in the packet (for handling partial sends)
+		bool m_isValid;           //Reading state of the packet
 	};
 }
 

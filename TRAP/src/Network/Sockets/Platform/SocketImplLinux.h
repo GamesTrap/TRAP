@@ -53,7 +53,7 @@ namespace TRAP::INTERNAL::Network
 		/// <summary>
 		/// Types.
 		/// </summary>
-		typedef socklen_t AddressLength;
+		using AddressLength = socklen_t;
 
 		/// <summary>
 		/// Create an internal sockaddr_in address.

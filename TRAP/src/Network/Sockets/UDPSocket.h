@@ -77,7 +77,7 @@ namespace TRAP::Network
 		/// <param name="port">Port to bind the socket to.</param>
 		/// <param name="address">Address of the interface to bind to.</param>
 		/// <returns>Status code.</returns>
-		Status Bind(uint16_t port, const IPv4Address& address = IPv4Address::Any);
+		[[nodiscard]] Status Bind(uint16_t port, const IPv4Address& address = IPv4Address::Any);
 
 		/// <summary>
 		/// Unbind the socket from the local port to which it is bound.
@@ -102,7 +102,7 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the receiver.</param>
 		/// <param name="remotePort">Port of the receiver to send the data to.</param>
 		/// <returns>Status code.</returns>
-		Status Send(const void* data, std::size_t size, const IPv4Address& remoteAddress, uint16_t remotePort);
+		[[nodiscard]] Status Send(const void* data, std::size_t size, const IPv4Address& remoteAddress, uint16_t remotePort);
 
 		/// <summary>
 		/// Receive raw data from a remote peer.
@@ -120,8 +120,8 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
 		/// <param name="remotePort">Port of the peer that sent the data.</param>
 		/// <returns>Status code.</returns>
-		Status Receive(void* data, std::size_t size, std::size_t& received, IPv4Address& remoteAddress,
-		               uint16_t& remotePort) const;
+		[[nodiscard]] Status Receive(void* data, std::size_t size, std::size_t& received, IPv4Address& remoteAddress,
+		                             uint16_t& remotePort) const;
 
 		/// <summary>
 		/// Send a formatted packet of data to a remote peer.
@@ -134,7 +134,7 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the received.</param>
 		/// <param name="remotePort">Port of the receiver to send the data to.</param>
 		/// <returns>Status code.</returns>
-		Status Send(Packet& packet, const IPv4Address& remoteAddress, uint16_t remotePort);
+		[[nodiscard]] Status Send(Packet& packet, const IPv4Address& remoteAddress, uint16_t remotePort);
 
 		/// <summary>
 		/// Receive a formatted packet of data from a remote peer.
@@ -146,7 +146,7 @@ namespace TRAP::Network
 		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
 		/// <param name="remotePort">Port of the peer that sent the data.</param>
 		/// <returns>Status code.</returns>
-		Status Receive(Packet& packet, IPv4Address& remoteAddress, uint16_t& remotePort);
+		[[nodiscard]] Status Receive(Packet& packet, IPv4Address& remoteAddress, uint16_t& remotePort);
 
 	private:
 		std::vector<char> m_buffer; //Temporary buffer holding the received data in Receive(Packet)
