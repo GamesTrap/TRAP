@@ -44,23 +44,6 @@ namespace TRAP::Network
 	{
 	public:
 		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		FTP(FTP&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		FTP& operator=(FTP&&) = default;
-		/// <summary>
-		/// Copy constructor.
-		/// </summary>
-		FTP(const FTP&) = delete;
-		/// <summary>
-		/// Copy assignment constructor.
-		/// </summary>
-		FTP& operator=(const FTP&) = delete;
-
-		/// <summary>
 		/// Enumeration of transfer modes
 		/// </summary>
 		enum class TransferMode
