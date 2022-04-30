@@ -3961,11 +3961,6 @@ namespace TRAP::INTERNAL
 		/// <param name="event">Selection request event.</param>
 		static void HandleSelectionRequest(XEvent& event);
 		/// <summary>
-		/// Handles a selection clear event.
-		/// </summary>
-		/// <param name="event">Selection clear event.</param>
-		static void HandleSelectionClear(XEvent& event);
-		/// <summary>
 		/// Push contents of our selection to clipboard manager.
 		/// </summary>
 		static void PushSelectionToManagerX11();

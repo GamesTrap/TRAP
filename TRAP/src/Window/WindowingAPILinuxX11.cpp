@@ -1154,16 +1154,6 @@ void TRAP::INTERNAL::WindowingAPI::HandleSelectionRequest(XEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::HandleSelectionClear(XEvent& event)
-{
-	if(event.xselectionclear.selection == s_Data.PRIMARY)
-		s_Data.PrimarySelectionString.clear();
-	else
-		s_Data.ClipboardString.clear();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Push contents of our selection to clipboard manager
 void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 {
@@ -1180,10 +1170,6 @@ void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 			{
 			case SelectionRequest:
 				HandleSelectionRequest(event);
-				break;
-
-			case SelectionClear:
-				HandleSelectionClear(event);
 				break;
 
 			case SelectionNotify:
@@ -1792,13 +1778,16 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 
 				if(!itemCount)
 				{
-					if(target == XA_STRING)
+					if(string.empty())
 					{
-						*selectionString = ConvertLatin1ToUTF8(string.c_str());
-						string.clear();
+						if(target == XA_STRING)
+						{
+							*selectionString = ConvertLatin1ToUTF8(string.c_str());
+							string.clear();
+						}
+						else
+							*selectionString = string;
 					}
-					else
-						*selectionString = string;
 
 					break;
 				}
@@ -2505,6 +2494,9 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 	if(!CreateNativeWindow(window, WNDConfig, visual, depth))
 		return false;
 
+	if(WNDConfig.MousePassthrough)
+		PlatformSetWindowMousePassthrough(window, true);
+
 	if(window->Monitor)
 	{
 		PlatformShowWindow(window);
@@ -2513,6 +2505,15 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 			AcquireMonitorBorderless(window);
 		else
 			AcquireMonitor(window);
+	}
+	else
+	{
+		if(WNDConfig.Visible)
+		{
+			PlatformShowWindow(window);
+			if(WNDConfig.Focused)
+				PlatformFocusWindow(window);
+		}
 	}
 
 	s_Data.XLIB.Flush(s_Data.display);
@@ -3588,11 +3589,6 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		return;
 	}
 
-	if(event.type == SelectionClear)
-	{
-		HandleSelectionClear(event);
-		return;
-	}
 	if(event.type == SelectionRequest)
 	{
 		HandleSelectionRequest(event);

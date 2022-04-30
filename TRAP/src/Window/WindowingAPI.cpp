@@ -313,21 +313,6 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 		return nullptr;
 	}
 
-	if (WNDConfig.MousePassthrough)
-		PlatformSetWindowMousePassthrough(window.get(), WNDConfig.MousePassthrough);
-
-	if (window->Monitor)
-		CenterCursorInContentArea(window.get());
-	else
-	{
-		if (WNDConfig.Visible)
-		{
-			PlatformShowWindow(window.get());
-			if(WNDConfig.Focused)
-				PlatformFocusWindow(window.get());
-		}
-	}
-
 	return window;
 }
 

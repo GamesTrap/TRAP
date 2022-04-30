@@ -1452,13 +1452,16 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 
 	if (window->Monitor)
 	{
+		MONITORINFO mi{};
+		mi.cbSize = sizeof(mi);
+		GetMonitorInfoW(window->Monitor->Handle, &mi);
 		//NOTE: This window placement is temporary and approximate, as the
 		//      correct position and size cannot be known until the monitor
 		//      video mode has been picked in SetVideoModeWin32
-		PlatformGetMonitorPos(window->Monitor, xPos, yPos);
-		const InternalVideoMode mode = PlatformGetVideoMode(window->Monitor);
-		fullWidth = mode.Width;
-		fullHeight = mode.Height;
+		xPos = mi.rcMonitor.left;
+		yPos = mi.rcMonitor.top;
+		fullWidth = mi.rcMonitor.right - mi.rcMonitor.left;
+		fullHeight = mi.rcMonitor.bottom - mi.rcMonitor.top;
 	}
 	else
 	{
@@ -2209,12 +2212,24 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window, 
 	if (!CreateNativeWindow(window, WNDConfig))
 		return false;
 
+	if(WNDConfig.MousePassthrough)
+		PlatformSetWindowMousePassthrough(window, true);
+
 	if (window->Monitor)
 	{
 		PlatformShowWindow(window);
 		PlatformFocusWindow(window);
 		AcquireMonitor(window);
 		FitToMonitor(window);
+	}
+	else
+	{
+		if(WNDConfig.Visible)
+		{
+			PlatformShowWindow(window);
+			if(WNDConfig.Focused)
+				PlatformFocusWindow(window);
+		}
 	}
 
 	return true;

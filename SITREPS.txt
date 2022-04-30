@@ -2505,3 +2505,7 @@ SITREP 04/28/2022|22w17b1
 SITREP 04/29/2022|22w17b2
     - Changed TRAP Engine version to 22w17b2(0.7.128)
     - Updated Networking ~<20 mins
+
+SITREP 04/30/2022|22w17b3
+    - Changed TRAP Engine version to 22w17b3(0.7.129)
+    - Small WindowingAPI updates ~<20 mins
