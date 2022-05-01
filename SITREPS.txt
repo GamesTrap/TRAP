@@ -2509,3 +2509,12 @@ SITREP 04/29/2022|22w17b2
 SITREP 04/30/2022|22w17b3
     - Changed TRAP Engine version to 22w17b3(0.7.129)
     - Small WindowingAPI updates ~<20 mins
+    - Moved some class-members from heap onto stack ~<15 mins
+    - Corrected some unique_ptrs used as TRAP::Scope ~<20 mins
+
+SITREP 05/01/2022|22w17c1
+    - Changed TRAP Engine version to 22w17c1(0.7.130)
+    - Application cleaned up Main Window creation ~<10 mins
+    - Corrected memory model (only use smart pointers when we care
+                              about ownership, else use raw pointers) ~>120 mins
+    - Removed window parameter from OrthographicCameraController ~<5 mins

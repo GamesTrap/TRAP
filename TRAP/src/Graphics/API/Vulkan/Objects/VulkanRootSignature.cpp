@@ -14,7 +14,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkDescriptorSetLayouts(),
 	  m_vkCumulativeDescriptorsCounts(),
 	  m_vkDescriptorCounts(),

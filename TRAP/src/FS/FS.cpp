@@ -805,7 +805,7 @@ std::string GetHomeFolderPathLinux()
     if(!homeDir.empty())
         return homeDir;
 
-    int uid = static_cast<int>(getuid());
+    uid_t uid = getuid();
     const char* homeEnv = std::getenv("HOME");
     if(uid != 0 && homeEnv)
     {

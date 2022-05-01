@@ -328,7 +328,7 @@ namespace TRAP
 		/// <param name="key">Key to check.</param>
 		/// <param name="window">Window to check on.</param>
 		/// <returns>True if provided key is pressed in provided window, false otherwise.</returns>
-		static bool IsKeyPressed(Key key, const Scope<Window>& window);
+		static bool IsKeyPressed(Key key, const Window* const window);
 		/// <summary>
 		/// Check if a mouse button on the mouse is pressed.
 		/// </summary>
@@ -341,7 +341,7 @@ namespace TRAP
 		/// <param name="button">Mouse button to check.</param>
 		/// <param name="window">Window to check on.</param>
 		/// <returns>True if provided mouse button is pressed in provided window, false otherwise.</returns>
-		static bool IsMouseButtonPressed(MouseButton button, const Scope<Window>& window);
+		static bool IsMouseButtonPressed(MouseButton button, const Window* const window);
 		/// <summary>
 		/// Retrieve whether raw mouse input is supported.
 		/// </summary>
@@ -370,7 +370,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>Mouse position of the window as a Math::Vec2.</returns>
-		static Math::Vec2 GetMousePosition(const Scope<Window>& window);
+		static Math::Vec2 GetMousePosition(const Window* const window);
 		/// <summary>
 		/// Retrieve the current mouse position on the x axis.
 		/// </summary>
@@ -386,13 +386,13 @@ namespace TRAP
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>X mouse position.</returns>
-		static float GetMouseX(const Scope<Window>& window);
+		static float GetMouseX(const Window* const window);
 		/// <summary>
 		/// Retrieve the current mouse position on the y axis for the provided window.
 		/// </summary>
 		/// <param name="window">Window to check.</param>
 		/// <returns>Y mouse position.</returns>
-		static float GetMouseY(const Scope<Window>& window);
+		static float GetMouseY(const Window* const window);
 		/// <summary>
 		/// Retrieve the string representation of a key.
 		/// </summary>
@@ -496,7 +496,7 @@ namespace TRAP
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
 		/// <param name="window">Window to affect.</param>
-		static void SetMousePosition(float x, float y, const Scope<Window>& window);
+		static void SetMousePosition(float x, float y, const Window* const window);
 		/// <summary>
 		/// Set the mouse position.
 		/// </summary>
@@ -507,7 +507,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="position">New position.</param>
 		/// <param name="window">Window to affect.</param>
-		static void SetMousePosition(const Math::Vec2& position, const Scope<Window>& window);
+		static void SetMousePosition(const Math::Vec2& position, const Window* const window);
 
 		/// <summary>
 		/// Set the system clipboard to the specified UTF-8 encoded string.

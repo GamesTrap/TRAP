@@ -10,9 +10,9 @@ public:
 	explicit Sandbox(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		PushLayer(TRAP::MakeScope<SandboxLayer>());
-		// PushLayer(TRAP::MakeScope<Sandbox2D>());
-		// PushLayer(TRAP::MakeScope<ParticleSystem2DLayer>());
+		PushLayer(std::make_unique<SandboxLayer>());
+		// PushLayer(std::make_unique<Sandbox2D>());
+		// PushLayer(std::make_unique<ParticleSystem2DLayer>());
 	}
 };
 

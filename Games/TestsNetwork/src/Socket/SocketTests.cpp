@@ -9,8 +9,9 @@ SocketTests::SocketTests()
 
 void SocketTests::OnAttach()
 {
-	m_socketThread = TRAP::MakeScope<std::thread>(Sockets);
-	m_socketThread->detach();
+	m_socketThread = std::make_unique<std::thread>(Sockets);
+	if(m_socketThread)
+		m_socketThread->detach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

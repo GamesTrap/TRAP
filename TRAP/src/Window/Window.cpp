@@ -487,7 +487,7 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetCursorIcon(const Scope<Image>& image, const int32_t xHotspot, const int32_t yHotspot) const
+void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspot, const int32_t yHotspot) const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -526,12 +526,12 @@ void TRAP::Window::SetIcon() const
 
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
 	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, Image::ColorFormat::RGBA,
-	                                                                            TRAPLogo));
+	                                                                            TRAPLogo).get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetIcon(const Scope<Image>& image) const
+void TRAP::Window::SetIcon(const Image* const image) const
 {
 	TP_PROFILE_FUNCTION();
 

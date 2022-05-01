@@ -394,7 +394,6 @@ namespace TRAP::Graphics
 
 		/// <summary>
 		/// Take a screenshot of the RenderTarget from the given window.
-		/// Note: EXPERIMENTAL
 		/// </summary>
 		/// <param name="window">Window to take screenshot from. Default: Main Window.</param>
 		/// <returns>Captured screenshot.</returns>

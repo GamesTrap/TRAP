@@ -1388,7 +1388,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>On success new internal cursor, nullptr otherwise.</returns>
-		static Scope<InternalCursor> CreateCursor(const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
+		static Scope<InternalCursor> CreateCursor(const Image* const image, int32_t xHotspot, int32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -1429,7 +1429,7 @@ namespace TRAP::INTERNAL
 		/// <param name="image">
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
-		static void SetWindowIcon(InternalWindow* window, const Scope<Image>& image);
+		static void SetWindowIcon(InternalWindow* window, const Image* const image);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specifed windowed mode window. If the window is a full screen window,
@@ -2768,7 +2768,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotspot">Center x coordinate of the image.</param>
 		/// <param name="yHotspot">Center y coordinate of the image.</param>
 		/// <returns>True if the cursor was created successfully.</returns>
-		static bool PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image, int32_t xHotspot,
+		static bool PlatformCreateCursor(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
 		                                 int32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
@@ -2882,7 +2882,7 @@ namespace TRAP::INTERNAL
 		/// <param name="image">
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
-		static void PlatformSetWindowIcon(InternalWindow* window, const Scope<Image>& image);
+		static void PlatformSetWindowIcon(InternalWindow* window, const Image* const image);
 		/// <summary>
 		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
@@ -3745,7 +3745,7 @@ namespace TRAP::INTERNAL
 		/// <param name="yHot">Center y coordinate of the image.</param>
 		/// <param name="icon">Whether it is an icon or a cursor.</param>
 		/// <returns>Handle to the icon.</returns>
-		static HICON CreateIcon(const Scope<Image>& image, int32_t xHot, int32_t yHot, bool icon);
+		static HICON CreateIcon(const Image* const image, int32_t xHot, int32_t yHot, bool icon);
 		/// <summary>
 		/// Update native window styles to match attributes.
 		/// </summary>
@@ -3992,7 +3992,7 @@ namespace TRAP::INTERNAL
 		/// <param name="xHotSpot">X center coordinate of the given image.</param>
 		/// <param name="yHotSpot">Y center coordinate of the given image.</param>
 		/// <returns>Newly created cursor.</returns>
-		static Cursor CreateCursorX11(const Scope<TRAP::Image>& image, int32_t xHotSpot, int32_t yHotSpot);
+		static Cursor CreateCursorX11(const TRAP::Image* const image, int32_t xHotSpot, int32_t yHotSpot);
 		/// <summary>
 		/// Returns whether the window is iconified/minimized
 		/// </summary>

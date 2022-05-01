@@ -920,7 +920,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 	VkFormatProperties formatProperties;
 	TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
-			RendererAPI::GetRenderer().get()
+			RendererAPI::GetRenderer()
 		);
 	vkGetPhysicalDeviceFormatProperties(vkRenderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice(),
 										TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()),
@@ -1004,7 +1004,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
 																											 const TextureUpdateDescInternal& textureUpdateDesc,
-																											 std::array<TRAP::Scope<TRAP::Image>, 6>* const images)
+																											 const std::array<TRAP::Scope<TRAP::Image>, 6>* const images)
 {
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
@@ -1077,11 +1077,10 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				for(uint32_t z = 0; z < subDepth; ++z)
 				{
 					//Convert to RGBA if necessary
-					TRAP::Scope<TRAP::Image> RGBAImage = nullptr;
 					const uint8_t* pixelData = nullptr;
 					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 					{
-						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer]);
+						TRAP::Scope<TRAP::Image> RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer].get());
 						pixelData = static_cast<const uint8_t*>(RGBAImage->GetPixelData());
 					}
 					else
@@ -1258,11 +1257,11 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			if(valid)
 			{
 				if(baseImg->IsHDR() && baseImg->GetBytesPerChannel() == 4)
-					images = TRAP::Graphics::Texture::SplitImageFromCross<float>(baseImg);
+					images = TRAP::Graphics::Texture::SplitImageFromCross<float>(baseImg.get());
 				else if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 2)
-					images = TRAP::Graphics::Texture::SplitImageFromCross<uint16_t>(baseImg);
+					images = TRAP::Graphics::Texture::SplitImageFromCross<uint16_t>(baseImg.get());
 				else /*if (baseImg->IsLDR() && baseImg->GetBytesPerChannel() == 1)*/
-					images = TRAP::Graphics::Texture::SplitImageFromCross<uint8_t>(baseImg);
+					images = TRAP::Graphics::Texture::SplitImageFromCross<uint8_t>(baseImg.get());
 			}
 			else //Use FallbackCube
 			{

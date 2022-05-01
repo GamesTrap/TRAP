@@ -91,7 +91,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
+bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -127,7 +127,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Scope<Window>& window)
+bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -189,7 +189,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
+TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -226,7 +226,7 @@ float TRAP::Input::GetMouseY()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Input::GetMouseX(const Scope<Window>& window)
+float TRAP::Input::GetMouseX(const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -235,7 +235,7 @@ float TRAP::Input::GetMouseX(const Scope<Window>& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Input::GetMouseY(const Scope<Window>& window)
+float TRAP::Input::GetMouseY(const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -440,7 +440,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetMousePosition(const float x, const float y, const Scope<Window>& window)
+void TRAP::Input::SetMousePosition(const float x, const float y, const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -466,7 +466,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Scope<Window>& window)
+void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* const window)
 {
 	TP_PROFILE_FUNCTION();
 

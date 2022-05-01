@@ -12,7 +12,7 @@
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 	: m_vkPipeline(VK_NULL_HANDLE),
 	  m_type(),
-	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	TRAP_ASSERT(m_device);
 

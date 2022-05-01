@@ -13,7 +13,7 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	static void SetIcon(const TRAP::Scope<TRAP::Window>& window, int32_t iconColor);
+	static void SetIcon(const TRAP::Window& window, int32_t iconColor);
 	static bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 
 	static int32_t s_cursorIconColor;

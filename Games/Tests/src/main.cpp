@@ -25,24 +25,24 @@ public:
 	explicit Tests(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		// PushLayer(TRAP::MakeScope<ClipboardTests>());
-		// PushLayer(TRAP::MakeScope<ControllerTests>());
-		// PushLayer(TRAP::MakeScope<CursorTests>());
-		// PushLayer(TRAP::MakeScope<DragAndDropTests>());
-		//PushLayer(TRAP::MakeScope<EventTests>());
-		// PushLayer(TRAP::MakeScope<FileSystemTests>());
-		// PushLayer(TRAP::MakeScope<IconTests>());
-		PushLayer(TRAP::MakeScope<ImageLoaderTests>());
-		// PushLayer(TRAP::MakeScope<MonitorTests>());
-		// PushLayer(TRAP::MakeScope<OpacityTests>());
-		// PushLayer(TRAP::MakeScope<ScreenshotTests>());
-		// PushLayer(TRAP::MakeScope<TitleTests>());
-		// PushLayer(TRAP::MakeScope<VulkanFrameBufferTests>());
-		// PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
-		// PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
-		// PushLayer(TRAP::MakeScope<VulkanTests>());
-		// PushLayer(TRAP::MakeScope<VulkanTextureTests>());
-		// PushLayer(TRAP::MakeScope<WindowStateTests>());
+		// PushLayer(std::make_unique<ClipboardTests>());
+		// PushLayer(std::make_unique<ControllerTests>());
+		// PushLayer(std::make_unique<CursorTests>());
+		// PushLayer(std::make_unique<DragAndDropTests>());
+		// PushLayer(std::make_unique<EventTests>());
+		// PushLayer(std::make_unique<FileSystemTests>());
+		// PushLayer(std::make_unique<IconTests>());
+		PushLayer(std::make_unique<ImageLoaderTests>());
+		// PushLayer(std::make_unique<MonitorTests>());
+		// PushLayer(std::make_unique<OpacityTests>());
+		// PushLayer(std::make_unique<ScreenshotTests>());
+		// PushLayer(std::make_unique<TitleTests>());
+		// PushLayer(std::make_unique<VulkanFrameBufferTests>());
+		// PushLayer(std::make_unique<VulkanIcoSphereTests>());
+		// PushLayer(std::make_unique<VulkanMultiWindowTests>());
+		// PushLayer(std::make_unique<VulkanTests>());
+		// PushLayer(std::make_unique<VulkanTextureTests>());
+		// PushLayer(std::make_unique<WindowStateTests>());
 	}
 };
 

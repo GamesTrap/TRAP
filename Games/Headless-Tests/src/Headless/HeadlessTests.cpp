@@ -14,7 +14,7 @@ void HeadlessTests::OnAttach()
 	//TRAP::Graphics::RenderCommand::SetResolution(3840, 2160); //4K Resolution
 
 	//TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
-	//TRAP::INTERNAL::PPMImage::Save(testImage, "testBefore.ppm");
+	//TRAP::INTERNAL::PPMImage::Save(testImage.get(), "testBefore.ppm");
 
 	TRAP::Application::Shutdown();
 }
@@ -28,7 +28,7 @@ void HeadlessTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 	if(++count > 1)
 	{
 		TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
-		TRAP::INTERNAL::PPMImage::Save(testImage, "testAfter.ppm");
+		TRAP::INTERNAL::PPMImage::Save(testImage.get(), "testAfter.ppm");
 		TRAP::Application::Shutdown();
 	}*/
 }

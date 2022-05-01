@@ -1688,7 +1688,7 @@ bool TRAP::INTERNAL::WindowingAPI::CursorInContentArea(const InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates an RGBA icon or cursor
-HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const int32_t xHot, const int32_t yHot,
+HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image* const image, const int32_t xHot, const int32_t yHot,
                                                const bool icon)
 {
 	BITMAPV5HEADER bi;
@@ -2248,7 +2248,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image,
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* cursor, const Image* const image,
                                                         const int32_t xHotspot, const int32_t yHotspot)
 {
 	cursor->Handle = CreateIcon(image, xHotspot, yHotspot, false);
@@ -2406,7 +2406,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow* wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window, const Scope<Image>& image)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window, const Image* const image)
 {
 	HICON bigIcon, smallIcon;
 

@@ -11,7 +11,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkQueue(VK_NULL_HANDLE),
 	  m_submitMutex(VulkanRenderer::s_NullDescriptors->SubmitMutex),
 	  m_vkQueueFamilyIndex(std::numeric_limits<uint8_t>::max()),

@@ -36,10 +36,8 @@ class OrthographicCameraController
 		/// <param name="rotation">Enabled or disable rotation controls.</param>
 		/// <param name="useController">Use the mouse and keyboard to control the camera or a controller.</param>
 		/// <param name="controller">Which controller slot to use when useController is set to true.</param>
-		/// <param name="window">Window to use for the camera. Used for mouse scroll and resize event capturing.</param>
 		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false,
-		                                      Input::Controller controller = Input::Controller::One,
-											  const std::unique_ptr<Window>& window = Application::GetWindow()); //TODO Could be split into 2 constructors, one containing controller.
+		                                      Input::Controller controller = Input::Controller::One); //TODO Could be split into 2 constructors, one containing controller.
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -70,6 +68,7 @@ class OrthographicCameraController
 		/// </summary>
 		/// <param name="deltaTime">Time since last frame.</param>
 		void OnUpdate(const Utils::TimeStep& deltaTime);
+
 		/// <summary>
 		/// Receive and handle mouse scroll and framebuffer resize events.
 		/// </summary>
@@ -83,7 +82,7 @@ class OrthographicCameraController
 		/// </summary>
 		/// <param name="width">New width of the camera.</param>
 		/// <param name="height">New height of the camera.</param>
-		void OnResize(float width, float height); //TODO Should this be private?
+		void OnResize(float width, float height);
 
 		/// <summary>
 		/// Retrieve the Orthographic/2D camera.
@@ -162,7 +161,6 @@ class OrthographicCameraController
 		bool m_rotation;
 		bool m_useController;
 		Input::Controller m_controller;
-		const Scope<Window>& m_window;
 
 		Math::Vec3 m_cameraPosition{ 0.0f };
 		Math::Vec3 m_cameraRotation{ 0.0f };

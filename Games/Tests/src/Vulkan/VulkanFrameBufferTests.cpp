@@ -34,11 +34,11 @@ void VulkanFrameBufferTests::OnAttach()
     m_indexBuffer->AwaitLoading();
 
     //Load Texture
-    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", "./Assets/Textures/vulkanlogotransparent2.png").get();
+    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", "./Assets/Textures/vulkanlogotransparent2.png");
     m_texture->AwaitLoading();
 
     //Load Shader
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperate.shader").get();
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperate.shader");
 
     TRAP::Graphics::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;

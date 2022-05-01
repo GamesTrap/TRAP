@@ -43,21 +43,21 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="filepath">File path of texture to load.</param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<Texture2D>& Load(const std::filesystem::path& filepath);
+		static Texture2D* Load(const std::filesystem::path& filepath);
 		/// <summary>
 		/// Load a 2D texture from file.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
 		/// <param name="filepath">File path of texture to load.</param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<Texture2D>& Load(const std::string& name, const std::filesystem::path& filepath);
+		static Texture2D* Load(const std::string& name, const std::filesystem::path& filepath);
 		/// <summary>
 		/// Load a 2D texture from TRAP::Image.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
 		/// <param name="img">TRAP::Image to use as texture.</param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<Texture2D>& Load(const std::string& name, const Scope<Image>& img);
+		static Texture2D* Load(const std::string& name, const Image* const img);
 		/// <summary>
 		/// Load a cube texture from file.
 		/// </summary>
@@ -65,8 +65,8 @@ namespace TRAP::Graphics
 		/// <param name="filepath">File path of texture to load.</param>
 		/// <param name="format">Format of the cube texture.</param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<TextureCube>& Load(const std::string& name, const std::filesystem::path& filepath,
-		                                      TextureCubeFormat format);
+		static TextureCube* Load(const std::string& name, const std::filesystem::path& filepath,
+		                         TextureCubeFormat format);
 		/// <summary>
 		/// Load a cube texture from file.
 		/// File name will be used as the texture name.
@@ -74,7 +74,7 @@ namespace TRAP::Graphics
 		/// <param name="filepath">File path of texture to load.</param>
 		/// <param name="format">Format of the cube texture.</param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<TextureCube>& Load(const std::filesystem::path& filepath, TextureCubeFormat format);
+		static TextureCube* Load(const std::filesystem::path& filepath, TextureCubeFormat format);
 		/// <summary>
 		/// Load a cube texture from file.
 		/// </summary>
@@ -84,7 +84,7 @@ namespace TRAP::Graphics
 		/// Order: +X, -X, +Y, -Y, +Z, -Z.
 		/// </param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<TextureCube>& Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths);
+		static TextureCube* Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths);
 		/// <summary>
 		/// Load a cube texture from TRAP::Image.
 		/// </summary>
@@ -92,8 +92,8 @@ namespace TRAP::Graphics
 		/// <param name="img">TRAP::Image to use as texture.</param>
 		/// <param name="format">Format of the cube texture.</param>
 		/// <returns>Loaded texture.</returns>
-		static const Scope<TextureCube>& Load(const std::string& name, const Scope<Image>& img,
-		                                      TextureCubeFormat format);
+		static TextureCube* Load(const std::string& name, const Image* const img,
+		                         TextureCubeFormat format);
 
 		/// <summary>
 		/// Add a texture to the TextureManager.
@@ -104,7 +104,7 @@ namespace TRAP::Graphics
 		/// Remove a texture from the TextureManager.
 		/// </summary>
 		/// <param name="texture">Texture to remove.</param>
-		static void Remove(const Scope<Texture>& texture);
+		static void Remove(const Texture* const texture);
 		/// <summary>
 		/// Remove a texture from the TextureManager via its name.
 		/// </summary>
@@ -116,19 +116,19 @@ namespace TRAP::Graphics
 		/// <param name="name">Name of texture to retrieve.</param>
 		/// <param name="textureType">Type of texture.</param>
 		/// <returns>Texture, Fallback texture if not found.</returns>
-		static const Scope<Texture>& Get(const std::string& name, TextureType textureType);
+		static Texture* Get(const std::string& name, TextureType textureType);
 		/// <summary>
 		/// Retrieve a 2D texture from the TextureManager.
 		/// </summary>
 		/// <param name="name">Name of texture to retrieve.</param>
 		/// <returns>Texture, Fallback texture if not found.</returns>
-		static const Scope<Texture2D>& Get2D(const std::string& name);
+		static Texture2D* Get2D(const std::string& name);
 		/// <summary>
 		/// Retrieve a cube texture from the TextureManager.
 		/// </summary>
 		/// <param name="name">Name of texture to retrieve.</param>
 		/// <returns>Texture, Fallback texture if not found.</returns>
-		static const Scope<TextureCube>& GetCube(const std::string& name);
+		static TextureCube* GetCube(const std::string& name);
 		/// <summary>
 		/// Retrieve all loaded textures from the TextureManager.
 		/// </summary>
@@ -150,7 +150,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="texture">Texture to reload.</param>
 		/// <returns>Pointer to reloaded texture on success, nullptr otherwise.</returns>
-		static Texture* Reload(const Scope<Texture>& texture);
+		static Texture* Reload(const Texture* const texture);
 		/// <summary>
 		/// Reload all currently loaded textures.
 		/// </summary>

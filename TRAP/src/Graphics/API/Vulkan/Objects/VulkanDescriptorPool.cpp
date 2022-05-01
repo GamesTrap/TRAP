@@ -32,7 +32,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	: m_currentPool(VK_NULL_HANDLE),
 	  m_descriptorPoolSizes(DescriptorTypeRangeSize),
 	  m_usedDescriptorSetCount(0),
-	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	m_numDescriptorSets = numDescriptorSets;
 	TRAP_ASSERT(m_device, "device is nullptr");

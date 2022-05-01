@@ -50,7 +50,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="img">Image to save.</param>
 		/// <param name="filepath">File path to save the image to.</param>
-		static void Save(const Scope<Image>& img, const std::filesystem::path& filepath);
+		static void Save(const Image* const img, const std::filesystem::path& filepath);
 
 	private:
 		std::vector<uint8_t> m_data;

@@ -90,7 +90,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	);
 
 	//Setup Platform/Renderer bindings
-	const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+	const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
 
 	TP_TRACE(Log::ImGuiPrefix, "Init...");
 	TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI());
@@ -98,7 +98,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	{
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
-			TRAP::Graphics::RendererAPI::GetRenderer().get()
+			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 
 		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
@@ -132,7 +132,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		ImGui_ImplVulkan_Init(&initInfo, dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
-			winData->GraphicCommandBuffers[winData->ImageIndex]
+			winData.GraphicCommandBuffers[winData.ImageIndex]
 		)->GetActiveVkRenderPass());
 
 		ImGui_ImplVulkan_UploadFontsTexture();
@@ -156,7 +156,7 @@ void TRAP::ImGuiLayer::OnDetach()
 		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
-			TRAP::Graphics::RendererAPI::GetRenderer().get()
+			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 		vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
@@ -192,10 +192,10 @@ void TRAP::ImGuiLayer::Begin()
 		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
 		const auto* vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
-			winData->GraphicCommandBuffers[winData->ImageIndex]
+			winData.GraphicCommandBuffers[winData.ImageIndex]
 		);
 		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
-			TRAP::Graphics::RenderCommand::BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex]);
+			TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
 		ImGui_ImplVulkan_NewFrame();
 	}
 
@@ -218,11 +218,11 @@ void TRAP::ImGuiLayer::End()
 	ImGui::Render();
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
 		                                dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 										(
-											winData->GraphicCommandBuffers[winData->ImageIndex]
+											winData.GraphicCommandBuffers[winData.ImageIndex]
 										)->GetVkCommandBuffer());
 	}
 

@@ -312,7 +312,7 @@ bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Scope<Image>& img)
+TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
 {
 	if(!img)
 		return nullptr;
@@ -347,7 +347,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Scope<Image>& img)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Scope<Image>& img)
+TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
 {
 	if (!img)
 		return nullptr;
@@ -381,7 +381,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Scope<Image>& img)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Scope<Image>& img)
+TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Image* const img)
 {
 	if(!img)
 		return nullptr;

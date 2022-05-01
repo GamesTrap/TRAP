@@ -8,7 +8,7 @@ public:
 	explicit HeadlessTestsApp(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		PushLayer(TRAP::MakeScope<HeadlessTests>());
+		PushLayer(std::make_unique<HeadlessTests>());
 	}
 };
 

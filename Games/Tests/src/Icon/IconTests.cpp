@@ -63,7 +63,7 @@ void IconTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Icon");
 
-	SetIcon(TRAP::Application::GetWindow(), s_cursorIconColor);
+	SetIcon(*TRAP::Application::GetWindow(), s_cursorIconColor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -80,7 +80,7 @@ void IconTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void IconTests::SetIcon(const TRAP::Scope<TRAP::Window>& window, const int32_t iconColor)
+void IconTests::SetIcon(const TRAP::Window& window, const int32_t iconColor)
 {
 	std::vector<uint8_t> pixels(16ull * 16ull * 4ull, 0);
 	std::size_t target = 0;
@@ -98,7 +98,7 @@ void IconTests::SetIcon(const TRAP::Scope<TRAP::Window>& window, const int32_t i
 		}
 	}
 
-	window->SetIcon(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA, pixels));
+	window.SetIcon(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA, pixels).get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,7 +116,7 @@ bool IconTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 	case TRAP::Input::Key::Space:
 		s_cursorIconColor = static_cast<int32_t>((s_cursorIconColor + 1) % IconColors.size());
-		SetIcon(TRAP::Application::GetWindow(), s_cursorIconColor);
+		SetIcon(*TRAP::Application::GetWindow(), s_cursorIconColor);
 		break;
 
 	case TRAP::Input::Key::X:

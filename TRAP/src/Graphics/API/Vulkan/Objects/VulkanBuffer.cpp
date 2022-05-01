@@ -9,8 +9,8 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
-	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA()),
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
+	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
 	  m_vkBuffer(VK_NULL_HANDLE),
 	  m_vkStorageTexelView(VK_NULL_HANDLE),
 	  m_vkUniformTexelView(VK_NULL_HANDLE),

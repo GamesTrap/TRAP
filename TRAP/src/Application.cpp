@@ -51,7 +51,7 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 TRAP::Application::Application(std::string gameName)
 	: m_hotReloadingEnabled(false),
-	  m_timer(std::make_unique<Utils::Timer>()),
+	  m_timer(),
 	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
@@ -171,43 +171,36 @@ TRAP::Application::Application(std::string gameName)
 	Graphics::RendererAPI::Init(m_gameName, renderAPI);
 #endif
 
-	m_layerStack = std::make_unique<LayerStack>();
-
-	m_window = MakeScope<Window>
-	(
-		WindowProps
-		(
-			"TRAP™",
-			width,
-			height,
-			refreshRate,
-			vsync,
-			displayMode,
-			WindowProps::AdvancedProps
-			{
-				true,
-				maximized,
-				visible,
-				true,
-				true,
-				true,
-				rawInput,
-				Window::CursorMode::Normal
-			},
-			monitor
-		)
-	);
-	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
-
-	//Update Window Title (Debug/DebWithRelInfo)
-#ifdef TRAP_HEADLESS_MODE
-	if(renderAPI != Graphics::RenderAPI::NONE)
+	//Window creation stuff
 	{
-#endif
-	m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+		WindowProps::AdvancedProps advWinProps{};
+		advWinProps.Maximized = maximized;
+		advWinProps.Visible = visible;
+		advWinProps.RawMouseInput = rawInput;
+
+		WindowProps winProps{};
+		winProps.Title = "TRAP™";
+		winProps.Width = width;
+		winProps.Height = height;
+		winProps.RefreshRate = refreshRate;
+		winProps.VSync = vsync;
+		winProps.DisplayMode = displayMode;
+		winProps.Monitor = monitor;
+		winProps.Advanced = advWinProps;
+
+		m_window = std::make_unique<Window>(winProps);
+		m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
+
+		//Update Window Title (Debug/DebWithRelInfo)
 #ifdef TRAP_HEADLESS_MODE
-	}
+		if(renderAPI != Graphics::RenderAPI::NONE)
+		{
 #endif
+		m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+#ifdef TRAP_HEADLESS_MODE
+		}
+#endif
+	}
 
 #ifndef TRAP_HEADLESS_MODE
 	//Update Viewport
@@ -242,7 +235,7 @@ TRAP::Application::Application(std::string gameName)
 	{
 		Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
 		m_ImGuiLayer = imguiLayer.get();
-		m_layerStack->PushOverlay(std::move(imguiLayer));
+		m_layerStack.PushOverlay(std::move(imguiLayer));
 	}
 #endif
 
@@ -254,15 +247,16 @@ TRAP::Application::Application(std::string gameName)
 TRAP::Application::~Application()
 {
 	TP_PROFILE_BEGIN_SESSION("Shutdown", "TRAPProfile-Shutdown.json");
-
 	TP_PROFILE_FUNCTION();
-
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
-	TRAP::Utils::Discord::Destroy();
-	Input::Shutdown();
+
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
-	m_layerStack.reset();
+
+	m_layerStack.Shutdown();
+
+	TRAP::Utils::Discord::Destroy();
+	Input::Shutdown();
 
 #ifndef TRAP_HEADLESS_MODE
 	if(m_window->GetWidth() > 0)
@@ -334,7 +328,7 @@ void TRAP::Application::Run()
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
 
 		Utils::Timer FrameTimeTimer;
-		const float time = m_timer->Elapsed();
+		const float time = m_timer.Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
 		lastFrameTime = time;
 
@@ -343,7 +337,7 @@ void TRAP::Application::Run()
 			{
 				TP_PROFILE_SCOPE("LayerStack OnUpdate");
 
-				for (const auto& layer : *m_layerStack)
+				for (const auto& layer : m_layerStack)
 					layer->OnUpdate(deltaTime);
 			}
 
@@ -352,7 +346,7 @@ void TRAP::Application::Run()
 				{
 					TP_PROFILE_SCOPE("LayerStack OnTick");
 
-					for (const auto& layer : *m_layerStack)
+					for (const auto& layer : m_layerStack)
 						layer->OnTick();
 				}
 
@@ -365,7 +359,7 @@ void TRAP::Application::Run()
 		{
 			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-			for (const auto& layer : *m_layerStack)
+			for (const auto& layer : m_layerStack)
 				layer->OnImGuiRender();
 		}
 		ImGuiLayer::End();
@@ -430,10 +424,7 @@ void TRAP::Application::OnEvent(Events::Event& e)
 			return OnFileChangeEvent(event);
 		});
 
-	if(!m_layerStack)
-		return;
-
-	for (auto it = m_layerStack->rbegin(); it != m_layerStack->rend(); ++it)
+	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
 	{
 		if (e.Handled)
 			break;
@@ -443,16 +434,16 @@ void TRAP::Application::OnEvent(Events::Event& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::PushLayer(Scope<Layer> layer) const
+void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
 {
-	m_layerStack->PushLayer(std::move(layer));
+	m_layerStack.PushLayer(std::move(layer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::PushOverlay(Scope<Layer> overlay) const
+void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 {
-	m_layerStack->PushOverlay(std::move(overlay));
+	m_layerStack.PushOverlay(std::move(overlay));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -466,7 +457,7 @@ const TRAP::Utils::Config& TRAP::Application::GetConfig()
 
 TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
-	return *s_Instance->m_layerStack;
+	return s_Instance->m_layerStack;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -534,16 +525,16 @@ void TRAP::Application::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Window>& TRAP::Application::GetWindow()
+TRAP::Window* TRAP::Application::GetWindow()
 {
-	return s_Instance->m_window;
+	return s_Instance->m_window.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
-	const Utils::TimeStep timeStep(s_Instance->m_timer->Elapsed());
+	const Utils::TimeStep timeStep(s_Instance->m_timer.Elapsed());
 
 	return timeStep;
 }
@@ -612,7 +603,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = TRAP::MakeScope<FS::FileWatcher>("", false);
+		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FS::FileWatcher>("", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)

@@ -29,7 +29,7 @@ namespace TRAP::Graphics
 		/// <param name="name">Name for the texture.</param>
 		/// <param name="img">Image to create the texture from.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
-		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img);
+		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Image* const img);
 		/// <summary>
 		/// Create an empty 2D texture.
 		/// </summary>

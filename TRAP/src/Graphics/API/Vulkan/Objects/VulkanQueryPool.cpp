@@ -9,7 +9,7 @@
 TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc)
 	: m_vkQueryPool(VK_NULL_HANDLE), m_type(), m_count()
 {
-	TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice();
+	TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 	TRAP_ASSERT(device);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Destroying QueryPool");
 #endif
 
-	vkDestroyQueryPool(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()->GetVkDevice(),
+	vkDestroyQueryPool(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()->GetVkDevice(),
 	                   m_vkQueryPool, nullptr);
 }
 

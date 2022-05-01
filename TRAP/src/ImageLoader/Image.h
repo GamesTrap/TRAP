@@ -204,19 +204,19 @@ namespace TRAP
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
 		/// <returns>Flipped image</returns>
-		static Scope<Image> FlipX(const Scope<Image>& img);
+		static Scope<Image> FlipX(const Image* const img);
 		/// <summary>
 		/// Flip an image on its Y axis.
 		/// </summary>
 		/// <param name="img">Image to flip.</param>
 		/// <returns>Flipped image</returns>
-		static Scope<Image> FlipY(const Scope<Image>& img);
+		static Scope<Image> FlipY(const Image* const img);
 		/// <summary>
 		/// Convert a RGB image to RGBA.
 		/// </summary>
 		/// <param name="img">Image to convert.</param>
 		/// <returns>Converted image</returns>
-		static Scope<Image> ConvertRGBToRGBA(const Scope<Image>& img);
+		static Scope<Image> ConvertRGBToRGBA(const Image* const img);
 
 		static const std::array<std::string, 15> SupportedImageFormatSuffixes;
 

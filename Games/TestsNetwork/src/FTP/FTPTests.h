@@ -14,7 +14,7 @@ public:
 private:
 	static void FTP();
 
-	TRAP::Scope<std::thread> m_ftpThread;
+	std::unique_ptr<std::thread> m_ftpThread;
 };
 
 #endif /*GAMESTRAP_FTPTESTS_H*/

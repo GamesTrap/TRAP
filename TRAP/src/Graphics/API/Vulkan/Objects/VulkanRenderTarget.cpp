@@ -13,7 +13,7 @@ std::atomic<int32_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkDescriptor(VK_NULL_HANDLE),
 	  m_used(),
 	  m_ID(++s_RenderTargetIDs)

@@ -135,7 +135,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromImage(const std::string& name,
-	                                                                                  const Scope<Image>& img,
+	                                                                                  const Image* const img,
 																					  const TextureCubeFormat format)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
@@ -148,7 +148,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	if(img->GetColorFormat() == Image::ColorFormat::RGB)
 		imgRGBA = TRAP::Image::ConvertRGBToRGBA(img);
 
-	Image* useImg = imgRGBA ? imgRGBA.get() : img.get();
+	const Image* const useImg = imgRGBA ? imgRGBA.get() : img;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -168,11 +168,11 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		if(format == TextureCubeFormat::Cross)
 		{
 			if(useImg->GetBytesPerChannel() == 1)
-				faces = SplitImageFromCross<uint8_t>(imgRGBA ? imgRGBA : img);
+				faces = SplitImageFromCross<uint8_t>(imgRGBA ? imgRGBA.get() : img);
 			else if(useImg->GetBytesPerChannel() == 2)
-				faces = SplitImageFromCross<uint16_t>(imgRGBA ? imgRGBA : img);
+				faces = SplitImageFromCross<uint16_t>(imgRGBA ? imgRGBA.get() : img);
 			else if(useImg->GetBytesPerChannel() == 4)
-				faces = SplitImageFromCross<float>(imgRGBA ? imgRGBA : img);
+				faces = SplitImageFromCross<float>(imgRGBA ? imgRGBA.get() : img);
 
 			loadDesc.Desc->MipLevels = CalculateMipLevels(faces[0]->GetWidth(), faces[0]->GetHeight());
 		}
@@ -233,20 +233,20 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromImages(const std::string& name,
-	                                                                                   const std::array<Scope<Image>, 6>& imgs)
+	                                                                                   const std::array<const Image*, 6>& imgs)
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
-	                        [](const Scope<Image>& img) { return img.get() == nullptr; }), "An Image is nullptr!");
+	                        [](const Image* img) { return img == nullptr; }), "An Image is nullptr!");
 
 	TP_PROFILE_FUNCTION();
 
 	//Validation that images have same size and format
 	Image::ColorFormat format = imgs[0]->GetColorFormat();
 	if(std::none_of(imgs.cbegin(), imgs.cend(),
-	   [&](const Scope<Image>& img) {return img->GetColorFormat() != format ||
-	                                                   img->GetBitsPerChannel() != imgs[0]->GetBitsPerPixel() ||
-													   img->GetWidth() != imgs[0]->GetWidth() ||
-													   img->GetHeight() != imgs[0]->GetHeight(); }))
+	   [&](const Image* img) {return img->GetColorFormat() != format ||
+	                                 img->GetBitsPerChannel() != imgs[0]->GetBitsPerPixel() ||
+									 img->GetWidth() != imgs[0]->GetWidth() ||
+									 img->GetHeight() != imgs[0]->GetHeight(); }))
 	{
 		TP_ERROR(Log::TextureCubePrefix, "An image has mismatching color format, bits per channel, width and/or height!");
 		return nullptr;
@@ -254,13 +254,17 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	//Convert to RGBA if necessary
 	std::array<Scope<Image>, 6> imgsRGBA{};
+	std::array<const Image*, 6> imgsRGBAPtr{};
 	if(format == Image::ColorFormat::RGB)
 	{
 		for(uint32_t i = 0; i < imgs.size(); ++i)
+		{
 			imgsRGBA[i] = TRAP::Image::ConvertRGBToRGBA(imgs[i]);
+			imgsRGBAPtr[i] = imgsRGBA[i].get();
+		}
 	}
 
-	const Scope<Image>* useImgs = (format == Image::ColorFormat::RGB ? imgsRGBA.data() : imgs.data());
+	const std::array<const Image*, 6>& useImgs = (format == Image::ColorFormat::RGB ? imgsRGBAPtr : imgs);
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -335,10 +339,14 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create()
 {
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
-	for(auto& img : imgs)
-		img = TRAP::Image::LoadFallback();
+	std::array<const TRAP::Image*, 6> imgPtrs{};
+	for(uint32_t i = 0; i < imgs.size(); ++i)
+	{
+		imgs[i] = TRAP::Image::LoadFallback();
+		imgPtrs[i] = imgs[i].get();
+	}
 
-	return CreateFromImages("FallbackCube", imgs);
+	return CreateFromImages("FallbackCube", imgPtrs);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

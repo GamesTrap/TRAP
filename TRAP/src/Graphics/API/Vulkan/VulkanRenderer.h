@@ -674,7 +674,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="physicalDevice">Physical device to use.</param>
 		/// <returns>List of device extensions.</returns>
-		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
+		static std::vector<std::string> SetupDeviceExtensions(VulkanPhysicalDevice* const physicalDevice);
 
 		/// <summary>
 		/// Add the default resources to the renderer.
@@ -689,12 +689,12 @@ namespace TRAP::Graphics::API
 		/// Start recording the graphics pipeline.
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
-		static void StartGraphicRecording(const TRAP::Scope<PerWindowData>& p);
+		static void StartGraphicRecording(PerWindowData* const p);
 		/// <summary>
 		/// Stop recording the graphics pipeline.
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
-		static void EndGraphicRecording(const TRAP::Scope<PerWindowData>& p);
+		static void EndGraphicRecording(PerWindowData* const p);
 
 		std::string m_rendererTitle;
 

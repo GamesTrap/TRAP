@@ -142,9 +142,9 @@ VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::API::VulkanPhysicalDevice>& TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const
+TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const
 {
-	return m_physicalDevice;
+	return m_physicalDevice.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

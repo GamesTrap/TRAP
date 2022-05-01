@@ -80,7 +80,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImage(const std::string& name,
-	                                                                              const Scope<Image>& img)
+	                                                                              const Image* const img)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
 
@@ -90,7 +90,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 	if(img->GetColorFormat() == Image::ColorFormat::RGB)
 		imgRGBA = TRAP::Image::ConvertRGBToRGBA(img);
 
-	Image* useImg = imgRGBA ? imgRGBA.get() : img.get();
+	const Image* const useImg = imgRGBA ? imgRGBA.get() : img;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -195,7 +195,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(co
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create()
 {
-	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback());
+	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback().get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -16,8 +16,9 @@ FTPTests::FTPTests()
 
 void FTPTests::OnAttach()
 {
-	m_ftpThread = TRAP::MakeScope<std::thread>(FTP);
-	m_ftpThread->detach();
+	m_ftpThread = std::make_unique<std::thread>(FTP);
+	if(m_ftpThread)
+		m_ftpThread->detach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

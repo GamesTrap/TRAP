@@ -22,31 +22,27 @@ void VulkanMultiWindowTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test 1");
 
 	//Create second Window
-	TRAP::WindowProps windowProps
-	{
-		"Vulkan Multi-Window Test 2",
-		200,
-		200,
-		60,
-		false,
-		TRAP::Window::DisplayMode::Windowed,
-		TRAP::WindowProps::AdvancedProps
-		{
-			true,
-			false,
-			true,
-			true,
-			true,
-			true,
-			false,
-			TRAP::Window::CursorMode::Normal
-		},
-		0
-	};
-	m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
+	TRAP::WindowProps::AdvancedProps advWinProps{};
+	advWinProps.Focused = false;
+	advWinProps.FocusOnShow = false;
 
-	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-	TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, m_window.get());
+	TRAP::WindowProps winProps{};
+	winProps.Title = "Vulkan Multi-Window Test 2";
+	winProps.Width = 200;
+	winProps.Height = 200;
+	winProps.RefreshRate = 60;
+	winProps.VSync = false;
+	winProps.DisplayMode = TRAP::Window::DisplayMode::Windowed;
+	winProps.Advanced = advWinProps;
+	winProps.Monitor = 0;
+
+	m_window = TRAP::MakeScope<TRAP::Window>(winProps);
+
+	if(m_window)
+	{
+		m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
+		TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f}, m_window.get());
+	}
 
 	//Load Triangle vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
@@ -210,7 +206,7 @@ void VulkanMultiWindowTests::OnEvent(TRAP::Events::Event& event)
 
 bool VulkanMultiWindowTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 {
-	if (e.GetWindow() == m_window.get())
+	if (m_window && e.GetWindow() == m_window.get())
 		m_window.reset();
 
 	return true;

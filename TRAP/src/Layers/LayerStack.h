@@ -12,26 +12,12 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		LayerStack() = default;
+
 		/// <summary>
-		/// Copy constructor.
+		/// Shut down the LayerStack.
+		/// This detaches and destroys all Layers.
 		/// </summary>
-		LayerStack(const LayerStack&) = default;
-		/// <summary>
-		/// Copy assignment operator.
-		/// </summary>
-		LayerStack& operator=(const LayerStack&) = default;
-		/// <summary>
-		/// Move constructor.
-		/// </summary>
-		LayerStack(LayerStack&&) = default;
-		/// <summary>
-		/// Move assignment operator.
-		/// </summary>
-		LayerStack& operator=(LayerStack&&) = default;
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~LayerStack();
+		void Shutdown();
 
 		/// <summary>
 		/// Push a layer to the layer stack.
@@ -43,16 +29,6 @@ namespace TRAP
 		/// </summary>
 		/// <param name="overlay">Overlay to push.</param>
 		void PushOverlay(std::unique_ptr<Layer> overlay);
-		/// <summary>
-		/// Pop a layer from the layer stack.
-		/// </summary>
-		/// <param name="layer">Layer to pop.</param>
-		void PopLayer(const std::unique_ptr<Layer>& layer);
-		/// <summary>
-		/// Pop an overlay from the layer stack.
-		/// </summary>
-		/// <param name="overlay">Overlay to pop.</param>
-		void PopOverlay(const std::unique_ptr<Layer>& overlay);
 		/// <summary>
 		/// Pop a layer from the layer stack.
 		/// </summary>
@@ -75,7 +51,7 @@ namespace TRAP
 		/// <returns>Layer stack iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::iterator end();
 		/// <summary>
-		/// Layers tack reverse begin iterator.
+		/// Layer stack reverse begin iterator.
 		/// </summary>
 		/// <returns>Layer stack reverse iterator.</returns>
 		std::vector<std::unique_ptr<Layer>>::reverse_iterator rbegin();

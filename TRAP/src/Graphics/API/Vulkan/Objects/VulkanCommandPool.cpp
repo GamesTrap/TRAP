@@ -8,7 +8,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkCommandPool(VK_NULL_HANDLE)
 {
 	m_queue = desc.Queue;

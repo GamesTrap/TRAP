@@ -8,7 +8,7 @@ public:
 	explicit Tests3D(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		PushLayer(TRAP::MakeScope<Cube3D>());
+		PushLayer(std::make_unique<Cube3D>());
 	}
 };
 

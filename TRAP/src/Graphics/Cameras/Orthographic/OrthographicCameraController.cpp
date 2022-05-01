@@ -21,17 +21,14 @@ float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const
 TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const float aspectRatio,
 																		   const bool rotation,
 																		   const bool useController,
-																		   const Input::Controller controller,
-																		   const Scope<Window>& window)
+																		   const Input::Controller controller)
 	: m_aspectRatio(aspectRatio),
 	  m_bounds({ -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel }),
 	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f),
 	  m_rotation(rotation),
 	  m_useController(useController),
-	  m_controller(controller),
-	  m_window(window)
+	  m_controller(controller)
 {
-	TRAP_ASSERT(m_window.get(), "[OrthographicCameraController] Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -246,9 +243,6 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseSc
 {
 	TP_PROFILE_FUNCTION();
 
-	if(!m_window || m_window.get() != e.GetWindow())
-		return false;
-
 	m_zoomLevel -= e.GetYOffset() * 0.25f;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
@@ -264,7 +258,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(Events::F
 {
 	TP_PROFILE_FUNCTION();
 
-	if (m_window && m_window.get() == e.GetWindow() && e.GetWidth() > 0 && e.GetHeight() > 0)
+	if (e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
 
 	return false;

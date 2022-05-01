@@ -865,7 +865,7 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateHiddenCursor()
 	std::array<uint8_t, static_cast<std::size_t>(16) * 16 * 4> pixels = {0};
 	return CreateCursorX11(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA,
 	                                                           std::vector<uint8_t>(pixels.begin(),
-															   pixels.end())), 0, 0);
+															   pixels.end())).get(), 0, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1376,7 +1376,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, Wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates a native cursor object from the specified image and hotspot
-Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const Scope<TRAP::Image>& image, int32_t xHotSpot,
+Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const TRAP::Image* const image, int32_t xHotSpot,
                                                      int32_t yHotSpot)
 {
 	if(!s_Data.XCursor.Handle)
@@ -2560,7 +2560,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image,
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* cursor, const Image* const image,
                                                         int32_t xHotspot, int32_t yHotspot)
 {
 	cursor->Handle = CreateCursorX11(image, xHotspot, yHotspot);
@@ -2737,7 +2737,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow* wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window, const Scope<Image>& image)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window, const Image* const image)
 {
 	if(image)
 	{

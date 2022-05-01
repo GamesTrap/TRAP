@@ -391,7 +391,7 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(VkResult result, const char* func
 		break;
 
 	default:
-		TP_ERROR(Log::RendererVulkanPrefix, "Unknown error", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererVulkanPrefix, "Unknown error: ", function, " @[", file, ':', line, ']');
 		break;
 	}
 

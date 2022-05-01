@@ -43,12 +43,12 @@ void VulkanTextureTests::OnAttach()
     m_vulkanLogoTransparent = TRAP::Image::LoadFromFile("./Assets/Textures/vulkanlogoTransparent.png");
 
     //Load Texture
-    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", m_vulkanLogo).get();
+    m_texture = TRAP::Graphics::TextureManager::Load("vulkanlogo", m_vulkanLogo.get());
     m_texture->AwaitLoading();
     m_maxMipLevel = m_texture->GetMipLevels();
 
     //Load Shader
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader").get();
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperatelod.shader");
 
     TRAP::Graphics::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;

@@ -126,7 +126,7 @@ uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::PPMImage::Save(const Scope<Image>& img, const std::filesystem::path& filepath)
+void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesystem::path& filepath)
 {
 	//NOTE Only supports 24/32BPP RGB(A) Input
 

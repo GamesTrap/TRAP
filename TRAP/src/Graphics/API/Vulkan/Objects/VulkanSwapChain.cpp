@@ -14,9 +14,9 @@
 
 
 TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
-	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA()),
-	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetInstance()),
-	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
+	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance()),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_presentQueue(),
 	  m_swapChain(),
 	  m_presentQueueFamilyIndex(),

@@ -349,7 +349,7 @@ namespace TRAP::Graphics::API
 		/// <param name="images">Images to update.</param>
 		/// <return>Result of upload.</return>
 		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& textureUpdateDesc,
-		                                   std::array<TRAP::Scope<TRAP::Image>, 6>* images);
+		                                   const std::array<TRAP::Scope<TRAP::Image>, 6>* images);
 		/// <summary>
 		/// Load a texture with the specified resource set.
 		/// </summary>

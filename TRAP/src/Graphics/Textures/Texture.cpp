@@ -241,7 +241,7 @@ uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::Im
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::Scope<TRAP::Image>& img)
+TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::Image* const img)
 {
 	if(img->GetBitsPerChannel() == 32)
 	{
@@ -303,7 +303,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const TRAP::Scope<TRAP::Image>& img)
+TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const TRAP::Image* const img)
 {
 	if(img->GetBitsPerChannel() == 32)
 	{

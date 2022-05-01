@@ -133,7 +133,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* data, const uint64_t
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
 
 	if(!window)
-		window = TRAP::Application::GetWindow().get();
+		window = TRAP::Application::GetWindow();
 
 	RendererAPI::BufferUpdateDesc desc{};
 	const uint32_t imageIndex = GetUpdateFrequency() ==

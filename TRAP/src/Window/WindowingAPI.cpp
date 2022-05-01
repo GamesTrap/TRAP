@@ -438,7 +438,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Creates a custom cursor.
-TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateCursor(const Scope<Image>& image,
+TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateCursor(const Image* const image,
 	                                                                                                 const int32_t xHotspot,
 	                                                                                                 const int32_t yHotspot)
 {
@@ -486,7 +486,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 		cursor = MakeScope<InternalCursor>();
 		s_Data.CursorList.emplace_front(cursor.get());
 
-		if(!PlatformCreateCursor(cursor.get(), iconImage, xHotspot, yHotspot))
+		if(!PlatformCreateCursor(cursor.get(), iconImage.get(), xHotspot, yHotspot))
 		{
 			DestroyCursor(std::move(cursor));
 			return nullptr;
@@ -553,7 +553,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCur
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const Scope<Image>& image)
+void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const Image* const image)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -598,7 +598,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 	if (image->GetColorFormat() == Image::ColorFormat::RGB)
 	{
 		const Scope<Image> imageRGBA = Image::ConvertRGBToRGBA(image);
-		PlatformSetWindowIcon(window, imageRGBA);
+		PlatformSetWindowIcon(window, imageRGBA.get());
 	}
 	else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
 		PlatformSetWindowIcon(window, image);

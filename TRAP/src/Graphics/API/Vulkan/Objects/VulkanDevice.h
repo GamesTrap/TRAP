@@ -56,7 +56,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan physical device.
 		/// </summary>
 		/// <retruns>Vulkan physical device.</retruns>
-		const TRAP::Scope<VulkanPhysicalDevice>& GetPhysicalDevice() const;
+		VulkanPhysicalDevice* GetPhysicalDevice() const;
 
 		/// <summary>
 		/// Retrieve a list of all used physical device extensions.

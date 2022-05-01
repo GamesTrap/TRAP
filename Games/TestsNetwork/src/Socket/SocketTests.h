@@ -24,7 +24,7 @@ private:
 	static void RunUDPServerIPv6(uint16_t port);
 	static void RunUDPClientIPv6(uint16_t port);
 
-	TRAP::Scope<std::thread> m_socketThread;
+	std::unique_ptr<std::thread> m_socketThread;
 };
 
 #endif /*GAMESTRAP_SOCKETTESTS_H*/

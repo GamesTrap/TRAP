@@ -102,20 +102,20 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::RendererAPI>& TRAP::Graphics::RendererAPI::GetRenderer()
+TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 {
 #ifdef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
 #endif
 
-	return s_Renderer;
+	return s_Renderer.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::API::ResourceLoader>& TRAP::Graphics::RendererAPI::GetResourceLoader()
+TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader()
 {
-	return s_ResourceLoader;
+	return s_ResourceLoader.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -185,9 +185,9 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetMainWindowData()
+const TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
-	return s_perWindowDataMap[TRAP::Application::GetWindow().get()];
+	return *s_perWindowDataMap[TRAP::Application::GetWindow()];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -195,7 +195,7 @@ const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::R
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(Window* window)
 {
 	if (!window)
-		window = TRAP::Application::GetWindow().get();
+		window = TRAP::Application::GetWindow();
 
 	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
 	(
@@ -347,5 +347,7 @@ bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==
 
 uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(TRAP::Window* window)
 {
+	TRAP_ASSERT(window, "Window is nullptr!");
+
 	return s_perWindowDataMap[window]->ImageIndex;
 }

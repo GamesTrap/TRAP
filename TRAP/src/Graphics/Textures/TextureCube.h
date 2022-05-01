@@ -46,7 +46,7 @@ namespace TRAP::Graphics
 		/// <param name="img">Image to create the texture from.</param>
 		/// <param name="format">Format of the cube texture.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
-		static Scope<TextureCube> CreateFromImage(const std::string& name, const Scope<Image>& img,
+		static Scope<TextureCube> CreateFromImage(const std::string& name, const Image* const img,
 		                                          TextureCubeFormat format);
 		/// <summary>
 		/// Create a cube texture from 6 TRAP::Images.
@@ -57,7 +57,7 @@ namespace TRAP::Graphics
 		/// Order: +X, -X, +Y, -Y, +Z, -Z
 		/// </param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
-		static Scope<TextureCube> CreateFromImages(const std::string& name, const std::array<Scope<Image>, 6>& imgs);
+		static Scope<TextureCube> CreateFromImages(const std::string& name, const std::array<const Image*, 6>& imgs);
 		/// <summary>
 		/// Create the fallback texture.
 		/// </summary>

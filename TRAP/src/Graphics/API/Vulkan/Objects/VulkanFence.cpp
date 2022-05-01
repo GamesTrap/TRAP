@@ -8,7 +8,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanFence::VulkanFence()
-	: m_fence(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
+	: m_fence(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 

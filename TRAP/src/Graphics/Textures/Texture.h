@@ -171,7 +171,7 @@ namespace TRAP::Graphics
 		/// <param name="image">Image to split.</param>
 		/// <returns>Array of splitted textures.</returns>
 		template<typename T>
-		static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image);
+		static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* const image);
 	protected:
 		/// <summary>
 		/// Convert color format and bits per pixel to image format.
@@ -197,13 +197,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="img">Image to rotate.</param>
 		/// <returns>Rotated image.</returns>
-		static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Scope<TRAP::Image>& img);
+		static TRAP::Scope<TRAP::Image> Rotate90Clockwise(const TRAP::Image* const img);
 		/// <summary>
 		/// Rotate image 90 degrees counter clockwise.
 		/// </summary>
 		/// <param name="img">Image to rotate.</param>
 		/// <returns>Rotated image.</returns>
-		static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Scope<TRAP::Image>& img);
+		static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Image* const img);
 
 		std::string m_name;
 		TextureType m_textureType;
@@ -216,7 +216,7 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image)
+std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image* const image)
 {
 	const bool isHorizontal = image->GetWidth() > image->GetHeight();
 
@@ -334,8 +334,8 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 	{
 		images[0] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[2]); //+X
 		images[1] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[5]); //-X
-		images[2] = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[0])); //+Y
-		images[3] = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[4])); //-Y
+		images[2] = Rotate90CounterClockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[0]).get()); //+Y
+		images[3] = Rotate90Clockwise(TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[4]).get()); //-Y
 		images[4] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[1]); //+Z
 		images[5] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[3]); //-Z
 	}

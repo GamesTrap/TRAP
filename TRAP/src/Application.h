@@ -62,13 +62,13 @@ namespace TRAP
 		/// <summary>
 		/// Pushes a layer to the applications layer stack.
 		/// </summary>
-		/// <param name="layer">Scope containing the layer to be pushed.</param>
-		void PushLayer(Scope<Layer> layer) const;
+		/// <param name="layer">Unique ptr containing the layer to be pushed.</param>
+		void PushLayer(std::unique_ptr<Layer> layer);
 		/// <summary>
 		/// Pushes a layer to the applications layer stack.
 		/// </summary>
-		/// <param name="overlay">Scope containing the layer to be pushed.</param>
-		void PushOverlay(Scope<Layer> overlay) const;
+		/// <param name="overlay">Unique ptr containing the layer to be pushed.</param>
+		void PushOverlay(std::unique_ptr<Layer> overlay);
 
 		/// <summary>
 		/// Get the Engine.cfg config from the application.
@@ -131,8 +131,8 @@ namespace TRAP
 		/// <summary>
 		/// Get the Main Render window.
 		/// </summary>
-		/// <returns>Constant reference to a Scope containing the main render window.</returns>
-		static const Scope<Window>& GetWindow();
+		/// <returns>Pointer to the main render window.</returns>
+		static Window* GetWindow();
 		/// <summary>
 		/// Get the Time since the Engine was started.
 		/// </summary>
@@ -237,26 +237,34 @@ namespace TRAP
 		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		/// <summary>
+		/// Handles file change events for the application.
+		/// Used by Texture and Shader HotReloading.
+		/// </summary>
+		/// <param name="e">File change event that occurred.</param>
+		/// <returns>True if event was handled, false otherwise.</returns>
+		bool OnFileChangeEvent(const Events::FileChangeEvent& e);
+
+		/// <summary>
 		/// Tries to reload every modified shader/texture that was set by the hot reloading file watcher.
 		/// </summary>
 		void UpdateHotReloading();
-		bool OnFileChangeEvent(const Events::FileChangeEvent& e);
+
 		std::vector<std::filesystem::path> m_hotReloadingShaderPaths;
 		std::vector<std::filesystem::path> m_hotReloadingTexturePaths;
 		std::mutex m_hotReloadingMutex;
-		Scope<FS::FileWatcher> m_hotReloadingFileWatcher;
+		std::unique_ptr<FS::FileWatcher> m_hotReloadingFileWatcher;
 		bool m_hotReloadingEnabled;
 
-		Scope<Window> m_window;
+		std::unique_ptr<Window> m_window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_running = true;
 		bool m_minimized = false;
 		bool m_focused = true;
-		std::unique_ptr<LayerStack> m_layerStack;
+		LayerStack m_layerStack;
 
 		Utils::Config m_config;
 
-		std::unique_ptr<Utils::Timer> m_timer;
+		Utils::Timer m_timer;
 		uint32_t m_FramesPerSecond;
 		float m_FrameTime;
 		uint32_t m_fpsLimit;
@@ -270,7 +278,7 @@ namespace TRAP
 
 		Graphics::RenderAPI m_newRenderAPI;
 
-		static Application* s_Instance;
+		static Application* s_Instance; //Singleton instance
 
 		friend int ::main();
 	};

@@ -75,11 +75,12 @@ namespace TRAP::Graphics
 	//protected:
 		struct PerWindowData;
 
-	public:
+	protected:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		RendererAPI() = default;
+	public:
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -87,19 +88,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		RendererAPI(const RendererAPI&) = default;
+		RendererAPI(const RendererAPI&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		RendererAPI& operator=(const RendererAPI&) = default;
+		RendererAPI& operator=(const RendererAPI&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RendererAPI(RendererAPI&&) = default;
+		RendererAPI(RendererAPI&&) = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RendererAPI& operator=(RendererAPI&&) = default;
+		RendererAPI& operator=(RendererAPI&&) = delete;
 
 		/// <summary>
 		/// Initialize the Renderer.
@@ -116,12 +117,12 @@ namespace TRAP::Graphics
 		/// Retrieve the Renderer singleton.
 		/// </summary>
 		/// <returns>Renderer.</returns>
-		static const TRAP::Scope<RendererAPI>& GetRenderer();
+		static RendererAPI* GetRenderer();
 		/// <summary>
 		/// Retrieve the resource loader singleton.
 		/// </summary>
 		/// <returns>Resource loader.</returns>
-		static const TRAP::Scope<API::ResourceLoader>& GetResourceLoader();
+		static API::ResourceLoader* GetResourceLoader();
 
 		/// <summary>
 		/// Auto select a supported render API.
@@ -565,7 +566,7 @@ namespace TRAP::Graphics
 		/// Retrieve the main windows internal rendering data.
 		/// </summary>
 		/// <returns>Main windows internal rendering data.</returns>
-		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
+		static const PerWindowData& GetMainWindowData();
 
 	public:
 		/// <summary>

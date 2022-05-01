@@ -206,9 +206,9 @@ void Cube3D::OnAttach()
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
     //Use Textures
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid").get());
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid"));
     TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
-    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox").get());
+    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox"));
     TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
 
     TRAP::Graphics::RenderCommand::SetDepthTesting(true);
@@ -353,7 +353,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         if(m_drawSkyBox)
     	{
             TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::LessOrEqual);
-            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox").get(),
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("SkyBox"),
                                              m_skyBoxVertexBuffer.get());
             TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::CompareMode::Less);
     	}
@@ -367,7 +367,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_diffuseReflectionUniformBuffer->AwaitLoading();
             TRAP::Graphics::ShaderManager::Get("Diffuse Reflection")->UseUBO(1, 2, m_diffuseReflectionUniformBuffer.get());
 
-            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]),
                                              m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
                                              TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
                                              TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
@@ -381,13 +381,13 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             m_phongLightningUniformBuffer->AwaitLoading();
             TRAP::Graphics::ShaderManager::Get("Phong Lightning")->UseUBO(1, 2, m_phongLightningUniformBuffer.get());
 
-            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]).get(),
+            TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]),
                                              m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
                                              TRAP::Math::Translate(TRAP::Math::Vec3(m_lightPosition)) *
                                              TRAP::Math::Scale(TRAP::Math::Vec3(0.1f, 0.1f, 0.1f)));
         }
 
-        TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]).get(),
+        TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[m_currentShader]),
                                          m_cubeVertexBuffer.get(), m_cubeIndexBuffer.get(),
                                          TRAP::Math::Translate(m_cubePosition) *
                                          TRAP::Math::Rotate(TRAP::Math::Radians(-m_cubeRotation.z), { 0.0f, 0.0f, 1.0f }) *

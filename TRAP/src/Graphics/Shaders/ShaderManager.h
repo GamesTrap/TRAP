@@ -42,8 +42,8 @@ namespace TRAP::Graphics
 		/// <param name="filepath">File path of shader to load.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded shader.</returns>
-		static const Scope<Shader>& LoadFile(const std::filesystem::path& filepath,
-		                                     const std::vector<Shader::Macro>* userMacros = nullptr);
+		static Shader* LoadFile(const std::filesystem::path& filepath,
+		                        const std::vector<Shader::Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Load a shader from file.
 		/// </summary>
@@ -51,8 +51,8 @@ namespace TRAP::Graphics
 		/// <param name="filepath">File path of shader to load.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded shader.</returns>
-		static const Scope<Shader>& LoadFile(const std::string& name, const std::filesystem::path& filepath,
-		                                     const std::vector<Shader::Macro>* userMacros = nullptr);
+		static Shader* LoadFile(const std::string& name, const std::filesystem::path& filepath,
+		                        const std::vector<Shader::Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Load a shader from GLSL source.
 		/// </summary>
@@ -60,9 +60,9 @@ namespace TRAP::Graphics
 		/// <param name="glslSource">GLSL source code.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded shader.</returns>
-		static const Scope<Shader>& LoadSource(const std::string& name,
-		                                       const std::string& glslSource,
-										       const std::vector<Shader::Macro>* userMacros = nullptr);
+		static Shader* LoadSource(const std::string& name,
+		                          const std::string& glslSource,
+								  const std::vector<Shader::Macro>* userMacros = nullptr);
 
 		/// <summary>
 		/// Add a shader to the ShaderManager.
@@ -73,7 +73,7 @@ namespace TRAP::Graphics
 		/// Remove a shader from the ShaderManager.
 		/// </summary>
 		/// <param name="shader">Shader to remove.</param>
-		static void Remove(const Scope<Shader>& shader);
+		static void Remove(const Shader* const shader);
 		/// <summary>
 		/// Remove a shader from the ShaderManager via its name.
 		/// </summary>
@@ -84,7 +84,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the shader to retrieve.</param>
 		/// <returns>Shader, Fallback shader if not found.</returns>
-		static const Scope<Shader>& Get(const std::string& name);
+		static Shader* Get(const std::string& name);
 		/// <summary>
 		/// Retrieve all loaded shader from the ShaderManager.
 		/// </summary>
@@ -106,7 +106,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="shader">Shader to reload.</param>
 		/// <returns>Pointer to reloaded shader on success, nullptr otherwise.</returns>
-		static Shader* Reload(const Scope<Shader>& shader);
+		static Shader* Reload(const Shader* const shader);
 		/// <summary>
 		/// Reload all currently loaded shaders.
 		/// </summary>

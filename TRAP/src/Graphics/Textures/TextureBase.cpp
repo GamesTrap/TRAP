@@ -15,7 +15,7 @@ TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::TextureBase::Create(const
     {
     case RenderAPI::Vulkan:
     {
-        const auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(RendererAPI::GetRenderer().get());
+        const auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(RendererAPI::GetRenderer());
         TRAP::Ref<TextureBase> texture = TRAP::MakeRef<API::VulkanTexture>(vkRenderer->GetDevice(), desc,
                                                                            vkRenderer->GetVMA());
 

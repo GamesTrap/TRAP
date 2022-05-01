@@ -9,8 +9,9 @@ IPv6Tests::IPv6Tests()
 
 void IPv6Tests::OnAttach()
 {
-	m_ipv6Thread = TRAP::MakeScope<std::thread>(IPv6);
-	m_ipv6Thread->detach();
+	m_ipv6Thread = std::make_unique<std::thread>(IPv6);
+	if(m_ipv6Thread)
+		m_ipv6Thread->detach();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

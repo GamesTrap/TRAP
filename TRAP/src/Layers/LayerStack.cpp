@@ -3,7 +3,7 @@
 
 #include "Layers/Layer.h"
 
-TRAP::LayerStack::~LayerStack()
+void TRAP::LayerStack::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
@@ -13,6 +13,8 @@ TRAP::LayerStack::~LayerStack()
 		layer->OnDetach();
 		layer.reset();
 	}
+
+	m_layers.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -40,43 +42,13 @@ void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::LayerStack::PopLayer(const std::unique_ptr<Layer>& layer)
-{
-	TP_PROFILE_FUNCTION();
-
-	const auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, layer);
-	if (it != m_layers.end())
-	{
-		TP_DEBUG(Log::LayerStackPrefix, "Destroying layer: ", layer->GetName());
-		layer->OnDetach();
-		m_layers.erase(it);
-		m_layerInsertIndex--;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::LayerStack::PopOverlay(const std::unique_ptr<Layer>& overlay)
-{
-	TP_PROFILE_FUNCTION();
-
-	const auto it = std::find(m_layers.begin() + m_layerInsertIndex, m_layers.end(), overlay);
-	if (it != m_layers.end())
-	{
-		TP_DEBUG(Log::LayerStackPrefix, "Destroying overlay: ", overlay->GetName());
-		overlay->OnDetach();
-		m_layers.erase(it);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::LayerStack::PopLayer(Layer* const layer)
 {
 	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(layer, "Layer is nullptr!");
 
 	const auto it = std::find_if(m_layers.begin(), m_layers.begin() + m_layerInsertIndex,
-		[layer](const std::unique_ptr<Layer>& l){return l.get() == layer;});
+		                         [&layer](const std::unique_ptr<Layer>& l){return l.get() == layer;});
 	if (it != m_layers.end())
 	{
 		TP_DEBUG(Log::LayerStackPrefix, "Destroying layer: ", layer->GetName());
@@ -91,9 +63,10 @@ void TRAP::LayerStack::PopLayer(Layer* const layer)
 void TRAP::LayerStack::PopOverlay(Layer* const overlay)
 {
 	TP_PROFILE_FUNCTION();
+	TRAP_ASSERT(overlay, "Overlay is nullptr!");
 
 	const auto it = std::find_if(m_layers.begin() + m_layerInsertIndex, m_layers.end(),
-		[overlay](const std::unique_ptr<Layer>& l){return l.get() == overlay;});
+		                         [&overlay](const std::unique_ptr<Layer>& l){return l.get() == overlay;});
 	if (it != m_layers.end())
 	{
 		TP_DEBUG(Log::LayerStackPrefix, "Destroying overlay: ", overlay->GetName());

@@ -42,7 +42,7 @@ void VulkanIcoSphereTests::OnAttach()
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader
-	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "./Assets/Shaders/icosphere.shader").get();
+	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "./Assets/Shaders/icosphere.shader");
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();

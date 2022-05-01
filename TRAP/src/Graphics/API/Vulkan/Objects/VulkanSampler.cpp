@@ -8,7 +8,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc& desc)
-	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkSampler(VK_NULL_HANDLE),
 	  m_vkSamplerYcbcrConversion(),
 	  m_vkSamplerYcbcrConversionInfo()

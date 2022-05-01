@@ -61,14 +61,15 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="transform">Transform of the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
-		static void DrawQuad(const Transform& transform, const Scope<Texture2D>& texture);
+		static void DrawQuad(const Transform& transform, Texture2D* const texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// </summary>
 		/// <param name="transform">Transform of the quad.</param>
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
-		static void DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
+		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
+		                     Texture2D* const texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// This is the base function for all the other DrawQuad functions.
@@ -77,7 +78,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
-		                     const Scope<Texture2D>& texture);
+		                     Texture2D* const texture);
 
 		//Stats
 		struct Statistics
