@@ -28,18 +28,18 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	//Start TGA Loading here
 	Header header{};
 
-	header.IDLength = file.get();
-	header.ColorMapType = file.get();
-	header.ImageType = file.get();
+	header.IDLength = static_cast<uint8_t>(file.get());
+	header.ColorMapType = static_cast<uint8_t>(file.get());
+	header.ImageType = static_cast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), 2);
 	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), 2);
-	header.ColorMapDepth = file.get();
+	header.ColorMapDepth = static_cast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(&header.XOffset), 2);
 	file.read(reinterpret_cast<char*>(&header.YOffset), 2);
 	file.read(reinterpret_cast<char*>(&header.Width), 2);
 	file.read(reinterpret_cast<char*>(&header.Height), 2);
-	header.BitsPerPixel = file.get();
-	header.ImageDescriptor = file.get();
+	header.BitsPerPixel = static_cast<uint8_t>(file.get());
+	header.ImageDescriptor = static_cast<uint8_t>(file.get());
 
 	//File uses little-endian
 	//Convert to machines endian

@@ -9,17 +9,16 @@ namespace TRAP::Graphics
 {
 	class TextureManager
 	{
-	private:
+	public:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TextureManager() = default;
+		TextureManager() = delete;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
 		~TextureManager() = default;
 
-	public:
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

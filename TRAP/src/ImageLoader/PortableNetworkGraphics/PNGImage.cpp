@@ -393,11 +393,11 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 	//Read in IHDR Chunk
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Width), sizeof(uint32_t));
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Height), sizeof(uint32_t));
-	ihdrChunk.BitDepth = file.get();
-	ihdrChunk.ColorType = file.get();
-	ihdrChunk.CompressionMethod = file.get();
-	ihdrChunk.FilterMethod = file.get();
-	ihdrChunk.InterlaceMethod = file.get();
+	ihdrChunk.BitDepth = static_cast<uint8_t>(file.get());
+	ihdrChunk.ColorType = static_cast<uint8_t>(file.get());
+	ihdrChunk.CompressionMethod = static_cast<uint8_t>(file.get());
+	ihdrChunk.FilterMethod = static_cast<uint8_t>(file.get());
+	ihdrChunk.InterlaceMethod = static_cast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(ihdrChunk.CRC.data()), ihdrChunk.CRC.size());
 
 	//Convert to machines endian
@@ -475,8 +475,6 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 	default:
 		return false;
 	}
-
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -485,7 +483,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 {
 	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
-	const uint8_t renderingIntent = file.get();
+	const uint8_t renderingIntent = static_cast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 	std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
@@ -530,8 +528,6 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 	default:
 		return false;
 	}
-
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -544,8 +540,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 	case 0:
 	{
 		std::array<uint8_t, 4> CRC{};
-		const uint8_t grayAlpha1 = file.get();
-		const uint8_t grayAlpha2 = file.get();
+		const uint8_t grayAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t grayAlpha2 = static_cast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
@@ -564,12 +560,12 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 	case 2:
 	{
 		std::array<uint8_t, 4> CRC{};
-		const uint8_t redAlpha1 = file.get();
-		const uint8_t redAlpha2 = file.get();
-		const uint8_t greenAlpha1 = file.get();
-		const uint8_t greenAlpha2 = file.get();
-		const uint8_t blueAlpha1 = file.get();
-		const uint8_t blueAlpha2 = file.get();
+		const uint8_t redAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t redAlpha2 = static_cast<uint8_t>(file.get());
+		const uint8_t greenAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t greenAlpha2 = static_cast<uint8_t>(file.get());
+		const uint8_t blueAlpha1 = static_cast<uint8_t>(file.get());
+		const uint8_t blueAlpha2 = static_cast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
 		std::array<uint8_t, 10> CRCData
@@ -650,11 +646,11 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 	for (uint32_t i = 0; i < length; i++)
 	{
 		RGBA rgba{};
-		rgba.Red = file.get();
+		rgba.Red = static_cast<uint8_t>(file.get());
 		i++;
-		rgba.Green = file.get();
+		rgba.Green = static_cast<uint8_t>(file.get());
 		i++;
-		rgba.Blue = file.get();
+		rgba.Blue = static_cast<uint8_t>(file.get());
 
 		paletteData[paletteIndex++] = rgba;
 	}

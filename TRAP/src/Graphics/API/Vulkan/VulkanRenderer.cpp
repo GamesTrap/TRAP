@@ -1197,7 +1197,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
 
 	//Add a staging buffer
-	uint16_t formatByteWidth = ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8;
+	uint16_t formatByteWidth = static_cast<uint16_t>(ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u);
 	BufferDesc bufferDesc{};
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
 	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUToCPU;
@@ -1280,7 +1280,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 	TRAP::Ref<RenderTarget> rT = winData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
-	const uint8_t channelCount = ImageFormatChannelCount(rT->GetImageFormat());
+	const uint8_t channelCount = static_cast<uint8_t>(ImageFormatChannelCount(rT->GetImageFormat()));
 	const bool hdr = ImageFormatIsFloat(rT->GetImageFormat());
 	const bool u16 = ImageFormatIsU16(rT->GetImageFormat());
 	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
@@ -1335,8 +1335,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 				if(!hdr && u16)
 				{
 					uint16_t red = pixelDatau8[pixelIndex];
-					pixelDatau8[pixelIndex] = pixelDatau8[pixelIndex + 2];
-					pixelDatau8[pixelIndex + 2] = red;
+					pixelDatau16[pixelIndex] = pixelDatau8[pixelIndex + 2];
+					pixelDatau16[pixelIndex + 2] = red;
 				}
 				else if(!hdr)
 				{

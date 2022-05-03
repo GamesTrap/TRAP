@@ -649,6 +649,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
 	}
 #endif
+	(void)e; //Silence unused parameter warning
 
 	return false;
 }

@@ -36,17 +36,16 @@ namespace TRAP::INTERNAL
 {
 	class WindowingAPI final
 	{
-	private:
+	public:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		WindowingAPI() = default;
+		WindowingAPI() = delete;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
 		~WindowingAPI() = default;
 
-	public:
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

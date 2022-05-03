@@ -417,7 +417,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 	}
 
 	reader.AdvanceBits(FirstBits);
-	value += reader.PeekBits(l - FirstBits);
+	value += static_cast<uint16_t>(reader.PeekBits(l - FirstBits));
 	reader.AdvanceBits(TableLength[value] - FirstBits);
 
 	return TableValue[value];

@@ -7,17 +7,16 @@ namespace TRAP::Graphics
 {
 	class ShaderManager
 	{
-	private:
+	public:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		ShaderManager() = default;
+		ShaderManager() = delete;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
 		~ShaderManager() = default;
 
-	public:
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

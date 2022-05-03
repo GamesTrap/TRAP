@@ -284,8 +284,8 @@ void TRAP::Graphics::RenderCommand::BindRenderTarget(const TRAP::Ref<Graphics::R
 									                 const RendererAPI::LoadActionsDesc* loadActions,
 									                 Window* window)
 {
-	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr, -1, -1,
-	                                             window);
+	RendererAPI::GetRenderer()->BindRenderTarget(colorTarget, depthStencil, loadActions, nullptr, nullptr,
+												 static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -295,8 +295,8 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 									                 const RendererAPI::LoadActionsDesc* loadActions,
 									                 Window* window)
 {
-	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr, -1, -1,
-	                                              window);
+	RendererAPI::GetRenderer()->BindRenderTargets(colorTargets, depthStencil, loadActions, nullptr, nullptr,
+												  static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
