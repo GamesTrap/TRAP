@@ -5,7 +5,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders{};
+std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> Shaders{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -70,7 +70,7 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 	TP_PROFILE_FUNCTION();
 
 	if(!Exists(shader->GetName()))
-		s_Shaders[shader->GetName()] = std::move(shader);
+		Shaders[shader->GetName()] = std::move(shader);
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Shader with name: \"", shader->GetName(), "\" already exists! Ignoring new shader");
 }
@@ -83,7 +83,7 @@ void TRAP::Graphics::ShaderManager::Remove(const Shader* const shader)
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(shader->GetName()))
-		s_Shaders.erase(shader->GetName());
+		Shaders.erase(shader->GetName());
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", shader->GetName(), "\"!");
 }
@@ -95,7 +95,7 @@ void TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(name))
-		s_Shaders.erase(name);
+		Shaders.erase(name);
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", name, "\"!");
 }
@@ -107,7 +107,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Get(const std::string& na
 	TP_PROFILE_FUNCTION();
 
 	if(Exists(name))
-		return s_Shaders[name].get();
+		return Shaders[name].get();
 
 	TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: ", name, "!");
 	TP_WARN(Log::ShaderManagerPrefix, "Using fallback shader!");
@@ -120,14 +120,14 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Get(const std::string& na
 
 const std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
 {
-	return s_Shaders;
+	return Shaders;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::ShaderManager::Clean()
 {
-	s_Shaders.clear();
+	Shaders.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -141,14 +141,14 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 		//Name
 		if(Exists(nameOrPath))
 		{
-			const std::filesystem::path path = s_Shaders[nameOrPath]->GetFilePath();
+			const std::filesystem::path path = Shaders[nameOrPath]->GetFilePath();
 			std::string error;
 			if (!path.empty())
 			{
-				s_Shaders[nameOrPath].reset();
-				s_Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path);
+				Shaders[nameOrPath].reset();
+				Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-				return s_Shaders[nameOrPath].get();
+				return Shaders[nameOrPath].get();
 			}
 		}
 		else
@@ -156,7 +156,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 	}
 	else //Path
 	{
-		for (const auto& [name, shader] : s_Shaders)
+		for (const auto& [name, shader] : Shaders)
 		{
 			if (FS::IsPathEquivalent(nameOrPath, shader->GetFilePath()))
 				return Reload(shader.get());
@@ -188,11 +188,11 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Shader* cons
 	if (path.empty())
 		return nullptr;
 
-	s_Shaders[name].reset();
-	s_Shaders[name] = Shader::CreateFromFile(name, path);
+	Shaders[name].reset();
+	Shaders[name] = Shader::CreateFromFile(name, path);
 	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
 
-	return s_Shaders[name].get();
+	return Shaders[name].get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -202,7 +202,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 	TP_PROFILE_FUNCTION();
 
 	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
-	for (auto& [name, shader] : s_Shaders)
+	for (auto& [name, shader] : Shaders)
 		Reload(shader.get());
 }
 
@@ -222,14 +222,14 @@ void TRAP::Graphics::ShaderManager::Shutdown()
 
 bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 {
-	return s_Shaders.find(name) != s_Shaders.end();
+	return Shaders.find(name) != Shaders.end();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
 {
-	for(const auto& [name, shader] : s_Shaders)
+	for(const auto& [name, shader] : Shaders)
 	{
 		if (FS::IsPathEquivalent(shader->GetFilePath(), path))
 			return true;

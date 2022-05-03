@@ -2523,3 +2523,4 @@ SITREP 05/01/2022|22w17c1
 SITREP 05/03/2022|22w18a1
     - Changed TRAP Engine version to 22w18a1(0.7.131)
     - Small code cleanup ~<20 mins
+    - Made TextureManager & ShaderManager a namespace ~<10 mins
