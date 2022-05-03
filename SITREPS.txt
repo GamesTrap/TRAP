@@ -2525,3 +2525,4 @@ SITREP 05/03/2022|22w18a1
     - Small code cleanup ~<20 mins
     - Made TextureManager & ShaderManager a namespace ~<10 mins
     - ShaderManager & TextureManager now return the onwed pointer when using Remove() ~<10 mins
+    - Added forwarding of console args ~<10 mins

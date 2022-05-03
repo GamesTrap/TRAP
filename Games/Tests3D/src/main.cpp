@@ -12,7 +12,7 @@ public:
 	}
 };
 
-std::unique_ptr<TRAP::Application> TRAP::CreateApplication()
+std::unique_ptr<TRAP::Application> TRAP::CreateApplication(int32_t, char**)
 {
 	return std::make_unique<Tests3D>("Tests3D");
 }

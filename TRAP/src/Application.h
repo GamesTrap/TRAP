@@ -8,7 +8,7 @@
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Time/Timer.h"
 
-int main();
+int main(int32_t argc, char** argv);
 
 namespace TRAP
 {
@@ -280,11 +280,11 @@ namespace TRAP
 
 		static Application* s_Instance; //Singleton instance
 
-		friend int ::main();
+		friend int ::main(int32_t argc, char** argv);
 	};
 
 	//To be defined in CLIENT
-	std::unique_ptr<Application> CreateApplication();
+	std::unique_ptr<Application> CreateApplication(int32_t argc, char** argv);
 }
 
 #endif /*TRAP_APPLICATION_H*/
