@@ -74,12 +74,14 @@ namespace TRAP::Graphics::TextureManager
 	/// Remove a texture from the TextureManager.
 	/// </summary>
 	/// <param name="texture">Texture to remove.</param>
-	void Remove(const Texture* const texture);
+	/// <returns>Removed texture on success, nullptr otherwise.</returns>
+	[[maybe_unused]] Scope<Texture>  Remove(const Texture* const texture);
 	/// <summary>
 	/// Remove a texture from the TextureManager via its name.
 	/// </summary>
 	/// <param name="name">Name of texture to remove.</param>
-	void Remove(const std::string& name);
+	/// <returns>Removed texture on success, nullptr otherwise.</returns>
+	[[maybe_unused]] Scope<Texture>  Remove(const std::string& name);
 	/// <summary>
 	/// Retrieve a texture from the TextureManager.
 	/// </summary>

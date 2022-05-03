@@ -77,27 +77,39 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Remove(const Shader* const shader)
+TRAP::Scope<TRAP::Graphics::Shader>  TRAP::Graphics::ShaderManager::Remove(const Shader* const shader)
 {
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(shader->GetName()))
+	{
+		Scope<Shader> revShader = std::move(Shaders[shader->GetName()]);
 		Shaders.erase(shader->GetName());
+		return revShader;
+	}
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", shader->GetName(), "\"!");
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Remove(const std::string& name)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 {
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(name))
+	{
+		Scope<Shader> shader = std::move(Shaders[name]);
 		Shaders.erase(name);
+		return shader;
+	}
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Couldn't find shader with name: \"", name, "\"!");
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

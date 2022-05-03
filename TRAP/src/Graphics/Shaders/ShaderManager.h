@@ -43,12 +43,14 @@ namespace TRAP::Graphics::ShaderManager
 	/// Remove a shader from the ShaderManager.
 	/// </summary>
 	/// <param name="shader">Shader to remove.</param>
-	void Remove(const Shader* const shader);
+	/// <returns>Removed shader on success, nullptr otherwise.</returns>
+	[[maybe_unused]] Scope<Shader> Remove(const Shader* const shader);
 	/// <summary>
 	/// Remove a shader from the ShaderManager via its name.
 	/// </summary>
 	/// <param name="name">Name of shader to remove.</param>
-	void Remove(const std::string& name);
+	/// <returns>Removed shader on success, nullptr otherwise.</returns>
+	[[maybe_unused]] Scope<Shader>  Remove(const std::string& name);
 	/// <summary>
 	/// Retrieve a shader from the ShaderManager.
 	/// </summary>

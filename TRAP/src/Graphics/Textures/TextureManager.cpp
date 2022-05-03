@@ -161,29 +161,41 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Remove(const Texture* const texture)
+TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const Texture* const texture)
 {
 	TP_PROFILE_FUNCTION();
 
 	if(texture)
 	{
 		if (Exists(texture->GetName()))
+		{
+			Scope<Texture> tex = std::move(Textures[texture->GetName()]);
 			Textures.erase(texture->GetName());
+			return tex;
+		}
 		else
 			TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", texture->GetName(), "\"!");
 	}
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Remove(const std::string& name)
+TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const std::string& name)
 {
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(name))
+	{
+		Scope<Texture> tex = std::move(Textures[name]);
 		Textures.erase(name);
+		return tex;
+	}
 	else
 		TP_ERROR(Log::TextureManagerPrefix, "Couldn't find texture with name: \"", name, "\"!");
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
