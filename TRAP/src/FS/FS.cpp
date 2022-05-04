@@ -287,7 +287,7 @@ bool TRAP::FS::RenameFolder(const std::filesystem::path& oldPath, const std::fil
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::RenameFile(const std::filesystem::path& oldPath, const std::string& newName)
+bool TRAP::FS::RenameFile(const std::filesystem::path& oldPath, const std::string_view newName)
 {
     std::filesystem::path newPath = oldPath.parent_path() / newName / oldPath.extension();
     return RenameFolder(oldPath, newPath);

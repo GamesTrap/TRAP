@@ -10,6 +10,7 @@
 #include "ImageLoader/ImageLoaderTests.h"
 #include "Monitors/MonitorTests.h"
 #include "Opacity/OpacityTests.h"
+#include "RendererAPI/RendererAPIInfo.h"
 #include "Screenshot/ScreenshotTests.h"
 #include "Title/TitleTests.h"
 #include "Vulkan/VulkanFrameBufferTests.h"
@@ -32,9 +33,10 @@ public:
 		// PushLayer(std::make_unique<EventTests>());
 		// PushLayer(std::make_unique<FileSystemTests>());
 		// PushLayer(std::make_unique<IconTests>());
-		PushLayer(std::make_unique<ImageLoaderTests>());
+		// PushLayer(std::make_unique<ImageLoaderTests>());
 		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
+		PushLayer(std::make_unique<RendererAPIInfo>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
 		// PushLayer(std::make_unique<TitleTests>());
 		// PushLayer(std::make_unique<VulkanFrameBufferTests>());

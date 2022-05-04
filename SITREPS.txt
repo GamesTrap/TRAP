@@ -2519,10 +2519,13 @@ SITREP 05/01/2022|22w17c1
                               about ownership, else use raw pointers) ~>120 mins
     - Removed window parameter from OrthographicCameraController ~<5 mins
 
-
 SITREP 05/03/2022|22w18a1
     - Changed TRAP Engine version to 22w18a1(0.7.131)
     - Small code cleanup ~<20 mins
     - Made TextureManager & ShaderManager a namespace ~<10 mins
     - ShaderManager & TextureManager now return the onwed pointer when using Remove() ~<10 mins
     - Added forwarding of console args ~<10 mins
+
+SITREP 05/04/2022|22w18a2
+    - Changed TRAP Engine version to 22w18a2(0.7.132)
+    - Tests Added RendererAPIInfo program ~<15 mins

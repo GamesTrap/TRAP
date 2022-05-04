@@ -143,7 +143,7 @@ namespace TRAP
 		/// <param name="oldPath">File path to rename.</param>
 		/// <param name="newName">New filename.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool RenameFile(const std::filesystem::path& oldPath, const std::string& newName);
+		bool RenameFile(const std::filesystem::path& oldPath, const std::string_view newName);
 
         /// <summary>
 		/// Check if a file or folder exists.
