@@ -126,60 +126,69 @@ namespace TRAP::Graphics::API::SPIRVTools
 	/// <summary>
 	/// SPIRV cross compiler data
 	/// </summary>
-	struct CrossCompiler
+	class CrossCompiler
 	{
+	public:
+		/// <summary>
+		/// Create a new SPIRV cross compiler instance.
+		/// </summary>
+		/// <param name="SPIRVBinary">SPIRV binary data.</param>
+		/// <param name="binarySize">Size of the SPIRV binary data.</param>
+		CrossCompiler(const uint32_t* SPIRVBinary, uint32_t binarySize);
+
+		/// <summary>
+		/// Reflect the shaders entry point.
+		/// </summary>
+		void ReflectEntryPoint();
+		/// <summary>
+		/// Reflect the shaders used resources.
+		/// </summary>
+		void ReflectShaderResources();
+		/// <summary>
+		/// Reflect the shaders uniform variables.
+		/// </summary>
+		void ReflectShaderVariables();
+		/// <summary>
+		/// Reflect the compute shader work group size.
+		/// </summary>
+		/// <returns>Compute shader work group size.</returns>
+		std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize();
+		/// <summary>
+		/// Reflect tessellation control shader control point count.
+		/// </summary>
+		/// <returns>Tessellation control shader control point count.</returns>
+		uint32_t ReflectTessellationControlShaderControlPoint();
+
+		/// <summary>
+		/// Retrieve the shader resources.
+		/// </summary>
+		/// <returns>Shader resources.</returns>
+		const std::vector<Resource>& GetShaderResources() const;
+
+		/// <summary>
+		/// Retrieve the uniform variables.
+		/// </summary>
+		/// <returns>Uniform variables.</returns>
+		const std::vector<Variable>& GetUniformVariables() const;
+
+		/// <summary>
+		/// Rertieve the name of the entry point.
+		/// </summary>
+		/// <returns>Name of entry point.</returns>
+		std::string GetEntryPoint();
+
+	private:
 		//This points to the internal compiler class
-		TRAP::Scope<spirv_cross::Compiler> Compiler;
+		TRAP::Scope<spirv_cross::Compiler> m_compiler;
 
 		//Resources
-		std::vector<Resource> ShaderResources;
+		std::vector<Resource> m_shaderResources;
 
 		//Uniforms
-		std::vector<Variable> UniformVariables;
+		std::vector<Variable> m_uniformVariables;
 
-		std::string EntryPoint;
+		std::string m_entryPoint;
 	};
-
-	/// <summary>
-	/// Create a new SPIRV cross compiler instance.
-	/// </summary>
-	/// <param name="SPIRVBinary">SPIRV binary data.</param>
-	/// <param name="binarySize">Size of the SPIRV binary data.</param>
-	/// <returns>New SPIRV cross compiler instance.</returns>
-	CrossCompiler CreateCrossCompiler(const uint32_t* SPIRVBinary, uint32_t binarySize);
-	/// <summary>
-	/// Destroy a SPIRV cross compiler instance.
-	/// </summary>
-	/// <param name="compiler">SPIRV cross compiler instance.</param>
-	void DestroyCrossCompiler(CrossCompiler& compiler);
-
-	/// <summary>
-	/// Reflect the shaders entry point.
-	/// </summary>
-	/// <param name="compiler">SPIRV cross compiler instance.</param>
-	void ReflectEntryPoint(CrossCompiler& compiler);
-	/// <summary>
-	/// Reflect the shaders used resources.
-	/// </summary>
-	/// <param name="compiler">SPIRV cross compiler instance.</param>
-	void ReflectShaderResources(CrossCompiler& compiler);
-	/// <summary>
-	/// Reflect the shaders uniform variables.
-	/// </summary>
-	/// <param name="compiler">SPIRV cross compiler instance.</param>
-	void ReflectShaderVariables(CrossCompiler& compiler);
-	/// <summary>
-	/// Reflect the compute shader work group size.
-	/// </summary>
-	/// <param name="compiler">SPIRV cross compiler instance.</param>
-	/// <returns>Compute shader work group size.</returns>
-	std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize(CrossCompiler& compiler);
-	/// <summary>
-	/// Reflect tessellation control shader control point count.
-	/// </summary>
-	/// <param name="compiler">SPIRV cross compiler instance.</param>
-	/// <returns>Tessellation control shader control point count.</returns>
-	uint32_t ReflectTessellationControlShaderControlPoint(CrossCompiler& compiler);
 }
 
 #endif /*TRAP_SPIRVTOOLS_H*/

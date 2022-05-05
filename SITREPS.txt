@@ -2529,3 +2529,7 @@ SITREP 05/03/2022|22w18a1
 SITREP 05/04/2022|22w18a2
     - Changed TRAP Engine version to 22w18a2(0.7.132)
     - Tests Added RendererAPIInfo program ~<15 mins
+
+SITREP 05/05/2022|22w18b1
+    - Changed TRAP Engine version to 22w18b1(0.7.133)
+    - SPIRVTools Made CrossCompiler a class ~<30 mins

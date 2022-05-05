@@ -68,25 +68,24 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
 TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
                                                                                                       RendererAPI::ShaderStage shaderStage)
 {
-	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(shaderCode.data(),
-	                                                               static_cast<uint32_t>(shaderCode.size()));
+	SPIRVTools::CrossCompiler cc(shaderCode.data(), static_cast<uint32_t>(shaderCode.size()));
 
-	ReflectEntryPoint(cc);
-	ReflectShaderResources(cc);
-	ReflectShaderVariables(cc);
+	cc.ReflectEntryPoint();
+	cc.ReflectShaderResources();
+	cc.ReflectShaderVariables();
 
 	ShaderReflection::ShaderReflection out{};
 
 	if (shaderStage == RendererAPI::ShaderStage::Compute)
-		out.NumThreadsPerGroup = ReflectComputeShaderWorkGroupSize(cc);
+		out.NumThreadsPerGroup = cc.ReflectComputeShaderWorkGroupSize();
 	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
-		out.NumControlPoint = ReflectTessellationControlShaderControlPoint(cc);
+		out.NumControlPoint = cc.ReflectTessellationControlShaderControlPoint();
 
 	std::size_t vertexInputCount = 0;
 	std::size_t resourceCount = 0;
 	std::size_t variablesCount = 0;
 
-	for(auto& resource : cc.ShaderResources)
+	for(const auto& resource : cc.GetShaderResources())
 	{
 		if(!resource.IsUsed)
 		{
@@ -111,19 +110,17 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		}
 	}
 
-	for(std::size_t i = 0; i < cc.UniformVariables.size(); ++i)
+	for(const auto& variable : cc.GetUniformVariables())
 	{
-		SPIRVTools::Variable& variable = cc.UniformVariables[i];
-
 		//Check if parent buffer was filtered out
-		const bool parentFiltered = FilterResource(cc.ShaderResources[variable.ParentIndex], shaderStage);
+		const bool parentFiltered = FilterResource(cc.GetShaderResources()[variable.ParentIndex], shaderStage);
 
 		//Filter out what we don't use
 		if(variable.IsUsed && !parentFiltered)
 			++variablesCount;
 	}
 
-	out.EntryPoint = cc.EntryPoint;
+	out.EntryPoint = cc.GetEntryPoint();
 
 	std::vector<ShaderReflection::VertexInput> vertexInputs{};
 	//Start with the vertex input
@@ -132,7 +129,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		vertexInputs.resize(vertexInputCount);
 
 		std::size_t j = 0;
-		for(auto& resource : cc.ShaderResources)
+		for(const auto& resource : cc.GetShaderResources())
 		{
 			//Filter out what we don't use
 			if(!FilterResource(resource, shaderStage) &&
@@ -151,16 +148,16 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	//Continue with resources
 	if(resourceCount)
 	{
-		indexRemap.resize(cc.ShaderResources.size());
+		indexRemap.resize(cc.GetShaderResources().size());
 		resources.resize(resourceCount);
 
 		std::size_t j = 0;
-		for(std::size_t i = 0; i < cc.ShaderResources.size(); ++i)
+		for(std::size_t i = 0; i < cc.GetShaderResources().size(); ++i)
 		{
 			//Set index remap
 			indexRemap[i] = static_cast<uint32_t>(-1);
 
-			SPIRVTools::Resource& resource = cc.ShaderResources[i];
+			const SPIRVTools::Resource& resource = cc.GetShaderResources()[i];
 
 			//Filter out what we don't use
 			if(!FilterResource(resource, shaderStage) && resource.Type != SPIRVTools::ResourceType::Inputs)
@@ -197,12 +194,10 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		variables.resize(variablesCount);
 
 		std::size_t j = 0;
-		for(std::size_t i = 0; i < cc.UniformVariables.size(); ++i)
+		for(const auto& variable : cc.GetUniformVariables())
 		{
-			SPIRVTools::Variable& variable = cc.UniformVariables[i];
-
 			//Check if parent buffer was filtered out
-			const bool parentFiltered = FilterResource(cc.ShaderResources[variable.ParentIndex], shaderStage);
+			const bool parentFiltered = FilterResource(cc.GetShaderResources()[variable.ParentIndex], shaderStage);
 
 			//Filter out what we don't use
 			if(variable.IsUsed && !parentFiltered)
@@ -219,7 +214,6 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	}
 
 	indexRemap.clear();
-	DestroyCrossCompiler(cc);
 
 	//All reflection struct should be built now
 	out.ShaderStage = shaderStage;

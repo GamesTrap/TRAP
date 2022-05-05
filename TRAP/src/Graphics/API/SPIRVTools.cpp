@@ -10,9 +10,8 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 	                       std::size_t& currentResource,
 	                       const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
 {
-	for(std::size_t i = 0; i < allResources.size(); ++i)
+	for(const auto& input : allResources)
 	{
-		spirv_cross::Resource const& input = allResources[i];
 		TRAP::Graphics::API::SPIRVTools::Resource& resource = resources[currentResource++];
 
 		resource.SPIRVCode.ID = input.id;
@@ -98,50 +97,28 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::SPIRVTools::CrossCompiler TRAP::Graphics::API::SPIRVTools::CreateCrossCompiler(const uint32_t* SPIRVBinary,
-                                                                                                    const uint32_t binarySize)
+TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* SPIRVBinary, const uint32_t binarySize)
+	: m_compiler(TRAP::MakeScope<spirv_cross::Compiler>(SPIRVBinary, binarySize))
 {
-	CrossCompiler comp;
-
-	//Build the compiler
-	comp.Compiler = TRAP::MakeScope<spirv_cross::Compiler>(SPIRVBinary, binarySize);
-
-	comp.ShaderResources = {};
-
-	comp.UniformVariables = {};
-
-	return comp;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::SPIRVTools::DestroyCrossCompiler(CrossCompiler& compiler)
+void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 {
-	compiler.Compiler.reset();
-
-	compiler.ShaderResources.clear();
-	compiler.UniformVariables.clear();
-
-	compiler.Compiler = nullptr;
+	m_entryPoint = m_compiler->get_entry_points_and_stages()[0].name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::SPIRVTools::ReflectEntryPoint(CrossCompiler& compiler)
-{
-	compiler.EntryPoint = compiler.Compiler->get_entry_points_and_stages()[0].name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& compiler)
+void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 {
 	//1. Get all shader resources
 	spirv_cross::ShaderResources allResources;
 	std::unordered_set<spirv_cross::VariableID> usedResources;
 
-	allResources = compiler.Compiler->get_shader_resources();
-	usedResources = compiler.Compiler->get_active_interface_variables();
+	allResources = m_compiler->get_shader_resources();
+	usedResources = m_compiler->get_active_interface_variables();
 
 	//2. Count number of resources and allocate array
 	std::size_t resourceCount = 0;
@@ -168,9 +145,8 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 	std::size_t currentResource = 0;
 
 	//3. Start by reflecting the shader inputs
-	for(std::size_t i = 0; i < allResources.stage_inputs.size(); ++i)
+	for(const auto& input : allResources.stage_inputs)
 	{
-		spirv_cross::Resource const& input = allResources.stage_inputs[i];
 		Resource& resource = resources[currentResource++];
 
 		resource.SPIRVCode.ID = input.id;
@@ -183,9 +159,9 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 
 		resource.Set = static_cast<uint32_t>(-1); //Stage inputs dont have sets
 		//Location is the binding point for inputs
-		resource.Binding = compiler.Compiler->get_decoration(resource.SPIRVCode.ID, spv::DecorationLocation);
+		resource.Binding = m_compiler->get_decoration(resource.SPIRVCode.ID, spv::DecorationLocation);
 
-		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
+		spirv_cross::SPIRType type = m_compiler->get_type(resource.SPIRVCode.TypeID);
 		//bit width * vecsize = size
 		resource.Size = static_cast<uint64_t>(type.width / 8) * type.vecsize;
 
@@ -193,9 +169,8 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 	}
 
 	//4. Reflect output
-	for(std::size_t i = 0; i < allResources.stage_outputs.size(); ++i)
+	for(const auto& input : allResources.stage_outputs)
 	{
-		spirv_cross::Resource const& input = allResources.stage_outputs[i];
 		Resource& resource = resources[currentResource++];
 
 		resource.SPIRVCode.ID = input.id;
@@ -208,9 +183,9 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 
 		resource.Set = static_cast<uint32_t>(-1);
 		//Location is the binding point for outputs
-		resource.Binding = compiler.Compiler->get_decoration(resource.SPIRVCode.ID, spv::DecorationLocation);
+		resource.Binding = m_compiler->get_decoration(resource.SPIRVCode.ID, spv::DecorationLocation);
 
-		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
+		spirv_cross::SPIRType type = m_compiler->get_type(resource.SPIRVCode.TypeID);
 		//bit width * vecsize = size
 		resource.Size = (static_cast<uint64_t>(type.width / 8)) * type.vecsize;
 
@@ -218,29 +193,28 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 	}
 
 	//5. Reflect the "normal" resources
-	ReflectBoundResources(*compiler.Compiler, allResources.uniform_buffers, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.uniform_buffers, usedResources, resources,
 	                      currentResource, ResourceType::UniformBuffers);
-	ReflectBoundResources(*compiler.Compiler, allResources.storage_buffers, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.storage_buffers, usedResources, resources,
 	                      currentResource, ResourceType::StorageBuffers);
-	ReflectBoundResources(*compiler.Compiler, allResources.storage_images, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.storage_images, usedResources, resources,
 	                      currentResource, ResourceType::StorageImages);
-	ReflectBoundResources(*compiler.Compiler, allResources.separate_images, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.separate_images, usedResources, resources,
 	                      currentResource, ResourceType::Images);
-	ReflectBoundResources(*compiler.Compiler, allResources.separate_samplers, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.separate_samplers, usedResources, resources,
 	                      currentResource, ResourceType::Samplers);
-	ReflectBoundResources(*compiler.Compiler, allResources.sampled_images, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.sampled_images, usedResources, resources,
 	                      currentResource, ResourceType::CombinedSamplers);
-	ReflectBoundResources(*compiler.Compiler, allResources.subpass_inputs, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.subpass_inputs, usedResources, resources,
 	                      currentResource, ResourceType::SubpassInputs);
-	ReflectBoundResources(*compiler.Compiler, allResources.subpass_inputs, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.subpass_inputs, usedResources, resources,
 	                      currentResource, ResourceType::SubpassInputs);
-	ReflectBoundResources(*compiler.Compiler, allResources.acceleration_structures, usedResources, resources,
+	ReflectBoundResources(*m_compiler, allResources.acceleration_structures, usedResources, resources,
 	                      currentResource, ResourceType::AccelerationStructures);
 
 	//6. Reflect push buffers
-	for(std::size_t i = 0; i < allResources.push_constant_buffers.size(); ++i)
+	for(const auto& input : allResources.push_constant_buffers)
 	{
-		spirv_cross::Resource const& input = allResources.push_constant_buffers[i];
 		Resource& resource = resources[currentResource++];
 
 		resource.SPIRVCode.ID = input.id;
@@ -254,33 +228,31 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 		resource.Set = static_cast<uint32_t>(-1); //Push constants dont have sets
 		resource.Binding = static_cast<uint32_t>(-1); //Push constants dont have bindings
 
-		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
-		resource.Size = compiler.Compiler->get_declared_struct_size(type);
+		spirv_cross::SPIRType type = m_compiler->get_type(resource.SPIRVCode.TypeID);
+		resource.Size = m_compiler->get_declared_struct_size(type);
 
 		resource.Name = input.name;
 		resource.Dimension = ResourceTextureDimension::Undefined;
 	}
 
-	compiler.ShaderResources = resources;
+	m_shaderResources = resources;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& compiler)
+void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 {
-	if (compiler.ShaderResources.empty())
+	if (m_shaderResources.empty())
 		return; //Error code here
 
 	//1. Count number of variables we have
 	std::size_t variableCount = 0;
 
-	for(std::size_t i = 0; i < compiler.ShaderResources.size(); ++i)
+	for(Resource& resource : m_shaderResources)
 	{
-		Resource& resource = compiler.ShaderResources[i];
-
 		if(resource.Type == ResourceType::UniformBuffers || resource.Type == ResourceType::PushConstant)
 		{
-			spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
+			spirv_cross::SPIRType type = m_compiler->get_type(resource.SPIRVCode.TypeID);
 			variableCount += type.member_types.size();
 		}
 	}
@@ -290,16 +262,16 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& comp
 	std::size_t currentVariable = 0;
 
 	//3. Reflect
-	for(std::size_t i = 0; i < compiler.ShaderResources.size(); ++i)
+	for(std::size_t i = 0; i < m_shaderResources.size(); ++i)
 	{
-		Resource& resource = compiler.ShaderResources[i];
+		Resource& resource = m_shaderResources[i];
 
 		if(resource.Type != ResourceType::UniformBuffers && resource.Type != ResourceType::PushConstant)
 			continue;
 
 		std::size_t startOfBlock = currentVariable;
 
-		spirv_cross::SPIRType type = compiler.Compiler->get_type(resource.SPIRVCode.TypeID);
+		spirv_cross::SPIRType type = m_compiler->get_type(resource.SPIRVCode.TypeID);
 		for(std::size_t j = 0; j < type.member_types.size(); ++j)
 		{
 			Variable& variable = variables[currentVariable++];
@@ -311,30 +283,29 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderVariables(CrossCompiler& comp
 
 			variable.IsUsed = false;
 
-			variable.Size = compiler.Compiler->get_declared_struct_member_size(type, static_cast<uint32_t>(j));
-			variable.Offset = compiler.Compiler->get_member_decoration(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j),
+			variable.Size = m_compiler->get_declared_struct_member_size(type, static_cast<uint32_t>(j));
+			variable.Offset = m_compiler->get_member_decoration(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j),
 																		spv::DecorationOffset);
 
-			variable.Name = compiler.Compiler->get_member_name(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j));
+			variable.Name = m_compiler->get_member_name(resource.SPIRVCode.BaseTypeID, static_cast<uint32_t>(j));
 		}
 
-		spirv_cross::SmallVector<spirv_cross::BufferRange> range = compiler.Compiler->get_active_buffer_ranges(resource.SPIRVCode.ID);
+		spirv_cross::SmallVector<spirv_cross::BufferRange> range = m_compiler->get_active_buffer_ranges(resource.SPIRVCode.ID);
 
 		for(std::size_t j = 0; j < range.size(); ++j)
 			variables[startOfBlock + range[j].index].IsUsed = true;
 	}
 
-	compiler.UniformVariables = variables;
+	m_uniformVariables = variables;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::ReflectComputeShaderWorkGroupSize(CrossCompiler& compiler)
+std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectComputeShaderWorkGroupSize()
 {
 	std::array<uint32_t, 3> res{};
 
-	spirv_cross::SPIREntryPoint& entryPoint = compiler.Compiler->get_entry_point(compiler.EntryPoint,
-	                                                                             compiler.Compiler->get_execution_model());
+	spirv_cross::SPIREntryPoint& entryPoint = m_compiler->get_entry_point(m_entryPoint, m_compiler->get_execution_model());
 
 	res[0] = entryPoint.workgroup_size.x;
 	res[1] = entryPoint.workgroup_size.y;
@@ -345,10 +316,9 @@ std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::ReflectComputeShaderWor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::SPIRVTools::ReflectTessellationControlShaderControlPoint(CrossCompiler& compiler)
+uint32_t TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationControlShaderControlPoint()
 {
-	uint32_t controlPoints = compiler.Compiler->get_entry_point(compiler.EntryPoint,
-	                                          compiler.Compiler->get_execution_model()).output_vertices;
+	uint32_t controlPoints = m_compiler->get_entry_point(m_entryPoint, m_compiler->get_execution_model()).output_vertices;
 
 	if(controlPoints > RendererAPI::GPUSettings.MaxTessellationControlPoints)
 	{
@@ -359,4 +329,25 @@ uint32_t TRAP::Graphics::API::SPIRVTools::ReflectTessellationControlShaderContro
 	}
 
 	return controlPoints;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const
+{
+	return m_shaderResources;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const
+{
+	return m_uniformVariables;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint()
+{
+	return m_entryPoint;
 }
