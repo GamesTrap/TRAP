@@ -485,6 +485,18 @@ namespace TRAP::INTERNAL
 			ResizeAll = 8, //Omni-directional resize/move cursor shape.
 			NotAllowed = 9 //Operation-not-allowed cursor shape.
 		};
+
+		/// <summary>
+		/// State of progress for a window.
+		/// </summary>
+		enum class ProgressState
+		{
+			NoProgress = 0x00,
+			Indeterminate = 0x01,
+			Normal = 0x02,
+			Error = 0x04,
+			Paused = 0x08
+		};
 	private:
 		//-------//
 		//Windows//
@@ -628,6 +640,8 @@ namespace TRAP::INTERNAL
 			std::vector<RAWINPUT> RawInput{};
 			int32_t RawInputSize = 0;
 			UINT MouseTrailSize = 0;
+
+			ITaskbarList3* TaskbarList = nullptr;
 
 			struct
 			{
@@ -2045,6 +2059,16 @@ namespace TRAP::INTERNAL
 		/// <returns>True if raw mouse motion mode is enabled, false otherwise.</returns>
 		static bool GetRawMouseMotionMode(const InternalWindow* window);
 		/// <summary>
+		/// Sets the progress value and state on the taskbar for the specified window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error and Error::Feature_Unavailable.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set progress for.</param>
+		/// <param name="state">State of progress.</param>
+		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
+		static void SetProgress(const InternalWindow* window, ProgressState state, uint32_t progress);
+		/// <summary>
 		/// This function returns the name of the specified printable key, encoded as UTF-8.
 		/// This is typically the character that key would produce without any modifier
 		/// keys, intended for displaying key bindings to the user. For dead keys, it is
@@ -3130,6 +3154,16 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set raw mouse input for.</param>
 		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
 		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
+		/// <summary>
+		/// Sets the progress value and state on the taskbar for the specified window.
+		///
+		/// Errors: Possible errors include Error::Platform_Error and Error::Feature_Unavailable.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set progress for.</param>
+		/// <param name="state">State of progress.</param>
+		/// <param name="completed">How much has been completed. Valid values: 0 - 100.</param>
+		static void PlatformSetProgress(const InternalWindow* window, ProgressState state, uint32_t completed);
 		/// <summary>
 		/// This function returns the platform-specific scancode of the specified key.
 		///

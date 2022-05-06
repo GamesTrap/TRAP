@@ -39,6 +39,12 @@ namespace TRAP
 		/// </summary>
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
 
+		/// <summary>
+		/// Same as WindowingAPI::ProgressState.
+		/// Specifies the progress state of a window.
+		/// </summary>
+		using ProgressState = INTERNAL::WindowingAPI::ProgressState;
+
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
 		/// <summary>
@@ -192,6 +198,12 @@ namespace TRAP
 		/// </summary>
 		/// <param name="enabled">New status for raw mouse input.</param>
 		void SetRawMouseInput(bool enabled);
+		/// <summary>
+		/// Sets the progress on the taskbar for the specified window.
+		/// </summary>
+		/// <param name="state">State of progress.</param>
+		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
+		void SetProgress(ProgressState state, uint32_t progress);
 		/// <summary>
 		/// Resets the window icon to the TRAP logo.
 		/// </summary>

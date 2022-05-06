@@ -36,7 +36,7 @@ public:
 		// PushLayer(std::make_unique<ImageLoaderTests>());
 		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
-		PushLayer(std::make_unique<RendererAPIInfo>());
+		// PushLayer(std::make_unique<RendererAPIInfo>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
 		// PushLayer(std::make_unique<TitleTests>());
 		// PushLayer(std::make_unique<VulkanFrameBufferTests>());
@@ -44,7 +44,7 @@ public:
 		// PushLayer(std::make_unique<VulkanMultiWindowTests>());
 		// PushLayer(std::make_unique<VulkanTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
-		// PushLayer(std::make_unique<WindowStateTests>());
+		PushLayer(std::make_unique<WindowStateTests>());
 	}
 };
 

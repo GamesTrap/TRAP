@@ -520,6 +520,15 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progress)
+{
+	TP_PROFILE_FUNCTION();
+
+	INTERNAL::WindowingAPI::SetProgress(m_window.get(), state, progress);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Window::SetIcon() const
 {
 	TP_PROFILE_FUNCTION();

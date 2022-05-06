@@ -3196,6 +3196,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* /*window*/, const ProgressState /*state*/,
+													   const uint32_t /*completed*/)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(Input::Key key)
 {
 	return s_Data.ScanCodes[static_cast<uint32_t>(key)];

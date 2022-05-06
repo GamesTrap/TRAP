@@ -149,6 +149,7 @@
 #include <imm.h>
 #include <KnownFolders.h>
 #include <ShlObj_core.h>
+#include <Shobjidl.h>
 //DirectX
 //XInput
 #include <Xinput.h>

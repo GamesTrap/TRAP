@@ -2533,3 +2533,7 @@ SITREP 05/04/2022|22w18a2
 SITREP 05/05/2022|22w18b1
     - Changed TRAP Engine version to 22w18b1(0.7.133)
     - SPIRVTools Made CrossCompiler a class ~<30 mins
+
+SITREP 05/06/2022|22w18c1
+    - Changed TRAP Engine version to 22w18c1(0.7.134)
+    - WindowingAPI Added ability to set progress state & value on taskbar on Windows ~<40 mins

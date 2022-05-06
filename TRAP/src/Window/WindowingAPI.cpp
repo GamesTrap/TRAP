@@ -1429,6 +1429,16 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* window, const ProgressState state,
+											   const uint32_t progress)
+{
+	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+
+	PlatformSetProgress(window, state, progress);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Returns the layout-specific name of the specified printable key.
 const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {

@@ -16,6 +16,16 @@ void WindowStateTests::OnImGuiRender()
 	ImGui::Text("Press M to maximize window");
 	ImGui::Text("Press R to restore window");
 	ImGui::Text("Press B to enable/disable window resizability");
+	ImGui::Separator();
+	ImGui::Text("Press 1 to set progress to   0%%");
+	ImGui::Text("Press 2 to set progress to  25%%");
+	ImGui::Text("Press 3 to set progress to  50%%");
+	ImGui::Text("Press 4 to set progress to  75%%");
+	ImGui::Text("Press 5 to set progress to 100%%");
+	ImGui::Text("Press 6 to set progress to Indeterminate");
+	ImGui::Text("Press 7 to set progress to Error");
+	ImGui::Text("Press 8 to set progress to Paused");
+	ImGui::Text("Press 9 to request user attention");
 	ImGui::End();
 }
 
@@ -75,18 +85,20 @@ bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 	if (event.GetRepeatCount() > 0)
 		return true;
 
+	TRAP::Window* window = TRAP::Application::GetWindow();
+
 	switch(event.GetKey())
 	{
 	case TRAP::Input::Key::I:
-		TRAP::Application::GetWindow()->Minimize();
+		window->Minimize();
 		break;
 
 	case TRAP::Input::Key::M:
-		TRAP::Application::GetWindow()->Maximize();
+		window->Maximize();
 		break;
 
 	case TRAP::Input::Key::R:
-		TRAP::Application::GetWindow()->Restore();
+		window->Restore();
 		break;
 
 	case TRAP::Input::Key::Escape:
@@ -94,7 +106,35 @@ bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::B:
-		TRAP::Application::GetWindow()->SetResizable(!TRAP::Application::GetWindow()->IsResizable());
+		window->SetResizable(!window->IsResizable());
+		break;
+
+	case TRAP::Input::Key::One:
+		window->SetProgress(TRAP::Window::ProgressState::NoProgress, 0);
+		break;
+	case TRAP::Input::Key::Two:
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 25);
+		break;
+	case TRAP::Input::Key::Three:
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 50);
+		break;
+	case TRAP::Input::Key::Four:
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 75);
+		break;
+	case TRAP::Input::Key::Five:
+		window->SetProgress(TRAP::Window::ProgressState::Normal, 100);
+		break;
+	case TRAP::Input::Key::Six:
+		window->SetProgress(TRAP::Window::ProgressState::Indeterminate, 0);
+		break;
+	case TRAP::Input::Key::Seven:
+		window->SetProgress(TRAP::Window::ProgressState::Error, 100);
+		break;
+	case TRAP::Input::Key::Eight:
+		window->SetProgress(TRAP::Window::ProgressState::Paused, 100);
+		break;
+	case TRAP::Input::Key::Nine:
+		window->RequestAttention();
 		break;
 
 	default:

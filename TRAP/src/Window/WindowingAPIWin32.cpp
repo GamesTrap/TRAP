@@ -363,6 +363,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                                           const LPARAM lParam)
 {
+	static const UINT WM_TBC = RegisterWindowMessageW(L"TaskbarCreated");
 	InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(hWnd, L"TRAP"));
 
 	if (!windowPtr)
@@ -2116,6 +2117,14 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	if (!CreateHelperWindow())
 		return false;
 
+	if(IsWindows7OrGreaterWin32())
+	{
+		CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+		CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, reinterpret_cast<void**>(&s_Data.TaskbarList));
+		if(!s_Data.TaskbarList)
+			CoUninitialize();
+	}
+
 	PollMonitorsWin32();
 
 	return true;
@@ -2152,6 +2161,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
+	if(s_Data.TaskbarList)
+	{
+		s_Data.TaskbarList->Release();
+		s_Data.TaskbarList = nullptr;
+		CoUninitialize();
+	}
+
 	if (s_Data.DeviceNotificationHandle)
 		UnregisterDeviceNotification(s_Data.DeviceNotificationHandle);
 
@@ -2729,6 +2745,31 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 		EnableRawMouseMotion(window);
 	else
 		DisableRawMouseMotion(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* window, const ProgressState state,
+													   const uint32_t completed)
+{
+	if(!s_Data.TaskbarList)
+		return;
+
+	uint32_t progress = TRAP::Math::Clamp(completed, 0u, 100u);
+
+	HRESULT res = s_Data.TaskbarList->SetProgressValue(window->Handle, progress, 100u);
+	if(!res == S_OK)
+	{
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress value");
+		return;
+	}
+
+	res = s_Data.TaskbarList->SetProgressState(window->Handle, static_cast<TBPFLAG>(state));
+	if(!res == S_OK)
+	{
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress state");
+		return;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
