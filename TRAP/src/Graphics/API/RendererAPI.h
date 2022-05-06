@@ -1359,7 +1359,7 @@ namespace TRAP::Graphics
 			//Flags specifying the suitable usage of this buffer (Uniform Buffer, Vertex Buffer, Index Buffer, ...)
 			DescriptorType Descriptors{};
 			//Debug name used in GPU-profile
-			const char* Name{};
+			const std::string_view Name{};
 		};
 
 		/// <summary>
@@ -1754,7 +1754,7 @@ namespace TRAP::Graphics
 			uint32_t PipelineExtensionCount{};
 
 			//Name for the pipeline
-			const char* Name{};
+			const std::string_view Name{};
 		};
 
 		/// <summary>

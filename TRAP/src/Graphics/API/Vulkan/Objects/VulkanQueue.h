@@ -96,6 +96,12 @@ namespace TRAP::Graphics::API
 		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
 
 	private:
+		/// <summary>
+		/// Set a name for the queue.
+		/// </summary>
+		/// <param name="name">Name for the queue.</param>
+		void SetQueueName(std::string_view name) const;
+
 		TRAP::Ref<VulkanDevice> m_device;
 
 		VkQueue m_vkQueue;

@@ -36,6 +36,23 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	//Get queue handle
 	vkGetDeviceQueue(m_device->GetVkDevice(), m_vkQueueFamilyIndex, m_vkQueueIndex, &m_vkQueue);
 	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	switch(m_type)
+	{
+	case RendererAPI::QueueType::Graphics:
+		SetQueueName("Queue_Graphics");
+		break;
+	case RendererAPI::QueueType::Compute:
+		SetQueueName("Queue_Compute");
+		break;
+	case RendererAPI::QueueType::Transfer:
+		SetQueueName("Queue_Transfer");
+		break;
+	default:
+		break;
+	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -218,4 +235,11 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 	}
 
 	return presentStatus;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name) const
+{
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
 }

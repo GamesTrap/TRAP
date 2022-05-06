@@ -204,7 +204,7 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const char* name) const
+void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
 {
 	m_texture->SetTextureName(name);
 }

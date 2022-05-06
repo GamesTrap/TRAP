@@ -118,6 +118,11 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VulkanRenderer::s_debugMarkerSupport = (vkCmdBeginDebugUtilsLabelEXT) && (vkCmdEndDebugUtilsLabelEXT) &&
 		                                   (vkCmdInsertDebugUtilsLabelEXT) && (vkSetDebugUtilsObjectNameEXT);
+
+#if defined(ENABLE_GRAPHICS_DEBUG)
+	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName)
+		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -381,4 +386,11 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
 uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 {
 	return m_computeQueueIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view name) const
+{
+	VkSetObjectName(m_device, reinterpret_cast<uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
 }

@@ -49,6 +49,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 
 			const RendererAPI::BinaryShaderStageDesc* stageDesc = nullptr;
 
+			std::string stageName = m_name + "_";
 			switch(stageMask)
 			{
 				case RendererAPI::ShaderStage::Vertex:
@@ -60,6 +61,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 					stageDesc = &desc.Vertex;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules[counter]));
+#ifdef ENABLE_GRAPHICS_DEBUG
+					if (!m_name.empty())
+						SetShaderStageName(m_name + "_Vertex", m_shaderModules[counter]);
+#endif
 					break;
 				}
 
@@ -73,6 +78,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 					stageDesc = &desc.TessellationControl;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules[counter]));
+#ifdef ENABLE_GRAPHICS_DEBUG
+					if (!m_name.empty())
+						SetShaderStageName(m_name + "_TessellationControl", m_shaderModules[counter]);
+#endif
 					break;
 				}
 
@@ -86,6 +95,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 					stageDesc = &desc.TessellationEvaluation;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules[counter]));
+#ifdef ENABLE_GRAPHICS_DEBUG
+					if (!m_name.empty())
+						SetShaderStageName(m_name + "_TessellationEvaluation", m_shaderModules[counter]);
+#endif
 					break;
 				}
 
@@ -98,6 +111,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 					stageDesc = &desc.Geometry;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules[counter]));
+#ifdef ENABLE_GRAPHICS_DEBUG
+					if (!m_name.empty())
+						SetShaderStageName(m_name + "_Geometry", m_shaderModules[counter]);
+#endif
 					break;
 				}
 
@@ -110,6 +127,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 					stageDesc = &desc.Fragment;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules[counter]));
+#ifdef ENABLE_GRAPHICS_DEBUG
+					if (!m_name.empty())
+						SetShaderStageName(m_name + "_Fragment", m_shaderModules[counter]);
+#endif
 					break;
 				}
 
@@ -123,6 +144,10 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 					stageDesc = &desc.Compute;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr,
 					                            &m_shaderModules[counter]));
+#ifdef ENABLE_GRAPHICS_DEBUG
+					if (!m_name.empty())
+						SetShaderStageName(m_name + "_Compute/RayTracing", m_shaderModules[counter]);
+#endif
 					break;
 				}
 
@@ -393,6 +418,13 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 		                           0 : RendererAPI::GetCurrentImageIndex(window);
 
 	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size, 0, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_view name, VkShaderModule stage) const
+{
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

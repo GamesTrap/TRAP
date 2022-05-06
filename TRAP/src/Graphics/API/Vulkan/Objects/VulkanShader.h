@@ -130,6 +130,13 @@ namespace TRAP::Graphics::API
 
 	private:
 		/// <summary>
+		/// Set a name for the shader stage.
+		/// </summary>
+		/// <param name="name">Name for the shader stage.</param>
+		/// <param name="stage">Shader stage to name.</param>
+		void SetShaderStageName(std::string_view name, VkShaderModule stage) const;
+
+		/// <summary>
 		/// Use a buffer object with this shader on the given window.
 		/// </summary>
 		/// <param name="set">Descriptor set to use the buffer with.</param>

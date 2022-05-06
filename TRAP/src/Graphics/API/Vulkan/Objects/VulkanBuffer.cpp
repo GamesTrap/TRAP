@@ -235,7 +235,7 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const char* name) const
+void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
 {
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
 }

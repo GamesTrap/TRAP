@@ -45,9 +45,10 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 		break;
 	}
 
-	if(desc.Name)
-		VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE,
-		                desc.Name);
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(!desc.Name.empty() && m_vkPipeline != VK_NULL_HANDLE)
+		SetPipelineName(desc.Name);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -346,4 +347,11 @@ VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const
 {
 	return m_type;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
+{
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
 }

@@ -109,15 +109,6 @@ BOOL TRAP::INTERNAL::WindowingAPI::IsWindows7OrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Checks whether we are on at least Windows Vista
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindowsVistaOrGreaterWin32()
-{
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_VISTA),
-		                                  LOBYTE(_WIN32_WINNT_VISTA), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Returns an UTF-8 string version of the specified wide string
 std::string TRAP::INTERNAL::WindowingAPI::CreateUTF8StringFromWideStringWin32(const std::wstring& wStr)
 {
@@ -2108,8 +2099,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 		s_Data.User32.SetProcessDPIAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	else if (IsWindows8Point1OrGreaterWin32())
 		s_Data.SHCore.SetProcessDPIAwareness(Process_DPI_Awareness::Process_Per_Monitor_DPI_Aware); //Process per monitor DPI aware
-	else if (IsWindowsVistaOrGreaterWin32())
-		s_Data.User32.SetProcessDPIAware();
+
+	s_Data.User32.SetProcessDPIAware();
 
 	if (!RegisterWindowClassWin32())
 		return false;

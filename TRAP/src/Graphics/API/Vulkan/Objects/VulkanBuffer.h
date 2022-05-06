@@ -115,7 +115,7 @@ namespace TRAP::Graphics::API
 		/// Set a name for the buffer.
 		/// </summary>
 		/// <param name="name">Name for the buffer.</param>
-		void SetBufferName(const char* name) const;
+		void SetBufferName(std::string_view name) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_VMA;

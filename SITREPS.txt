@@ -2537,3 +2537,7 @@ SITREP 05/05/2022|22w18b1
 SITREP 05/06/2022|22w18c1
     - Changed TRAP Engine version to 22w18c1(0.7.134)
     - WindowingAPI Added ability to set progress state & value on taskbar on Windows ~<40 mins
+    - VulkanDevice Added device name for debugging tools (RenderDoc) ~<10 mins
+    - VulkanQueue Added queue type name for debugging tools (RenderDoc) ~<10 mins
+    - VulkanShader Added shader name + type for debugging tools (RenderDoc) ~<10 mins
+    - WindowingAPI Removed IsWindowsVistraOrGreaterWin32() as TRAP uses Windows 7 as minimum reqs ~<10 mins

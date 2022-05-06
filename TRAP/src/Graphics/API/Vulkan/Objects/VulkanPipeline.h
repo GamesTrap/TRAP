@@ -61,6 +61,12 @@ namespace TRAP::Graphics::API
 		/// <param name="desc">Pipeline description</param>
 		void InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc);
 
+		/// <summary>
+		/// Set a name for the pipeline.
+		/// </summary>
+		/// <param name="name">Name for the pipeline.</param>
+		void SetPipelineName(std::string_view name) const;
+
 		VkPipeline m_vkPipeline;
 		RendererAPI::PipelineType m_type;
 		//In DX12 this information is stored in ID3D12StateObject.

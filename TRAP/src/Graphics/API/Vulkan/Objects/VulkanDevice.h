@@ -131,6 +131,12 @@ namespace TRAP::Graphics::API
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties,
 		                          uint8_t& queueFamilyIndex, uint8_t& queueIndex);
 
+		/// <summary>
+		/// Set a name for the device device.
+		/// </summary>
+		/// <param name="name">Name for the device.</param>
+		void SetDeviceName(std::string_view name) const;
+
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 
 		std::vector<std::string> m_deviceExtensions;

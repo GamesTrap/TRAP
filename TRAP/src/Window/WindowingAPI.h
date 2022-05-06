@@ -3639,11 +3639,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Whether Windows 7 version or newer.</returns>
 		static BOOL IsWindows7OrGreaterWin32();
 		/// <summary>
-		/// Checks whether we are on at least Windows Vista.
-		/// </summary>
-		/// <returns>Whether Windows Vista version or newer.</returns>
-		static BOOL IsWindowsVistaOrGreaterWin32();
-		/// <summary>
 		/// Returns an UTF-8 string version of the specified wide string.
 		/// </summary>
 		/// <param name="wStr">Wide string representation.</param>
