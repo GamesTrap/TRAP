@@ -392,5 +392,12 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 
 void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view name) const
 {
+	if(!VulkanRenderer::s_debugMarkerSupport)
+		return;
+
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device, reinterpret_cast<uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
+#else
+	VkSetObjectName(m_device, reinterpret_cast<uint64_t>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
+#endif
 }

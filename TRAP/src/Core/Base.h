@@ -11,6 +11,12 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#if !defined(TRAP_PLATFORM_ANDROID)
+#define ENABLE_DEBUG_UTILS_EXTENSION
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Enable graphics validation in debug builds by default.
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG
@@ -81,7 +87,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 134);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 135);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

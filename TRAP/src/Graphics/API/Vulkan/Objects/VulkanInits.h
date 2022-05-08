@@ -33,6 +33,13 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback) noexcept;
 
 	/// <summary>
+	/// Create a Vulkan debug report callback create info.
+	/// </summary>
+	/// <param name="callback">Debug callback.</param>
+	/// <returns>VkDebugReportCallbackCreateInfoEXT.</returns>
+	VkDebugReportCallbackCreateInfoEXT DebugReportCallbackCreateInfo(PFN_vkDebugReportCallbackEXT callback) noexcept;
+
+	/// <summary>
 	/// Create a Vulkan debug utils object name info.
 	/// </summary>
 	/// <param name="type">Vulkan object type.</param>
@@ -43,6 +50,16 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                       const std::string_view name) noexcept;
 
 	/// <summary>
+	/// Create a Vulkan debug marker object name info.
+	/// </summary>
+	/// <param name="type">Vulkan debug report object type.</param>
+	/// <param name="handle">Vulkan handle.</param>
+	/// <param name="name">Debug object name to set.</param>
+	/// <returns>VkDebugMarkerObjectNameInfoEXT.</returns>
+	VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, uint64_t handle,
+	                                                         const std::string_view name) noexcept;
+
+	/// <summary>
 	/// Create a Vulkan debug utils label.
 	/// </summary>
 	/// <param name="r">Red color.</param>
@@ -51,6 +68,16 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugUtilsLabelEXT.</returns>
 	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, const char* name) noexcept;
+
+	/// <summary>
+	/// Create a Vulkan debug marker.
+	/// </summary>
+	/// <param name="r">Red color.</param>
+	/// <param name="g">Green color.</param>
+	/// <param name="b">Blue color.</param>
+	/// <param name="name">Name for the label.</param>
+	/// <returns>VkDebugMarkerMarkerInfoEXT.</returns>
+	VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, const char* name) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

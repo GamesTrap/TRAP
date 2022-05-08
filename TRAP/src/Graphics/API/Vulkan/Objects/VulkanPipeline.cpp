@@ -46,7 +46,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	}
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	if(!desc.Name.empty() && m_vkPipeline != VK_NULL_HANDLE)
+	if(desc.Name && m_vkPipeline != VK_NULL_HANDLE)
 		SetPipelineName(desc.Name);
 #endif
 }
@@ -353,5 +353,12 @@ TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::G
 
 void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
 {
+	if(!VulkanRenderer::s_debugMarkerSupport)
+		return;
+
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
+#else
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkPipeline), VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT, name);
+#endif
 }

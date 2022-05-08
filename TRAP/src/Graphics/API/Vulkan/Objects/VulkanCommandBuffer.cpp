@@ -382,25 +382,55 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::Vec3& color, const char* name) const
 {
-	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+	if(!VulkanRenderer::s_debugUtilsExtension)
+		return;
 
+	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
 	vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
+#else
+	if(!VulkanRenderer::s_debugReportExtension)
+		return;
+
+	VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
+	vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math::Vec3& color, const char* name) const
 {
-	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+	if(!VulkanRenderer::s_debugUtilsExtension)
+		return;
 
+	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
 	vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
+#elif !defined(USE_RENDER_DOC)
+	if(!VulkanRenderer::s_debugReportExtension)
+		return;
+
+	VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
+	vkCmdDebugMarkerBeginEXT(m_vkCommandBuffer, &markerInfo);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 {
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+	if(!VulkanRenderer::s_debugUtilsExtension)
+		return;
+
 	vkCmdEndDebugUtilsLabelEXT(m_vkCommandBuffer);
+#elif !defined(USE_RENDER_DOC)
+	if(!VulkanRenderer::s_debugReportExtension)
+		return;
+
+	vkCmdDebugMarkerEndEXT(m_vkCommandBuffer);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

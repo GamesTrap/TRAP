@@ -37,7 +37,7 @@ void RendererAPIInfo::OnImGuiRender()
     ImGui::Text("Vulkan: %s", TRAP::Graphics::RendererAPI::IsVulkanCapable() ? "Supported" : "Not Supported");
     ImGui::NewLine();
     ImGui::Text("Supported Features:");
-    ImGui::Text("MultiDrawIndirect: %s", TRAP::Graphics::RendererAPI::GPUSettings.MultiDrawIndirect ? "Supported" : "Not Supported");
+    ImGui::Text("MultiDrawIndirectSupported: %s", TRAP::Graphics::RendererAPI::GPUSettings.MultiDrawIndirectSupported ? "Supported" : "Not Supported");
     ImGui::Text("Tessellation: %s", TRAP::Graphics::RendererAPI::GPUSettings.TessellationSupported ? "Supported" : "Not Supported");
     ImGui::Text("Geometry Shader: %s", TRAP::Graphics::RendererAPI::GPUSettings.GeometryShaderSupported ? "Supported" : "Not Supported");
     ImGui::Text("Surface: %s", TRAP::Graphics::RendererAPI::GPUSettings.SurfaceSupported ? "Supported" : "Not Supported");

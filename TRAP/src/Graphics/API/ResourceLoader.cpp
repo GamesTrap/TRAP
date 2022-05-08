@@ -482,7 +482,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	desc.DstSliceStride = (((desc.DstRowStride * desc.RowCount) + alignment - 1) / alignment) * alignment;
 
 	const uint64_t requiredSize = ((MIP_REDUCE(texture->GetDepth(), desc.MipLevel) *
-	                               desc.DstRowStride * desc.RowCount + alignment - 1) / alignment) * alignment;
+	                               desc.DstSliceStride + alignment - 1) / alignment) * alignment;
 
 	//We need to use a staging buffer
 	desc.Internal.MappedRange = AllocateUploadMemory(requiredSize, static_cast<uint32_t>(alignment));

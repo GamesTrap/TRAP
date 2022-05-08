@@ -101,7 +101,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	}
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	if (desc.Name)
+	if (!desc.Name.empty())
 		SetBufferName(desc.Name);
 #endif
 }
@@ -237,5 +237,12 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 
 void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
 {
+	if(!VulkanRenderer::s_debugMarkerSupport)
+		return;
+
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
+#else
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
+#endif
 }

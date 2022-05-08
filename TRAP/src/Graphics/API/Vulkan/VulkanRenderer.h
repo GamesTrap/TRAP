@@ -468,6 +468,7 @@ namespace TRAP::Graphics::API
 
 		//Instance Extensions
 		static bool s_debugUtilsExtension;
+		static bool s_debugReportExtension;
 		static bool s_swapchainColorSpaceExtension;
 		static bool s_VRExtensions;
 

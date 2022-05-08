@@ -241,5 +241,12 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name) const
 {
+	if(!VulkanRenderer::s_debugMarkerSupport)
+		return;
+
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
+#else
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
+#endif
 }

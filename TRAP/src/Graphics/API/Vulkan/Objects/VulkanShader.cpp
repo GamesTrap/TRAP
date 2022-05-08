@@ -424,7 +424,14 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 
 void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_view name, VkShaderModule stage) const
 {
+	if(!VulkanRenderer::s_debugMarkerSupport)
+		return;
+
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
+#else
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

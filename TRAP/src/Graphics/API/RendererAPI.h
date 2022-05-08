@@ -1754,7 +1754,7 @@ namespace TRAP::Graphics
 			uint32_t PipelineExtensionCount{};
 
 			//Name for the pipeline
-			const std::string_view Name{};
+			const char* Name{};
 		};
 
 		/// <summary>
@@ -2186,19 +2186,21 @@ namespace TRAP::Graphics
 			uint32_t MaxVertexInputBindings;
 			uint32_t MaxVertexInputAttributes;
 			uint32_t MaxRootSignatureDWORDS;
-			uint32_t WaveLaneCount;
-			TRAP::Graphics::RendererAPI::WaveOpsSupportFlags WaveOpsSupportFlags;
-			bool MultiDrawIndirect;
-			uint32_t ROVsSupported;
-			bool TessellationSupported;
-			bool GeometryShaderSupported;
-			float MaxAnisotropy;
 			uint32_t MaxImageDimension2D;
 			uint32_t MaxImageDimensionCube;
-			bool FillModeNonSolid;
 			uint32_t MaxPushConstantSize;
 			uint32_t MaxSamplerAllocationCount;
 			uint32_t MaxTessellationControlPoints;
+			float MaxAnisotropy;
+
+			uint32_t WaveLaneCount;
+			TRAP::Graphics::RendererAPI::WaveOpsSupportFlags WaveOpsSupportFlags;
+
+			uint32_t ROVsSupported;
+			bool MultiDrawIndirectSupported;
+			bool TessellationSupported;
+			bool GeometryShaderSupported;
+			bool FillModeNonSolid;
 			bool SurfaceSupported;
 			bool PresentSupported;
 		} GPUSettings{};

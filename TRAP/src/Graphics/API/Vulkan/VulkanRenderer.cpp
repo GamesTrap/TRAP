@@ -40,6 +40,7 @@
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_debugReportExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_VRExtensions = false;
 //Device Extensions
@@ -1558,11 +1559,19 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 	}
 
 #ifdef ENABLE_GRAPHICS_DEBUG
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		s_debugUtilsExtension = true;
 	}
+#else
+	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_REPORT_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+		s_debugUtilsExtension = true;
+	}
+#endif
 #endif
 
 	///HDR support
@@ -1602,6 +1611,15 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		TRAP::Application::Shutdown();
 		exit(-1);
 	}
+
+	//Debug marker extension in case debug utils is not supported
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+	if (physicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+		s_debugMarkerSupport = true;
+	}
+#endif
 
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
 	{

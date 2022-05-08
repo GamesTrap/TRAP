@@ -62,6 +62,22 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkDebugReportCallbackCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugReportCallbackCreateInfo(const PFN_vkDebugReportCallbackEXT callback) noexcept
+{
+	VkDebugReportCallbackCreateInfoEXT info;
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+	info.pNext = nullptr;
+	info.flags = VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
+	             VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_DEBUG_BIT_EXT;
+	info.pfnCallback = callback;
+	info.pUserData = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
 	                                                                                     const uint64_t handle,
 	                                                                                     const std::string_view name) noexcept
@@ -72,6 +88,23 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 	info.pNext = nullptr;
 	info.objectType = type;
 	info.objectHandle = handle;
+	info.pObjectName = name.data();
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo(const VkDebugReportObjectTypeEXT type,
+	                                                                                       const uint64_t handle,
+	                                                                                       const std::string_view name) noexcept
+{
+	VkDebugMarkerObjectNameInfoEXT info;
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT;
+	info.pNext = nullptr;
+	info.objectType = type;
+	info.object = handle;
 	info.pObjectName = name.data();
 
 	return info;
@@ -90,6 +123,23 @@ VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const 
 	info.color[2] = b;
 	info.color[3] = 1.0f;
 	info.pLabelName = name;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const float r, const float g,
+                                                                                   const float b, const char* name) noexcept
+{
+	VkDebugMarkerMarkerInfoEXT info{};
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT;
+	info.color[0] = r;
+	info.color[1] = g;
+	info.color[2] = b;
+	info.color[3] = 1.0f;
+	info.pMarkerName = name;
 
 	return info;
 }

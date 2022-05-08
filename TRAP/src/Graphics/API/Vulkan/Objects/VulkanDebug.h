@@ -44,12 +44,31 @@ namespace TRAP::Graphics::API
 		/// <param name="callbackData">Message data.</param>
 		/// <param name="userData">User data (unused).</param>
 		/// <returns>VK_FALSE (as defined in Vulkan spec).</returns>
-		static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-																  VkDebugUtilsMessageTypeFlagsEXT messageType,
-																  const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-																  void* userData);
+		static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugUtilsCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+																       VkDebugUtilsMessageTypeFlagsEXT messageType,
+																       const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+																       void* userData);
+		/// <summary>
+		/// Callback for Vulkan debug report messenger extension.
+		/// </summary>
+		/// <param name="flags">Severity of the message.</param>
+		/// <param name="objectType">Object type (unused).</param>
+		/// <param name="object">Object (unused).</param>
+		/// <param name="location">Location (unused).</param>
+		/// <param name="messageCode">Message code.</param>
+		/// <param name="layerPrefix">Layer prefix.</param>
+		/// <param name="message">Message data.</param>
+		/// <param name="userData">User data (unused).</param>
+		/// <returns>VK_FALSE (as defined in Vulkan spec).</returns>
+		static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugReportCallback(VkDebugReportFlagsEXT flags,
+																	    VkDebugReportObjectTypeEXT objectType,
+																	    uint64_t object, size_t location,
+																	    int32_t messageCode,
+																	    const char* layerPrefix,
+																	    const char* message, void* userData);
 
-		VkDebugUtilsMessengerEXT m_debugReport;
+		VkDebugUtilsMessengerEXT m_debugUtils;
+		VkDebugReportCallbackEXT m_debugReport;
 
 		Ref<VulkanInstance> m_instance;
 	};

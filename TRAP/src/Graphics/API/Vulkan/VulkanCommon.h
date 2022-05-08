@@ -201,6 +201,7 @@ namespace TRAP::Graphics::API
 	/// <returns>Converted ImageFormat.</returns>
 	constexpr TRAP::Graphics::API::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	/// <summary>
 	/// Set a name for a Vulkan object.
 	/// </summary>
@@ -209,6 +210,16 @@ namespace TRAP::Graphics::API
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string_view name);
+#else
+	/// <summary>
+	/// Set a name for a Vulkan object.
+	/// </summary>
+	/// <param name="device">Vulkan device.</param>
+	/// <param name="handle">Vulkan object.</param>
+	/// <param name="type">Vulkan object type.</param>
+	/// <param name="name">Name to set.</param>
+	void VkSetObjectName(VkDevice device, uint64_t handle, VkDebugReportObjectTypeEXT type, const std::string_view name);
+#endif
 
 	inline static constexpr std::array<VkAttachmentLoadOp,
 	                                   static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
