@@ -2547,3 +2547,4 @@ SITREP 05/08/2022|22w18d1
     - VulkanDebug Added support for the older Debug Report extension (Android compatibility) ~<30 mins
     - Vulkan Added support for GPU based validation (enabled via macro, off by default) ~<25 mins
     - Vulkan progress on HDR support ~<15 mins
+    - Lowered auto generated shader code SPIR-V version to 1.4 (1.5 before) ~<5 mins

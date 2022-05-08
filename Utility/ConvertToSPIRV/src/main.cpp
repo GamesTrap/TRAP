@@ -725,8 +725,8 @@ std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source
 	shader->setStrings(&source, 1);
 	shader->setEnvInput(glslang::EShSourceGlsl, spvStages.at(stage), glslang::EShClientVulkan, 460);
 
-	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
-	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
+	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_4);
 	glslang::TShader::ForbidIncluder includer;
 	if (!shader->preprocess(&DefaultTBuiltInResource,
 		460,

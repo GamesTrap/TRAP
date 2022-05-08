@@ -852,12 +852,14 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
 	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationControl))
 		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Fragment))
+		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
 	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Compute))
 		res |= VK_SHADER_STAGE_COMPUTE_BIT;
 	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::RayTracing))
 		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
-			VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
-			VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
+			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
+			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
 
 	// TRAP_ASSERT(res != 0);
 	return res;
