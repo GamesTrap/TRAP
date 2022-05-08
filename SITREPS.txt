@@ -2550,3 +2550,4 @@ SITREP 05/08/2022|22w18d1
     - Lowered auto generated shader code SPIR-V version to 1.4 (1.5 before) ~<5 mins
     - Vulkan lowered required version to Vulkan 1.1 (Android compatibility) ~>60 mins
     - Vulkan Updated device rating ~<20 mins
+    - Vulkan Added support for texture import/export from/to other processes ~<20 mins

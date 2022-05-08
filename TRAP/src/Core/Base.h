@@ -15,6 +15,10 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#define USE_EXTERNAL_MEMORY_EXTENSIONS
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Enable graphics validation in debug builds by default.
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG

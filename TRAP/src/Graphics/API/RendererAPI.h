@@ -701,24 +701,30 @@ namespace TRAP::Graphics
 			None = 0x0,
 			//Texture will allocate its own memory (COMMITTED resource)
 			OwnMemory = BIT(0),
+			//Texture will be allocated in memory which can be shared among multiple processes
+			Export = BIT(1),
 			//Texture will be allocated in memory which can be shared among multiple GPUs
 			ExportAdapter = BIT(2),
+			//Texture will be imported from a handle created in another process
+			Import = BIT(3),
 			//Use ESRAM to store this texture
 			ESRAM = BIT(4),
 			//Use on-tile memory to store this texture
 			OnTile = BIT(5),
 			//Force 2D instead of automatically determining dimension based on width, height, depth
-			Force2D = BIT(6),
+			Force2D = BIT(7),
 			//Force 3D instead of automatically determining dimension based on width, height, depth
-			Force3D = BIT(7),
+			Force3D = BIT(8),
 			//Display target
-			AllowDisplayTarget = BIT(8),
+			AllowDisplayTarget = BIT(9),
 			//Create an sRGB texture
-			SRGB = BIT(9),
+			SRGB = BIT(10),
+			//Create a normal map texture
+			NormalMap = BIT(11),
 			//Fast clear
-			FastClear = BIT(10),
+			FastClear = BIT(12),
 			//Fragment mask
-			FragMask = BIT(11)
+			FragMask = BIT(13)
 		};
 
 		/// <summary>

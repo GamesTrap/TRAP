@@ -22,8 +22,10 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	  m_vkAllocation(),
 	  m_vkDeviceMemory()
 {
-	TRAP_ASSERT(m_device, "device is nullptr");
-	TRAP_ASSERT(m_vma, "vma is nullptr");
+	TRAP_ASSERT(m_device, "Device is nullptr");
+	TRAP_ASSERT(m_vma, "VMA is nullptr");
+	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Invalid resolution");
+	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1), "Multi-Sampled texture cannot have mip maps");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
@@ -33,7 +35,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ?
 		                           desc.MipLevels : 0));
 
-	if (desc.NativeHandle)
+	if (desc.NativeHandle && !static_cast<bool>((desc.Flags & RendererAPI::TextureCreationFlags::Import)))
 	{
 		m_ownsImage = false;
 		m_vkImage = static_cast<VkImage>(desc.NativeHandle);
@@ -128,6 +130,53 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory))
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 		memReqs.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+
+		VkExternalMemoryImageCreateInfo externalInfo{};
+		externalInfo.sType = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO;
+		externalInfo.pNext = nullptr;
+
+#ifdef TRAP_PLATFORM_WINDOWS
+		VkImportMemoryWin32HandleInfoKHR importInfo{};
+		importInfo.sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR;
+		importInfo.pNext = nullptr;
+#endif
+		VkExportMemoryAllocateInfo exportMemoryInfo{};
+		exportMemoryInfo.sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO;
+		exportMemoryInfo.pNext = nullptr;
+
+		if(VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Import))
+		{
+			info.pNext = &externalInfo;
+
+#ifdef TRAP_PLATFORM_WINDOWS
+			struct ImportHandleInfo
+			{
+				void* Handle;
+				VkExternalMemoryHandleTypeFlagBits HandleType;
+			};
+
+			ImportHandleInfo* handleInfo = reinterpret_cast<ImportHandleInfo*>(desc.NativeHandle);
+			importInfo.Handle = handleInfo->Handle;
+			importInfo.HandleType = handleInfo->HandleType;
+
+			externalInfo.handleTypes = handleInfo->HandleType;
+
+			memReqs.pUserData = &importInfo;
+			//Allocate external (importable / exportable) memory as dedicated memory to avoid
+			//unnecessary complexity to the Vulkan Memory Allocator
+			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
+#endif
+		}
+		else if(VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Export))
+		{
+#ifdef TRAP_PLATFORM_WINDOWS
+			exportMemoryInfo.handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT;
+#endif
+			memReqs.pUserData = &exportMemoryInfo;
+			//Allocate external (importable / exportable) memory as dedicated memory to avoid
+			//unnecessary complexity to the Vulkan Memory Allocator
+			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
+		}
 
 		VmaAllocationInfo allocInfo{};
 		if(isSinglePlane)
