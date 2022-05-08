@@ -1644,11 +1644,6 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 	}
 #endif
 
-	if(physicalDevice->IsExtensionSupported(VK_EXT_SHADER_SUBGROUP_BALLOT_EXTENSION_NAME))
-		extensions.emplace_back(VK_EXT_SHADER_SUBGROUP_BALLOT_EXTENSION_NAME);
-	if(physicalDevice->IsExtensionSupported(VK_EXT_SHADER_SUBGROUP_VOTE_EXTENSION_NAME))
-		extensions.emplace_back(VK_EXT_SHADER_SUBGROUP_VOTE_EXTENSION_NAME);
-
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME);

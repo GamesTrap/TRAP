@@ -318,6 +318,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 		RendererAPI::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
 	}
+	RendererAPI::GPUSettings.ROVsSupported = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -681,14 +682,16 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = true;
 		const std::vector<std::string> raytracingExt =
-			{
-				VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
-				VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-				VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
-				VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
-				VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME,
-				VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-				VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME};
+		{
+			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+			VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME,
+			VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
+			VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME,
+			VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
+			VK_KHR_SPIRV_1_4_EXTENSION_NAME,
+			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
+			VK_KHR_RAY_QUERY_EXTENSION_NAME
+		};
 		for (const std::string_view str : raytracingExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
