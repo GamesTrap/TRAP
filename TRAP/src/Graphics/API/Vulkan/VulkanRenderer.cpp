@@ -41,6 +41,7 @@ TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_rend
 //Instance Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_debugReportExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_validationFeaturesExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_VRExtensions = false;
 //Device Extensions
@@ -1570,6 +1571,14 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 		s_debugUtilsExtension = true;
+	}
+#endif
+
+#ifdef ENABLE_GPU_BASED_VALIDATION
+	if(VulkanInstance::IsExtensionSupported(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+		s_validationFeaturesExtension = true;
 	}
 #endif
 #endif

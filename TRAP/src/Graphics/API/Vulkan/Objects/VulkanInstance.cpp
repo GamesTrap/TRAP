@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Utils/Dialogs/Dialogs.h"
 
 uint32_t TRAP::Graphics::API::VulkanInstance::s_instanceVersion = 0;
@@ -56,6 +57,18 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 
 	const VkApplicationInfo appInfo = VulkanInits::ApplicationInfo(appName);
 	VkInstanceCreateInfo info = VulkanInits::InstanceCreateInfo(appInfo, layers, extensions);
+
+#if defined(ENABLE_GRAPHICS_DEBUG) && defined(ENABLE_GPU_BASED_VALIDATION)
+	if(VulkanRenderer::s_validationFeaturesExtension)
+	{
+		VkValidationFeaturesEXT validationFeatures{};
+		validationFeatures.sType = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT;
+		VkValidationFeatureEnableEXT enabledValidationFeatures = VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT;
+		validationFeatures.enabledValidationFeatureCount = 1;
+		validationFeatures.pEnabledValidationFeatures = &enabledValidationFeatures;
+		info.pNext = &validationFeatures;
+	}
+#endif
 
 	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
 

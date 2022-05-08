@@ -25,6 +25,15 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Enable GPU based validation. This creates patched shaders that have additional validation code.
+//This can slow things down a lot, especially for applications with lots of pipelines. Time to see the first
+//rendered frame may take a long time.
+//ENABLE_GRAPHICS_DEBUG must be defined for this to work.
+//Vulkan: Only works if VK_EXT_validation_features extension is supported.
+// #define ENABLE_GPU_BASED_VALIDATION
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Headless mode.
 //This macro changes Window and RendererAPI behaviour.
 //By default the Main Window will be hidden.
