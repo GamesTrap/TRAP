@@ -284,7 +284,18 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool)
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
+																						  const bool SRGB)
 {
-	return TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM; //TODO HDR support
+#if !defined(TRAP_PLATFORM_ANDROID)
+	if(SRGB)
+		return TRAP::Graphics::API::ImageFormat::B8G8R8A8_SRGB;
+
+	return TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
+#else
+	if(SRGB)
+		return TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
+
+	return TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+#endif
 }

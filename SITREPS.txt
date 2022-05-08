@@ -2546,3 +2546,4 @@ SITREP 05/08/2022|22w18d1
     - Changed TRAP Engine version to 22w18d1(0.7.135)
     - VulkanDebug Added support for the older Debug Report extension (Android compatibility) ~<30 mins
     - Vulkan Added support for GPU based validation (enabled via macro, off by default) ~<25 mins
+    - Vulkan progress on HDR support ~<15 mins

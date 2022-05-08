@@ -22,8 +22,9 @@ namespace TRAP::Graphics
 		/// Retrieve the recommended swap chain image format.
 		/// </summary>
 		/// <param name="HDR">Use HDR?</param>
+		/// <param name="SRGB">Use SRGB?</param>
 		/// <returns>Recommended swap chain image format.</returns>
-		static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR);
+		static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR, bool SRGB);
 
 		/// <summary>
 		/// Destructor.

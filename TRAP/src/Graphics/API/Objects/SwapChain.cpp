@@ -22,12 +22,13 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR)
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR,
+                                                                                          const bool SRGB)
 {
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return API::VulkanGetRecommendedSwapchainFormat(HDR);
+		return API::VulkanGetRecommendedSwapchainFormat(HDR, SRGB);
 
 	case RenderAPI::NONE:
 	default:

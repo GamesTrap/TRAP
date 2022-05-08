@@ -93,8 +93,9 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	else
 	{
 		const VkFormat requestedFormat = ImageFormatToVkFormat(desc.ColorFormat);
-		const VkColorSpaceKHR requestedColorSpace = requestedFormat == HDRSurfaceFormat.format ?
-		                                            HDRSurfaceFormat.colorSpace : VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+		VkColorSpaceKHR requestedColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+		if(requestedFormat == HDRSurfaceFormat.format)
+			requestedColorSpace = HDRSurfaceFormat.colorSpace;
 
 		for(const VkSurfaceFormatKHR& format : formats)
 		{

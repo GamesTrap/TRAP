@@ -191,8 +191,9 @@ namespace TRAP::Graphics::API
 	/// Retrieve the recommended swapchain format for Vulkan.
 	/// </summary>
 	/// <param name="HDR">True if HDR is desired.</param>
+	/// <param name="SRGB">True if SRGB is desired.</param>
 	/// <returns>Recommended swapchain format.</returns>
-	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
+	TRAP::Graphics::API::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR, bool SRGB);
 
 	/// <summary>
 	/// Convert the VkFormat to ImageFormat.

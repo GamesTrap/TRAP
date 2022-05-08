@@ -265,7 +265,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		swapChainDesc.Width = p->Window->GetWidth();
 		swapChainDesc.Height = p->Window->GetHeight();
 		swapChainDesc.ImageCount = RendererAPI::ImageCount;
-		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
+		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
 		swapChainDesc.ClearColor = p->ClearColor;
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
@@ -297,7 +297,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 			rTDesc.Depth = 1;
 			rTDesc.ArraySize = 1;
 			rTDesc.MipLevels = 1;
-			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
+			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 
 			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
@@ -1407,7 +1407,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		swapChainDesc.Width = window->GetWidth();
 		swapChainDesc.Height = window->GetHeight();
 		swapChainDesc.ImageCount = RendererAPI::ImageCount;
-		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
+		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
 		swapChainDesc.EnableVSync = p->CurrentVSync;
 		swapChainDesc.ClearColor = p->ClearColor;
 		swapChainDesc.ClearDepth = p->ClearDepth;
@@ -1426,7 +1426,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 	rTDesc.Depth = 1;
 	rTDesc.ArraySize = 1;
 	rTDesc.MipLevels = 1;
-	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true);
+	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
 	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
