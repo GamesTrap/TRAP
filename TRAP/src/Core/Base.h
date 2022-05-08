@@ -15,7 +15,9 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define USE_EXTERNAL_MEMORY_EXTENSIONS
+//Activate this to enable support for texture import/exporting from/to other processes
+//Note: Only works on Windows
+// #define USE_EXTERNAL_MEMORY_EXTENSIONS
 
 //-------------------------------------------------------------------------------------------------------------------//
 

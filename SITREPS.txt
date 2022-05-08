@@ -2551,3 +2551,4 @@ SITREP 05/08/2022|22w18d1
     - Vulkan lowered required version to Vulkan 1.1 (Android compatibility) ~>60 mins
     - Vulkan Updated device rating ~<20 mins
     - Vulkan Added support for texture import/export from/to other processes ~<20 mins
+    - Vulkan Added support for lazy texture allocation ~<15 mins

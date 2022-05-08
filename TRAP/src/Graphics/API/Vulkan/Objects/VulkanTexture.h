@@ -71,6 +71,12 @@ namespace TRAP::Graphics::API
 		VmaAllocation GetVMAAllocation() const;
 
 		/// <summary>
+		/// Retrieve whether the texture is lazily allocated or not.
+		/// </summary>
+		/// <returns>True if the texture is lazily allocated, false otherwise.</returns>
+		bool IsLazilyAllocated() const;
+
+		/// <summary>
 		/// Set the name of the texture.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
@@ -102,6 +108,8 @@ namespace TRAP::Graphics::API
 		//Contains resource allocation info such as parent heap, offset in heap
 		VmaAllocation m_vkAllocation;
 		VkDeviceMemory m_vkDeviceMemory;
+
+		bool m_lazilyAllocated;
 	};
 }
 

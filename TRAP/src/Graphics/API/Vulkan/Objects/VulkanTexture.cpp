@@ -178,6 +178,30 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 		}
 
+		//If lazy allocation is requested check that the hardware supports it
+		bool lazyAllocation = static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::OnTile);
+		if(lazyAllocation)
+		{
+			uint32_t memoryTypeIndex = 0;
+			VmaAllocationCreateInfo lazyMemReqs = memReqs;
+			lazyMemReqs.usage = VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED;
+			VkResult result = vmaFindMemoryTypeIndex(m_vma->GetVMAAllocator(),
+			                                         std::numeric_limits<uint32_t>::max(),
+													 &lazyMemReqs, &memoryTypeIndex);
+			if(result == VK_SUCCESS)
+			{
+				memReqs = lazyMemReqs;
+				info.usage |= VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
+				//The Vulkan spec states: If usage includes VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
+				//then bits other than VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+				//VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, and VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT
+				//must not be set.
+				info.usage &= (VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+							   VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT);
+				m_lazilyAllocated = true;
+			}
+		}
+
 		VmaAllocationInfo allocInfo{};
 		if(isSinglePlane)
 		{
@@ -404,6 +428,13 @@ VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage()
 VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const
 {
 	return m_vkAllocation;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const
+{
+	return m_lazilyAllocated;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
