@@ -75,8 +75,23 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	//Set this by default to be able to sample the renderTarget in shader
 	textureDesc.Descriptors = desc.Descriptors;
-	//Create SRV by default for a render target
-	textureDesc.Descriptors |= RendererAPI::DescriptorType::Texture;
+	//Create SRV by default for a render target unless this is on tile texture
+	//where SRV is not supported
+	if(!static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::OnTile))
+		textureDesc.Descriptors |= RendererAPI::DescriptorType::Texture;
+	else
+	{
+		if(static_cast<bool>(textureDesc.Descriptors & RendererAPI::DescriptorType::Texture) ||
+		   static_cast<bool>(textureDesc.Descriptors & RendererAPI::DescriptorType::RWTexture))
+		{
+			TP_WARN(Log::RendererVulkanRenderTargetPrefix, "On tile textures do not support DescriptorType::Texture or DescriptorType::RWTexture");
+		}
+
+		//On tile textures do not support SRV/UAV as there is no backing memory
+		//You can only read these textures as input attachments inside same render pass
+		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<uint32_t>(RendererAPI::DescriptorType::Texture));
+		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<uint32_t>(RendererAPI::DescriptorType::RWTexture));
+	}
 
 	if(isDepth)
 	{
