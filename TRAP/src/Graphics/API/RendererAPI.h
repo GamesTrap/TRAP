@@ -670,6 +670,19 @@ namespace TRAP::Graphics
 		};
 
 		/// <summary>
+		/// Enum describing the different types of store actions.
+		/// </summary>
+		enum class StoreActionType
+		{
+			//Store is the most common use case so keep that as default
+			Store,
+			DontCare,
+			None,
+
+			MAX_STORE_ACTION_TYPE
+		};
+
+		/// <summary>
 		/// Enum describing the different types of cube textures.
 		/// </summary>
 		enum class TextureCubeType
@@ -840,7 +853,11 @@ namespace TRAP::Graphics
 			//Use ESRAM to store this buffer
 			ESRAM = BIT(3),
 			//Flag to specify not to allocate descriptors for the resource
-			NoDescriptorViewCreation = BIT(4)
+			NoDescriptorViewCreation = BIT(4),
+
+			//Vulkan
+			HostVisible = 0x100,
+			HostCoherent = 0x200
 		};
 
 		/// <summary>
@@ -1393,6 +1410,12 @@ namespace TRAP::Graphics
 			AddressMode AddressW{};
 			//Mip lod bias (offset from the calculated mip map level)
 			float MipLodBias{};
+			//Whether to use the given lod range or not
+			bool SetLodRange{};
+			//Minimum lod value
+			float MinLod{};
+			//Maximum lod value
+			float MaxLod{};
 			//Max anisotropy
 			float MaxAnisotropy{};
 			//Comparison function compares sampled data against existing sampled data
@@ -2049,18 +2072,24 @@ namespace TRAP::Graphics
 		/// </summary>
 		struct LoadActionsDesc
 		{
-			//Clear color(s)
-			std::array<TRAP::Math::Vec4, 8> ClearColorValues{};
 			//Action to perform on the color attachment(s) on load.
 			std::array<LoadActionType, 8> LoadActionsColor{};
-			//Clear depth value
-			float ClearDepth = 1.0f;
-			//Clear stencil value
-			uint32_t ClearStencil = 0;
 			//Action to perform on the depth attachment on load.
 			LoadActionType LoadActionDepth{};
 			//Action to perform on the stencil attachment on load.
 			LoadActionType LoadActionStencil{};
+			//Clear color(s)
+			std::array<TRAP::Math::Vec4, 8> ClearColorValues{};
+			//Clear depth value
+			float ClearDepth = 1.0f;
+			//Clear stencil value
+			uint32_t ClearStencil = 0;
+			//Action to perform on the color attachment(s) on store.
+			std::array<StoreActionType, 8> StoreActionsColor{};
+			//Action to perform on the depth attachment on store.
+			StoreActionType StoreActionDepth{};
+			//Action to perform on the stencil attachment on store.
+			StoreActionType StoreActionStencil{};
 		};
 
 		/// <summary>
@@ -2215,6 +2244,12 @@ namespace TRAP::Graphics
 			bool FillModeNonSolid;
 			bool SurfaceSupported;
 			bool PresentSupported;
+
+			//Variable rate shading capabilities
+			TRAP::Graphics::RendererAPI::ShadingRate ShadingRate;
+			TRAP::Graphics::RendererAPI::ShadingRateCaps ShadingRateCaps;
+			uint32_t ShadingRateTexelWidth;
+			uint32_t ShadingRateTexelHeight;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered

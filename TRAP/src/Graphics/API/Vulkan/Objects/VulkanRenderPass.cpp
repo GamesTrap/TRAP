@@ -56,7 +56,9 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 				                                                    !desc.LoadActionsColor.empty() ?
 																	VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
 																	VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-				                                                    VK_ATTACHMENT_STORE_OP_STORE,
+				                                                    !desc.StoreActionsColor.empty() ?
+																	VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionsColor[i])] :
+																	VK_ATTACHMENT_STORE_OP_STORE,
 				                                                    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 				                                                    VK_ATTACHMENT_STORE_OP_STORE,
 				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -74,13 +76,13 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	{
 		const uint32_t idx = colorAttachmentCount;
 		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
-			                                                                        sampleCount,
-			                                                                        VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
-			                                                                        VK_ATTACHMENT_STORE_OP_STORE,
-			                                                                        VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
-			                                                                        VK_ATTACHMENT_STORE_OP_STORE,
-			                                                                        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-			                                                                        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+															  sampleCount,
+															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
+															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionDepth)],
+															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
+															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionStencil)],
+															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		);
 
 		depthStencilAttachmentRefs[0].attachment = idx;

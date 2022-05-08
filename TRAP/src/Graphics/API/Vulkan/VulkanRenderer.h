@@ -538,11 +538,14 @@ namespace TRAP::Graphics::API
 		{
 			std::vector<ImageFormat> ColorFormats;
 			std::vector<LoadActionType> LoadActionsColor;
+			std::vector<StoreActionType> StoreActionsColor;
 			uint32_t RenderTargetCount;
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount;
 			ImageFormat DepthStencilFormat;
 			LoadActionType LoadActionDepth;
 			LoadActionType LoadActionStencil;
+			StoreActionType StoreActionDepth;
+			StoreActionType StoreActionStencil;
 		};
 
 		/// <summary>

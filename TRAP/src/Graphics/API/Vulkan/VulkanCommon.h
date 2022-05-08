@@ -230,6 +230,15 @@ namespace TRAP::Graphics::API
 		VK_ATTACHMENT_LOAD_OP_CLEAR
 	};
 
+	inline static constexpr std::array<VkAttachmentStoreOp,
+	                                   static_cast<uint32_t>(RendererAPI::StoreActionType::MAX_STORE_ACTION_TYPE)> VkAttachmentStoreOpTranslator =
+	{
+		VK_ATTACHMENT_STORE_OP_STORE,
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,
+		//Don't case is treated as store op none in most drivers
+		VK_ATTACHMENT_STORE_OP_DONT_CARE
+	};
+
 	inline static constexpr std::array<VkCompareOp,
 	                                   static_cast<uint32_t>(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
 	{

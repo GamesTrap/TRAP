@@ -232,6 +232,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 	std::size_t renderPassHash = 0;
 	std::size_t frameBufferHash = 0;
+	std::vector<RendererAPI::StoreActionType> colorStoreActions(8);
+	RendererAPI::StoreActionType depthStoreAction{};
+	RendererAPI::StoreActionType stencilStoreAction{};
 
 	//Generate hash for RenderPass and FrameBuffer
 	//NOTE:
@@ -242,28 +245,50 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
 	for(std::size_t i = 0; i < renderTargets.size(); ++i)
 	{
-		std::array<uint32_t, 3> hashValues =
+		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTargets[i]->GetTexture().get());
+		if(vkTex->IsLazilyAllocated())
+			colorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
+		else if(loadActions)
+			colorStoreActions[i] = loadActions->StoreActionsColor[i];
+
+		std::array<uint32_t, 4> hashValues =
 		{
 			static_cast<uint32_t>(renderTargets[i]->GetImageFormat()),
 			static_cast<uint32_t>(renderTargets[i]->GetSampleCount()),
-			loadActions ? static_cast<uint32_t>(loadActions->LoadActionsColor[i]) : 0
+			loadActions ? static_cast<uint32_t>(loadActions->LoadActionsColor[i]) : 0,
+			static_cast<uint32_t>(loadActions->StoreActionsColor[i])
 		};
 
-		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 3, renderPassHash);
+		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
 		const uint32_t ID = dynamic_cast<VulkanRenderTarget*>(renderTargets[i].get())->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 	}
 	if(depthStencil)
 	{
 		VulkanRenderTarget* dStencil = dynamic_cast<VulkanRenderTarget*>(depthStencil.get());
-		std::array<uint32_t, 4> hashValues =
+		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(dStencil->GetTexture().get());
+
+		if(vkTex->IsLazilyAllocated())
+		{
+			depthStoreAction = RendererAPI::StoreActionType::DontCare;
+			stencilStoreAction = RendererAPI::StoreActionType::DontCare;
+		}
+		else if(loadActions)
+		{
+			depthStoreAction = loadActions->StoreActionDepth;
+			stencilStoreAction = loadActions->StoreActionStencil;
+		}
+
+		std::array<uint32_t, 6> hashValues =
 		{
 			static_cast<uint32_t>(dStencil->GetImageFormat()),
 			static_cast<uint32_t>(dStencil->GetSampleCount()),
 			loadActions ? static_cast<uint32_t>(loadActions->LoadActionDepth) : 0,
-			loadActions ? static_cast<uint32_t>(loadActions->LoadActionStencil) : 0
+			loadActions ? static_cast<uint32_t>(loadActions->LoadActionStencil) : 0,
+			static_cast<uint32_t>(depthStoreAction),
+			static_cast<uint32_t>(stencilStoreAction)
 		};
-		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
+		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 6, renderPassHash);
 		const uint32_t ID = dStencil->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 
@@ -317,6 +342,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		desc.LoadActionDepth = loadActions ? loadActions->LoadActionDepth : RendererAPI::LoadActionType::DontCare;
 		desc.LoadActionStencil = loadActions ? loadActions->LoadActionStencil :
 		                         RendererAPI::LoadActionType::DontCare;
+		desc.StoreActionsColor = colorStoreActions;
+		desc.StoreActionDepth = depthStoreAction;
+		desc.StoreActionStencil = stencilStoreAction;
 		renderPass = TRAP::MakeRef<VulkanRenderPass>(m_device, desc);
 
 		//No need of a lock here since this map is per thread
