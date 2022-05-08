@@ -2553,3 +2553,4 @@ SITREP 05/08/2022|22w18d1
     - Vulkan Added support for texture import/export from/to other processes ~<20 mins
     - Vulkan Added support for lazy texture allocation ~<15 mins
     - Vulkan Added store actions for render targets ~<20 mins
+    - RendererAPI Added optional ability to set a lod range ~<15 mins

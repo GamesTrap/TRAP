@@ -50,18 +50,24 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 	vulkanFunctions.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2;
 
 	//Bind Memory 2
+#if VMA_BIND_MEMORY2 || VMA_VULKAN_VERSION >= 1001000
 	vulkanFunctions.vkBindBufferMemory2KHR = vkBindBufferMemory2;
 	vulkanFunctions.vkBindImageMemory2KHR = vkBindImageMemory2;
+#endif
 
 	//Memory Budget
+#if VMA_MEMORY_BUDGET || VMA_VULKAN_VERSION >= 1001000
 	if(VulkanRenderer::s_memoryBudgetExtension)
 		vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
+#endif
 
+#if VMA_VULKAN_VERSION >= 1003000
 	if(VulkanRenderer::s_maintenance4Extension)
 	{
 		vulkanFunctions.vkGetDeviceBufferMemoryRequirements = vkGetDeviceBufferMemoryRequirementsKHR;
 		vulkanFunctions.vkGetDeviceImageMemoryRequirements = vkGetDeviceImageMemoryRequirementsKHR;
 	}
+#endif
 
 	VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
 		                                                              device->GetPhysicalDevice()->GetVkPhysicalDevice(),

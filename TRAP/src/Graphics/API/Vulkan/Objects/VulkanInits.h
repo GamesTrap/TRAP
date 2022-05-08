@@ -350,12 +350,15 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="v">Vulkan sampler address mode.</param>
 	/// <param name="w">Vulkan sampler address mode.</param>
 	/// <param name="mipLodBias">Vulkan mip map lod bias.</param>
+	/// <param name="minLod">Minimum lod.</param>
+	/// <param name="maxLod">Maximum lod.</param>
 	/// <param name="maxAnisotropy">Vulkan max anisotropy.</param>
 	/// <param name="compareOp">Vulkan compare op.</param>
 	/// <returns>VkSamplerCreateInfo.</returns>
 	VkSamplerCreateInfo SamplerCreateInfo(VkFilter magFilter, VkFilter minFilter, VkSamplerMipmapMode mipMapMode,
 		                                  VkSamplerAddressMode u, VkSamplerAddressMode v, VkSamplerAddressMode w,
-		                                  float mipLodBias, float maxAnisotropy, VkCompareOp compareOp) noexcept;
+		                                  float mipLodBias, float minLod, float maxLod, float maxAnisotropy,
+										  VkCompareOp compareOp) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

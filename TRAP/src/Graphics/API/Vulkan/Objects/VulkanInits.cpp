@@ -619,6 +619,8 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 	                                                                    const VkSamplerAddressMode v,
 	                                                                    const VkSamplerAddressMode w,
 	                                                                    const float mipLodBias,
+																		const float minLod,
+																		const float maxLod,
 	                                                                    const float maxAnisotropy,
 	                                                                    const VkCompareOp compareOp) noexcept
 {
@@ -638,8 +640,8 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 	info.maxAnisotropy = maxAnisotropy;
 	info.compareEnable = (compareOp != VK_COMPARE_OP_NEVER) ? VK_TRUE : VK_FALSE;
 	info.compareOp = compareOp;
-	info.minLod = 0.0f;
-	info.maxLod = (mipMapMode == VK_SAMPLER_MIPMAP_MODE_LINEAR) ? std::numeric_limits<float>::max() : 0.0f;
+	info.minLod = minLod;
+	info.maxLod = maxLod;
 	info.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 	info.unnormalizedCoordinates = VK_FALSE;
 

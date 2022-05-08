@@ -6,6 +6,7 @@
 	#ifdef _WIN64
 		//Windows x64
 		#define TRAP_PLATFORM_WINDOWS
+		#define VK_USE_PLATFORM_WIN32_KHR
 	#else
 		//Windows x86
 		#error "x86 builds are unsupported!"

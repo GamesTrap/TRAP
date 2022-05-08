@@ -53,6 +53,19 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::PersistentMap))
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostVisible))
+		vmaMemReqs.flags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::HostCoherent))
+		vmaMemReqs.flags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+#ifdef TRAP_PLATFORM_ANDROID
+	//UMA for Android devices
+	if(vmaMemReqs.usage != VMA_MEMORY_USAGE_CPU_TO_GPU)
+	{
+		vmaMemReqs.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
+	}
+#endif
 
 	VmaAllocationInfo allocInfo{};
 	VkCall(vmaCreateBuffer(m_VMA->GetVMAAllocator(), &info, &vmaMemReqs, &m_vkBuffer, &m_allocation, &allocInfo));

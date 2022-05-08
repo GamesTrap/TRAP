@@ -156,8 +156,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 			};
 
 			ImportHandleInfo* handleInfo = reinterpret_cast<ImportHandleInfo*>(desc.NativeHandle);
-			importInfo.Handle = handleInfo->Handle;
-			importInfo.HandleType = handleInfo->HandleType;
+			importInfo.handle = handleInfo->Handle;
+			importInfo.handleType = handleInfo->HandleType;
 
 			externalInfo.handleTypes = handleInfo->HandleType;
 

@@ -27,6 +27,18 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		m_samplerDesc.MaxAnisotropy = RendererAPI::GPUSettings.MaxAnisotropy;
 	}
 
+	//Default sampler lod values
+	//Used if not overriden by SetLogRange or not Linear mipmaps
+	float minSamplerLod = 0;
+	float maxSampledLod = desc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
+
+	//User provided lods
+	if(desc.SetLodRange)
+	{
+		minSamplerLod = desc.MinLod;
+		maxSampledLod = desc.MaxLod;
+	}
+
 	VkSamplerCreateInfo info = VulkanInits::SamplerCreateInfo(FilterTypeToVkFilter(m_samplerDesc.MagFilter),
 		                                                      FilterTypeToVkFilter(m_samplerDesc.MinFilter),
 		                                                      MipMapModeToVkMipMapMode(m_samplerDesc.MipMapMode),
@@ -34,6 +46,8 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		                                                      AddressModeToVkAddressMode(m_samplerDesc.AddressV),
 		                                                      AddressModeToVkAddressMode(m_samplerDesc.AddressW),
 		                                                      m_samplerDesc.MipLodBias,
+															  minSamplerLod,
+															  maxSampledLod,
 		                                                      m_samplerDesc.MaxAnisotropy,
 		                                                      VkComparisonFuncTranslator[static_cast<uint32_t>(m_samplerDesc.CompareFunc)]);
 
