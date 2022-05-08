@@ -69,26 +69,6 @@ namespace TRAP::Graphics::API
 		/// <returns>VkPhysicalDeviceFeatures.</returns>
 		const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const;
 		/// <summary>
-		/// Retrieve the Vulkan physical device Vulkan 1.1 features.
-		/// </summary>
-		/// <returns>VkPhysicalDeviceVulkan11Features.</returns>
-		const VkPhysicalDeviceVulkan11Features& GetVkPhysicalDeviceVulkan11Features() const;
-		/// <summary>
-		/// Retrieve the Vulkan physical device Vulkan 1.2 features.
-		/// </summary>
-		/// <returns>VkPhysicalDeviceVulkan12Features.</returns>
-		const VkPhysicalDeviceVulkan12Features& GetVkPhysicalDeviceVulkan12Features() const;
-		/// <summary>
-		/// Retrieve the Vulkan physical device Vulkan 1.1 properties.
-		/// </summary>
-		/// <returns>VkPhysicalDeviceVulkan11Properties.</returns>
-		const VkPhysicalDeviceVulkan11Properties& GetVkPhysicalDeviceVulkan11Properties() const;
-		/// <summary>
-		/// Retrieve the Vulkan physical device Vulkan 1.2 properties.
-		/// </summary>
-		/// <returns>VkPhysicalDeviceVulkan12Properties.</returns>
-		const VkPhysicalDeviceVulkan12Properties& GetVkPhysicalDeviceVulkan12Properties() const;
-		/// <summary>
 		/// Retrieve the Vulkan physical device fragment shader interlock features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT.</returns>
@@ -181,7 +161,7 @@ namespace TRAP::Graphics::API
 		/// 17. Optionally supports geometry shaders (1000 score).
 		/// 18. Optionally supports tessellation shaders (1000 score).
 		/// 19. Optionally supports fill mode non solid (250 score).
-		/// 20. Optionally does surface has optimal format (B8G8R8A8 SRGB Non-linear) (250 score) (Disabled for Headless mode).
+		/// 20. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
 		/// 21. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
 		/// 22. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
 		/// 23. Optionally check if anisotropic filtering is supported (500 score).
@@ -201,10 +181,6 @@ namespace TRAP::Graphics::API
 		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties;
 		VkPhysicalDeviceFeatures m_physicalDeviceFeatures;
 		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT m_physicalDeviceFragmentShaderInterlockFeatures;
-		VkPhysicalDeviceVulkan11Features m_physicalDeviceVulkan11Features;
-		VkPhysicalDeviceVulkan12Features m_physicalDeviceVulkan12Features;
-		VkPhysicalDeviceVulkan11Properties m_physicalDeviceVulkan11Properties;
-		VkPhysicalDeviceVulkan12Properties m_physicalDeviceVulkan12Properties;
 		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties;
 
 		std::array<uint8_t, 16> m_deviceUUID;

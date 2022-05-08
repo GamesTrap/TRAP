@@ -223,7 +223,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
-		if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
+		if(VkGetInstanceVersion() < VK_API_VERSION_1_1)
 		{
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed instance version test!");
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
@@ -237,10 +237,11 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
-			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
+			!API::VulkanInstance::IsExtensionSupported(reqExt[1]) ||
+			!API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
 		{
 			GPUSettings.SurfaceSupported = false;
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed surface extension test");
+			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed required instance extension test");
 #ifndef TRAP_HEADLESS_MODE
 			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
@@ -253,6 +254,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			GPUSettings.SurfaceSupported = true;
 			instanceExtensions.push_back(reqExt[0]);
 			instanceExtensions.push_back(reqExt[1]);
+			instanceExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 		}
 
 		//Create Instance

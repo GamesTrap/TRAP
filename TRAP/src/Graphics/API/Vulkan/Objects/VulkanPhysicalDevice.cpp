@@ -22,10 +22,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceMemoryProperties(),
 	  m_physicalDeviceFeatures(),
 	  m_physicalDeviceFragmentShaderInterlockFeatures(),
-	  m_physicalDeviceVulkan11Features(),
-	  m_physicalDeviceVulkan12Features(),
-	  m_physicalDeviceVulkan11Properties(),
-	  m_physicalDeviceVulkan12Properties(),
 	  m_deviceUUID()
 {
 	TRAP_ASSERT(instance, "instance is nullptr");
@@ -65,16 +61,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	m_physicalDeviceSubgroupProperties.pNext = nullptr;
 	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
 
-	m_physicalDeviceVulkan11Properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES;
-	m_physicalDeviceVulkan11Properties.pNext = nullptr;
-	props.pNext = &m_physicalDeviceVulkan11Properties;
-	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
-
-	m_physicalDeviceVulkan12Properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES;
-	m_physicalDeviceVulkan12Properties.pNext = nullptr;
-	props.pNext = &m_physicalDeviceVulkan12Properties;
-	vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
-
 	uint32_t queueFamilyPropertyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);
 	m_queueFamilyProperties.resize(queueFamilyPropertyCount);
@@ -83,21 +69,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	// Copy UUID
 	std::memcpy(m_deviceUUID.data(), m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size());
-
-	VkPhysicalDeviceFeatures2 features{};
-	m_physicalDeviceVulkan11Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
-	m_physicalDeviceVulkan11Features.pNext = nullptr;
-	features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-	features.pNext = &m_physicalDeviceVulkan11Features;
-	vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features);
-
-	m_physicalDeviceVulkan12Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
-	m_physicalDeviceVulkan12Features.pNext = nullptr;
-	features.pNext = &m_physicalDeviceVulkan12Features;
-	vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features);
-
-	VulkanRenderer::s_shaderDrawParameters = m_physicalDeviceVulkan11Features.shaderDrawParameters;
-	VulkanRenderer::s_subgroupBroadcastDynamicID = m_physicalDeviceVulkan12Features.subgroupBroadcastDynamicId;
 
 	// Capabilities for VulkanRenderer
 	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
@@ -275,34 +246,6 @@ const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceVulkan11Features &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Features() const
-{
-	return m_physicalDeviceVulkan11Features;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const VkPhysicalDeviceVulkan12Features &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Features() const
-{
-	return m_physicalDeviceVulkan12Features;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const VkPhysicalDeviceVulkan11Properties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Properties() const
-{
-	return m_physicalDeviceVulkan11Properties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const VkPhysicalDeviceVulkan12Properties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Properties() const
-{
-	return m_physicalDeviceVulkan12Properties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const
 {
 	return m_physicalDeviceFragmentShaderInterlockFeatures;
@@ -364,14 +307,17 @@ const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhy
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
 {
-	VkPhysicalDeviceFeatures2 features2;
-	features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-	m_physicalDeviceFragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
-	m_physicalDeviceFragmentShaderInterlockFeatures.pNext = nullptr;
-	features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
-	vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
+	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
+	{
+		VkPhysicalDeviceFeatures2 features2;
+		features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		m_physicalDeviceFragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
+		m_physicalDeviceFragmentShaderInterlockFeatures.pNext = nullptr;
+		features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
+		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
 
-	RendererAPI::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
+		RendererAPI::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -492,8 +438,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkPhysicalDeviceProperties devProps;
 		vkGetPhysicalDeviceProperties(dev, &devProps);
 
-		// Required: Vulkan 1.2 is minimum
-		if (devProps.apiVersion < VK_API_VERSION_1_2)
+		// Required: Vulkan 1.1 is minimum
+		if (devProps.apiVersion < VK_API_VERSION_1_1)
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed Vulkan Version Test!");

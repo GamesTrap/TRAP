@@ -43,18 +43,23 @@ bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_debugReportExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_validationFeaturesExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_VRExtensions = false;
 //Device Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_shaderDrawParameters = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_subgroupBroadcastDynamicID = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_fragmentShaderInterlockExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_drawIndirectCountExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_descriptorIndexingExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_raytracingExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_rayTracingExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_samplerYcbcrConversionExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_bufferDeviceAddressExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_memoryBudgetExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_externalMemory = false;
 
-bool TRAP::Graphics::API::VulkanRenderer::s_renderdocCapture = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
+
+bool TRAP::Graphics::API::VulkanRenderer::s_externalMemoryWin32Extension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_externalFenceWin32Extension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_externalSemaphoreWin32Extension = false;
 
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::s_usableGPUs{};
 
@@ -1519,16 +1524,15 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayer
 	std::vector<std::string> layers{};
 
 #ifdef ENABLE_GRAPHICS_DEBUG
+	//Turn on all validations
 	if (VulkanInstance::IsLayerSupported("VK_LAYER_KHRONOS_validation"))
 		layers.emplace_back("VK_LAYER_KHRONOS_validation");
 #endif
 
 #ifdef USE_RENDER_DOC
+	//Turn on render doc layer for gpu capture
 	if(VulkanInstance::IsLayerSupported("VK_LAYER_RENDERDOC_Capture"))
-	{
 		layers.emplace_back("VK_LAYER_RENDERDOC_Capture");
-		s_renderdocCapture = true;
-	}
 #endif
 
 	return layers;
@@ -1559,6 +1563,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 		extensions.push_back(reqExt[1]);
 	}
 
+	//Vulkan 1.1 core
+	//VK_KHR_get_physical_device_properties2
+	//VK_KHR_external_memory_capabilities
+	//VK_KHR_external_semaphore_capabilities
+	//VK_KHR_external_fence_capabilities
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
@@ -1583,20 +1593,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 #endif
 #endif
 
-	///HDR support
-	if (VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
+	///HDR support (requires surface extension)
+	if (VulkanInstance::IsExtensionSupported(VK_KHR_SURFACE_EXTENSION_NAME) &&
+	    VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
 		s_swapchainColorSpaceExtension = true;
-	}
-
-	///VR support
-	if (VulkanInstance::IsExtensionSupported(VK_KHR_DISPLAY_EXTENSION_NAME) &&
-		VulkanInstance::IsExtensionSupported(VK_EXT_DIRECT_MODE_DISPLAY_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_DISPLAY_EXTENSION_NAME);
-		extensions.emplace_back(VK_EXT_DIRECT_MODE_DISPLAY_EXTENSION_NAME);
-		s_VRExtensions = true;
 	}
 
 	return extensions;
@@ -1621,6 +1623,18 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		exit(-1);
 	}
 
+	//Vulkan 1.1 core
+	//VK_KHR_maintenance1
+	//VK_KHR_maintenance3
+	//VK_KHR_external_memory
+	//VK_KHR_external_semaphore
+	//VK_KHR_external_fence
+	//VK_KHR_bind_memory2
+	//VK_KHR_get_memory_requirements2
+	//VK_KHR_sampler_ycbcr_conversion (needs check of capability flag) //TODO
+	//VK_KHR_dedicated_allocation
+	//VK_KHR_shader_draw_parameters (needs check of capability flag) //TODO
+
 	//Debug marker extension in case debug utils is not supported
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if (physicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
@@ -1630,16 +1644,15 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 	}
 #endif
 
+	if(physicalDevice->IsExtensionSupported(VK_EXT_SHADER_SUBGROUP_BALLOT_EXTENSION_NAME))
+		extensions.emplace_back(VK_EXT_SHADER_SUBGROUP_BALLOT_EXTENSION_NAME);
+	if(physicalDevice->IsExtensionSupported(VK_EXT_SHADER_SUBGROUP_VOTE_EXTENSION_NAME))
+		extensions.emplace_back(VK_EXT_SHADER_SUBGROUP_VOTE_EXTENSION_NAME);
+
 	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME);
 		s_drawIndirectCountExtension = true;
-	}
-
-	if (physicalDevice->IsExtensionSupported(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME);
-		s_fragmentShaderInterlockExtension = true;
 	}
 
 	if (physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME))
@@ -1648,29 +1661,68 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		s_descriptorIndexingExtension = true;
 	}
 
-	if (physicalDevice->IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME))
+	if (physicalDevice->IsExtensionSupported(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME))
 	{
-		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+		extensions.emplace_back(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME);
+		s_fragmentShaderInterlockExtension = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME))
+	{
 		extensions.emplace_back(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
-		extensions.emplace_back(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
-		extensions.emplace_back(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
-		extensions.emplace_back(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME);
-		s_raytracingExtension = true;
+		s_bufferDeviceAddressExtension = true;
 	}
 
-	if(physicalDevice->IsExtensionSupported(VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME))
+	if (physicalDevice->IsExtensionSupported(VK_KHR_MAINTENANCE_4_EXTENSION_NAME))
 	{
-		extensions.emplace_back(VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME);
-		s_samplerYcbcrConversionExtension = true;
+		extensions.emplace_back(VK_KHR_MAINTENANCE_4_EXTENSION_NAME);
+		s_maintenance4Extension = true;
 	}
 
-	if(physicalDevice->IsExtensionSupported(VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME))
-		extensions.emplace_back(VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME);
+	if (physicalDevice->IsExtensionSupported(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);
+		s_memoryBudgetExtension = true;
+	}
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME);
+		s_externalMemoryWin32Extension = true;
+	}
+	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_FENCE_WIN32_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_EXTERNAL_FENCE_WIN32_EXTENSION_NAME);
+		s_externalFenceWin32Extension = true;
+	}
+	if (physicalDevice->IsExtensionSupported(VK_KHR_EXTERNAL_SEMAPHORE_WIN32_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_EXTERNAL_SEMAPHORE_WIN32_EXTENSION_NAME);
+		s_externalSemaphoreWin32Extension = true;
+	}
+	s_externalMemory = s_externalMemoryWin32Extension && s_externalFenceWin32Extension &&
+	                   s_externalSemaphoreWin32Extension;
+#endif
+
+	//RayTracing
+	if(s_descriptorIndexingExtension &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME) &&
+	   s_bufferDeviceAddressExtension &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_SPIRV_1_4_EXTENSION_NAME) &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
+	   physicalDevice->IsExtensionSupported(VK_KHR_RAY_QUERY_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_SPIRV_1_4_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_RAY_QUERY_EXTENSION_NAME);
+		s_rayTracingExtension = true;
+	}
 
 	return extensions;
 }

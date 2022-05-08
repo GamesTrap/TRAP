@@ -62,7 +62,8 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 				flags |= VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT;
 			}
 			flags |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
-			if (VulkanRenderer::s_raytracingExtension)
+			//RayTracing
+			if (VulkanRenderer::s_rayTracingExtension)
 				flags |= VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR;
 		}
 
@@ -124,6 +125,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 {
 	int32_t blendDescIndex = 0;
 
+#ifdef ENABLE_GRAPHICS_DEBUG
 	for(int32_t i = 0; i < 8; ++i)
 	{
 		if(static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
@@ -141,6 +143,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 	}
 
 	blendDescIndex = 0;
+#endif
 
 	for(int32_t i = 0; i < 8; ++i)
 	{

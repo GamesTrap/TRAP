@@ -5,8 +5,6 @@
 #include "PlatformDetection.h"
 
 //Set this define to enable RenderDoc layer
-//NOTE: Settings this define will disable usage of the KHR dedicated allocation extension since
-//      it conflicts with the RenderDoc capture layer.
 //#define USE_RENDER_DOC
 
 //-------------------------------------------------------------------------------------------------------------------//

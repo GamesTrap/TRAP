@@ -2548,3 +2548,4 @@ SITREP 05/08/2022|22w18d1
     - Vulkan Added support for GPU based validation (enabled via macro, off by default) ~<25 mins
     - Vulkan progress on HDR support ~<15 mins
     - Lowered auto generated shader code SPIR-V version to 1.4 (1.5 before) ~<5 mins
+    - Vulkan lowered required version to Vulkan 1.1 (Android compatibility) ~>60 mins

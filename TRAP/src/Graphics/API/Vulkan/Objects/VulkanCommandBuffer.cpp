@@ -557,9 +557,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
 	{
 		if (counterBuffer)
 		{
-			vkCmdDrawIndirectCount(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset,
-				                   dynamic_cast<VulkanBuffer*>(counterBuffer.get())->GetVkBuffer(),
-				                   counterBufferOffset, maxCommandCount, cSig->GetStride());
+			vkCmdDrawIndirectCountKHR(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset,
+				                      dynamic_cast<VulkanBuffer*>(counterBuffer.get())->GetVkBuffer(),
+				                      counterBufferOffset, maxCommandCount, cSig->GetStride());
 		}
 		else
 			vkCmdDrawIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset, maxCommandCount,
@@ -569,9 +569,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
 	{
 		if (counterBuffer)
 		{
-			vkCmdDrawIndexedIndirectCount(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset,
-				                          dynamic_cast<VulkanBuffer*>(counterBuffer.get())->GetVkBuffer(),
-				                          counterBufferOffset, maxCommandCount, cSig->GetStride());
+			vkCmdDrawIndexedIndirectCountKHR(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset,
+				                             dynamic_cast<VulkanBuffer*>(counterBuffer.get())->GetVkBuffer(),
+				                             counterBufferOffset, maxCommandCount, cSig->GetStride());
 		}
 		else
 			vkCmdDrawIndexedIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset, maxCommandCount,

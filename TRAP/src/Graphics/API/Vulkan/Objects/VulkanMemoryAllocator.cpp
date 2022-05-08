@@ -9,6 +9,7 @@
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "VulkanInits.h"
 
 TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Ref<VulkanDevice>& device,
@@ -43,11 +44,24 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 	vulkanFunctions.vkCreateImage = vkCreateImage;
 	vulkanFunctions.vkDestroyImage = vkDestroyImage;
 	vulkanFunctions.vkCmdCopyBuffer = vkCmdCopyBuffer;
+
+	//Dedicated Allocation
 	vulkanFunctions.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
 	vulkanFunctions.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2;
+
+	//Bind Memory 2
 	vulkanFunctions.vkBindBufferMemory2KHR = vkBindBufferMemory2;
 	vulkanFunctions.vkBindImageMemory2KHR = vkBindImageMemory2;
-	vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2;
+
+	//Memory Budget
+	if(VulkanRenderer::s_memoryBudgetExtension)
+		vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2KHR;
+
+	if(VulkanRenderer::s_maintenance4Extension)
+	{
+		vulkanFunctions.vkGetDeviceBufferMemoryRequirements = vkGetDeviceBufferMemoryRequirementsKHR;
+		vulkanFunctions.vkGetDeviceImageMemoryRequirements = vkGetDeviceImageMemoryRequirementsKHR;
+	}
 
 	VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
 		                                                              device->GetPhysicalDevice()->GetVkPhysicalDevice(),

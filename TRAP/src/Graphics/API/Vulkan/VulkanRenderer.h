@@ -471,19 +471,24 @@ namespace TRAP::Graphics::API
 		static bool s_debugReportExtension;
 		static bool s_validationFeaturesExtension;
 		static bool s_swapchainColorSpaceExtension;
-		static bool s_VRExtensions;
 
 		//Device Extensions
 		static bool s_shaderDrawParameters;
-		static bool s_subgroupBroadcastDynamicID;
 		static bool s_fragmentShaderInterlockExtension;
 		static bool s_drawIndirectCountExtension;
 		static bool s_descriptorIndexingExtension;
-		static bool s_raytracingExtension;
+		static bool s_rayTracingExtension;
 		static bool s_samplerYcbcrConversionExtension;
+		static bool s_bufferDeviceAddressExtension;
+		static bool s_memoryBudgetExtension;
+		static bool s_maintenance4Extension;
+		static bool s_externalMemory;
 
-		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;
+
+		static bool s_externalMemoryWin32Extension;
+		static bool s_externalFenceWin32Extension;
+		static bool s_externalSemaphoreWin32Extension;
 
 		static struct GPUCapBits
 		{

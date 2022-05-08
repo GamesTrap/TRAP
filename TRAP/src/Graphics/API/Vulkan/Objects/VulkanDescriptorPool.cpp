@@ -41,7 +41,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif
 
-	if (VulkanRenderer::s_raytracingExtension)
+	if (VulkanRenderer::s_rayTracingExtension)
 		s_descriptorPoolSizes[DESCRIPTOR_TYPE_RANGE_SIZE - 1] = { VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
 		                                                          1024 };
 

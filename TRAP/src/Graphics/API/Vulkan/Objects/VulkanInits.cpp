@@ -14,7 +14,7 @@ VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::s
 	info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	info.pEngineName = "TRAP";
 	info.engineVersion = TRAP_VERSION;
-	info.apiVersion = VK_API_VERSION_1_2;
+	info.apiVersion = VK_API_VERSION_1_1;
 
 	return info;
 }
@@ -180,12 +180,13 @@ VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(
 	info.instance = instance;
 	info.flags = 0;
 
-	if (!VulkanRenderer::s_renderdocCapture)
-		info.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
+	info.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
+	if(VulkanRenderer::s_bufferDeviceAddressExtension)
+		info.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
 
 	info.pVulkanFunctions = &vulkanFunctions;
 	info.pAllocationCallbacks = nullptr;
-	info.vulkanApiVersion = VK_API_VERSION_1_2;
+	info.vulkanApiVersion = VK_API_VERSION_1_1;
 
 	return info;
 }

@@ -724,7 +724,15 @@ constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(
 		result |= VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndirectBuffer))
 		result |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
-	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RayTracing))
+
+	//RayTracing
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::AccelerationStructure))
+		result |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::AccelerationStructureBuildInput))
+		result |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::ShaderDeviceAddress))
+		result |= VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::ShaderBindingTable))
 		result |= VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR;
 
 	return result;
@@ -826,6 +834,7 @@ constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType
 	case RendererAPI::DescriptorType::CombinedImageSampler:
 		return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 
+	//RayTracing
 	case RendererAPI::DescriptorType::RayTracing:
 		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 
@@ -856,6 +865,7 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 		res |= VK_SHADER_STAGE_FRAGMENT_BIT;
 	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Compute))
 		res |= VK_SHADER_STAGE_COMPUTE_BIT;
+	//RayTracing
 	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::RayTracing))
 		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
 			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
@@ -903,6 +913,8 @@ constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(Render
 		ret |= VK_ACCESS_SHADER_READ_BIT;
 	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::Present))
 		ret |= VK_ACCESS_MEMORY_READ_BIT;
+
+	//RayTracing
 	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RayTracingAccelerationStructure))
 		ret |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
 

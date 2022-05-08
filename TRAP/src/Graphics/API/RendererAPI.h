@@ -787,7 +787,13 @@ namespace TRAP::Graphics
 			InputAttachment = (RayTracing << 1),
 			TexelBuffer = (InputAttachment << 1),
 			RWTexelBuffer = (TexelBuffer << 1),
-			CombinedImageSampler = (RWTexelBuffer << 1)
+			CombinedImageSampler = (RWTexelBuffer << 1),
+
+			//Khronos ray tracing extension
+			AccelerationStructure = (CombinedImageSampler << 1),
+			AccelerationStructureBuildInput = (AccelerationStructure << 1),
+			ShaderDeviceAddress  = (AccelerationStructureBuildInput << 1),
+			ShaderBindingTable = (ShaderDeviceAddress << 1)
 		};
 
 		//Choosing Memory Type

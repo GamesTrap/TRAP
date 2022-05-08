@@ -51,34 +51,73 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		m_physicalDevice->RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 	}
 
-	VkPhysicalDeviceFeatures2 deviceFeatures2{};
-	VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures{};
+	//Enable features of the device extensions
+	VkPhysicalDeviceFeatures2 devFeatures2{};
+	devFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	VkBaseOutStructure* base = reinterpret_cast<VkBaseOutStructure*>(&devFeatures2);
+
 	VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragmentShaderInterlockFeatures{};
+	fragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
+	VkPhysicalDeviceDescriptorIndexingFeaturesEXT descriptorIndexingFeatures{};
+	descriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
 	VkPhysicalDeviceSamplerYcbcrConversionFeatures ycbcrFeatures{};
+	ycbcrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
+	VkPhysicalDeviceShaderDrawParametersFeatures shaderDrawParametersFeatures{};
+	shaderDrawParametersFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES;
+
+	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&fragmentShaderInterlockFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
 	if (VulkanRenderer::s_descriptorIndexingExtension)
 	{
-		if (VulkanRenderer::s_fragmentShaderInterlockExtension)
-		{
-			fragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
-			fragmentShaderInterlockFeatures.pNext = nullptr;
-			descriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
-			descriptorIndexingFeatures.pNext = &fragmentShaderInterlockFeatures;
-		}
-		else
-			descriptorIndexingFeatures.pNext = nullptr;
-
-		deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-		deviceFeatures2.pNext = &descriptorIndexingFeatures;
-
-		ycbcrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
-		if(VulkanRenderer::s_samplerYcbcrConversionExtension)
-		{
-			deviceFeatures2.pNext = &ycbcrFeatures;
-			ycbcrFeatures.pNext = &descriptorIndexingFeatures;
-		}
-
-		vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &deviceFeatures2);
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&descriptorIndexingFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
 	}
+	if (VulkanRenderer::s_samplerYcbcrConversionExtension)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&ycbcrFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
+	base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shaderDrawParametersFeatures);
+	base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+
+	VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures{};
+	bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR;
+	bufferDeviceAddressFeatures.bufferDeviceAddress = VK_TRUE;
+	VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeatures{};
+	rayTracingPipelineFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
+	rayTracingPipelineFeatures.rayTracingPipeline = VK_TRUE;
+	VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures{};
+	accelerationStructureFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
+	accelerationStructureFeatures.accelerationStructure = VK_TRUE;
+	VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
+	rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
+	rayQueryFeatures.rayQuery = VK_TRUE;
+
+	if (VulkanRenderer::s_bufferDeviceAddressExtension)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&bufferDeviceAddressFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
+	if (VulkanRenderer::s_rayTracingExtension)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&rayTracingPipelineFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
+	if (VulkanRenderer::s_rayTracingExtension)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&accelerationStructureFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
+	if (VulkanRenderer::s_rayTracingExtension)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&rayQueryFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
+
+	vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &devFeatures2);
 
 	//Need a queuePriority for each queue in the queue family we create
 	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_physicalDevice->GetQueueFamilyProperties();
@@ -109,7 +148,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		}
 	}
 
-	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&deviceFeatures2, queueCreateInfos,
+	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
 	                                                                    extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
@@ -118,6 +157,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VulkanRenderer::s_debugMarkerSupport = (vkCmdBeginDebugUtilsLabelEXT) && (vkCmdEndDebugUtilsLabelEXT) &&
 		                                   (vkCmdInsertDebugUtilsLabelEXT) && (vkSetDebugUtilsObjectNameEXT);
+	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
+	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName)
