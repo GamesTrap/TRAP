@@ -2564,3 +2564,4 @@ SITREP 05/13/2022|22w19a1
 SITREP 05/14/2022|22w19a2
     - Changed TRAP Engine version to 22w19a2(0.7.137)
     - Replaced typedefs with usings ~<30 mins
+    - Mat3/4 Made operator overloads constexpr ~<20 mins

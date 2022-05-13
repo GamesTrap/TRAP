@@ -136,7 +136,7 @@ namespace TRAP::Math
 		/// Retrieve a column of the matrix.
 		/// </summary>
 		/// <param name="i">Column to retrieve.</param>
-		colType& operator[](int32_t i);
+		constexpr colType& operator[](int32_t i);
 		/// <summary>
 		/// Retrieve a column of the matrix.
 		/// </summary>
@@ -145,93 +145,93 @@ namespace TRAP::Math
 
 		//Unary arithmetic operators
 		template<typename U>
-		Mat<4, 4, T>& operator=(const Mat<4, 4, U>& m);
+		constexpr Mat<4, 4, T>& operator=(const Mat<4, 4, U>& m);
 		template<typename U>
-		Mat<4, 4, T>& operator+=(U s);
+		constexpr Mat<4, 4, T>& operator+=(U s);
 		template<typename U>
-		Mat<4, 4, T>& operator+=(const Mat<4, 4, U>& m);
+		constexpr Mat<4, 4, T>& operator+=(const Mat<4, 4, U>& m);
 		template<typename U>
-		Mat<4, 4, T>& operator-=(U s);
+		constexpr Mat<4, 4, T>& operator-=(U s);
 		template<typename U>
-		Mat<4, 4, T>& operator-=(const Mat<4, 4, U>& m);
+		constexpr Mat<4, 4, T>& operator-=(const Mat<4, 4, U>& m);
 		template<typename U>
-		Mat<4, 4, T>& operator*=(U s);
+		constexpr Mat<4, 4, T>& operator*=(U s);
 		template<typename U>
-		Mat<4, 4, T>& operator*=(const Mat<4, 4, U>& m);
+		constexpr Mat<4, 4, T>& operator*=(const Mat<4, 4, U>& m);
 		template<typename U>
-		Mat<4, 4, T>& operator/=(U s);
+		constexpr Mat<4, 4, T>& operator/=(U s);
 		template<typename U>
-		Mat<4, 4, T>& operator/=(const Mat<4, 4, U>& m);
+		constexpr Mat<4, 4, T>& operator/=(const Mat<4, 4, U>& m);
 
 		//Increment and decrement operators
-		Mat<4, 4, T>& operator++();
-		Mat<4, 4, T>& operator--();
-		Mat<4, 4, T> operator++(int);
-		Mat<4, 4, T> operator--(int);
+		constexpr Mat<4, 4, T>& operator++();
+		constexpr Mat<4, 4, T>& operator--();
+		constexpr Mat<4, 4, T> operator++(int);
+		constexpr Mat<4, 4, T> operator--(int);
 	};
 
 	//Unary operators
 	template<typename T>
-	Mat<4, 4, T> operator+(const Mat<4, 4, T>& m);
+	constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m);
 
 	template<typename T>
-	Mat<4, 4, T> operator-(const Mat<4, 4, T>& m);
+	constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m);
 
 	//Binary operators
 	template<typename T>
-	Mat<4, 4, T> operator+(const Mat<4, 4, T>& m, const T& scalar);
+	constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m, const T& scalar);
 
 	template<typename T>
-	Mat<4, 4, T> operator+(const T& scalar, const Mat<4, 4, T>& m);
+	constexpr Mat<4, 4, T> operator+(const T& scalar, const Mat<4, 4, T>& m);
 
 	template<typename T>
-	Mat<4, 4, T> operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+	constexpr Mat<4, 4, T> operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
 
 	template<typename T>
-	Mat<4, 4, T> operator-(const Mat<4, 4, T>& m, const T& scalar);
+	constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m, const T& scalar);
 
 	template<typename T>
-	Mat<4, 4, T> operator-(const T& scalar, const Mat<4, 4, T>& m);
+	constexpr Mat<4, 4, T> operator-(const T& scalar, const Mat<4, 4, T>& m);
 
 	template<typename T>
-	Mat<4, 4, T> operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+	constexpr Mat<4, 4, T> operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
 
 	template<typename T>
-	Mat<4, 4, T> operator*(const Mat<4, 4, T>& m, const T& scalar);
+	constexpr Mat<4, 4, T> operator*(const Mat<4, 4, T>& m, const T& scalar);
 
 	template<typename T>
-	Mat<4, 4, T> operator*(const T& scalar, const Mat<4, 4, T>& m);
+	constexpr Mat<4, 4, T> operator*(const T& scalar, const Mat<4, 4, T>& m);
 
 	template<typename T>
-	typename Mat<4, 4, T>::colType operator*(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::rowType& v);
+	constexpr typename Mat<4, 4, T>::colType operator*(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::rowType& v);
 
 	template<typename T>
-	typename Mat<4, 4, T>::rowType operator*(const typename Mat<4, 4, T>::colType& v, const Mat<4, 4, T>& m);
+	constexpr typename Mat<4, 4, T>::rowType operator*(const typename Mat<4, 4, T>::colType& v, const Mat<4, 4, T>& m);
 
 	template<typename T>
-	Mat<4, 4, T> operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+	constexpr Mat<4, 4, T> operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
 
 	template<typename T>
-	Mat<4, 4, T> operator/(const Mat<4, 4, T>& m, const T& scalar);
+	constexpr Mat<4, 4, T> operator/(const Mat<4, 4, T>& m, const T& scalar);
 
 	template<typename T>
-	Mat<4, 4, T> operator/(const T& scalar, const Mat<4, 4, T>& m);
+	constexpr Mat<4, 4, T> operator/(const T& scalar, const Mat<4, 4, T>& m);
 
 	template<typename T>
-	typename Mat<4, 4, T>::colType operator/(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::rowType& v);
+	constexpr typename Mat<4, 4, T>::colType operator/(const Mat<4, 4, T>& m, const typename Mat<4, 4, T>::rowType& v);
 
 	template<typename T>
-	typename Mat<4, 4, T>::rowType operator/(const typename Mat<4, 4, T>::colType& v, const Mat<4, 4, T>& m);
+	constexpr typename Mat<4, 4, T>::rowType operator/(const typename Mat<4, 4, T>::colType& v, const Mat<4, 4, T>& m);
 
 	template<typename T>
-	Mat<4, 4, T> operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+	constexpr Mat<4, 4, T> operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
 
 	//Boolean operators
 	template<typename T>
-	bool operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+	constexpr bool operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
 
 	template<typename T>
-	bool operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
+	constexpr bool operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -370,7 +370,7 @@ constexpr int TRAP::Math::Mat<4, 4, T>::Length()
 //Accesses
 
 template<typename T>
-typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i)
+constexpr typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](const int32_t i)
 {
 	TRAP_ASSERT(i < this->Length());
 
@@ -390,7 +390,7 @@ constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator=(const Mat<4, 4, U>& m)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator=(const Mat<4, 4, U>& m)
 {
 	this->value[0] = m[0];
 	this->value[1] = m[1];
@@ -402,7 +402,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator=(const Mat<4, 4, U>
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(U s)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(U s)
 {
 	this->value[0] += s;
 	this->value[1] += s;
@@ -414,7 +414,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(U s)
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(const Mat<4, 4, U>& m)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(const Mat<4, 4, U>& m)
 {
 	this->value[0] += m[0];
 	this->value[1] += m[1];
@@ -426,7 +426,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator+=(const Mat<4, 4, U
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(U s)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(U s)
 {
 	this->value[0] -= s;
 	this->value[1] -= s;
@@ -438,7 +438,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(U s)
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(const Mat<4, 4, U>& m)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(const Mat<4, 4, U>& m)
 {
 	this->value[0] -= m[0];
 	this->value[1] -= m[1];
@@ -450,7 +450,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator-=(const Mat<4, 4, U
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator*=(U s)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator*=(U s)
 {
 	this->value[0] *= s;
 	this->value[1] *= s;
@@ -462,14 +462,14 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator*=(U s)
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator*=(const Mat<4, 4, U>& m)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator*=(const Mat<4, 4, U>& m)
 {
 	return (*this = *this * m);
 }
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(U s)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(U s)
 {
 	this->value[0] /= s;
 	this->value[1] /= s;
@@ -481,7 +481,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(U s)
 
 template<typename T>
 template<typename U>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(const Mat<4, 4, U>& m)
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(const Mat<4, 4, U>& m)
 {
 	return *this *= Inverse(m);
 }
@@ -490,7 +490,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator/=(const Mat<4, 4, U
 //Increment and decrement operators
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator++()
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator++()
 {
 	++this->value[0];
 	++this->value[1];
@@ -501,7 +501,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator++()
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator--()
+constexpr TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator--()
 {
 	--this->value[0];
 	--this->value[1];
@@ -512,7 +512,7 @@ TRAP::Math::Mat<4, 4, T>& TRAP::Math::Mat<4, 4, T>::operator--()
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator++(int)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator++(int)
 {
 	Mat<4, 4, T> result(*this);
 	++*this;
@@ -521,7 +521,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator++(int)
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int)
 {
 	Mat<4, 4, T> result(*this);
 	--*this;
@@ -533,13 +533,13 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int)
 //Unary arithmetic operators
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m)
 {
 	return m;
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m)
 {
 	return Mat<4, 4, T>(-m[0], -m[1], -m[2], -m[3]);
 }
@@ -548,56 +548,56 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m)
 //Binary arithmetic operators
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m, const T& scalar)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m, const T& scalar)
 {
 	return Mat<4, 4, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar, m[3] + scalar);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const T& scalar, const Mat<4, 4, T>& m)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const T& scalar, const Mat<4, 4, T>& m)
 {
 	return Mat<4, 4, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar, m[3] + scalar);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
 	return Mat<4, 4, T>(m1[0] + m2[0], m1[1] + m2[1], m1[2] + m2[2], m1[3] + m2[2]);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m, const T& scalar)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m, const T& scalar)
 {
 	return Mat<4, 4, T>(m[0] - scalar, m[1] - scalar, m[2] - scalar, m[3] - scalar);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const T& scalar, const Mat<4, 4, T>& m)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const T& scalar, const Mat<4, 4, T>& m)
 {
 	return Mat<4, 4, T>(scalar - m[0], scalar - m[1], scalar - m[2], scalar - m[3]);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator-(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
 	return Mat<4, 4, T>(m1[0] - m2[0], m1[1] - m2[1], m1[2] - m2[2], m1[3] - m2[3]);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m, const T& scalar)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m, const T& scalar)
 {
 	return Mat<4, 4, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar, m[3] * scalar);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const T& scalar, const Mat<4, 4, T>& m)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const T& scalar, const Mat<4, 4, T>& m)
 {
 	return Mat<4, 4, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar, m[3] * scalar);
 }
 
 template<typename T>
-typename TRAP::Math::Mat<4, 4, T>::colType TRAP::Math::operator*(const Mat<4, 4, T>& m,
-                                                                 const typename Mat<4, 4, T>::rowType& v)
+constexpr typename TRAP::Math::Mat<4, 4, T>::colType TRAP::Math::operator*(const Mat<4, 4, T>& m,
+                                                                           const typename Mat<4, 4, T>::rowType& v)
 {
 	typename Mat<4, 4, T>::colType const mov0(v[0]);
 	typename Mat<4, 4, T>::colType const mov1(v[1]);
@@ -615,8 +615,8 @@ typename TRAP::Math::Mat<4, 4, T>::colType TRAP::Math::operator*(const Mat<4, 4,
 }
 
 template<typename T>
-typename TRAP::Math::Mat<4, 4, T>::rowType TRAP::Math::operator*(const typename Mat<4, 4, T>::colType& v,
-                                                                 const Mat<4, 4, T>& m)
+constexpr typename TRAP::Math::Mat<4, 4, T>::rowType TRAP::Math::operator*(const typename Mat<4, 4, T>::colType& v,
+                                                                           const Mat<4, 4, T>& m)
 {
 	return typename Mat<4, 4, T>::rowType(m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2] + m[0][3] * v[3],
 		                                  m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2] + m[1][3] * v[3],
@@ -625,7 +625,7 @@ typename TRAP::Math::Mat<4, 4, T>::rowType TRAP::Math::operator*(const typename 
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
 	typename Mat<4, 4, T>::colType const srcA0 = m1[0];
 	typename Mat<4, 4, T>::colType const srcA1 = m1[1];
@@ -647,33 +647,33 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::operator*(const Mat<4, 4, T>& m1, const Mat
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m, const T& scalar)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m, const T& scalar)
 {
 	return Mat<4, 4, T>(m[0] / scalar, m[1] / scalar, m[2] / scalar, m[3] / scalar);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const T& scalar, const Mat<4, 4, T>& m)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const T& scalar, const Mat<4, 4, T>& m)
 {
 	return Mat<4, 4, T>(scalar / m[0], scalar / m[1], scalar / m[2], scalar / m[3]);
 }
 
 template<typename T>
-typename TRAP::Math::Mat<4, 4, T>::colType TRAP::Math::operator/(const Mat<4, 4, T>& m,
+constexpr typename TRAP::Math::Mat<4, 4, T>::colType TRAP::Math::operator/(const Mat<4, 4, T>& m,
                                                                  const typename Mat<4, 4, T>::rowType& v)
 {
 	return Inverse(m) * v;
 }
 
 template<typename T>
-typename TRAP::Math::Mat<4, 4, T>::rowType TRAP::Math::operator/(const typename Mat<4, 4, T>::colType& v,
+constexpr typename TRAP::Math::Mat<4, 4, T>::rowType TRAP::Math::operator/(const typename Mat<4, 4, T>::colType& v,
                                                                  const Mat<4, 4, T>& m)
 {
 	return v * Inverse(m);
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
+constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
 	Mat<4, 4, T> m1Copy(m1);
 
@@ -684,13 +684,13 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::operator/(const Mat<4, 4, T>& m1, const Mat
 //Boolean operators
 
 template<typename T>
-bool TRAP::Math::operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
+constexpr bool TRAP::Math::operator==(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
 	return (m1[0] == m2[0]) && (m1[1] == m2[1]) && (m1[2] == m2[2]);
 }
 
 template<typename T>
-bool TRAP::Math::operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
+constexpr bool TRAP::Math::operator!=(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
 	return (m1[0] != m2[0]) || (m1[1] != m2[1]) || (m1[2] != m2[2]);
 }
