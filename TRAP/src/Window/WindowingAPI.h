@@ -85,8 +85,8 @@ namespace TRAP::INTERNAL
 		enum class Process_DPI_Awareness;
 #elif defined(TRAP_PLATFORM_LINUX)
 		struct xcb_connection_t;
-		typedef XID xcb_window_t;
-		typedef XID xcb_visualid_t;
+		using xcb_window_t = XID;
+		using xcb_visualid_t = XID;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Typedefs-----------------------------------------------------------------------------------------------------------//
@@ -105,14 +105,14 @@ namespace TRAP::INTERNAL
 		/// <param name="yPos">
 		/// The new y-coordinate, in screen coordinates, of the upper-left corner of the content area.
 		/// </param>
-		typedef void (*WindowPositionFunc)(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		using WindowPositionFunc = void(*)(const InternalWindow* window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// The function pointer type for window size callbacks.
 		/// </summary>
 		/// <param name="window">The window that was resized.</param>
 		/// <param name="width">The new width, in screen coordinates.</param>
 		/// <param name="height">The new height, in screen coordinates.</param>
-		typedef void (*WindowSizeFunc)(const InternalWindow* window, int32_t width, int32_t height);
+		using WindowSizeFunc = void(*)(const InternalWindow* window, int32_t width, int32_t height);
 		/// <summary>
 		/// The function pointer type for window minimize/iconfiy callbacks.
 		/// </summary>
@@ -120,106 +120,106 @@ namespace TRAP::INTERNAL
 		/// <param name="restored">
 		/// True if the window was minimized/iconified, or false if it was restored.
 		/// </param>
-		typedef void (*WindowMinimizeFunc)(const InternalWindow* window, bool restored);
+		using WindowMinimizeFunc = void(*)(const InternalWindow* window, bool restored);
 		/// <summary>
 		/// The function pointer type for window maximize callbacks.
 		/// </summary>
 		/// <param name="window">The window that was maximized or restored.</param>
 		/// <param name="restored">True if the window was maximized, or false if it was restored.</param>
-		typedef void (*WindowMaximizeFunc)(const InternalWindow* window, bool restored);
+		using WindowMaximizeFunc = void(*)(const InternalWindow* window, bool restored);
 		/// <summary>
 		/// The function pointer type for window close callbacks.
 		/// </summary>
 		/// <param name="window">The window that the user attempted to close.</param>
-		typedef void (*WindowCloseFunc)(const InternalWindow* window);
+		using WindowCloseFunc = void(*)(const InternalWindow* window);
 		/// <summary>
 		/// The function pointer type for window focus callbacks.
 		/// </summary>
 		/// <param name="window">The window that gained or lost input focus.</param>
 		/// <param name="focused">True if the window was given input focus, or false if it lost it.</param>
-		typedef void (*WindowFocusFunc)(const InternalWindow* window, bool focused);
+		using WindowFocusFunc = void(*)(const InternalWindow* window, bool focused);
 		/// <summary>
 		/// The function pointer type for framebuffer size callbacks.
 		/// </summary>
 		/// <param name="window">The window whose framebuffer was resized.</param>
 		/// <param name="width">The new width, in pixels, of the framebuffer.</param>
 		/// <param name="height">The new height, in pixels, of the framebuffer.</param>
-		typedef void (*FrameBufferSizeFunc)(const InternalWindow* window, int32_t width, int32_t height);
+		using FrameBufferSizeFunc = void(*)(const InternalWindow* window, int32_t width, int32_t height);
 		/// <summary>
 		/// The function pointer type for window content scale callbacks.
 		/// </summary>
 		/// <param name="window">The window whose content scale changed.</param>
 		/// <param name="xScale">The new x-axis content scale of the window.</param>
 		/// <param name="yScale">The new y-axis content scale of the window.</param>
-		typedef void (*WindowContentScaleFunc)(const InternalWindow* window, float xScale, float yScale);
+		using WindowContentScaleFunc = void(*)(const InternalWindow* window, float xScale, float yScale);
 		/// <summary>
 		/// The function pointer type for mouse button callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="mouseButton">The mouse button that was pressed or released.</param>
 		/// <param name="pressed">True if mouse button is pressed, false otherwise.</param>
-		typedef void (*MouseButtonFunc)(const InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
+		using MouseButtonFunc = void(*)(const InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
 		/// <summary>
 		/// The function pointer type for cursor position callbacks.
 		/// </summary>
 		/// <param name="window>The window that received the event.</param>
 		/// <param name="xPos">The new cursor x-coordinate, relative to the left edge of the content area.</param>
 		/// <param name="yPos">The new cursor y-coordinate, relative to the top edge of the content area.</param>
-		typedef void (*CursorPositionFunc)(const InternalWindow* window, double xPos, double yPos);
+		using CursorPositionFunc = void(*)(const InternalWindow* window, double xPos, double yPos);
 		/// <summary>
 		/// The function pointer type for cursor enter callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="entered">True if the cursor entered the window's content area, false if it left it.</param>
-		typedef void (*CursorEnterFunc)(const InternalWindow* window, bool entered);
+		using CursorEnterFunc = void(*)(const InternalWindow* window, bool entered);
 		/// <summary>
 		/// The function pointer type for scroll callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="xOffset">The scroll offset along the x-axis.</param>
 		/// <param name="yOffset">The scroll offset along the y-axis.</param>
-		typedef void (*ScrollFunc)(const InternalWindow* window, double xOffset, double yOffset);
+		using ScrollFunc = void(*)(const InternalWindow* window, double xOffset, double yOffset);
 		/// <summary>
 		/// The function pointer type for keyboard key callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="key">The key that was pressed or released.</param>
 		/// <param name="pressed">True if key is pressed, false if it is released.</param>
-		typedef void (*KeyFunc)(const InternalWindow* window, Input::Key key, bool pressed);
+		using KeyFunc = void(*)(const InternalWindow* window, Input::Key key, bool pressed);
 		/// <summary>
 		/// The function pointer type for Unicode character callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="codePoint">The Unicode code point of the character.</param>
-		typedef void (*CharFunc)(const InternalWindow* window, uint32_t codePoint);
+		using CharFunc = void(*)(const InternalWindow* window, uint32_t codePoint);
 		/// <summary>
 		/// The function pointer type for path drop callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="paths">The UTF-8 encoded file and/or directory path names.</param>
-		typedef void (*DropFunc)(const InternalWindow* window, std::vector<std::string> paths);
+		using DropFunc = void(*)(const InternalWindow* window, std::vector<std::string> paths);
 		/// <summary>
 		/// The function pointer type for monitor configuration callbacks.
 		/// </summary>
 		/// <param name="monitor">The monitor that was connected or disconnected.</param>
 		/// <param name="connceted">True if monitor got connceted or false if it got disconnceted.</param>
-		typedef void (*MonitorFunc)(const InternalMonitor* monitor, bool connected);
+		using MonitorFunc = void(*)(const InternalMonitor* monitor, bool connected);
 	private:
 		//--------------//
 		//Vulkan Surface//
 		//--------------//
 #ifdef TRAP_PLATFORM_WINDOWS
-		typedef VkFlags VkWin32SurfaceCreateFlagsKHR;
-		typedef VkResult(*PFN_vkCreateWin32SurfaceKHR)(VkInstance, const VkWin32SurfaceCreateInfoKHR*,
-		                                               const VkAllocationCallbacks*, VkSurfaceKHR*);
+		using VkWin32SurfaceCreateFlagsKHR = VkFlags;
+		using PFN_vkCreateWin32SurfaceKHR = VkResult(*)(VkInstance, const VkWin32SurfaceCreateInfoKHR*,
+		                                                const VkAllocationCallbacks*, VkSurfaceKHR*);
 #elif defined(TRAP_PLATFORM_LINUX)
-		typedef VkResult (*PFN_vkCreateXlibSurfaceKHR)(VkInstance, const VkXlibSurfaceCreateInfoKHR*,
+		using PFN_vkCreateXlibSurfaceKHR = VkResult(*)(VkInstance, const VkXlibSurfaceCreateInfoKHR*,
 		                                               const VkAllocationCallbacks*, VkSurfaceKHR*);
-		typedef VkBool32 (*PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR)(VkPhysicalDevice, uint32_t,
+		using PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
 		                                                                      Display*, VisualID);
-		typedef VkResult (*PFN_vkCreateXcbSurfaceKHR)(VkInstance, const VkXcbSurfaceCreateInfoKHR*,
+		using PFN_vkCreateXcbSurfaceKHR = VkResult(*)(VkInstance, const VkXcbSurfaceCreateInfoKHR*,
 		                                              const VkAllocationCallbacks*, VkSurfaceKHR*);
-		typedef VkBool32 (*PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR)(VkPhysicalDevice, uint32_t,
+		using PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
 		                                                                     xcb_connection_t*, xcb_visualid_t);
 #endif
 		//-------//
@@ -227,192 +227,192 @@ namespace TRAP::INTERNAL
 		//-------//
 #ifdef TRAP_PLATFORM_WINDOWS
 		//user32.dll function pointer typedefs
-		typedef BOOL(WINAPI* PFN_SetProcessDPIAware)();
-		typedef BOOL(WINAPI* PFN_ChangeWindowMessageFilterEx)(HWND, UINT, DWORD, CHANGEFILTERSTRUCT*);
-		typedef BOOL(WINAPI* PFN_EnableNonClientDPIScaling)(HWND);
-		typedef BOOL(WINAPI* PFN_SetProcessDPIAwarenessContext)(HANDLE);
-		typedef UINT(WINAPI* PFN_GetDPIForWindow)(HWND);
-		typedef BOOL(WINAPI* PFN_AdjustWindowRectExForDPI)(LPRECT, DWORD, BOOL, DWORD, UINT);
-		typedef int(WINAPI* PFN_GetSystemMetricsForDPI)(int, UINT);
+		using PFN_SetProcessDPIAware = BOOL(WINAPI*)();
+		using PFN_ChangeWindowMessageFilterEx = BOOL(WINAPI*)(HWND, UINT, DWORD, CHANGEFILTERSTRUCT*);
+		using PFN_EnableNonClientDPIScaling = BOOL(WINAPI*)(HWND);
+		using PFN_SetProcessDPIAwarenessContext = BOOL(WINAPI*)(HANDLE);
+		using PFN_GetDPIForWindow = UINT(WINAPI*)(HWND);
+		using PFN_AdjustWindowRectExForDPI = BOOL(WINAPI*)(LPRECT, DWORD, BOOL, DWORD, UINT);
+		using PFN_GetSystemMetricsForDPI = int(WINAPI*)(int, UINT);
 
 		//dwmapi.dll function pointer typedefs
-		typedef HRESULT(WINAPI* PFN_DwmIsCompositionEnabled)(BOOL*);
-		typedef HRESULT(WINAPI* PFN_DwmFlush)();
-		typedef HRESULT(WINAPI* PFN_DwmEnableBlurBehindWindow)(HWND, const DWM_BLURBEHIND*);
+		using PFN_DwmIsCompositionEnabled = HRESULT(WINAPI*)(BOOL*);
+		using PFN_DwmFlush = HRESULT(WINAPI*)();
+		using PFN_DwmEnableBlurBehindWindow = HRESULT(WINAPI*)(HWND, const DWM_BLURBEHIND*);
 
 		//shcore.dll function pointer typedefs
-		typedef HRESULT(WINAPI* PFN_SetProcessDPIAwareness)(Process_DPI_Awareness);
-		typedef HRESULT(WINAPI* PFN_GetDPIForMonitor)(HMONITOR, Monitor_DPI_Type, UINT*, UINT*);
+		using PFN_SetProcessDPIAwareness = HRESULT(WINAPI*)(Process_DPI_Awareness);
+		using PFN_GetDPIForMonitor = HRESULT(WINAPI*)(HMONITOR, Monitor_DPI_Type, UINT*, UINT*);
 
 		//ntdll.dll function pointer typedefs
-		typedef LONG(WINAPI* PFN_RtlVerifyVersionInfo)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
+		using PFN_RtlVerifyVersionInfo = LONG(WINAPI*)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
 #elif defined(TRAP_PLATFORM_LINUX)
 		//----------//
 		//Linux(X11)//
 		//----------//
 
 		//RandR
-		typedef void(*PFN_XRRFreeCrtcInfo)(XRRCrtcInfo*);
-		typedef void(*PFN_XRRFreeOutputInfo)(XRROutputInfo*);
-		typedef void(*PFN_XRRFreeScreenResources)(XRRScreenResources*);
-		typedef XRRCrtcInfo*(*PFN_XRRGetCrtcInfo)(Display*, XRRScreenResources*, RRCrtc);
-		typedef XRROutputInfo*(*PFN_XRRGetOutputInfo)(Display*, XRRScreenResources*, RROutput);
-		typedef RROutput(*PFN_XRRGetOutputPrimary)(Display*, ::Window);
-		typedef XRRScreenResources*(*PFN_XRRGetScreenResourcesCurrent)(Display*, ::Window);
-		typedef int32_t(*PFN_XRRQueryExtension)(Display*, int32_t*, int32_t*);
-		typedef int32_t(*PFN_XRRQueryVersion)(Display*, int32_t*, int32_t*);
-		typedef void(*PFN_XRRSelectInput)(Display*, ::Window, int32_t);
-		typedef int32_t(*PFN_XRRSetCrtcConfig)(Display*, XRRScreenResources*, RRCrtc, Time, int32_t, int32_t,
-		                                       RRMode, Rotation, RROutput*, int32_t);
-		typedef int32_t(*PFN_XRRUpdateConfiguration)(XEvent*);
+		using PFN_XRRFreeCrtcInfo = void(*)(XRRCrtcInfo*);
+		using PFN_XRRFreeOutputInfo = void(*)(XRROutputInfo*);
+		using PFN_XRRFreeScreenResources = void(*)(XRRScreenResources*);
+		using PFN_XRRGetCrtcInfo = XRRCrtcInfo*(*)(Display*, XRRScreenResources*, RRCrtc);
+		using PFN_XRRGetOutputInfo = XRROutputInfo*(*)(Display*, XRRScreenResources*, RROutput);
+		using PFN_XRRGetOutputPrimary = RROutput(*)(Display*, ::Window);
+		using PFN_XRRGetScreenResourcesCurrent = XRRScreenResources*(*)(Display*, ::Window);
+		using PFN_XRRQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
+		using PFN_XRRQueryVersion = int32_t(*)(Display*, int32_t*, int32_t*);
+		using PFN_XRRSelectInput = void(*)(Display*, ::Window, int32_t);
+		using PFN_XRRSetCrtcConfig = int32_t(*)(Display*, XRRScreenResources*, RRCrtc, Time, int32_t, int32_t,
+		                                        RRMode, Rotation, RROutput*, int32_t);
+		using PFN_XRRUpdateConfiguration = int32_t(*)(XEvent*);
 
 		//XCursor
-		typedef XcursorImage*(*PFN_XcursorImageCreate)(int32_t, int32_t);
-		typedef void(*PFN_XcursorImageDestroy)(XcursorImage*);
-		typedef Cursor(*PFN_XcursorImageLoadCursor)(Display*, const XcursorImage*);
-		typedef char*(*PFN_XcursorGetTheme)(Display*);
-		typedef int32_t(*PFN_XcursorGetDefaultSize)(Display*);
-		typedef XcursorImage*(*PFN_XcursorLibraryLoadImage)(const char*, const char*, int32_t);
+		using PFN_XcursorImageCreate = XcursorImage*(*)(int32_t, int32_t);
+		using PFN_XcursorImageDestroy = void(*)(XcursorImage*);
+		using PFN_XcursorImageLoadCursor = Cursor(*)(Display*, const XcursorImage*);
+		using PFN_XcursorGetTheme = char*(*)(Display*);
+		using PFN_XcursorGetDefaultSize = int32_t(*)(Display*);
+		using PFN_XcursorLibraryLoadImage = XcursorImage*(*)(const char*, const char*, int32_t);
 
 		//Xinerama
-		typedef int32_t (*PFN_XineramaIsActive)(Display*);
-		typedef int32_t(*PFN_XineramaQueryExtension)(Display*, int32_t*, int32_t*);
-		typedef XineramaScreenInfo*(*PFN_XineramaQueryScreens)(Display*, int32_t*);
+		using PFN_XineramaIsActive = int32_t (*)(Display*);
+		using PFN_XineramaQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
+		using PFN_XineramaQueryScreens = XineramaScreenInfo*(*)(Display*, int32_t*);
 
 		//XCB
-		typedef xcb_connection_t*(*PFN_XGetXCBConnection)(Display*);
+		using PFN_XGetXCBConnection = xcb_connection_t*(*)(Display*);
 
 		//XI
-		typedef int32_t(*PFN_XIQueryVersion)(Display*, int32_t*, int32_t*);
-		typedef int32_t(*PFN_XISelectEvents)(Display*, ::Window, XIEventMask*, int32_t);
+		using PFN_XIQueryVersion = int32_t(*)(Display*, int32_t*, int32_t*);
+		using PFN_XISelectEvents = int32_t(*)(Display*, ::Window, XIEventMask*, int32_t);
 
 		//XRender
-		typedef int32_t(*PFN_XRenderQueryExtension)(Display*,int32_t*, int32_t*);
-		typedef int32_t(*PFN_XRenderQueryVersion)(Display* dpy, int32_t*, int32_t*);
-		typedef XRenderPictFormat*(*PFN_XRenderFindVisualFormat)(Display*, Visual const*);
+		using PFN_XRenderQueryExtension = int32_t(*)(Display*,int32_t*, int32_t*);
+		using PFN_XRenderQueryVersion = int32_t(*)(Display* dpy, int32_t*, int32_t*);
+		using PFN_XRenderFindVisualFormat = XRenderPictFormat*(*)(Display*, Visual const*);
 
 		//Vulkan
-		typedef VkFlags VkXlibSurfaceCreateFlagsKHR;
-		typedef VkFlags VkXcbSurfaceCreateFlagsKHR;
+		using VkXlibSurfaceCreateFlagsKHR = VkFlags;
+		using VkXcbSurfaceCreateFlagsKHR = VkFlags;
 
 		//XShape
-		typedef int32_t (*PFN_XShapeQueryExtension)(Display*, int32_t*, int32_t*);
-		typedef int32_t(*PFN_XShapeQueryVersion)(Display* dpy, int32_t*, int32_t*);
-		typedef void(*PFN_XShapeCombineRegion)(Display*, ::Window, int32_t, int32_t, int32_t, Region, int32_t);
-		typedef void(*PFN_XShapeCombineMask)(Display*, XID, int32_t, int32_t, int32_t, Pixmap, int32_t);
+		using PFN_XShapeQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
+		using PFN_XShapeQueryVersion = int32_t(*)(Display* dpy, int32_t*, int32_t*);
+		using PFN_XShapeCombineRegion = void(*)(Display*, ::Window, int32_t, int32_t, int32_t, Region, int32_t);
+		using PFN_XShapeCombineMask = void(*)(Display*, XID, int32_t, int32_t, int32_t, Pixmap, int32_t);
 
 		//XLib
-		typedef XClassHint* (*PFN_XAllocClassHint)();
-		typedef XSizeHints* (*PFN_XAllocSizeHints)();
-		typedef XWMHints* (*PFN_XAllocWMHints)();
-		typedef int (*PFN_XChangeProperty)(Display*, ::Window, Atom, Atom, int, int, const unsigned char*, int);
-		typedef int (*PFN_XChangeWindowAttributes)(Display*, ::Window, unsigned long, XSetWindowAttributes*);
-		typedef int (*PFN_XCheckIfEvent)(Display*, XEvent*, int(*)(Display*, XEvent*, XPointer), XPointer);
-		typedef int (*PFN_XCheckTypedWindowEvent)(Display*, ::Window, int, XEvent*);
-		typedef int (*PFN_XCloseDisplay)(Display*);
-		typedef int32_t(*PFN_XCloseIM)(XIM);
-		typedef int (*PFN_XConvertSelection)(Display*, Atom, Atom, Atom, ::Window, Time);
-		typedef Colormap (*PFN_XCreateColormap)(Display*, ::Window, Visual*, int);
-		typedef Cursor (*PFN_XCreateFontCursor)(Display*, unsigned int);
-		typedef XIC (*PFN_XCreateIC)(XIM, ...);
-		typedef ::Window (*PFN_XCreateWindow)(Display*, ::Window, int, int, unsigned int, unsigned int, unsigned int, int,
+		using PFN_XAllocClassHint = XClassHint*(*)();
+		using PFN_XAllocSizeHints = XSizeHints*(*)();
+		using PFN_XAllocWMHints = XWMHints*(*)();
+		using PFN_XChangeProperty = int(*)(Display*, ::Window, Atom, Atom, int, int, const unsigned char*, int);
+		using PFN_XChangeWindowAttributes = int(*)(Display*, ::Window, unsigned long, XSetWindowAttributes*);
+		using PFN_XCheckIfEvent = int(*)(Display*, XEvent*, int(*)(Display*, XEvent*, XPointer), XPointer);
+		using PFN_XCheckTypedWindowEvent = int(*)(Display*, ::Window, int, XEvent*);
+		using PFN_XCloseDisplay = int(*)(Display*);
+		using PFN_XCloseIM = int32_t(*)(XIM);
+		using PFN_XConvertSelection = int(*)(Display*, Atom, Atom, Atom, ::Window, Time);
+		using PFN_XCreateColormap = Colormap(*)(Display*, ::Window, Visual*, int);
+		using PFN_XCreateFontCursor = Cursor(*)(Display*, unsigned int);
+		using PFN_XCreateIC = XIC(*)(XIM, ...);
+		using PFN_XCreateWindow = ::Window(*)(Display*, ::Window, int, int, unsigned int, unsigned int, unsigned int, int,
 		                                      unsigned int, Visual*, unsigned long, XSetWindowAttributes*);
-		typedef int (*PFN_XDefineCursor)(Display*, ::Window, Cursor);
-		typedef int (*PFN_XDeleteContext)(Display*, XID, XContext);
-		typedef int (*PFN_XDeleteProperty)(Display*, ::Window, Atom);
-		typedef void (*PFN_XDestroyIC)(XIC);
-		typedef int (*PFN_XDestroyWindow)(Display*, ::Window);
-		typedef int (*PFN_XDisplayKeycodes)(Display*, int*, int*);
-		typedef int (*PFN_XEventsQueued)(Display*, int);
-		typedef int (*PFN_XFilterEvent)(XEvent*, ::Window);
-		typedef int (*PFN_XFindContext)(Display*, XID, XContext, XPointer*);
-		typedef int (*PFN_XFlush)(Display*);
-		typedef int (*PFN_XFree)(void*);
-		typedef int (*PFN_XFreeColormap)(Display*, Colormap);
-		typedef int (*PFN_XFreeCursor)(Display*, Cursor);
-		typedef void (*PFN_XFreeEventData)(Display*, XGenericEventCookie*);
-		typedef char* (*PFN_XGetAtomName)(Display*, Atom);
-		typedef int (*PFN_XGetErrorText)(Display*, int, char*, int);
-		typedef int (*PFN_XGetEventData)(Display*, XGenericEventCookie*);
-		typedef char* (*PFN_XGetICValues)(XIC, ...);
-		typedef char* (*PFN_XGetIMValues)(XIM, ...);
-		typedef int (*PFN_XGetInputFocus)(Display*, ::Window*, int*);
-		typedef KeySym* (*PFN_XGetKeyboardMapping)(Display*, KeyCode, int, int*);
-		typedef int (*PFN_XGetScreenSaver)(Display*, int*, int*, int*, int*);
-		typedef ::Window (*PFN_XGetSelectionOwner)(Display*, Atom);
-		typedef XVisualInfo* (*PFN_XGetVisualInfo)(Display*, long, XVisualInfo*, int*);
-		typedef int32_t(*PFN_XGetWMNormalHints)(Display*, ::Window, XSizeHints*, long*);
-		typedef int32_t(*PFN_XGetWindowAttributes)(Display*, ::Window, XWindowAttributes*);
-		typedef int (*PFN_XGetWindowProperty)(Display*, ::Window, Atom, long, long, int, Atom, Atom*, int*, unsigned long*,
+		using PFN_XDefineCursor = int(*)(Display*, ::Window, Cursor);
+		using PFN_XDeleteContext = int(*)(Display*, XID, XContext);
+		using PFN_XDeleteProperty = int(*)(Display*, ::Window, Atom);
+		using PFN_XDestroyIC = void(*)(XIC);
+		using PFN_XDestroyWindow = int(*)(Display*, ::Window);
+		using PFN_XDisplayKeycodes = int(*)(Display*, int*, int*);
+		using PFN_XEventsQueued = int(*)(Display*, int);
+		using PFN_XFilterEvent = int(*)(XEvent*, ::Window);
+		using PFN_XFindContext = int(*)(Display*, XID, XContext, XPointer*);
+		using PFN_XFlush = int(*)(Display*);
+		using PFN_XFree = int(*)(void*);
+		using PFN_XFreeColormap = int(*)(Display*, Colormap);
+		using PFN_XFreeCursor = int(*)(Display*, Cursor);
+		using PFN_XFreeEventData = void(*)(Display*, XGenericEventCookie*);
+		using PFN_XGetAtomName = char*(*)(Display*, Atom);
+		using PFN_XGetErrorText = int(*)(Display*, int, char*, int);
+		using PFN_XGetEventData = int(*)(Display*, XGenericEventCookie*);
+		using PFN_XGetICValues = char*(*)(XIC, ...);
+		using PFN_XGetIMValues = char*(*)(XIM, ...);
+		using PFN_XGetInputFocus = int(*)(Display*, ::Window*, int*);
+		using PFN_XGetKeyboardMapping = KeySym*(*)(Display*, KeyCode, int, int*);
+		using PFN_XGetScreenSaver = int(*)(Display*, int*, int*, int*, int*);
+		using PFN_XGetSelectionOwner = ::Window(*)(Display*, Atom);
+		using PFN_XGetVisualInfo = XVisualInfo*(*)(Display*, long, XVisualInfo*, int*);
+		using PFN_XGetWMNormalHints = int32_t(*)(Display*, ::Window, XSizeHints*, long*);
+		using PFN_XGetWindowAttributes = int32_t(*)(Display*, ::Window, XWindowAttributes*);
+		using PFN_XGetWindowProperty = int(*)(Display*, ::Window, Atom, long, long, int, Atom, Atom*, int*, unsigned long*,
 		                                      unsigned long*, unsigned char**);
-		typedef int (*PFN_XGrabPointer)(Display*, ::Window, int, unsigned int, int, int, ::Window, Cursor, Time);
-		typedef int32_t(*PFN_XIconifyWindow)(Display*, ::Window, int);
-		typedef int32_t(*PFN_XInitThreads)();
-		typedef Atom (*PFN_XInternAtom)(Display*, const char*, int);
-		typedef int (*PFN_XLookupString)(XKeyEvent*, char*, int, KeySym*, XComposeStatus*);
-		typedef int (*PFN_XMapRaised)(Display*, ::Window);
-		typedef int (*PFN_XMapWindow)(Display*, ::Window);
-		typedef int (*PFN_XMoveResizeWindow)(Display*, ::Window, int, int, unsigned int, unsigned int);
-		typedef int (*PFN_XMoveWindow)(Display*, ::Window, int, int);
-		typedef int (*PFN_XNextEvent)(Display*, XEvent*);
-		typedef Display* (*PFN_XOpenDisplay)(const char*);
-		typedef XIM (*PFN_XOpenIM)(Display*, XrmDatabase*, char*, char*);
-		typedef int (*PFN_XPeekEvent)(Display*, XEvent*);
-		typedef int (*PFN_XPending)(Display*);
-		typedef int (*PFN_XQueryExtension)(Display*, const char*, int*, int*, int*);
-		typedef int (*PFN_XQueryPointer)(Display*, ::Window, ::Window*, ::Window*, int*, int*, int*, int*, unsigned int*);
-		typedef int (*PFN_XRaiseWindow)(Display*, ::Window);
-		typedef int (*PFN_XRegisterIMInstantiateCallback)(Display*, void*, char*, char*, XIDProc, XPointer);
-		typedef int (*PFN_XResizeWindow)(Display*, ::Window, unsigned int, unsigned int);
-		typedef char* (*PFN_XResourceManagerString)(Display*);
-		typedef int (*PFN_XSaveContext)(Display*, XID, XContext, const char*);
-		typedef int (*PFN_XSelectInput)(Display*, ::Window, long);
-		typedef int32_t(*PFN_XSendEvent)(Display*, ::Window, int, long, XEvent*);
-		typedef int (*PFN_XSetClassHint)(Display*, ::Window, XClassHint*);
-		typedef XErrorHandler (*PFN_XSetErrorHandler)(XErrorHandler);
-		typedef void (*PFN_XSetICFocus)(XIC);
-		typedef char* (*PFN_XSetIMValues)(XIM, ...);
-		typedef int (*PFN_XSetInputFocus)(Display*, ::Window, int, Time);
-		typedef char* (*PFN_XSetLocaleModifiers)(const char*);
-		typedef int (*PFN_XSetScreenSaver)(Display*, int, int, int, int);
-		typedef int (*PFN_XSetSelectionOwner)(Display*, Atom, ::Window, Time);
-		typedef int (*PFN_XSetWMHints)(Display*, ::Window, XWMHints*);
-		typedef void (*PFN_XSetWMNormalHints)(Display*, ::Window, XSizeHints*);
-		typedef int32_t(*PFN_XSetWMProtocols)(Display*, ::Window, Atom*, int);
-		typedef int (*PFN_XSupportsLocale)();
-		typedef int (*PFN_XSync)(Display*, int);
-		typedef int (*PFN_XTranslateCoordinates)(Display*, ::Window, ::Window, int, int, int*, int*, ::Window*);
-		typedef int (*PFN_XUndefineCursor)(Display*, ::Window);
-		typedef int (*PFN_XUngrabPointer)(Display*, Time);
-		typedef int (*PFN_XUnmapWindow)(Display*, ::Window);
-		typedef void (*PFN_XUnsetICFocus)(XIC);
-		typedef VisualID (*PFN_XVisualIDFromVisual)(Visual*);
-		typedef int (*PFN_XWarpPointer)(Display*, ::Window, ::Window, int, int, unsigned int, unsigned int, int, int);
-		typedef Region(*PFN_XCreateRegion)();
-		typedef int32_t (*PFN_XDestroyRegion)(Region);
+		using PFN_XGrabPointer = int(*)(Display*, ::Window, int, unsigned int, int, int, ::Window, Cursor, Time);
+		using PFN_XIconifyWindow = int32_t(*)(Display*, ::Window, int);
+		using PFN_XInitThreads = int32_t(*)();
+		using PFN_XInternAtom = Atom(*)(Display*, const char*, int);
+		using PFN_XLookupString = int(*)(XKeyEvent*, char*, int, KeySym*, XComposeStatus*);
+		using PFN_XMapRaised = int(*)(Display*, ::Window);
+		using PFN_XMapWindow = int(*)(Display*, ::Window);
+		using PFN_XMoveResizeWindow = int(*)(Display*, ::Window, int, int, unsigned int, unsigned int);
+		using PFN_XMoveWindow = int(*)(Display*, ::Window, int, int);
+		using PFN_XNextEvent = int(*)(Display*, XEvent*);
+		using PFN_XOpenDisplay = Display*(*)(const char*);
+		using PFN_XOpenIM = XIM(*)(Display*, XrmDatabase*, char*, char*);
+		using PFN_XPeekEvent = int(*)(Display*, XEvent*);
+		using PFN_XPending = int(*)(Display*);
+		using PFN_XQueryExtension = int(*)(Display*, const char*, int*, int*, int*);
+		using PFN_XQueryPointer = int(*)(Display*, ::Window, ::Window*, ::Window*, int*, int*, int*, int*, unsigned int*);
+		using PFN_XRaiseWindow = int(*)(Display*, ::Window);
+		using PFN_XRegisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
+		using PFN_XResizeWindow = int(*)(Display*, ::Window, unsigned int, unsigned int);
+		using PFN_XResourceManagerString = char*(*)(Display*);
+		using PFN_XSaveContext = int(*)(Display*, XID, XContext, const char*);
+		using PFN_XSelectInput = int(*)(Display*, ::Window, long);
+		using PFN_XSendEvent = int32_t(*)(Display*, ::Window, int, long, XEvent*);
+		using PFN_XSetClassHint = int(*)(Display*, ::Window, XClassHint*);
+		using PFN_XSetErrorHandler = XErrorHandler(*)(XErrorHandler);
+		using PFN_XSetICFocus = void(*)(XIC);
+		using PFN_XSetIMValues = char*(*)(XIM, ...);
+		using PFN_XSetInputFocus = int(*)(Display*, ::Window, int, Time);
+		using PFN_XSetLocaleModifiers = char*(*)(const char*);
+		using PFN_XSetScreenSaver = int(*)(Display*, int, int, int, int);
+		using PFN_XSetSelectionOwner = int(*)(Display*, Atom, ::Window, Time);
+		using PFN_XSetWMHints = int(*)(Display*, ::Window, XWMHints*);
+		using PFN_XSetWMNormalHints = void(*)(Display*, ::Window, XSizeHints*);
+		using PFN_XSetWMProtocols = int32_t(*)(Display*, ::Window, Atom*, int);
+		using PFN_XSupportsLocale = int(*)();
+		using PFN_XSync = int(*)(Display*, int);
+		using PFN_XTranslateCoordinates = int(*)(Display*, ::Window, ::Window, int, int, int*, int*, ::Window*);
+		using PFN_XUndefineCursor = int(*)(Display*, ::Window);
+		using PFN_XUngrabPointer = int(*)(Display*, Time);
+		using PFN_XUnmapWindow = int(*)(Display*, ::Window);
+		using PFN_XUnsetICFocus = void(*)(XIC);
+		using PFN_XVisualIDFromVisual = VisualID(*)(Visual*);
+		using PFN_XWarpPointer = int(*)(Display*, ::Window, ::Window, int, int, unsigned int, unsigned int, int, int);
+		using PFN_XCreateRegion = Region(*)();
+		using PFN_XDestroyRegion = int32_t(*)(Region);
 
 		//XKB
-		typedef XkbDescPtr (*PFN_XkbAllocKeyboard)();
-		typedef void (*PFN_XkbFreeKeyboard)(XkbDescPtr, unsigned int, int);
-		typedef void (*PFN_XkbFreeNames)(XkbDescPtr, unsigned int, int);
-		typedef XkbDescPtr (*PFN_XkbGetMap)(Display*, unsigned int, unsigned int);
-		typedef int32_t(*PFN_XkbGetNames)(Display*, unsigned int, XkbDescPtr);
-		typedef int32_t(*PFN_XkbGetState)(Display*, unsigned int, XkbStatePtr);
-		typedef KeySym (*PFN_XkbKeycodeToKeysym)(Display*, KeyCode, int, int);
-		typedef int (*PFN_XkbQueryExtension)(Display*, int*, int*, int*, int*, int*);
-		typedef int (*PFN_XkbSelectEventDetails)(Display*, unsigned int, unsigned int, unsigned long, unsigned long);
-		typedef int (*PFN_XkbSetDetectableAutoRepeat)(Display*, int, int*);
-		typedef int (*PFN_Xutf8LookupString)(XIC, XKeyPressedEvent*, char*, int, KeySym*, int32_t*);
-		typedef void (*PFN_Xutf8SetWMProperties)(Display*, ::Window, const char*, const char*, char**, int, XSizeHints*,
+		using PFN_XkbAllocKeyboard = XkbDescPtr(*)();
+		using PFN_XkbFreeKeyboard = void(*)(XkbDescPtr, unsigned int, int);
+		using PFN_XkbFreeNames = void(*)(XkbDescPtr, unsigned int, int);
+		using PFN_XkbGetMap = XkbDescPtr(*)(Display*, unsigned int, unsigned int);
+		using PFN_XkbGetNames = int32_t(*)(Display*, unsigned int, XkbDescPtr);
+		using PFN_XkbGetState = int32_t(*)(Display*, unsigned int, XkbStatePtr);
+		using PFN_XkbKeycodeToKeysym = KeySym(*)(Display*, KeyCode, int, int);
+		using PFN_XkbQueryExtension = int(*)(Display*, int*, int*, int*, int*, int*);
+		using PFN_XkbSelectEventDetails = int(*)(Display*, unsigned int, unsigned int, unsigned long, unsigned long);
+		using PFN_XkbSetDetectableAutoRepeat = int(*)(Display*, int, int*);
+		using PFN_Xutf8LookupString = int(*)(XIC, XKeyPressedEvent*, char*, int, KeySym*, int32_t*);
+		using PFN_Xutf8SetWMProperties = void(*)(Display*, ::Window, const char*, const char*, char**, int, XSizeHints*,
 		                                         XWMHints*, XClassHint*);
 
 		//XRM
-		typedef void (*PFN_XrmDestroyDatabase)(XrmDatabase);
-		typedef int (*PFN_XrmGetResource)(XrmDatabase, const char*, const char*, char**, XrmValue*);
-		typedef XrmDatabase (*PFN_XrmGetStringDatabase)(const char*);
-		typedef void (*PFN_XrmInitialize)();
-		typedef XrmQuark (*PFN_XrmUniqueQuark)();
-		typedef int (*PFN_XUnregisterIMInstantiateCallback)(Display*, void*, char*, char*, XIDProc, XPointer);
+		using PFN_XrmDestroyDatabase = void(*)(XrmDatabase);
+		using PFN_XrmGetResource = int(*)(XrmDatabase, const char*, const char*, char**, XrmValue*);
+		using PFN_XrmGetStringDatabase = XrmDatabase(*)(const char*);
+		using PFN_XrmInitialize = void(*)();
+		using PFN_XrmUniqueQuark = XrmQuark(*)();
+		using PFN_XUnregisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//

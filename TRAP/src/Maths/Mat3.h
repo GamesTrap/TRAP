@@ -62,11 +62,11 @@ namespace TRAP::Math
 		/// </summary>
 		constexpr Mat<3, 3, T>& operator=(const Mat&) = default;
 
-		typedef Vec<3, T> colType;
-		typedef Vec<3, T> rowType;
-		typedef Mat<3, 3, T> type;
-		typedef Mat<3, 3, T> transposeType;
-		typedef T valueType;
+		using colType = Vec<3, T>;
+		using rowType = Vec<3, T>;
+		using type = Mat<3, 3, T>;
+		using transposeType = Mat<3, 3, T>;
+		using valueType = T;
 
 	private:
 		std::array<colType, 3> value{};

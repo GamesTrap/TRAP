@@ -46,9 +46,9 @@ namespace TRAP::Math
 	struct Vec<2, T>
 	{
 		//Implementation detail
-		typedef T valueType;
-		typedef Vec<2, T> type;
-		typedef Vec<2, bool> boolType;
+		using valueType = T;
+		using type = Vec<2, T>;
+		using boolType = Vec<2, bool>;
 
 		//Data
 		T x, y;

@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
-	typedef uint64_t SyncToken;
+	using SyncToken = uint64_t;
 
 	/// <summary>
 	/// Resource loader.

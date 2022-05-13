@@ -2560,3 +2560,7 @@ SITREP 05/13/2022|22w19a1
     - Changed TRAP Engine version to 22w19a1(0.7.136)
     - Added optional support for NVIDIA Nsight Aftermath ~<60 mins
     - Added AftermathTracker class ~<30 mins
+
+SITREP 05/14/2022|22w19a2
+    - Changed TRAP Engine version to 22w19a2(0.7.137)
+    - Replaced typedefs with usings ~<30 mins

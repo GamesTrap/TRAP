@@ -747,7 +747,7 @@ namespace TRAP
 			static_cast<DWORD>(TRAPObjectDataFormats.size()),
 			TRAPObjectDataFormats.data()
 		};
-		typedef HRESULT(WINAPI* PFN_DirectInput8Create)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
+		using PFN_DirectInput8Create = HRESULT(WINAPI*)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
 		struct DInput8
 		{
 			HINSTANCE Instance{};
@@ -794,11 +794,11 @@ namespace TRAP
 		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_LOW = 0x01;
 		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_MEDIUM = 0x02;
 		static constexpr uint32_t TRAP_XINPUT_BATTERY_LEVEL_FULL = 0x03;
-		typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
-		typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);
-		typedef DWORD(WINAPI* PFN_XInputGetStateSecret)(DWORD, XINPUT_STATE*);
-		typedef DWORD(WINAPI* PFN_XInputSetState)(DWORD, XINPUT_VIBRATION*);
-		typedef DWORD(WINAPI* PFN_XInputGetBatteryInformation)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
+		using PFN_XInputGetCapabilities = DWORD(WINAPI*)(DWORD, DWORD, XINPUT_CAPABILITIES*);
+		using PFN_XInputGetState = DWORD(WINAPI*)(DWORD, XINPUT_STATE*);
+		using PFN_XInputGetStateSecret = DWORD(WINAPI*)(DWORD, XINPUT_STATE*);
+		using PFN_XInputSetState = DWORD(WINAPI*)(DWORD, XINPUT_VIBRATION*);
+		using PFN_XInputGetBatteryInformation = DWORD(WINAPI*)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
 		/// <summary>
 		/// DirectInput device object enumeration callback.
 		/// </summary>

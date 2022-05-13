@@ -55,8 +55,8 @@ namespace TRAP::Math
 		constexpr tQuaternion<T>& operator=(tQuaternion&&) = default;
 
 		//Implementation detail
-		typedef T valueType;
-		typedef tQuaternion<T> type;
+		using valueType = T;
+		using type = tQuaternion<T>;
 
 		//Data
 		T x, y, z, w;
