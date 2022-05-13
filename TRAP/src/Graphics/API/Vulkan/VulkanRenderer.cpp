@@ -872,7 +872,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 
-		if(gpd.ShaderProgram == shader) //TODO Shouldn't it just return?!
+		if(gpd.ShaderProgram == shader)
 		{
 			data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 			data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
@@ -1610,7 +1610,6 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 {
 	std::vector<std::string> extensions{};
 
-	//TODO do we need this extension in headless mode?
 	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 	else
@@ -1718,6 +1717,19 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_RAY_QUERY_EXTENSION_NAME);
 		s_rayTracingExtension = true;
 	}
+
+#ifdef ENABLE_NSIGHT_AFTERMATH
+	if(physicalDevice->IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_NV_DEVICE_DIAGNOSTICS_CONFIG_EXTENSION_NAME);
+		s_diagnosticsConfigSupport = true;
+	}
+	if(physicalDevice->IsExtensionSupported(VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME);
+		s_diagnosticCheckPointsSupport = true;
+	}
+#endif
 
 	return extensions;
 }

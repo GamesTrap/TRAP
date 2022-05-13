@@ -529,7 +529,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 		return nullptr;
 
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_4);
+	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 	glslang::TShader::ForbidIncluder includer;
 	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 

@@ -423,6 +423,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 	VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
 	vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
 #endif
+
+#ifdef ENABLE_NSIGHT_AFTERMATH
+	if(RendererAPI::s_aftermathSupport)
+		vkCmdSetCheckpointNV(m_vkCommandBuffer, name);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

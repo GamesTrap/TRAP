@@ -2555,3 +2555,8 @@ SITREP 05/08/2022|22w18d1
     - Vulkan Added store actions for render targets ~<20 mins
     - RendererAPI Added optional ability to set a lod range ~<15 mins
     - Updated VulkanLoader ~<5 mins
+
+SITREP 05/13/2022|22w19a1
+    - Changed TRAP Engine version to 22w19a1(0.7.136)
+    - Added optional support for NVIDIA Nsight Aftermath ~<60 mins
+    - Added AftermathTracker class ~<30 mins

@@ -88,6 +88,7 @@ project "TRAP"
 			"ws2_32"
 		}
 
+		-- Discord Game SDK stuff
 		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib") and
 		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
 		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
@@ -114,6 +115,20 @@ project "TRAP"
 			defines "USE_DISCORD_GAME_SDK"
 		end
 
+		-- Nsight Aftermath stuff
+		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/GFSDK_Aftermath_Lib.x64.lib") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
+		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+			sysincludedirs
+			{
+				"../%{IncludeDir.NSIGHTAFTERMATH}"
+			}
+
+			defines "NSIGHT_AFTERMATH_AVAILABLE"
+		end
+
 	filter "system:linux"
 		-- Add Linux-specific files
         files
@@ -125,6 +140,7 @@ project "TRAP"
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
 		}
 
+		-- Discord Game SDK stuff
 		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") and
 		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
@@ -155,6 +171,28 @@ project "TRAP"
 			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
 
 			defines "USE_DISCORD_GAME_SDK"
+		end
+
+		-- Nsight Aftermath stuff
+		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
+		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
+		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+			sysincludedirs
+			{
+				"../%{IncludeDir.NSIGHTAFTERMATH}"
+			}
+
+			prelinkcommands
+			{
+				-- Copy the libGFSDK_Aftermath_Lib.x64.so file to /usr/local/lib/libGFSDK_Aftermath_Lib.x64.so if exists and
+				-- not already in /usr/local/lib
+				"if [ ! -f '/usr/local/lib/libGFSDK_Aftermath_Lib.x64.so' ]; then " ..
+				"echo 'Copying libGFSDK_Aftermath_Lib.x64.so to /usr/local/lib/libGFSDK_Aftermath_Lib.x64.so' && " ..
+				"sudo cp '../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so' '/usr/local/lib/libGFSDK_Aftermath_Lib.x64.so'; " ..
+				"fi"
+			}
+
+			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
 
 	filter "configurations:Debug"

@@ -9,12 +9,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if !defined(TRAP_PLATFORM_ANDROID)
-#define ENABLE_DEBUG_UTILS_EXTENSION
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Activate this to enable support for texture import/exporting from/to other processes
 //Note: Only works on Windows
 // #define USE_EXTERNAL_MEMORY_EXTENSIONS
@@ -25,6 +19,15 @@
 #if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
 	#define ENABLE_GRAPHICS_DEBUG
 	#define VERBOSE_GRAPHICS_DEBUG
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Enable Nsight Aftermath support for debug builds.
+#ifdef NSIGHT_AFTERMATH_AVAILABLE
+	#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+		#define ENABLE_NSIGHT_AFTERMATH
+	#endif
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -100,7 +103,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 135);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 136);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

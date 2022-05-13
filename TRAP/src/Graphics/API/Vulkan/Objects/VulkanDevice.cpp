@@ -3,8 +3,10 @@
 
 #include "VulkanPhysicalDevice.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Objects/AftermathTracker.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Application.h"
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
                                                 std::vector<std::string> deviceExtensions,
@@ -148,6 +150,25 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		}
 	}
 
+#ifdef ENABLE_NSIGHT_AFTERMATH
+	if(RendererAPI::s_diagnosticCheckPointsSupport && RendererAPI::s_diagnosticsConfigSupport)
+		RendererAPI::s_aftermathSupport = true;
+
+	VkDeviceDiagnosticsConfigCreateInfoNV diagnosticsCreateInfo{};
+	if(RendererAPI::s_aftermathSupport)
+	{
+		diagnosticsCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV;
+		diagnosticsCreateInfo.flags = VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_DEBUG_INFO_BIT_NV |
+			                          VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_RESOURCE_TRACKING_BIT_NV |
+									  VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_AUTOMATIC_CHECKPOINTS_BIT_NV;
+		diagnosticsCreateInfo.pNext = devFeatures2.pNext;
+		devFeatures2.pNext = &diagnosticsCreateInfo;
+		//Enable Nsight Aftermath GPU crash dump creation.
+		//This needs to be done before the Vulkan device is created.
+		RendererAPI::s_aftermathTracker = TRAP::Graphics::AftermathTracker::Create();
+	}
+#endif
+
 	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
 	                                                                    extensions);
 
@@ -177,6 +198,14 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 #endif
 	vkDestroyDevice(m_device, nullptr);
 	m_device = nullptr;
+
+#ifdef ENABLE_NSIGHT_AFTERMATH
+	if(RendererAPI::s_aftermathSupport)
+	{
+		RendererAPI::s_aftermathTracker.reset();
+		RendererAPI::s_aftermathTracker = nullptr;
+	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -32,6 +32,7 @@ namespace TRAP::Graphics
 	class Sampler;
 	class RenderTarget;
 	class TextureBase;
+	class AftermathTracker;
 }
 
 namespace TRAP::Graphics::API
@@ -2260,6 +2261,14 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve image index from.</param>
 		/// <returns>Image index.</returns>
 		static uint32_t GetCurrentImageIndex(TRAP::Window* window);
+
+#ifdef ENABLE_NSIGHT_AFTERMATH
+		//GPU crash dump tracker using Nsight Aftermath instrumentation
+		static TRAP::Ref<AftermathTracker> s_aftermathTracker;
+		static bool s_aftermathSupport;
+		static bool s_diagnosticsConfigSupport;
+		static bool s_diagnosticCheckPointsSupport;
+#endif
 
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;

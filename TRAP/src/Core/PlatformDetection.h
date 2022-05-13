@@ -7,6 +7,7 @@
 		//Windows x64
 		#define TRAP_PLATFORM_WINDOWS
 		#define VK_USE_PLATFORM_WIN32_KHR
+		#define ENABLE_DEBUG_UTILS_EXTENSION
 	#else
 		//Windows x86
 		#error "x86 builds are unsupported!"
@@ -22,6 +23,7 @@
 	#ifdef __LP64__
 		//Linux x64
 		#define TRAP_PLATFORM_LINUX
+		#define ENABLE_DEBUG_UTILS_EXTENSION
 	#else
 		//Linux x86
 		#error "x86 builds are unsupported!"

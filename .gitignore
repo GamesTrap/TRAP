@@ -189,5 +189,9 @@ Dependencies/DiscordGameSDK/csharp/**
 Dependencies/DiscordGameSDK/examples/**
 Dependencies/DiscordGameSDK/lib/**
 Dependencies/DiscordGameSDK/README.md
+Dependencies/Nsight-Aftermath/lib/**
+Dependencies/Nsight-Aftermath/include/**
+Dependencies/Nsight-Aftermath/Readme.md
+Dependencies/Nsight-Aftermath/nsight-aftermath-usage-guidelines.txt
 TRAP.TODO
 compile_commands.json

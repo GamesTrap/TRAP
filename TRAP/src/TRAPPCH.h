@@ -253,4 +253,10 @@
 	#pragma warning(pop)
 #endif
 
+#ifdef ENABLE_NSIGHT_AFTERMATH
+#include <GFSDK_Aftermath.h>
+#include <GFSDK_Aftermath_Defines.h>
+#include <GFSDK_Aftermath_GpuCrashDump.h>
+#endif
+
 #endif /*TRAP_TRAPPCH_H*/
