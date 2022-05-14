@@ -5533,9 +5533,9 @@ template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::HSVColor(const Vec<3, T>& rgbColor)
 {
 	Vec<3, T> hsv = rgbColor;
-	float min = Min(Min(rgbColor.r, rgbColor.g), rgbColor.b);
-	float max = Max(Max(rgbColor.r, rgbColor.g), rgbColor.b);
-	float delta = max - min;
+	T min = Min(Min(rgbColor.r, rgbColor.g), rgbColor.b);
+	T max = Max(Max(rgbColor.r, rgbColor.g), rgbColor.b);
+	T delta = max - min;
 
 	hsv.z = max;
 

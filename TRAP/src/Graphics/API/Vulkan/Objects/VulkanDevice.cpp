@@ -165,7 +165,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		devFeatures2.pNext = &diagnosticsCreateInfo;
 		//Enable Nsight Aftermath GPU crash dump creation.
 		//This needs to be done before the Vulkan device is created.
-		RendererAPI::s_aftermathTracker = TRAP::Graphics::AftermathTracker::Create();
+		TRAP::Graphics::AftermathTracker::Initialize();
 	}
 #endif
 
@@ -201,10 +201,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(RendererAPI::s_aftermathSupport)
-	{
-		RendererAPI::s_aftermathTracker.reset();
-		RendererAPI::s_aftermathTracker = nullptr;
-	}
+		TRAP::Graphics::AftermathTracker::Shutdown();
 #endif
 }
 

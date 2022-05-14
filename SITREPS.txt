@@ -2565,3 +2565,5 @@ SITREP 05/14/2022|22w19a2
     - Changed TRAP Engine version to 22w19a2(0.7.137)
     - Replaced typedefs with usings ~<30 mins
     - Mat3/4 Made operator overloads constexpr ~<20 mins
+    - AftermathTracker Added D3D12 support (disabled as D3D12 isnt implemented) ~<30 mins
+    - Made AftermathTracker a namespace ~<15 mins

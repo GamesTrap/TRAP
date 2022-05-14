@@ -12,7 +12,6 @@
 #include "Objects/CommandPool.h"
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
-#include "Objects/AftermathTracker.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -32,7 +31,6 @@ std::array<TRAP::Graphics::CommandBuffer*,
            TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
-TRAP::Ref<TRAP::Graphics::AftermathTracker> TRAP::Graphics::RendererAPI::s_aftermathTracker = nullptr;
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
 bool TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport = false;
 bool TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport = false;
