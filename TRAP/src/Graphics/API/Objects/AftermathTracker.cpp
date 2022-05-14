@@ -214,8 +214,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::AftermathTracker::SetAftermathMarker(void* /*cmdList*/,
-                                                          [[maybe_unused]] const std::string& name)
+void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string& name)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
     /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
