@@ -30,6 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Application.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -167,74 +168,51 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 		return false;
 	}
 
-	s_Data.User32.Instance = static_cast<HINSTANCE>(PlatformLoadModule("user32.dll"));
+	s_Data.User32.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("user32.dll"));
 	if (!s_Data.User32.Instance)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to load user32.dll");
 		return false;
 	}
 
-	s_Data.User32.SetProcessDPIAware = reinterpret_cast<PFN_SetProcessDPIAware>(PlatformGetModuleSymbol
-		(
-			s_Data.User32.Instance, "SetProcessDPIAware"
-		));
-	s_Data.User32.ChangeWindowMessageFilterEx = reinterpret_cast<PFN_ChangeWindowMessageFilterEx>(PlatformGetModuleSymbol
-		(
-			s_Data.User32.Instance, "ChangeWindowMessageFilterEx"
-		));
-	s_Data.User32.EnableNonClientDPIScaling = reinterpret_cast<PFN_EnableNonClientDPIScaling>(PlatformGetModuleSymbol
-		(
-			s_Data.User32.Instance, "EnableNonClientDpiScaling"
-		));
-	s_Data.User32.SetProcessDPIAwarenessContext = reinterpret_cast<PFN_SetProcessDPIAwarenessContext>(PlatformGetModuleSymbol
-		(
-			s_Data.User32.Instance, "SetProcessDpiAwarenessContext"
-		));
-	s_Data.User32.GetDPIForWindow = reinterpret_cast<PFN_GetDPIForWindow>(PlatformGetModuleSymbol(s_Data.User32.Instance,
-																					       "GetDpiForWindow"));
-	s_Data.User32.AdjustWindowRectExForDPI = reinterpret_cast<PFN_AdjustWindowRectExForDPI>(PlatformGetModuleSymbol
-		(
-			s_Data.User32.Instance, "AdjustWindowRectExForDpi"
-		));
-	s_Data.User32.GetSystemMetricsForDPI = reinterpret_cast<PFN_GetSystemMetricsForDPI>(PlatformGetModuleSymbol
-		(
-			s_Data.User32.Instance, "GetSystemMetricsForDpi"
-		));
+	s_Data.User32.SetProcessDPIAware = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_SetProcessDPIAware>(s_Data.User32.Instance,
+																											 "SetProcessDPIAware");
+	s_Data.User32.ChangeWindowMessageFilterEx = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_ChangeWindowMessageFilterEx>(s_Data.User32.Instance,
+	 																														   "ChangeWindowMessageFilterEx");
+	s_Data.User32.EnableNonClientDPIScaling = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_EnableNonClientDPIScaling>(s_Data.User32.Instance,
+																														   "EnableNonClientDpiScaling");
+	s_Data.User32.SetProcessDPIAwarenessContext = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_SetProcessDPIAwarenessContext>(s_Data.User32.Instance,
+																																   "SetProcessDpiAwarenessContext");
+	s_Data.User32.GetDPIForWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GetDPIForWindow>(s_Data.User32.Instance, "GetDpiForWindow");
+	s_Data.User32.AdjustWindowRectExForDPI = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_AdjustWindowRectExForDPI>(s_Data.User32.Instance,
+																														 "AdjustWindowRectExForDpi");
+	s_Data.User32.GetSystemMetricsForDPI = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GetSystemMetricsForDPI>(s_Data.User32.Instance,
+																													 "GetSystemMetricsForDpi");
 
-	s_Data.DWMAPI_.Instance = static_cast<HINSTANCE>(PlatformLoadModule("dwmapi.dll"));
+	s_Data.DWMAPI_.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("dwmapi.dll"));
 	if (s_Data.DWMAPI_.Instance)
 	{
-		s_Data.DWMAPI_.IsCompositionEnabled = reinterpret_cast<PFN_DwmIsCompositionEnabled>(PlatformGetModuleSymbol
-			(
-				s_Data.DWMAPI_.Instance, "DwmIsCompositionEnabled"
-			));
-		s_Data.DWMAPI_.Flush = reinterpret_cast<PFN_DwmFlush>(PlatformGetModuleSymbol(s_Data.DWMAPI_.Instance, "DwmFlush"));
-		s_Data.DWMAPI_.EnableBlurBehindWindow = reinterpret_cast<PFN_DwmEnableBlurBehindWindow>(PlatformGetModuleSymbol
-			(
-				s_Data.DWMAPI_.Instance, "DwmEnableBlurBehindWindow"
-			));
+		s_Data.DWMAPI_.IsCompositionEnabled = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DwmIsCompositionEnabled>(s_Data.DWMAPI_.Instance,
+																														 "DwmIsCompositionEnabled");
+		s_Data.DWMAPI_.Flush = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DwmFlush>(s_Data.DWMAPI_.Instance, "DwmFlush");
+		s_Data.DWMAPI_.EnableBlurBehindWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DwmEnableBlurBehindWindow>(s_Data.DWMAPI_.Instance,
+																															 "DwmEnableBlurBehindWindow");
 	}
 
-	s_Data.SHCore.Instance = static_cast<HINSTANCE>(PlatformLoadModule("shcore.dll"));
+	s_Data.SHCore.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("shcore.dll"));
 	if (s_Data.SHCore.Instance)
 	{
-		s_Data.SHCore.SetProcessDPIAwareness = reinterpret_cast<PFN_SetProcessDPIAwareness>(PlatformGetModuleSymbol
-			(
-				s_Data.SHCore.Instance, "SetProcessDpiAwareness"
-			));
-		s_Data.SHCore.GetDPIForMonitor = reinterpret_cast<PFN_GetDPIForMonitor>(PlatformGetModuleSymbol
-			(
-				s_Data.SHCore.Instance, "GetDpiForMonitor"
-			));
+		s_Data.SHCore.SetProcessDPIAwareness = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_SetProcessDPIAwareness>(s_Data.SHCore.Instance,
+																														 "SetProcessDpiAwareness");
+		s_Data.SHCore.GetDPIForMonitor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GetDPIForMonitor>(s_Data.SHCore.Instance,
+																											 "GetDpiForMonitor");
 	}
 
-	s_Data.NTDLL.Instance = static_cast<HINSTANCE>(PlatformLoadModule("ntdll.dll"));
+	s_Data.NTDLL.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("ntdll.dll"));
 	if (s_Data.NTDLL.Instance)
 	{
-		s_Data.NTDLL.RtlVerifyVersionInfo = reinterpret_cast<PFN_RtlVerifyVersionInfo>(PlatformGetModuleSymbol
-			(
-				s_Data.NTDLL.Instance, "RtlVerifyVersionInfo"
-			));
+		s_Data.NTDLL.RtlVerifyVersionInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_Data.NTDLL.Instance,
+																													"RtlVerifyVersionInfo");
 	}
 
 	if (IsWindows7OrGreaterWin32())
@@ -254,16 +232,16 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 {
 	if (s_Data.User32.Instance)
-		PlatformFreeModule(s_Data.User32.Instance);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.User32.Instance);
 
 	if (s_Data.DWMAPI_.Instance)
-		PlatformFreeModule(s_Data.DWMAPI_.Instance);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.DWMAPI_.Instance);
 
 	if (s_Data.SHCore.Instance)
-		PlatformFreeModule(s_Data.SHCore.Instance);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.SHCore.Instance);
 
 	if (s_Data.NTDLL.Instance)
-		PlatformFreeModule(s_Data.NTDLL.Instance);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.NTDLL.Instance);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3144,27 +3122,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow*
 void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window, const bool value)
 {
 	DragAcceptFiles(window->Handle, value);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void* TRAP::INTERNAL::WindowingAPI::PlatformLoadModule(const std::string& path)
-{
-	return LoadLibraryA(path.c_str());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformFreeModule(void* module)
-{
-	FreeLibrary(static_cast<HMODULE>(module));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void* TRAP::INTERNAL::WindowingAPI::PlatformGetModuleSymbol(void* module, const std::string& name)
-{
-	return ::GetProcAddress(static_cast<HMODULE>(module), name.c_str());
 }
 
 #endif

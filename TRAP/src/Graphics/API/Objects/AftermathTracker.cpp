@@ -3,6 +3,7 @@
 
 #include "FS/FS.h"
 #include "Application.h"
+#include "Utils/DynamicLoading/DynamicLoading.h"
 
 bool initialized = false;
 
@@ -48,69 +49,41 @@ void LoadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 #ifdef TRAP_PLATFORM_WINDOWS
-    handle = LoadLibraryA("GFSDK_Aftermath_Lib.x64.dll");
+    handle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
 #elif defined(TRAP_PLATFORM_LINUX)
-    handle = dlopen("libGFSDK_Aftermath_Lib.x64.so", RTLD_LAZY | RTLD_LOCAL);
+    handle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
 #endif
 
-    enableGPUCrashDumps = reinterpret_cast<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
+    enableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_EnableGpuCrashDumps")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_EnableGpuCrashDumps")
-#endif
+        handle, "GFSDK_Aftermath_EnableGpuCrashDumps"
     );
-    disableGPUCrashDumps = reinterpret_cast<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
+    disableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_DisableGpuCrashDumps")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_DisableGpuCrashDumps")
-#endif
+        handle, "GFSDK_Aftermath_DisableGpuCrashDumps"
     );
-    getGPUCrashDumpStatus = reinterpret_cast<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
+    getGPUCrashDumpStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_GetCrashDumpStatus")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_GetCrashDumpStatus")
-#endif
+        handle, "GFSDK_Aftermath_GetCrashDumpStatus"
     );
 
     //DirectX 12 stuff
 #if defined(__d3d11_h__) || defined(__d3d12_h__)
-    dx12Initialize = reinterpret_cast<PFN_GFSDK_Aftermath_DX12_Initialize>
+    dx12Initialize = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DX12_Initialize>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_DX12_Initialize")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_DX12_Initialize")
-#endif
+        handle, "GFSDK_Aftermath_DX12_Initialize"
     );
-    dx12CreateContextHandle = reinterpret_cast<PFN_GFSDK_Aftermath_DX12_CreateContextHandle>
+    dx12CreateContextHandle = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DX12_CreateContextHandle>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_DX12_CreateContextHandle")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_DX12_CreateContextHandle")
-#endif
+        handle, "GFSDK_Aftermath_DX12_CreateContextHandle"
     );
-    releaseContextHandle = reinterpret_cast<PFN_GFSDK_Aftermath_ReleaseContextHandle>
+    releaseContextHandle = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_ReleaseContextHandle>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_ReleaseContextHandle")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_ReleaseContextHandle")
-#endif
+        handle, "GFSDK_Aftermath_ReleaseContextHandle"
     );
-    setEventMarker = reinterpret_cast<PFN_GFSDK_Aftermath_SetEventMarker>
+    setEventMarker = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_SetEventMarker>
     (
-#ifdef TRAP_PLATFORM_WINDOWS
-        ::GetProcAddress(static_cast<HMODULE>(handle), "GFSDK_Aftermath_SetEventMarker")
-#elif defined(TRAP_PLATFORM_LINUX)
-        dlsym(handle, "GFSDK_Aftermath_SetEventMarker")
-#endif
+        handle, "GFSDK_Aftermath_SetEventMarker"
     );
 #endif
 
@@ -122,11 +95,7 @@ void LoadFunctions()
 void UnloadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-#ifdef TRAP_PLATFORM_WINDOWS
-    FreeLibrary(static_cast<HMODULE>(handle));
-#elif defined(TRAP_PLATFORM_LINUX)
-    dlclose(handle);
-#endif
+    TRAP::Utils::DynamicLoading::FreeLibrary(handle);
 
     handle = nullptr;
     enableGPUCrashDumps = nullptr;

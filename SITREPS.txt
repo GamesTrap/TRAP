@@ -2568,4 +2568,4 @@ SITREP 05/14/2022|22w19a2
     - AftermathTracker Added D3D12 support (disabled as D3D12 isnt implemented) ~<30 mins
     - Made AftermathTracker a namespace ~<15 mins
     - Commented AftermathTracker ~<10 mins
-
+    - Moved the dynamic library loading functions from WindowingAPI to Utils ~<15 mins

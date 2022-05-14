@@ -3576,24 +3576,6 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static void ReleaseCursor();
 
-		/// <summary>
-		/// Loads a dynamic library into memory.
-		/// </summary>
-		/// <param name="path">Path to the library.</param>
-		/// <returns>Pointer to the loaded library.</returns>
-		static void* PlatformLoadModule(const std::string& path);
-		/// <summary>
-		/// Unloads a dynamic library from memory.
-		/// </summary>
-		/// <param name="module">Pointer to the library to unload.</param>
-		static void PlatformFreeModule(void* module);
-		/// <summary>
-		/// Gets a function pointer from a dynamic library.
-		/// </summary>
-		/// <param name="module">Pointer to the library.</param>
-		/// <param name="name">Name of the function.</param>
-		/// <returns>Pointer to the function.</returns>
-		static void* PlatformGetModuleSymbol(void* module, const std::string& name);
 		//-------//
 		//Windows//
 		//-------//

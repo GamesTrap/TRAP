@@ -34,6 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "WindowingAPI.h"
 #include "Application.h"
 #include "Utils/Utils.h"
+#include "Utils/DynamicLoading/DynamicLoading.h"
 
 //Action for EWMH client messages
 static constexpr int32_t _NET_WM_STATE_REMOVE = 0;
@@ -442,16 +443,16 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 {
 #if defined(__CYGWIN__)
-	s_Data.XI.Handle = PlatformLoadModule("libXi-6.so");
+	s_Data.XI.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXi-6.so");
 #elif defined (__OpenBSD__) || defined(__NetBSD__)
-	s_Data.XI.Handle = PlatformLoadModule("libXi.so");
+	s_Data.XI.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXi.so");
 #else
-	s_Data.XI.Handle = PlatformLoadModule("libXi.so.6");
+	s_Data.XI.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXi.so.6");
 #endif
 	if(s_Data.XI.Handle)
 	{
-		s_Data.XI.QueryVersion = reinterpret_cast<PFN_XIQueryVersion>(PlatformGetModuleSymbol(s_Data.XI.Handle, "XIQueryVersion"));
-		s_Data.XI.SelectEvents = reinterpret_cast<PFN_XISelectEvents>(PlatformGetModuleSymbol(s_Data.XI.Handle, "XISelectEvents"));
+		s_Data.XI.QueryVersion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XIQueryVersion>(s_Data.XI.Handle, "XIQueryVersion");
+		s_Data.XI.SelectEvents = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XISelectEvents>(s_Data.XI.Handle, "XISelectEvents");
 
 		if(s_Data.XLIB.QueryExtension(s_Data.display,
 		                              "XInputExtension",
@@ -468,44 +469,38 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.RandR.Handle = PlatformLoadModule("libXrandr-2.so");
+	s_Data.RandR.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXrandr-2.so");
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
-	s_Data.RandR.Handle = PlatformLoadModule("libXrandr.so");
+	s_Data.RandR.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXrandr.so");
 #else
-	s_Data.RandR.Handle = PlatformLoadModule("libXrandr.so.2");
+	s_Data.RandR.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXrandr.so.2");
 #endif
 	if(s_Data.RandR.Handle)
 	{
-		s_Data.RandR.FreeCrtcInfo = reinterpret_cast<PFN_XRRFreeCrtcInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                        "XRRFreeCrtcInfo"));
-		s_Data.RandR.FreeOutputInfo = reinterpret_cast<PFN_XRRFreeOutputInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                            "XRRFreeOutputInfo"));
-		s_Data.RandR.FreeScreenResources = reinterpret_cast<PFN_XRRFreeScreenResources>(PlatformGetModuleSymbol
-			(
-				s_Data.RandR.Handle, "XRRFreeScreenResources"
-			));
-		s_Data.RandR.GetCrtcInfo = reinterpret_cast<PFN_XRRGetCrtcInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                      "XRRGetCrtcInfo"));
-		s_Data.RandR.GetOutputInfo = reinterpret_cast<PFN_XRRGetOutputInfo>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                          "XRRGetOutputInfo"));
-		s_Data.RandR.GetOutputPrimary = reinterpret_cast<PFN_XRRGetOutputPrimary>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                                "XRRGetOutputPrimary"));
-		s_Data.RandR.GetScreenResourcesCurrent = reinterpret_cast<PFN_XRRGetScreenResourcesCurrent>(PlatformGetModuleSymbol
-			(
-				s_Data.RandR.Handle, "XRRGetScreenResourcesCurrent"
-			));
-		s_Data.RandR.QueryExtension = reinterpret_cast<PFN_XRRQueryExtension>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                            "XRRQueryExtension"));
-		s_Data.RandR.QueryVersion = reinterpret_cast<PFN_XRRQueryVersion>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                        "XRRQueryVersion"));
-		s_Data.RandR.SelectInput = reinterpret_cast<PFN_XRRSelectInput>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                      "XRRSelectInput"));
-		s_Data.RandR.SetCrtcConfig = reinterpret_cast<PFN_XRRSetCrtcConfig>(PlatformGetModuleSymbol(s_Data.RandR.Handle,
-		                                                                          "XRRSetCrtcConfig"));
-		s_Data.RandR.UpdateConfiguration = reinterpret_cast<PFN_XRRUpdateConfiguration>(PlatformGetModuleSymbol
-			(
-				s_Data.RandR.Handle, "XRRUpdateConfiguration"
-			));
+		s_Data.RandR.FreeCrtcInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRFreeCrtcInfo>(s_Data.RandR.Handle,
+		                                                                                               "XRRFreeCrtcInfo");
+		s_Data.RandR.FreeOutputInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRFreeOutputInfo>(s_Data.RandR.Handle,
+		                                                                                                   "XRRFreeOutputInfo");
+		s_Data.RandR.FreeScreenResources = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRFreeScreenResources>(s_Data.RandR.Handle,
+		                                                                                                             "XRRFreeScreenResources");
+		s_Data.RandR.GetCrtcInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRGetCrtcInfo>(s_Data.RandR.Handle,
+		                                                                                             "XRRGetCrtcInfo");
+		s_Data.RandR.GetOutputInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRGetOutputInfo>(s_Data.RandR.Handle,
+		                                                                                                 "XRRGetOutputInfo");
+		s_Data.RandR.GetOutputPrimary = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRGetOutputPrimary>(s_Data.RandR.Handle,
+		                                                                                                       "XRRGetOutputPrimary");
+		s_Data.RandR.GetScreenResourcesCurrent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRGetScreenResourcesCurrent>(s_Data.RandR.Handle,
+		 																														 "XRRGetScreenResourcesCurrent");
+		s_Data.RandR.QueryExtension = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRQueryExtension>(s_Data.RandR.Handle,
+		                                                                                                   "XRRQueryExtension");
+		s_Data.RandR.QueryVersion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRQueryVersion>(s_Data.RandR.Handle,
+		                                                                                               "XRRQueryVersion");
+		s_Data.RandR.SelectInput = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRSelectInput>(s_Data.RandR.Handle,
+		                                                                                             "XRRSelectInput");
+		s_Data.RandR.SetCrtcConfig = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRSetCrtcConfig>(s_Data.RandR.Handle,
+		                                                                                                 "XRRSetCrtcConfig");
+		s_Data.RandR.UpdateConfiguration = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRRUpdateConfiguration>(s_Data.RandR.Handle,
+																													 "XRRUpdateConfiguration");
 
 		if(s_Data.RandR.QueryExtension(s_Data.display, &s_Data.RandR.EventBase, &s_Data.RandR.ErrorBase))
 		{
@@ -538,49 +533,43 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 		s_Data.RandR.SelectInput(s_Data.display, s_Data.Root, RROutputChangeNotifyMask);
 
 #if defined(__CYGWIN__)
-	s_Data.XCursor.Handle = PlatformLoadModule("libXcursor-1.so");
+	s_Data.XCursor.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXcursor-1.so");
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
-	s_Data.XCursor.Handle = PlatformLoadModule("libXcursor.so");
+	s_Data.XCursor.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXcursor.so");
 #else
-	s_Data.XCursor.Handle = PlatformLoadModule("libXcursor.so.1");
+	s_Data.XCursor.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXcursor.so.1");
 #endif
 	if(s_Data.XCursor.Handle)
 	{
-		s_Data.XCursor.ImageCreate = reinterpret_cast<PFN_XcursorImageCreate>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
-		                                                                            "XcursorImageCreate"));
-		s_Data.XCursor.ImageDestroy = reinterpret_cast<PFN_XcursorImageDestroy>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
-		                                                                              "XcursorImageDestroy"));
-		s_Data.XCursor.ImageLoadCursor = reinterpret_cast<PFN_XcursorImageLoadCursor>(PlatformGetModuleSymbol
-			(
-				s_Data.XCursor.Handle, "XcursorImageLoadCursor"
-			));
-		s_Data.XCursor.GetTheme = reinterpret_cast<PFN_XcursorGetTheme>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
-													                          "XcursorGetTheme"));
-		s_Data.XCursor.GetDefaultSize = reinterpret_cast<PFN_XcursorGetDefaultSize>(PlatformGetModuleSymbol(s_Data.XCursor.Handle,
-		                                                                                  "XcursorGetDefaultSize"));
-		s_Data.XCursor.LibraryLoadImage = reinterpret_cast<PFN_XcursorLibraryLoadImage>(PlatformGetModuleSymbol
-			(
-				s_Data.XCursor.Handle, "XcursorLibraryLoadImage"
-			));
+		s_Data.XCursor.ImageCreate = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XcursorImageCreate>(s_Data.XCursor.Handle,
+		                                                                                                   "XcursorImageCreate");
+		s_Data.XCursor.ImageDestroy = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XcursorImageDestroy>(s_Data.XCursor.Handle,
+		                                                                                                     "XcursorImageDestroy");
+		s_Data.XCursor.ImageLoadCursor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XcursorImageLoadCursor>(s_Data.XCursor.Handle,
+																												   "XcursorImageLoadCursor");
+		s_Data.XCursor.GetTheme = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XcursorGetTheme>(s_Data.XCursor.Handle,
+													                                                 "XcursorGetTheme");
+		s_Data.XCursor.GetDefaultSize = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XcursorGetDefaultSize>(s_Data.XCursor.Handle,
+		                                                                                                         "XcursorGetDefaultSize");
+		s_Data.XCursor.LibraryLoadImage = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XcursorLibraryLoadImage>(s_Data.XCursor.Handle,
+																													 "XcursorLibraryLoadImage");
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.Xinerama.Handle = PlatformLoadModule("libXinerama-1.so");
+	s_Data.Xinerama.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXinerama-1.so");
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
-	s_Data.Xinerama.Handle = PlatformLoadModule("libXinerama.so");
+	s_Data.Xinerama.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXinerama.so");
 #else
-	s_Data.Xinerama.Handle = PlatformLoadModule("libXinerama.so.1");
+	s_Data.Xinerama.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXinerama.so.1");
 #endif
 	if(s_Data.Xinerama.Handle)
 	{
-		s_Data.Xinerama.IsActive = reinterpret_cast<PFN_XineramaIsActive>(PlatformGetModuleSymbol(s_Data.Xinerama.Handle,
-		                                                                        "XineramaIsActive"));
-		s_Data.Xinerama.QueryExtension = reinterpret_cast<PFN_XineramaQueryExtension>(PlatformGetModuleSymbol
-			(
-				s_Data.Xinerama.Handle, "XineramaQueryExtension"
-			));
-		s_Data.Xinerama.QueryScreens = reinterpret_cast<PFN_XineramaQueryScreens>(PlatformGetModuleSymbol(s_Data.Xinerama.Handle,
-		                                                                                "XineramaQueryScreens"));
+		s_Data.Xinerama.IsActive = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XineramaIsActive>(s_Data.Xinerama.Handle,
+		                                                                                               "XineramaIsActive");
+		s_Data.Xinerama.QueryExtension = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XineramaQueryExtension>(s_Data.Xinerama.Handle,
+																												   "XineramaQueryExtension");
+		s_Data.Xinerama.QueryScreens = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XineramaQueryScreens>(s_Data.Xinerama.Handle,
+		                                                                                					   "XineramaQueryScreens");
 
 		if(s_Data.Xinerama.QueryExtension(s_Data.display, &s_Data.Xinerama.Major, &s_Data.Xinerama.Minor))
 		{
@@ -618,33 +607,31 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.XCB.Handle = PlatformLoadModule("libX11-xcb-1.so");
+	s_Data.XCB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11-xcb-1.so");
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
-	s_Data.XCB.Handle = PlatformLoadModule("libX11-xcb.so");
+	s_Data.XCB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11-xcb.so");
 #else
-	s_Data.XCB.Handle = PlatformLoadModule("libX11-xcb.so.1");
+	s_Data.XCB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11-xcb.so.1");
 #endif
 	if(s_Data.XCB.Handle)
-		s_Data.XCB.GetXCBConnection = reinterpret_cast<PFN_XGetXCBConnection>(PlatformGetModuleSymbol(s_Data.XCB.Handle,
-		                                                                            "XGetXCBConnection"));
+		s_Data.XCB.GetXCBConnection = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetXCBConnection>(s_Data.XCB.Handle,
+		                                                                            					   "XGetXCBConnection");
 
 #if defined(__CYGWIN__)
-	s_Data.XRender.Handle = PlatformLoadModule("libXrender-1.so");
+	s_Data.XRender.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXrender-1.so");
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
-	s_Data.XRender.Handle = PlatformLoadModule("libXrender.so");
+	s_Data.XRender.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXrender.so");
 #else
-	s_Data.XRender.Handle = PlatformLoadModule("libXrender.so.1");
+	s_Data.XRender.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXrender.so.1");
 #endif
 	if(s_Data.XRender.Handle)
 	{
-		s_Data.XRender.QueryExtension = reinterpret_cast<PFN_XRenderQueryExtension>(PlatformGetModuleSymbol(s_Data.XRender.Handle,
-		                                                                                  "XRenderQueryExtension"));
-		s_Data.XRender.QueryVersion = reinterpret_cast<PFN_XRenderQueryVersion>(PlatformGetModuleSymbol(s_Data.XRender.Handle,
-		                                                                              "XRenderQueryVersion"));
-		s_Data.XRender.FindVisualFormat = reinterpret_cast<PFN_XRenderFindVisualFormat>(PlatformGetModuleSymbol
-			(
-				s_Data.XRender.Handle, "XRenderFindVisualFormat"
-			));
+		s_Data.XRender.QueryExtension = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRenderQueryExtension>(s_Data.XRender.Handle,
+		                                                                                                         "XRenderQueryExtension");
+		s_Data.XRender.QueryVersion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRenderQueryVersion>(s_Data.XRender.Handle,
+		                                                                                                     "XRenderQueryVersion");
+		s_Data.XRender.FindVisualFormat = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRenderFindVisualFormat>(s_Data.XRender.Handle,
+																													 "XRenderFindVisualFormat");
 
 		if(s_Data.XRender.QueryExtension(s_Data.display, &s_Data.XRender.ErrorBase, &s_Data.XRender.EventBase))
 		{
@@ -654,22 +641,22 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	}
 
 #if defined(__CYGWIN__)
-	s_Data.XShape.Handle = PlatformLoadModule("libXext-6.so");
+	s_Data.XShape.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXext-6.so");
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
-	s_Data.XShape.Handle = PlatformLoadModule("libXext.so");
+	s_Data.XShape.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXext.so");
 #else
-	s_Data.XShape.Handle = PlatformLoadModule("libXext.so.6");
+	s_Data.XShape.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXext.so.6");
 #endif
 	if(s_Data.XShape.Handle)
 	{
-		s_Data.XShape.QueryExtension = reinterpret_cast<PFN_XShapeQueryExtension>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
-		                                                                                "XShapeQueryExtension"));
-		s_Data.XShape.CombineRegion = reinterpret_cast<PFN_XShapeCombineRegion>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
-		                                                                              "XShapeCombineRegion"));
-		s_Data.XShape.CombineMask = reinterpret_cast<PFN_XShapeCombineMask>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
-		                                                                          "XShapeCombineMask"));
-		s_Data.XShape.QueryVersion = reinterpret_cast<PFN_XShapeQueryVersion>(PlatformGetModuleSymbol(s_Data.XShape.Handle,
-		                                                                            "XShapeQueryVersion"));
+		s_Data.XShape.QueryExtension = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XShapeQueryExtension>(s_Data.XShape.Handle,
+		                                                                                                       "XShapeQueryExtension");
+		s_Data.XShape.CombineRegion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XShapeCombineRegion>(s_Data.XShape.Handle,
+		                                                                                                     "XShapeCombineRegion");
+		s_Data.XShape.CombineMask = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XShapeCombineMask>(s_Data.XShape.Handle,
+		                                                                                                 "XShapeCombineMask");
+		s_Data.XShape.QueryVersion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XShapeQueryVersion>(s_Data.XShape.Handle,
+		                                                                                                   "XShapeQueryVersion");
 
 		if(s_Data.XShape.QueryExtension(s_Data.display, &s_Data.XShape.ErrorBase, &s_Data.XShape.EventBase))
 		{
@@ -2099,11 +2086,11 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 #endif
 
 	#if defined(__CYGWIN__)
-		s_Data.XLIB.Handle = PlatformLoadModule("libX11-6.so");
+		s_Data.XLIB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11-6.so");
 	#elif defined(__OpenBSD__) || defined(__NetBSD__)
-		s_Data.XLIB.Handle = PlatformLoadModule("libX11.so");
+		s_Data.XLIB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11.so");
 	#else
-        s_Data.XLIB.Handle = PlatformLoadModule("libX11.so.6");
+        s_Data.XLIB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libX11.so.6");
 	#endif
 
 	if(!s_Data.XLIB.Handle)
@@ -2112,151 +2099,139 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 		return false;
 	}
 
-	s_Data.XLIB.AllocClassHint = reinterpret_cast<PFN_XAllocClassHint>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XAllocClassHint"));
-	s_Data.XLIB.AllocSizeHints = reinterpret_cast<PFN_XAllocSizeHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XAllocSizeHints"));
-	s_Data.XLIB.AllocWMHints = reinterpret_cast<PFN_XAllocWMHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XAllocWMHints"));
-	s_Data.XLIB.ChangeProperty = reinterpret_cast<PFN_XChangeProperty>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XChangeProperty"));
-	s_Data.XLIB.ChangeWindowAttributes = reinterpret_cast<PFN_XChangeWindowAttributes>(PlatformGetModuleSymbol
-		(
-			s_Data.XLIB.Handle, "XChangeWindowAttributes"
-		));
-	s_Data.XLIB.CheckIfEvent = reinterpret_cast<PFN_XCheckIfEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCheckIfEvent"));
-	s_Data.XLIB.CheckTypedWindowEvent = reinterpret_cast<PFN_XCheckTypedWindowEvent>(PlatformGetModuleSymbol
-		(
-			s_Data.XLIB.Handle, "XCheckTypedWindowEvent"
-		));
-	s_Data.XLIB.CloseDisplay = reinterpret_cast<PFN_XCloseDisplay>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCloseDisplay"));
-	s_Data.XLIB.CloseIM = reinterpret_cast<PFN_XCloseIM>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCloseIM"));
-	s_Data.XLIB.ConvertSelection = reinterpret_cast<PFN_XConvertSelection>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                             "XConvertSelection"));
-	s_Data.XLIB.CreateColormap = reinterpret_cast<PFN_XCreateColormap>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                         "XCreateColormap"));
-	s_Data.XLIB.CreateFontCursor = reinterpret_cast<PFN_XCreateFontCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                             "XCreateFontCursor"));
-	s_Data.XLIB.CreateIC = reinterpret_cast<PFN_XCreateIC>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,"XCreateIC"));
-	s_Data.XLIB.CreateWindow = reinterpret_cast<PFN_XCreateWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCreateWindow"));
-	s_Data.XLIB.DefineCursor = reinterpret_cast<PFN_XDefineCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDefineCursor"));
-	s_Data.XLIB.DeleteContext = reinterpret_cast<PFN_XDeleteContext>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDeleteContext"));
-	s_Data.XLIB.DeleteProperty = reinterpret_cast<PFN_XDeleteProperty>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDeleteProperty"));
-	s_Data.XLIB.DestroyIC = reinterpret_cast<PFN_XDestroyIC>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDestroyIC"));
-	s_Data.XLIB.DestroyWindow = reinterpret_cast<PFN_XDestroyWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDestroyWindow"));
-	s_Data.XLIB.DisplayKeycodes = reinterpret_cast<PFN_XDisplayKeycodes>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                           "XDisplayKeycodes"));
-	s_Data.XLIB.EventsQueued = reinterpret_cast<PFN_XEventsQueued>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XEventsQueued"));
-	s_Data.XLIB.FilterEvent = reinterpret_cast<PFN_XFilterEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFilterEvent"));
-	s_Data.XLIB.FindContext = reinterpret_cast<PFN_XFindContext>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFindContext"));
-	s_Data.XLIB.Flush = reinterpret_cast<PFN_XFlush>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFlush"));
-	s_Data.XLIB.Free = reinterpret_cast<PFN_XFree>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFree"));
-	s_Data.XLIB.FreeColormap = reinterpret_cast<PFN_XFreeColormap>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFreeColormap"));
-	s_Data.XLIB.FreeCursor = reinterpret_cast<PFN_XFreeCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFreeCursor"));
-	s_Data.XLIB.FreeEventData = reinterpret_cast<PFN_XFreeEventData>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XFreeEventData"));
-	s_Data.XLIB.GetAtomName = reinterpret_cast<PFN_XGetAtomName>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetAtomName"));
-	s_Data.XLIB.GetErrorText = reinterpret_cast<PFN_XGetErrorText>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetErrorText"));
-	s_Data.XLIB.GetEventData = reinterpret_cast<PFN_XGetEventData>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetEventData"));
-	s_Data.XLIB.GetICValues = reinterpret_cast<PFN_XGetICValues>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetICValues"));
-	s_Data.XLIB.GetIMValues = reinterpret_cast<PFN_XGetIMValues>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetIMValues"));
-	s_Data.XLIB.GetInputFocus = reinterpret_cast<PFN_XGetInputFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetInputFocus"));
-	s_Data.XLIB.GetKeyboardMapping = reinterpret_cast<PFN_XGetKeyboardMapping>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                 "XGetKeyboardMapping"));
-	s_Data.XLIB.GetScreenSaver = reinterpret_cast<PFN_XGetScreenSaver>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetScreenSaver"));
-	s_Data.XLIB.GetSelectionOwner = reinterpret_cast<PFN_XGetSelectionOwner>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                               "XGetSelectionOwner"));
-	s_Data.XLIB.GetVisualInfo = reinterpret_cast<PFN_XGetVisualInfo>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGetVisualInfo"));
-	s_Data.XLIB.GetWMNormalHints = reinterpret_cast<PFN_XGetWMNormalHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                             "XGetWMNormalHints"));
-	s_Data.XLIB.GetWindowAttributes = reinterpret_cast<PFN_XGetWindowAttributes>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                   "XGetWindowAttributes"));
-	s_Data.XLIB.GetWindowProperty = reinterpret_cast<PFN_XGetWindowProperty>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                               "XGetWindowProperty"));
-	s_Data.XLIB.GrabPointer = reinterpret_cast<PFN_XGrabPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XGrabPointer"));
-	s_Data.XLIB.IconifyWindow = reinterpret_cast<PFN_XIconifyWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XIconifyWindow"));
-	s_Data.XLIB.InitThreads = reinterpret_cast<PFN_XInitThreads>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XInitThreads"));
-	s_Data.XLIB.InternAtom = reinterpret_cast<PFN_XInternAtom>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XInternAtom"));
-	s_Data.XLIB.LookupString = reinterpret_cast<PFN_XLookupString>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XLookupString"));
-	s_Data.XLIB.MapRaised = reinterpret_cast<PFN_XMapRaised>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XMapRaised"));
-	s_Data.XLIB.MapWindow = reinterpret_cast<PFN_XMapWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XMapWindow"));
-	s_Data.XLIB.MoveResizeWindow = reinterpret_cast<PFN_XMoveResizeWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                             "XMoveResizeWindow"));
-	s_Data.XLIB.MoveWindow = reinterpret_cast<PFN_XMoveWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XMoveWindow"));
-	s_Data.XLIB.NextEvent = reinterpret_cast<PFN_XNextEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XNextEvent"));
-	s_Data.XLIB.OpenDisplay = reinterpret_cast<PFN_XOpenDisplay>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XOpenDisplay"));
-	s_Data.XLIB.OpenIM = reinterpret_cast<PFN_XOpenIM>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XOpenIM"));
-	s_Data.XLIB.PeekEvent = reinterpret_cast<PFN_XPeekEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XPeekEvent"));
-	s_Data.XLIB.Pending = reinterpret_cast<PFN_XPending>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XPending"));
-	s_Data.XLIB.QueryExtension = reinterpret_cast<PFN_XQueryExtension>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XQueryExtension"));
-	s_Data.XLIB.QueryPointer = reinterpret_cast<PFN_XQueryPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XQueryPointer"));
-	s_Data.XLIB.RaiseWindow = reinterpret_cast<PFN_XRaiseWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XRaiseWindow"));
-	s_Data.XLIB.RegisterIMInstantiateCallback = reinterpret_cast<PFN_XRegisterIMInstantiateCallback>(PlatformGetModuleSymbol
-		(
-			s_Data.XLIB.Handle, "XRegisterIMInstantiateCallback"
-		));
-	s_Data.XLIB.ResizeWindow = reinterpret_cast<PFN_XResizeWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XResizeWindow"));
-	s_Data.XLIB.ResourceManagerString = reinterpret_cast<PFN_XResourceManagerString>(PlatformGetModuleSymbol
-		(
-			s_Data.XLIB.Handle, "XResourceManagerString"
-		));
-	s_Data.XLIB.SaveContext = reinterpret_cast<PFN_XSaveContext>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSaveContext"));
-	s_Data.XLIB.SelectInput = reinterpret_cast<PFN_XSelectInput>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSelectInput"));
-	s_Data.XLIB.SendEvent = reinterpret_cast<PFN_XSendEvent>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSendEvent"));
-	s_Data.XLIB.SetClassHint = reinterpret_cast<PFN_XSetClassHint>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetClassHint"));
-	s_Data.XLIB.SetErrorHandler = reinterpret_cast<PFN_XSetErrorHandler>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                           "XSetErrorHandler"));
-	s_Data.XLIB.SetICFocus = reinterpret_cast<PFN_XSetICFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetICFocus"));
-	s_Data.XLIB.SetIMValues = reinterpret_cast<PFN_XSetIMValues>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetIMValues"));
-	s_Data.XLIB.SetInputFocus = reinterpret_cast<PFN_XSetInputFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetInputFocus"));
-	s_Data.XLIB.SetLocaleModifiers = reinterpret_cast<PFN_XSetLocaleModifiers>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                 "XSetLocaleModifiers"));
-	s_Data.XLIB.SetScreenSaver = reinterpret_cast<PFN_XSetScreenSaver>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetScreenSaver"));
-	s_Data.XLIB.SetSelectionOwner = reinterpret_cast<PFN_XSetSelectionOwner>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                               "XSetSelectionOwner"));
-	s_Data.XLIB.SetWMHints = reinterpret_cast<PFN_XSetWMHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetWMHints"));
-	s_Data.XLIB.SetWMNormalHints = reinterpret_cast<PFN_XSetWMNormalHints>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                             "XSetWMNormalHints"));
-	s_Data.XLIB.SetWMProtocols = reinterpret_cast<PFN_XSetWMProtocols>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSetWMProtocols"));
-	s_Data.XLIB.SupportsLocale = reinterpret_cast<PFN_XSupportsLocale>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSupportsLocale"));
-	s_Data.XLIB.Sync = reinterpret_cast<PFN_XSync>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XSync"));
-	s_Data.XLIB.TranslateCoordinates = reinterpret_cast<PFN_XTranslateCoordinates>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                     "XTranslateCoordinates"));
-	s_Data.XLIB.UndefineCursor = reinterpret_cast<PFN_XUndefineCursor>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUndefineCursor"));
-	s_Data.XLIB.UngrabPointer = reinterpret_cast<PFN_XUngrabPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUngrabPointer"));
-	s_Data.XLIB.UnmapWindow = reinterpret_cast<PFN_XUnmapWindow>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUnmapWindow"));
-	s_Data.XLIB.UnsetICFocus = reinterpret_cast<PFN_XUnsetICFocus>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XUnsetICFocus"));
-	s_Data.XLIB.VisualIDFromVisual = reinterpret_cast<PFN_XVisualIDFromVisual>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                 "XVisualIDFromVisual"));
-	s_Data.XLIB.WarpPointer = reinterpret_cast<PFN_XWarpPointer>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XWarpPointer"));
-	s_Data.XLIB.UnregisterIMInstantiateCallback = reinterpret_cast<PFN_XUnregisterIMInstantiateCallback>(PlatformGetModuleSymbol
-		(
-			s_Data.XLIB.Handle, "XUnregisterIMInstantiateCallback"
-		));
-	s_Data.XLIB.UTF8LookupString = reinterpret_cast<PFN_Xutf8LookupString>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                             "Xutf8LookupString"));
-	s_Data.XLIB.UTF8SetWMProperties = reinterpret_cast<PFN_Xutf8SetWMProperties>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                   "Xutf8SetWMProperties"));
-	s_Data.XLIB.CreateRegion = reinterpret_cast<PFN_XCreateRegion>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XCreateRegion"));
-	s_Data.XLIB.DestroyRegion = reinterpret_cast<PFN_XDestroyRegion>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XDestroyRegion"));
-	s_Data.XKB.AllocKeyboard = reinterpret_cast<PFN_XkbAllocKeyboard>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbAllocKeyboard"));
-	s_Data.XKB.FreeKeyboard = reinterpret_cast<PFN_XkbFreeKeyboard>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbFreeKeyboard"));
-	s_Data.XKB.FreeNames = reinterpret_cast<PFN_XkbFreeNames>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbFreeNames"));
-	s_Data.XKB.GetMap = reinterpret_cast<PFN_XkbGetMap>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbGetMap"));
-	s_Data.XKB.GetNames = reinterpret_cast<PFN_XkbGetNames>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbGetNames"));
-	s_Data.XKB.GetState = reinterpret_cast<PFN_XkbGetState>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XkbGetState"));
-	s_Data.XKB.KeycodeToKeysym = reinterpret_cast<PFN_XkbKeycodeToKeysym>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                            "XkbKeycodeToKeysym"));
-	s_Data.XKB.QueryExtension = reinterpret_cast<PFN_XkbQueryExtension>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                          "XkbQueryExtension"));
-	s_Data.XKB.SelectEventDetails = reinterpret_cast<PFN_XkbSelectEventDetails>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                  "XkbSelectEventDetails"));
-	s_Data.XKB.SetDetectableAutoRepeat = reinterpret_cast<PFN_XkbSetDetectableAutoRepeat>(PlatformGetModuleSymbol
-		(
-			s_Data.XLIB.Handle, "XkbSetDetectableAutoRepeat"
-		));
-	s_Data.XRM.DestroyDatabase = reinterpret_cast<PFN_XrmDestroyDatabase>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                            "XrmDestroyDatabase"));
-	s_Data.XRM.GetResource = reinterpret_cast<PFN_XrmGetResource>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XrmGetResource"));
-	s_Data.XRM.GetStringDatabase = reinterpret_cast<PFN_XrmGetStringDatabase>(PlatformGetModuleSymbol(s_Data.XLIB.Handle,
-	                                                                                "XrmGetStringDatabase"));
-	s_Data.XRM.Initialize = reinterpret_cast<PFN_XrmInitialize>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XrmInitialize"));
-	s_Data.XRM.UniqueQuark = reinterpret_cast<PFN_XrmUniqueQuark>(PlatformGetModuleSymbol(s_Data.XLIB.Handle, "XrmUniqueQuark"));
+	s_Data.XLIB.AllocClassHint = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XAllocClassHint>(s_Data.XLIB.Handle, "XAllocClassHint");
+	s_Data.XLIB.AllocSizeHints = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XAllocSizeHints>(s_Data.XLIB.Handle, "XAllocSizeHints");
+	s_Data.XLIB.AllocWMHints = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XAllocWMHints>(s_Data.XLIB.Handle, "XAllocWMHints");
+	s_Data.XLIB.ChangeProperty = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XChangeProperty>(s_Data.XLIB.Handle, "XChangeProperty");
+	s_Data.XLIB.ChangeWindowAttributes = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XChangeWindowAttributes>(s_Data.XLIB.Handle,
+																													"XChangeWindowAttributes");
+	s_Data.XLIB.CheckIfEvent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCheckIfEvent>(s_Data.XLIB.Handle, "XCheckIfEvent");
+	s_Data.XLIB.CheckTypedWindowEvent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCheckTypedWindowEvent>(s_Data.XLIB.Handle,
+																												  "XCheckTypedWindowEvent");
+	s_Data.XLIB.CloseDisplay = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCloseDisplay>(s_Data.XLIB.Handle, "XCloseDisplay");
+	s_Data.XLIB.CloseIM = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCloseIM>(s_Data.XLIB.Handle, "XCloseIM");
+	s_Data.XLIB.ConvertSelection = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XConvertSelection>(s_Data.XLIB.Handle,
+	                                                                                                    "XConvertSelection");
+	s_Data.XLIB.CreateColormap = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCreateColormap>(s_Data.XLIB.Handle,
+	                                                                                                "XCreateColormap");
+	s_Data.XLIB.CreateFontCursor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCreateFontCursor>(s_Data.XLIB.Handle,
+	                                                                                                    "XCreateFontCursor");
+	s_Data.XLIB.CreateIC = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCreateIC>(s_Data.XLIB.Handle,"XCreateIC");
+	s_Data.XLIB.CreateWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCreateWindow>(s_Data.XLIB.Handle, "XCreateWindow");
+	s_Data.XLIB.DefineCursor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDefineCursor>(s_Data.XLIB.Handle, "XDefineCursor");
+	s_Data.XLIB.DeleteContext = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDeleteContext>(s_Data.XLIB.Handle, "XDeleteContext");
+	s_Data.XLIB.DeleteProperty = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDeleteProperty>(s_Data.XLIB.Handle, "XDeleteProperty");
+	s_Data.XLIB.DestroyIC = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDestroyIC>(s_Data.XLIB.Handle, "XDestroyIC");
+	s_Data.XLIB.DestroyWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDestroyWindow>(s_Data.XLIB.Handle, "XDestroyWindow");
+	s_Data.XLIB.DisplayKeycodes = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDisplayKeycodes>(s_Data.XLIB.Handle,
+	                                                                                                  "XDisplayKeycodes");
+	s_Data.XLIB.EventsQueued = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XEventsQueued>(s_Data.XLIB.Handle, "XEventsQueued");
+	s_Data.XLIB.FilterEvent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFilterEvent>(s_Data.XLIB.Handle, "XFilterEvent");
+	s_Data.XLIB.FindContext = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFindContext>(s_Data.XLIB.Handle, "XFindContext");
+	s_Data.XLIB.Flush = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFlush>(s_Data.XLIB.Handle, "XFlush");
+	s_Data.XLIB.Free = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFree>(s_Data.XLIB.Handle, "XFree");
+	s_Data.XLIB.FreeColormap = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFreeColormap>(s_Data.XLIB.Handle, "XFreeColormap");
+	s_Data.XLIB.FreeCursor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFreeCursor>(s_Data.XLIB.Handle, "XFreeCursor");
+	s_Data.XLIB.FreeEventData = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XFreeEventData>(s_Data.XLIB.Handle, "XFreeEventData");
+	s_Data.XLIB.GetAtomName = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetAtomName>(s_Data.XLIB.Handle, "XGetAtomName");
+	s_Data.XLIB.GetErrorText = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetErrorText>(s_Data.XLIB.Handle, "XGetErrorText");
+	s_Data.XLIB.GetEventData = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetEventData>(s_Data.XLIB.Handle, "XGetEventData");
+	s_Data.XLIB.GetICValues = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetICValues>(s_Data.XLIB.Handle, "XGetICValues");
+	s_Data.XLIB.GetIMValues = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetIMValues>(s_Data.XLIB.Handle, "XGetIMValues");
+	s_Data.XLIB.GetInputFocus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetInputFocus>(s_Data.XLIB.Handle, "XGetInputFocus");
+	s_Data.XLIB.GetKeyboardMapping = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetKeyboardMapping>(s_Data.XLIB.Handle,
+	                                                                                                        "XGetKeyboardMapping");
+	s_Data.XLIB.GetScreenSaver = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetScreenSaver>(s_Data.XLIB.Handle, "XGetScreenSaver");
+	s_Data.XLIB.GetSelectionOwner = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetSelectionOwner>(s_Data.XLIB.Handle,
+	                                                                               						  "XGetSelectionOwner");
+	s_Data.XLIB.GetVisualInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetVisualInfo>(s_Data.XLIB.Handle, "XGetVisualInfo");
+	s_Data.XLIB.GetWMNormalHints = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetWMNormalHints>(s_Data.XLIB.Handle,
+	                                                                             					    "XGetWMNormalHints");
+	s_Data.XLIB.GetWindowAttributes = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetWindowAttributes>(s_Data.XLIB.Handle,
+	                                                                                                          "XGetWindowAttributes");
+	s_Data.XLIB.GetWindowProperty = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGetWindowProperty>(s_Data.XLIB.Handle,
+	                                                                                                      "XGetWindowProperty");
+	s_Data.XLIB.GrabPointer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XGrabPointer>(s_Data.XLIB.Handle, "XGrabPointer");
+	s_Data.XLIB.IconifyWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XIconifyWindow>(s_Data.XLIB.Handle, "XIconifyWindow");
+	s_Data.XLIB.InitThreads = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XInitThreads>(s_Data.XLIB.Handle, "XInitThreads");
+	s_Data.XLIB.InternAtom = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XInternAtom>(s_Data.XLIB.Handle, "XInternAtom");
+	s_Data.XLIB.LookupString = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XLookupString>(s_Data.XLIB.Handle, "XLookupString");
+	s_Data.XLIB.MapRaised = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XMapRaised>(s_Data.XLIB.Handle, "XMapRaised");
+	s_Data.XLIB.MapWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XMapWindow>(s_Data.XLIB.Handle, "XMapWindow");
+	s_Data.XLIB.MoveResizeWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XMoveResizeWindow>(s_Data.XLIB.Handle,
+	                                                                                                    "XMoveResizeWindow");
+	s_Data.XLIB.MoveWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XMoveWindow>(s_Data.XLIB.Handle, "XMoveWindow");
+	s_Data.XLIB.NextEvent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XNextEvent>(s_Data.XLIB.Handle, "XNextEvent");
+	s_Data.XLIB.OpenDisplay = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XOpenDisplay>(s_Data.XLIB.Handle, "XOpenDisplay");
+	s_Data.XLIB.OpenIM = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XOpenIM>(s_Data.XLIB.Handle, "XOpenIM");
+	s_Data.XLIB.PeekEvent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XPeekEvent>(s_Data.XLIB.Handle, "XPeekEvent");
+	s_Data.XLIB.Pending = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XPending>(s_Data.XLIB.Handle, "XPending");
+	s_Data.XLIB.QueryExtension = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XQueryExtension>(s_Data.XLIB.Handle, "XQueryExtension");
+	s_Data.XLIB.QueryPointer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XQueryPointer>(s_Data.XLIB.Handle, "XQueryPointer");
+	s_Data.XLIB.RaiseWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRaiseWindow>(s_Data.XLIB.Handle, "XRaiseWindow");
+	s_Data.XLIB.RegisterIMInstantiateCallback = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XRegisterIMInstantiateCallback>(s_Data.XLIB.Handle,
+																																  "XRegisterIMInstantiateCallback");
+	s_Data.XLIB.ResizeWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XResizeWindow>(s_Data.XLIB.Handle, "XResizeWindow");
+	s_Data.XLIB.ResourceManagerString = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XResourceManagerString>(s_Data.XLIB.Handle,
+																												  "XResourceManagerString");
+	s_Data.XLIB.SaveContext = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSaveContext>(s_Data.XLIB.Handle, "XSaveContext");
+	s_Data.XLIB.SelectInput = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSelectInput>(s_Data.XLIB.Handle, "XSelectInput");
+	s_Data.XLIB.SendEvent = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSendEvent>(s_Data.XLIB.Handle, "XSendEvent");
+	s_Data.XLIB.SetClassHint = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetClassHint>(s_Data.XLIB.Handle, "XSetClassHint");
+	s_Data.XLIB.SetErrorHandler = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetErrorHandler>(s_Data.XLIB.Handle,
+	                                                                                                  "XSetErrorHandler");
+	s_Data.XLIB.SetICFocus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetICFocus>(s_Data.XLIB.Handle, "XSetICFocus");
+	s_Data.XLIB.SetIMValues = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetIMValues>(s_Data.XLIB.Handle, "XSetIMValues");
+	s_Data.XLIB.SetInputFocus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetInputFocus>(s_Data.XLIB.Handle, "XSetInputFocus");
+	s_Data.XLIB.SetLocaleModifiers = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetLocaleModifiers>(s_Data.XLIB.Handle,
+	                                                                                                        "XSetLocaleModifiers");
+	s_Data.XLIB.SetScreenSaver = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetScreenSaver>(s_Data.XLIB.Handle, "XSetScreenSaver");
+	s_Data.XLIB.SetSelectionOwner = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetSelectionOwner>(s_Data.XLIB.Handle,
+	                                                                                                      "XSetSelectionOwner");
+	s_Data.XLIB.SetWMHints = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetWMHints>(s_Data.XLIB.Handle, "XSetWMHints");
+	s_Data.XLIB.SetWMNormalHints = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetWMNormalHints>(s_Data.XLIB.Handle,
+	                                                                                                    "XSetWMNormalHints");
+	s_Data.XLIB.SetWMProtocols = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSetWMProtocols>(s_Data.XLIB.Handle, "XSetWMProtocols");
+	s_Data.XLIB.SupportsLocale = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSupportsLocale>(s_Data.XLIB.Handle, "XSupportsLocale");
+	s_Data.XLIB.Sync = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XSync>(s_Data.XLIB.Handle, "XSync");
+	s_Data.XLIB.TranslateCoordinates = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XTranslateCoordinates>(s_Data.XLIB.Handle,
+	                                                                                                            "XTranslateCoordinates");
+	s_Data.XLIB.UndefineCursor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XUndefineCursor>(s_Data.XLIB.Handle, "XUndefineCursor");
+	s_Data.XLIB.UngrabPointer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XUngrabPointer>(s_Data.XLIB.Handle, "XUngrabPointer");
+	s_Data.XLIB.UnmapWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XUnmapWindow>(s_Data.XLIB.Handle, "XUnmapWindow");
+	s_Data.XLIB.UnsetICFocus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XUnsetICFocus>(s_Data.XLIB.Handle, "XUnsetICFocus");
+	s_Data.XLIB.VisualIDFromVisual = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XVisualIDFromVisual>(s_Data.XLIB.Handle,
+	                                                                                                        "XVisualIDFromVisual");
+	s_Data.XLIB.WarpPointer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XWarpPointer>(s_Data.XLIB.Handle, "XWarpPointer");
+	s_Data.XLIB.UnregisterIMInstantiateCallback = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XUnregisterIMInstantiateCallback>(s_Data.XLIB.Handle,
+	                       																											  "XUnregisterIMInstantiateCallback");
+	s_Data.XLIB.UTF8LookupString = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_Xutf8LookupString>(s_Data.XLIB.Handle,
+	                                                                                                    "Xutf8LookupString");
+	s_Data.XLIB.UTF8SetWMProperties = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_Xutf8SetWMProperties>(s_Data.XLIB.Handle,
+	                                                                                                          "Xutf8SetWMProperties");
+	s_Data.XLIB.CreateRegion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XCreateRegion>(s_Data.XLIB.Handle, "XCreateRegion");
+	s_Data.XLIB.DestroyRegion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XDestroyRegion>(s_Data.XLIB.Handle, "XDestroyRegion");
+	s_Data.XKB.AllocKeyboard = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbAllocKeyboard>(s_Data.XLIB.Handle, "XkbAllocKeyboard");
+	s_Data.XKB.FreeKeyboard = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbFreeKeyboard>(s_Data.XLIB.Handle, "XkbFreeKeyboard");
+	s_Data.XKB.FreeNames = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbFreeNames>(s_Data.XLIB.Handle, "XkbFreeNames");
+	s_Data.XKB.GetMap = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbGetMap>(s_Data.XLIB.Handle, "XkbGetMap");
+	s_Data.XKB.GetNames = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbGetNames>(s_Data.XLIB.Handle, "XkbGetNames");
+	s_Data.XKB.GetState = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbGetState>(s_Data.XLIB.Handle, "XkbGetState");
+	s_Data.XKB.KeycodeToKeysym = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbKeycodeToKeysym>(s_Data.XLIB.Handle,
+	                                                                                                   "XkbKeycodeToKeysym");
+	s_Data.XKB.QueryExtension = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbQueryExtension>(s_Data.XLIB.Handle,
+	                                                                                                 "XkbQueryExtension");
+	s_Data.XKB.SelectEventDetails = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbSelectEventDetails>(s_Data.XLIB.Handle,
+	                                                                                                         "XkbSelectEventDetails");
+	s_Data.XKB.SetDetectableAutoRepeat = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XkbSetDetectableAutoRepeat>(s_Data.XLIB.Handle,
+	 																												   "XkbSetDetectableAutoRepeat");
+	s_Data.XRM.DestroyDatabase = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XrmDestroyDatabase>(s_Data.XLIB.Handle,
+	                                                                                                   "XrmDestroyDatabase");
+	s_Data.XRM.GetResource = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XrmGetResource>(s_Data.XLIB.Handle, "XrmGetResource");
+	s_Data.XRM.GetStringDatabase = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XrmGetStringDatabase>(s_Data.XLIB.Handle,
+	                                                                                                       "XrmGetStringDatabase");
+	s_Data.XRM.Initialize = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XrmInitialize>(s_Data.XLIB.Handle, "XrmInitialize");
+	s_Data.XRM.UniqueQuark = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_XrmUniqueQuark>(s_Data.XLIB.Handle, "XrmUniqueQuark");
 	if (s_Data.XLIB.UTF8LookupString && s_Data.XLIB.UTF8SetWMProperties)
 		s_Data.XLIB.UTF8 = true;
 
@@ -2374,43 +2349,43 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 
 	if(s_Data.XCB.Handle)
 	{
-		PlatformFreeModule(s_Data.XCB.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XCB.Handle);
 		s_Data.XCB.Handle = nullptr;
 	}
 
 	if(s_Data.XCursor.Handle)
 	{
-		PlatformFreeModule(s_Data.XCursor.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XCursor.Handle);
 		s_Data.XCursor.Handle = nullptr;
 	}
 
 	if(s_Data.RandR.Handle)
 	{
-		PlatformFreeModule(s_Data.RandR.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.RandR.Handle);
 		s_Data.RandR.Handle = nullptr;
 	}
 
 	if(s_Data.Xinerama.Handle)
 	{
-		PlatformFreeModule(s_Data.Xinerama.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.Xinerama.Handle);
 		s_Data.Xinerama.Handle = nullptr;
 	}
 
 	if(s_Data.XRender.Handle)
 	{
-		PlatformFreeModule(s_Data.XRender.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XRender.Handle);
 		s_Data.XRender.Handle = nullptr;
 	}
 
 	if(s_Data.XI.Handle)
 	{
-		PlatformFreeModule(s_Data.XI.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XI.Handle);
 		s_Data.XI.Handle = nullptr;
 	}
 
 	if(s_Data.XLIB.Handle)
 	{
-		PlatformFreeModule(s_Data.XLIB.Handle);
+		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.XLIB.Handle);
 		s_Data.XLIB.Handle = nullptr;
 	}
 
