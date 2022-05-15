@@ -7,8 +7,9 @@ void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string& path)
     return LoadLibraryA(path.c_str());
 #elif defined(TRAP_PLATFORM_LINUX)
 	return dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
-#endif
+#else
     return nullptr;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

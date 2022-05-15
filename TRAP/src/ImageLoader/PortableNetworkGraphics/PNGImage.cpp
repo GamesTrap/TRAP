@@ -813,23 +813,6 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
-{
-	//Check timestamp validity
-	if ((timeChunk.Month < 1 || timeChunk.Month > 12) || (timeChunk.Day < 1 || timeChunk.Day > 31) ||
-	    timeChunk.Hour > 23 || timeChunk.Minute > 59 || timeChunk.Second > 59)
-	{
-		TP_ERROR(Log::ImagePNGPrefix, "Time stamp: ", static_cast<uint32_t>(timeChunk.Day), '/',
-		static_cast<uint32_t>(timeChunk.Month), '/', static_cast<uint32_t>(timeChunk.Year), ' ',
-		static_cast<uint32_t>(timeChunk.Hour), ':', static_cast<uint32_t>(timeChunk.Minute), '.',
-		static_cast<uint32_t>(timeChunk.Second), " is invalid!");
-		TP_WARN(Log::ImagePNGPrefix, "Using default image!");
-		return false;
-	}
-
-	return true;
-}
-
 bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination,
 										      const int destinationLength)
 {

@@ -2569,3 +2569,8 @@ SITREP 05/14/2022|22w19a2
     - Made AftermathTracker a namespace ~<15 mins
     - Commented AftermathTracker ~<10 mins
     - Moved the dynamic library loading functions from WindowingAPI to Utils ~<15 mins
+
+SITREP 05/15/2022|22w19b1
+    - Changed TRAP Engine version to 22w19b1(0.7.138)
+    - Utils String Added (Date)Timestamp to string functions ~<15 mins
+    - PNG Removed unused tIMECheck function ~<5 mins

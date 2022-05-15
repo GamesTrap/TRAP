@@ -75,33 +75,16 @@ void TRAP::Log::Clear()
 
 std::string TRAP::Log::GetTimeStamp()
 {
-	std::stringstream ss;
-	ss << '[';
-	std::time_t time = std::time(nullptr);
-	std::tm tm{};
-#ifdef TRAP_PLATFORM_WINDOWS
-	localtime_s(&tm, &time);
-#else
-	localtime_r(&time, &tm);
-#endif
-	ss << std::put_time(&tm, "%T") << ']';
-
-	return ss.str();
+	std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
+	return "[" + timeStamp + ']';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Log::GetDateTimeStamp()
 {
-	std::stringstream ss;
-	std::time_t time = std::time(nullptr);
-	std::tm tm{};
-#ifdef TRAP_PLATFORM_WINDOWS
-	localtime_s(&tm, &time);
-#else
-	localtime_r(&time, &tm);
-#endif
-	ss << std::put_time(&tm, "%FT%H-%M-%S");
-
-	return ss.str();
+	std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
+	//Make the date-time-stamp usable as file-name
+	std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
+	return dateTimeStamp;
 }

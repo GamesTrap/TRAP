@@ -181,12 +181,6 @@ namespace TRAP::INTERNAL
 		/// <param name="ihdrChunk">Loaded IHDR chunk data.</param>
 		/// <returns>True if the IHDR chunk is valid, false otherwise.</returns>
 		static bool IHDRCheck(const IHDRChunk& ihdrChunk);
-		/// <summary>
-		/// Check tIME timestamp validity.
-		/// </summary>
-		/// <param name="timeChunk">Loaded tIME chunk data.</param>
-		/// <returns>True if the tIME timestampt is valid, false otherwise.</returns>
-		static bool tIMECheck(const tIMEChunk& timeChunk);
 
 		std::vector<uint8_t> m_data;
 		std::vector<uint16_t> m_data2Byte;

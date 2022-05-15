@@ -184,3 +184,43 @@ bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std:
 
 	return true;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint)
+{
+	std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
+
+	std::tm tm{};
+#ifdef TRAP_PLATFORM_WINDOWS
+	localtime_s(&tm, &time);
+#elif defined(TRAP_PLATFORM_LINUX)
+	localtime_r(&time, &tm);
+#endif
+
+	char buffer[9];
+	std::memset(buffer, 0, sizeof(buffer));
+	std::strftime(buffer, sizeof(buffer), "%T", &tm);
+
+	return buffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint)
+{
+	std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
+
+	std::tm tm{};
+#ifdef TRAP_PLATFORM_WINDOWS
+	localtime_s(&tm, &time);
+#elif defined(TRAP_PLATFORM_LINUX)
+	localtime_r(&time, &tm);
+#endif
+
+	char buffer[20];
+	std::memset(buffer, 0, sizeof(buffer));
+	std::strftime(buffer, sizeof(buffer), "%F %T", &tm);
+
+	return buffer;
+}

@@ -147,6 +147,21 @@ namespace TRAP::Utils::String
 	/// <returns>Type T value converted to string.</returns>
 	template<typename T>
 	std::string ConvertToString(T value);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Retrieve the given time-stamp as a string with "HH:MM:SS" format.
+	/// </summary>
+	/// <param name="timePoint">Time-stamp to convert.</param>
+	/// <returns>Time-stamp as string.</returns>
+	std::string GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint);
+	/// <summary>
+	/// Retrieve the given date-time-stamp as a string with "YYYY-MM-DD HH:MM:SS" format.
+	/// </summary>
+	/// <param name="timePoint">Timestamp to convert.</param>
+	/// <returns>Timestamp as string.</returns>
+	std::string GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

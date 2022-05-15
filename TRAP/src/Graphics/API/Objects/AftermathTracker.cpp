@@ -33,9 +33,11 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
                  void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-    //TODO Use time stamp in file name
+    std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
+    std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
+
     std::filesystem::path filePath = TRAP::FS::GetDocumentsFolderPath() / TRAP::Application::GetGameName() /
-                                     "crash-dumps" / "latest.dump";
+                                     "crash-dumps" / ("crash_" + dateTimeStamp + ".dump");
     std::lock_guard lock(mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
     std::memcpy(buffer.data(), gpuCrashDump, gpuCrashDumpSize);

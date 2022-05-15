@@ -33,9 +33,9 @@ inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol(void* module, const std::
     return reinterpret_cast<T>(::GetProcAddress(static_cast<HMODULE>(module), name.c_str()));
 #elif defined(TRAP_PLATFORM_LINUX)
     return reinterpret_cast<T>(dlsym(module, name.c_str()));
-#endif
-
+#else
     return T();
+#endif
 }
 
 #endif /*TRAP_DYNAMICLOADING_H*/

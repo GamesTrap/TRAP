@@ -2844,12 +2844,12 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
                                                                    const VkAllocationCallbacks* allocator,
 																   VkSurfaceKHR& surface)
 {
-	const PFN_vkCreateWin32SurfaceKHR vkCreateWin32SurfaceKHR = reinterpret_cast<PFN_vkCreateWin32SurfaceKHR>
+	const PFN_vkCreateWin32SurfaceKHR _vkCreateWin32SurfaceKHR = reinterpret_cast<PFN_vkCreateWin32SurfaceKHR>
 		(
 			vkGetInstanceProcAddr(instance, "vkCreateWin32SurfaceKHR"
 		));
 
-	if (!vkCreateWin32SurfaceKHR)
+	if (!_vkCreateWin32SurfaceKHR)
 	{
 		InputError(Error::API_Unavailable, "[WinAPI] Vulkan instance missing VK_KHR_win32_surface extension");
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
@@ -2864,7 +2864,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		window->Handle
 	};
 
-	const VkResult err = vkCreateWin32SurfaceKHR(instance, &sci, allocator, &surface);
+	const VkResult err = _vkCreateWin32SurfaceKHR(instance, &sci, allocator, &surface);
 	if (err)
 		InputError(Error::Platform_Error, "[WinAPI] Failed to create Vulkan surface: " + GetVulkanResultString(err));
 
