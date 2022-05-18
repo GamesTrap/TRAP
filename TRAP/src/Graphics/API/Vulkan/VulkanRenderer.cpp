@@ -54,6 +54,7 @@ bool TRAP::Graphics::API::VulkanRenderer::s_bufferDeviceAddressExtension = false
 bool TRAP::Graphics::API::VulkanRenderer::s_memoryBudgetExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_externalMemory = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_shadingRate = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
@@ -1624,15 +1625,17 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 	//Vulkan 1.1 core
 	//VK_KHR_maintenance1
+	//VK_KHR_maintenance2
 	//VK_KHR_maintenance3
 	//VK_KHR_external_memory
 	//VK_KHR_external_semaphore
 	//VK_KHR_external_fence
 	//VK_KHR_bind_memory2
 	//VK_KHR_get_memory_requirements2
-	//VK_KHR_sampler_ycbcr_conversion (needs check of capability flag) //TODO
+	//VK_KHR_sampler_ycbcr_conversion (needs check of capability flag)
 	//VK_KHR_dedicated_allocation
-	//VK_KHR_shader_draw_parameters (needs check of capability flag) //TODO
+	//VK_KHR_shader_draw_parameters (needs check of capability flag)
+	//VK_KHR_multiview
 
 	//Debug marker extension in case debug utils is not supported
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
@@ -1677,6 +1680,14 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 	{
 		extensions.emplace_back(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);
 		s_memoryBudgetExtension = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME) &&
+	    physicalDevice->IsExtensionSupported(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
+		s_shadingRate = true;
 	}
 
 #ifdef TRAP_PLATFORM_WINDOWS

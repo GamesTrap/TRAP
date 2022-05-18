@@ -2246,8 +2246,9 @@ namespace TRAP::Graphics
 			bool PresentSupported;
 
 			//Variable rate shading capabilities
-			TRAP::Graphics::RendererAPI::ShadingRate ShadingRate;
+			TRAP::Graphics::RendererAPI::ShadingRate ShadingRates;
 			TRAP::Graphics::RendererAPI::ShadingRateCaps ShadingRateCaps;
+			TRAP::Graphics::RendererAPI::ShadingRateCombiner ShadingRateCombiner;
 			uint32_t ShadingRateTexelWidth;
 			uint32_t ShadingRateTexelHeight;
 		} GPUSettings{};

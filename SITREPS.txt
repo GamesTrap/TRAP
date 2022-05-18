@@ -2574,3 +2574,7 @@ SITREP 05/15/2022|22w19b1
     - Changed TRAP Engine version to 22w19b1(0.7.138)
     - Utils String Added (Date)Timestamp to string functions ~<15 mins
     - PNG Removed unused tIMECheck function ~<5 mins
+
+SITREP 05/18/2022|22w20a1
+    - Changed TRAP Engine version to 22w20a1(0.7.139)
+    - Vulkan worked on Variable Rate Shading (VRS) support ~<30 mins

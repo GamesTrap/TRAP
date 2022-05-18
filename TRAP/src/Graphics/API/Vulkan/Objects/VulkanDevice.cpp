@@ -97,6 +97,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
 	rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
 	rayQueryFeatures.rayQuery = VK_TRUE;
+	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
+	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
 
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{
@@ -116,6 +118,13 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if (VulkanRenderer::s_rayTracingExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&rayQueryFeatures);
+		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	}
+
+	//Shading rate
+	if(VulkanRenderer::s_shadingRate)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shadingRateFeatures);
 		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
 	}
 
@@ -180,6 +189,34 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		                                   (vkCmdInsertDebugUtilsLabelEXT) && (vkSetDebugUtilsObjectNameEXT);
 	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
 	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
+
+	if(VulkanRenderer::s_shadingRate)
+	{
+		if(shadingRateFeatures.primitiveFragmentShadingRate || shadingRateFeatures.attachmentFragmentShadingRate)
+			RendererAPI::GPUSettings.ShadingRateCaps = RendererAPI::ShadingRateCaps::PerTile;
+		else if(shadingRateFeatures.pipelineFragmentShadingRate)
+			RendererAPI::GPUSettings.ShadingRateCaps = RendererAPI::ShadingRateCaps::PerDraw;
+
+		if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
+		{
+			VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
+			fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
+			VkPhysicalDeviceProperties2 deviceProperties2{};
+			deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+			deviceProperties2.pNext = &fragmentShadingRateProperties;
+			vkGetPhysicalDeviceProperties2(m_physicalDevice->GetVkPhysicalDevice(), &deviceProperties2);
+
+			RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
+			RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
+
+			if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps)
+				RendererAPI::GPUSettings.ShadingRateCombiner = RendererAPI::ShadingRateCombiner::Sum;
+			else
+				RendererAPI::GPUSettings.ShadingRateCombiner = RendererAPI::ShadingRateCombiner::Override;
+
+			//TODO Further caps ShadingRate itself
+		}
+	}
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName)

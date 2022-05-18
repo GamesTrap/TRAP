@@ -483,6 +483,7 @@ namespace TRAP::Graphics::API
 		static bool s_memoryBudgetExtension;
 		static bool s_maintenance4Extension;
 		static bool s_externalMemory;
+		static bool s_shadingRate;
 
 		static bool s_debugMarkerSupport;
 

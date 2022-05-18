@@ -307,7 +307,7 @@ namespace TRAP::Graphics::API
 		/// <param name="val">New value to use as stencil reference.</param>
 		void SetStencilReferenceValue(uint32_t val) const override;
 
-		//TODO
+		//TODO Use vkCmdSetFragmentShadingRateKHR
 		/*void SetShadingRate(RendererAPI::ShadingRate shadingRate, TRAP::Ref<TRAP::Graphics::TextureBase> texture,
 		                      RendererAPI::ShadingRateCombiner postRasterizerRate,
 							  RendererAPI::ShadingRateCombiner finalRate);*/

@@ -318,6 +318,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			VK_DYNAMIC_STATE_DEPTH_BOUNDS,
 			VK_DYNAMIC_STATE_STENCIL_REFERENCE
 		};
+		if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
+			dynamicStates.emplace_back(VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR);
 		VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 
 		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(static_cast<uint32_t>(stageCount), stages.data(),
