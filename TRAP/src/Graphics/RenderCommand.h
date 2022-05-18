@@ -41,6 +41,14 @@ namespace TRAP::Graphics
 	/// Different blend constants.
 	/// </summary>
 	using BlendConstant = RendererAPI::BlendConstant;
+	/// <summary>
+	/// Different shading rates.
+	/// </summary>
+	using ShadingRate = RendererAPI::ShadingRate;
+	/// <summary>
+	/// Different shading rate combiners.
+	/// </summary>
+	using ShadingRateCombiner = RendererAPI::ShadingRateCombiner;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.
@@ -204,6 +212,17 @@ namespace TRAP::Graphics
 		/// <param name="face">Front face.</param>
 		/// <param name="window">Window to set front face for. Default: Main Window.</param>
 		static void SetFrontFace(FrontFace face, Window* window = nullptr);
+		/// <summary>
+		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// </summary>
+		/// <param name="shadingRate">Shading rate to use.</param>
+		/// <param name="texture">Unused by Vulkan.</param>
+		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
+		/// <param name="finalRate">Shading rate combiner to use.</param>
+		virtual void SetShadingRate(ShadingRate shadingRate,
+						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                            ShadingRateCombiner postRasterizerRate,
+							        ShadingRateCombiner finalRate, Window* window = nullptr);
 
 		//Blending functions
 

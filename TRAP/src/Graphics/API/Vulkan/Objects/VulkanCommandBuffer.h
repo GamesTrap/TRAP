@@ -307,10 +307,17 @@ namespace TRAP::Graphics::API
 		/// <param name="val">New value to use as stencil reference.</param>
 		void SetStencilReferenceValue(uint32_t val) const override;
 
-		//TODO Use vkCmdSetFragmentShadingRateKHR
-		/*void SetShadingRate(RendererAPI::ShadingRate shadingRate, TRAP::Ref<TRAP::Graphics::TextureBase> texture,
-		                      RendererAPI::ShadingRateCombiner postRasterizerRate,
-							  RendererAPI::ShadingRateCombiner finalRate);*/
+		/// <summary>
+		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// </summary>
+		/// <param name="shadingRate">Shading rate to use.</param>
+		/// <param name="texture">Unused by Vulkan.</param>
+		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
+		/// <param name="finalRate">Shading rate combiner to use.</param>
+		void SetShadingRate(RendererAPI::ShadingRate shadingRate,
+						    const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                    RendererAPI::ShadingRateCombiner postRasterizerRate,
+							RendererAPI::ShadingRateCombiner finalRate) const override;
 
 		/// <summary>
 		/// Clear the currently used color attachment.

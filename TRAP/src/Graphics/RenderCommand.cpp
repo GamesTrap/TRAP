@@ -161,6 +161,16 @@ void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face, Window* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate,
+												   const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+												   const ShadingRateCombiner postRasterizerRate,
+												   const ShadingRateCombiner finalRate, Window* window)
+{
+	RendererAPI::GetRenderer()->SetShadingRate(shadingRate, texture, postRasterizerRate, finalRate, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha, Window* window)
 {
 	RendererAPI::GetRenderer()->SetBlendMode(modeRGB, modeAlpha, window);

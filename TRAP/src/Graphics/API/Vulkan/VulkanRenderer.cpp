@@ -719,6 +719,21 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
+						            					 const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                            					 const ShadingRateCombiner postRasterizerRate,
+							        					 const ShadingRateCombiner finalRate, Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	PerWindowData* const p = s_perWindowDataMap[window].get();
+
+	p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(shadingRate, texture, postRasterizerRate, finalRate);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType, Window* window)
 {
 	if (!window)

@@ -186,6 +186,20 @@ namespace TRAP::Graphics::API
 	/// <param name="planesOffsets">Output plane offsets.</param>
 	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount,
 	                                           VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
+	/// <summary>
+	/// Utility to create the VkFragmentShadingRateCombinerOpKHR from
+	/// a RendererAPI::ShadingRateCombiner.
+	/// </summary>
+	/// <param name="combiner">ShadingRateCombiner.</param>
+	/// <returns>Converted VkFragmentShadingRateCombinerOpKHR.</returns>
+	constexpr VkFragmentShadingRateCombinerOpKHR ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner);
+	/// <summary>
+	/// Utility to create the VkExtent2D (fragment size) from
+	/// a RendererAPI::ShadingRate.
+	/// </summary>
+	/// <param name="rate">ShadingRate.</param>
+	/// <returns>Converted VkExtent2D.</returns>
+	constexpr VkExtent2D ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate);
 
 	/// <summary>
 	/// Retrieve the recommended swapchain format for Vulkan.
@@ -1191,6 +1205,58 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromV
 
 	default:
 		return TRAP::Graphics::API::ImageFormat::Undefined;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(const RendererAPI::ShadingRateCombiner& combiner)
+{
+	switch(combiner)
+	{
+	case RendererAPI::ShadingRateCombiner::Passthrough:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
+	case RendererAPI::ShadingRateCombiner::Override:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_REPLACE_KHR;
+	case RendererAPI::ShadingRateCombiner::Min:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MIN_KHR;
+	case RendererAPI::ShadingRateCombiner::Max:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MAX_KHR;
+	case RendererAPI::ShadingRateCombiner::Sum:
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
+
+	default:
+		TRAP_ASSERT(false, "Invalid shading rate combiner type");
+		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const RendererAPI::ShadingRate& rate)
+{
+	switch(rate)
+	{
+	case RendererAPI::ShadingRate::Full:
+		return VkExtent2D{ 1, 1 };
+	case RendererAPI::ShadingRate::Half:
+		return VkExtent2D{ 2, 2 };
+	case RendererAPI::ShadingRate::Quarter:
+		return VkExtent2D{ 4, 4 };
+	case RendererAPI::ShadingRate::Eighth:
+		return VkExtent2D{ 8, 8 };
+	case RendererAPI::ShadingRate::OneXTwo:
+		return VkExtent2D{ 1, 2 };
+	case RendererAPI::ShadingRate::TwoXOne:
+		return VkExtent2D{ 2, 1 };
+	case RendererAPI::ShadingRate::TwoXFour:
+		return VkExtent2D{ 2, 4 };
+	case RendererAPI::ShadingRate::FourXTwo:
+		return VkExtent2D{ 4, 2 };
+
+	default:
+		TRAP_ASSERT(false, "Invalid shading rate");
+		return VkExtent2D{ 1, 1 };
 	}
 }
 

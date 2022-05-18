@@ -290,6 +290,18 @@ namespace TRAP::Graphics
 		virtual void SetStencilReferenceValue(uint32_t val) const = 0;
 
 		/// <summary>
+		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// </summary>
+		/// <param name="shadingRate">Shading rate to use.</param>
+		/// <param name="texture">Unused by Vulkan.</param>
+		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
+		/// <param name="finalRate">Shading rate combiner to use.</param>
+		virtual void SetShadingRate(RendererAPI::ShadingRate shadingRate,
+						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                            RendererAPI::ShadingRateCombiner postRasterizerRate,
+							        RendererAPI::ShadingRateCombiner finalRate) const = 0;
+
+		/// <summary>
 		/// Clear the currently used color attachment.
 		/// </summary>
 		/// <param name="color">Color to clear the color attachment with.</param>

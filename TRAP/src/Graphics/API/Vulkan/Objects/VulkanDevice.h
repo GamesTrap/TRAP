@@ -137,6 +137,11 @@ namespace TRAP::Graphics::API
 		/// <param name="name">Name for the device.</param>
 		void SetDeviceName(std::string_view name) const;
 
+		/// <summary>
+		/// Load the variable shading rate capabilities from the physical device.
+		/// </summary>
+		void LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures);
+
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 
 		std::vector<std::string> m_deviceExtensions;

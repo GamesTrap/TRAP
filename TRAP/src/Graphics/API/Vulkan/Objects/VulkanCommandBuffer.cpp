@@ -1194,6 +1194,28 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::ShadingRate rate,
+															  const TRAP::Ref<TextureBase>& /*texture*/,
+															  RendererAPI::ShadingRateCombiner postRasterizerState,
+															  RendererAPI::ShadingRateCombiner finalRate) const
+{
+	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
+
+	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
+	{
+		std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
+		{
+			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(postRasterizerState),
+			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(finalRate)
+		};
+		VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
+
+		vkCmdSetFragmentShadingRateKHR(m_vkCommandBuffer, &fragmentSize, combiner.data());
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
 													 const uint32_t height)
 {

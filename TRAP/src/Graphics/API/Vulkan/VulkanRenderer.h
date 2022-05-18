@@ -219,6 +219,17 @@ namespace TRAP::Graphics::API
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
 							  Window* window) override;
+		/// <summary>
+		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// </summary>
+		/// <param name="shadingRate">Shading rate to use.</param>
+		/// <param name="texture">Unused by Vulkan.</param>
+		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
+		/// <param name="finalRate">Shading rate combiner to use.</param>
+		void SetShadingRate(ShadingRate shadingRate,
+							const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+							ShadingRateCombiner postRasterizerRate,
+							ShadingRateCombiner finalRate, Window* window = nullptr) override;
 
 		/// <summary>
 		/// Clear the given window's render target.

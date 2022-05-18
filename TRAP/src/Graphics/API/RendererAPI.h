@@ -68,6 +68,8 @@ namespace TRAP::Graphics
 		enum class BlendConstant;
 		enum class IndexType;
 		enum class ClearBufferType;
+		enum class ShadingRate;
+		enum class ShadingRateCombiner;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -313,6 +315,17 @@ namespace TRAP::Graphics
 		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 			                          BlendConstant destinationRGB, BlendConstant destinationAlpha,
 									  Window* window = nullptr) = 0;
+		/// <summary>
+		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
+		/// </summary>
+		/// <param name="shadingRate">Shading rate to use.</param>
+		/// <param name="texture">Unused by Vulkan.</param>
+		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
+		/// <param name="finalRate">Shading rate combiner to use.</param>
+		virtual void SetShadingRate(ShadingRate shadingRate,
+						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                            ShadingRateCombiner postRasterizerRate,
+							        ShadingRateCombiner finalRate, Window* window = nullptr) = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -774,45 +787,45 @@ namespace TRAP::Graphics
 			Undefined = 0,
 			Sampler = BIT(0),
 			//SRV read only Texture
-			Texture = (Sampler << 1),
+			Texture = BIT(1),
 			//UAV Texture
-			RWTexture = (Texture << 1),
+			RWTexture = BIT(2),
 			//SRV read only Buffer
-			Buffer = (RWTexture << 1),
+			Buffer = BIT(3),
 			BufferRaw = (Buffer | (Buffer << 1)),
 			//UAV Buffer
-			RWBuffer = (Buffer << 2),
+			RWBuffer = BIT(5),
 			RWBufferRaw = (RWBuffer | (RWBuffer << 1)),
 			//Uniform buffer
-			UniformBuffer = (RWBuffer << 2),
+			UniformBuffer = BIT(7),
 			//Push constant / Root constant
-			RootConstant = (UniformBuffer << 1),
+			RootConstant = BIT(8),
 			//IA
-			VertexBuffer = (RootConstant << 1),
-			IndexBuffer = (VertexBuffer << 1),
-			IndirectBuffer = (IndexBuffer << 1),
+			VertexBuffer = BIT(9),
+			IndexBuffer = BIT(10),
+			IndirectBuffer = BIT(11),
 			//Cubemap SRV
 			TextureCube = (Texture | (IndirectBuffer << 1)),
 			//RTV / DSV per mip slice
-			RenderTargetMipSlices = (IndirectBuffer << 2),
+			RenderTargetMipSlices = BIT(13),
 			//RTV / DSV per array slice
-			RenderTargetArraySlices = (RenderTargetMipSlices << 1),
+			RenderTargetArraySlices = BIT(14),
 			//RTV / DSV per depth sice
-			RenderTargetDepthSlices = (RenderTargetArraySlices << 1),
-			RayTracing = (RenderTargetDepthSlices << 1),
+			RenderTargetDepthSlices = BIT(15),
+			RayTracing = BIT(16),
 
 			//Vulkan
 			//Subpass input (descriptor type only available in Vulkan)
-			InputAttachment = (RayTracing << 1),
-			TexelBuffer = (InputAttachment << 1),
-			RWTexelBuffer = (TexelBuffer << 1),
-			CombinedImageSampler = (RWTexelBuffer << 1),
+			InputAttachment = BIT(17),
+			TexelBuffer = BIT(18),
+			RWTexelBuffer = BIT(19),
+			CombinedImageSampler = BIT(20),
 
 			//Khronos ray tracing extension
-			AccelerationStructure = (CombinedImageSampler << 1),
-			AccelerationStructureBuildInput = (AccelerationStructure << 1),
-			ShaderDeviceAddress  = (AccelerationStructureBuildInput << 1),
-			ShaderBindingTable = (ShaderDeviceAddress << 1)
+			AccelerationStructure = BIT(21),
+			AccelerationStructureBuildInput = BIT(22),
+			ShaderDeviceAddress  = BIT(23),
+			ShaderBindingTable = BIT(24)
 		};
 
 		//Choosing Memory Type
@@ -1205,13 +1218,13 @@ namespace TRAP::Graphics
 		{
 			NotSupported = 0x0,
 			Full = BIT(0),
-			Half = Full << 1,
-			Quarter = Half << 1,
-			Eighth = Quarter << 1,
-			OneXTwo = Eighth << 1,
-			TwoXOne = OneXTwo << 1,
-			TwoXFour = TwoXOne << 1,
-			FourXTwo = TwoXFour << 1
+			Half = BIT(1),
+			Quarter = BIT(2),
+			Eighth = BIT(3),
+			OneXTwo = BIT(4),
+			TwoXOne = BIT(5),
+			TwoXFour = BIT(6),
+			FourXTwo = BIT(7)
 		};
 
 		/// <summary>
@@ -1219,11 +1232,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class ShadingRateCombiner
 		{
-			Passthrough = 0,
-			Override = 1,
-			Min = 2,
-			Max = 3,
-			Sum = 4
+			Passthrough = 0x0,
+			Override = BIT(0),
+			Min = BIT(1),
+			Max = BIT(2),
+			Sum = BIT(3)
 		};
 
 		/// <summary>
@@ -1233,7 +1246,7 @@ namespace TRAP::Graphics
 		{
 			NotSupported = 0x0,
 			PerDraw = BIT(0),
-			PerTile = PerDraw << 1
+			PerTile = BIT(1)
 		};
 
 		/// <summary>
@@ -2342,6 +2355,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
 
 #endif /*TRAP_RENDERERAPI_H*/

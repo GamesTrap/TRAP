@@ -2577,4 +2577,4 @@ SITREP 05/15/2022|22w19b1
 
 SITREP 05/18/2022|22w20a1
     - Changed TRAP Engine version to 22w20a1(0.7.139)
-    - Vulkan worked on Variable Rate Shading (VRS) support ~<30 mins
+    - Vulkan implemented Variable Rate Shading (VRS) support ~>60 mins
