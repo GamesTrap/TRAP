@@ -20,7 +20,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
 	  m_vkImage(VK_NULL_HANDLE),
 	  m_vkAllocation(),
-	  m_vkDeviceMemory()
+	  m_vkDeviceMemory(),
+	  m_lazilyAllocated(false)
 {
 	TRAP_ASSERT(m_device, "Device is nullptr");
 	TRAP_ASSERT(m_vma, "VMA is nullptr");

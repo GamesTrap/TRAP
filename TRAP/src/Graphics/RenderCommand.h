@@ -219,10 +219,10 @@ namespace TRAP::Graphics
 		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
-		virtual void SetShadingRate(ShadingRate shadingRate,
-						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
-		                            ShadingRateCombiner postRasterizerRate,
-							        ShadingRateCombiner finalRate, Window* window = nullptr);
+		static void SetShadingRate(ShadingRate shadingRate,
+						           const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		                           ShadingRateCombiner postRasterizerRate,
+							       ShadingRateCombiner finalRate, Window* window = nullptr);
 
 		//Blending functions
 

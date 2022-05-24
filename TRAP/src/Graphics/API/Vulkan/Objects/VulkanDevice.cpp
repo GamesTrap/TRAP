@@ -99,6 +99,9 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	rayQueryFeatures.rayQuery = VK_TRUE;
 	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+	shadingRateFeatures.pipelineFragmentShadingRate = VK_TRUE;
+	shadingRateFeatures.primitiveFragmentShadingRate = VK_TRUE;
+	shadingRateFeatures.attachmentFragmentShadingRate = VK_TRUE;
 
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{
@@ -187,6 +190,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VulkanRenderer::s_debugMarkerSupport = (vkCmdBeginDebugUtilsLabelEXT) && (vkCmdEndDebugUtilsLabelEXT) &&
 		                                   (vkCmdInsertDebugUtilsLabelEXT) && (vkSetDebugUtilsObjectNameEXT);
+	VulkanRenderer::s_bufferDeviceAddressExtension = bufferDeviceAddressFeatures.bufferDeviceAddress;
 	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
 	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
 	LoadShadingRateCaps(shadingRateFeatures);
@@ -483,62 +487,62 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 
 void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures)
 {
-	if(VulkanRenderer::s_shadingRate)
+	if(!VulkanRenderer::s_shadingRate)
+		return;
+
+	if(shadingRateFeatures.pipelineFragmentShadingRate)
+		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
+	if(shadingRateFeatures.attachmentFragmentShadingRate)
+		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
+
+	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
 	{
-		if(shadingRateFeatures.pipelineFragmentShadingRate)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
-		if(shadingRateFeatures.attachmentFragmentShadingRate)
-			RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
+		VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
+		fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
+		VkPhysicalDeviceProperties2 deviceProperties2{};
+		deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+		deviceProperties2.pNext = &fragmentShadingRateProperties;
+		vkGetPhysicalDeviceProperties2(m_physicalDevice->GetVkPhysicalDevice(), &deviceProperties2);
 
-		if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
+		RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
+		RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
+
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
+		RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
+		if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps)
 		{
-			VkPhysicalDeviceFragmentShadingRatePropertiesKHR fragmentShadingRateProperties{};
-			fragmentShadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
-			VkPhysicalDeviceProperties2 deviceProperties2{};
-			deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-			deviceProperties2.pNext = &fragmentShadingRateProperties;
-			vkGetPhysicalDeviceProperties2(m_physicalDevice->GetVkPhysicalDevice(), &deviceProperties2);
+			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
+			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
+			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
+		}
 
-			RendererAPI::GPUSettings.ShadingRateTexelWidth = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.width;
-			RendererAPI::GPUSettings.ShadingRateTexelHeight = fragmentShadingRateProperties.maxFragmentShadingRateAttachmentTexelSize.height;
-
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Passthrough;
-			RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Override;
-			if(fragmentShadingRateProperties.fragmentShadingRateNonTrivialCombinerOps)
-			{
-				RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Min;
-				RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Max;
-				RendererAPI::GPUSettings.ShadingRateCombiner |= RendererAPI::ShadingRateCombiner::Sum;
-			}
-
-			uint32_t fragmentShadingRatesCount = 0;
-			vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, nullptr);
-			std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
-			for(auto& rate : fragmentShadingRates)
-			{
-				rate.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR;
-				rate.pNext = nullptr;
-			}
-			vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, fragmentShadingRates.data());
-			for(const auto& rate : fragmentShadingRates)
-			{
-				if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
-				if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
-				if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
-				if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
-				if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
-				if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
-				if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
-				if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
-					RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
-			}
+		uint32_t fragmentShadingRatesCount = 0;
+		vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, nullptr);
+		std::vector<VkPhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates(fragmentShadingRatesCount);
+		for(auto& rate : fragmentShadingRates)
+		{
+			rate.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR;
+			rate.pNext = nullptr;
+		}
+		vkGetPhysicalDeviceFragmentShadingRatesKHR(m_physicalDevice->GetVkPhysicalDevice(), &fragmentShadingRatesCount, fragmentShadingRates.data());
+		for(const auto& rate : fragmentShadingRates)
+		{
+			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 2)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::OneXTwo;
+			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 1)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXOne;
+			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 4)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::TwoXFour;
+			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 2)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::FourXTwo;
+			if(rate.fragmentSize.width == 4 && rate.fragmentSize.height == 4)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Quarter;
+			if(rate.fragmentSize.width == 8 && rate.fragmentSize.height == 8)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Eighth;
+			if(rate.fragmentSize.width == 2 && rate.fragmentSize.height == 2)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Half;
+			if(rate.fragmentSize.width == 1 && rate.fragmentSize.height == 1)
+				RendererAPI::GPUSettings.ShadingRates |= RendererAPI::ShadingRate::Full;
 		}
 	}
 }

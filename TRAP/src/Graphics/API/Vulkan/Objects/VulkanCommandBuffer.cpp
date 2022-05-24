@@ -1200,6 +1200,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::Shadi
 															  RendererAPI::ShadingRateCombiner finalRate) const
 {
 	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
+	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
+		return;
 
 	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
 	{

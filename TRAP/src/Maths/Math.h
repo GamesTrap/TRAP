@@ -938,7 +938,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename genType>
-	bool IsNaN(genType x);
+	constexpr bool IsNaN(genType x);
 
 	/// <summary>
 	/// Determine whether the parameter is a number.
@@ -953,7 +953,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<uint32_t L, typename T>
-	Vec<L, bool> IsNaN(const Vec<L, T>& v);
+	constexpr Vec<L, bool> IsNaN(const Vec<L, T>& v);
 
 	/// <summary>
 	/// Determine whether the parameter is a number.
@@ -968,7 +968,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename T>
-	Vec<4, bool> IsNaN(const tQuaternion<T>& q);
+	constexpr Vec<4, bool> IsNaN(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -983,7 +983,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename genType>
-	bool IsInf(genType x);
+	constexpr bool IsInf(genType x);
 
 	/// <summary>
 	/// Determine whether the paramter is positive or negative infinity
@@ -996,7 +996,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<uint32_t L, typename T>
-	Vec<L, bool> IsInf(const Vec<L, T>& v);
+	constexpr Vec<L, bool> IsInf(const Vec<L, T>& v);
 
 	/// <summary>
 	/// Determine whether the paramter is positive or negative infinity
@@ -1009,7 +1009,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename T>
-	Vec<4, bool> IsInf(const tQuaternion<T>& q);
+	constexpr Vec<4, bool> IsInf(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2956,6 +2956,64 @@ namespace TRAP::Math
 	/// <returns>Color in linear space.</returns>
 	template<uint32_t L, typename T>
 	Vec<L, T> ConvertSRGBToLinear(const Vec<L, T>& colorSRGB, const T gamma);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Other--------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Returns whether the given integer is odd or not.
+	/// </summary>
+	/// <param name="x">Integer to check.</param>
+	/// <returns>True if the given integer is odd, false otherwise.</returns>
+	template<typename T>
+	constexpr bool IsOdd(const T x);
+
+
+	/// <summary>
+	/// Returns whether the given integers are odd or not.
+	/// </summary>
+	/// <param name="x">Integers to check.</param>
+	/// <returns>Vector containing True if a given integer is odd, false otherwise.</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, bool> IsOdd(const Vec<L, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Returns whether the given integer is even or not.
+	/// </summary>
+	/// <param name="x">Integer to check.</param>
+	/// <returns>True if the given integer is even, false otherwise.</returns>
+	template<typename T>
+	constexpr bool IsEven(const T x);
+
+
+	/// <summary>
+	/// Returns whether the given integers are even or not.
+	/// </summary>
+	/// <param name="x">Integers to check.</param>
+	/// <returns>Vector containing True if a given integer is even, false otherwise.</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, bool> IsEven(const Vec<L, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Returns whether the given number is finite or not.
+	/// </summary>
+	/// <param name="x">Number to check.</param>
+	/// <returns>True if the given number is finite, false otherwise.</returns>
+	template<typename T>
+	constexpr bool IsFinite(const T x);
+
+	/// <summary>
+	/// Returns whether the given numbers are finite or not.
+	/// </summary>
+	/// <param name="x">Numbers to check.</param>
+	/// <returns>True if a given number is finite, false otherwise.</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, bool> IsFinite(const Vec<L, T>& x);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3475,55 +3533,55 @@ TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const Vec<L, T>& edge0, const Vec<L
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-bool TRAP::Math::IsNaN(genType x)
+constexpr bool TRAP::Math::IsNaN(genType x)
 {
-	return std::isnan(x);
+	return x != x;
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, bool> TRAP::Math::IsNaN(const Vec<L, T>& v)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsNaN(const Vec<L, T>& v)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsNaN' only accepts floating-point inputs");
 
 	Vec<L, bool> result;
 	for (uint32_t i = 0; i < L; ++i)
-		result[i] = std::isnan(v[i]);
+		result[i] = TRAP::Math::IsNaN(v[i]);
 	return result;
 }
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuaternion<T>& q)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuaternion<T>& q)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsNan' only accepts floating-point inputs");
 
-	return Vec<4, bool>(IsNan(q.x), IsNan(q.y), IsNan(q.z), IsNan(q.w));
+	return Vec<4, bool>(TRAP::Math::IsNaN(q.x), TRAP::Math::IsNaN(q.y), TRAP::Math::IsNaN(q.z), TRAP::Math::IsNaN(q.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-bool TRAP::Math::IsInf(genType x)
+constexpr bool TRAP::Math::IsInf(genType x)
 {
-	return std::isinf(x);
+	return x == std::numeric_limits<genType>::infinity() || x == -std::numeric_limits<genType>::infinity();
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, bool> TRAP::Math::IsInf(const Vec<L, T>& v)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsInf(const Vec<L, T>& v)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
 	Vec<L, bool> result;
 	for (uint32_t i = 0; i < L; ++i)
-		result[i] = std::isinf(v[i]);
+		result[i] = TRAP::Math::IsInf(v[i]);
 	return result;
 }
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuaternion<T>& q)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuaternion<T>& q)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
-	return Vec<4, bool>(IsInf(q.x), IsInf(q.y), IsInf(q.z), IsInf(q.w));
+	return Vec<4, bool>(TRAP::Math::IsInf(q.x), TRAP::Math::IsInf(q.y), TRAP::Math::IsInf(q.z), TRAP::Math::IsInf(q.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5680,6 +5738,67 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB
 	return Mix(Pow((colorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
 	               Vec<L, T>(gamma)), colorSRGB * static_cast<T>(0.07739938080495356037151702786378),
 			   LessThanEqual(colorSRGB, Vec<L, T>(static_cast<T>(0.04045))));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr bool TRAP::Math::IsOdd(const T x)
+{
+	static_assert(std::is_integral_v<T>, "IsOdd only works with integral types");
+
+	return (x & 1u) != 0;
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsOdd(const Vec<L, T>& x)
+{
+	Vec<L, bool> result{};
+
+	for(uint32_t i = 0; i < L; ++i)
+		result[i] = (x[i] & 1u) != 0;
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr bool TRAP::Math::IsEven(const T x)
+{
+	static_assert(std::is_integral_v<T>, "IsOdd only works with integral types");
+
+	return !IsOdd(x);
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsEven(const Vec<L, T>& x)
+{
+	Vec<L, bool> result{};
+
+	for(uint32_t i = 0; i < L; ++i)
+		result[i] = !IsOdd(x);
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr bool TRAP::Math::IsFinite(const T x)
+{
+	return (!IsNaN(x)) && (!IsInf(x));
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsFinite(const Vec<L, T>& x)
+{
+	Vec<L, bool> result{};
+
+	for(uint32_t i = 0; i < L; ++i)
+		result[i] = TRAP::Math::IsFinite(x[i]);
+
+	return result;
 }
 
 #endif /*TRAP_MATH_H*/
