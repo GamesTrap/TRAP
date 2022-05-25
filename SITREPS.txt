@@ -2591,3 +2591,4 @@ SITREP 05/25/2022|22w21a2
     - Renamed VulkanTests to RendererAPITests ~<5 mins
     - Added missing QOI License for QOIConv ~<5 mins
     - Changed all premake files to use staticruntime "off" ~<5 mins
+    - Some small premake improvements ~<10 mins

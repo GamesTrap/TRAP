@@ -8,8 +8,8 @@ project "Headless-Tests"
 	vectorextensions "AVX2"
 	warnings "Extra"
 
-	targetdir ("../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	objdir ("../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
 	files
 	{
@@ -19,20 +19,20 @@ project "Headless-Tests"
 
 	includedirs
 	{
-		"../../TRAP/src"
+		"%{wks.location}/TRAP/src"
 	}
 
 	sysincludedirs
 	{
-		"../../%{IncludeDir.IMGUI}",
-		"../../%{IncludeDir.GLSLANG}",
-		"../../%{IncludeDir.SPIRV}",
-		"../../%{IncludeDir.VULKAN}/include/",
-		"../../%{IncludeDir.SPIRVCROSS}",
-		"../../%{IncludeDir.ENTT}",
-		"../../%{IncludeDir.YAMLCPP}",
-		"../../%{IncludeDir.MODERNDIALOGS}",
-		"../../%{IncludeDir.VMA}"
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.VULKAN}/include/",
+		"%{IncludeDir.SPIRVCROSS}",
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.MODERNDIALOGS}",
+		"%{IncludeDir.VMA}"
 	}
 
 	links

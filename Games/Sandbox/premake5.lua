@@ -8,8 +8,8 @@ project "Sandbox"
 	vectorextensions "AVX2"
 	warnings "Extra"
 
-	targetdir ("../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	objdir ("../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
 	files
 	{
@@ -19,20 +19,20 @@ project "Sandbox"
 
 	includedirs
 	{
-		"../../TRAP/src"
+		"%{wks.location}/TRAP/src"
 	}
 
 	sysincludedirs
 	{
-		"../../%{IncludeDir.IMGUI}",
-		"../../%{IncludeDir.GLSLANG}",
-		"../../%{IncludeDir.SPIRV}",
-		"../../%{IncludeDir.VULKAN}/include/",
-		"../../%{IncludeDir.SPIRVCROSS}",
-		"../../%{IncludeDir.ENTT}",
-		"../../%{IncludeDir.YAMLCPP}",
-		"../../%{IncludeDir.MODERNDIALOGS}",
-		"../../%{IncludeDir.VMA}"
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.VULKAN}/include/",
+		"%{IncludeDir.SPIRVCROSS}",
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.MODERNDIALOGS}",
+		"%{IncludeDir.VMA}"
 	}
 
 	links
@@ -66,8 +66,8 @@ project "Sandbox"
 
 			files
 			{
-				"../../%{IncludeDir.DISCORDGAMESDK}/**.h",
-				"../../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
+				"%{IncludeDir.DISCORDGAMESDK}/**.h",
+				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
 			defines "USE_DISCORD_GAME_SDK"
@@ -79,7 +79,7 @@ project "Sandbox"
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 			sysincludedirs
 			{
-				"../../%{IncludeDir.NSIGHTAFTERMATH}"
+				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
@@ -94,18 +94,18 @@ project "Sandbox"
 
 			links
 			{
-				"../../%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
+				"%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
 			}
 
 			files
 			{
-				"../../%{IncludeDir.DISCORDGAMESDK}/**.h",
-				"../../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
+				"%{IncludeDir.DISCORDGAMESDK}/**.h",
+				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
 			postbuildcommands
 			{
-				"{COPY} ../../%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
+				"{COPY} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 			}
 
 			defines "USE_DISCORD_GAME_SDK"
@@ -119,12 +119,12 @@ project "Sandbox"
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 			sysincludedirs
 			{
-				"../../%{IncludeDir.NSIGHTAFTERMATH}"
+				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
 
 			postbuildcommands
 			{
-				"{COPY} ../../%{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
+				"{COPY} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"

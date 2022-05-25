@@ -6,8 +6,8 @@ project "SPIRV-Cross-Core"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {
@@ -45,8 +45,8 @@ project "SPIRV-Cross-Reflect"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {
@@ -74,8 +74,8 @@ project "SPIRV-Cross-GLSL"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {
@@ -108,8 +108,8 @@ project "SPIRV-Cross-HLSL"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {

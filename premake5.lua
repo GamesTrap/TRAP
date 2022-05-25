@@ -23,17 +23,17 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}
-IncludeDir["IMGUI"] = "Dependencies/ImGui"
+IncludeDir["IMGUI"] = "%{wks.location}/Dependencies/ImGui"
 IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
-IncludeDir["GLSLANG"] = "Dependencies/GLSLang"
-IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
-IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
-IncludeDir["ENTT"] = "Dependencies/EnTT/src/entt"
-IncludeDir["YAMLCPP"] = "Dependencies/YAMLCpp/include"
-IncludeDir["MODERNDIALOGS"] = "Dependencies/ModernDialogs/ModernDialogs"
-IncludeDir["DISCORDGAMESDK"] = "Dependencies/DiscordGameSDK/cpp"
-IncludeDir["NSIGHTAFTERMATH"] = "Dependencies/Nsight-Aftermath/include"
-IncludeDir["VMA"] = "Dependencies/VulkanMemoryAllocator/include"
+IncludeDir["GLSLANG"] = "%{wks.location}/Dependencies/GLSLang"
+IncludeDir["SPIRV"] = "%{wks.location}/Dependencies/GLSLang/SPIRV"
+IncludeDir["SPIRVCROSS"] = "%{wks.location}/Dependencies/SPIRV-Cross"
+IncludeDir["ENTT"] = "%{wks.location}/Dependencies/EnTT/src/entt"
+IncludeDir["YAMLCPP"] = "%{wks.location}/Dependencies/YAMLCpp/include"
+IncludeDir["MODERNDIALOGS"] = "%{wks.location}/Dependencies/ModernDialogs/ModernDialogs"
+IncludeDir["DISCORDGAMESDK"] = "%{wks.location}/Dependencies/DiscordGameSDK/cpp"
+IncludeDir["NSIGHTAFTERMATH"] = "%{wks.location}/Dependencies/Nsight-Aftermath/include"
+IncludeDir["VMA"] = "%{wks.location}/Dependencies/VulkanMemoryAllocator/include"
 
 include "TRAP"
 

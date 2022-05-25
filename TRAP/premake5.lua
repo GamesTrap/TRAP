@@ -8,8 +8,8 @@ project "TRAP"
 	vectorextensions "AVX2"
 	warnings "Extra"
 
-	targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
 	pchheader "TRAPPCH.h"
 	pchsource "src/TRAPPCH.cpp"
@@ -46,15 +46,15 @@ project "TRAP"
 
 	sysincludedirs
 	{
-		"../%{IncludeDir.IMGUI}",
-		"../%{IncludeDir.GLSLANG}",
-		"../%{IncludeDir.SPIRV}",
-		"../%{IncludeDir.SPIRVCROSS}",
-		"../%{IncludeDir.VULKAN}/include/",
-		"../%{IncludeDir.ENTT}",
-		"../%{IncludeDir.YAMLCPP}",
-		"../%{IncludeDir.MODERNDIALOGS}",
-		"../%{IncludeDir.VMA}"
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.SPIRVCROSS}",
+		"%{IncludeDir.VULKAN}/include/",
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.MODERNDIALOGS}",
+		"%{IncludeDir.VMA}"
 	}
 
 	links
@@ -96,21 +96,21 @@ project "TRAP"
 
 			links
 			{
-				"../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib"
+				"%{wks.location}/Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib"
 			}
 
 			sysincludedirs
 			{
-				"../%{IncludeDir.DISCORDGAMESDK}"
+				"%{IncludeDir.DISCORDGAMESDK}"
 			}
 
 			files
 			{
-				"../%{IncludeDir.DISCORDGAMESDK}/**.h",
-				"../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
+				"%{IncludeDir.DISCORDGAMESDK}/**.h",
+				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
-			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+			dofileopt("%{wks.location}/Dependencies/DiscordGameSDK/Compatibility")
 
 			defines "USE_DISCORD_GAME_SDK"
 		end
@@ -123,7 +123,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 			sysincludedirs
 			{
-				"../%{IncludeDir.NSIGHTAFTERMATH}"
+				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
@@ -149,13 +149,13 @@ project "TRAP"
 
 			sysincludedirs
 			{
-				"../%{IncludeDir.DISCORDGAMESDK}"
+				"%{IncludeDir.DISCORDGAMESDK}"
 			}
 
 			files
 			{
-				"../%{IncludeDir.DISCORDGAMESDK}/**.h",
-				"../%{IncludeDir.DISCORDGAMESDK}/**.cpp"
+				"%{IncludeDir.DISCORDGAMESDK}/**.h",
+				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
 			prelinkcommands
@@ -168,7 +168,7 @@ project "TRAP"
 				"fi"
 			}
 
-			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
+			dofileopt("%{wks.location}/Dependencies/DiscordGameSDK/Compatibility")
 
 			defines "USE_DISCORD_GAME_SDK"
 		end
@@ -179,7 +179,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 			sysincludedirs
 			{
-				"../%{IncludeDir.NSIGHTAFTERMATH}"
+				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
 
 			prelinkcommands
@@ -221,8 +221,8 @@ project "TRAP-Headless"
 	vectorextensions "AVX2"
 	warnings "Extra"
 
-	targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
 	pchheader "TRAPPCH.h"
 	pchsource "src/TRAPPCH.cpp"
@@ -259,15 +259,15 @@ project "TRAP-Headless"
 
 	sysincludedirs
 	{
-		"../%{IncludeDir.IMGUI}",
-		"../%{IncludeDir.GLSLANG}",
-		"../%{IncludeDir.SPIRV}",
-		"../%{IncludeDir.SPIRVCROSS}",
-		"../%{IncludeDir.VULKAN}/include/",
-		"../%{IncludeDir.ENTT}",
-		"../%{IncludeDir.YAMLCPP}",
-		"../%{IncludeDir.MODERNDIALOGS}",
-		"../%{IncludeDir.VMA}"
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.SPIRVCROSS}",
+		"%{IncludeDir.VULKAN}/include/",
+		"%{IncludeDir.ENTT}",
+		"%{IncludeDir.YAMLCPP}",
+		"%{IncludeDir.MODERNDIALOGS}",
+		"%{IncludeDir.VMA}"
 	}
 
 	links

@@ -8,8 +8,8 @@ project "ConvertToSPIRV"
 	vectorextensions "AVX2"
 	warnings "Extra"
 
-	targetdir ("../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	objdir ("../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
 	files
 	{
@@ -19,8 +19,8 @@ project "ConvertToSPIRV"
 
 	sysincludedirs
 	{
-		"../../%{IncludeDir.GLSLANG}",
-		"../../%{IncludeDir.SPIRV}"
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}"
 	}
 
 	filter "system:windows"

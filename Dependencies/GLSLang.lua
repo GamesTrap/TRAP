@@ -30,8 +30,8 @@ project "GLSLang"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {
@@ -61,7 +61,7 @@ project "GLSLang"
 
     includedirs
     {
-        "../%{IncludeDir.GLSLANG}"
+        "%{IncludeDir.GLSLANG}"
     }
 
     defines
@@ -117,8 +117,8 @@ project "SPIRV"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {
@@ -151,8 +151,8 @@ project "SPIRV"
 
     includedirs
     {
-        "../%{IncludeDir.GLSLANG}",
-        "../%{IncludeDir.GLSLANG}/SPIRV",
+        "%{IncludeDir.GLSLANG}",
+        "%{IncludeDir.GLSLANG}/SPIRV",
     }
 
     links
@@ -194,8 +194,8 @@ project "GLSLang-Default-Resource-Limits"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
     {

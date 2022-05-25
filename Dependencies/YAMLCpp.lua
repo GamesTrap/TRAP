@@ -6,8 +6,8 @@ project "YAMLCpp"
     systemversion "latest"
     warnings "off"
 
-    targetdir ("../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-    objdir ("../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
     files
 	{
@@ -19,7 +19,7 @@ project "YAMLCpp"
 
 	includedirs
 	{
-        "../%{IncludeDir.YAMLCPP}"
+        "%{IncludeDir.YAMLCPP}"
 	}
 
 	defines

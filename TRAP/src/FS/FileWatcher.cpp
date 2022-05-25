@@ -343,7 +343,8 @@ void TRAP::FS::FileWatcher::WatchLinux()
     if(fileDescriptors[0].fd < 0)
     {
         std::string error(1024, '\0');
-        strerror_r(errno, error.data(), error.size());
+        const char* unused = strerror_r(errno, error.data(), error.size());
+        static_cast<void>(unused); //Avoid unused variable warning
 
         TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to initialize inotify: ", Utils::GetStrError());
         close(m_killEvent);
