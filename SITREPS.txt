@@ -2581,4 +2581,11 @@ SITREP 05/18/2022|22w20a1
 
 SITREP 05/24/2022|22w21a1
     - Changed TRAP Engine version to 22w21a1(0.7.140)
-    - Fixed an issue which leads to the render targets artifacting (StoreColorActions was set to DontCare instead of Store) ~<30 mins
+    - Fixed an issue which leads to the render targets artifacting (StoreColorActions was set to DontCare instead of Store for the swapchain) ~<30 mins
+
+SITREP 05/25/2022|22w21a2
+    - Changed TRAP Engine version to 22w21a2(0.7.141)
+    - Renamed VulkanFrameBufferTests to FrameBufferTests ~<5 mins
+    - Renamed VulkanMultiWindowTests to MultiWindowTests ~<5 mins
+    - Renamed VulkanIcoSphereTests to IcoSphereTests ~<5 mins
+    - Renamed VulkanTests to RendererAPITests ~<5 mins

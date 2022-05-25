@@ -1,12 +1,12 @@
-#ifndef GAMESTRAP_VULKANFRAMEBUFFERTESTS_H
-#define GAMESTRAP_VULKANFRAMEBUFFERTESTS_H
+#ifndef GAMESTRAP_FRAMEBUFFERTESTS_H
+#define GAMESTRAP_FRAMEBUFFERTESTS_H
 
 #include <TRAP.h>
 
-class VulkanFrameBufferTests final : public TRAP::Layer
+class FrameBufferTests final : public TRAP::Layer
 {
 public:
-    VulkanFrameBufferTests();
+    FrameBufferTests();
 
     void OnAttach() override;
     void OnDetach() override;
@@ -46,4 +46,4 @@ private:
 	TRAP::Utils::Timer m_titleTimer{};
 };
 
-#endif /*GAMESTRAP_VULKANTEXTURETESTS_H*/
+#endif /*GAMESTRAP_FRAMEBUFFERTESTS_H*/

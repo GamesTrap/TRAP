@@ -1,7 +1,7 @@
-#include "VulkanFrameBufferTests.h"
+#include "FrameBufferTests.h"
 
-VulkanFrameBufferTests::VulkanFrameBufferTests()
-    : Layer("VulkanFrameBufferTests"),
+FrameBufferTests::FrameBufferTests()
+    : Layer("FrameBuffer"),
       m_vertexBuffer(nullptr),
       m_indexBuffer(nullptr),
 	  m_shader(nullptr),
@@ -11,9 +11,9 @@ VulkanFrameBufferTests::VulkanFrameBufferTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanFrameBufferTests::OnAttach()
+void FrameBufferTests::OnAttach()
 {
-    TRAP::Application::GetWindow()->SetTitle("Vulkan FrameBuffer Test");
+    TRAP::Application::GetWindow()->SetTitle("FrameBuffer");
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
@@ -38,7 +38,7 @@ void VulkanFrameBufferTests::OnAttach()
     m_texture->AwaitLoading();
 
     //Load Shader
-    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "./Assets/Shaders/testtextureseperate.shader");
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("TextureTest", "./Assets/Shaders/testtextureseperate.shader");
 
     TRAP::Graphics::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
@@ -76,7 +76,7 @@ void VulkanFrameBufferTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanFrameBufferTests::OnDetach()
+void FrameBufferTests::OnDetach()
 {
     //Maybe needs GPU idle
     m_renderTarget.reset();
@@ -88,7 +88,7 @@ void VulkanFrameBufferTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
@@ -107,7 +107,7 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     //Bind geometry and shader
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
+    TRAP::Graphics::ShaderManager::Get("TextureTest")->Use();
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
@@ -141,9 +141,9 @@ void VulkanFrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanFrameBufferTests::OnImGuiRender()
+void FrameBufferTests::OnImGuiRender()
 {
-    ImGui::Begin("Vulkan FrameBuffer Test");
+    ImGui::Begin("FrameBuffer");
     ImGui::Text("Press ESC to close");
     ImGui::Separator();
     ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
@@ -165,7 +165,7 @@ void VulkanFrameBufferTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanFrameBufferTests::OnEvent(TRAP::Events::Event& event)
+void FrameBufferTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
@@ -173,7 +173,7 @@ void VulkanFrameBufferTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VulkanFrameBufferTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool FrameBufferTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
     if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();

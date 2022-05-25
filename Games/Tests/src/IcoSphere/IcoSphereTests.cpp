@@ -1,7 +1,7 @@
-#include "VulkanIcoSphereTests.h"
+#include "IcoSphereTests.h"
 
-VulkanIcoSphereTests::VulkanIcoSphereTests()
-	: Layer("VulkanIcoSphereTests"),
+IcoSphereTests::IcoSphereTests()
+	: Layer("IcoSphere"),
 	  m_wireFrame(false),
 	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
 	  m_FOV(45.0f),
@@ -12,9 +12,9 @@ VulkanIcoSphereTests::VulkanIcoSphereTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanIcoSphereTests::OnAttach()
+void IcoSphereTests::OnAttach()
 {
-	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
+	TRAP::Application::GetWindow()->SetTitle("IcoSphere");
 
 	//Load Icosphere vertices
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_icoSphereVerticesIndexed.data(),
@@ -42,7 +42,7 @@ void VulkanIcoSphereTests::OnAttach()
 	m_cameraUBO->AwaitLoading();
 
 	//Load Shader
-	m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKIcoSphereTest", "./Assets/Shaders/icosphere.shader");
+	m_shader = TRAP::Graphics::ShaderManager::LoadFile("IcoSphereTest", "./Assets/Shaders/icosphere.shader");
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -59,7 +59,7 @@ void VulkanIcoSphereTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanIcoSphereTests::OnDetach()
+void IcoSphereTests::OnDetach()
 {
 	m_cameraUBO.reset();
 	m_indexBuffer.reset();
@@ -68,7 +68,7 @@ void VulkanIcoSphereTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void IcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
 	{
@@ -101,21 +101,21 @@ void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
-		TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[IcoSphere] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+		TP_INFO("[IcoSphere] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanIcoSphereTests::OnImGuiRender()
+void IcoSphereTests::OnImGuiRender()
 {
 	float fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
 	TRAP::Math::Vec3 pos = m_cameraTransform.Position;
 
-	ImGui::Begin("Vulkan IcoSphere Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                               ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("IcoSphere", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                   ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
@@ -129,7 +129,7 @@ void VulkanIcoSphereTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanIcoSphereTests::OnEvent(TRAP::Events::Event& event)
+void IcoSphereTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
@@ -140,17 +140,17 @@ void VulkanIcoSphereTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VulkanIcoSphereTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool IcoSphereTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 	{
 		m_wireFrame = !m_wireFrame;
-		TP_TRACE("[VulkanTests] WireFrame: ", m_wireFrame ? "Enabled" : "Disabled");
+		TP_TRACE("[IcoSphere] WireFrame: ", m_wireFrame ? "Enabled" : "Disabled");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)
 	{
 		m_vsync = !m_vsync;
-		TP_TRACE("[VulkanTests] VSync: ", m_vsync ? "On" : "Off");
+		TP_TRACE("[IcoSphere] VSync: ", m_vsync ? "On" : "Off");
 		e.GetWindow()->SetVSync(m_vsync);
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)

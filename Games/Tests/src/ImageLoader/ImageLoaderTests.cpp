@@ -20,8 +20,8 @@ ImageLoaderTests::ImageLoaderTests()
 
 void ImageLoaderTests::OnImGuiRender()
 {
-	ImGui::Begin("Images", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Image loader", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                      ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance), 6(QOI)");
 	if(m_tga)
@@ -190,7 +190,7 @@ void ImageLoaderTests::OnAttach()
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-	TP_TRACE("Initializing of all Textures took: ", loadingTimer.ElapsedMilliseconds(), "ms!");
+	TP_TRACE("[ImageLoader] Initializing of all Textures took: ", loadingTimer.ElapsedMilliseconds(), "ms!");
 
 	TRAP::Graphics::RenderCommand::SetClearColor();
 }

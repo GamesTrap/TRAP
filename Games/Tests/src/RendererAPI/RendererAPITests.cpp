@@ -1,7 +1,7 @@
-#include "VulkanTests.h"
+#include "RendererAPITests.h"
 
-VulkanTests::VulkanTests()
-	: Layer("VulkanTests"),
+RendererAPITests::RendererAPITests()
+	: Layer("RendererAPITests"),
 	  m_vertexBuffer(nullptr),
 	  m_indexBuffer(nullptr),
 	  m_wireFrame(false),
@@ -18,9 +18,9 @@ VulkanTests::VulkanTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanTests::OnAttach()
+void RendererAPITests::OnAttach()
 {
-	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
+	TRAP::Application::GetWindow()->SetTitle("RendererAPI Test");
 
 	//Load Triangle vertices (with enough space for a quad)
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(),
@@ -50,10 +50,10 @@ void VulkanTests::OnAttach()
 	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
 	m_colorUniformBuffer->AwaitLoading();
 
-	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "./Assets/Shaders/test.shader");
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "./Assets/Shaders/testpushconstant.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("TestPushConstant", "./Assets/Shaders/testpushconstant.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "./Assets/Shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", &macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -61,7 +61,7 @@ void VulkanTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanTests::OnDetach()
+void RendererAPITests::OnDetach()
 {
 	m_colorUniformBuffer.reset();
 	m_sizeMultiplicatorUniformBuffer.reset();
@@ -71,7 +71,7 @@ void VulkanTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void RendererAPITests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
 		TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Line);
@@ -129,7 +129,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 			m_colorTimer.Reset();
 		}
 
-		TRAP::Graphics::ShaderManager::Get("VKTestPushConstant")->Use();
+		TRAP::Graphics::ShaderManager::Get("TestPushConstant")->Use();
 
 		TRAP::Graphics::RenderCommand::SetPushConstants("ColorRootConstant", &m_colorData);
 	}
@@ -160,7 +160,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
 		m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
-		const auto& shader = TRAP::Graphics::ShaderManager::Get("VKTestUBO");
+		const auto& shader = TRAP::Graphics::ShaderManager::Get("TestUBO");
 		//Use UBOs
 		shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
 		shader->UseUBO(1, 1, m_colorUniformBuffer.get());
@@ -168,7 +168,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		shader->Use();
 	}
 	else
-		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
+		TRAP::Graphics::ShaderManager::Get("Test")->Use();
 
 	if(!m_indexed)
 		TRAP::Graphics::RenderCommand::Draw(m_quad ? 6 : 3);
@@ -178,17 +178,17 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
-		TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[RendererAPITests] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+		TP_INFO("[RendererAPITests] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanTests::OnImGuiRender()
+void RendererAPITests::OnImGuiRender()
 {
-	ImGui::Begin("Vulkan Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	ImGui::Begin("RendererAPI Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                     ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
@@ -206,7 +206,7 @@ void VulkanTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanTests::OnEvent(TRAP::Events::Event& event)
+void RendererAPITests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e)
@@ -217,32 +217,32 @@ void VulkanTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool RendererAPITests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 	{
 		m_wireFrame = !m_wireFrame;
-		TP_TRACE("[VulkanTests] WireFrame: ", m_wireFrame ? "Enabled" : "Disabled");
+		TP_TRACE("[RendererAPITests] WireFrame: ", m_wireFrame ? "Enabled" : "Disabled");
 	}
 	if (e.GetKey() == TRAP::Input::Key::F2)
 	{
 		m_quad = !m_quad;
-		TP_TRACE("[VulkanTests] Geometry: ", m_quad ? "Quad" : "Triangle");
+		TP_TRACE("[RendererAPITests] Geometry: ", m_quad ? "Quad" : "Triangle");
 	}
 	if(e.GetKey() == TRAP::Input::Key::F3)
 	{
 		m_indexed = !m_indexed;
-		TP_TRACE("[VulkanTests] Indexed Drawing: ", m_indexed ? "On" : "Off");
+		TP_TRACE("[RendererAPITests] Indexed Drawing: ", m_indexed ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
 		m_pushConstantOrUBO = (m_pushConstantOrUBO + 1) % 3;
-		TP_TRACE("[VulkanTests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO ? "On" : "Off");
+		TP_TRACE("[RendererAPITests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)
 	{
 		m_vsync = !m_vsync;
-		TP_TRACE("[VulkanTests] VSync: ", m_vsync ? "On" : "Off");
+		TP_TRACE("[RendererAPITests] VSync: ", m_vsync ? "On" : "Off");
 		e.GetWindow()->SetVSync(m_vsync);
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)

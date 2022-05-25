@@ -1,12 +1,12 @@
-#ifndef GAMESTRAP_VULKANICOSPHERETESTS_H
-#define GAMESTRAP_VULKANICOSPHERETESTS_H
+#ifndef GAMESTRAP_ICOSPHERETESTS_H
+#define GAMESTRAP_ICOSPHERETESTS_H
 
 #include <TRAP.h>
 
-class VulkanIcoSphereTests final : public TRAP::Layer
+class IcoSphereTests final : public TRAP::Layer
 {
 public:
-	VulkanIcoSphereTests();
+	IcoSphereTests();
 
 	void OnAttach() override;
 	void OnDetach() override;
@@ -87,4 +87,4 @@ private:
 	TRAP::Graphics::Shader* m_shader;
 };
 
-#endif /*GAMESTRAP_VULKANICOSPHERETESTS_H*/
+#endif /*GAMESTRAP_ICOSPHERETESTS_H*/

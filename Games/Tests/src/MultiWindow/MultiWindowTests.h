@@ -1,12 +1,12 @@
-#ifndef GAMESTRAP_VULKANMULTIWINDOWTESTS_H
-#define GAMESTRAP_VULKANMULTIWINDOWTESTS_H
+#ifndef GAMESTRAP_MULTIWINDOWTESTS_H
+#define GAMESTRAP_MULTIWINDOWTESTS_H
 
 #include <TRAP.h>
 
-class VulkanMultiWindowTests final : public TRAP::Layer
+class MultiWindowTests final : public TRAP::Layer
 {
 public:
-	VulkanMultiWindowTests();
+	MultiWindowTests();
 
 	void OnAttach() override;
 	void OnDetach() override;
@@ -56,4 +56,4 @@ private:
 	bool m_useUBO;
 };
 
-#endif /*GAMESTRAP_VULKANMULTIWINDOWTESTS_H*/
+#endif /*GAMESTRAP_MULTIWINDOWTESTS_H*/

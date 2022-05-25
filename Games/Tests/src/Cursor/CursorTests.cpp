@@ -53,7 +53,7 @@ CursorTests::CursorTests()
 
 void CursorTests::OnImGuiRender()
 {
-	ImGui::Begin("CursorTest", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	ImGui::Begin("Cursor", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                    ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press A to enable/disable Cursor animation");

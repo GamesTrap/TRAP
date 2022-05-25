@@ -9,14 +9,14 @@ DragAndDropTests::DragAndDropTests()
 
 void DragAndDropTests::OnImGuiRender()
 {
-	ImGui::Begin("Drag And Drop", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	ImGui::Begin("Drag and Drop", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                       ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
-	ImGui::Text("Press D to enable/disable Drag And Drop");
+	ImGui::Text("Press D to enable/disable Drag and Drop");
 	if(m_dragAndDrop)
-		ImGui::Text("Drag And Drop: Enabled");
+		ImGui::Text("Drag and Drop: Enabled");
 	else
-		ImGui::Text("Drag And Drop: Disabled");
+		ImGui::Text("Drag and Drop: Disabled");
 	ImGui::Separator();
 	ImGui::Text("Data: ");
 	if(m_dropData.empty())

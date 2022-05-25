@@ -9,7 +9,7 @@ TitleTests::TitleTests()
 
 void TitleTests::OnImGuiRender()
 {
-	ImGui::Begin("TitleTest", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	ImGui::Begin("Title", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                    ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::End();

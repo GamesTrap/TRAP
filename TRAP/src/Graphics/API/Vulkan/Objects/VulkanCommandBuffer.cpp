@@ -256,7 +256,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 			static_cast<uint32_t>(renderTargets[i]->GetImageFormat()),
 			static_cast<uint32_t>(renderTargets[i]->GetSampleCount()),
 			loadActions ? static_cast<uint32_t>(loadActions->LoadActionsColor[i]) : 0,
-			static_cast<uint32_t>(loadActions->StoreActionsColor[i])
+			static_cast<uint32_t>(colorStoreActions[i])
 		};
 
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
@@ -1199,6 +1199,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::Shadi
 															  RendererAPI::ShadingRateCombiner postRasterizerState,
 															  RendererAPI::ShadingRateCombiner finalRate) const
 {
+	//Texture would be used for https://www.khronos.org/registry/vulkan/specs/1.3-extensions/html/vkspec.html#primsrast-fragment-shading-rate-attachment
+
 	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
 	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
 		return;

@@ -1,7 +1,7 @@
-#include "VulkanMultiWindowTests.h"
+#include "MultiWindowTests.h"
 
-VulkanMultiWindowTests::VulkanMultiWindowTests()
-	: Layer("VulkanMultiWindowTests"),
+MultiWindowTests::MultiWindowTests()
+	: Layer("MultiWindow"),
 	  m_vertexBuffer(nullptr),
 	  m_indexBuffer(nullptr),
 	  m_wireFrameMainWindow(false),
@@ -17,9 +17,9 @@ VulkanMultiWindowTests::VulkanMultiWindowTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanMultiWindowTests::OnAttach()
+void MultiWindowTests::OnAttach()
 {
-	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test 1");
+	TRAP::Application::GetWindow()->SetTitle("Multi-Window Test 1");
 
 	//Create second Window
 	TRAP::WindowProps::AdvancedProps advWinProps{};
@@ -27,7 +27,7 @@ void VulkanMultiWindowTests::OnAttach()
 	advWinProps.FocusOnShow = false;
 
 	TRAP::WindowProps winProps{};
-	winProps.Title = "Vulkan Multi-Window Test 2";
+	winProps.Title = "Multi-Window Test 2";
 	winProps.Width = 200;
 	winProps.Height = 200;
 	winProps.RefreshRate = 60;
@@ -73,9 +73,9 @@ void VulkanMultiWindowTests::OnAttach()
 	m_colorUniformBuffer->AwaitLoading();
 
 	//Load Shaders
-	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "./Assets/Shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("Test", "./Assets/Shaders/test.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "./Assets/Shaders/testubo.shader", &macros);
+	TRAP::Graphics::ShaderManager::LoadFile("TestUBO", "./Assets/Shaders/testubo.shader", &macros);
 
 	//Wait for all pending resources (just in case)
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -83,7 +83,7 @@ void VulkanMultiWindowTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanMultiWindowTests::OnDetach()
+void MultiWindowTests::OnDetach()
 {
 	if(m_window)
 		m_window.reset();
@@ -96,7 +96,7 @@ void VulkanMultiWindowTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
+void MultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Second Window OnUpdate
 	if(m_window)
@@ -136,7 +136,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 			m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
 			m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
-			const auto& shader = TRAP::Graphics::ShaderManager::Get("VKTestUBO");
+			const auto& shader = TRAP::Graphics::ShaderManager::Get("TestUBO");
 			//Use UBOs
 			shader->UseUBO(1, 0, m_sizeMultiplicatorUniformBuffer.get());
 			shader->UseUBO(1, 1, m_colorUniformBuffer.get());
@@ -144,7 +144,7 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 			shader->Use(m_window.get());
 		}
 		else
-			TRAP::Graphics::ShaderManager::Get("VKTest")->Use(m_window.get());
+			TRAP::Graphics::ShaderManager::Get("Test")->Use(m_window.get());
 
 		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, m_window.get());
 
@@ -161,25 +161,25 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 
 		m_vertexBuffer->Use();
 		m_indexBuffer->Use();
-		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
+		TRAP::Graphics::ShaderManager::Get("Test")->Use();
 		TRAP::Graphics::RenderCommand::DrawIndexed(3);
 	}
 
 	//Simple performance metrics
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
-		TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[MultiWindow] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+		TP_INFO("[MultiWindow] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanMultiWindowTests::OnImGuiRender()
+void MultiWindowTests::OnImGuiRender()
 {
-	ImGui::Begin("Vulkan Multi-Window Test", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                                  ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Multi-Window", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                                           ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Main-Window WireFrame (F1): %s", m_wireFrameMainWindow ? "Enabled" : "Disabled");
 	ImGui::Text("Secondary-Window WireFrame (F2): %s", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
@@ -189,7 +189,7 @@ void VulkanMultiWindowTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanMultiWindowTests::OnEvent(TRAP::Events::Event& event)
+void MultiWindowTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e)
@@ -204,7 +204,7 @@ void VulkanMultiWindowTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VulkanMultiWindowTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
+bool MultiWindowTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 {
 	if (m_window && e.GetWindow() == m_window.get())
 		m_window.reset();
@@ -214,23 +214,23 @@ bool VulkanMultiWindowTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VulkanMultiWindowTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool MultiWindowTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 	{
 		m_wireFrameMainWindow = !m_wireFrameMainWindow;
-		TP_TRACE("[VulkanMultiWindowTests] Main-Window WireFrame: ", m_wireFrameMainWindow ? "Enabled" : "Disabled");
+		TP_TRACE("[MultiWindow] Main-Window WireFrame: ", m_wireFrameMainWindow ? "Enabled" : "Disabled");
 	}
 	if (e.GetKey() == TRAP::Input::Key::F2)
 	{
 		m_wireFrameSecondWindow = !m_wireFrameSecondWindow;
-		TP_TRACE("[VulkanMultiWindowTests] Secondary-Window WireFrame: ", m_wireFrameSecondWindow ? "Enabled" :
-		 																							"Disabled");
+		TP_TRACE("[MultiWindow] Secondary-Window WireFrame: ", m_wireFrameSecondWindow ? "Enabled" :
+		 																				 "Disabled");
 	}
 	if(e.GetKey() == TRAP::Input::Key::F3)
 	{
 		m_useUBO = !m_useUBO;
-		TP_TRACE("[VulkanMultiWindowTests] UBO: ", m_useUBO ? "Enabled" : "Disabled");
+		TP_TRACE("[MultiWindow] UBO: ", m_useUBO ? "Enabled" : "Disabled");
 	}
 
 	if (e.GetKey() == TRAP::Input::Key::Escape)

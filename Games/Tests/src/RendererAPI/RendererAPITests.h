@@ -1,12 +1,12 @@
-#ifndef GAMESTRAP_VULKANTESTS_H
-#define GAMESTRAP_VULKANTESTS_H
+#ifndef GAMESTRAP_RENDERERAPITESTS_H
+#define GAMESTRAP_RENDERERAPITESTS_H
 
 #include <TRAP.h>
 
-class VulkanTests final : public TRAP::Layer
+class RendererAPITests final : public TRAP::Layer
 {
 public:
-	VulkanTests();
+	RendererAPITests();
 
 	void OnAttach() override;
 	void OnDetach() override;
@@ -80,4 +80,4 @@ private:
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
 };
 
-#endif /*GAMESTRAP_VULKANTESTS_H*/
+#endif /*GAMESTRAP_RENDERERAPITESTS_H*/

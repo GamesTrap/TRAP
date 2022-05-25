@@ -49,8 +49,8 @@ IconTests::IconTests()
 
 void IconTests::OnImGuiRender()
 {
-	ImGui::Begin("IconTests", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-	                                   ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Icon", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+	                              ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
 	ImGui::Text("Press Space to cycle through Window Icons");
 	ImGui::Text("Press X to reset Window Icon");
