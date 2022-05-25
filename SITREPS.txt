@@ -2589,3 +2589,5 @@ SITREP 05/25/2022|22w21a2
     - Renamed VulkanMultiWindowTests to MultiWindowTests ~<5 mins
     - Renamed VulkanIcoSphereTests to IcoSphereTests ~<5 mins
     - Renamed VulkanTests to RendererAPITests ~<5 mins
+    - Added missing QOI License for QOIConv ~<5 mins
+    - Changed all premake files to use staticruntime "off" ~<5 mins
