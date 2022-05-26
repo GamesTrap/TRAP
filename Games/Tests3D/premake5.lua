@@ -57,12 +57,26 @@ project "Tests3D"
 			"SPIRV-Cross-HLSL"
 		}
 
+		runpathdirs
+		{
+			".",
+			"%{cfg.targetdir}",
+			"$ORIGIN"
+		}
+
 		-- Discord Game SDK stuff
-		if os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") and
+		if (os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") or
+		    os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/libdiscord_game_sdk.so")) and
 		   os.isdir("../../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
-			linkoptions{ "-Wl,/usr/local/lib/discord_game_sdk.so"}
+			links "discord_game_sdk"
+			libdirs "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64"
+
+			postbuildcommands
+			{
+				"{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/libdiscord_game_sdk.so %{cfg.targetdir}"
+			}
 
 			files
 			{
@@ -80,6 +94,11 @@ project "Tests3D"
 			sysincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
+			}
+
+			postbuildcommands
+			{
+				"{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
@@ -105,7 +124,7 @@ project "Tests3D"
 
 			postbuildcommands
 			{
-				"{COPY} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
+				"{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 			}
 
 			defines "USE_DISCORD_GAME_SDK"
@@ -124,7 +143,7 @@ project "Tests3D"
 
 			postbuildcommands
 			{
-				"{COPY} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
+				"{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"

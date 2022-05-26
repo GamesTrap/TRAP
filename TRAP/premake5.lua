@@ -110,7 +110,7 @@ project "TRAP"
 				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
-			dofileopt("%{wks.location}/Dependencies/DiscordGameSDK/Compatibility")
+			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
 
 			defines "USE_DISCORD_GAME_SDK"
 		end
@@ -141,11 +141,10 @@ project "TRAP"
 		}
 
 		-- Discord Game SDK stuff
-		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") and
-		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
-		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-
-			linkoptions{ "-Wl,/usr/local/lib/discord_game_sdk.so"}
+		if (os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") or
+		    os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/libdiscord_game_sdk.so")) and
+			os.isdir("../Dependencies/DiscordGameSDK/cpp") and
+			os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
 			sysincludedirs
 			{
@@ -158,17 +157,7 @@ project "TRAP"
 				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
-			prelinkcommands
-			{
-				-- Copy the discord_game_sdk.so file to /usr/local/lib/discord_game_sdk.so if exists and
-				-- not already in /usr/local/lib
-				"if [ ! -f '/usr/local/lib/discord_game_sdk.so' ]; then " ..
-				"echo 'Copying discord_game_sdk.so to /usr/local/lib/discord_game_sdk.so' && " ..
-				"sudo cp '../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so' '/usr/local/lib/discord_game_sdk.so'; " ..
-				"fi"
-			}
-
-			dofileopt("%{wks.location}/Dependencies/DiscordGameSDK/Compatibility")
+			dofileopt("../Dependencies/DiscordGameSDK/Compatibility")
 
 			defines "USE_DISCORD_GAME_SDK"
 		end
@@ -177,19 +166,10 @@ project "TRAP"
 		if os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
+
 			sysincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
-
-			prelinkcommands
-			{
-				-- Copy the libGFSDK_Aftermath_Lib.x64.so file to /usr/local/lib/libGFSDK_Aftermath_Lib.x64.so if exists and
-				-- not already in /usr/local/lib
-				"if [ ! -f '/usr/local/lib/libGFSDK_Aftermath_Lib.x64.so' ]; then " ..
-				"echo 'Copying libGFSDK_Aftermath_Lib.x64.so to /usr/local/lib/libGFSDK_Aftermath_Lib.x64.so' && " ..
-				"sudo cp '../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so' '/usr/local/lib/libGFSDK_Aftermath_Lib.x64.so'; " ..
-				"fi"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"

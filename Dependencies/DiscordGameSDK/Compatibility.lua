@@ -45,3 +45,5 @@ for key, value in ipairs(incompatibleFiles) do
         io.close(f);
     end
 end
+
+os.rename("lib/x86_64/discord_game_sdk.so", "lib/x86_64/libdiscord_game_sdk.so");
