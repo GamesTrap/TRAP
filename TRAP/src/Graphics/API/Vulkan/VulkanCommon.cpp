@@ -9,8 +9,8 @@
 #include "Objects/VulkanInits.h"
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type,
-                                          const std::string_view name)
+void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
+										  [[maybe_unused]] const VkObjectType type, [[maybe_unused]] const std::string_view name)
 {
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)
@@ -21,8 +21,9 @@ void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle
 #endif
 }
 #else
-void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkDebugReportObjectTypeEXT type,
-                                          const std::string_view name)
+void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
+										  [[maybe_unused]] const VkDebugReportObjectTypeEXT type,
+                                          [[maybe_unused]] const std::string_view name)
 {
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugReportExtension)

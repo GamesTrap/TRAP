@@ -1,8 +1,6 @@
 #ifndef TRAP_VULKANMEMORYALLOCATOR_H
 #define TRAP_VULKANMEMORYALLOCATOR_H
 
-#include <vk_mem_alloc.h>
-
 namespace TRAP::Graphics::API
 {
 	class VulkanInstance;

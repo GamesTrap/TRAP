@@ -253,6 +253,14 @@
 	#pragma warning(pop)
 #endif
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <vk_mem_alloc.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 #ifdef ENABLE_NSIGHT_AFTERMATH
 #include <GFSDK_Aftermath.h>
 #include <GFSDK_Aftermath_Defines.h>

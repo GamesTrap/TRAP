@@ -82,23 +82,11 @@ project "TRAP"
 			"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 		}
 
-		links
-		{
-			"Imm32",
-			"ws2_32"
-		}
-
 		-- Discord Game SDK stuff
 		if os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib") and
 		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
 		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-
-			links
-			{
-				"%{wks.location}/Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib"
-			}
-
 			sysincludedirs
 			{
 				"%{IncludeDir.DISCORDGAMESDK}"

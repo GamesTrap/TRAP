@@ -34,10 +34,11 @@ for key, value in ipairs(cppFiles) do
 end
 
 for key, value in ipairs(incompatibleFiles) do
-    content = '#include "TRAPPCH.h"\n'
+    content = '#include "TRAPPCH.h"\n#ifdef _MSC_VER\n\t#pragma warning(push, 0)\n#endif\n'
     for line in io.lines("cpp/" .. value) do
         content = content .. line .. "\n"
     end
+    content = content .. "#ifdef _MSC_VER\n\t#pragma warning(pop)\n#endif\n\n"
 
     f = io.open("cpp/" .. value, "w")
     if f then

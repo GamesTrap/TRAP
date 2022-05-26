@@ -1,8 +1,6 @@
 #ifndef TRAP_VULKANTEXTURE_H
 #define TRAP_VULKANTEXTURE_H
 
-#include <vk_mem_alloc.h>
-
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Textures/TextureBase.h"
 

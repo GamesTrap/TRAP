@@ -224,7 +224,8 @@ namespace TRAP::Graphics::API
 	/// <param name="handle">Vulkan object.</param>
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
-	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const std::string_view name);
+	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] uint64_t handle,
+				         [[maybe_unused]] VkObjectType type, [[maybe_unused]] const std::string_view name);
 #else
 	/// <summary>
 	/// Set a name for a Vulkan object.
@@ -233,7 +234,8 @@ namespace TRAP::Graphics::API
 	/// <param name="handle">Vulkan object.</param>
 	/// <param name="type">Vulkan object type.</param>
 	/// <param name="name">Name to set.</param>
-	void VkSetObjectName(VkDevice device, uint64_t handle, VkDebugReportObjectTypeEXT type, const std::string_view name);
+	void VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] uint64_t handle,
+	                     [[maybe_unused]] VkDebugReportObjectTypeEXT type, [[maybe_unused]] const std::string_view name);
 #endif
 
 	inline static constexpr std::array<VkAttachmentLoadOp,

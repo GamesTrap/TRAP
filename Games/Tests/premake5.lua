@@ -124,7 +124,7 @@ project "Tests"
 
 			postbuildcommands
 			{
-				"{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
+				"{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 			}
 
 			defines "USE_DISCORD_GAME_SDK"
@@ -143,7 +143,7 @@ project "Tests"
 
 			postbuildcommands
 			{
-				"{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
+				"{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
 			}
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"

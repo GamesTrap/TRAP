@@ -2593,8 +2593,10 @@ SITREP 05/25/2022|22w21a2
     - Changed all premake files to use staticruntime "off" ~<5 mins
     - Some small premake improvements ~<10 mins
 
-SITREP 05/25/2022|22w21a2
+SITREP 05/26/2022|22w21a2
     - Changed TRAP Engine version to 22w21b1(0.7.142)
     - Linux moved *.so files to output application folder ~<10 mins
     - DiscordGameSDK Compatibility.lua now renames the discord_game_sdk.so to libdiscord_game_sdk.so ~<10 mins
     - Premake Linux Added runpaths for the *.so dependencies (this allows building in non-root envs) ~<40 mins
+    - MSVC Discord Game SDK silenced all warnings ~<20 mins
+    - MSVC Vulkan Memory Allocator silenced all warnings ~<20 mins

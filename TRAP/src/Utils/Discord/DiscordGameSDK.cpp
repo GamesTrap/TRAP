@@ -7,7 +7,13 @@
 
 #ifdef USE_DISCORD_GAME_SDK
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #include <discord.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 discord::Core* core{};
 discord::Result lastRes = discord::Result::Ok;
