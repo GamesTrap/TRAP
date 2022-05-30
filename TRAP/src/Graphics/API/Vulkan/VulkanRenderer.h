@@ -71,6 +71,16 @@ namespace TRAP::Graphics::API
 		void Present(Window* window) override;
 
 		/// <summary>
+		/// Dispatch to the given window.
+		/// </summary>
+		/// <param name="workGroupElements">
+		/// Amount of elements for each work group.
+		/// These values will be divided by the shader's work group size and rounded up.
+		/// </param>
+		/// <param name="window">Window to Dispatch.</param>
+		void Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) override;
+
+		/// <summary>
 		/// Set the VSync state for the given window.
 		/// </summary>
 		/// <param name="vsync">Enable or disable VSync.</param>
@@ -717,6 +727,18 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndGraphicRecording(PerWindowData* const p);
+
+
+		/// <summary>
+		/// Start recording the compute pipeline.
+		/// </summary>
+		/// <param name="p">Per window data used for recording.</param>
+		static void StartComputeRecording(PerWindowData* const p);
+		/// <summary>
+		/// Stop recording the compute pipeline.
+		/// </summary>
+		/// <param name="p">Per window data used for recording.</param>
+		static void EndComputeRecording(PerWindowData* const p);
 
 		std::string m_rendererTitle;
 

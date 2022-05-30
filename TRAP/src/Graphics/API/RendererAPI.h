@@ -70,6 +70,7 @@ namespace TRAP::Graphics
 		enum class ClearBufferType;
 		enum class ShadingRate;
 		enum class ShadingRateCombiner;
+		enum class ResourceState;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -153,6 +154,12 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to present.</param>
 		virtual void Present(Window* window) = 0;
+
+		/// <summary>
+		/// Dispatch to the given window.
+		/// </summary>
+		/// <param name="window">Window to Dispatch.</param>
+		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) = 0;
 
 		/// <summary>
 		/// Set the VSync state for the given window.
@@ -573,6 +580,17 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve the graphics root signature from. Default: Main Window.</param>
 		/// <returns>Graphics root signature.</returns>
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
+
+		/// <summary>
+		/// Transition a texture from old layout to the new layout.
+		/// The transition happens immediately and is guaranteed to be complete when the function returns.
+		/// </summary>
+		/// <param name="texture">Texture to transition layout.</param>
+		/// <param name="oldState">Current resource state of the given texture.</param>
+		/// <param name="newState">New resource state for the given texture.</param>
+		static void Transition(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+							   TRAP::Graphics::RendererAPI::ResourceState oldState,
+							   TRAP::Graphics::RendererAPI::ResourceState newState);
 
 	//protected:
 		/// <summary>
@@ -2290,8 +2308,6 @@ namespace TRAP::Graphics
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
 		static TRAP::Ref<Queue> s_graphicQueue;
 		static TRAP::Ref<Queue> s_computeQueue;
-		static std::array<TRAP::Ref<CommandPool>, ImageCount> s_computeCommandPools;
-		static std::array<CommandBuffer*, ImageCount> s_computeCommandBuffers;
 
 	public:
 		/// <summary>
@@ -2306,12 +2322,17 @@ namespace TRAP::Graphics
 
 			TRAP::Window* Window;
 
+			//Swapchain/Graphics stuff
 			uint32_t ImageIndex = 0;
 			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
 			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers;
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
+			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
+			PipelineDesc GraphicsPipelineDesc;
+			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
+			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 #ifdef TRAP_HEADLESS_MODE
@@ -2328,10 +2349,15 @@ namespace TRAP::Graphics
 			bool CurrentVSync;
 			bool NewVSync;
 
-			PipelineDesc GraphicsPipelineDesc;
-			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
-
-			bool Recording;
+			//Compute stuff
+			std::array<TRAP::Ref<CommandPool>, ImageCount> ComputeCommandPools;
+			std::array<CommandBuffer*, ImageCount>  ComputeCommandBuffers;
+			std::array<TRAP::Ref<Fence>, ImageCount> ComputeCompleteFences;
+			std::array<TRAP::Ref<Semaphore>, ImageCount> ComputeCompleteSemaphores;
+			TRAP::Math::Vec3 CurrentComputeWorkGroupSize;
+			PipelineDesc ComputePipelineDesc;
+			TRAP::Ref<Pipeline> CurrentComputePipeline;
+			bool RecordingCompute;
 		};
 
 	protected:

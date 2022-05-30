@@ -42,7 +42,6 @@ namespace TRAP::Graphics::API
 
 		/// <summary>
 		/// Retrieve the shaders thread count per work group.
-		/// TODO: Not implemented yet.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
 		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const;
@@ -77,6 +76,20 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
 		                Window* window) override;
+
+		//TODO Temporary REMOVE AFTER
+		/// <summary>
+		/// Use texture with this shader on the given window.
+		/// </summary>
+		/// <param name="set">Descriptor set to use the texture with.</param>
+		/// <param name="binding">Binding point of the texture.</param>
+		/// <param name="texture">Texture to use.</param>
+		/// <param name="window">Window to use the shader for.</param>
+		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::TextureBase* texture,
+		                Window* window);
+		//TODO Temporary REMOVE BEFORE
+
+		//TODO Combined Textures
 		/// <summary>
 		/// Use multiple textures with this shader on the given window.
 		/// </summary>
@@ -156,7 +169,7 @@ namespace TRAP::Graphics::API
 		/// <param name="type">Descriptor type of the descriptor.</param>
 		/// <param name="size">Size of the descriptor.</param>
 		/// <returns>Descriptor's name if found, empty string otherwise.</returns>
-		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, uint64_t size = 1) const;
+		std::string RetrieveDescriptorName(uint32_t set, uint32_t binding, RendererAPI::DescriptorType type, bool* outUAV = nullptr, uint64_t size = 1) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 

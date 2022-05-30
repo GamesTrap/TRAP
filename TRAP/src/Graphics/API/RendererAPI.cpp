@@ -10,6 +10,7 @@
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "ResourceLoader.h"
 #include "Objects/CommandPool.h"
+#include "Objects/CommandBuffer.h"
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
 
@@ -25,10 +26,6 @@ bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
-std::array<TRAP::Ref<TRAP::Graphics::CommandPool>,
-           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
-std::array<TRAP::Graphics::CommandBuffer*,
-           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
@@ -71,15 +68,6 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	//Create Compute Queue
 	queueDesc.Type = QueueType::Compute;
 	s_computeQueue = Queue::Create(queueDesc);
-
-	//For each buffered image
-	for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-	{
-		//Create Compute Command Pool
-		s_computeCommandPools[i] = CommandPool::Create({ s_computeQueue, false });
-		//Allocate Compute Command Buffer
-		s_computeCommandBuffers[i] = s_computeCommandPools[i]->AllocateCommandBuffer(false);
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -89,13 +77,6 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 	s_perWindowDataMap.clear();
 
 	TRAP::Graphics::Sampler::ClearCache();
-
-	for(uint32_t i = ImageCount; i > 0; i--)
-	{
-		s_computeCommandPools[i - 1]->FreeCommandBuffer(s_computeCommandBuffers[i - 1]);
-		s_computeCommandBuffers[i - 1] = nullptr;
-		s_computeCommandPools[i - 1].reset();
-	}
 
 	s_Renderer->s_graphicQueue->WaitQueueIdle();
 	s_Renderer->s_computeQueue->WaitQueueIdle();
@@ -207,6 +188,47 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 	(
 		s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::Transition(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+											 const TRAP::Graphics::RendererAPI::ResourceState oldState,
+											 const TRAP::Graphics::RendererAPI::ResourceState newState)
+{
+	CommandPoolDesc cmdPoolDesc{};
+	cmdPoolDesc.Queue = s_graphicQueue;
+	cmdPoolDesc.Transient = true;
+	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
+
+	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+
+	//Start recording
+	cmd->Begin();
+
+	//Transition the texture to the correct state
+	TextureBarrier texBarrier{};
+	texBarrier.Texture = texture;
+	texBarrier.CurrentState = oldState;
+	texBarrier.NewState = newState;
+
+	cmd->ResourceBarrier(nullptr, &texBarrier, nullptr);
+
+	//End recording
+	cmd->End();
+
+	//Submit the command buffer
+	QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds = {cmd};
+
+	s_graphicQueue->Submit(submitDesc);
+
+	//Wait for work to finish on the GPU
+	s_graphicQueue->WaitQueueIdle();
+
+	//Cleanup
+	cmdPool->FreeCommandBuffer(cmd);
+	cmdPool.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,6 +348,13 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
 		GraphicCommandBuffers[i] = nullptr;
 		GraphicCommandPools[i].reset();
+
+		ComputeCompleteSemaphores[i].reset();
+		ComputeCompleteFences[i].reset();
+
+		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
+		ComputeCommandBuffers[i] = nullptr;
+		ComputeCommandPools[i].reset();
 	}
 }
 

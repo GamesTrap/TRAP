@@ -24,6 +24,7 @@
 #include "Objects/VulkanRootSignature.h"
 #include "Objects/VulkanTexture.h"
 #include "Objects/VulkanInits.h"
+#include "Objects/VulkanShader.h"
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/PipelineDescHash.h"
@@ -156,7 +157,6 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	renderTarget = p->RenderTargets[p->CurrentSwapChainImageIndex];
 #endif
 
-	const TRAP::Ref<Semaphore> renderCompleteSemaphore = p->RenderCompleteSemaphores[p->ImageIndex];
 	TRAP::Ref<Fence> renderCompleteFence = p->RenderCompleteFences[p->ImageIndex];
 
 	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
@@ -207,24 +207,27 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	if(p->Window->IsMinimized() || !p->Recording)
 		return;
 
-	//End Recording
+
+#ifndef TRAP_HEADLESS_MODE
+	//Transition RenderTarget to Present
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
-
-#ifndef TRAP_HEADLESS_MODE
 	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
 	                            ResourceState::RenderTarget, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 #endif
 
+	//End Recording
 	p->GraphicCommandBuffers[p->ImageIndex]->End();
 
 	QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds = { p->GraphicCommandBuffers[p->ImageIndex] };
 #ifndef TRAP_HEADLESS_MODE
 	submitDesc.SignalSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
-	submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphore };
+	submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphore, p->ComputeCompleteSemaphores[p->ImageIndex] };
+#else
+	submitDesc.WaitSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
 #endif
 	submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
 	s_graphicQueue->Submit(submitDesc);
@@ -323,6 +326,52 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* const p)
+{
+	TRAP_ASSERT(p);
+
+	if(p->RecordingCompute)
+		return;
+
+	//Start Recording
+	TRAP::Ref<Fence> computeCompleteFence = p->ComputeCompleteFences[p->ImageIndex];
+
+	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
+	if (computeCompleteFence->GetStatus() == FenceStatus::Incomplete)
+		computeCompleteFence->Wait();
+
+	//Reset cmd pool for this frame
+	p->ComputeCommandPools[p->ImageIndex]->Reset();
+
+	p->ComputeCommandBuffers[p->ImageIndex]->Begin();
+
+	// if(p->CurrentComputePipeline)
+	// 	p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
+
+	p->RecordingCompute = true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* const p)
+{
+	if(!p->RecordingCompute)
+		return;
+
+	//End Recording
+	p->ComputeCommandBuffers[p->ImageIndex]->End();
+
+	QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds = { p->ComputeCommandBuffers[p->ImageIndex] };
+	submitDesc.SignalSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
+	submitDesc.SignalFence = {p->ComputeCompleteFences[p->ImageIndex]};
+	s_computeQueue->Submit(submitDesc);
+
+	p->RecordingCompute = false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view gameName)
 {
 	m_instance = TRAP::MakeRef<VulkanInstance>(gameName, SetupInstanceLayers(), SetupInstanceExtensions());
@@ -399,6 +448,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 {
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
+	EndComputeRecording(p);
 	EndGraphicRecording(p);
 #ifndef TRAP_HEADLESS_MODE
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
@@ -408,7 +458,24 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 		p->CurrentVSync = p->NewVSync;
 	}
 #endif
+	StartComputeRecording(p);
 	StartGraphicRecording(p);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window)
+{
+	PerWindowData* const p = s_perWindowDataMap[window].get();
+
+	if(!p->RecordingCompute)
+		return;
+
+	//Calculate used work group sizes
+	for(uint32_t i = 0; i < workGroupElements.size(); ++i)
+		workGroupElements[i] = static_cast<uint32_t>(TRAP::Math::Round(workGroupElements[i] / p->CurrentComputeWorkGroupSize[i]));
+
+	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(workGroupElements[0], workGroupElements[1], workGroupElements[2]);
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -881,33 +948,42 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	}
 	else if (stages == ShaderStage::Compute)
 	{
-		//TODO ComputePipelineDesc.Pipeline.ShaderProgram = shader;
-		//Bind pipeline
+		ComputePipelineDesc& cpd = std::get<ComputePipelineDesc>(data->ComputePipelineDesc.Pipeline);
+
+		if(cpd.ShaderProgram != shader)
+		{
+			cpd.ShaderProgram = shader;
+			cpd.RootSignature = shader->GetRootSignature();
+		}
+
+		VulkanShader* vkShader = dynamic_cast<VulkanShader*>(shader);
+
+		data->CurrentComputeWorkGroupSize.x = vkShader->GetNumThreadsPerGroup()[0];
+		data->CurrentComputeWorkGroupSize.y = vkShader->GetNumThreadsPerGroup()[1];
+		data->CurrentComputeWorkGroupSize.z = vkShader->GetNumThreadsPerGroup()[2];
+
+		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
+		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
+
+		//Bind Descriptors
+		for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
+		{
+			if(shader->GetDescriptorSets()[i])
+			{
+				data->ComputeCommandBuffers[data->ImageIndex]->BindDescriptorSet(i == 0 ? 0 : data->ImageIndex,
+																			 	 *(shader->GetDescriptorSets()[i]));
+			}
+		}
 	}
 	else if (stages != ShaderStage::None && stages != ShaderStage::SHADER_STAGE_COUNT)
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 
-		if(gpd.ShaderProgram == shader)
+		if(gpd.ShaderProgram != shader)
 		{
-			data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
-			data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
-
-			//Bind Descriptors
-			for(uint32_t i = 0; i < RendererAPI::MaxDescriptorSets; ++i)
-			{
-				if(shader->GetDescriptorSets()[i])
-				{
-					data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(i == 0 ? 0 : data->ImageIndex,
-				                                                                     *(shader->GetDescriptorSets()[i]));
-				}
-			}
-
-			return;
+			gpd.ShaderProgram = shader;
+			gpd.RootSignature = shader->GetRootSignature();
 		}
-
-		gpd.ShaderProgram = shader;
-		gpd.RootSignature = shader->GetRootSignature();
 
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
@@ -1412,6 +1488,13 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		//Create Render Fences/Semaphores
 		p->RenderCompleteFences[i] = Fence::Create();
 		p->RenderCompleteSemaphores[i] = Semaphore::Create();
+		p->GraphicsCompleteSemaphores[i] = Semaphore::Create();
+
+		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue, false});
+		p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
+
+		p->ComputeCompleteFences[i] = Fence::Create();
+		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
 	}
 
 	//Image Acquire Semaphore
@@ -1438,6 +1521,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		if (!p->SwapChain)
 			TRAP::Application::Shutdown();
 
+		StartComputeRecording(p.get());
 		StartGraphicRecording(p.get());
 	}
 #else
@@ -1452,6 +1536,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 
+	StartComputeRecording(p.get());
 	StartGraphicRecording(p.get());
 #endif
 
@@ -1514,6 +1599,11 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 	vLayout->Attributes[0].Binding = 0;
 	vLayout->Attributes[0].Location = 0;
 	vLayout->Attributes[0].Offset = 0;
+
+	//Compute Pipeline
+	p->ComputePipelineDesc = {};
+	p->ComputePipelineDesc.Type = PipelineType::Compute;
+	p->ComputePipelineDesc.Pipeline = ComputePipelineDesc();
 
 	s_perWindowDataMap[window] = std::move(p);
 }

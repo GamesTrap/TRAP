@@ -37,7 +37,7 @@
 //rendered frame may take a long time.
 //ENABLE_GRAPHICS_DEBUG must be defined for this to work.
 //Vulkan: Only works if VK_EXT_validation_features extension is supported.
-// #define ENABLE_GPU_BASED_VALIDATION
+//#define ENABLE_GPU_BASED_VALIDATION
 
 //-------------------------------------------------------------------------------------------------------------------//
 

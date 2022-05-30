@@ -17,6 +17,7 @@
 #include "RendererAPI/RendererAPITests.h"
 #include "Screenshot/ScreenshotTests.h"
 #include "Title/TitleTests.h"
+#include "Vulkan/VulkanComputeTests.h"
 #include "Vulkan/VulkanTextureTests.h"
 #include "WindowState/WindowStateTests.h"
 
@@ -40,9 +41,10 @@ public:
 		// PushLayer(std::make_unique<MultiWindowTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
 		// PushLayer(std::make_unique<RendererAPIInfo>());
-		PushLayer(std::make_unique<RendererAPITests>());
+		// PushLayer(std::make_unique<RendererAPITests>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
 		// PushLayer(std::make_unique<TitleTests>());
+		PushLayer(std::make_unique<VulkanComputeTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
 		// PushLayer(std::make_unique<WindowStateTests>());
 	}
