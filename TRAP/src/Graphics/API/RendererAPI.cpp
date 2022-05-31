@@ -26,6 +26,7 @@ bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_transferQueue = nullptr;
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
@@ -68,6 +69,10 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	//Create Compute Queue
 	queueDesc.Type = QueueType::Compute;
 	s_computeQueue = Queue::Create(queueDesc);
+
+	//Create Transfer Queue
+	queueDesc.Type = QueueType::Transfer;
+	s_transferQueue = Queue::Create(queueDesc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -80,8 +85,10 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 	s_Renderer->s_graphicQueue->WaitQueueIdle();
 	s_Renderer->s_computeQueue->WaitQueueIdle();
+	s_Renderer->s_transferQueue->WaitQueueIdle();
 	s_Renderer->s_graphicQueue.reset();
 	s_Renderer->s_computeQueue.reset();
+	s_Renderer->s_transferQueue.reset();
 
 	s_Renderer.reset();
 	s_Renderer = nullptr;
@@ -168,6 +175,13 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 {
 	return s_computeQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
+{
+	return s_transferQueue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -575,6 +575,11 @@ namespace TRAP::Graphics
 		/// <returns>Compute queue.</returns>
 		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
 		/// <summary>
+		/// Retrieve the used transfer queue.
+		/// </summary>
+		/// <returns>Transfer queue.</returns>
+		static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue();
+		/// <summary>
 		/// Retrieve the currently used graphics root signature of the given window.
 		/// </summary>
 		/// <param name="window">Window to retrieve the graphics root signature from. Default: Main Window.</param>
@@ -2308,6 +2313,7 @@ namespace TRAP::Graphics
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
 		static TRAP::Ref<Queue> s_graphicQueue;
 		static TRAP::Ref<Queue> s_computeQueue;
+		static TRAP::Ref<Queue> s_transferQueue;
 
 	public:
 		/// <summary>

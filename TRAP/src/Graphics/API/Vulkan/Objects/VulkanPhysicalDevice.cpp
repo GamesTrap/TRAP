@@ -333,7 +333,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
 
 	if (!physicalDevices.empty())
-		RatePhysicalDevices(physicalDevices);
+		RatePhysicalDevices(physicalDevices, instance->GetVkInstance());
 	else
 	{
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
@@ -399,7 +399,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 	const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance);
 
 	if (!physicalDevices.empty())
-		RatePhysicalDevices(physicalDevices);
+		RatePhysicalDevices(physicalDevices, instance);
 	else
 	{
 		Utils::Dialogs::ShowMsgBox("Vulkan API error", "No Vulkan capable physical device was found!\n"
@@ -429,7 +429,7 @@ std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice> &physicalDevices)
+void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice> &physicalDevices, VkInstance instance)
 {
 	// Score each Physical Device and insert into multimap
 	uint32_t score = 0;
@@ -497,28 +497,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					 "\" Failed to initialize WindowingAPI!");
 			TRAP::Application::Shutdown();
-		}
-
-		VkInstance instance = VK_NULL_HANDLE;
-		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Surface Tester");
-#ifndef TRAP_HEADLESS_MODE
-		std::vector<std::string> instanceExtensions{};
-		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-		for (const std::string &ext : reqExt)
-			instanceExtensions.push_back(ext);
-		std::vector<const char *> instExtensions(instanceExtensions.size());
-		for (uint32_t i = 0; i < instExtensions.size(); i++)
-			instExtensions[i] = instanceExtensions[i].c_str();
-		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, instExtensions);
-#else
-		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, {});
-#endif
-		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
-		if (!instance)
-		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-					 "\" Failed Instance Creation Test!");
-			continue;
 		}
 
 		// Required: Create Vulkan Surface Test Window
@@ -759,7 +737,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 		TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 #endif
-		vkDestroyInstance(instance, nullptr);
 
 		// Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)
 		// Get PhysicalDevice Memory Properties
@@ -796,7 +773,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Copy UUID
 		std::memcpy(physicalDeviceUUID.data(), physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size());
 
-		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, "\" Score: ", score);
+		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, '(', TRAP::Utils::UUIDToString(physicalDeviceUUID), ')', "\" Score: ", score);
 		s_availablePhysicalDeviceUUIDs.emplace(score, physicalDeviceUUID);
 		score = 0;
 	}

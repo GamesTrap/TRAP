@@ -4,8 +4,8 @@
 //Source: https://github.com/SaschaWillems/Vulkan/blob/master/data/shaders/glsl/computeshader/emboss.comp
 
 layout (local_size_x = 16, local_size_y = 16) in;
-layout (binding = 0, rgba8) uniform readonly image2D inputImage;
-layout (binding = 1, rgba8) uniform image2D resultImage;
+layout (set = 1, binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (set = 1, binding = 1, rgba8) uniform image2D resultImage;
 
 float conv(in float[9] kernel, in float[9] data, in float denom, in float offset)
 {

@@ -1743,7 +1743,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 	//VK_KHR_multiview
 
 	//Debug marker extension in case debug utils is not supported
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+#ifndef ENABLE_DEBUG_UTILS_EXTENSION
 	if (physicalDevice->IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);

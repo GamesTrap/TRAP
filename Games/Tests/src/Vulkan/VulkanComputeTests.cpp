@@ -23,7 +23,7 @@ VulkanComputeTests::VulkanComputeTests()
 
 void VulkanComputeTests::OnAttach()
 {
-    TRAP::Application::GetWindow()->SetTitle("Vulkan Compute Test");
+    TRAP::Application::GetWindow()->SetTitle("Vulkan Async Compute Test");
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
@@ -90,6 +90,14 @@ void VulkanComputeTests::OnAttach()
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
+    //Create empty TextureBase
+    // TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
+    // texDesc.Width = m_colorTextureUAV->GetWidth();
+    // texDesc.Height = m_colorTextureUAV->GetHeight();
+    // texDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+    // texDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+    // texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
+    // m_computeTarget = TRAP::Graphics::TextureBase::Create(texDesc);
     m_computeTarget = PrepareTextureTarget(m_colorTextureUAV->GetWidth(), m_colorTextureUAV->GetHeight());
 
     //Wait for all pending resources (Just in case)
@@ -114,72 +122,47 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
-    static bool once = true;
-    if(once)
-    {
-        once = false;
 
-        //Bind compute shader
-        m_compShader->Use(); //Is the shader reused on next frame?
+    //Bind compute shader
+    m_compShader->Use(); //Is the shader reused on next frame?
 
-        //Set shader descriptors
-        TRAP::Graphics::API::VulkanShader* vkShader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(m_compShader);
-        vkShader->UseTexture(0, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
-        vkShader->UseTexture(0, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
+    //Set shader descriptors
+    TRAP::Graphics::API::VulkanShader* vkCompShader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(m_compShader);
+    vkCompShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
+    vkCompShader->UseTexture(1, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
 
-        //Dispatch compute work (work groups are retrieved through automatic reflection)
-        //TODO Make this a RenderCommand
-        TRAP::Graphics::RendererAPI::GetRenderer()->Dispatch({m_colorTextureUAV->GetWidth(),
-                                                              m_colorTextureUAV->GetHeight(),
-                                                              1},
-                                                             TRAP::Application::GetWindow());
+    //Dispatch compute work (work groups are retrieved through automatic reflection)
+    //TODO Make this a RenderCommand
+    TRAP::Graphics::RendererAPI::GetRenderer()->Dispatch({m_colorTextureUAV->GetWidth(),
+                                                            m_colorTextureUAV->GetHeight(),
+                                                            1},
+                                                            TRAP::Application::GetWindow());
 
-        //TODO Barriers on compute queue
-        //Ownership Release + Layout transition
-        TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-        barrier.Texture = m_computeTarget;
-        barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-        barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.QueueType = TRAP::Graphics::RendererAPI::QueueType::Graphics;
-        barrier.Release = true;
-        const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
-        mainWinData.ComputeCommandBuffers[mainWinData.ImageIndex]->ResourceBarrier(nullptr, &barrier, nullptr);
-        barrier.Texture = m_colorTextureUAV;
-        mainWinData.ComputeCommandBuffers[mainWinData.ImageIndex]->ResourceBarrier(nullptr, &barrier, nullptr);
-
-        //Compute Shader gets executed correctly (confirmed via RenderDoc, first frame has correct result)
-        //Compute Queue -> Graphics Queue Syncronization via Semaphores is working correctly
-        //Compute Queue -> Graphics Queue ownership transfer of texture is working correctly
-        //Layout transition from UAV to Shader Resource is also working correctly
-        //BUG So why is the texture black after a single frame?
-    }
+    //Compute Shader gets executed correctly (confirmed via RenderDoc, first frame has correct result)
+    //Compute Queue -> Graphics Queue Syncronization via Semaphores is working correctly
+    //Compute Queue -> Graphics Queue ownership transfer of texture is working correctly
+    //Layout transition from UAV to Shader Resource is also working correctly
+    //BUG So why is the texture black after a single frame?
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Graphics Stuff-----------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    static bool once2 = true;
-    if(once2)
-    {
-        once2 = false;
+    //Stop RenderPass (necessary for ownership transfer)
+    TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
-        //Stop RenderPass (necessary for ownership transfer)
-        TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+    //Layout transition
+    TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
+    barrier.Texture = m_computeTarget;
+    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
+    barrier.Texture = m_colorTextureUAV;
+    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
 
-        //Ownership acquire + Layout transition
-        TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-        barrier.Texture = m_computeTarget;
-        barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-        barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.QueueType = TRAP::Graphics::RendererAPI::QueueType::Compute;
-        barrier.Acquire = true;
-        TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-        barrier.Texture = m_colorTextureUAV;
-        TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
+    const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
+    TRAP::Graphics::RenderCommand::BindRenderTarget(mainWinData.SwapChain->GetRenderTargets()[mainWinData.CurrentSwapChainImageIndex]);
 
-        const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
-        TRAP::Graphics::RenderCommand::BindRenderTarget(mainWinData.SwapChain->GetRenderTargets()[mainWinData.CurrentSwapChainImageIndex]);
-    }
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
 
@@ -193,6 +176,18 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
+
+    //Stop RenderPass (necessary for ownership transfer)
+    TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+
+    //Layout transition
+    barrier = {};
+    barrier.Texture = m_computeTarget;
+    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
+    barrier.Texture = m_colorTextureUAV;
+    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
