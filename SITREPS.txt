@@ -2600,3 +2600,17 @@ SITREP 05/26/2022|22w21a2
     - Premake Linux Added runpaths for the *.so dependencies (this allows building in non-root envs) ~<40 mins
     - MSVC Discord Game SDK silenced all warnings ~<20 mins
     - MSVC Vulkan Memory Allocator silenced all warnings ~<20 mins
+
+SITREP 06/01/2022|22w22a2
+    - Changed TRAP Engine version to 22w22a1(0.7.143)
+    - Added a test program for compute shaders (VulkanComputeTests) ~>30 mins
+    - VulkanComputeTests Added edge detection, sharpen and emboss compute shaders (source from SaschaWillems) ~<15 mins
+    - RendererAPI Added Dispatch and Transition functions ~<20 mins
+    - RendererAPI PerWindowData Added Compute stuff ~<20 mins
+    - RendererAPI Added GetTransferQueue function ~<5 mins
+    - VulkanInits SubmitInfo Added waitCount and signalCount parameters ~<5 mins
+    - VulkanShader Changed Use*** functions ~<30 mins
+    - VulkanRenderer Added StartComputeRecording & EndComputeRecording functions ~<20 mins
+    - VulkanRenderer Fixed a compile time macro ~<5 mins
+    - VulkanPhysicalDevice RatePhysicalDevice Fixed a bug (didn't use same VkInstance used to enumerate physical devices) ~<5 mins
+    - VulkanPhysicalDevice RatePhysicalDevice Removed the VkInstance check ~<5 mins

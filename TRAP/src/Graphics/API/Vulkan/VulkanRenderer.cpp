@@ -363,6 +363,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* con
 
 	QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds = { p->ComputeCommandBuffers[p->ImageIndex] };
+	submitDesc.WaitSemaphores = { p->GraphicsCompleteSemaphores[p->ImageIndex] };
 	submitDesc.SignalSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
 	submitDesc.SignalFence = {p->ComputeCompleteFences[p->ImageIndex]};
 	s_computeQueue->Submit(submitDesc);

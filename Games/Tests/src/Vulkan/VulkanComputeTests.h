@@ -39,12 +39,14 @@ private:
 	};
 
     TRAP::Graphics::Shader* m_texShader;
-    TRAP::Graphics::Shader* m_compShader;
     TRAP::Ref<TRAP::Graphics::TextureBase> m_colorTextureUAV;
     TRAP::Ref<TRAP::Graphics::TextureBase> m_computeTarget;
     TRAP::Scope<TRAP::Image> m_vulkanLogo;
 
+    bool m_disabled;
+    bool m_sharpen;
     bool m_emboss;
+    bool m_edgedetect;
 };
 
 #endif /*GAMESTRAP_VULKANCOMPUTETESTS_H*/

@@ -11,11 +11,13 @@ VulkanComputeTests::VulkanComputeTests()
       m_vertexBuffer(nullptr),
       m_indexBuffer(nullptr),
 	  m_texShader(nullptr),
-	  m_compShader(nullptr),
       m_colorTextureUAV(nullptr),
       m_computeTarget(nullptr),
       m_vulkanLogo(nullptr),
-      m_emboss(true)
+      m_disabled(true),
+      m_sharpen(false),
+      m_emboss(false),
+      m_edgedetect(false)
 {
 }
 
@@ -79,7 +81,9 @@ void VulkanComputeTests::OnAttach()
 
     //Load Shader
     m_texShader = TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
-    m_compShader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureComputeTest", "./Assets/Shaders/testcompute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
 
     TRAP::Graphics::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
@@ -91,13 +95,6 @@ void VulkanComputeTests::OnAttach()
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Create empty TextureBase
-    // TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
-    // texDesc.Width = m_colorTextureUAV->GetWidth();
-    // texDesc.Height = m_colorTextureUAV->GetHeight();
-    // texDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-    // texDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-    // texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
-    // m_computeTarget = TRAP::Graphics::TextureBase::Create(texDesc);
     m_computeTarget = PrepareTextureTarget(m_colorTextureUAV->GetWidth(), m_colorTextureUAV->GetHeight());
 
     //Wait for all pending resources (Just in case)
@@ -123,26 +120,32 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    //Bind compute shader
-    m_compShader->Use(); //Is the shader reused on next frame?
+    //TODO VulkanInits VulkanImageCreateInfo set sharing mode back to exclusive
 
-    //Set shader descriptors
-    TRAP::Graphics::API::VulkanShader* vkCompShader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(m_compShader);
-    vkCompShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
-    vkCompShader->UseTexture(1, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
+    if(!m_disabled)
+    {
+        TRAP::Graphics::API::VulkanShader* shader = nullptr;
+        if(m_sharpen)
+            shader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(TRAP::Graphics::ShaderManager::Get("ComputeSharpen"));
+        else if(m_emboss)
+            shader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(TRAP::Graphics::ShaderManager::Get("ComputeEmboss"));
+        else if(m_edgedetect)
+            shader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect"));
 
-    //Dispatch compute work (work groups are retrieved through automatic reflection)
-    //TODO Make this a RenderCommand
-    TRAP::Graphics::RendererAPI::GetRenderer()->Dispatch({m_colorTextureUAV->GetWidth(),
-                                                            m_colorTextureUAV->GetHeight(),
-                                                            1},
-                                                            TRAP::Application::GetWindow());
+        //Bind compute shader
+        shader->Use(TRAP::Application::GetWindow());
 
-    //Compute Shader gets executed correctly (confirmed via RenderDoc, first frame has correct result)
-    //Compute Queue -> Graphics Queue Syncronization via Semaphores is working correctly
-    //Compute Queue -> Graphics Queue ownership transfer of texture is working correctly
-    //Layout transition from UAV to Shader Resource is also working correctly
-    //BUG So why is the texture black after a single frame?
+        //Set shader descriptors
+        shader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
+        shader->UseTexture(1, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
+
+        //Dispatch compute work (work groups are retrieved through automatic reflection)
+        //TODO Make this a RenderCommand
+        TRAP::Graphics::RendererAPI::GetRenderer()->Dispatch({m_colorTextureUAV->GetWidth(),
+                                                              m_colorTextureUAV->GetHeight(),
+                                                              1},
+                                                             TRAP::Application::GetWindow());
+    }
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Graphics Stuff-----------------------------------------------------------------------------------------------------//
@@ -169,10 +172,10 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //Use shader
     m_texShader->Use();
     TRAP::Graphics::API::VulkanShader* vkShader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(m_texShader);
-    if(m_emboss)
-        vkShader->UseTexture(1, 0, m_computeTarget.get(), TRAP::Application::GetWindow()); //Doesnt work, black texture
+    if(m_disabled)
+        vkShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
     else
-        vkShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow()); //Just works™
+        vkShader->UseTexture(1, 0, m_computeTarget.get(), TRAP::Application::GetWindow());
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
@@ -196,7 +199,37 @@ void VulkanComputeTests::OnImGuiRender()
 {
     ImGui::Begin("Vulkan Compute Test");
     ImGui::Text("Press ESC to close");
-    ImGui::Text("Press E to toggle emboss image");
+    const std::array<std::string, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
+    static std::string currentItem = shaders[0];
+    ImGui::Text("Compute shader: ");
+    if(ImGui::BeginCombo("##Compute shader", currentItem.c_str()))
+    {
+        for(uint32_t n = 0; n < shaders.size(); ++n)
+        {
+            bool isSelected = (currentItem == shaders[n]);
+            if(ImGui::Selectable(shaders[n].c_str(), isSelected))
+                currentItem = shaders[n];
+            if(isSelected)
+            {
+                ImGui::SetItemDefaultFocus();
+
+                m_disabled = false;
+                m_sharpen = false;
+                m_emboss = false;
+                m_edgedetect = false;
+            }
+        }
+        ImGui::EndCombo();
+
+        if(currentItem == shaders[0])
+            m_disabled = true;
+        else if(currentItem == shaders[1])
+            m_sharpen = true;
+        else if(currentItem == shaders[2])
+            m_emboss = true;
+        else if(currentItem == shaders[3])
+            m_edgedetect = true;
+    }
     ImGui::End();
 }
 

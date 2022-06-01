@@ -487,24 +487,6 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 {
 	VkImageCreateInfo info;
 
-	bool queues = TRAP::Graphics::RendererAPI::GetRenderer()->GetGraphicsQueue() &&
-				  TRAP::Graphics::RendererAPI::GetRenderer()->GetComputeQueue() &&
-				  TRAP::Graphics::RendererAPI::GetRenderer()->GetTransferQueue();
-
-	static std::vector<uint32_t> queueFamilies{};
-	if(queues && queueFamilies.empty())
-	{
-		const auto* vkGraphicsQueue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(TRAP::Graphics::RendererAPI::GetRenderer()->GetGraphicsQueue().get());
-		const auto* vkComputeQueue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(TRAP::Graphics::RendererAPI::GetRenderer()->GetComputeQueue().get());
-		const auto* vkTransferQueue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(TRAP::Graphics::RendererAPI::GetRenderer()->GetTransferQueue().get());
-		queueFamilies.push_back(vkGraphicsQueue->GetQueueFamilyIndex());
-		if(vkComputeQueue->GetQueueFamilyIndex() != vkGraphicsQueue->GetQueueFamilyIndex())
-			queueFamilies.push_back(vkComputeQueue->GetQueueFamilyIndex());
-		if(vkTransferQueue->GetQueueFamilyIndex() != vkGraphicsQueue->GetQueueFamilyIndex() &&
-		   vkTransferQueue->GetQueueFamilyIndex() != vkComputeQueue->GetQueueFamilyIndex())
-			queueFamilies.push_back(vkTransferQueue->GetQueueFamilyIndex());
-	}
-
 	info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
@@ -518,12 +500,9 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 	info.samples = sampleCount;
 	info.tiling = tiling;
 	info.usage = usage;
-	// info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	info.sharingMode = queues ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
-	// info.queueFamilyIndexCount = 0;
-	// info.pQueueFamilyIndices = nullptr;
-	info.queueFamilyIndexCount = static_cast<uint32_t>(queueFamilies.size());
-	info.pQueueFamilyIndices = queueFamilies.data();
+	info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	info.queueFamilyIndexCount = 0;
+	info.pQueueFamilyIndices = nullptr;
 	info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
 	return info;
