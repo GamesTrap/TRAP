@@ -79,6 +79,7 @@ namespace TRAP::Graphics::API
 		/// </param>
 		/// <param name="window">Window to Dispatch.</param>
 		void Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) override;
+		//TODO DispatchIndirect
 
 		/// <summary>
 		/// Set the VSync state for the given window.
@@ -336,8 +337,9 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="dSet">Descriptor set to bind.</param>
 		/// <param name="index">Index for which descriptor set to bind.</param>
+		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the descriptor set for. Default: Main Window.</param>
-		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window) override;
+		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, QueueType queueType, Window* window) override;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// Note: There is an optimized function which uses the index into the RootSignature
@@ -345,15 +347,17 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
-		void BindPushConstants(const char* name, const void* constantsData, Window* window) override;
+		void BindPushConstants(const char* name, const void* constantsData, QueueType queueType, Window* window) override;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
-		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
+		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData, QueueType queueType,
 		                              Window* window) override;
 		/// <summary>
 		/// Bind render target(s) on the given window.
@@ -400,28 +404,34 @@ namespace TRAP::Graphics::API
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="bufferBarrier">Buffer barrier.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
-		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window) override;
+		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, QueueType queueType,
+		                           Window* window) override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="bufferBarriers">Buffer barriers.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-							        Window* window) override;
+									QueueType queueType, Window* window) override;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="textureBarrier">Texture barrier.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
-		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window) override;
+		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, QueueType queueType,
+		                            Window* window) override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="textureBarriers">Texture barriers.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-							         Window* window) override;
+									 QueueType queueType, Window* window) override;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>

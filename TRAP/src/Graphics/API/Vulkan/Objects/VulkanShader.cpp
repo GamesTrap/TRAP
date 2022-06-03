@@ -271,7 +271,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 	bool shaderUAV = false;
 	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
 	                                                               RendererAPI::DescriptorType::TextureCube |
-																   texture->GetDescriptorTypes()), &shaderUAV); //TODO Add in other Use***
+																   texture->GetDescriptorTypes()), &shaderUAV);
 
 	if(name.empty())
 	{
@@ -284,12 +284,10 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 	params[0].Resource = std::vector<TRAP::Graphics::Texture*>{texture};
 
 	if(shaderUAV && static_cast<bool>(texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture))
-		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{}; //TODO Add in other Use***
+		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
 
 	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
-	{
 		GetDescriptorSets()[set]->Update(0, params);
-	}
 	else
 	{
 		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
@@ -309,10 +307,11 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		window = TRAP::Application::GetWindow();
 
 	//OPTIMIZE Use index into root signature instead of name
+	bool shaderUAV = false;
 	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
 	                                                               RendererAPI::DescriptorType::TextureCube |
-																   RendererAPI::DescriptorType::RWTexture),
-	                                                nullptr, textures.size());
+																   textures[0]->GetDescriptorTypes()),
+	                                                &shaderUAV, textures.size());
 
 	if(name.empty())
 	{
@@ -324,6 +323,10 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 	params[0].Name = name.c_str();
 	params[0].Resource = textures;
 	params[0].Count = static_cast<uint32_t>(textures.size());
+
+	if(shaderUAV && static_cast<bool>(textures[0]->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture))
+		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
+
 	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);
 	else

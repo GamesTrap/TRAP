@@ -1066,48 +1066,81 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index,
-                                                            Window* window)
+															const QueueType queueType, Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(index, dSet);
+	if(queueType == QueueType::Graphics)
+		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(index, dSet);
+	else if(queueType == QueueType::Compute)
+		p->ComputeCommandBuffers[p->ImageIndex]->BindDescriptorSet(index, dSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* name, const void* constantsData,
-                                                            Window* window)
+															const QueueType queueType, Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstants
-	(
-		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
-		name, constantsData
-	);
+	if(queueType == QueueType::Graphics)
+	{
+		p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstants
+		(
+			std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
+			name, constantsData
+		);
+	}
+	else if(queueType == QueueType::Compute)
+	{
+		p->ComputeCommandBuffers[p->ImageIndex]->BindPushConstants
+		(
+			std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
+			name, constantsData
+		);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex,
-                                                                   const void* constantsData, Window* window)
+                                                                   const void* constantsData,
+																   const QueueType queueType,
+																   Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
-	(
-		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
-		paramIndex, constantsData
-	);
+	if(queueType == QueueType::Graphics)
+	{
+		p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
+		(
+			std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
+			paramIndex, constantsData
+		);
+	}
+	else if(queueType == QueueType::Compute)
+	{
+		p->ComputeCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex
+		(
+			std::get<ComputePipelineDesc>(p->ComputePipelineDesc.Pipeline).RootSignature,
+			paramIndex, constantsData
+		);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1158,53 +1191,73 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
-									                            Window* window)
+															    const QueueType queueType, Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarrier, nullptr, nullptr);
+	if(queueType == QueueType::Graphics)
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarrier, nullptr, nullptr);
+	else if(queueType == QueueType::Compute)
+		p->ComputeCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarrier, nullptr, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-									                             Window* window)
+																 const QueueType queueType, Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarriers, nullptr, nullptr);
+	if(queueType == QueueType::Graphics)
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarriers, nullptr, nullptr);
+	else if(queueType == QueueType::Compute)
+		p->ComputeCommandBuffers[p->ImageIndex]->ResourceBarrier(&bufferBarriers, nullptr, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
-									                             Window* window)
+																 const QueueType queueType, Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarrier, nullptr);
+	if(queueType == QueueType::Graphics)
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarrier, nullptr);
+	else if(queueType == QueueType::Compute)
+		p->ComputeCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarrier, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-									                              Window* window)
+																  const QueueType queueType, Window* window)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarriers, nullptr);
+	if(queueType == QueueType::Graphics)
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarriers, nullptr);
+	else if(queueType == QueueType::Compute)
+		p->ComputeCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, &textureBarriers, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

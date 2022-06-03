@@ -430,7 +430,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	m_mipLevels = desc.MipLevels;
 	m_arraySize = desc.ArraySize;
 	m_imageFormat = desc.Format;
-	m_descriptorTypes = desc.Descriptors & RendererAPI::DescriptorType::RWTexture;
+	m_descriptorTypes = desc.Descriptors;
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (m_name.empty() && !desc.Name.empty())

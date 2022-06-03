@@ -50,8 +50,9 @@ void VulkanComputeTests::OnAttach()
     m_colorTextureUAV = PrepareTextureTarget(m_vulkanLogo->GetWidth(), m_vulkanLogo->GetHeight());
     m_colorTextureUAV->Update(m_vulkanLogo->GetPixelData(), m_vulkanLogo->GetPixelDataSize());
     m_colorTextureUAV->AwaitLoading();
+    m_colorTextureUAV->SetTextureName("ColorTextureUAV");
 
-    //TODO Make this a RenderCommand
+    //TODO Make this a RenderCommand (in place layout transitions) with optional queue type
     TRAP::Graphics::RendererAPI::GetRenderer()->Transition(m_colorTextureUAV.get(),
                                                             TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
                                                             TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess);
@@ -73,6 +74,7 @@ void VulkanComputeTests::OnAttach()
 
     //Create empty Texture
     m_computeTarget = PrepareTextureTarget(m_colorTextureUAV->GetWidth(), m_colorTextureUAV->GetHeight());
+    m_computeTarget->SetTextureName("ComputeTargetUAV");
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -97,8 +99,6 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    //TODO VulkanInits VulkanImageCreateInfo set sharing mode back to exclusive
-
     if(!m_disabled)
     {
         TRAP::Graphics::Shader* shader = nullptr;
@@ -115,6 +115,9 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         //Set shader descriptors
         shader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow()); //TODO Update Shader class
         shader->UseTexture(1, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
+
+        // static constexpr float brightness = 0.25f;
+        // TRAP::Graphics::RenderCommand::SetPushConstants("BrughtnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
 
         //Dispatch compute work (work groups are retrieved through automatic reflection)
         //TODO Make this a RenderCommand

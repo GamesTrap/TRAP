@@ -49,6 +49,10 @@ namespace TRAP::Graphics
 	/// Different shading rate combiners.
 	/// </summary>
 	using ShadingRateCombiner = RendererAPI::ShadingRateCombiner;
+	/// <summary>
+	/// Different queue types.
+	/// </summary>
+	using QueueType = RendererAPI::QueueType;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.
@@ -333,8 +337,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant.</param>
 		/// <param name="data">Data to set push constant to.</param>
+		/// <param name="queueType">Queue type on which to perform the operation. Default: Graphics.</param>
 		/// <param name="window">Window to set push constant for. Default: Main Window.</param>
-		static void SetPushConstants(const char* name, const void* data, Window* window = nullptr);
+		static void SetPushConstants(const char* name, const void* data,
+		                             QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		// static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		//                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
 		// 							 const RendererAPI::LoadActionsDesc* loadActions = nullptr,
@@ -376,26 +382,34 @@ namespace TRAP::Graphics
 		/// Buffer barrier used to synchronize and transition the buffer.
 		/// </summary>
 		/// <param name="bufferBarrier">Buffer barrier to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition buffer for. Default: Main Window.</param>
-		static void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window = nullptr);
+		static void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+		                          QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// Buffer barrier used to synchronize and transition multiple buffers.
 		/// </summary>
 		/// <param name="bufferBarriers">Buffer barriers to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition buffers for. Default: Main Window.</param>
-		static void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers, Window* window = nullptr);
+		static void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+								   QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// Texture barrier used to synchronize and transition the texture.
 		/// </summary>
 		/// <param name="textureBarrier">Texture barrier to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition texture for. Default: Main Window.</param>
-		static void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window = nullptr);
+		static void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+		                           QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// Texture barrier used to synchronize and transition multiple textures.
 		/// </summary>
 		/// <param name="textureBarriers">Texture barriers to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition textures for. Default: Main Window.</param>
-		static void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers, Window* window = nullptr);
+		static void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+		                            QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// RenderTarget barrier used to synchronize and transition the RenderTarget.
 		/// </summary>

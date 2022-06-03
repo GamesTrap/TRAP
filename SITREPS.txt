@@ -2623,3 +2623,5 @@ SITREP 06/03/2022|22w22b1
     - Updated everything that used TextureBase, Texture2D and TextureCube ~>60 mins
     - Added TRAP::FileSystem alias for TRAP::FS ~<5 mins
     - Updated VulkanComputeTests ~<30 mins
+    - RendererAPI Added ability to specify QueueType on some functions ~<20 mins
+    - VulkanComputeTests Added push constant test ~<10 mins
