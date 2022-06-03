@@ -7,7 +7,7 @@
 namespace TRAP::Graphics
 {
 	class CommandPool;
-	class TextureBase;
+	class Texture;
 }
 
 namespace TRAP::Graphics::API
@@ -144,7 +144,7 @@ namespace TRAP::Graphics::API
 	private:
 		struct TextureUpdateDescInternal
 		{
-			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
+			TRAP::Graphics::Texture* Texture = nullptr;
 			RendererAPI::MappedMemoryRange Range{};
 			uint32_t BaseMipLevel = 0;
 			uint32_t MipLevels = 0;
@@ -240,7 +240,7 @@ namespace TRAP::Graphics::API
 		/// <param name="texture">Texture to queue a barrier on.</param>
 		/// <param name="state">State to transition the texture to.</param>
 		/// <param name="token">Optional output sync token.</param>
-		void QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		void QueueTextureBarrier(TRAP::Graphics::Texture* texture,
 		                         RendererAPI::ResourceState state, SyncToken* token);
 
 		/// <summary>
@@ -318,7 +318,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="texture">Texture to generate mip maps for.</param>
 		/// <param name="cmd">Command buffer to record the commands on.</param>
-		static void VulkanGenerateMipMaps(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture, CommandBuffer* cmd);
+		static void VulkanGenerateMipMaps(TRAP::Graphics::Texture* texture, CommandBuffer* cmd);
 
 		enum class UploadFunctionResult
 		{

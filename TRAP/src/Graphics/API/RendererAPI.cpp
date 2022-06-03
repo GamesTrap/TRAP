@@ -206,7 +206,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Transition(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
 											 const TRAP::Graphics::RendererAPI::ResourceState oldState,
 											 const TRAP::Graphics::RendererAPI::ResourceState newState)
 {

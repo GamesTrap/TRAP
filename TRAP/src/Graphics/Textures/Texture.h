@@ -11,8 +11,6 @@ namespace TRAP
 
 namespace TRAP::Graphics
 {
-	class TextureBase;
-
 	/// <summary>
 	/// Different texture types.
 	/// </summary>
@@ -22,15 +20,90 @@ namespace TRAP::Graphics
 		TextureCube
 	};
 
+	using TextureCubeFormat = RendererAPI::TextureCubeType;
+
 	class Texture
 	{
-	protected:
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		Texture();
-
 	public:
+		/// <summary>
+		/// Create a cube texture from 6 files.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+		/// <param name="filepaths">
+		/// File paths of the 6 texture files.
+		/// Order: +X, -X, +Y, -Y, +Z, -Z
+		/// </param>
+		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		static Scope<Texture> CreateFromFiles(std::string name,
+		                                      std::array<std::filesystem::path, 6> filepaths);
+		/// <summary>
+		/// Create a texture from file.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+		/// <param name="filepath">File path of the texture.</param>
+		/// <param name="type">Type of Texture.</param>
+		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
+		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		static Scope<Texture> CreateFromFile(std::string name, std::filesystem::path filepath, TextureType type,
+		                                     TextureCubeFormat cubeFormat = TextureCubeFormat::NONE);
+		/// <summary>
+		/// Create a texture from file.
+		/// File name will be used as the texture name.
+		/// </summary>
+		/// <param name="filepath">File path of the texture.</param>
+		/// <param name="type">Type of Texture.</param>
+		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
+		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		static Scope<Texture> CreateFromFile(std::filesystem::path filepath, TextureType type,
+		                                     TextureCubeFormat cubeFormat = TextureCubeFormat::NONE);
+		/// <summary>
+		/// Create a cube texture from 6 TRAP::Images.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+		/// <param name="imgs">
+		/// Images to create the texture from.
+		/// Order: +X, -X, +Y, -Y, +Z, -Z
+		/// </param>
+		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		static Scope<Texture> CreateFromImages(std::string name, const std::array<Image*, 6>& imgs);
+		/// <summary>
+		/// Create a texture from TRAP::Image.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+		/// <param name="img">Image to create the texture from.</param>
+		/// <param name="type">Type of Texture.</param>
+		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
+		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
+		static Scope<Texture> CreateFromImage(std::string name, const TRAP::Image* const img, TextureType type,
+		                                      TextureCubeFormat cubeFormat = TextureCubeFormat::NONE);
+		/// <summary>
+		/// Create an empty texture.
+		/// </summary>
+		/// <param name="width">Width for the texture.</param>
+		/// <param name="height">Height for the texture.</param>
+		/// <param name="bitsPerPixel">Bits per pixel for the texture.</param>
+		/// <param name="format">Color format for the texture.</param>
+		/// <param name="type">Type of texture.</param>
+		/// <returns>Empty texture on success, nullptr otherwise.</returns>
+		static Scope<Texture> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel,
+		                                  Image::ColorFormat format, TextureType type);
+		/// <summary>
+		/// Create a custom texture.
+		/// </summary>
+		/// <param name="desc">Texture description.</param>
+		/// <returns>New texture.</returns>
+        static Scope<Texture> CreateCustom(const RendererAPI::TextureDesc& desc);
+		/// <summary>
+		/// Create the fallback 2D texture.
+		/// </summary>
+		/// <returns>Fallback 2D texture.</returns>
+		static Scope<Texture> CreateFallback2D();
+		/// <summary>
+		/// Create the fallback cube texture.
+		/// </summary>
+		/// <returns>Fallback cube texture.</returns>
+		static Scope<Texture> CreateFallbackCube();
+
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -51,6 +124,8 @@ namespace TRAP::Graphics
 		/// Move assignment operator.
 		/// </summary>
 		Texture& operator=(Texture&&) = default;
+
+		virtual void Init(const RendererAPI::TextureDesc& desc) = 0;
 
 		/// <summary>
 		/// Retrieve the name of the texture.
@@ -73,25 +148,47 @@ namespace TRAP::Graphics
 		/// <returns>Texture height.</returns>
 		uint32_t GetHeight() const;
 		/// <summary>
+		/// Retrieve the texture size.
+		/// </summary>
+		/// <returns>Texture size.</returns>
+		Math::Vec2ui GetSize() const;
+		/// <summary>
 		/// Retrieve the texture depth.
 		/// </summary>
 		/// <returns>Texture depth.</returns>
-		virtual uint32_t GetDepth() const = 0;
+		uint32_t GetDepth() const;
 		/// <summary>
 		/// Retrieve the texture array size.
 		/// </summary>
 		/// <returns>Texture array size.</returns>
-		virtual uint32_t GetArraySize() const = 0;
+		uint32_t GetArraySize() const;
 		/// <summary>
 		/// Retrieve the textures mip level count.
 		/// </summary>
 		/// <returns>Textures mip level count.</returns>
 		uint32_t GetMipLevels() const;
 		/// <summary>
+		/// Retrieve the textures aspect mask.
+		/// Aspect mask specifies which aspects (Color, Depth, Stencil) are included in the texture.
+		/// </summary>
+		/// <returns>Aspect mask.</returns>
+		uint32_t GetAspectMask() const;
+		/// <summary>
 		/// Retrieve the textures color format.
 		/// </summary>
 		/// <returns>Textures color format.</returns>
 		Image::ColorFormat GetColorFormat() const;
+		/// <summary>
+		/// Retrieve the textures image format.
+		/// </summary>
+		/// <returns>Image format.</returns>
+		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
+		/// <summary>
+		/// Retrieve the textures used descriptor types.
+		/// </summary>
+		/// <returns>Used descriptor types.</returns>
+		RendererAPI::DescriptorType GetDescriptorTypes() const;
+
 		/// <summary>
 		/// Retrieve the textures bits per channel.
 		/// </summary>
@@ -130,12 +227,21 @@ namespace TRAP::Graphics
 		/// <param name="mipLevel">Mip level.</param>
 		/// <returns>Mip size.</returns>
 		Math::Vec2ui GetMipSize(uint32_t mipLevel) const;
-
 		/// <summary>
-		/// Retrieve the base texture.
+		/// Retrieve the file path of the texture.
 		/// </summary>
-		/// <returns>Base texture.</returns>
-		TRAP::Ref<TRAP::Graphics::TextureBase> GetTexture() const;
+		/// <returns>File path of the texture.</returns>
+		const std::filesystem::path& GetFilePath() const;
+		/// <summary>
+		/// Retrieve the file path of the texture.
+		/// </summary>
+		/// <returns>File path of the texture.</returns>
+		const std::array<std::filesystem::path, 6>& GetFilePaths() const;
+		/// <summary>
+		/// Retrieve the cube format of the texture.
+		/// </summary>
+		/// <returns>Cube format of the texture.</returns>
+		TextureCubeFormat GetCubeFormat() const;
 
 		/// <summary>
 		/// Update the texture with raw pixel data.
@@ -146,7 +252,19 @@ namespace TRAP::Graphics
 		/// <param name="sizeInBytes">Size of the data array in bytes.</param>
 		/// <param name="mipLevel">Mip level to update. Default: 0</param>
 		/// <param name="arrayLayer">Array layer to update. Default: 0</param>
-		virtual void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0) = 0;
+		void Update(const void* data, uint32_t sizeInBytes, uint32_t mipLevel = 0, uint32_t arrayLayer = 0);
+
+		/// <summary>
+		/// Set the texture name.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+        virtual void SetTextureName(const std::string& name) const = 0;
+
+		/// <summary>
+		/// Retrieve whether the texture owns the image data.
+		/// </summary>
+		/// <returns>True if texture owns the image data, false otherwise.</returns>
+		bool OwnsImage() const;
 
 		/// <summary>
 		/// Check if texture finished loading.
@@ -173,6 +291,13 @@ namespace TRAP::Graphics
 		template<typename T>
 		static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* const image);
 	protected:
+		/// <summary>
+		/// Validate texture limits.
+		/// </summary>
+		/// <param name="desc">Texture description.</param>
+		/// <returns>True if texture is inside limits, false otherwise.</returns>
+		static bool ValidateLimits(const RendererAPI::TextureDesc& desc);
+
 		/// <summary>
 		/// Convert color format and bits per pixel to image format.
 		/// </summary>
@@ -205,11 +330,27 @@ namespace TRAP::Graphics
 		/// <returns>Rotated image.</returns>
 		static TRAP::Scope<TRAP::Image> Rotate90CounterClockwise(const TRAP::Image* const img);
 
-		std::string m_name;
-		TextureType m_textureType;
-		API::SyncToken m_syncToken;
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		Texture();
 
-		TRAP::Ref<TRAP::Graphics::TextureBase> m_texture;
+		//RenderAPI independent data
+		std::string m_name;
+		API::SyncToken m_syncToken;
+		TextureType m_textureType;
+		uint32_t m_width;
+		uint32_t m_height;
+		uint32_t m_depth;
+		uint32_t m_arraySize;
+		uint32_t m_mipLevels;
+		Image::ColorFormat m_colorFormat;
+		Graphics::API::ImageFormat m_imageFormat;
+		uint32_t m_aspectMask;
+		RendererAPI::DescriptorType m_descriptorTypes;
+		bool m_ownsImage;
+		std::array<std::filesystem::path, 6> m_filepaths;
+		TextureCubeFormat m_textureCubeFormat;
 	};
 }
 

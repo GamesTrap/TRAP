@@ -1,10 +1,6 @@
 #include "VulkanComputeTests.h"
 
-#include <Graphics/API/Vulkan/Objects/VulkanTexture.h>
-#include <Graphics/API/Vulkan/Objects/VulkanShader.h>
 #include <Graphics/API/Objects/SwapChain.h>
-#include <Graphics/API/Objects/CommandBuffer.h>
-#include <Graphics/API/Objects/Queue.h>
 
 VulkanComputeTests::VulkanComputeTests()
     : Layer("VulkanComputeTests"),
@@ -48,36 +44,17 @@ void VulkanComputeTests::OnAttach()
     //Load Image
     m_vulkanLogo = TRAP::Image::LoadFromFile("./Assets/Textures/vulkanlogo.png");
 
-    //Load Texture
-    {
-        //TODO Texture Loading bool to indicate UAV usage
-        //Currently UAV Textures require manual loading
-        m_colorTextureUAV = PrepareTextureTarget(m_vulkanLogo->GetWidth(), m_vulkanLogo->GetHeight());
+    //Load Texture    {
+    //TODO Texture Loading bool to indicate UAV usage
+    //Currently UAV Textures require manual loading
+    m_colorTextureUAV = PrepareTextureTarget(m_vulkanLogo->GetWidth(), m_vulkanLogo->GetHeight());
+    m_colorTextureUAV->Update(m_vulkanLogo->GetPixelData(), m_vulkanLogo->GetPixelDataSize());
+    m_colorTextureUAV->AwaitLoading();
 
-        // Fill empty TextureBase with images pixel data
-        TRAP::Graphics::API::SyncToken syncToken{};
-		TRAP::Graphics::RendererAPI::TextureUpdateDesc updateDesc{};
-		updateDesc.Texture = m_colorTextureUAV;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
-		if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single memcpy is enough
-			memcpy(updateDesc.MappedData, m_vulkanLogo->GetPixelData(), m_vulkanLogo->GetPixelDataSize());
-		else //Needs row by row copy
-		{
-			for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
-			{
-				memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-				       static_cast<const uint8_t*>(m_vulkanLogo->GetPixelData()) + r * updateDesc.SrcRowStride,
-					   updateDesc.SrcRowStride);
-			}
-		}
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &syncToken);
-        TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&syncToken);
-
-        //TODO Make this a RenderCommand
-        TRAP::Graphics::RendererAPI::GetRenderer()->Transition(m_colorTextureUAV,
-                                                               TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
-                                                               TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess);
-    }
+    //TODO Make this a RenderCommand
+    TRAP::Graphics::RendererAPI::GetRenderer()->Transition(m_colorTextureUAV.get(),
+                                                            TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
+                                                            TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess);
 
     //Load Shader
     m_texShader = TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
@@ -94,7 +71,7 @@ void VulkanComputeTests::OnAttach()
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
-    //Create empty TextureBase
+    //Create empty Texture
     m_computeTarget = PrepareTextureTarget(m_colorTextureUAV->GetWidth(), m_colorTextureUAV->GetHeight());
 
     //Wait for all pending resources (Just in case)
@@ -124,19 +101,19 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     if(!m_disabled)
     {
-        TRAP::Graphics::API::VulkanShader* shader = nullptr;
+        TRAP::Graphics::Shader* shader = nullptr;
         if(m_sharpen)
-            shader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(TRAP::Graphics::ShaderManager::Get("ComputeSharpen"));
+            shader = TRAP::Graphics::ShaderManager::Get("ComputeSharpen");
         else if(m_emboss)
-            shader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(TRAP::Graphics::ShaderManager::Get("ComputeEmboss"));
+            shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
         else if(m_edgedetect)
-            shader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect"));
+            shader = TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect");
 
         //Bind compute shader
         shader->Use(TRAP::Application::GetWindow());
 
         //Set shader descriptors
-        shader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
+        shader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow()); //TODO Update Shader class
         shader->UseTexture(1, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
 
         //Dispatch compute work (work groups are retrieved through automatic reflection)
@@ -156,11 +133,11 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Layout transition
     TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-    barrier.Texture = m_computeTarget;
+    barrier.Texture = m_computeTarget.get();
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-    barrier.Texture = m_colorTextureUAV;
+    barrier.Texture = m_colorTextureUAV.get();
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
 
     const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
@@ -171,26 +148,42 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Use shader
     m_texShader->Use();
-    TRAP::Graphics::API::VulkanShader* vkShader = dynamic_cast<TRAP::Graphics::API::VulkanShader*>(m_texShader);
     if(m_disabled)
-        vkShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
+        m_texShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
     else
-        vkShader->UseTexture(1, 0, m_computeTarget.get(), TRAP::Application::GetWindow());
+        m_texShader->UseTexture(1, 0, m_computeTarget.get(), TRAP::Application::GetWindow());
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
-    //Stop RenderPass (necessary for ownership transfer)
+    //Stop RenderPass (necessary for layout transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
     //Layout transition
     barrier = {};
-    barrier.Texture = m_computeTarget;
+    barrier.Texture = m_computeTarget.get();
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-    barrier.Texture = m_colorTextureUAV;
+    barrier.Texture = m_colorTextureUAV.get();
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
+
+    //Update FPS & FrameTime history
+    if (m_titleTimer.Elapsed() >= 0.025f)
+    {
+        m_titleTimer.Reset();
+        static int frameTimeIndex = 0;
+        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+        {
+            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+            frameTimeIndex++;
+        }
+        else
+        {
+            std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
+            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -199,6 +192,14 @@ void VulkanComputeTests::OnImGuiRender()
 {
     ImGui::Begin("Vulkan Compute Test");
     ImGui::Text("Press ESC to close");
+    ImGui::Separator();
+    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
+    ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
+    ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
+    ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
+                     33, ImVec2(200, 50));
+    ImGui::Separator();
     const std::array<std::string, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
     static std::string currentItem = shaders[0];
     ImGui::Text("Compute shader: ");
@@ -255,24 +256,18 @@ bool VulkanComputeTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::TextureBase> VulkanComputeTests::PrepareTextureTarget(const uint32_t width, const uint32_t height)
+TRAP::Scope<TRAP::Graphics::Texture> VulkanComputeTests::PrepareTextureTarget(const uint32_t width, const uint32_t height)
 {
-    TRAP::Ref<TRAP::Graphics::TextureBase> texTarget = nullptr;
-    TRAP::Graphics::API::SyncToken syncToken{};
+    //Create empty Texture
+    TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
+    texDesc.Width = width;
+    texDesc.Height = height;
+    texDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
+    texDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+    texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
 
-    //Create empty TextureBase
-    TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
-    loadDesc.Desc = TRAP::MakeRef<TRAP::Graphics::RendererAPI::TextureDesc>();
-    loadDesc.Desc->Width = width;
-    loadDesc.Desc->Height = height;
-    loadDesc.Desc->Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-    loadDesc.Desc->StartState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-    loadDesc.Desc->Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
-    loadDesc.Texture = &texTarget;
-    TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &syncToken);
-
-    //Wait for texture to be ready
-    TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&syncToken);
+    TRAP::Scope<TRAP::Graphics::Texture> texTarget = TRAP::Graphics::Texture::CreateCustom(texDesc);
+    texTarget->AwaitLoading();
 
     return texTarget;
 }

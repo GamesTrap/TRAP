@@ -13,7 +13,7 @@
 #include "Graphics/API/Objects/Buffer.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Textures/TextureManager.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 #include "Application.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc)
@@ -271,7 +271,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 	bool shaderUAV = false;
 	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
 	                                                               RendererAPI::DescriptorType::TextureCube |
-																   texture->GetTexture()->GetUAV()), &shaderUAV);
+																   texture->GetDescriptorTypes()), &shaderUAV); //TODO Add in other Use***
 
 	if(name.empty())
 	{
@@ -281,49 +281,9 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
-	params[0].Resource = std::vector<TRAP::Graphics::TextureBase*>{texture->GetTexture().get()};
+	params[0].Resource = std::vector<TRAP::Graphics::Texture*>{texture};
 
-	if(shaderUAV && static_cast<bool>(texture->GetTexture()->GetUAV() & RendererAPI::DescriptorType::RWTexture))
-		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
-
-	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
-	{
-		GetDescriptorSets()[set]->Update(0, params);
-	}
-	else
-	{
-		const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(window);
-		GetDescriptorSets()[set]->Update(imageIndex, params);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
-                                                   TRAP::Graphics::TextureBase* const texture, Window* window)
-{
-	TRAP_ASSERT(texture, "Texture is nullptr!");
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
-
-	//OPTIMIZE Use index into root signature instead of name
-	bool shaderUAV = false;
-	const std::string name = RetrieveDescriptorName(set, binding, (RendererAPI::DescriptorType::Texture |
-	                                                               RendererAPI::DescriptorType::TextureCube |
-																   texture->GetUAV()), &shaderUAV); //TODO Add in other Use***
-
-	if(name.empty())
-	{
-		//TP_ERROR(Log::RendererVulkanShaderPrefix, "Texture with invalid set and/or binding provided!");
-		return;
-	}
-
-	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-	params[0].Name = name.c_str();
-	params[0].Resource = std::vector<TRAP::Graphics::TextureBase*>{texture};
-
-	if(shaderUAV && static_cast<bool>(texture->GetUAV() & RendererAPI::DescriptorType::RWTexture))
+	if(shaderUAV && static_cast<bool>(texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture))
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{}; //TODO Add in other Use***
 
 	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
@@ -360,13 +320,9 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 		return;
 	}
 
-	std::vector<TRAP::Graphics::TextureBase*> textureBases(textures.size());
-	for(std::size_t i = 0; i < textureBases.size(); ++i)
-		textureBases[i] = textures[i]->GetTexture().get();
-
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
-	params[0].Resource = textureBases;
+	params[0].Resource = textures;
 	params[0].Count = static_cast<uint32_t>(textures.size());
 	if(set == static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::Static))
 		GetDescriptorSets()[set]->Update(0, params);

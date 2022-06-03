@@ -2,7 +2,6 @@
 #define GAMESTRAP_VULKANCOMPUTETESTS_H
 
 #include <TRAP.h>
-#include <Graphics/Textures/TextureBase.h>
 
 class VulkanComputeTests final : public TRAP::Layer
 {
@@ -19,7 +18,7 @@ public:
 private:
     bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
 
-    static TRAP::Ref<TRAP::Graphics::TextureBase> PrepareTextureTarget(uint32_t width, uint32_t height);
+    static TRAP::Scope<TRAP::Graphics::Texture> PrepareTextureTarget(uint32_t width, uint32_t height);
 
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
@@ -39,14 +38,18 @@ private:
 	};
 
     TRAP::Graphics::Shader* m_texShader;
-    TRAP::Ref<TRAP::Graphics::TextureBase> m_colorTextureUAV;
-    TRAP::Ref<TRAP::Graphics::TextureBase> m_computeTarget;
+    TRAP::Scope<TRAP::Graphics::Texture> m_colorTextureUAV;
+    TRAP::Scope<TRAP::Graphics::Texture> m_computeTarget;
     TRAP::Scope<TRAP::Image> m_vulkanLogo;
 
     bool m_disabled;
     bool m_sharpen;
     bool m_emboss;
     bool m_edgedetect;
+
+    std::array<float, 50> m_frameTimeHistory{};
+	TRAP::Utils::Timer m_fpsTimer{};
+	TRAP::Utils::Timer m_titleTimer{};
 };
 
 #endif /*GAMESTRAP_VULKANCOMPUTETESTS_H*/

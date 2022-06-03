@@ -103,8 +103,6 @@
 #include "../src/Graphics/Textures/TextureManager.h"
 #include "../src/ImageLoader/Image.h"
 #include "../src/Graphics/Textures/Texture.h"
-#include "../src/Graphics/Textures/Texture2D.h"
-#include "../src/Graphics/Textures/TextureCube.h"
 #include "../src/Graphics/API/Objects/Sampler.h"
 //-----------------------
 

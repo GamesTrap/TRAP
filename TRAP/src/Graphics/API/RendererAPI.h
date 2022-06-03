@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 	class RootSignature;
 	class Sampler;
 	class RenderTarget;
-	class TextureBase;
+	class Texture;
 }
 
 namespace TRAP::Graphics::API
@@ -330,7 +330,7 @@ namespace TRAP::Graphics
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		virtual void SetShadingRate(ShadingRate shadingRate,
-						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						            TRAP::Graphics::Texture* texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, Window* window = nullptr) = 0;
 
@@ -593,7 +593,7 @@ namespace TRAP::Graphics
 		/// <param name="texture">Texture to transition layout.</param>
 		/// <param name="oldState">Current resource state of the given texture.</param>
 		/// <param name="newState">New resource state for the given texture.</param>
-		static void Transition(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+		static void Transition(TRAP::Graphics::Texture* texture,
 							   TRAP::Graphics::RendererAPI::ResourceState oldState,
 							   TRAP::Graphics::RendererAPI::ResourceState newState);
 
@@ -723,6 +723,8 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class TextureCubeType
 		{
+			NONE = 0,
+
 			MultiFile,
 			Cross,
 			//TODO
@@ -1374,9 +1376,9 @@ namespace TRAP::Graphics
 		struct TextureLoadDesc
 		{
 			//Target to load texture info into.
-			TRAP::Ref<TRAP::Graphics::TextureBase>* Texture;
+			TRAP::Graphics::Texture* Texture;
 			//Load empty texture
-			TRAP::Ref<TextureDesc> Desc;
+			TextureDesc* Desc;
 			//Filepath with extension.
 			std::array<std::filesystem::path, 6> Filepaths;
 			//Following is ignored if Desc != nullptr.
@@ -2007,7 +2009,7 @@ namespace TRAP::Graphics
 		struct TextureBarrier
 		{
 			//Texture
-			TRAP::Ref<TRAP::Graphics::TextureBase> Texture{};
+			TRAP::Graphics::Texture* Texture{};
 			//Current resource state of the texture
 			ResourceState CurrentState{};
 			//Target resource state of the texture
@@ -2080,9 +2082,9 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<TRAP::Graphics::TextureBase*>, std::vector<Sampler*>,
+			std::variant<std::vector<TRAP::Graphics::Texture*>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::TextureBase*>()}; //TODO RayTracing acceleration structure
+				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
@@ -2156,7 +2158,7 @@ namespace TRAP::Graphics
 		struct TextureUpdateDesc
 		{
 			//Texture to update
-			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
+			TRAP::Graphics::Texture* Texture = nullptr;
 			//Mip level to update
 			uint32_t MipLevel = 0;
 			//Array layer to update

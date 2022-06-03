@@ -11,11 +11,9 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device,
-                                                  const RendererAPI::TextureDesc& desc,
-                                                  TRAP::Ref<VulkanMemoryAllocator> vma)
-	: m_device(std::move(device)),
-	  m_vma(std::move(vma)),
+TRAP::Graphics::API::VulkanTexture::VulkanTexture()
+	: m_device(nullptr),
+	  m_vma(nullptr),
 	  m_vkSRVDescriptor(VK_NULL_HANDLE),
 	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
 	  m_vkImage(VK_NULL_HANDLE),
@@ -23,8 +21,103 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	  m_vkDeviceMemory(),
 	  m_lazilyAllocated(false)
 {
-	TRAP_ASSERT(m_device, "Device is nullptr");
-	TRAP_ASSERT(m_vma, "VMA is nullptr");
+	PreInit();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::array<std::filesystem::path, 6> filepaths)
+	: m_device(nullptr),
+	  m_vma(nullptr),
+	  m_vkSRVDescriptor(VK_NULL_HANDLE),
+	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
+	  m_vkImage(VK_NULL_HANDLE),
+	  m_vkAllocation(),
+	  m_vkDeviceMemory(),
+	  m_lazilyAllocated(false)
+{
+	m_name = std::move(name);
+	m_filepaths = std::move(filepaths);
+
+	PreInit();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesystem::path filepath,
+												  const TextureType type, const TextureCubeFormat cubeFormat)
+	: m_device(nullptr),
+	  m_vma(nullptr),
+	  m_vkSRVDescriptor(VK_NULL_HANDLE),
+	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
+	  m_vkImage(VK_NULL_HANDLE),
+	  m_vkAllocation(),
+	  m_vkDeviceMemory(),
+	  m_lazilyAllocated(false)
+{
+	m_name = std::move(name);
+	m_filepaths[0] = std::move(filepath);
+	m_textureType = type;
+	m_textureCubeFormat = cubeFormat;
+
+	PreInit();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
+	: m_device(nullptr),
+	  m_vma(nullptr),
+	  m_vkSRVDescriptor(VK_NULL_HANDLE),
+	  m_vkSRVStencilDescriptor(VK_NULL_HANDLE),
+	  m_vkImage(VK_NULL_HANDLE),
+	  m_vkAllocation(),
+	  m_vkDeviceMemory(),
+	  m_lazilyAllocated(false)
+{
+	m_textureType = type;
+
+	PreInit();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
+{
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
+#endif
+
+	if (m_ownsImage && m_vkImage)
+	{
+		if (TRAP::Graphics::API::ImageFormatIsSinglePlane(m_imageFormat))
+		{
+			vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
+		}
+		else
+		{
+			vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
+			vkFreeMemory(m_device->GetVkDevice(), m_vkDeviceMemory, nullptr);
+		}
+	}
+
+	if (m_vkSRVDescriptor)
+		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVDescriptor, nullptr);
+
+	if (m_vkSRVStencilDescriptor)
+		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVStencilDescriptor, nullptr);
+
+	if (!m_vkUAVDescriptors.empty())
+	{
+		for (uint32_t i = 0; i < m_mipLevels; ++i)
+			vkDestroyImageView(m_device->GetVkDevice(), m_vkUAVDescriptors[i], nullptr);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &desc)
+{
 	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Invalid resolution");
 	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1), "Multi-Sampled texture cannot have mip maps");
 
@@ -33,8 +126,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 #endif
 
 	if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture))
-		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ?
-		                           desc.MipLevels : 0));
+		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ? desc.MipLevels : 0));
 
 	if (desc.NativeHandle && !static_cast<bool>((desc.Flags & RendererAPI::TextureCreationFlags::Import)))
 	{
@@ -51,12 +143,12 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		additionalFlags |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 
 	VkImageType imageType = VK_IMAGE_TYPE_MAX_ENUM;
-	if(static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force2D))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force2D))
 	{
 		TRAP_ASSERT(desc.Depth == 1);
 		imageType = VK_IMAGE_TYPE_2D;
 	}
-	else if(static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force3D))
+	else if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force3D))
 		imageType = VK_IMAGE_TYPE_3D;
 	else
 	{
@@ -70,30 +162,30 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 	RendererAPI::DescriptorType descriptors = desc.Descriptors;
 	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) ==
-	                       RendererAPI::DescriptorType::TextureCube;
+						   RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;
 
 	const bool isPlanarFormat = TRAP::Graphics::API::ImageFormatIsPlanar(desc.Format);
 	const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(desc.Format);
 	const bool isSinglePlane = TRAP::Graphics::API::ImageFormatIsSinglePlane(desc.Format);
 	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)),
-	            "Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
+				"Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
 				"formats it must be 1");
 
 	if (imageType == VK_IMAGE_TYPE_3D)
 		arrayRequired = true;
 
-	if(m_vkImage == VK_NULL_HANDLE)
+	if (m_vkImage == VK_NULL_HANDLE)
 	{
 		VkImageCreateInfo info = VulkanInits::ImageCreateInfo(imageType,
-		                                                      ImageFormatToVkFormat(desc.Format),
-		                                                      desc.Width,
-		                                                      desc.Height,
-		                                                      desc.Depth,
-		                                                      desc.MipLevels,
-		                                                      desc.ArraySize,
-		                                                      SampleCountToVkSampleCount(desc.SampleCount),
-		                                                      VK_IMAGE_TILING_OPTIMAL,
+															  ImageFormatToVkFormat(desc.Format),
+															  desc.Width,
+															  desc.Height,
+															  desc.Depth,
+															  desc.MipLevels,
+															  desc.ArraySize,
+															  SampleCountToVkSampleCount(desc.SampleCount),
+															  VK_IMAGE_TILING_OPTIMAL,
 															  DescriptorTypeToVkImageUsage(descriptors));
 		info.usage |= additionalFlags;
 
@@ -104,23 +196,23 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 		VkFormatProperties formatProps{};
 		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format,
-		                                    &formatProps);
+											&formatProps);
 
-		//Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
-		if(isPlanarFormat)
+		// Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
+		if (isPlanarFormat)
 		{
 			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DISJOINT_BIT);
 			info.flags |= VK_IMAGE_CREATE_DISJOINT_BIT;
 		}
 
-		if((info.usage & VK_IMAGE_USAGE_SAMPLED_BIT) || (info.usage & VK_IMAGE_USAGE_STORAGE_BIT))
+		if ((info.usage & VK_IMAGE_USAGE_SAMPLED_BIT) || (info.usage & VK_IMAGE_USAGE_STORAGE_BIT))
 		{
-			//Make it easy to copy to and from textures
+			// Make it easy to copy to and from textures
 			info.usage |= (VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 		}
 
 		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)],
-		            "GPU shader can't read from this format");
+					"GPU shader can't read from this format");
 
 		const VkFormatFeatureFlags formatFeatures = VkImageUsageToFormatFeatures(info.usage);
 
@@ -145,58 +237,58 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		exportMemoryInfo.sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO;
 		exportMemoryInfo.pNext = nullptr;
 
-		if(VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Import))
+		if (VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Import))
 		{
 			info.pNext = &externalInfo;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			struct ImportHandleInfo
 			{
-				void* Handle;
+				void *Handle;
 				VkExternalMemoryHandleTypeFlagBits HandleType;
 			};
 
-			ImportHandleInfo* handleInfo = reinterpret_cast<ImportHandleInfo*>(desc.NativeHandle);
+			ImportHandleInfo *handleInfo = reinterpret_cast<ImportHandleInfo *>(desc.NativeHandle);
 			importInfo.handle = handleInfo->Handle;
 			importInfo.handleType = handleInfo->HandleType;
 
 			externalInfo.handleTypes = handleInfo->HandleType;
 
 			memReqs.pUserData = &importInfo;
-			//Allocate external (importable / exportable) memory as dedicated memory to avoid
-			//unnecessary complexity to the Vulkan Memory Allocator
+			// Allocate external (importable / exportable) memory as dedicated memory to avoid
+			// unnecessary complexity to the Vulkan Memory Allocator
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 #endif
 		}
-		else if(VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Export))
+		else if (VulkanRenderer::s_externalMemory && static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Export))
 		{
 #ifdef TRAP_PLATFORM_WINDOWS
 			exportMemoryInfo.handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT;
 #endif
 			memReqs.pUserData = &exportMemoryInfo;
-			//Allocate external (importable / exportable) memory as dedicated memory to avoid
-			//unnecessary complexity to the Vulkan Memory Allocator
+			// Allocate external (importable / exportable) memory as dedicated memory to avoid
+			// unnecessary complexity to the Vulkan Memory Allocator
 			memReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 		}
 
-		//If lazy allocation is requested check that the hardware supports it
+		// If lazy allocation is requested check that the hardware supports it
 		bool lazyAllocation = static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::OnTile);
-		if(lazyAllocation)
+		if (lazyAllocation)
 		{
 			uint32_t memoryTypeIndex = 0;
 			VmaAllocationCreateInfo lazyMemReqs = memReqs;
 			lazyMemReqs.usage = VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED;
 			VkResult result = vmaFindMemoryTypeIndex(m_vma->GetVMAAllocator(),
-			                                         std::numeric_limits<uint32_t>::max(),
+													 std::numeric_limits<uint32_t>::max(),
 													 &lazyMemReqs, &memoryTypeIndex);
-			if(result == VK_SUCCESS)
+			if (result == VK_SUCCESS)
 			{
 				memReqs = lazyMemReqs;
 				info.usage |= VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
-				//The Vulkan spec states: If usage includes VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
-				//then bits other than VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-				//VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, and VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT
-				//must not be set.
+				// The Vulkan spec states: If usage includes VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
+				// then bits other than VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+				// VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, and VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT
+				// must not be set.
 				info.usage &= (VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
 							   VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT);
 				m_lazilyAllocated = true;
@@ -204,18 +296,18 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		}
 
 		VmaAllocationInfo allocInfo{};
-		if(isSinglePlane)
+		if (isSinglePlane)
 		{
 			VkCall(vmaCreateImage(m_vma->GetVMAAllocator(), &info, &memReqs, &m_vkImage, &m_vkAllocation,
-			                      &allocInfo));
+								  &allocInfo));
 		}
-		else //Multi-Planar formats
+		else // Multi-Planar formats
 		{
-			//Create info requires the mutable format flag set for multi planar images
-			//Also pass the format list for mutable formats as per recommendation from the spec
-			//Might help to keep DCC enabled if we ever use this as a output format
-			//DCC gets disabled when we pass mutable format bit to the create info.
-			//Passing the format list helps the driver to enable it
+			// Create info requires the mutable format flag set for multi planar images
+			// Also pass the format list for mutable formats as per recommendation from the spec
+			// Might help to keep DCC enabled if we ever use this as a output format
+			// DCC gets disabled when we pass mutable format bit to the create info.
+			// Passing the format list helps the driver to enable it
 			VkFormat planarFormat = ImageFormatToVkFormat(desc.Format);
 			VkImageFormatListCreateInfo formatList{};
 			formatList.sType = VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO;
@@ -226,34 +318,34 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 			info.flags |= VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
 			info.pNext = &formatList;
 
-			//Create Image
+			// Create Image
 			VkCall(vkCreateImage(m_device->GetVkDevice(), &info, nullptr, &m_vkImage));
 
 			VkMemoryRequirements memReq{};
 			std::vector<uint64_t> planeOffsets(3);
 			UtilGetPlanarVkImageMemoryRequirement(m_device->GetVkDevice(), m_vkImage, numOfPlanes, memReq,
-			                                      planeOffsets);
+												  planeOffsets);
 
-			//Allocate image memory
+			// Allocate image memory
 			VkMemoryAllocateInfo memAllocInfo{};
 			memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 			memAllocInfo.allocationSize = memReq.size;
-			const VkPhysicalDeviceMemoryProperties& memProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceMemoryProperties();
+			const VkPhysicalDeviceMemoryProperties &memProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceMemoryProperties();
 			memAllocInfo.memoryTypeIndex = GetMemoryType(memReq.memoryTypeBits, memProps,
-			                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+														 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 			VkCall(vkAllocateMemory(m_device->GetVkDevice(), &memAllocInfo, nullptr, &m_vkDeviceMemory));
 
-			//Bind planes to their memories
+			// Bind planes to their memories
 			std::vector<VkBindImageMemoryInfo> bindImagesMemoryInfo(3);
 			std::vector<VkBindImagePlaneMemoryInfo> bindImagePlanesMemoryInfo(3);
-			for(uint32_t i = 0; i < numOfPlanes; ++i)
+			for (uint32_t i = 0; i < numOfPlanes; ++i)
 			{
-				VkBindImagePlaneMemoryInfo& bindImagePlaneMemoryInfo = bindImagePlanesMemoryInfo[i];
+				VkBindImagePlaneMemoryInfo &bindImagePlaneMemoryInfo = bindImagePlanesMemoryInfo[i];
 				bindImagePlaneMemoryInfo.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO;
 				bindImagePlaneMemoryInfo.pNext = nullptr;
 				bindImagePlaneMemoryInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
 
-				VkBindImageMemoryInfo& bindImageMemoryInfo = bindImagesMemoryInfo[i];
+				VkBindImageMemoryInfo &bindImageMemoryInfo = bindImagesMemoryInfo[i];
 				bindImageMemoryInfo.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO;
 				bindImageMemoryInfo.pNext = &bindImagePlaneMemoryInfo;
 				bindImageMemoryInfo.image = m_vkImage;
@@ -265,9 +357,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		}
 	}
 
-	//Create image view
+	// Create image view
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
-	switch(imageType)
+	switch (imageType)
 	{
 	case VK_IMAGE_TYPE_1D:
 		viewType = desc.ArraySize > 1 ? VK_IMAGE_VIEW_TYPE_1D_ARRAY : VK_IMAGE_VIEW_TYPE_1D;
@@ -281,7 +373,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		break;
 
 	case VK_IMAGE_TYPE_3D:
-		if(desc.ArraySize > 1)
+		if (desc.ArraySize > 1)
 		{
 			TP_ERROR(Log::RendererVulkanTexturePrefix, "Cannot support 3D Texture Array in Vulkan");
 			TRAP_ASSERT(false);
@@ -296,9 +388,9 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 	TRAP_ASSERT(viewType != VK_IMAGE_VIEW_TYPE_MAX_ENUM, "Invalid Image View");
 
-	//SRV
+	// SRV
 	VkImageViewCreateInfo srvDesc = VulkanInits::ImageViewCreateInfo(m_vkImage, viewType,
-	                                                                 ImageFormatToVkFormat(desc.Format),
+																	 ImageFormatToVkFormat(desc.Format),
 																	 desc.MipLevels, desc.ArraySize);
 	m_aspectMask = DetermineAspectMask(srvDesc.format, true);
 
@@ -308,24 +400,24 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture))
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
 
-	//SRV stencil
-	if((TRAP::Graphics::API::ImageFormatHasStencil(desc.Format)) &&
-	   (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
+	// SRV stencil
+	if ((TRAP::Graphics::API::ImageFormatHasStencil(desc.Format)) &&
+		(static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
 	{
 		srvDesc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVStencilDescriptor));
 	}
 
-	//UAV
-	if(static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::RWTexture))
+	// UAV
+	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::RWTexture))
 	{
 		VkImageViewCreateInfo uavDesc = srvDesc;
-		//Note: We dont support imageCube, imageCubeArray for consistency with other APIs
-		//All cubemaps will be used as image2DArray for Image Load / Store ops
+		// Note: We dont support imageCube, imageCubeArray for consistency with other APIs
+		// All cubemaps will be used as image2DArray for Image Load / Store ops
 		if (uavDesc.viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY || uavDesc.viewType == VK_IMAGE_VIEW_TYPE_CUBE)
 			uavDesc.viewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 		uavDesc.subresourceRange.levelCount = 1;
-		for(uint32_t i = 0; i < desc.MipLevels; ++i)
+		for (uint32_t i = 0; i < desc.MipLevels; ++i)
 		{
 			uavDesc.subresourceRange.baseMipLevel = i;
 			VkCall(vkCreateImageView(m_device->GetVkDevice(), &uavDesc, nullptr, &m_vkUAVDescriptors[i]));
@@ -337,62 +429,15 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	m_depth = desc.Depth;
 	m_mipLevels = desc.MipLevels;
 	m_arraySize = desc.ArraySize;
-	m_format = desc.Format;
-	m_UAV = desc.Descriptors & RendererAPI::DescriptorType::RWTexture;
+	m_imageFormat = desc.Format;
+	m_descriptorTypes = desc.Descriptors & RendererAPI::DescriptorType::RWTexture;
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
-	if (!desc.Name.empty())
-		VulkanTexture::SetTextureName(desc.Name);
-#endif
-}
+	if (m_name.empty() && !desc.Name.empty())
+		m_name = desc.Name;
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
-{
-#ifdef VERBOSE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
-#endif
-
-	if(m_ownsImage && m_vkImage)
-	{
-		if(TRAP::Graphics::API::ImageFormatIsSinglePlane(m_format))
-		{
-			vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
-		}
-		else
-		{
-			vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
-			vkFreeMemory(m_device->GetVkDevice(), m_vkDeviceMemory, nullptr);
-		}
-	}
-
-	if (m_vkSRVDescriptor)
-		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVDescriptor, nullptr);
-
-	if (m_vkSRVStencilDescriptor)
-		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVStencilDescriptor, nullptr);
-
-	if(!m_vkUAVDescriptors.empty())
-	{
-		for(uint32_t i = 0; i < m_mipLevels; ++i)
-			vkDestroyImageView(m_device->GetVkDevice(), m_vkUAVDescriptors[i], nullptr);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view name) const
-{
-	TRAP_ASSERT(!name.empty());
-
-	if(!VulkanRenderer::s_debugMarkerSupport)
-		return;
-
-#ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
-#else
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
+	if (!m_name.empty())
+		SetTextureName(m_name);
 #endif
 }
 
@@ -412,7 +457,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkImageView>& TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const
+const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const
 {
 	return m_vkUAVDescriptors;
 }
@@ -440,15 +485,44 @@ bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
-                                                           const VkPhysicalDeviceMemoryProperties& memProps,
-                                                           const VkMemoryPropertyFlags props, VkBool32* memTypeFound)
+void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string& name) const
 {
-	for(uint32_t i = 0; i < memProps.memoryTypeCount; i++)
+	TRAP_ASSERT(!name.empty());
+
+	if (!VulkanRenderer::s_debugMarkerSupport)
+		return;
+
+#ifdef ENABLE_DEBUG_UTILS_EXTENSION
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
+#else
+	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanTexture::PreInit()
+{
+	const auto *vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer *>(TRAP::Graphics::RendererAPI::GetRenderer());
+
+	m_device = vkRenderer->GetDevice();
+	m_vma = vkRenderer->GetVMA();
+
+	TRAP_ASSERT(m_device, "Device is nullptr");
+	TRAP_ASSERT(m_vma, "VMA is nullptr");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
+														   const VkPhysicalDeviceMemoryProperties &memProps,
+														   const VkMemoryPropertyFlags props, VkBool32 *memTypeFound)
+{
+	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
 	{
-		if((typeBits & 1) == 1)
+		if ((typeBits & 1) == 1)
 		{
-			if((memProps.memoryTypes[i].propertyFlags & props) == props)
+			if ((memProps.memoryTypes[i].propertyFlags & props) == props)
 			{
 				if (memTypeFound)
 					*memTypeFound = true;
@@ -459,7 +533,7 @@ uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
 		typeBits >>= 1;
 	}
 
-	if(memTypeFound)
+	if (memTypeFound)
 	{
 		*memTypeFound = false;
 		return 0;

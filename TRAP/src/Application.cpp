@@ -10,8 +10,7 @@
 #include "Graphics/Renderer2D.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
-#include "Graphics/Textures/Texture2D.h"
-#include "Graphics/Textures/TextureCube.h"
+#include "Graphics/Textures/Texture.h"
 #include "Graphics/Renderer.h"
 #include "Utils/String/String.h"
 #include "Utils/Dialogs/Dialogs.h"
@@ -218,8 +217,8 @@ TRAP::Application::Application(std::string gameName)
 		Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
 
 		//Always added as a fallback texture
-		Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-		Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+		Graphics::TextureManager::Add(Graphics::Texture::CreateFallback2D());
+		Graphics::TextureManager::Add(Graphics::Texture::CreateFallbackCube());
 
 		//Initialize Renderer
 		Graphics::Renderer::Init();

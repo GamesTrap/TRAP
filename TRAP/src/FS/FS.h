@@ -33,6 +33,8 @@
 
 namespace TRAP
 {
+	namespace FileSystem = FS;
+
 	namespace FS
     {
         /// <summary>

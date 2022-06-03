@@ -7,7 +7,7 @@
 #include "VulkanSampler.h"
 #include "VulkanRootSignature.h"
 #include "VulkanTexture.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 
 TRAP::Graphics::API::VulkanDescriptorSet::~VulkanDescriptorSet()
 {
@@ -181,7 +181,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 		case RendererAPI::DescriptorType::CombinedImageSampler:
 		{
-			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
+			const std::vector<TRAP::Graphics::Texture*>& textures = std::get<std::vector<TRAP::Graphics::Texture*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + desc->Name + ")");
 
 			std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap().find(desc->Name);
@@ -210,7 +210,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 		case RendererAPI::DescriptorType::Texture:
 		{
-			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
+			const std::vector<TRAP::Graphics::Texture*>& textures = std::get<std::vector<TRAP::Graphics::Texture*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + desc->Name + ")");
 
 			if(!std::get<bool>(param.Offset))
@@ -252,7 +252,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 		case RendererAPI::DescriptorType::RWTexture:
 		{
-			const std::vector<TRAP::Graphics::TextureBase*>& textures = std::get<std::vector<TRAP::Graphics::TextureBase*>>(param.Resource);
+			const std::vector<TRAP::Graphics::Texture*>& textures = std::get<std::vector<TRAP::Graphics::Texture*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty RW Texture (") + desc->Name + ")");
 
 			if(std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>(param.Offset).BindMipChain)

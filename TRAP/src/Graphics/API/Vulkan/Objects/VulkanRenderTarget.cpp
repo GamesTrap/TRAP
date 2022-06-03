@@ -5,7 +5,7 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 std::atomic<int32_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
@@ -117,7 +117,9 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	textureDesc.Name = desc.Name;
 
-	m_texture = TRAP::Graphics::TextureBase::Create(textureDesc);
+	TRAP::Scope<VulkanTexture> vkTex = TRAP::MakeScope<VulkanTexture>();
+	vkTex->Init(textureDesc);
+	m_texture = std::move(vkTex);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
 	if (desc.Height > 1)
@@ -154,7 +156,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	//To keep in line with DirectX 12, we transition them to the specified layout
 	//manually so app code doesn't have to worry about this
 	//Render targets wont be created during runtime so this overhead will be minimal
-	VulkanRenderer::UtilInitialTransition(m_texture, desc.StartState);
+	VulkanRenderer::UtilInitialTransition(m_texture.get(), desc.StartState);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -219,7 +221,7 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
+void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string& name) const
 {
 	m_texture->SetTextureName(name);
 }

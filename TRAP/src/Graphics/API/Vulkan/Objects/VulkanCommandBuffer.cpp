@@ -9,7 +9,7 @@
 #include "VulkanPhysicalDevice.h"
 #include "VulkanBuffer.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanRootSignature.h"
@@ -245,7 +245,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
 	for(std::size_t i = 0; i < renderTargets.size(); ++i)
 	{
-		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTargets[i]->GetTexture().get());
+		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTargets[i]->GetTexture());
 		if(vkTex->IsLazilyAllocated())
 			colorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
 		else if(loadActions)
@@ -266,7 +266,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	if(depthStencil)
 	{
 		VulkanRenderTarget* dStencil = dynamic_cast<VulkanRenderTarget*>(depthStencil.get());
-		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(dStencil->GetTexture().get());
+		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(dStencil->GetTexture());
 
 		if(vkTex->IsLazilyAllocated())
 		{
@@ -651,12 +651,12 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(TRAP::Graphics::Texture* texture,
                                                                  const TRAP::Ref<Buffer>& srcBuffer,
                                                                  const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
 	VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
-	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	if(TRAP::Graphics::API::ImageFormatIsSinglePlane(fmt))
@@ -860,8 +860,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	{
 		for (const auto& trans : *textureBarriers)
 		{
-			const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = trans.Texture;
-			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+			const TRAP::Graphics::Texture* texture = trans.Texture;
+			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(trans.Texture);
 			VkImageMemoryBarrier* imageBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -923,8 +923,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	{
 		for (const auto& trans : *renderTargetBarriers)
 		{
-			const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture;
-			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+			TRAP::Graphics::Texture* texture = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_texture.get();
+			auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 			VkImageMemoryBarrier* imageBarrier = nullptr;
 
 			if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -1059,8 +1059,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 
 	if(textureBarrier)
 	{
-		const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = textureBarrier->Texture;
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+		TRAP::Graphics::Texture* texture = textureBarrier->Texture;
+		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 		VkImageMemoryBarrier* imageBarrier = nullptr;
 
 		if (textureBarrier->CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -1119,8 +1119,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 
 	if(renderTargetBarrier)
 	{
-		const TRAP::Ref<TRAP::Graphics::TextureBase> texture = dynamic_cast<VulkanRenderTarget*>(renderTargetBarrier->RenderTarget.get())->m_texture;
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+		TRAP::Graphics::Texture* texture = dynamic_cast<VulkanRenderTarget*>(renderTargetBarrier->RenderTarget.get())->m_texture.get();
+		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 		VkImageMemoryBarrier* imageBarrier = nullptr;
 
 		if (renderTargetBarrier->CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
@@ -1195,7 +1195,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::ShadingRate rate,
-															  const TRAP::Ref<TextureBase>& /*texture*/,
+															  Texture* /*texture*/,
 															  RendererAPI::ShadingRateCombiner postRasterizerState,
 															  RendererAPI::ShadingRateCombiner finalRate) const
 {

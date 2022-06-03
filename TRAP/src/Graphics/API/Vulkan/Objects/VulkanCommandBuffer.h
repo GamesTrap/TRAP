@@ -249,7 +249,7 @@ namespace TRAP::Graphics::API
 		/// <param name="texture">Texture to update.</param>
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		void UpdateSubresource(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture, const TRAP::Ref<Buffer>& srcBuffer,
+		void UpdateSubresource(TRAP::Graphics::Texture* texture, const TRAP::Ref<Buffer>& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 
 		/// <summary>
@@ -315,7 +315,7 @@ namespace TRAP::Graphics::API
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						    const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						    TRAP::Graphics::Texture* texture,
 		                    RendererAPI::ShadingRateCombiner postRasterizerRate,
 							RendererAPI::ShadingRateCombiner finalRate) const override;
 

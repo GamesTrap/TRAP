@@ -77,17 +77,6 @@ namespace TRAP::Graphics::API
 		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
 		                Window* window) override;
 
-		//TODO Temporary REMOVE AFTER
-		/// <summary>
-		/// Use texture with this shader on the given window.
-		/// </summary>
-		/// <param name="set">Descriptor set to use the texture with.</param>
-		/// <param name="binding">Binding point of the texture.</param>
-		/// <param name="texture">Texture to use.</param>
-		/// <param name="window">Window to use the shader for.</param>
-		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::TextureBase* texture,
-		                Window* window);
-		//TODO Temporary REMOVE BEFORE
 
 		//TODO Combined Textures
 		/// <summary>

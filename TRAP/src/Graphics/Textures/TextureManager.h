@@ -2,8 +2,6 @@
 #define TRAP_TEXTUREMANAGER_H
 
 #include "Texture.h"
-#include "Texture2D.h"
-#include "TextureCube.h"
 
 namespace TRAP::Graphics::TextureManager
 {
@@ -13,21 +11,21 @@ namespace TRAP::Graphics::TextureManager
 	/// </summary>
 	/// <param name="filepath">File path of texture to load.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture2D* Load(const std::filesystem::path& filepath);
+	Texture* Load(const std::filesystem::path& filepath);
 	/// <summary>
 	/// Load a 2D texture from file.
 	/// </summary>
 	/// <param name="name">Name for the texture.</param>
 	/// <param name="filepath">File path of texture to load.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture2D* Load(const std::string& name, const std::filesystem::path& filepath);
+	Texture* Load(const std::string& name, const std::filesystem::path& filepath);
 	/// <summary>
 	/// Load a 2D texture from TRAP::Image.
 	/// </summary>
 	/// <param name="name">Name for the texture.</param>
 	/// <param name="img">TRAP::Image to use as texture.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture2D* Load(const std::string& name, const Image* const img);
+	Texture* Load(const std::string& name, const Image* const img);
 	/// <summary>
 	/// Load a cube texture from file.
 	/// </summary>
@@ -35,8 +33,8 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="filepath">File path of texture to load.</param>
 	/// <param name="format">Format of the cube texture.</param>
 	/// <returns>Loaded texture.</returns>
-	TextureCube* Load(const std::string& name, const std::filesystem::path& filepath,
-				      TextureCubeFormat format);
+	Texture* Load(const std::string& name, const std::filesystem::path& filepath,
+				  TextureCubeFormat format);
 	/// <summary>
 	/// Load a cube texture from file.
 	/// File name will be used as the texture name.
@@ -44,7 +42,7 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="filepath">File path of texture to load.</param>
 	/// <param name="format">Format of the cube texture.</param>
 	/// <returns>Loaded texture.</returns>
-	TextureCube* Load(const std::filesystem::path& filepath, TextureCubeFormat format);
+	Texture* Load(const std::filesystem::path& filepath, TextureCubeFormat format);
 	/// <summary>
 	/// Load a cube texture from file.
 	/// </summary>
@@ -54,7 +52,7 @@ namespace TRAP::Graphics::TextureManager
 	/// Order: +X, -X, +Y, -Y, +Z, -Z.
 	/// </param>
 	/// <returns>Loaded texture.</returns>
-	TextureCube* Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths);
+	Texture* Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths);
 	/// <summary>
 	/// Load a cube texture from TRAP::Image.
 	/// </summary>
@@ -62,8 +60,8 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="img">TRAP::Image to use as texture.</param>
 	/// <param name="format">Format of the cube texture.</param>
 	/// <returns>Loaded texture.</returns>
-	TextureCube* Load(const std::string& name, const Image* const img,
-					  TextureCubeFormat format);
+	Texture* Load(const std::string& name, const Image* const img,
+				  TextureCubeFormat format);
 
 	/// <summary>
 	/// Add a texture to the TextureManager.
@@ -94,13 +92,13 @@ namespace TRAP::Graphics::TextureManager
 	/// </summary>
 	/// <param name="name">Name of texture to retrieve.</param>
 	/// <returns>Texture, Fallback texture if not found.</returns>
-	Texture2D* Get2D(const std::string& name);
+	Texture* Get2D(const std::string& name);
 	/// <summary>
 	/// Retrieve a cube texture from the TextureManager.
 	/// </summary>
 	/// <param name="name">Name of texture to retrieve.</param>
 	/// <returns>Texture, Fallback texture if not found.</returns>
-	TextureCube* GetCube(const std::string& name);
+	Texture* GetCube(const std::string& name);
 	/// <summary>
 	/// Retrieve all loaded textures from the TextureManager.
 	/// </summary>

@@ -35,7 +35,7 @@
 #include "Graphics/API/Objects/Pipeline.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 #include "Utils/Dialogs/Dialogs.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
@@ -788,7 +788,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
-						            					 const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						            					 TRAP::Graphics::Texture* texture,
 		                            					 const ShadingRateCombiner postRasterizerRate,
 							        					 const ShadingRateCombiner finalRate, Window* window)
 {
@@ -1330,7 +1330,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
 
 	VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
-	VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture().get());
+	VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTarget->GetTexture());
 	VulkanBuffer* vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
 
 	vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
@@ -1861,6 +1861,8 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 	s_NullDescriptors = TRAP::MakeScope<NullDescriptors>();
 
+	TRAP::Scope<TRAP::Graphics::API::VulkanTexture> vkTex = nullptr;
+
 	//1D Texture
 	TextureDesc textureDesc{};
 	textureDesc.ArraySize = 1;
@@ -1872,58 +1874,86 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	textureDesc.StartState = ResourceState::Common;
 	textureDesc.Descriptors = DescriptorType::Texture;
 	textureDesc.Width = 1;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = std::move(vkTex);
 
 	//1D Texture Array
 	textureDesc.ArraySize = 2;
 	textureDesc.Descriptors = DescriptorType::Texture;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = std::move(vkTex);
 
 	//2D Texture
 	textureDesc.Width = 2;
 	textureDesc.Height = 2;
 	textureDesc.ArraySize = 1;
 	textureDesc.Descriptors = DescriptorType::Texture;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = std::move(vkTex);
 
 	//2D MS Texture
 	textureDesc.Descriptors = DescriptorType::Texture;
-	textureDesc.SampleCount = SampleCount::SampleCount2;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMS)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	textureDesc.SampleCount = SampleCount::SampleCount4;
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMS)] = std::move(vkTex);
 	textureDesc.SampleCount = SampleCount::SampleCount1;
 
 	//2D Texture Array
 	textureDesc.ArraySize = 2;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = std::move(vkTex);
 
 	//2D MS Texture Array
 	textureDesc.Descriptors = DescriptorType::Texture;
-	textureDesc.SampleCount = SampleCount::SampleCount2;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMSArray)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	textureDesc.SampleCount = SampleCount::SampleCount4;
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMSArray)] = std::move(vkTex);
 	textureDesc.SampleCount = SampleCount::SampleCount1;
 
 	//3D Texture
 	textureDesc.Depth = 2;
 	textureDesc.ArraySize = 1;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = std::move(vkTex);
 	textureDesc.Descriptors = DescriptorType::RWTexture;
-	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = std::move(vkTex);
 
 	//Cube Texture
 	textureDesc.Depth = 1;
 	textureDesc.ArraySize = 6;
 	textureDesc.Descriptors = DescriptorType::TextureCube;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCube)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCube)] = std::move(vkTex);
 	textureDesc.ArraySize = 6 * 2;
-	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCubeArray)] = TRAP::Graphics::TextureBase::Create(textureDesc);
+	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
+	vkTex->Init(textureDesc);
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCubeArray)] = std::move(vkTex);
 
 	BufferDesc bufferDesc{};
 	bufferDesc.Descriptors = DescriptorType::Buffer | DescriptorType::UniformBuffer;
@@ -1955,7 +1985,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);
 
 	DepthStateDesc depthStateDesc{};
-	depthStateDesc.DepthFunc = CompareMode::Less;
+	depthStateDesc.DepthFunc = CompareMode::LessOrEqual;
 	depthStateDesc.DepthTest = false;
 	depthStateDesc.DepthWrite = false;
 	depthStateDesc.StencilBackFunc = CompareMode::Always;
@@ -1991,10 +2021,10 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	for (uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
 		if (s_NullDescriptors->DefaultTextureSRV[dim])
-			UtilInitialTransition(s_NullDescriptors->DefaultTextureSRV[dim], ResourceState::ShaderResource);
+			UtilInitialTransition(s_NullDescriptors->DefaultTextureSRV[dim].get(), ResourceState::ShaderResource);
 
 		if (s_NullDescriptors->DefaultTextureUAV[dim])
-			UtilInitialTransition(s_NullDescriptors->DefaultTextureUAV[dim], ResourceState::UnorderedAccess);
+			UtilInitialTransition(s_NullDescriptors->DefaultTextureUAV[dim].get(), ResourceState::UnorderedAccess);
 	}
 }
 
@@ -2030,14 +2060,14 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(TRAP::Ref<TRAP::Graphics::TextureBase> texture,
+void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(TRAP::Graphics::Texture* texture,
                                                                 const RendererAPI::ResourceState startState)
 {
 	std::lock_guard<std::mutex> lock(s_NullDescriptors->InitialTransitionMutex);
 	VulkanCommandBuffer* cmd = s_NullDescriptors->InitialTransitionCmd;
 	s_NullDescriptors->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
-	TextureBarrier barrier{std::move(texture), RendererAPI::ResourceState::Undefined, startState};
+	TextureBarrier barrier{texture, RendererAPI::ResourceState::Undefined, startState};
 	cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	cmd->End();
 	RendererAPI::QueueSubmitDesc submitDesc{};

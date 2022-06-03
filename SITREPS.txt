@@ -2601,7 +2601,7 @@ SITREP 05/26/2022|22w21a2
     - MSVC Discord Game SDK silenced all warnings ~<20 mins
     - MSVC Vulkan Memory Allocator silenced all warnings ~<20 mins
 
-SITREP 06/01/2022|22w22a2
+SITREP 06/01/2022|22w22a1
     - Changed TRAP Engine version to 22w22a1(0.7.143)
     - Added a test program for compute shaders (VulkanComputeTests) ~>30 mins
     - VulkanComputeTests Added edge detection, sharpen and emboss compute shaders (source from SaschaWillems) ~<15 mins
@@ -2614,3 +2614,12 @@ SITREP 06/01/2022|22w22a2
     - VulkanRenderer Fixed a compile time macro ~<5 mins
     - VulkanPhysicalDevice RatePhysicalDevice Fixed a bug (didn't use same VkInstance used to enumerate physical devices) ~<5 mins
     - VulkanPhysicalDevice RatePhysicalDevice Removed the VkInstance check ~<5 mins
+
+SITREP 06/03/2022|22w22b1
+    - Changed TRAP Engine version to 22w22b1(0.7.144)
+    - Removed TextureBase, Texture2D & TextureCube ~>40 mins
+    - Texture class now combines TextureBase + Texture2D & TextureCube functionality ~>60 mins
+    - VulkanTexture is now derived from Texture directly ~<30 mins
+    - Updated everything that used TextureBase, Texture2D and TextureCube ~>60 mins
+    - Added TRAP::FileSystem alias for TRAP::FS ~<5 mins
+    - Updated VulkanComputeTests ~<30 mins

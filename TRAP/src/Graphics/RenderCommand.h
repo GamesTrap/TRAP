@@ -220,7 +220,7 @@ namespace TRAP::Graphics
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		static void SetShadingRate(ShadingRate shadingRate,
-						           const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						           Texture* texture,
 		                           ShadingRateCombiner postRasterizerRate,
 							       ShadingRateCombiner finalRate, Window* window = nullptr);
 
