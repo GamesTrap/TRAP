@@ -35,7 +35,6 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    TRAP::Graphics::Shader* m_texShader;
     TRAP::Graphics::Texture* m_colTex;
     TRAP::Graphics::Texture* m_compTex;
 

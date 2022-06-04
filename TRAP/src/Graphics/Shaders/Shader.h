@@ -168,6 +168,18 @@ namespace TRAP::Graphics
 		static Scope<Shader> CreateFromFile(const std::filesystem::path& filepath,
 		                                    const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
+		/// Create a shader from file.
+		/// Used by the HotReloading system.
+		/// </summary>
+		/// <param name="name">Name for the shader.</param>
+		/// <param name="filePath">File path of the shader.</param>
+		/// <param name="stages">Shader stages used before reloading.</param>
+		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
+		static Scope<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
+		                                    RendererAPI::ShaderStage stages,
+		                                    const std::vector<Macro>* userMacros = nullptr);
+		/// <summary>
 		/// Create a shader from GLSL source.
 		/// </summary>
 		/// <param name="name">Name for the shader.</param>

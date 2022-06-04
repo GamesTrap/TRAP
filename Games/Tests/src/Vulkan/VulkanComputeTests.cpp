@@ -4,7 +4,7 @@
 
 VulkanComputeTests::VulkanComputeTests()
     : Layer("VulkanComputeTests"),
-      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_texShader(nullptr), m_colTex(nullptr), m_compTex(nullptr),
+      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_colTex(nullptr), m_compTex(nullptr),
       m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false)
 {
 }
@@ -13,6 +13,7 @@ VulkanComputeTests::VulkanComputeTests()
 
 void VulkanComputeTests::OnAttach()
 {
+    TRAP::Application::SetHotReloading(true);
     TRAP::Application::GetWindow()->SetTitle("Vulkan Async Compute Test");
 
     //Load Quad vertices
@@ -46,7 +47,7 @@ void VulkanComputeTests::OnAttach()
     m_compTex->AwaitLoading();
 
     //Load Shader
-    m_texShader = TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
+    TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
@@ -63,7 +64,7 @@ void VulkanComputeTests::OnAttach()
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-    m_texShader->UseSampler(0, 1, m_textureSampler.get());
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -94,7 +95,7 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             shader = TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect");
 
         //Bind compute shader
-        shader->Use(TRAP::Application::GetWindow());
+        shader->Use();
         //Set shader descriptors
         shader->UseTexture(1, 0, m_colTex);
         shader->UseTexture(1, 1, m_compTex);
@@ -129,11 +130,12 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     m_indexBuffer->Use();
 
     //Use shader
-    m_texShader->Use();
+    auto* texShader = TRAP::Graphics::ShaderManager::Get("Texture");
+    texShader->Use();
     if(m_disabled)
-        m_texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
+        texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
     else
-        m_texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
+        texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());

@@ -18,6 +18,13 @@ namespace TRAP::Graphics
 		/// <param name="filepath">Filepath of the shader.</param>
 		DummyShader(std::string name, std::filesystem::path filepath);
 		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="name">Name of the shader.</param>
+		/// <param name="filepath">Filepath of the shader.</param>
+		/// <param name="stages">Used shader stages.</param>
+		DummyShader(std::string name, std::filesystem::path filepath, RendererAPI::ShaderStage stages);
+		/// <summary>
 		/// Destructor.
 		/// </summary>
 		~DummyShader() override = default;

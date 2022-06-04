@@ -2624,7 +2624,6 @@ SITREP 06/03/2022|22w22b1
     - Added TRAP::FileSystem alias for TRAP::FS ~<5 mins
     - Updated VulkanComputeTests ~<30 mins
     - RendererAPI Added ability to specify QueueType on some functions ~<20 mins
-    - VulkanComputeTests Added push constant test ~<10 mins
 
 SITREP 06/04/2022|22w22b2
     - Changed TRAP Engine version to 22w22b2(0.7.145)
@@ -2632,3 +2631,5 @@ SITREP 06/04/2022|22w22b2
     - RenderCommand Added Dispatch and Transition functions ~<15 mins
     - Updated VulkanComputeTests ~<15 mins
     - VulkanComputeTests Added push constant test ~<10 mins
+    - Embed Added a fallback compute shader ~<5 mins
+    - Added HotReloading support for Compute shader ~<40 mins

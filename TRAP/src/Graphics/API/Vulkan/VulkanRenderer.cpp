@@ -35,6 +35,7 @@
 #include "Graphics/API/Objects/Pipeline.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
+#include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/Texture.h"
 #include "Utils/Dialogs/Dialogs.h"
 
@@ -345,8 +346,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* c
 
 	p->ComputeCommandBuffers[p->ImageIndex]->Begin();
 
-	// if(p->CurrentComputePipeline)
-	// 	p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
+	if(p->CurrentComputePipeline)
+		p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
 
 	p->RecordingCompute = true;
 }
@@ -474,6 +475,13 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 
 	if(!p->RecordingCompute)
 		return;
+
+	//Check if we have an actual shader bound
+	if(!p->CurrentComputePipeline)
+	{
+		//Bind fallback shader
+		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute"), p->Window);
+	}
 
 	//Calculate used work group sizes
 	for(uint32_t i = 0; i < workGroupElements.size(); ++i)

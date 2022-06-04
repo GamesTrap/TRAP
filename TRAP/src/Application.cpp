@@ -214,7 +214,8 @@ TRAP::Application::Application(std::string gameName)
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
 		//Always added as a fallback shader
-		Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
+		Graphics::ShaderManager::LoadSource("FallbackGraphics", Embed::FallbackGraphicsShader)->Use();
+		Graphics::ShaderManager::LoadSource("FallbackCompute", Embed::FallbackComputeShader)->Use();
 
 		//Always added as a fallback texture
 		Graphics::TextureManager::Add(Graphics::Texture::CreateFallback2D());
@@ -722,7 +723,10 @@ void TRAP::Application::UpdateHotReloading()
 
 			//By binding the fallback shader, we can make sure that the
 			//new shader will trigger a pipeline rebuild.
-			TRAP::Graphics::ShaderManager::Get("Fallback")->Use();
+			if(static_cast<bool>(shader->GetShaderStages() & Graphics::RendererAPI::ShaderStage::Compute))
+				TRAP::Graphics::ShaderManager::Get("FallbackCompute")->Use();
+			else
+				TRAP::Graphics::ShaderManager::Get("FallbackGraphics")->Use();
 
 			//Send event
 			TRAP::Events::ShaderReloadEvent e(shader);

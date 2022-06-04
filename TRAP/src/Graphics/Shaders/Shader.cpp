@@ -115,7 +115,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if(!supportedFormat)
 		{
 			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
-			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
 			return nullptr;
 		}
 
@@ -140,7 +140,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
+		TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
 		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 	}
 
@@ -150,12 +150,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
 		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 		{
-			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"Fallback\"");
+			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
-			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"Fallback\"");
+			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 
@@ -219,7 +219,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if(!supportedFormat)
 		{
 			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
-			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
 			return nullptr;
 		}
 
@@ -246,7 +246,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"Fallback\"");
+		TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
 		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 	}
 
@@ -256,12 +256,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
 		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 		{
-			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"Fallback\"");
+			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
-			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"Fallback\"");
+			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 
@@ -299,6 +299,126 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
+                                                                           const std::filesystem::path& filePath,
+																		   const RendererAPI::ShaderStage stages,
+																		   const std::vector<Macro>* userMacros)
+{
+	TP_PROFILE_FUNCTION();
+
+	std::string glslSource;
+	bool isSPIRV = false;
+	RendererAPI::BinaryShaderDesc desc;
+	std::vector<uint32_t> SPIRVSource{};
+	if (!filePath.empty())
+	{
+		std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(filePath));
+		bool supportedFormat = false;
+		for(const auto& fmt : SupportedShaderFormatSuffixes)
+		{
+			if(fEnding == fmt)
+			{
+				supportedFormat = true;
+				break;
+			}
+		}
+
+		if(!supportedFormat)
+		{
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
+			return nullptr;
+		}
+
+		isSPIRV = CheckSPIRVMagicNumber(filePath);
+
+		if (!isSPIRV)
+			glslSource = FS::ReadTextFile(filePath);
+		else
+			SPIRVSource = Convert8To32(FS::ReadFile(filePath));
+	}
+
+	if(isSPIRV)
+	{
+		if(!filePath.empty() && SPIRVSource.empty())
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", name, "\"!");
+	}
+	else
+	{
+		if (!filePath.empty() && glslSource.empty())
+			TP_ERROR(Log::ShaderGLSLPrefix, "Couldn't load shader: \"", name, "\"!");
+	}
+
+	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
+	{
+		if(static_cast<bool>(stages & RendererAPI::ShaderStage::Compute))
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackCompute\"");
+		else
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
+
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+	}
+
+	if (!isSPIRV)
+	{
+		RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
+		std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
+		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
+		{
+			if(static_cast<bool>(stages & RendererAPI::ShaderStage::Compute))
+				TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackCompute\"");
+			else
+				TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
+
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+		}
+		if (!ValidateShaderStages(shaderStages))
+		{
+			if(static_cast<bool>(stages & RendererAPI::ShaderStage::Compute))
+				TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackCompute\"");
+			else
+				TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
+
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+		}
+
+		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
+	}
+	else
+		desc = LoadSPIRV(SPIRVSource);
+
+	if (desc.Stages == RendererAPI::ShaderStage::None)
+	{
+		if(static_cast<bool>(stages & RendererAPI::ShaderStage::Compute))
+			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackCompute\"");
+		else
+			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
+
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+	}
+
+	switch (RendererAPI::GetRenderAPI())
+	{
+	case RenderAPI::Vulkan:
+	{
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
+
+		result->m_filepath = filePath;
+
+		return result;
+	}
+
+	case RenderAPI::NONE:
+		return nullptr;
+
+	default:
+		TRAP_ASSERT(false, "Unknown RenderAPI");
+		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
                                                                              const std::string& glslSource,
 																			 const std::vector<Macro>* userMacros)
@@ -309,12 +429,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
 	if(!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 	{
-		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader: \"Fallback\"");
+		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 		return nullptr;
 	}
 	if(!ValidateShaderStages(shaderStages))
 	{
-		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader: \"Fallback\"");
+		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 		return nullptr;
 	}
 

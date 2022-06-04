@@ -4,9 +4,9 @@
 namespace TRAP::Embed
 {
 	/// <summary>
-	/// Fallback shader
+	/// Fallback Graphics shader
 	/// </summary>
-	inline static constexpr const char* FallbackShader
+	inline static constexpr const char* FallbackGraphicsShader
 	{
 		R"(
 #shader vertex
@@ -33,6 +33,23 @@ namespace TRAP::Embed
 		void main()
 		{
 			FragColor = vec4(1.0f);
+		}
+	)"
+	};
+
+	/// <summary>
+	/// Fallback Compute shader
+	/// </summary>
+	inline static constexpr const char* FallbackComputeShader
+	{
+		R"(
+#shader compute
+
+		layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+		void main()
+		{
+			//Do nothing
 		}
 	)"
 	};
