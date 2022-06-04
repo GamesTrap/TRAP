@@ -53,6 +53,10 @@ namespace TRAP::Graphics
 	/// Different queue types.
 	/// </summary>
 	using QueueType = RendererAPI::QueueType;
+	/// <summary>
+	/// Different resource states.
+	/// </summary>
+	using ResourceState = RendererAPI::ResourceState;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.
@@ -329,6 +333,20 @@ namespace TRAP::Graphics
 		                                 uint32_t firstInstance = 0, uint32_t firstVertex = 0,
 										 Window* window = nullptr);
 
+		//Compute functions
+
+		/// <summary>
+		/// Dispatch compute work on the given window.
+		/// </summary>
+		/// <param name="workGroupElementSizes">
+		/// Number of elements to dispatch for each dimension.
+		/// The elements are automatically divided by the number of threads in the work group and rounded up.
+		/// </param>
+		/// <param name="window">Window to draw for. Default: Main Window.</param>
+		static void Dispatch(const std::array<uint32_t, 3>& workGroupElementSizes, Window* window = nullptr);
+
+		//TODO DispatchIndirect
+
 		//CommandBuffer functions
 
 		/// <summary>
@@ -423,7 +441,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to sync and transition RenderTargets for. Default: Main Window.</param>
 		static void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, Window* window = nullptr);
 
-		//Screenshot
+		//Utility
 
 		/// <summary>
 		/// Take a screenshot of the RenderTarget from the given window.
@@ -431,6 +449,18 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to take screenshot from. Default: Main Window.</param>
 		/// <returns>Captured screenshot.</returns>
 		static TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr);
+
+		/// <summary>
+		/// Transition a texture from old layout to the new layout.
+		/// The transition happens immediately and is guaranteed to be complete when the function returns.
+		/// </summary>
+		/// <param name="texture">Texture to transition layout.</param>
+		/// <param name="oldLayout">Current resource state of the given texture.</param>
+		/// <param name="newLayout">New resource state for the given texture.</param>
+		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
+		static void Transition(Texture* texture, RendererAPI::ResourceState oldLayout,
+		                       RendererAPI::ResourceState newLayout,
+		                       QueueType queueType = QueueType::Graphics);
 	};
 }
 

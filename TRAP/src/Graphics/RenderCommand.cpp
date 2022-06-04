@@ -254,6 +254,13 @@ void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(const uint32_t indexCou
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::Dispatch(const std::array<uint32_t, 3>& workGroupElementSizes, Window* window)
+{
+	RendererAPI::GetRenderer()->Dispatch(workGroupElementSizes, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data, const QueueType queueType,
                                                      Window* window)
 {
@@ -363,4 +370,12 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
 TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(Window* window)
 {
 	return RendererAPI::GetRenderer()->CaptureScreenshot(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::Transition(Texture* texture, const RendererAPI::ResourceState oldLayout,
+											   const RendererAPI::ResourceState newLayout, const QueueType queueType)
+{
+	RendererAPI::Transition(texture, oldLayout, newLayout, queueType);
 }

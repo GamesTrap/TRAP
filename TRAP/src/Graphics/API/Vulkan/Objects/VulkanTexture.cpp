@@ -125,8 +125,9 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
 #endif
 
-	if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture))
-		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ? desc.MipLevels : 0));
+	if (static_cast<bool>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ||
+	    static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Storage))
+		m_vkUAVDescriptors.resize(desc.MipLevels);
 
 	if (desc.NativeHandle && !static_cast<bool>((desc.Flags & RendererAPI::TextureCreationFlags::Import)))
 	{
@@ -161,6 +162,8 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	}
 
 	RendererAPI::DescriptorType descriptors = desc.Descriptors;
+	if(static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Storage))
+		descriptors |= RendererAPI::DescriptorType::RWTexture;
 	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) ==
 						   RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;

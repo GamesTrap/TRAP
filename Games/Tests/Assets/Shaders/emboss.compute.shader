@@ -10,7 +10,7 @@ layout (set = 1, binding = 1, rgba8) uniform image2D resultImage;
 layout(push_constant) uniform PushConstantBlock
 {
 	uniform float Brightness;
-} BrughtnessRootConstant;
+} BrightnessRootConstant;
 
 float conv(in float[9] kernel, in float[9] data, in float denom, in float offset)
 {
@@ -46,7 +46,7 @@ void main()
 
     vec4 res = vec4(vec3(conv(kernel, imageData.avg, 1.0, 0.50)), 1.0);
 
-    res.rgb *= BrughtnessRootConstant.Brightness;
+    res.rgb *= BrightnessRootConstant.Brightness;
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), res);
 }

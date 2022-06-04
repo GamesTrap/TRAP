@@ -21,6 +21,7 @@ namespace TRAP::Graphics
 	};
 
 	using TextureCubeFormat = RendererAPI::TextureCubeType;
+	using TextureCreationFlags = RendererAPI::TextureCreationFlags;
 
 	class Texture
 	{
@@ -33,9 +34,11 @@ namespace TRAP::Graphics
 		/// File paths of the 6 texture files.
 		/// Order: +X, -X, +Y, -Y, +Z, -Z
 		/// </param>
+		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
 		static Scope<Texture> CreateFromFiles(std::string name,
-		                                      std::array<std::filesystem::path, 6> filepaths);
+		                                      std::array<std::filesystem::path, 6> filepaths,
+											  TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create a texture from file.
 		/// </summary>
@@ -43,9 +46,11 @@ namespace TRAP::Graphics
 		/// <param name="filepath">File path of the texture.</param>
 		/// <param name="type">Type of Texture.</param>
 		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
+		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
 		static Scope<Texture> CreateFromFile(std::string name, std::filesystem::path filepath, TextureType type,
-		                                     TextureCubeFormat cubeFormat = TextureCubeFormat::NONE);
+		                                     TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
+											 TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create a texture from file.
 		/// File name will be used as the texture name.
@@ -53,9 +58,11 @@ namespace TRAP::Graphics
 		/// <param name="filepath">File path of the texture.</param>
 		/// <param name="type">Type of Texture.</param>
 		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
+		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
 		static Scope<Texture> CreateFromFile(std::filesystem::path filepath, TextureType type,
-		                                     TextureCubeFormat cubeFormat = TextureCubeFormat::NONE);
+		                                     TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
+											TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create a cube texture from 6 TRAP::Images.
 		/// </summary>
@@ -64,8 +71,10 @@ namespace TRAP::Graphics
 		/// Images to create the texture from.
 		/// Order: +X, -X, +Y, -Y, +Z, -Z
 		/// </param>
+		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
-		static Scope<Texture> CreateFromImages(std::string name, const std::array<Image*, 6>& imgs);
+		static Scope<Texture> CreateFromImages(std::string name, const std::array<Image*, 6>& imgs,
+											   TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create a texture from TRAP::Image.
 		/// </summary>
@@ -73,9 +82,11 @@ namespace TRAP::Graphics
 		/// <param name="img">Image to create the texture from.</param>
 		/// <param name="type">Type of Texture.</param>
 		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
+		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
 		static Scope<Texture> CreateFromImage(std::string name, const TRAP::Image* const img, TextureType type,
-		                                      TextureCubeFormat cubeFormat = TextureCubeFormat::NONE);
+		                                      TextureCubeFormat cubeFormat = TextureCubeFormat::NONE,
+											  TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create an empty texture.
 		/// </summary>
@@ -84,9 +95,11 @@ namespace TRAP::Graphics
 		/// <param name="bitsPerPixel">Bits per pixel for the texture.</param>
 		/// <param name="format">Color format for the texture.</param>
 		/// <param name="type">Type of texture.</param>
+		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Empty texture on success, nullptr otherwise.</returns>
-		static Scope<Texture> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel,
-		                                  Image::ColorFormat format, TextureType type);
+		static Scope<Texture> CreateEmpty(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel,
+		                                  Image::ColorFormat format, TextureType type,
+										  TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create a custom texture.
 		/// </summary>

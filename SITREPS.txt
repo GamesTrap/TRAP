@@ -2625,3 +2625,10 @@ SITREP 06/03/2022|22w22b1
     - Updated VulkanComputeTests ~<30 mins
     - RendererAPI Added ability to specify QueueType on some functions ~<20 mins
     - VulkanComputeTests Added push constant test ~<10 mins
+
+SITREP 06/04/2022|22w22b2
+    - Changed TRAP Engine version to 22w22b2(0.7.145)
+    - Texture Added ability to provide additional flags (like Storage for storage images) ~<20 mins
+    - RenderCommand Added Dispatch and Transition functions ~<15 mins
+    - Updated VulkanComputeTests ~<15 mins
+    - VulkanComputeTests Added push constant test ~<10 mins

@@ -207,11 +207,23 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
-											 const TRAP::Graphics::RendererAPI::ResourceState oldState,
-											 const TRAP::Graphics::RendererAPI::ResourceState newState)
+											 const TRAP::Graphics::RendererAPI::ResourceState oldLayout,
+											 const TRAP::Graphics::RendererAPI::ResourceState newLayout,
+											 const TRAP::Graphics::RendererAPI::QueueType queueType)
 {
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute ||
+	            queueType == QueueType::Transfer, "Invalid queue type provided!");
+
+	TRAP::Ref<TRAP::Graphics::Queue> queue = nullptr;
+	if(queueType == QueueType::Graphics)
+		queue = s_graphicQueue;
+	else if(queueType == QueueType::Compute)
+		queue = s_computeQueue;
+	else if(queueType == QueueType::Transfer)
+		queue = s_transferQueue;
+
 	CommandPoolDesc cmdPoolDesc{};
-	cmdPoolDesc.Queue = s_graphicQueue;
+	cmdPoolDesc.Queue = queue;
 	cmdPoolDesc.Transient = true;
 	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
 
@@ -223,8 +235,8 @@ void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
 	//Transition the texture to the correct state
 	TextureBarrier texBarrier{};
 	texBarrier.Texture = texture;
-	texBarrier.CurrentState = oldState;
-	texBarrier.NewState = newState;
+	texBarrier.CurrentState = oldLayout;
+	texBarrier.NewState = newLayout;
 
 	cmd->ResourceBarrier(nullptr, &texBarrier, nullptr);
 
@@ -235,10 +247,10 @@ void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
 	QueueSubmitDesc submitDesc{};
 	submitDesc.Cmds = {cmd};
 
-	s_graphicQueue->Submit(submitDesc);
+	queue->Submit(submitDesc);
 
 	//Wait for work to finish on the GPU
-	s_graphicQueue->WaitQueueIdle();
+	queue->WaitQueueIdle();
 
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);

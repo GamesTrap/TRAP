@@ -4,16 +4,8 @@
 
 VulkanComputeTests::VulkanComputeTests()
     : Layer("VulkanComputeTests"),
-      m_vertexBuffer(nullptr),
-      m_indexBuffer(nullptr),
-	  m_texShader(nullptr),
-      m_colorTextureUAV(nullptr),
-      m_computeTarget(nullptr),
-      m_vulkanLogo(nullptr),
-      m_disabled(true),
-      m_sharpen(false),
-      m_emboss(false),
-      m_edgedetect(false)
+      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_texShader(nullptr), m_colTex(nullptr), m_compTex(nullptr),
+      m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false)
 {
 }
 
@@ -41,21 +33,17 @@ void VulkanComputeTests::OnAttach()
                                                         sizeof(uint16_t), TRAP::Graphics::UpdateFrequency::Static);
     m_indexBuffer->AwaitLoading();
 
-    //Load Image
-    m_vulkanLogo = TRAP::Image::LoadFromFile("./Assets/Textures/vulkanlogo.png");
+    //Load Texture
+    m_colTex = TRAP::Graphics::TextureManager::Load("ColorTextureUAV", "./Assets/Textures/vulkanlogo.png", TRAP::Graphics::TextureCreationFlags::Storage);
+    m_colTex->AwaitLoading();
 
-    //Load Texture    {
-    //TODO Texture Loading bool to indicate UAV usage
-    //Currently UAV Textures require manual loading
-    m_colorTextureUAV = PrepareTextureTarget(m_vulkanLogo->GetWidth(), m_vulkanLogo->GetHeight());
-    m_colorTextureUAV->Update(m_vulkanLogo->GetPixelData(), m_vulkanLogo->GetPixelDataSize());
-    m_colorTextureUAV->AwaitLoading();
-    m_colorTextureUAV->SetTextureName("ColorTextureUAV");
-
-    //TODO Make this a RenderCommand (in place layout transitions) with optional queue type
-    TRAP::Graphics::RendererAPI::GetRenderer()->Transition(m_colorTextureUAV.get(),
-                                                            TRAP::Graphics::RendererAPI::ResourceState::ShaderResource,
-                                                            TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess);
+    //Create empty Texture
+    TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture::CreateEmpty("ComputeTargetUAV",
+                                        m_colTex->GetWidth(), m_colTex->GetHeight(), m_colTex->GetBitsPerPixel(),
+                                        m_colTex->GetColorFormat(), TRAP::Graphics::TextureType::Texture2D,
+                                        TRAP::Graphics::TextureCreationFlags::Storage));
+    m_compTex = TRAP::Graphics::TextureManager::Get2D("ComputeTargetUAV");
+    m_compTex->AwaitLoading();
 
     //Load Shader
     m_texShader = TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
@@ -71,10 +59,6 @@ void VulkanComputeTests::OnAttach()
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
-
-    //Create empty Texture
-    m_computeTarget = PrepareTextureTarget(m_colorTextureUAV->GetWidth(), m_colorTextureUAV->GetHeight());
-    m_computeTarget->SetTextureName("ComputeTargetUAV");
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -111,20 +95,15 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
         //Bind compute shader
         shader->Use(TRAP::Application::GetWindow());
-
         //Set shader descriptors
-        shader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow()); //TODO Update Shader class
-        shader->UseTexture(1, 1, m_computeTarget.get(), TRAP::Application::GetWindow());
+        shader->UseTexture(1, 0, m_colTex);
+        shader->UseTexture(1, 1, m_compTex);
 
-        // static constexpr float brightness = 0.25f;
-        // TRAP::Graphics::RenderCommand::SetPushConstants("BrughtnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
+        static constexpr float brightness = 1.0f;
+        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
 
-        //Dispatch compute work (work groups are retrieved through automatic reflection)
-        //TODO Make this a RenderCommand
-        TRAP::Graphics::RendererAPI::GetRenderer()->Dispatch({m_colorTextureUAV->GetWidth(),
-                                                              m_colorTextureUAV->GetHeight(),
-                                                              1},
-                                                             TRAP::Application::GetWindow());
+        //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)
+        TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
     }
 
     //-------------------------------------------------------------------------------------------------------------------//
@@ -136,11 +115,11 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Layout transition
     TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-    barrier.Texture = m_computeTarget.get();
+    barrier.Texture = m_compTex;
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-    barrier.Texture = m_colorTextureUAV.get();
+    barrier.Texture = m_colTex;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
 
     const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
@@ -152,9 +131,9 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //Use shader
     m_texShader->Use();
     if(m_disabled)
-        m_texShader->UseTexture(1, 0, m_colorTextureUAV.get(), TRAP::Application::GetWindow());
+        m_texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
     else
-        m_texShader->UseTexture(1, 0, m_computeTarget.get(), TRAP::Application::GetWindow());
+        m_texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
@@ -164,11 +143,11 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Layout transition
     barrier = {};
-    barrier.Texture = m_computeTarget.get();
-    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+    barrier.Texture = m_compTex;
+    barrier.CurrentState = TRAP::Graphics::ResourceState::ShaderResource;
+    barrier.NewState = TRAP::Graphics::ResourceState::UnorderedAccess;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-    barrier.Texture = m_colorTextureUAV.get();
+    barrier.Texture = m_colTex;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
 
     //Update FPS & FrameTime history
@@ -251,26 +230,6 @@ bool VulkanComputeTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
     if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
-    else if(e.GetKey() == TRAP::Input::Key::E)
-        m_emboss = !m_emboss;
 
     return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scope<TRAP::Graphics::Texture> VulkanComputeTests::PrepareTextureTarget(const uint32_t width, const uint32_t height)
-{
-    //Create empty Texture
-    TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
-    texDesc.Width = width;
-    texDesc.Height = height;
-    texDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
-    texDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-    texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture | TRAP::Graphics::RendererAPI::DescriptorType::RWTexture;
-
-    TRAP::Scope<TRAP::Graphics::Texture> texTarget = TRAP::Graphics::Texture::CreateCustom(texDesc);
-    texTarget->AwaitLoading();
-
-    return texTarget;
 }

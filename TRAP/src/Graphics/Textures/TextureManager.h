@@ -10,39 +10,49 @@ namespace TRAP::Graphics::TextureManager
 	/// File name will be used as the texture name.
 	/// </summary>
 	/// <param name="filepath">File path of texture to load.</param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture* Load(const std::filesystem::path& filepath);
+	Texture* Load(const std::filesystem::path& filepath,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a 2D texture from file.
 	/// </summary>
 	/// <param name="name">Name for the texture.</param>
 	/// <param name="filepath">File path of texture to load.</param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture* Load(const std::string& name, const std::filesystem::path& filepath);
+	Texture* Load(const std::string& name, const std::filesystem::path& filepath,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a 2D texture from TRAP::Image.
 	/// </summary>
 	/// <param name="name">Name for the texture.</param>
 	/// <param name="img">TRAP::Image to use as texture.</param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture* Load(const std::string& name, const Image* const img);
+	Texture* Load(const std::string& name, const Image* const img,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a cube texture from file.
 	/// </summary>
 	/// <param name="name">Name for the texture.</param>
 	/// <param name="filepath">File path of texture to load.</param>
 	/// <param name="format">Format of the cube texture.</param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
 	Texture* Load(const std::string& name, const std::filesystem::path& filepath,
-				  TextureCubeFormat format);
+				  TextureCubeFormat format,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a cube texture from file.
 	/// File name will be used as the texture name.
 	/// </summary>
 	/// <param name="filepath">File path of texture to load.</param>
 	/// <param name="format">Format of the cube texture.</param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture* Load(const std::filesystem::path& filepath, TextureCubeFormat format);
+	Texture* Load(const std::filesystem::path& filepath, TextureCubeFormat format,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a cube texture from file.
 	/// </summary>
@@ -51,17 +61,21 @@ namespace TRAP::Graphics::TextureManager
 	/// File paths of all 6 textures to load.
 	/// Order: +X, -X, +Y, -Y, +Z, -Z.
 	/// </param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
-	Texture* Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths);
+	Texture* Load(const std::string& name, const std::array<std::filesystem::path, 6>& filepaths,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 	/// <summary>
 	/// Load a cube texture from TRAP::Image.
 	/// </summary>
 	/// <param name="name">Name for the texture.</param>
 	/// <param name="img">TRAP::Image to use as texture.</param>
 	/// <param name="format">Format of the cube texture.</param>
+	/// <param name="flags">Additional flags. Default: None.</param>
 	/// <returns>Loaded texture.</returns>
 	Texture* Load(const std::string& name, const Image* const img,
-				  TextureCubeFormat format);
+				  TextureCubeFormat format,
+				  TextureCreationFlags flags = TextureCreationFlags::None);
 
 	/// <summary>
 	/// Add a texture to the TextureManager.

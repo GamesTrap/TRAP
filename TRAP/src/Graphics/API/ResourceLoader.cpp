@@ -1110,8 +1110,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
+		RendererAPI::ResourceState finalLayout = UtilDetermineResourceStartState(static_cast<bool>(texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture));
 		RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::CopyDestination,
-		                                    RendererAPI::ResourceState::ShaderResource};
+		                                    finalLayout};
 		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
@@ -1156,6 +1157,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	textureDesc.SampleCount = RendererAPI::SampleCount::SampleCount1;
 	textureDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::Common;
 	textureDesc.Flags |= textureLoadDesc.CreationFlag;
+	if(static_cast<bool>(textureDesc.Flags & RendererAPI::TextureCreationFlags::Storage))
+		textureDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan &&
 	   textureLoadDesc.Desc != nullptr)

@@ -7,11 +7,13 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> Textures;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath)
+TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
+                                                              const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(filepath, TextureType::Texture2D);
+	Scope<Texture> texture = Texture::CreateFromFile(filepath, TextureType::Texture2D, TextureCubeFormat::NONE,
+	                                                 flags);
 	if(texture)
 	{
 		const std::string name = texture->GetName();
@@ -27,11 +29,13 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesys
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const std::filesystem::path& filepath)
+	                                                          const std::filesystem::path& filepath,
+                                                              const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::Texture2D);
+	Scope<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::Texture2D,
+													 TextureCubeFormat::NONE, flags);
 
 	if(texture)
 	{
@@ -46,11 +50,13 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const Image* const img)
+	                                                          const Image* const img,
+                                                              const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromImage(name, img, TextureType::Texture2D);
+	Scope<Texture> texture = Texture::CreateFromImage(name, img, TextureType::Texture2D, TextureCubeFormat::NONE,
+													  flags);
 
 	if (texture)
 	{
@@ -66,11 +72,12 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
 	                                                          const std::filesystem::path& filepath,
-															  const TextureCubeFormat format)
+															  const TextureCubeFormat format,
+                                                              const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::TextureCube, format);
+	Scope<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::TextureCube, format, flags);
 
 	if(texture)
 	{
@@ -85,11 +92,12 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
-	                                                          const TextureCubeFormat format)
+	                                                          const TextureCubeFormat format,
+                                                              const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(filepath, TextureType::TextureCube, format);
+	Scope<Texture> texture = Texture::CreateFromFile(filepath, TextureType::TextureCube, format, flags);
 
 	if(texture)
 	{
@@ -106,11 +114,12 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesys
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const std::array<std::filesystem::path, 6>& filepaths)
+	                                                          const std::array<std::filesystem::path, 6>& filepaths,
+                                                              const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFiles(name, filepaths);
+	Scope<Texture> texture = Texture::CreateFromFiles(name, filepaths, flags);
 
 	if(texture)
 	{
@@ -126,11 +135,12 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
 	                                                          const Image* const img,
-															  const TextureCubeFormat format)
+															  const TextureCubeFormat format,
+															  const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromImage(name, img, TextureType::TextureCube, format);
+	Scope<Texture> texture = Texture::CreateFromImage(name, img, TextureType::TextureCube, format, flags);
 
 	if(texture)
 	{

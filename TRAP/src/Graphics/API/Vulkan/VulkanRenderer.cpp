@@ -467,6 +467,9 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 
 void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window)
 {
+	if (!window)
+		window = TRAP::Application::GetWindow();
+
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
 	if(!p->RecordingCompute)

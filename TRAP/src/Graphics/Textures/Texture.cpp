@@ -6,7 +6,8 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
-																			  std::array<std::filesystem::path, 6> filepaths)
+																			  std::array<std::filesystem::path, 6> filepaths,
+																			  const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -41,6 +42,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 		desc.Filepaths = texture->m_filepaths;
 		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
 		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
 		desc.Texture = texture.get();
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
@@ -54,7 +56,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::string name,
 																			 std::filesystem::path filepath,
 																			 const TextureType type,
-																			 const TextureCubeFormat cubeFormat)
+																			 const TextureCubeFormat cubeFormat,
+																			 const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
@@ -92,6 +95,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		desc.Filepaths = texture->m_filepaths;
 		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
 		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
 		desc.Texture = texture.get();
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
@@ -104,7 +108,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::filesystem::path filepath,
 																			 const TextureType type,
-		                                                                     const TextureCubeFormat cubeFormat)
+		                                                                     const TextureCubeFormat cubeFormat,
+																			 const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
@@ -137,6 +142,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		desc.Filepaths = texture->m_filepaths;
 		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
 		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
 		desc.Texture = texture.get();
 
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
@@ -148,7 +154,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
-																			   const std::array<Image*, 6>& imgs)
+																			   const std::array<Image*, 6>& imgs,
+																			   const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
 	            [](const Image* img) { return img == nullptr; }), "An Image is nullptr!");
@@ -184,7 +191,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 	TRAP::Scope<Texture> texture = nullptr;
 
 	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImgs[0]->GetColorFormat(),
-																				useImgs[0]->GetBitsPerPixel());
+																			  useImgs[0]->GetBitsPerPixel());
 
 	if(imageFormat == API::ImageFormat::Undefined)
 		return nullptr;
@@ -223,6 +230,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 		texDesc.Format = imageFormat;
 		texDesc.StartState = RendererAPI::ResourceState::Common;
 		texDesc.Descriptors = RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube;
+		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
+			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
 		loadDesc.Desc = &texDesc;
 		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
@@ -246,7 +255,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std::string name,
 																			  const TRAP::Image* const img,
  																	          const TextureType type,
-		                                                                      const TextureCubeFormat cubeFormat)
+		                                                                      const TextureCubeFormat cubeFormat,
+																			  const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
@@ -294,6 +304,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		texDesc.StartState = RendererAPI::ResourceState::Common;
 		texDesc.Descriptors = texture->m_textureType == TextureType::TextureCube ? (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube) :
 																				   RendererAPI::DescriptorType::Texture;
+		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
+			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
 		std::array<TRAP::Scope<Image>, 6> faces{};
 		if(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::Cross)
@@ -341,11 +353,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(const uint32_t width,
+TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
+																		  const uint32_t width,
 																		  const uint32_t height,
 																		  const uint32_t bitsPerPixel,
 																		  const Image::ColorFormat format,
-																		  const TextureType type)
+																		  const TextureType type,
+																		  const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -382,9 +396,12 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(const 
 		texDesc.Height = height;
 		texDesc.Format = imageFormat;
 		texDesc.ArraySize = texture->m_textureType == TextureType::TextureCube ? 6 : 1;
+		texDesc.Name = std::move(name);
 		texDesc.Descriptors = texture->m_textureType == TextureType::TextureCube ? (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube) :
 																				   RendererAPI::DescriptorType::Texture;
 		texDesc.StartState = RendererAPI::ResourceState::Common;
+		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
+			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
 		desc.Desc = &texDesc;
 
@@ -441,7 +458,16 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 {
-	return CreateFromImage("Fallback2D", TRAP::Image::LoadFallback().get(), TextureType::Texture2D);
+	TRAP::Scope<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
+																		 TRAP::Image::LoadFallback().get(),
+																		 TextureType::Texture2D,
+	                       												 TextureCubeFormat::NONE, TextureCreationFlags::Storage);
+
+	//By default Storage texture are in Unordered Access layout.
+	RendererAPI::Transition(fallback2DTex.get(), RendererAPI::ResourceState::UnorderedAccess,
+	                        RendererAPI::ResourceState::ShaderResource);
+
+	return fallback2DTex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -456,7 +482,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube
 		imgPtrs[i] = imgs[i].get();
 	}
 
-	return CreateFromImages("FallbackCube", imgPtrs);
+	TRAP::Scope<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
+
+	//By default Storage texture are in Unordered Access layout.
+	RendererAPI::Transition(fallbackCubeTex.get(), RendererAPI::ResourceState::UnorderedAccess,
+	                        RendererAPI::ResourceState::ShaderResource);
+
+	return fallbackCubeTex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

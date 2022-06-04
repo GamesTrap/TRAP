@@ -608,11 +608,13 @@ namespace TRAP::Graphics
 		/// The transition happens immediately and is guaranteed to be complete when the function returns.
 		/// </summary>
 		/// <param name="texture">Texture to transition layout.</param>
-		/// <param name="oldState">Current resource state of the given texture.</param>
-		/// <param name="newState">New resource state for the given texture.</param>
+		/// <param name="oldLayout">Current resource state of the given texture.</param>
+		/// <param name="newLayout">New resource state for the given texture.</param>
+		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
 		static void Transition(TRAP::Graphics::Texture* texture,
-							   TRAP::Graphics::RendererAPI::ResourceState oldState,
-							   TRAP::Graphics::RendererAPI::ResourceState newState);
+							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
+							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
+							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
 
 	//protected:
 		/// <summary>
@@ -792,7 +794,9 @@ namespace TRAP::Graphics
 			//Fast clear
 			FastClear = BIT(12),
 			//Fragment mask
-			FragMask = BIT(13)
+			FragMask = BIT(13),
+			//Create a storage texture
+			Storage = BIT(14)
 		};
 
 		/// <summary>

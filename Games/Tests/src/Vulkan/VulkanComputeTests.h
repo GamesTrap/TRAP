@@ -18,8 +18,6 @@ public:
 private:
     bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
 
-    static TRAP::Scope<TRAP::Graphics::Texture> PrepareTextureTarget(uint32_t width, uint32_t height);
-
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
     TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
@@ -38,9 +36,8 @@ private:
 	};
 
     TRAP::Graphics::Shader* m_texShader;
-    TRAP::Scope<TRAP::Graphics::Texture> m_colorTextureUAV;
-    TRAP::Scope<TRAP::Graphics::Texture> m_computeTarget;
-    TRAP::Scope<TRAP::Image> m_vulkanLogo;
+    TRAP::Graphics::Texture* m_colTex;
+    TRAP::Graphics::Texture* m_compTex;
 
     bool m_disabled;
     bool m_sharpen;
