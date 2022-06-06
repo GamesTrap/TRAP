@@ -463,6 +463,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 																		 TextureType::Texture2D,
 	                       												 TextureCubeFormat::NONE, TextureCreationFlags::Storage);
 
+	fallback2DTex->AwaitLoading();
+
 	//By default Storage texture are in Unordered Access layout.
 	RendererAPI::Transition(fallback2DTex.get(), RendererAPI::ResourceState::UnorderedAccess,
 	                        RendererAPI::ResourceState::ShaderResource);
@@ -483,6 +485,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube
 	}
 
 	TRAP::Scope<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
+	fallbackCubeTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
 	RendererAPI::Transition(fallbackCubeTex.get(), RendererAPI::ResourceState::UnorderedAccess,
