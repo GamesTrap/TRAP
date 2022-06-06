@@ -319,6 +319,20 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::StartRenderPass(Window* window)
+{
+	RendererAPI::GetRenderer()->StartRenderPass(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::StopRenderPass(Window* window)
+{
+	RendererAPI::GetRenderer()->StopRenderPass(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
                                                   const QueueType queueType, Window* window)
 {

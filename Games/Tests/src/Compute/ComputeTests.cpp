@@ -112,7 +112,8 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //-------------------------------------------------------------------------------------------------------------------//
 
     //Stop RenderPass (necessary for ownership transfer)
-    TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+    TRAP::Graphics::RenderCommand::StopRenderPass();
+    // TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
     //Layout transition
     TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
@@ -123,8 +124,9 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     barrier.Texture = m_colTex;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
 
-    const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
-    TRAP::Graphics::RenderCommand::BindRenderTarget(mainWinData.SwapChain->GetRenderTargets()[mainWinData.CurrentSwapChainImageIndex]);
+    TRAP::Graphics::RenderCommand::StartRenderPass();
+    // const auto& mainWinData = TRAP::Graphics::RendererAPI::GetRenderer()->GetMainWindowData();
+    // TRAP::Graphics::RenderCommand::BindRenderTarget(mainWinData.SwapChain->GetRenderTargets()[mainWinData.CurrentSwapChainImageIndex]);
 
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
@@ -141,7 +143,8 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
     //Stop RenderPass (necessary for layout transition)
-    TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
+    TRAP::Graphics::RenderCommand::StopRenderPass();
+    // TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
     //Layout transition
     barrier = {};

@@ -397,6 +397,18 @@ namespace TRAP::Graphics
 									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
 									  Window* window = nullptr);
 		/// <summary>
+		/// Start a new render pass for the given window.
+		///
+		/// Note: This will bind the render target for the current frame again.
+		/// </summary>
+		/// <param name="window">Window to start render pass for. Default: Main Window.</param>
+		static void StartRenderPass(Window* window = nullptr);
+		/// <summary>
+		/// Stop the running render pass for the given window.
+		/// </summary>
+		/// <param name="window">Window to stop render pass for. Default: Main Window.</param>
+		static void StopRenderPass(Window* window = nullptr);
+		/// <summary>
 		/// Buffer barrier used to synchronize and transition the buffer.
 		/// </summary>
 		/// <param name="bufferBarrier">Buffer barrier to use.</param>

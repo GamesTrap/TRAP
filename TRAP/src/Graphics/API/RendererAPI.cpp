@@ -13,6 +13,7 @@
 #include "Objects/CommandBuffer.h"
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
+#include "Objects/SwapChain.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -202,6 +203,27 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 	(
 		s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	const auto* winData = s_perWindowDataMap[window].get();
+
+	GetRenderer()->BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex], nullptr, nullptr,
+	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::StopRenderPass(Window* window)
+{
+	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
+	                                static_cast<uint32_t>(-1), window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

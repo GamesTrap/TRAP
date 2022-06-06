@@ -2638,3 +2638,4 @@ SITREP 06/06/2022|22w23a1
     - Changed TRAP Engine version to 22w23a1(0.7.146)
     - Renamed VulkanComputeTests to ComputeTests ~<5 mins
     - Fixed Vulkan threading error (threads using graphics queue simultaneously) ~<5 mins
+    - RenderCommand & RendererAPI Added StartRenderPass and StopRenderPass functions ~<15 mins

@@ -494,6 +494,7 @@ namespace TRAP::Graphics
 									   std::vector<uint32_t>* colorMipSlices = nullptr,
 									   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
 									   Window* window = nullptr) = 0;
+
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
@@ -602,6 +603,19 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve the graphics root signature from. Default: Main Window.</param>
 		/// <returns>Graphics root signature.</returns>
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
+
+		/// <summary>
+		/// Start a render pass for the given window.
+		///
+		/// Note: This will bind the render target for the current frame again.
+		/// </summary>
+		/// <param name="window">Window to start render pass for. Default: Main Window.</param>
+		static void StartRenderPass(Window* window = nullptr);
+		/// <summary>
+		/// Stop running render pass of the given window.
+		/// </summary>
+		/// <param name="window">Window to stop render pass on. Default: Main Window.</param>
+		static void StopRenderPass(Window* window = nullptr);
 
 		/// <summary>
 		/// Transition a texture from old layout to the new layout.
