@@ -2633,3 +2633,7 @@ SITREP 06/04/2022|22w22b2
     - VulkanComputeTests Added push constant test ~<10 mins
     - Embed Added a fallback compute shader ~<5 mins
     - Added HotReloading support for Compute shader ~<40 mins
+
+SITREP 06/06/2022|22w23a1
+    - Changed TRAP Engine version to 22w23a1(0.7.146)
+    - Renamed VulkanComputeTests to ComputeTests ~<5 mins

@@ -1,12 +1,12 @@
-#ifndef GAMESTRAP_VULKANCOMPUTETESTS_H
-#define GAMESTRAP_VULKANCOMPUTETESTS_H
+#ifndef GAMESTRAP_COMPUTETESTS_H
+#define GAMESTRAP_COMPUTETESTS_H
 
 #include <TRAP.h>
 
-class VulkanComputeTests final : public TRAP::Layer
+class ComputeTests final : public TRAP::Layer
 {
 public:
-    VulkanComputeTests();
+    ComputeTests();
 
     void OnAttach() override;
     void OnDetach() override;
@@ -48,4 +48,4 @@ private:
 	TRAP::Utils::Timer m_titleTimer{};
 };
 
-#endif /*GAMESTRAP_VULKANCOMPUTETESTS_H*/
+#endif /*GAMESTRAP_COMPUTETESTS_H*/

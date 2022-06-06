@@ -1,9 +1,9 @@
-#include "VulkanComputeTests.h"
+#include "ComputeTests.h"
 
 #include <Graphics/API/Objects/SwapChain.h>
 
-VulkanComputeTests::VulkanComputeTests()
-    : Layer("VulkanComputeTests"),
+ComputeTests::ComputeTests()
+    : Layer("ComputeTests"),
       m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_colTex(nullptr), m_compTex(nullptr),
       m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false)
 {
@@ -11,10 +11,10 @@ VulkanComputeTests::VulkanComputeTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanComputeTests::OnAttach()
+void ComputeTests::OnAttach()
 {
     TRAP::Application::SetHotReloading(true);
-    TRAP::Application::GetWindow()->SetTitle("Vulkan Async Compute Test");
+    TRAP::Application::GetWindow()->SetTitle("Async Compute Test");
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
@@ -69,7 +69,7 @@ void VulkanComputeTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanComputeTests::OnDetach()
+void ComputeTests::OnDetach()
 {
     m_textureSampler.reset();
     m_indexBuffer.reset();
@@ -78,7 +78,7 @@ void VulkanComputeTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
@@ -172,9 +172,9 @@ void VulkanComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanComputeTests::OnImGuiRender()
+void ComputeTests::OnImGuiRender()
 {
-    ImGui::Begin("Vulkan Compute Test");
+    ImGui::Begin("Async Compute Test");
     ImGui::Text("Press ESC to close");
     ImGui::Separator();
     ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
@@ -220,7 +220,7 @@ void VulkanComputeTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanComputeTests::OnEvent(TRAP::Events::Event& event)
+void ComputeTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
@@ -228,7 +228,7 @@ void VulkanComputeTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VulkanComputeTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
+bool ComputeTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
     if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();
