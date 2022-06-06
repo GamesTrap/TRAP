@@ -1,11 +1,11 @@
 #include "ComputeTests.h"
 
 #include <Graphics/API/Objects/SwapChain.h>
+#include <ImageLoader/PortableMaps/PPMImage.h>
 
 ComputeTests::ComputeTests()
-    : Layer("ComputeTests"),
-      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_colTex(nullptr), m_compTex(nullptr),
-      m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false)
+    : Layer("HeadlessComputeTests"),
+      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_colTex(nullptr), m_compTex(nullptr)
 {
 }
 
@@ -13,8 +13,10 @@ ComputeTests::ComputeTests()
 
 void ComputeTests::OnAttach()
 {
-    TRAP::Application::SetHotReloading(true);
-    TRAP::Application::GetWindow()->SetTitle("Async Compute Test");
+    TRAP::Application::GetWindow()->SetTitle("Headless Async Compute Test");
+
+    if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
+        return;
 
     //Load Quad vertices
     m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_quadVerticesIndexed.data(),
@@ -48,9 +50,7 @@ void ComputeTests::OnAttach()
 
     //Load Shader
     TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("ComputeSharpen", "./Assets/Shaders/sharpen.compute.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
-    TRAP::Graphics::ShaderManager::LoadFile("ComputeEdgeDetect", "./Assets/Shaders/edgedetect.compute.shader");
 
     TRAP::Graphics::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
@@ -80,32 +80,37 @@ void ComputeTests::OnDetach()
 
 void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
+    if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
+        return;
+
+    static float time = 0.0f;
+    time += deltaTime.GetSeconds();
+    if(time >= 5.0f)
+    {
+        //Screenshot
+	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
+	    TRAP::INTERNAL::PPMImage::Save(testImage.get(), "compute.ppm");
+
+        TRAP::Application::Shutdown();
+    }
+
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    if(!m_disabled)
-    {
-        TRAP::Graphics::Shader* shader = nullptr;
-        if(m_sharpen)
-            shader = TRAP::Graphics::ShaderManager::Get("ComputeSharpen");
-        else if(m_emboss)
-            shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
-        else if(m_edgedetect)
-            shader = TRAP::Graphics::ShaderManager::Get("ComputeEdgeDetect");
+    TRAP::Graphics::Shader* shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
 
-        //Bind compute shader
-        shader->Use();
-        //Set shader descriptors
-        shader->UseTexture(1, 0, m_colTex);
-        shader->UseTexture(1, 1, m_compTex);
+    //Bind compute shader
+    shader->Use();
+    //Set shader descriptors
+    shader->UseTexture(1, 0, m_colTex);
+    shader->UseTexture(1, 1, m_compTex);
 
-        static constexpr float brightness = 1.0f;
-        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
+    static constexpr float brightness = 1.0f;
+    TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
 
-        //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)
-        TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
-    }
+    //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)
+    TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Graphics Stuff-----------------------------------------------------------------------------------------------------//
@@ -131,10 +136,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //Use shader
     auto* texShader = TRAP::Graphics::ShaderManager::Get("Texture");
     texShader->Use();
-    if(m_disabled)
-        texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
-    else
-        texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
+    texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
@@ -150,87 +152,4 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
     barrier.Texture = m_colTex;
     TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-
-    //Update FPS & FrameTime history
-    if (m_titleTimer.Elapsed() >= 0.025f)
-    {
-        m_titleTimer.Reset();
-        static int frameTimeIndex = 0;
-        if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
-        {
-            m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
-            frameTimeIndex++;
-        }
-        else
-        {
-            std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-            m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ComputeTests::OnImGuiRender()
-{
-    ImGui::Begin("Async Compute Test");
-    ImGui::Text("Press ESC to close");
-    ImGui::Separator();
-    ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
-    ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-    ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-    ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
-    ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0,
-                     33, ImVec2(200, 50));
-    ImGui::Separator();
-    const std::array<std::string, 4> shaders{"Disabled", "Sharpen", "Emboss", "Edge Detection"};
-    static std::string currentItem = shaders[0];
-    ImGui::Text("Compute shader: ");
-    if(ImGui::BeginCombo("##Compute shader", currentItem.c_str()))
-    {
-        for(uint32_t n = 0; n < shaders.size(); ++n)
-        {
-            bool isSelected = (currentItem == shaders[n]);
-            if(ImGui::Selectable(shaders[n].c_str(), isSelected))
-                currentItem = shaders[n];
-            if(isSelected)
-            {
-                ImGui::SetItemDefaultFocus();
-
-                m_disabled = false;
-                m_sharpen = false;
-                m_emboss = false;
-                m_edgedetect = false;
-            }
-        }
-        ImGui::EndCombo();
-
-        if(currentItem == shaders[0])
-            m_disabled = true;
-        else if(currentItem == shaders[1])
-            m_sharpen = true;
-        else if(currentItem == shaders[2])
-            m_emboss = true;
-        else if(currentItem == shaders[3])
-            m_edgedetect = true;
-    }
-    ImGui::End();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ComputeTests::OnEvent(TRAP::Events::Event& event)
-{
-    TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool ComputeTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
-{
-    if(e.GetKey() == TRAP::Input::Key::Escape)
-        TRAP::Application::Shutdown();
-
-    return false;
 }

@@ -264,7 +264,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
 
-	if(texture->GetType() != TextureType::Texture2D)
+	if(texture && texture->GetType() != TextureType::Texture2D)
 		return;
 
 	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)

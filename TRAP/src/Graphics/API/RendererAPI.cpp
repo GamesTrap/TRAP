@@ -214,8 +214,13 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 
 	const auto* winData = s_perWindowDataMap[window].get();
 
+#ifndef TRAP_HEADLESS_MODE
 	GetRenderer()->BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex], nullptr, nullptr,
 	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+#else
+	GetRenderer()->BindRenderTarget(winData->RenderTargets[winData->ImageIndex], nullptr, nullptr,
+	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

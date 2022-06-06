@@ -75,7 +75,6 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 	{
 	case RenderAPI::Vulkan:
 	{
-		//TODO VulkanTexture::Init() should set the name for renderdoc
 		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
 		break;
 	}

@@ -118,7 +118,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-	ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
+	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
 	ImGui::End();
 	ImGui::PopStyleVar();
 

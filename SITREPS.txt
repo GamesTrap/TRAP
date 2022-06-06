@@ -2639,3 +2639,8 @@ SITREP 06/06/2022|22w23a1
     - Renamed VulkanComputeTests to ComputeTests ~<5 mins
     - Fixed Vulkan threading error (threads using graphics queue simultaneously) ~<5 mins
     - RenderCommand & RendererAPI Added StartRenderPass and StopRenderPass functions ~<15 mins
+    - Texture switched format to R8G8B8A8_UNORM ~<5 mins
+    - VulkanRenderer switched surface format to B8G8R8A8_SRGB ~<5 mins
+    - Headless Added ComputeTest ~<15 mins
+    - Fixed TRAP-Editor crashing ~<5 mins
+    - Fixed FrameBufferTests crashing ~<5 mins

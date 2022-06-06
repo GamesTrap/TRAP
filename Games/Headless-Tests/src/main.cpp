@@ -1,6 +1,7 @@
 #include <TRAP.h>
 
 #include "Headless/HeadlessTests.h"
+#include "Compute/ComputeTests.h"
 
 class HeadlessTestsApp final : public TRAP::Application
 {
@@ -8,7 +9,8 @@ public:
 	explicit HeadlessTestsApp(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		PushLayer(std::make_unique<HeadlessTests>());
+		PushLayer(std::make_unique<ComputeTests>());
+		// PushLayer(std::make_unique<HeadlessTests>());
 	}
 };
 

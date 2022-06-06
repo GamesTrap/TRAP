@@ -56,7 +56,6 @@ void FrameBufferTests::OnAttach()
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
     //Use static shader resources
-    m_shader->UseTexture(0, 0, m_texture);
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 
     TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
@@ -108,6 +107,7 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
     TRAP::Graphics::ShaderManager::Get("TextureTest")->Use();
+    m_shader->UseTexture(1, 0, m_texture);
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());

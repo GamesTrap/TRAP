@@ -1332,7 +1332,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 		textureDesc.Width = images[0]->GetWidth();
 		textureDesc.Height = images[0]->GetHeight();
-		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                textureDesc.Height);
 	}
@@ -1347,7 +1347,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Height = images[0]->GetHeight();
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
-		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                textureDesc.Height);
 	}

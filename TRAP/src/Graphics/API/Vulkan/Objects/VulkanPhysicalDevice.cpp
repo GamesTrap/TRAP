@@ -714,13 +714,14 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					"\" Failed fillModeNonSolid Test!");
 
-			// Optionally: Check if Surface has optimal surface format
-			// Disabled in Headless mode.
+		// Optionally: Check if Surface has optimal surface format
+		// Disabled in Headless mode.
 #ifndef TRAP_HEADLESS_MODE
 		bool optimalFormat = false;
 		for (auto &format : surfaceFormats)
 		{
-			if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			// if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				optimalFormat = true;
 				break;
