@@ -4,8 +4,8 @@
 
 ComputeTests::ComputeTests()
     : Layer("ComputeTests"),
-      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_colTex(nullptr), m_compTex(nullptr),
-      m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false)
+      m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_textureSampler(nullptr), m_colTex(nullptr),
+      m_compTex(nullptr), m_disabled(true), m_sharpen(false), m_emboss(false), m_edgedetect(false)
 {
 }
 

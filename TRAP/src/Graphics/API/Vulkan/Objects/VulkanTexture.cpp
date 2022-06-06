@@ -435,10 +435,10 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	m_imageFormat = desc.Format;
 	m_descriptorTypes = desc.Descriptors;
 
-#if defined(ENABLE_GRAPHICS_DEBUG)
 	if (m_name.empty() && !desc.Name.empty())
 		m_name = desc.Name;
 
+#if defined(ENABLE_GRAPHICS_DEBUG)
 	if (!m_name.empty())
 		SetTextureName(m_name);
 #endif

@@ -2644,3 +2644,4 @@ SITREP 06/06/2022|22w23a1
     - Headless Added ComputeTest ~<15 mins
     - Fixed TRAP-Editor crashing ~<5 mins
     - Fixed FrameBufferTests crashing ~<5 mins
+    - Tested if Compute works when using a Graphics Queue (can be the case on some GPUs) ~<10 mins

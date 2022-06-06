@@ -29,12 +29,12 @@ public:
 	{
 		// PushLayer(std::make_unique<ClipboardTests>());
 		// PushLayer(std::make_unique<ControllerTests>());
-		// PushLayer(std::make_unique<ComputeTests>());
+		PushLayer(std::make_unique<ComputeTests>());
 		// PushLayer(std::make_unique<CursorTests>());
 		// PushLayer(std::make_unique<DragAndDropTests>());
 		// PushLayer(std::make_unique<EventTests>());
 		// PushLayer(std::make_unique<FileSystemTests>());
-		PushLayer(std::make_unique<FrameBufferTests>());
+		// PushLayer(std::make_unique<FrameBufferTests>());
 		// PushLayer(std::make_unique<IconTests>());
 		// PushLayer(std::make_unique<IcoSphereTests>());
 		// PushLayer(std::make_unique<ImageLoaderTests>());
