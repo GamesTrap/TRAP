@@ -37,7 +37,7 @@
 //rendered frame may take a long time.
 //ENABLE_GRAPHICS_DEBUG must be defined for this to work.
 //Vulkan: Only works if VK_EXT_validation_features extension is supported.
-// #define ENABLE_GPU_BASED_VALIDATION
+//#define ENABLE_GPU_BASED_VALIDATION
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -103,7 +103,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 142);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 147);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

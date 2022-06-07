@@ -56,7 +56,6 @@ void FrameBufferTests::OnAttach()
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
     //Use static shader resources
-    m_shader->UseTexture(0, 0, m_texture);
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 
     TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
@@ -107,7 +106,8 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     //Bind geometry and shader
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-    TRAP::Graphics::ShaderManager::Get("TextureTest")->Use();
+    m_shader->UseTexture(1, 0, m_texture);
+    m_shader->Use();
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
@@ -157,7 +157,7 @@ void FrameBufferTests::OnImGuiRender()
     ImGui::Begin("COLOR_B8G8R8A8_UNORM_Framebuffer", nullptr, ImGuiWindowFlags_AlwaysAutoResize |
                                                                 ImGuiWindowFlags_NoCollapse |
                                                                 ImGuiWindowFlags_NoResize);
-    ImGui::Image(m_renderTarget->GetTexture().get(), ImVec2(static_cast<float>(m_renderTarget->GetWidth()),
+    ImGui::Image(m_renderTarget->GetTexture(), ImVec2(static_cast<float>(m_renderTarget->GetWidth()),
                  static_cast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
     ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
     ImGui::End();

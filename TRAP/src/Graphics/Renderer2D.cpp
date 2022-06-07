@@ -34,7 +34,7 @@ namespace TRAP::Graphics
 		Scope<IndexBuffer> QuadIndexBuffer;
 		Scope<Shader> TextureShader;
 		Ref<Sampler> TextureSampler;
-		Scope<Texture2D> WhiteTexture;
+		Scope<Texture> WhiteTexture;
 
 		Scope<std::array<QuadVertex, MaxVertices>> QuadVertices = MakeScope<std::array<QuadVertex, MaxVertices>>();
 
@@ -114,7 +114,7 @@ void TRAP::Graphics::Renderer2D::Init()
 																			   255, 255, 255, 255,
 																		       255, 255, 255, 255,
 																			   255, 255, 255, 255 });
-	s_data.WhiteTexture = Texture2D::CreateFromImage("Renderer2DWhite", whiteImage.get());
+	s_data.WhiteTexture = Texture::CreateFromImage("Renderer2DWhite", whiteImage.get(), TextureType::Texture2D);
 	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
 
 	const SamplerDesc samplerDesc{};
@@ -228,17 +228,23 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, Texture2D* const texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, Texture* const texture)
 {
+	if(texture->GetType() != TextureType::Texture2D)
+		return;
+
 	DrawQuad(transform, Math::Vec4(1.0f), texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
-                                          Texture2D* const texture)
+                                          Texture* const texture)
 {
 	TP_PROFILE_FUNCTION();
+
+	if(texture->GetType() != TextureType::Texture2D)
+		return;
 
 	Math::Mat4 transformation;
 	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
@@ -253,15 +259,18 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
-                                          Texture2D* const texture)
+                                          Texture* const texture)
 {
 	constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
 
+	if(texture && texture->GetType() != TextureType::Texture2D)
+		return;
+
 	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		FlushAndReset();
 
-	Texture2D* const tex = texture ? texture : s_data.WhiteTexture.get();
+	Texture* const tex = texture ? texture : s_data.WhiteTexture.get();
 	const float textureIndex = GetTextureIndex(tex);
 
 	for (uint64_t i = 0; i < quadVertexCount; i++)
@@ -280,9 +289,10 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Renderer2D::GetTextureIndex(Texture2D* const texture)
+float TRAP::Graphics::Renderer2D::GetTextureIndex(Texture* const texture)
 {
 	TRAP_ASSERT(texture, "Texture is nullptr!");
+	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a Texture2D!");
 
 	float textureIndex = -1.0f;
 

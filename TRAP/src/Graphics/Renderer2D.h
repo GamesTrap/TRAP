@@ -2,7 +2,7 @@
 #define TRAP_RENDERER2D_H
 
 #include "Cameras/Orthographic/OrthographicCamera.h"
-#include "Textures/Texture2D.h"
+#include "Textures/Texture.h"
 
 namespace TRAP::Graphics
 {
@@ -61,7 +61,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="transform">Transform of the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
-		static void DrawQuad(const Transform& transform, Texture2D* const texture);
+		static void DrawQuad(const Transform& transform, Texture* const texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// </summary>
@@ -69,7 +69,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
-		                     Texture2D* const texture);
+		                     Texture* const texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// This is the base function for all the other DrawQuad functions.
@@ -78,7 +78,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
-		                     Texture2D* const texture);
+		                     Texture* const texture);
 
 		//Stats
 		struct Statistics
@@ -124,7 +124,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="texture">Texture to find index for.</param>
 		/// <returns>Index to the texture.</returns>
-		static float GetTextureIndex(Texture2D* texture);
+		static float GetTextureIndex(Texture* texture);
 
 		static Renderer2DData s_data;
 	};

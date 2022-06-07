@@ -51,6 +51,7 @@ void TRAP::FS::Init()
         }
     }
 
+#ifndef TRAP_HEADLESS_MODE
     p = GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "logs";
     res = std::filesystem::exists(p, ec);
     if(ec)
@@ -68,6 +69,7 @@ void TRAP::FS::Init()
             return;
         }
     }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

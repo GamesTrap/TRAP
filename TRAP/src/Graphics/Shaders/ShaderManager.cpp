@@ -17,7 +17,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::LoadFile(const std::files
 	Scope<Shader> shader = Shader::CreateFromFile(filepath, userMacros);
 
 	if(!shader)
-		return Get("Fallback");
+		return Get("FallbackGraphics");
 
 	const std::string name = shader->GetName();
 
@@ -37,7 +37,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::LoadFile(const std::strin
 	Scope<Shader> shader = Shader::CreateFromFile(name, filepath, userMacros);
 
 	if(!shader)
-		return Get("Fallback");
+		return Get("FallbackGraphics");
 
 	Add(std::move(shader));
 
@@ -55,7 +55,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::LoadSource(const std::str
 	Scope<Shader> shader = Shader::CreateFromSource(name, glslSource, userMacros);
 
 	if(!shader)
-		return Get("Fallback");
+		return Get("FallbackGraphics");
 
 	Add(std::move(shader));
 
@@ -125,7 +125,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Get(const std::string& na
 	TP_WARN(Log::ShaderManagerPrefix, "Using fallback shader!");
 
 	//Should always be available as a fallback
-	return Get("Fallback");
+	return Get("FallbackGraphics");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -157,8 +157,9 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 			std::string error;
 			if (!path.empty())
 			{
+				const RendererAPI::ShaderStage stages = Shaders[nameOrPath]->GetShaderStages();
 				Shaders[nameOrPath].reset();
-				Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path);
+				Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path, stages);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
 				return Shaders[nameOrPath].get();
 			}
@@ -195,13 +196,13 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Shader* cons
 
 	const std::string name = shader->GetName();
 	const std::filesystem::path path = shader->GetFilePath();
-	std::string error;
+	const RendererAPI::ShaderStage stages = Shaders[name]->GetShaderStages();
 
 	if (path.empty())
 		return nullptr;
 
 	Shaders[name].reset();
-	Shaders[name] = Shader::CreateFromFile(name, path);
+	Shaders[name] = Shader::CreateFromFile(name, path, stages);
 	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
 
 	return Shaders[name].get();

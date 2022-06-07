@@ -147,27 +147,27 @@ namespace TRAP::Graphics::API
 		///  3. Must support at least 4 simultaneously bound descriptor sets.
 		///  4. Retrieves all supported extensions (50 score for each supported extension).
 		///  5. Must support swapchain extensions (Disabled for Headless mode).
-		///  6. Must be able to create a Vulkan instance with surface extensions (Surface extensions are not used by Headless mode).
-		///  7. Must be able to create a Vulkan surface test window (Disabled for Headless mode).
-		///  8. Must be able to create a Vulkan surface (Disabled for Headless mode).
-		///  9. Must have at least one queue family.
-		/// 10. Must support at least one graphics queue family.
-		/// 11. Must support at least one queue family with present support (Disabled for Headless mode).
-		/// 12. Must support at least one present mode (Disabled for Headless mode).
-		/// 13. Must support at least one surface format (Disabled for Headless mode).
-		/// 14. Optionally supports a compute queue family (1000 score for each).
-		/// 15. Optionally supports a transfer queue family (1000 score for each).
-		/// 16. Optionally supports RayTracing extensions (2000 score).
-		/// 17. Optionally supports geometry shaders (1000 score).
-		/// 18. Optionally supports tessellation shaders (1000 score).
-		/// 19. Optionally supports fill mode non solid (250 score).
-		/// 20. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
-		/// 21. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
-		/// 22. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
-		/// 23. Optionally check if anisotropic filtering is supported (500 score).
+		///  6. Must be able to create a Vulkan surface test window (Disabled for Headless mode).
+		///  7. Must be able to create a Vulkan surface (Disabled for Headless mode).
+		///  8. Must have at least one queue family.
+		///  9. Must support at least one graphics queue family.
+		/// 10. Must support at least one queue family with present support (Disabled for Headless mode).
+		/// 11. Must support at least one present mode (Disabled for Headless mode).
+		/// 12. Must support at least one surface format (Disabled for Headless mode).
+		/// 13. Optionally supports a compute queue family (1000 score for each).
+		/// 14. Optionally supports a transfer queue family (1000 score for each).
+		/// 15. Optionally supports RayTracing extensions (2000 score).
+		/// 16. Optionally supports geometry shaders (1000 score).
+		/// 17. Optionally supports tessellation shaders (1000 score).
+		/// 18. Optionally supports fill mode non solid (250 score).
+		/// 19. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
+		/// 20. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
+		/// 21. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
+		/// 22. Optionally check if anisotropic filtering is supported (500 score).
 		/// </summary>
 		/// <param name="physicalDevices">Vulkan physical devices to rate.</param>
-		static void RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices);
+		/// <param name="instance">Vulkan instance used to retrieve the physical devices.</param>
+		static void RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices, VkInstance instance);
 
 		/// <summary>
 		/// Load a list of available instance layers.

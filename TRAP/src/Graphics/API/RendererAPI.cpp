@@ -10,8 +10,10 @@
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "ResourceLoader.h"
 #include "Objects/CommandPool.h"
+#include "Objects/CommandBuffer.h"
 #include "Objects/Queue.h"
 #include "Objects/Sampler.h"
+#include "Objects/SwapChain.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -25,10 +27,7 @@ bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
-std::array<TRAP::Ref<TRAP::Graphics::CommandPool>,
-           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
-std::array<TRAP::Graphics::CommandBuffer*,
-           TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_transferQueue = nullptr;
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
@@ -72,14 +71,9 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	queueDesc.Type = QueueType::Compute;
 	s_computeQueue = Queue::Create(queueDesc);
 
-	//For each buffered image
-	for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-	{
-		//Create Compute Command Pool
-		s_computeCommandPools[i] = CommandPool::Create({ s_computeQueue, false });
-		//Allocate Compute Command Buffer
-		s_computeCommandBuffers[i] = s_computeCommandPools[i]->AllocateCommandBuffer(false);
-	}
+	//Create Transfer Queue
+	queueDesc.Type = QueueType::Transfer;
+	s_transferQueue = Queue::Create(queueDesc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -90,17 +84,12 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 	TRAP::Graphics::Sampler::ClearCache();
 
-	for(uint32_t i = ImageCount; i > 0; i--)
-	{
-		s_computeCommandPools[i - 1]->FreeCommandBuffer(s_computeCommandBuffers[i - 1]);
-		s_computeCommandBuffers[i - 1] = nullptr;
-		s_computeCommandPools[i - 1].reset();
-	}
-
 	s_Renderer->s_graphicQueue->WaitQueueIdle();
 	s_Renderer->s_computeQueue->WaitQueueIdle();
+	s_Renderer->s_transferQueue->WaitQueueIdle();
 	s_Renderer->s_graphicQueue.reset();
 	s_Renderer->s_computeQueue.reset();
+	s_Renderer->s_transferQueue.reset();
 
 	s_Renderer.reset();
 	s_Renderer = nullptr;
@@ -191,7 +180,14 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
+{
+	return s_transferQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
 	return *s_perWindowDataMap[TRAP::Application::GetWindow()];
 }
@@ -207,6 +203,85 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 	(
 		s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	const auto* winData = s_perWindowDataMap[window].get();
+
+#ifndef TRAP_HEADLESS_MODE
+	GetRenderer()->BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex], nullptr, nullptr,
+	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+#else
+	GetRenderer()->BindRenderTarget(winData->RenderTargets[winData->ImageIndex], nullptr, nullptr,
+	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::StopRenderPass(Window* window)
+{
+	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
+	                                static_cast<uint32_t>(-1), window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
+											 const TRAP::Graphics::RendererAPI::ResourceState oldLayout,
+											 const TRAP::Graphics::RendererAPI::ResourceState newLayout,
+											 const TRAP::Graphics::RendererAPI::QueueType queueType)
+{
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute ||
+	            queueType == QueueType::Transfer, "Invalid queue type provided!");
+
+	TRAP::Ref<TRAP::Graphics::Queue> queue = nullptr;
+	if(queueType == QueueType::Graphics)
+		queue = s_graphicQueue;
+	else if(queueType == QueueType::Compute)
+		queue = s_computeQueue;
+	else if(queueType == QueueType::Transfer)
+		queue = s_transferQueue;
+
+	CommandPoolDesc cmdPoolDesc{};
+	cmdPoolDesc.Queue = queue;
+	cmdPoolDesc.Transient = true;
+	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
+
+	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+
+	//Start recording
+	cmd->Begin();
+
+	//Transition the texture to the correct state
+	TextureBarrier texBarrier{};
+	texBarrier.Texture = texture;
+	texBarrier.CurrentState = oldLayout;
+	texBarrier.NewState = newLayout;
+
+	cmd->ResourceBarrier(nullptr, &texBarrier, nullptr);
+
+	//End recording
+	cmd->End();
+
+	//Submit the command buffer
+	QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds = {cmd};
+
+	queue->Submit(submitDesc);
+
+	//Wait for work to finish on the GPU
+	queue->WaitQueueIdle();
+
+	//Cleanup
+	cmdPool->FreeCommandBuffer(cmd);
+	cmdPool.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,6 +401,13 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
 		GraphicCommandBuffers[i] = nullptr;
 		GraphicCommandPools[i].reset();
+
+		ComputeCompleteSemaphores[i].reset();
+		ComputeCompleteFences[i].reset();
+
+		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
+		ComputeCommandBuffers[i] = nullptr;
+		ComputeCommandPools[i].reset();
 	}
 }
 

@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 	class Buffer;
 	class RenderTarget;
 	class RootSignature;
-	class TextureBase;
+	class Texture;
 
 	class CommandBuffer
 	{
@@ -230,7 +230,7 @@ namespace TRAP::Graphics
 		/// <param name="texture">Texture to update.</param>
 		/// <param name="srcBuffer">Source buffer to read data from.</param>
 		/// <param name="subresourceDesc">Subresource description.</param>
-		virtual void UpdateSubresource(const TRAP::Ref<TextureBase>& texture,
+		virtual void UpdateSubresource(Texture* texture,
 		                               const TRAP::Ref<Buffer>& srcBuffer,
 									   const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 
@@ -297,7 +297,7 @@ namespace TRAP::Graphics
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		virtual void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						            TRAP::Graphics::Texture* texture,
 		                            RendererAPI::ShadingRateCombiner postRasterizerRate,
 							        RendererAPI::ShadingRateCombiner finalRate) const = 0;
 

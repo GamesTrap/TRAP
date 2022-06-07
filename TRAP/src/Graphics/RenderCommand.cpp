@@ -162,7 +162,7 @@ void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face, Window* w
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate,
-												   const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+												   Texture* texture,
 												   const ShadingRateCombiner postRasterizerRate,
 												   const ShadingRateCombiner finalRate, Window* window)
 {
@@ -254,9 +254,17 @@ void TRAP::Graphics::RenderCommand::DrawIndexedInstanced(const uint32_t indexCou
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data, Window* window)
+void TRAP::Graphics::RenderCommand::Dispatch(const std::array<uint32_t, 3>& workGroupElementSizes, Window* window)
 {
-	RendererAPI::GetRenderer()->BindPushConstants(name, data, window);
+	RendererAPI::GetRenderer()->Dispatch(workGroupElementSizes, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetPushConstants(const char* name, const void* data, const QueueType queueType,
+                                                     Window* window)
+{
+	RendererAPI::GetRenderer()->BindPushConstants(name, data, queueType, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -311,32 +319,48 @@ void TRAP::Graphics::RenderCommand::BindRenderTargets(const std::vector<TRAP::Re
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window)
+void TRAP::Graphics::RenderCommand::StartRenderPass(Window* window)
 {
-	RendererAPI::GetRenderer()->ResourceBufferBarrier(bufferBarrier, window);
+	RendererAPI::GetRenderer()->StartRenderPass(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::StopRenderPass(Window* window)
+{
+	RendererAPI::GetRenderer()->StopRenderPass(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+                                                  const QueueType queueType, Window* window)
+{
+	RendererAPI::GetRenderer()->ResourceBufferBarrier(bufferBarrier, queueType, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-                                                   Window* window)
+                                                   const QueueType queueType, Window* window)
 {
-	RendererAPI::GetRenderer()->ResourceBufferBarriers(bufferBarriers, window);
+	RendererAPI::GetRenderer()->ResourceBufferBarriers(bufferBarriers, queueType, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window)
+void TRAP::Graphics::RenderCommand::TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+                                                   const QueueType queueType, Window* window)
 {
-	RendererAPI::GetRenderer()->ResourceTextureBarrier(textureBarrier, window);
+	RendererAPI::GetRenderer()->ResourceTextureBarrier(textureBarrier, queueType, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-           										    Window* window)
+           										    const QueueType queueType, Window* window)
 {
-	RendererAPI::GetRenderer()->ResourceTextureBarriers(textureBarriers, window);
+	RendererAPI::GetRenderer()->ResourceTextureBarriers(textureBarriers, queueType, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -360,4 +384,12 @@ void TRAP::Graphics::RenderCommand::RenderTargetBarriers(const std::vector<Rende
 TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(Window* window)
 {
 	return RendererAPI::GetRenderer()->CaptureScreenshot(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::Transition(Texture* texture, const RendererAPI::ResourceState oldLayout,
+											   const RendererAPI::ResourceState newLayout, const QueueType queueType)
+{
+	RendererAPI::Transition(texture, oldLayout, newLayout, queueType);
 }

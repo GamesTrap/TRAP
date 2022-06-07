@@ -515,9 +515,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="signalSemaphore">Vulkan semaphore to signal.</param>
 	/// <returns>VkSubmitInfo.</returns>
 	VkSubmitInfo SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
+							uint32_t waitCount,
 	                        const std::vector<VkPipelineStageFlags>& waitMasks,
 	                        const std::vector<VkCommandBuffer>& cmds,
-	                        const std::vector<VkSemaphore>& signalSemaphore) noexcept;
+	                        const std::vector<VkSemaphore>& signalSemaphore,
+							const uint32_t signalCount) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

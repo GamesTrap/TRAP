@@ -5,7 +5,6 @@
 #include "Objects/Buffer.h"
 #include "Objects/CommandBuffer.h"
 #include "Objects/CommandPool.h"
-#include "Graphics/Textures/TextureBase.h"
 #include "Graphics/Textures/Texture.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
@@ -255,7 +254,7 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 	}
 	else if(packed)
 	{
-		TP_ERROR(Log::TextureBasePrefix, "Packed not implemented!");
+		TP_ERROR(Log::TexturePrefix, "Packed not implemented!");
 		return false;
 	}
 	else if(planar)
@@ -407,13 +406,11 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 	if(textureDesc.Filepaths[0].empty() && textureDesc.Desc)
 	{
 		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState));
+		TRAP_ASSERT(textureDesc.Texture != nullptr, "Texture must be constructed before loading");
 
 		//If texture is supposed to be filled later (UAV / Update later / ...) proceed with the StartState provided
 		//by the user in the texture description
-		*textureDesc.Texture = TRAP::Graphics::TextureBase::Create(*textureDesc.Desc);
-
-		if(!(*textureDesc.Texture))
-			return;
+		textureDesc.Texture->Init(*textureDesc.Desc);
 
 		//Transition texture to desired state for Vulkan since all Vulkan resources are created in undefined state
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
@@ -424,7 +421,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 			   startState == RendererAPI::ResourceState::Common)
 				startState = UtilDetermineResourceStartState(static_cast<uint32_t>(textureDesc.Desc->Descriptors) &
 				                                             static_cast<uint32_t>(RendererAPI::DescriptorType::RWTexture));
-			QueueTextureBarrier(*textureDesc.Texture, startState, token);
+			QueueTextureBarrier(textureDesc.Texture, startState, token);
 		}
 	}
 	else
@@ -468,7 +465,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 
 void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc)
 {
-	const TRAP::Ref<TRAP::Graphics::TextureBase> texture = desc.Texture;
+	const TRAP::Graphics::Texture* texture = desc.Texture;
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
 	const uint64_t alignment = UtilGetTextureSubresourceAlignment(fmt);
 
@@ -677,7 +674,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Texture* texture,
                                                               const RendererAPI::ResourceState state, SyncToken* token)
 {
 	SyncToken t{};
@@ -913,7 +910,7 @@ TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* texture,
                                                                 CommandBuffer* cmd)
 {
 	//Check if image format supports linear blitting
@@ -963,7 +960,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(const TRAP::Ref<
 		blit.dstSubresource.baseArrayLayer = 0;
 		blit.dstSubresource.layerCount = 1;
 
-		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture.get());
+		auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 
 		vkCmdBlitImage(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(),
 			           vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
@@ -1009,7 +1006,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
 	const bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer != nullptr;
-	const TRAP::Ref<TRAP::Graphics::TextureBase>& texture = textureUpdateDesc.Texture;
+	TRAP::Graphics::Texture* texture = textureUpdateDesc.Texture;
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
 	CommandBuffer* cmd = AcquireCmd(activeSet);
 
@@ -1113,8 +1110,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
+		RendererAPI::ResourceState finalLayout = UtilDetermineResourceStartState(static_cast<bool>(texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture));
 		RendererAPI::TextureBarrier barrier{texture, RendererAPI::ResourceState::CopyDestination,
-		                                    RendererAPI::ResourceState::ShaderResource};
+		                                    finalLayout};
 		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
 	}
 
@@ -1159,6 +1157,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	textureDesc.SampleCount = RendererAPI::SampleCount::SampleCount1;
 	textureDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::Common;
 	textureDesc.Flags |= textureLoadDesc.CreationFlag;
+	if(static_cast<bool>(textureDesc.Flags & RendererAPI::TextureCreationFlags::Storage))
+		textureDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan &&
 	   textureLoadDesc.Desc != nullptr)
@@ -1181,7 +1181,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			bool valid = true;
 			if(images[0]->GetWidth() != images[0]->GetHeight())
 			{
-				TP_ERROR(Log::TextureCubePrefix, "Images width and height must be the same!");
+				TP_ERROR(Log::TexturePrefix, "Images width and height must be the same!");
 				valid = false;
 			}
 			for(std::size_t i = 1; i < images.size(); ++i)
@@ -1193,14 +1193,14 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				if (images[0]->GetWidth() != images[i]->GetWidth() ||
 					images[0]->GetHeight() != images[i]->GetHeight())
 				{
-					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching width and/or height!");
+					TP_ERROR(Log::TexturePrefix, "Images have mismatching width and/or height!");
 					valid = false;
 					break;
 				}
 				if (images[0]->GetColorFormat() != images[i]->GetColorFormat() ||
 					images[0]->GetBitsPerPixel() != images[i]->GetBitsPerPixel())
 				{
-					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching color formats and/or bits per pixel!");
+					TP_ERROR(Log::TexturePrefix, "Images have mismatching color formats and/or bits per pixel!");
 					valid = false;
 					break;
 				}
@@ -1208,7 +1208,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			if(!valid) //Use FallbackCube
 			{
-				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube texture");
+				TP_WARN(Log::TexturePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
 				for (auto& image : images)
@@ -1240,7 +1240,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				if(baseImg->GetWidth() % 4 != 0 || baseImg->GetHeight() % 3 != 0)
 				{
 					valid = false;
-					TP_ERROR(Log::TextureCubePrefix,
+					TP_ERROR(Log::TexturePrefix,
 					         "Width must be a multiple of 4 & height must be a multiple of 3!");
 				}
 			}
@@ -1248,7 +1248,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			{
 				if(baseImg->GetWidth() % 3 != 0 || baseImg->GetHeight() % 4 != 0)
 				{
-					TP_ERROR(Log::TextureCubePrefix,
+					TP_ERROR(Log::TexturePrefix,
 					         "Width must be a multiple of 3 & height must be a multiple of 4!");
 					valid = false;
 				}
@@ -1265,7 +1265,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			}
 			else //Use FallbackCube
 			{
-				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube texture");
+				TP_WARN(Log::TexturePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
 				for (auto& image : images)
@@ -1311,9 +1311,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		else if (images[0]->GetBitsPerChannel() == 8 && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale) //GrayScale 8 bpc
 			textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UNORM;
 
-		*textureLoadDesc.Texture = TRAP::Graphics::TextureBase::Create(textureDesc);
+		textureLoadDesc.Texture->Init(textureDesc);
 
-		updateDesc.Texture = *textureLoadDesc.Texture;
+		updateDesc.Texture = textureLoadDesc.Texture;
 		updateDesc.BaseMipLevel = 0;
 		//updateDesc.MipLevels = textureDesc.MipLevels; //TODO For now every supported format does not support mip levels in file
 		updateDesc.MipLevels = 1;
@@ -1332,7 +1332,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 		textureDesc.Width = images[0]->GetWidth();
 		textureDesc.Height = images[0]->GetHeight();
-		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                textureDesc.Height);
 	}
@@ -1347,14 +1347,14 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Height = images[0]->GetHeight();
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
-		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.Format = TRAP::Graphics::API::ImageFormat::R8G8B8A8_UNORM;
 		textureDesc.MipLevels = TRAP::Graphics::Texture::CalculateMipLevels(textureDesc.Width,
 			                                                                textureDesc.Height);
 	}
 
-	*textureLoadDesc.Texture = TRAP::Graphics::TextureBase::Create(textureDesc);
+	textureLoadDesc.Texture->Init(textureDesc);
 
-	updateDesc.Texture = *textureLoadDesc.Texture;
+	updateDesc.Texture = textureLoadDesc.Texture;
 	updateDesc.BaseMipLevel = 0;
 	//updateDesc.MipLevels = textureDesc.MipLevels; //TODO For now every supported format does not support mip levels in file
 	updateDesc.MipLevels = 1;

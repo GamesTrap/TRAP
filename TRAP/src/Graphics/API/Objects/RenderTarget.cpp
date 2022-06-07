@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "RenderTarget.h"
 
+#include "Graphics/Textures/Texture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanRenderTarget.h"
 
 TRAP::Graphics::RenderTarget::RenderTarget()
@@ -136,7 +137,7 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::RenderTarget::GetDes
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::TextureBase> TRAP::Graphics::RenderTarget::GetTexture() const
+TRAP::Graphics::Texture* TRAP::Graphics::RenderTarget::GetTexture() const
 {
-	return m_texture;
+	return m_texture.get();
 }

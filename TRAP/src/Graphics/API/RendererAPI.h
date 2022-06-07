@@ -31,7 +31,7 @@ namespace TRAP::Graphics
 	class RootSignature;
 	class Sampler;
 	class RenderTarget;
-	class TextureBase;
+	class Texture;
 }
 
 namespace TRAP::Graphics::API
@@ -70,6 +70,8 @@ namespace TRAP::Graphics
 		enum class ClearBufferType;
 		enum class ShadingRate;
 		enum class ShadingRateCombiner;
+		enum class ResourceState;
+		enum class QueueType;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -153,6 +155,12 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to present.</param>
 		virtual void Present(Window* window) = 0;
+
+		/// <summary>
+		/// Dispatch to the given window.
+		/// </summary>
+		/// <param name="window">Window to Dispatch.</param>
+		virtual void Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) = 0;
 
 		/// <summary>
 		/// Set the VSync state for the given window.
@@ -323,7 +331,7 @@ namespace TRAP::Graphics
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		virtual void SetShadingRate(ShadingRate shadingRate,
-						            const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						            TRAP::Graphics::Texture* texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, Window* window = nullptr) = 0;
 
@@ -419,8 +427,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="dSet">Descriptor set to bind.</param>
 		/// <param name="index">Index for which descriptor set to bind.</param>
+		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the descriptor set for. Default: Main Window.</param>
-		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window = nullptr) = 0;
+		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index,
+		                               QueueType queueType = QueueType::Graphics,
+									   Window* window = nullptr) = 0;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// Note: There is an optimized function which uses the index into the RootSignature
@@ -428,16 +439,21 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant block.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
-		virtual void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) = 0;
+		virtual void BindPushConstants(const char* name, const void* constantsData,
+		                               QueueType queueType = QueueType::Graphics,
+									   Window* window = nullptr) = 0;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// </summary>
 		/// <param name="paramIndex">Index of the push constant block in the RootSignatures descriptors array.</param>
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
+		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
 		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData,
-		                                      Window* window = nullptr) = 0;
+											  QueueType queueType = QueueType::Graphics,
+											  Window* window = nullptr) = 0;
 		/// <summary>
 		/// Bind render target(s) on the given window.
 		///
@@ -478,33 +494,42 @@ namespace TRAP::Graphics
 									   std::vector<uint32_t>* colorMipSlices = nullptr,
 									   uint32_t depthArraySlice = -1, uint32_t depthMipSlice = -1,
 									   Window* window = nullptr) = 0;
+
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="bufferBarrier">Buffer barrier.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		virtual void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+										   QueueType queueType = QueueType::Graphics,
 								           Window* window = nullptr) = 0;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="bufferBarriers">Buffer barriers.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		virtual void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+											QueueType queueType = QueueType::Graphics,
 									        Window* window = nullptr) = 0;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="textureBarrier">Texture barrier.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		virtual void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+											QueueType queueType = QueueType::Graphics,
 									        Window* window = nullptr) = 0;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="textureBarriers">Texture barriers.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		virtual void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+											 QueueType queueType = QueueType::Graphics,
 									         Window* window = nullptr) = 0;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
@@ -568,18 +593,49 @@ namespace TRAP::Graphics
 		/// <returns>Compute queue.</returns>
 		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
 		/// <summary>
+		/// Retrieve the used transfer queue.
+		/// </summary>
+		/// <returns>Transfer queue.</returns>
+		static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue();
+		/// <summary>
 		/// Retrieve the currently used graphics root signature of the given window.
 		/// </summary>
 		/// <param name="window">Window to retrieve the graphics root signature from. Default: Main Window.</param>
 		/// <returns>Graphics root signature.</returns>
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
+		/// <summary>
+		/// Start a render pass for the given window.
+		///
+		/// Note: This will bind the render target for the current frame again.
+		/// </summary>
+		/// <param name="window">Window to start render pass for. Default: Main Window.</param>
+		static void StartRenderPass(Window* window = nullptr);
+		/// <summary>
+		/// Stop running render pass of the given window.
+		/// </summary>
+		/// <param name="window">Window to stop render pass on. Default: Main Window.</param>
+		static void StopRenderPass(Window* window = nullptr);
+
+		/// <summary>
+		/// Transition a texture from old layout to the new layout.
+		/// The transition happens immediately and is guaranteed to be complete when the function returns.
+		/// </summary>
+		/// <param name="texture">Texture to transition layout.</param>
+		/// <param name="oldLayout">Current resource state of the given texture.</param>
+		/// <param name="newLayout">New resource state for the given texture.</param>
+		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
+		static void Transition(TRAP::Graphics::Texture* texture,
+							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
+							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
+							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
+
 	//protected:
 		/// <summary>
 		/// Retrieve the main windows internal rendering data.
 		/// </summary>
 		/// <returns>Main windows internal rendering data.</returns>
-		static const PerWindowData& GetMainWindowData();
+		static PerWindowData& GetMainWindowData();
 
 	public:
 		/// <summary>
@@ -700,6 +756,8 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class TextureCubeType
 		{
+			NONE = 0,
+
 			MultiFile,
 			Cross,
 			//TODO
@@ -750,7 +808,9 @@ namespace TRAP::Graphics
 			//Fast clear
 			FastClear = BIT(12),
 			//Fragment mask
-			FragMask = BIT(13)
+			FragMask = BIT(13),
+			//Create a storage texture
+			Storage = BIT(14)
 		};
 
 		/// <summary>
@@ -1351,9 +1411,9 @@ namespace TRAP::Graphics
 		struct TextureLoadDesc
 		{
 			//Target to load texture info into.
-			TRAP::Ref<TRAP::Graphics::TextureBase>* Texture;
+			TRAP::Graphics::Texture* Texture;
 			//Load empty texture
-			TRAP::Ref<TextureDesc> Desc;
+			TextureDesc* Desc;
 			//Filepath with extension.
 			std::array<std::filesystem::path, 6> Filepaths;
 			//Following is ignored if Desc != nullptr.
@@ -1984,7 +2044,7 @@ namespace TRAP::Graphics
 		struct TextureBarrier
 		{
 			//Texture
-			TRAP::Ref<TRAP::Graphics::TextureBase> Texture{};
+			TRAP::Graphics::Texture* Texture{};
 			//Current resource state of the texture
 			ResourceState CurrentState{};
 			//Target resource state of the texture
@@ -2057,9 +2117,9 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<TRAP::Graphics::TextureBase*>, std::vector<Sampler*>,
+			std::variant<std::vector<TRAP::Graphics::Texture*>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::TextureBase*>()}; //TODO RayTracing acceleration structure
+				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
@@ -2133,7 +2193,7 @@ namespace TRAP::Graphics
 		struct TextureUpdateDesc
 		{
 			//Texture to update
-			TRAP::Ref<TRAP::Graphics::TextureBase> Texture = nullptr;
+			TRAP::Graphics::Texture* Texture = nullptr;
 			//Mip level to update
 			uint32_t MipLevel = 0;
 			//Array layer to update
@@ -2290,8 +2350,7 @@ namespace TRAP::Graphics
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
 		static TRAP::Ref<Queue> s_graphicQueue;
 		static TRAP::Ref<Queue> s_computeQueue;
-		static std::array<TRAP::Ref<CommandPool>, ImageCount> s_computeCommandPools;
-		static std::array<CommandBuffer*, ImageCount> s_computeCommandBuffers;
+		static TRAP::Ref<Queue> s_transferQueue;
 
 	public:
 		/// <summary>
@@ -2306,12 +2365,17 @@ namespace TRAP::Graphics
 
 			TRAP::Window* Window;
 
+			//Swapchain/Graphics stuff
 			uint32_t ImageIndex = 0;
 			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
 			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers;
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
+			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
+			PipelineDesc GraphicsPipelineDesc;
+			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
+			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 #ifdef TRAP_HEADLESS_MODE
@@ -2328,10 +2392,15 @@ namespace TRAP::Graphics
 			bool CurrentVSync;
 			bool NewVSync;
 
-			PipelineDesc GraphicsPipelineDesc;
-			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
-
-			bool Recording;
+			//Compute stuff
+			std::array<TRAP::Ref<CommandPool>, ImageCount> ComputeCommandPools;
+			std::array<CommandBuffer*, ImageCount>  ComputeCommandBuffers;
+			std::array<TRAP::Ref<Fence>, ImageCount> ComputeCompleteFences;
+			std::array<TRAP::Ref<Semaphore>, ImageCount> ComputeCompleteSemaphores;
+			TRAP::Math::Vec3 CurrentComputeWorkGroupSize;
+			PipelineDesc ComputePipelineDesc;
+			TRAP::Ref<Pipeline> CurrentComputePipeline;
+			bool RecordingCompute;
 		};
 
 	protected:

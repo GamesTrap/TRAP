@@ -7,8 +7,7 @@
 #include "Embed.h"
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
-#include "Graphics/Textures/Texture2D.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
@@ -277,39 +276,12 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Graphics::Texture2D* image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
+void ImGui::Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
                   const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
-	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-	{
-		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
-		auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
-		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
-	}
-}
+	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
+	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ImGui::Image(TRAP::Graphics::Texture2D* image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
-			      const ImVec4& tint_col, const ImVec4& border_col)
-{
-	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-	{
-		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image->GetTexture().get());
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
-		                                                      vkImage->GetSRVVkImageView(),
-		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void ImGui::Image(TRAP::Graphics::TextureBase* image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
-                  const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
-{
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
@@ -322,9 +294,12 @@ void ImGui::Image(TRAP::Graphics::TextureBase* image, TRAP::Graphics::Sampler* s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Graphics::TextureBase* image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
+void ImGui::Image(TRAP::Graphics::Texture* image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
 			      const ImVec4& tint_col, const ImVec4& border_col)
 {
+	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
+	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
+
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);

@@ -2,6 +2,7 @@
 
 #include "Clipboard/ClipboardTests.h"
 #include "Controllers/ControllerTests.h"
+#include "Compute/ComputeTests.h"
 #include "Cursor/CursorTests.h"
 #include "DragAndDrop/DragAndDropTests.h"
 #include "Events/EventTests.h"
@@ -28,6 +29,7 @@ public:
 	{
 		// PushLayer(std::make_unique<ClipboardTests>());
 		// PushLayer(std::make_unique<ControllerTests>());
+		PushLayer(std::make_unique<ComputeTests>());
 		// PushLayer(std::make_unique<CursorTests>());
 		// PushLayer(std::make_unique<DragAndDropTests>());
 		// PushLayer(std::make_unique<EventTests>());
@@ -40,7 +42,7 @@ public:
 		// PushLayer(std::make_unique<MultiWindowTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
 		// PushLayer(std::make_unique<RendererAPIInfo>());
-		PushLayer(std::make_unique<RendererAPITests>());
+		// PushLayer(std::make_unique<RendererAPITests>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
 		// PushLayer(std::make_unique<TitleTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());

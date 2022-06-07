@@ -4,6 +4,8 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
+#include "Graphics/API/Vulkan/Objects/VulkanQueue.h" //TODO REMOVE
+
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName) noexcept
 {
 	VkApplicationInfo info;
@@ -915,21 +917,23 @@ VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineC
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
+														  const uint32_t waitCount,
                                                           const std::vector<VkPipelineStageFlags>& waitMasks,
                                                           const std::vector<VkCommandBuffer>& cmds,
-                                                          const std::vector<VkSemaphore>& signalSemaphore) noexcept
+                                                          const std::vector<VkSemaphore>& signalSemaphores,
+														  const uint32_t signalCount) noexcept
 {
 	VkSubmitInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	info.pNext = nullptr;
-	info.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
+	info.waitSemaphoreCount = waitCount;
 	info.pWaitSemaphores = waitSemaphores.data();
 	info.pWaitDstStageMask = waitMasks.data();
 	info.commandBufferCount = static_cast<uint32_t>(cmds.size());
 	info.pCommandBuffers = cmds.data();
-	info.signalSemaphoreCount = static_cast<uint32_t>(signalSemaphore.size());
-	info.pSignalSemaphores = signalSemaphore.data();
+	info.signalSemaphoreCount = signalCount;
+	info.pSignalSemaphores = signalSemaphores.data();
 
 	return info;
 }

@@ -2,24 +2,40 @@
 #define TRAP_VULKANTEXTURE_H
 
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/Textures/TextureBase.h"
+#include "Graphics/Textures/Texture.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanMemoryAllocator;
 	class VulkanDevice;
 
-	class VulkanTexture : public TextureBase
+	class VulkanTexture final : public Texture
 	{
 	public:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="device">Vulkan device.</param>
-		/// <param name="desc">Texture description.</param>
-		/// <param name="vma">Vulkan memory allocator.</param>
-		VulkanTexture(TRAP::Ref<VulkanDevice> device, const RendererAPI::TextureDesc& desc,
-			          TRAP::Ref<VulkanMemoryAllocator> vma);
+		VulkanTexture();
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+		/// <param name="filepaths">Filepaths to images used by the texture.</param>
+		VulkanTexture(std::string name, std::array<std::filesystem::path, 6> filepaths);
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="name">Name for the texture.</param>
+		/// <param name="filepath">Filepath to image used by the texture.</param>
+		/// <param name="type">Type of texture.</param>
+		/// <param name="cubeFormat">Cube format used by the texture. Ignored when using TextureType::Texture2D.</param>
+		VulkanTexture(std::string name, std::filesystem::path filepath,
+					  TextureType type, TextureCubeFormat cubeFormat);
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="type">Type of texture.</param>
+		VulkanTexture(TextureType type);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -41,6 +57,12 @@ namespace TRAP::Graphics::API
 		/// Move assignment operator.
 		/// </summary>
 		VulkanTexture& operator=(VulkanTexture&&) = default;
+
+		/// <summary>
+		/// Initialize the Texture.
+		/// </summary>
+		/// <param name="desc">Texture description.</param>
+		void Init(const RendererAPI::TextureDesc& desc) override;
 
 		/// <summary>
 		/// Retrieve the read only color Vulkan image view handle of the texture.
@@ -78,9 +100,14 @@ namespace TRAP::Graphics::API
 		/// Set the name of the texture.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-		void SetTextureName(const std::string_view name) const override;
+		void SetTextureName(const std::string& name) const override;
 
 	private:
+		/// <summary>
+		/// Pre Initialization step run by every constructor.
+		/// </summary>
+		void PreInit();
+
 		/// <summary>
 		/// Retrieve the memory type index via the given parameters.
 		/// </summary>

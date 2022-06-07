@@ -75,7 +75,7 @@ namespace TRAP::Graphics::API
 		/// Set the name of the render target.
 		/// </summary>
 		/// <param name="name">Name to use.</param>
-		void SetRenderTargetName(std::string_view name) const;
+		void SetRenderTargetName(const std::string& name) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 

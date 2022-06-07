@@ -49,6 +49,14 @@ namespace TRAP::Graphics
 	/// Different shading rate combiners.
 	/// </summary>
 	using ShadingRateCombiner = RendererAPI::ShadingRateCombiner;
+	/// <summary>
+	/// Different queue types.
+	/// </summary>
+	using QueueType = RendererAPI::QueueType;
+	/// <summary>
+	/// Different resource states.
+	/// </summary>
+	using ResourceState = RendererAPI::ResourceState;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.
@@ -220,7 +228,7 @@ namespace TRAP::Graphics
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		static void SetShadingRate(ShadingRate shadingRate,
-						           const TRAP::Ref<TRAP::Graphics::TextureBase>& texture,
+						           Texture* texture,
 		                           ShadingRateCombiner postRasterizerRate,
 							       ShadingRateCombiner finalRate, Window* window = nullptr);
 
@@ -325,6 +333,20 @@ namespace TRAP::Graphics
 		                                 uint32_t firstInstance = 0, uint32_t firstVertex = 0,
 										 Window* window = nullptr);
 
+		//Compute functions
+
+		/// <summary>
+		/// Dispatch compute work on the given window.
+		/// </summary>
+		/// <param name="workGroupElementSizes">
+		/// Number of elements to dispatch for each dimension.
+		/// The elements are automatically divided by the number of threads in the work group and rounded up.
+		/// </param>
+		/// <param name="window">Window to draw for. Default: Main Window.</param>
+		static void Dispatch(const std::array<uint32_t, 3>& workGroupElementSizes, Window* window = nullptr);
+
+		//TODO DispatchIndirect
+
 		//CommandBuffer functions
 
 		/// <summary>
@@ -333,8 +355,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the push constant.</param>
 		/// <param name="data">Data to set push constant to.</param>
+		/// <param name="queueType">Queue type on which to perform the operation. Default: Graphics.</param>
 		/// <param name="window">Window to set push constant for. Default: Main Window.</param>
-		static void SetPushConstants(const char* name, const void* data, Window* window = nullptr);
+		static void SetPushConstants(const char* name, const void* data,
+		                             QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		// static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		//                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
 		// 							 const RendererAPI::LoadActionsDesc* loadActions = nullptr,
@@ -373,29 +397,49 @@ namespace TRAP::Graphics
 									  const RendererAPI::LoadActionsDesc* loadActions = nullptr,
 									  Window* window = nullptr);
 		/// <summary>
+		/// Start a new render pass for the given window.
+		///
+		/// Note: This will bind the render target for the current frame again.
+		/// </summary>
+		/// <param name="window">Window to start render pass for. Default: Main Window.</param>
+		static void StartRenderPass(Window* window = nullptr);
+		/// <summary>
+		/// Stop the running render pass for the given window.
+		/// </summary>
+		/// <param name="window">Window to stop render pass for. Default: Main Window.</param>
+		static void StopRenderPass(Window* window = nullptr);
+		/// <summary>
 		/// Buffer barrier used to synchronize and transition the buffer.
 		/// </summary>
 		/// <param name="bufferBarrier">Buffer barrier to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition buffer for. Default: Main Window.</param>
-		static void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, Window* window = nullptr);
+		static void BufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
+		                          QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// Buffer barrier used to synchronize and transition multiple buffers.
 		/// </summary>
 		/// <param name="bufferBarriers">Buffer barriers to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition buffers for. Default: Main Window.</param>
-		static void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers, Window* window = nullptr);
+		static void BufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+								   QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// Texture barrier used to synchronize and transition the texture.
 		/// </summary>
 		/// <param name="textureBarrier">Texture barrier to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition texture for. Default: Main Window.</param>
-		static void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, Window* window = nullptr);
+		static void TextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
+		                           QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// Texture barrier used to synchronize and transition multiple textures.
 		/// </summary>
 		/// <param name="textureBarriers">Texture barriers to use.</param>
+		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to sync and transition textures for. Default: Main Window.</param>
-		static void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers, Window* window = nullptr);
+		static void TextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+		                            QueueType queueType = QueueType::Graphics, Window* window = nullptr);
 		/// <summary>
 		/// RenderTarget barrier used to synchronize and transition the RenderTarget.
 		/// </summary>
@@ -409,7 +453,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to sync and transition RenderTargets for. Default: Main Window.</param>
 		static void RenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers, Window* window = nullptr);
 
-		//Screenshot
+		//Utility
 
 		/// <summary>
 		/// Take a screenshot of the RenderTarget from the given window.
@@ -417,6 +461,18 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to take screenshot from. Default: Main Window.</param>
 		/// <returns>Captured screenshot.</returns>
 		static TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr);
+
+		/// <summary>
+		/// Transition a texture from old layout to the new layout.
+		/// The transition happens immediately and is guaranteed to be complete when the function returns.
+		/// </summary>
+		/// <param name="texture">Texture to transition layout.</param>
+		/// <param name="oldLayout">Current resource state of the given texture.</param>
+		/// <param name="newLayout">New resource state for the given texture.</param>
+		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
+		static void Transition(Texture* texture, RendererAPI::ResourceState oldLayout,
+		                       RendererAPI::ResourceState newLayout,
+		                       QueueType queueType = QueueType::Graphics);
 	};
 }
 

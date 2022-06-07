@@ -11,9 +11,22 @@ TRAP::Graphics::DummyShader::DummyShader(std::string name, std::filesystem::path
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::DummyShader::DummyShader(std::string name, std::filesystem::path filepath,
+                                         const RendererAPI::ShaderStage stages)
+{
+	m_name = std::move(name);
+	m_filepath = std::move(filepath);
+    m_shaderStages = stages;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::DummyShader::Use(Window* window)
 {
-	TRAP::Graphics::ShaderManager::Get("Fallback")->Use(window);
+    if(static_cast<bool>(m_shaderStages & RendererAPI::ShaderStage::Compute))
+	    TRAP::Graphics::ShaderManager::Get("FallbackCompute")->Use(window);
+    else
+	    TRAP::Graphics::ShaderManager::Get("FallbackGraphics")->Use(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
