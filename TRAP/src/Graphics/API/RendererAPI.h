@@ -635,7 +635,7 @@ namespace TRAP::Graphics
 		/// Retrieve the main windows internal rendering data.
 		/// </summary>
 		/// <returns>Main windows internal rendering data.</returns>
-		static const PerWindowData& GetMainWindowData();
+		static PerWindowData& GetMainWindowData();
 
 	public:
 		/// <summary>

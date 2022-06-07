@@ -100,11 +100,11 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     TRAP::Graphics::Shader* shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
 
-    //Bind compute shader
-    shader->Use();
     //Set shader descriptors
     shader->UseTexture(1, 0, m_colTex);
     shader->UseTexture(1, 1, m_compTex);
+    //Bind compute shader
+    shader->Use();
 
     static constexpr float brightness = 1.0f;
     TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
@@ -135,8 +135,8 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     //Use shader
     auto* texShader = TRAP::Graphics::ShaderManager::Get("Texture");
-    texShader->Use();
     texShader->UseTexture(1, 0, m_compTex, TRAP::Application::GetWindow());
+    texShader->Use();
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());

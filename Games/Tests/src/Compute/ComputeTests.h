@@ -43,6 +43,8 @@ private:
     bool m_emboss;
     bool m_edgedetect;
 
+    bool m_reset;
+
     std::array<float, 50> m_frameTimeHistory{};
 	TRAP::Utils::Timer m_fpsTimer{};
 	TRAP::Utils::Timer m_titleTimer{};

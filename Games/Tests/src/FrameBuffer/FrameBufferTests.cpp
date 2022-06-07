@@ -106,8 +106,8 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     //Bind geometry and shader
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-    TRAP::Graphics::ShaderManager::Get("TextureTest")->Use();
     m_shader->UseTexture(1, 0, m_texture);
+    m_shader->Use();
 
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());

@@ -66,7 +66,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 	if(name.empty())
 	{
 		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
-		name = filepath;
+		name = filepath.string();
 	}
 
 	TRAP::Scope<Texture> texture = nullptr;

@@ -1669,6 +1669,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 	p->ComputePipelineDesc = {};
 	p->ComputePipelineDesc.Type = PipelineType::Compute;
 	p->ComputePipelineDesc.Pipeline = ComputePipelineDesc();
+	p->CurrentComputeWorkGroupSize = {1, 1, 1};
 
 	s_perWindowDataMap[window] = std::move(p);
 }

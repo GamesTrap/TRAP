@@ -187,7 +187,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
+TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
 	return *s_perWindowDataMap[TRAP::Application::GetWindow()];
 }
