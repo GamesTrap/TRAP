@@ -1,6 +1,6 @@
 #include "ComputeTests.h"
 
-#include <Graphics/API/Objects/SwapChain.h>
+#include <Graphics/API/Objects/Queue.h>
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 ComputeTests::ComputeTests()
@@ -83,52 +83,68 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
         return;
 
-    static float time = 0.0f;
-    time += deltaTime.GetSeconds();
-    if(time >= 5.0f)
+    static uint32_t frames = 0;
+    if(frames == 2)
     {
+        TRAP::Graphics::RendererAPI::GetGraphicsQueue()->WaitQueueIdle();
+        TRAP::Graphics::RendererAPI::GetComputeQueue()->WaitQueueIdle();
+
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
 	    TRAP::INTERNAL::PPMImage::Save(testImage.get(), "compute.ppm");
 
         TRAP::Application::Shutdown();
+        return;
     }
+
+    //TODO Wait quue idle for graphics and compute then take screenshot and stop
+    // static float time = 0.0f;
+    // time += deltaTime.GetSeconds();
+    // if(time >= 5.0f)
+    // {
+    //     //Screenshot
+	//     TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
+	//     TRAP::INTERNAL::PPMImage::Save(testImage.get(), "compute.ppm");
+
+    //     TRAP::Application::Shutdown();
+    // }
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
 
-    TRAP::Graphics::Shader* shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
+    static bool once = true;
+    if(once)
+    {
+        once = false;
 
-    //Set shader descriptors
-    shader->UseTexture(1, 0, m_colTex);
-    shader->UseTexture(1, 1, m_compTex);
-    //Bind compute shader
-    shader->Use();
+        TRAP::Graphics::Shader* shader = TRAP::Graphics::ShaderManager::Get("ComputeEmboss");
 
-    static constexpr float brightness = 1.0f;
-    TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
+        //Set shader descriptors
+        shader->UseTexture(1, 0, m_colTex);
+        shader->UseTexture(1, 1, m_compTex);
+        //Bind compute shader
+        shader->Use();
 
-    //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)
-    TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
+        static constexpr float brightness = 1.0f;
+        TRAP::Graphics::RenderCommand::SetPushConstants("BrightnessRootConstant", &brightness, TRAP::Graphics::QueueType::Compute);
+
+        //Dispatch compute work (local thread group sizes are retrieved through automatic reflection)
+        TRAP::Graphics::RenderCommand::Dispatch({m_compTex->GetWidth(), m_compTex->GetHeight(), 1});
+
+        //Transition textures (to use as sampled images)
+        TRAP::Graphics::RendererAPI::TextureBarrier barrier = {};
+        barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
+        barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
+        barrier.Texture = m_colTex;
+        TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
+        barrier.Texture = m_compTex;
+        TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
+    }
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Graphics Stuff-----------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//
-
-    //Stop RenderPass (necessary for ownership transfer)
-    TRAP::Graphics::RenderCommand::StopRenderPass();
-
-    //Layout transition
-    TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
-    barrier.Texture = m_compTex;
-    barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-    barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-    barrier.Texture = m_colTex;
-    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-
-    TRAP::Graphics::RenderCommand::StartRenderPass();
 
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
@@ -141,15 +157,5 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
-    //Stop RenderPass (necessary for layout transition)
-    TRAP::Graphics::RenderCommand::StopRenderPass();
-
-    //Layout transition
-    barrier = {};
-    barrier.Texture = m_compTex;
-    barrier.CurrentState = TRAP::Graphics::ResourceState::ShaderResource;
-    barrier.NewState = TRAP::Graphics::ResourceState::UnorderedAccess;
-    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
-    barrier.Texture = m_colTex;
-    TRAP::Graphics::RenderCommand::TextureBarrier(barrier);
+    ++frames;
 }
