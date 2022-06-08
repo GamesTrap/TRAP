@@ -2653,3 +2653,8 @@ SITREP 06/07/2022|22w23a2
     - ComputeTests Now only executes Compute shader once and reuses the resulting texture ~>20 mins
     - Headless disabled generation of Documents/TRAP/GameName/logs folder ~<5 mins
     - Headless ComputeTest now also executes Compute shader only once ~<10 mins
+    - Merged compute-shader branch into master ~<5 mins
+
+SITREP 06/08/2022|22w23b1
+    - Changed TRAP Engine version to 22w23b1(0.7.148)
+    - Config Added ability to append new values to existing config files on save ~<5 mins

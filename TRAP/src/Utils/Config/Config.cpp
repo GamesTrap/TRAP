@@ -104,6 +104,23 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 			fileContents.emplace_back(key, value);
 	}
 
+	//Add new values to the file
+	for (const std::pair<std::string, std::string>& pair : m_data)
+	{
+		//Check if the key is found in the vector
+		const auto it = std::find_if(fileContents.begin(), fileContents.end(),
+			[&pair](const std::pair<std::string, std::string>& element)
+			{
+				return Utils::String::CompareAnyCase(element.first, pair.first);
+			});
+
+		if (it == fileContents.end())
+		{
+			//If not found add it to the vector
+			fileContents.emplace_back(pair.first, pair.second);
+		}
+	}
+
 	std::stringstream ss;
 	for (const auto& [key, value] : fileContents)
 	{
