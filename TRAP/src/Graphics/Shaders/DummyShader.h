@@ -16,14 +16,17 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="name">Name of the shader.</param>
 		/// <param name="filepath">Filepath of the shader.</param>
-		DummyShader(std::string name, std::filesystem::path filepath);
+		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		DummyShader(std::string name, std::filesystem::path filepath, const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="name">Name of the shader.</param>
 		/// <param name="filepath">Filepath of the shader.</param>
 		/// <param name="stages">Used shader stages.</param>
-		DummyShader(std::string name, std::filesystem::path filepath, RendererAPI::ShaderStage stages);
+		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		DummyShader(std::string name, std::filesystem::path filepath,
+					RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

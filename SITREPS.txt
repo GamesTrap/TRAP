@@ -2666,3 +2666,4 @@ SITREP 06/10/2022|22w23b2
     - Updated all submodules ~<10 mins
     - Updated Vulkan loader ~<5 mins
     - Updated Controller mappings ~<5 mins
+    - HotReloading now preserves used shader macros on reload ~<15 mins

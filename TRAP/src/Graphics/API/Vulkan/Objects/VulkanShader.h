@@ -17,7 +17,9 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="name">Name for the shader.</param>
 		/// <param name="desc">Binary shader description.</param>
-		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc);
+		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
+		             const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

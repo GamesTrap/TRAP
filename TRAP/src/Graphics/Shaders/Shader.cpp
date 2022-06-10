@@ -68,6 +68,13 @@ TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const
+{
+	return m_macros;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const
 {
 	return m_rootSignature;
@@ -141,7 +148,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
-		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 	}
 
 	if (!isSPIRV)
@@ -151,12 +158,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
-			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
-			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 		}
 
 		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
@@ -165,13 +172,13 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		desc = LoadSPIRV(SPIRVSource);
 
 	if (desc.Stages == RendererAPI::ShaderStage::None)
-		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc, userMacros);
 
 		result->m_filepath = filePath;
 
@@ -247,7 +254,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
-		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 	}
 
 	if(!isSPIRV)
@@ -257,12 +264,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
-			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
-			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 		}
 
 		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
@@ -271,13 +278,13 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		desc = LoadSPIRV(SPIRVSource);
 
 	if (desc.Stages == RendererAPI::ShaderStage::None)
-		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, userMacros);
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc, userMacros);
 
 		result->m_filepath = filePath;
 
@@ -356,7 +363,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		else
 			TP_WARN(Log::ShaderPrefix, "Shader using fallback shader: \"FallbackGraphics\"");
 
-		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages, userMacros);
 	}
 
 	if (!isSPIRV)
@@ -370,7 +377,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 			else
 				TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 
-			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages, userMacros);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
@@ -379,7 +386,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 			else
 				TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 
-			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages, userMacros);
 		}
 
 		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
@@ -394,14 +401,14 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		else
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader: \"FallbackGraphics\"");
 
-		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages);
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath, stages, userMacros);
 	}
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, desc, userMacros);
 
 		result->m_filepath = filePath;
 
@@ -445,7 +452,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanShader>(name, desc);
+		return MakeScope<API::VulkanShader>(name, desc, userMacros);
 
 	case RenderAPI::NONE:
 		return nullptr;

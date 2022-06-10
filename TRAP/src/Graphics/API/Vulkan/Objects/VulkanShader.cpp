@@ -16,7 +16,8 @@
 #include "Graphics/Textures/Texture.h"
 #include "Application.h"
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc)
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
+                                                const std::vector<Macro>* userMacros)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
@@ -24,6 +25,9 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	m_name = std::move(name);
+
+	if(userMacros)
+		m_macros = *userMacros;
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 

@@ -158,8 +158,9 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 			if (!path.empty())
 			{
 				const RendererAPI::ShaderStage stages = Shaders[nameOrPath]->GetShaderStages();
+				const std::vector<Shader::Macro> macros = Shaders[nameOrPath]->GetMacros();
 				Shaders[nameOrPath].reset();
-				Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path, stages);
+				Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path, stages, &macros);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
 				return Shaders[nameOrPath].get();
 			}
@@ -197,12 +198,13 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Shader* cons
 	const std::string name = shader->GetName();
 	const std::filesystem::path path = shader->GetFilePath();
 	const RendererAPI::ShaderStage stages = Shaders[name]->GetShaderStages();
+	const std::vector<Shader::Macro> macros = shader->GetMacros();
 
 	if (path.empty())
 		return nullptr;
 
 	Shaders[name].reset();
-	Shaders[name] = Shader::CreateFromFile(name, path, stages);
+	Shaders[name] = Shader::CreateFromFile(name, path, stages, &macros);
 	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
 
 	return Shaders[name].get();

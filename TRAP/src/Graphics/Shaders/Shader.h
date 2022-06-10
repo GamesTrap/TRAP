@@ -74,6 +74,12 @@ namespace TRAP::Graphics
 		RendererAPI::ShaderStage GetShaderStages() const;
 
 		/// <summary>
+		/// Retrieve the used macros of the shader.
+		/// </summary>
+		/// <returns>Used macros.</returns>
+		const std::vector<Macro>& GetMacros() const;
+
+		/// <summary>
 		/// Retrieve the root signature of the shader.
 		/// </summary>
 		/// <returns>Root signature of the shader.</returns>
@@ -197,6 +203,7 @@ namespace TRAP::Graphics
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
 		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
+		std::vector<Macro> m_macros;
 
 	private:
 		/// <summary>

@@ -3,20 +3,24 @@
 
 #include "ShaderManager.h"
 
-TRAP::Graphics::DummyShader::DummyShader(std::string name, std::filesystem::path filepath)
+TRAP::Graphics::DummyShader::DummyShader(std::string name, std::filesystem::path filepath, const std::vector<Macro>* userMacros)
 {
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
+    if(userMacros)
+        m_macros = *userMacros;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::DummyShader::DummyShader(std::string name, std::filesystem::path filepath,
-                                         const RendererAPI::ShaderStage stages)
+                                         const RendererAPI::ShaderStage stages, const std::vector<Macro>* userMacros)
 {
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
     m_shaderStages = stages;
+    if(userMacros)
+        m_macros = *userMacros;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
