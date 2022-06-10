@@ -691,6 +691,8 @@ namespace TRAP::INTERNAL
 			XContext Context{};
 			//XIM input method
 			XIM IM{};
+			//The previous X error handler, to be restored later
+			XErrorHandler PrevErrorHandler{};
 			//Most recent error code received by X error handler
 			int32_t ErrorCode = 0;
 			//Primary selection string (while the primary selection is owned)

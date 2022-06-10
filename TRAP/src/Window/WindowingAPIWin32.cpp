@@ -303,6 +303,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 		if (length == -1)
 		{
+			//This is a dead key, so we need a second simulated key press to make it output its own
+			//character (usually a diacritic)
 			length = ToUnicode(virtualKey, scanCode, state.data(), chars.data(), static_cast<int32_t>(chars.size()),
 				               0);
 		}
@@ -322,6 +324,12 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow* window, const float xScale,
                                                            const float yScale)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(xScale > 0.0f);
+	TRAP_ASSERT(xScale < std::numeric_limits<float>::max());
+	TRAP_ASSERT(yScale > 0.0f);
+	TRAP_ASSERT(yScale < std::numeric_limits<float>::max());
+
 	if (window->Callbacks.Scale)
 		window->Callbacks.Scale(window, xScale, yScale);
 }
@@ -1005,7 +1013,7 @@ bool TRAP::INTERNAL::WindowingAPI::RegisterWindowClassWin32()
 	ZeroMemory(&wc, sizeof(wc));
 	wc.cbSize = sizeof(wc);
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.lpfnWndProc = static_cast<WNDPROC>(WindowProc);
+	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = s_Data.Instance;
 	wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
 	wc.lpszClassName = L"TRAP";

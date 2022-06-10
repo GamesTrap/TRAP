@@ -1998,6 +1998,12 @@ std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult r
 //The position is specified in content area relative screen coordinates
 void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const double xPos, const double yPos)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(xPos > std::numeric_limits<float>::min());
+	TRAP_ASSERT(xPos < std::numeric_limits<float>::max());
+	TRAP_ASSERT(yPos > std::numeric_limits<float>::min());
+	TRAP_ASSERT(yPos < std::numeric_limits<float>::max());
+
 	if (Math::Abs(window->VirtualCursorPosX - xPos) < Math::Epsilon<double>() &&
 		Math::Abs(window->VirtualCursorPosY - yPos) < Math::Epsilon<double>())
 		return;
@@ -2015,6 +2021,9 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t,
                                             const bool pressed)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(static_cast<int32_t>(key) >= 0 || key == Input::Key::Unknown);
+
 	if(key == Input::Key::Unknown)
 		return;
 
@@ -2033,6 +2042,8 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key k
 //The 'plain' parameter determines whether to emit a regular character event
 void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const uint32_t codePoint)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
 		return;
 
@@ -2046,6 +2057,9 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const
 void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button,
                                                    const bool pressed)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(static_cast<int32_t>(button) >= 0);
+
 	window->MouseButtons[static_cast<uint32_t>(button)] = pressed;
 
 	if (window->Callbacks.MouseButton)
@@ -2058,6 +2072,12 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input
 void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset,
                                                const double yOffset)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(xOffset > std::numeric_limits<float>::min());
+	TRAP_ASSERT(xOffset < std::numeric_limits<float>::max());
+	TRAP_ASSERT(yOffset > std::numeric_limits<float>::min());
+	TRAP_ASSERT(yOffset < std::numeric_limits<float>::max());
+
 	if (window->Callbacks.Scroll)
 		window->Callbacks.Scroll(window, xOffset, yOffset);
 }
@@ -2067,6 +2087,8 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, con
 //Notifies shared code of a cursor enter/leave event
 void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, const bool entered)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	if (window->Callbacks.CursorEnter)
 		window->Callbacks.CursorEnter(window, entered);
 }
@@ -2078,6 +2100,10 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, cons
 void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* window, const int32_t width,
                                                         const int32_t height)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(width >= 0);
+	TRAP_ASSERT(height >= 0);
+
 	if (window->Callbacks.FBSize)
 		window->Callbacks.FBSize(window, width, height);
 }
@@ -2089,6 +2115,10 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* wi
 void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window, const int32_t width,
                                                    const int32_t height)
 {
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(width >= 0);
+	TRAP_ASSERT(height >= 0);
+
 	if (window->Callbacks.Size)
 		window->Callbacks.Size(window, width, height);
 }
@@ -2098,6 +2128,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window,
 //Notifies shared code that a window has been minimized
 void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* window, const bool restored)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	if (window->Callbacks.Minimize)
 		window->Callbacks.Minimize(window, !restored);
 }
@@ -2117,6 +2149,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* win
 //The position is specified in content area relative screen coordinates
 void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* window, const int32_t x, const int32_t y)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	if (window->Callbacks.Pos)
 		window->Callbacks.Pos(window, x, y);
 }
@@ -2126,6 +2160,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* window, 
 //Notifies shared code that the user wishes to close a window
 void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* window)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	window->ShouldClose = true;
 
 	if (window->Callbacks.Close)
@@ -2137,6 +2173,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* windo
 //Notifies shared code of files or directories dropped on a window
 void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* window, const std::vector<std::string>& paths)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	if (window->Callbacks.Drop)
 		window->Callbacks.Drop(window, paths);
 }
@@ -2146,6 +2184,8 @@ void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* window, const
 //Notifies shared code that a window has lost or received input focus
 void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, const bool focused)
 {
+	TRAP_ASSERT(window != nullptr);
+
 	if (window->Callbacks.Focus)
 		window->Callbacks.Focus(window, focused);
 
@@ -2372,6 +2412,8 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected,
                                                 const uint32_t placement)
 {
+	TRAP_ASSERT(monitor != nullptr);
+
 	if (connected)
 	{
 		InternalMonitor* mon = nullptr;

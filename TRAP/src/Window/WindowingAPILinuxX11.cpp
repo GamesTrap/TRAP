@@ -802,8 +802,10 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 //Sets the X error handler callback
 void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 {
+	TRAP_ASSERT(s_Data.PrevErrorHandler == nullptr);
+
 	s_Data.ErrorCode = 0; //0 = Success
-	s_Data.XLIB.SetErrorHandler(ErrorHandler);
+	s_Data.PrevErrorHandler = s_Data.XLIB.SetErrorHandler(ErrorHandler);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -825,7 +827,8 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 {
 	//Synchronize to make sure all commands are processed
 	s_Data.XLIB.Sync(s_Data.display, 0);
-	s_Data.XLIB.SetErrorHandler(nullptr);
+	s_Data.XLIB.SetErrorHandler(s_Data.PrevErrorHandler);
+	s_Data.PrevErrorHandler = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -2658,3 +2658,7 @@ SITREP 06/07/2022|22w23a2
 SITREP 06/08/2022|22w23b1
     - Changed TRAP Engine version to 22w23b1(0.7.148)
     - Config Added ability to append new values to existing config files on save ~<5 mins
+
+SITREP 06/10/2022|22w23b2
+    - Changed TRAP Engine version to 22w23b2(0.7.149)
+    - WindowingAPI Added some asserts ~<10 mins
