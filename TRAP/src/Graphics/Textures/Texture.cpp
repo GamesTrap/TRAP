@@ -240,7 +240,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 
 		//Fill empty Texture with images pixel data
 		for(uint32_t i = 0; i < useImgs.size(); ++i)
-			texture->Update(useImgs[i]->GetPixelData(), useImgs[i]->GetPixelDataSize(), 0, i);
+			texture->Update(useImgs[i]->GetPixelData(), static_cast<uint32_t>(useImgs[i]->GetPixelDataSize()), 0, i);
 
 		//TODO Mipmaps
 		//TODO Make use of the ResourceLoader to do all this stuff
@@ -338,10 +338,10 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		if(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::Cross)
 		{
 			for(uint32_t i = 0; i < faces.size(); ++i)
-				texture->Update(faces[i]->GetPixelData(), faces[i]->GetPixelDataSize(), 0, i);
+				texture->Update(faces[i]->GetPixelData(), static_cast<uint32_t>(faces[i]->GetPixelDataSize()), 0, i);
 		}
 		else if(type == TextureType::Texture2D)
-			texture->Update(useImg->GetPixelData(), useImg->GetPixelDataSize());
+			texture->Update(useImg->GetPixelData(), static_cast<uint32_t>(useImg->GetPixelDataSize()));
 
 		//TODO Mipmaps
 		//TODO Make use of the ResourceLoader to do all this stuff

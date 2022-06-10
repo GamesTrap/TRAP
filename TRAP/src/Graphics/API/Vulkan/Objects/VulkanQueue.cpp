@@ -155,7 +155,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	}
 
 	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
-	std::size_t signalCount = 0;
+	uint32_t signalCount = 0;
 
 	for(const auto& signalSemaphore : desc.SignalSemaphores)
 	{

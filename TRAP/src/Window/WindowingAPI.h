@@ -635,6 +635,8 @@ namespace TRAP::INTERNAL
 			std::array<Input::Key, 512> KeyCodes{};
 			HINSTANCE Instance = nullptr;
 			HWND HelperWindowHandle = nullptr;
+			ATOM HelperWindowClass{};
+			ATOM MainWindowClass{};
 			HDEVNOTIFY DeviceNotificationHandle = nullptr;
 			int32_t AcquiredMonitorCount = 0;
 			std::vector<RAWINPUT> RawInput{};
@@ -3671,14 +3673,14 @@ namespace TRAP::INTERNAL
 		/// <returns>True if the message was handled, false otherwise.</returns>
 		static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		/// <summary>
-		/// Registers the TRAP window class.
+		/// Window callback function (handles window messages).
 		/// </summary>
-		/// <returns>True if registration was successful, false otherwise.</returns>
-		static bool RegisterWindowClassWin32();
-		/// <summary>
-		/// Unregisters the TRAP window class.
-		/// </summary>
-		static void UnregisterWindowClassWin32();
+		/// <param name="hwnd">Window handle.</param>
+		/// <param name="uMsg">Message.</param>
+		/// <param name="wParam">Message parameter.</param>
+		/// <param name="lParam">Message parameter.</param>
+		/// <returns>True if the message was handled, false otherwise.</returns>
+		static LRESULT CALLBACK HelperWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		/// <summary>
 		/// Callback for EnumDisplayMonitors in CreateMonitor.
 		/// </summary>

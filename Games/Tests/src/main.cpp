@@ -29,7 +29,7 @@ public:
 	{
 		// PushLayer(std::make_unique<ClipboardTests>());
 		// PushLayer(std::make_unique<ControllerTests>());
-		PushLayer(std::make_unique<ComputeTests>());
+		// PushLayer(std::make_unique<ComputeTests>());
 		// PushLayer(std::make_unique<CursorTests>());
 		// PushLayer(std::make_unique<DragAndDropTests>());
 		// PushLayer(std::make_unique<EventTests>());
@@ -45,7 +45,7 @@ public:
 		// PushLayer(std::make_unique<RendererAPITests>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
 		// PushLayer(std::make_unique<TitleTests>());
-		// PushLayer(std::make_unique<VulkanTextureTests>());
+		PushLayer(std::make_unique<VulkanTextureTests>());
 		// PushLayer(std::make_unique<WindowStateTests>());
 	}
 };

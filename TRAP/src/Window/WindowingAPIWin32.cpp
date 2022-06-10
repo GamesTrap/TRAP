@@ -336,7 +336,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Window callback function (handles window messages)
+//Window procedure for user-created windows
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                                           const LPARAM lParam)
 {
@@ -345,39 +345,10 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	if (!windowPtr)
 	{
-		//This is the message handling for the hidden helper window
-		//and for a regular window during its initial creation
-
-		switch (uMsg)
+		if(uMsg == WM_NCCREATE)
 		{
-		case WM_NCCREATE:
-			if (IsWindows10Version1607OrGreaterWin32())
+			if(IsWindows10Version1607OrGreaterWin32())
 				s_Data.User32.EnableNonClientDPIScaling(hWnd);
-			break;
-
-		case WM_DISPLAYCHANGE:
-			PollMonitorsWin32();
-			break;
-
-		case WM_DEVICECHANGE:
-		{
-			if (wParam == DBT_DEVICEARRIVAL)
-			{
-				DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
-				if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
-					Input::DetectControllerConnectionWin32();
-			}
-			else if (wParam == DBT_DEVICEREMOVECOMPLETE)
-			{
-				DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
-				if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
-					Input::DetectControllerDisconnectionWin32();
-			}
-			break;
-		}
-
-		default:
-			break;
 		}
 
 		return DefWindowProcW(hWnd, uMsg, wParam, lParam);
@@ -1005,48 +976,6 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Registers the TRAP window class
-bool TRAP::INTERNAL::WindowingAPI::RegisterWindowClassWin32()
-{
-	WNDCLASSEXW wc;
-
-	ZeroMemory(&wc, sizeof(wc));
-	wc.cbSize = sizeof(wc);
-	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.lpfnWndProc = WindowProc;
-	wc.hInstance = s_Data.Instance;
-	wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
-	wc.lpszClassName = L"TRAP";
-
-	//Load user-provided icon if available
-	wc.hIcon = static_cast<HICON>(LoadImageW(s_Data.Instance, L"TRAP_ICON", IMAGE_ICON, 0, 0,
-		                                     LR_DEFAULTSIZE | LR_SHARED));
-	if (!wc.hIcon)
-	{
-		//No user-provided icon found, load default icon
-		wc.hIcon = static_cast<HICON>(LoadImageW(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0,
-		                                         LR_DEFAULTSIZE | LR_SHARED));
-	}
-
-	if (!RegisterClassExW(&wc))
-	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register window class");
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Unregisters the TRAP window class
-void TRAP::INTERNAL::WindowingAPI::UnregisterWindowClassWin32()
-{
-	UnregisterClassW(L"TRAP", s_Data.Instance);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Callback for EnumDisplayMonitors in CreateMonitor
 BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, HDC, RECT*, const LPARAM data)
 {
@@ -1428,6 +1357,32 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 	DWORD style = GetWindowStyle(window);
 	const DWORD exStyle = GetWindowExStyle(window);
 
+	if(!s_Data.MainWindowClass)
+	{
+		WNDCLASSEXW wc{};
+		wc.cbSize = sizeof(wc);
+		wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+		wc.lpfnWndProc = WindowProc;
+		wc.hInstance = s_Data.Instance;
+		wc.hCursor = ::LoadCursorW(nullptr, IDC_ARROW);
+		wc.lpszClassName = L"TRAP";
+
+		//Load user-provided icon if available
+		wc.hIcon = static_cast<HICON>(::LoadImageW(::GetModuleHandleW(nullptr), L"TRAP_ICON", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED));
+		if(!wc.hIcon)
+		{
+			//No user-provided icon found, load default icon
+			wc.hIcon = static_cast<HICON>(::LoadImageW(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED));
+		}
+
+		s_Data.MainWindowClass = ::RegisterClassExW(&wc);
+		if(!s_Data.MainWindowClass)
+		{
+			InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register window class");
+			return false;
+		}
+	}
+
 	if (window->Monitor)
 	{
 		MONITORINFO mi{};
@@ -1458,7 +1413,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 	if (wideTitle.empty())
 		return false;
 
-	window->Handle = CreateWindowExW(exStyle, L"TRAP", wideTitle.data(), style, xPos, yPos, fullWidth, fullHeight,
+	window->Handle = CreateWindowExW(exStyle, MAKEINTATOM(s_Data.MainWindowClass), wideTitle.data(), style, xPos, yPos, fullWidth, fullHeight,
 		                             nullptr /*No parent window*/, nullptr /*No window menu*/,
 									 s_Data.Instance, nullptr);
 
@@ -1584,13 +1539,57 @@ HINSTANCE TRAP::INTERNAL::WindowingAPI::GetWin32HInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::HelperWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch(uMsg)
+	{
+	case WM_DISPLAYCHANGE:
+		PollMonitorsWin32();
+		break;
+
+	case WM_DEVICECHANGE:
+	{
+		if (wParam == DBT_DEVICEARRIVAL)
+		{
+			DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
+			if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
+				Input::DetectControllerConnectionWin32();
+		}
+		else if (wParam == DBT_DEVICEREMOVECOMPLETE)
+		{
+			DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
+			if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
+				Input::DetectControllerDisconnectionWin32();
+		}
+		break;
+	}
+	}
+
+	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 {
 	MSG msg;
+	WNDCLASSEXW wc{};
+	wc.cbSize = sizeof(wc);
+	wc.style = CS_OWNDC;
+	wc.lpfnWndProc = static_cast<WNDPROC>(HelperWindowProc);
+	wc.hInstance = s_Data.Instance;
+	wc.lpszClassName = L"TRAP Helper";
 
-	s_Data.HelperWindowHandle = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW, L"TRAP", L"TRAP Message Window",
-		                                        WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 1, 1, nullptr, nullptr,
-		                                        s_Data.Instance, nullptr);
+	s_Data.HelperWindowClass = RegisterClassExW(&wc);
+	if(!s_Data.HelperWindowClass)
+	{
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register helper window class");
+		return false;
+	}
+
+	s_Data.HelperWindowHandle = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW, MAKEINTATOM(s_Data.HelperWindowClass),
+	 											L"TRAP Message Window", WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+												0, 0, 1, 1, nullptr, nullptr, s_Data.Instance, nullptr);
 
 	if (!s_Data.HelperWindowHandle)
 	{
@@ -2088,9 +2087,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 	s_Data.User32.SetProcessDPIAware();
 
-	if (!RegisterWindowClassWin32())
-		return false;
-
 	if (!CreateHelperWindow())
 		return false;
 
@@ -2150,8 +2146,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 
 	if (s_Data.HelperWindowHandle)
 		::DestroyWindow(s_Data.HelperWindowHandle);
-
-	UnregisterWindowClassWin32();
+	if (s_Data.HelperWindowClass)
+		::UnregisterClassW(MAKEINTATOM(s_Data.HelperWindowClass), s_Data.Instance);
+	if (s_Data.MainWindowClass)
+		::UnregisterClassW(MAKEINTATOM(s_Data.MainWindowClass), s_Data.Instance);
 
 	s_Data.ClipboardString = {};
 	s_Data.RawInput = {};

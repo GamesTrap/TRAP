@@ -970,9 +970,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 
 		VulkanShader* vkShader = dynamic_cast<VulkanShader*>(shader);
 
-		data->CurrentComputeWorkGroupSize.x = vkShader->GetNumThreadsPerGroup()[0];
-		data->CurrentComputeWorkGroupSize.y = vkShader->GetNumThreadsPerGroup()[1];
-		data->CurrentComputeWorkGroupSize.z = vkShader->GetNumThreadsPerGroup()[2];
+		data->CurrentComputeWorkGroupSize.x = static_cast<float>(vkShader->GetNumThreadsPerGroup()[0]);
+		data->CurrentComputeWorkGroupSize.y = static_cast<float>(vkShader->GetNumThreadsPerGroup()[1]);
+		data->CurrentComputeWorkGroupSize.z = static_cast<float>(vkShader->GetNumThreadsPerGroup()[2]);
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
