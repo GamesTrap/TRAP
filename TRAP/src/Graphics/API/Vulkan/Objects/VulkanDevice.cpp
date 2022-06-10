@@ -196,7 +196,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	LoadShadingRateCaps(shadingRateFeatures);
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
-	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName)
+	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
 		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
 #endif
 }

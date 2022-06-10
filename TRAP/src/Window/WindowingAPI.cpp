@@ -1999,10 +1999,10 @@ std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult r
 void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const double xPos, const double yPos)
 {
 	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xPos > std::numeric_limits<float>::min());
-	TRAP_ASSERT(xPos < std::numeric_limits<float>::max());
-	TRAP_ASSERT(yPos > std::numeric_limits<float>::min());
-	TRAP_ASSERT(yPos < std::numeric_limits<float>::max());
+	TRAP_ASSERT(xPos > -std::numeric_limits<float>::max());
+	TRAP_ASSERT(xPos <  std::numeric_limits<float>::max());
+	TRAP_ASSERT(yPos > -std::numeric_limits<float>::max());
+	TRAP_ASSERT(yPos <  std::numeric_limits<float>::max());
 
 	if (Math::Abs(window->VirtualCursorPosX - xPos) < Math::Epsilon<double>() &&
 		Math::Abs(window->VirtualCursorPosY - yPos) < Math::Epsilon<double>())
@@ -2073,10 +2073,10 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, con
                                                const double yOffset)
 {
 	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xOffset > std::numeric_limits<float>::min());
-	TRAP_ASSERT(xOffset < std::numeric_limits<float>::max());
-	TRAP_ASSERT(yOffset > std::numeric_limits<float>::min());
-	TRAP_ASSERT(yOffset < std::numeric_limits<float>::max());
+	TRAP_ASSERT(xOffset > -std::numeric_limits<float>::max());
+	TRAP_ASSERT(xOffset <  std::numeric_limits<float>::max());
+	TRAP_ASSERT(yOffset > -std::numeric_limits<float>::max());
+	TRAP_ASSERT(yOffset <  std::numeric_limits<float>::max());
 
 	if (window->Callbacks.Scroll)
 		window->Callbacks.Scroll(window, xOffset, yOffset);

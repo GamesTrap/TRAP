@@ -2663,3 +2663,4 @@ SITREP 06/10/2022|22w23b2
     - Changed TRAP Engine version to 22w23b2(0.7.149)
     - WindowingAPI Added some asserts ~<10 mins
     - WindowingAPI Win32 Seperated helper window code from normal windows ~<10 mins
+    - Updated all submodules ~<10 mins
