@@ -23,11 +23,10 @@ void ClipboardTests::OnImGuiRender()
 	ImGui::Text("Press CTRL+C to copy example text from engine");
 	ImGui::Text("Press CTRL+V to paste clipboard contents to the engine");
 	ImGui::Separator();
-	ImGui::Text("Pasted from Clipboard: %s", ImGui::GetClipboardText());
-	// if (!m_clipboard.empty())
-	// 	ImGui::Text("Pasted from Clipboard: %s", m_clipboard.c_str());
-	// else
-	// 	ImGui::Text("Nothing pasted yet");
+	if (!m_clipboard.empty())
+		ImGui::Text("Pasted from Clipboard: %s", m_clipboard.c_str());
+	else
+		ImGui::Text("Nothing pasted yet");
 	ImGui::End();
 }
 
