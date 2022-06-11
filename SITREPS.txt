@@ -2672,3 +2672,5 @@ SITREP 06/10/2022|22w23b2
 SITREP 06/11/2022|22w23c1
     - Changed TRAP Engine version to 22w23c1(0.7.150)
     - Window Added GetPosition function ~<5 mins
+    - Window Added GetFrameBufferSize, SetPosition, IsHovered functions ~<15 mins
+    - Tests Added WindowFeaturesTests ~<30 mins

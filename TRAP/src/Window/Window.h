@@ -106,7 +106,13 @@ namespace TRAP
 		/// <returns>Vec2ui containing the width and height of the window.</returns>
 		Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
+		/// Get the current framebuffer width and height of the window.
+		/// </summary>
+		/// <returns>Vec2ui containing the framebuffer width and height of the window.</returns>
+		Math::Vec2ui GetFrameBufferSize() const noexcept;
+		/// <summary>
 		/// Get the current position of the window.
+		/// Retrieves the position, in screen coordinates, of the upper-left corner of the content area.
 		/// </summary>
 		/// <returns>Vec2i containing the position of the window.</returns>
 		Math::Vec2i GetPosition() const noexcept;
@@ -231,6 +237,7 @@ namespace TRAP
 		void SetResizable(bool enabled) const;
 		/// <summary>
 		/// Limit the minimum size of the window.
+		/// Setting any of the two parameters to 0 will disable the minimum size restriction.
 		/// </summary>
 		/// <param name="minWidth">Min width.</param>
 		/// <param name="minHeight">Min height.</param>
@@ -242,6 +249,12 @@ namespace TRAP
 		/// <param name="maxWidth">Max width.</param>
 		/// <param name="maxHeight">Max height.</param>
 		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight);
+		/// <summary>
+		/// Set the position of the window.
+		/// </summary>
+		/// <param name="x">New x position.</param>
+		/// <param name="y">New x position.</param>
+		void SetPosition(uint32_t x, uint32_t y);
 		/// <summary>
 		/// Set the opacity of the window (1.0f = fully opaque, 0.0f = fully transparent).
 		/// </summary>
@@ -288,6 +301,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Window decoration status.</returns>
 		bool IsDecorated() const;
+		/// <summary>
+		/// Query whether the mouse is hovered on the window or not.
+		/// </summary>
+		/// <returns>Window mouse hover status.</returns>
+		bool IsHovered() const;
 
 		/// <summary>
 		/// Maximize the window.

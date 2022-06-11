@@ -118,6 +118,16 @@ TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const noexcept
+{
+	int32_t width = 0, height = 0;
+	INTERNAL::WindowingAPI::GetFrameBufferSize(m_window.get(), width, height);
+
+	return { width, height };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Math::Vec2i TRAP::Window::GetPosition() const noexcept
 {
 	TRAP::Math::Vec2i pos{};
@@ -611,6 +621,11 @@ void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHei
 	m_data.MinWidth = static_cast<int32_t>(minWidth);
 	m_data.MinHeight = static_cast<int32_t>(minHeight);
 
+	if(m_data.MaxWidth == 0)
+		m_data.MaxWidth = -1;
+	if(m_data.MaxHeight == 0)
+		m_data.MaxHeight = -1;
+
 	if(m_data.MaxWidth >= MinimumSupportedWindowWidth && m_data.MinWidth > m_data.MaxWidth)
 	{
 		m_data.MinWidth = m_data.MaxWidth;
@@ -666,6 +681,18 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 
 	INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), m_data.MinWidth, m_data.MinHeight,
 											    m_data.MaxWidth, m_data.MaxHeight);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
+{
+	TP_PROFILE_FUNCTION();
+
+	INTERNAL::WindowingAPI::SetWindowPos(m_window.get(), x, y);
+
+	m_data.windowModeParams.XPos = x;
+	m_data.windowModeParams.YPos = y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -749,6 +776,15 @@ bool TRAP::Window::IsDecorated() const
 	TP_PROFILE_FUNCTION();
 
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Decorated);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Window::IsHovered() const
+{
+	TP_PROFILE_FUNCTION();
+
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Hovered);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
