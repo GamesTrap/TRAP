@@ -118,6 +118,17 @@ TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2i TRAP::Window::GetPosition() const noexcept
+{
+	TRAP::Math::Vec2i pos{};
+
+	INTERNAL::WindowingAPI::GetWindowPos(m_window.get(), pos[0], pos[1]);
+
+	return pos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Window::GetRefreshRate() const noexcept
 {
 	return m_data.RefreshRate;

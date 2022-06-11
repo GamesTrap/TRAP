@@ -106,6 +106,11 @@ namespace TRAP
 		/// <returns>Vec2ui containing the width and height of the window.</returns>
 		Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
+		/// Get the current position of the window.
+		/// </summary>
+		/// <returns>Vec2i containing the position of the window.</returns>
+		Math::Vec2i GetPosition() const noexcept;
+		/// <summary>
 		/// Get the current refresh rate of the window.
 		/// </summary>
 		/// <returns>Refresh rate of the window.</returns>

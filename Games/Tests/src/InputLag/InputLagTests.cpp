@@ -103,11 +103,8 @@ bool InputLagTests::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
 {
 	if(m_cursorMethod == CursorMethod::InputMessage)
 	{
-		//TODO TRAP::Window::GetPosition(); to retrieve window position relative to monitor top left corner
-		int32_t windowX = 0, windowY = 0;
-		TRAP::INTERNAL::WindowingAPI::GetWindowPos(reinterpret_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow()), windowX, windowY);
 		m_cursorNew = event.GetPosition();
-		m_cursorNew += TRAP::Math::Vec2(windowX, windowY);
+		m_cursorNew += event.GetWindow()->GetPosition();
 	}
 
 	return true;
@@ -121,10 +118,8 @@ void InputLagTests::SampleInput()
 
 	if(m_cursorMethod == CursorMethod::SyncQuery)
 	{
-		int32_t windowX = 0, windowY = 0;
-		TRAP::INTERNAL::WindowingAPI::GetWindowPos(reinterpret_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow()), windowX, windowY);
 		m_cursorNew = TRAP::Input::GetMousePosition();
-		m_cursorNew += TRAP::Math::Vec2(windowX, windowY);
+		m_cursorNew += TRAP::Application::GetWindow()->GetPosition();
 	}
 
 

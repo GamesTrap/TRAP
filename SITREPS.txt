@@ -2668,3 +2668,7 @@ SITREP 06/10/2022|22w23b2
     - Updated Controller mappings ~<5 mins
     - HotReloading now preserves used shader macros on reload ~<15 mins
     - Tests Added InputLagTests ~<30 mins
+
+SITREP 06/11/2022|22w23c1
+    - Changed TRAP Engine version to 22w23c1(0.7.150)
+    - Window Added GetPosition function ~<5 mins
