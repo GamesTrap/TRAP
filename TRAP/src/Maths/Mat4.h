@@ -119,12 +119,12 @@ namespace TRAP::Math
 		/// Copy conversion constructor.
 		/// </summary>
 		template<typename U>
-		explicit constexpr Mat(const Mat<4, 4, U> & m);
+		constexpr Mat(const Mat<4, 4, U> & m);
 
 		/// <summary>
 		/// Copy conversion constructor.
 		/// </summary>
-		explicit constexpr Mat(const Mat<3, 3, T> & x);
+		constexpr Mat(const Mat<3, 3, T> & x);
 
 		/// <summary>
 		/// Retrieve the length of the matrix.
@@ -363,7 +363,7 @@ constexpr TRAP::Math::Mat<4, 4, T>::Mat(const Mat<3, 3, T>& x)
 template <typename T>
 constexpr int TRAP::Math::Mat<4, 4, T>::Length()
 {
-	return 4 * 4;
+	return 4;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -562,7 +562,7 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const T& scalar, const 
 template<typename T>
 constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::operator+(const Mat<4, 4, T>& m1, const Mat<4, 4, T>& m2)
 {
-	return Mat<4, 4, T>(m1[0] + m2[0], m1[1] + m2[1], m1[2] + m2[2], m1[3] + m2[2]);
+	return Mat<4, 4, T>(m1[0] + m2[0], m1[1] + m2[1], m1[2] + m2[2], m1[3] + m2[3]);
 }
 
 template<typename T>

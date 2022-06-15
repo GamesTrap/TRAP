@@ -32,7 +32,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_QUATERNION_H
 #define TRAP_QUATERNION_H
 
-#include "Types.h"
+#include "Vec3.h"
+#include "Core/PlatformDetection.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 
@@ -245,7 +246,8 @@ TRAP::Math::tQuaternion<T>::operator Mat<4, 4, T>() const
 template <typename T>
 TRAP::Math::tQuaternion<T>::tQuaternion(const Vec<3, T>& u, const Vec<3, T>& v)
 {
-	T normUNormV = Sqrt(Dot(u, u) * Dot(v, v));
+	//TODO Can't use TRAP::Math::Sqrt here
+	T normUNormV = std::sqrt(Dot(u, u) * Dot(v, v));
 	T realPart = normUNormV + Dot(u, v);
 	Vec<3, T> t;
 
@@ -254,7 +256,8 @@ TRAP::Math::tQuaternion<T>::tQuaternion(const Vec<3, T>& u, const Vec<3, T>& v)
 		//If u and v are exactly opposite, rotate 180 degrees around an arbitrary orthogonal axis.
 		//Axis normalization can happen later, when we normalize the quaternion.
 		realPart = static_cast<T>(0);
-		t = Abs(u.x) > Abs(u.z) ? Vec<3, T>(-u.y, u.x, static_cast<T>(0)) : Vec<3, T>(static_cast<T>(0), -u.z, u.y);
+		//TODO Can't use TRAP::Math::Abs here
+		t = std::abs(u.x) > std::abs(u.z) ? Vec<3, T>(-u.y, u.x, static_cast<T>(0)) : Vec<3, T>(static_cast<T>(0), -u.z, u.y);
 	}
 	else
 	{

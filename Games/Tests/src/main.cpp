@@ -12,6 +12,7 @@
 #include "IcoSphere/IcoSphereTests.h"
 #include "ImageLoader/ImageLoaderTests.h"
 #include "InputLag/InputLagTests.h"
+#include "Math/MathTests.h"
 #include "Monitors/MonitorTests.h"
 #include "MultiWindow/MultiWindowTests.h"
 #include "Opacity/OpacityTests.h"
@@ -41,6 +42,7 @@ public:
 		// PushLayer(std::make_unique<IcoSphereTests>());
 		// PushLayer(std::make_unique<ImageLoaderTests>());
 		// PushLayer(std::make_unique<InputLagTests>());
+		PushLayer(std::make_unique<MathTests>());
 		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<MultiWindowTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
@@ -50,7 +52,7 @@ public:
 		// PushLayer(std::make_unique<TitleTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
 		// PushLayer(std::make_unique<WindowStateTests>());
-		PushLayer(std::make_unique<WindowFeaturesTests>());
+		// PushLayer(std::make_unique<WindowFeaturesTests>());
 	}
 };
 
