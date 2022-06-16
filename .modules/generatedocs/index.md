@@ -1,6 +1,6 @@
-(trap-engine)=
-
 # TRAP™ Engine
+
+(trap-engine)=
 
 ```{image} Branding/TRAP.gif
 :align: center

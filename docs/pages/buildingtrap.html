@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="TRAP Documentation" />
   
-<meta property="og:description" content="Requirements: TRAP™ Engine requires the VulkanSDK. TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible. First clone the repository with git clone --recursive https://github.com/Games..." />
+<meta property="og:description" content="Requirements: TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible. Please install the VulkanSDK and make sure that the VULKAN_SDK environment variable is set properly. If you want to..." />
   
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
   
@@ -217,29 +217,54 @@
         </div>
         <article role="main">
           <section id="building-trap">
-<span id="buildingtrap"></span><h1>Building TRAP™<a class="headerlink" href="#building-trap" title="Permalink to this headline">#</a></h1>
+<h1>Building TRAP™<a class="headerlink" href="#building-trap" title="Permalink to this headline">#</a></h1>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">#</a></h2>
-<p>TRAP™ Engine requires the <a class="reference external" href="https://vulkan.lunarg.com/sdk/home/">VulkanSDK</a>.</p>
+<span id="buildingtrap"></span><h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">#</a></h2>
 <p>TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible.</p>
-<p>First clone the repository with <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--recursive</span> <span class="pre">https://github.com/GamesTrap/TRAP</span></code>.</p>
+<p>Please install the <a class="reference external" href="https://vulkan.lunarg.com/sdk/home/">VulkanSDK</a> and make sure that the <code class="docutils literal notranslate"><span class="pre">VULKAN_SDK</span></code> environment variable is set properly.</p>
+<p>If you want to be able to build the documentation and to update the Vulkan loader you need to install <a class="reference external" href="https://www.python.org/downloads/">Python3</a>.</p>
+</section>
+<section id="cloning-the-repository">
+<h2>Cloning the repository<a class="headerlink" href="#cloning-the-repository" title="Permalink to this headline">#</a></h2>
+<p>Clone the repository with <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--recursive</span> <span class="pre">https://github.com/GamesTrap/TRAP</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If the repository has already been cloned non-recursively, use <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code> to clone the necessary submodules.</p>
+<p>If the repository has already been cloned non-recursively, use <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span> <span class="pre">--recursive</span></code> to clone the necessary submodules.</p>
 </div>
-<p>TRAP™ uses <a class="reference external" href="https://premake.github.io/">Premake 5</a> as a build generation tool.</p>
-<p>Follow <a class="reference external" href="https://premake.github.io/download.html">these</a> instructions in order to install it.</p>
-<p>Then, follow the steps relevant to your operating system.</p>
+</section>
+<section id="project-generation">
+<h2>Project generation<a class="headerlink" href="#project-generation" title="Permalink to this headline">#</a></h2>
+<p>TRAP™ uses <a class="reference external" href="https://premake.github.io/">Premake 5</a> as a build generation tool.
+By default it is shipped with the TRAP™ repository.</p>
 <div class="tab-set docutils container">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Windows</label><div class="tab-content docutils container">
-<p>Premake 5 can generate project files for several Visual Studio versions.</p>
-<p>For example, run <code class="code docutils literal notranslate"><span class="pre">premake</span> <span class="pre">vs2022</span></code> to generate the <code class="code docutils literal notranslate"><span class="pre">.sln</span></code> and <code class="code docutils literal notranslate"><span class="pre">.vcxproj</span></code> files for Visual Studio 2022.</p>
+<p>You can generate project files for Visual Studio 2022, Visual Studio 2019, Codelite and make.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Linux</label><div class="tab-content docutils container">
-<p>Premake 5 can generate makefile project files.</p>
-<p>For example, run <code class="code docutils literal notranslate"><span class="pre">premake</span> <span class="pre">gmake2</span></code> to generate the <code class="code docutils literal notranslate"><span class="pre">Makefile</span></code> files.</p>
+<p>You can generate project files for Codelite and make.</p>
 </div>
 </div>
+<p>Just run the appropriate generator script inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
+</section>
+<section id="generate-documentation">
+<h2>Generate documentation<a class="headerlink" href="#generate-documentation" title="Permalink to this headline">#</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Python 3 is required in order to build the documentation.</p>
+</div>
+<p>To update the documentation run the <code class="docutils literal notranslate"><span class="pre">GenerateDocumentation</span></code> script inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
+</section>
+<section id="update-controller-mappings">
+<h2>Update controller mappings<a class="headerlink" href="#update-controller-mappings" title="Permalink to this headline">#</a></h2>
+<p>To update the controller mappings database run the <code class="docutils literal notranslate"><span class="pre">GenerateControllerMappings</span></code> script inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
+</section>
+<section id="update-vulkan-loader">
+<h2>Update Vulkan loader<a class="headerlink" href="#update-vulkan-loader" title="Permalink to this headline">#</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Python 3 is required in order to update the Vulkan loader.</p>
+</div>
+<p>To update the Vulkan loader run the <code class="docutils literal notranslate"><span class="pre">GenerateVulkanLoader</span></code> script inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
 </section>
 </section>
 
@@ -301,6 +326,11 @@
             <ul>
 <li><a class="reference internal" href="#">Building TRAP™</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#cloning-the-repository">Cloning the repository</a></li>
+<li><a class="reference internal" href="#project-generation">Project generation</a></li>
+<li><a class="reference internal" href="#generate-documentation">Generate documentation</a></li>
+<li><a class="reference internal" href="#update-controller-mappings">Update controller mappings</a></li>
+<li><a class="reference internal" href="#update-vulkan-loader">Update Vulkan loader</a></li>
 </ul>
 </li>
 </ul>
