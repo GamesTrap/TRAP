@@ -399,8 +399,8 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
     const TRAP::Math::Vec3 rotVec{ m_cameraTransform.Rotation.x, m_cameraTransform.Rotation.y,
                                    m_cameraTransform.Rotation.z };
-    const TRAP::Math::Quaternion orientation = TRAP::Math::Quaternion(rotVec);
-    const TRAP::Math::Quaternion qF = orientation * TRAP::Math::Quaternion(0.0f, 0.0f, 0.0f, -1.0f) *
+    const TRAP::Math::Quat orientation = TRAP::Math::Quat(rotVec);
+    const TRAP::Math::Quat qF = orientation * TRAP::Math::Quat(0.0f, 0.0f, 0.0f, -1.0f) *
                                       TRAP::Math::Conjugate(orientation);
     const TRAP::Math::Vec3 front = { qF.x, qF.y, qF.z };
     const TRAP::Math::Vec3 right = TRAP::Math::Normalize(TRAP::Math::Cross(front,

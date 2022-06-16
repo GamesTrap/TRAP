@@ -837,7 +837,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
 	/// <returns>Spherical linear interpolation of two quaternions.</returns>
 	template<typename T>
-	tQuaternion<T> Mix(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
+	tQuat<T> Mix(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1071,7 +1071,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no NaN representations.
 	/// </returns>
 	template<typename T>
-	constexpr Vec<4, bool> IsNaN(const tQuaternion<T>& q);
+	constexpr Vec<4, bool> IsNaN(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1112,7 +1112,7 @@ namespace TRAP::Math
 	/// False otherwise, including for implementations with no infinity representations.
 	/// </returns>
 	template<typename T>
-	constexpr Vec<4, bool> IsInf(const tQuaternion<T>& q);
+	constexpr Vec<4, bool> IsInf(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1261,7 +1261,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined in the range [0, 1].</param>
 	/// <returns>Linear interpolation of two quaternions.</returns>
 	template<typename T>
-	constexpr tQuaternion<T> Lerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
+	constexpr tQuat<T> Lerp(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Exponential--------------------------------------------------------------------------------------------------------//
@@ -1299,7 +1299,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <returns>Quaternion raised to a power.</returns>
 	template<typename T>
-	tQuaternion<T> Pow(const tQuaternion<T>& x, T y);
+	tQuat<T> Pow(const tQuat<T>& x, T y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1334,7 +1334,7 @@ namespace TRAP::Math
 	/// <param name="q">Specify the value to exponentiate.</param>
 	/// <returns>Exponential of a quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> Exp(const tQuaternion<T>& q);
+	tQuat<T> Exp(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1372,7 +1372,7 @@ namespace TRAP::Math
 	/// <param name="q">Specify the value of which to take the natural logarithm.</param>
 	/// <returns>Logarithm of a quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> Log(const tQuaternion<T>& q);
+	tQuat<T> Log(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1459,7 +1459,7 @@ namespace TRAP::Math
 	/// <param name="x">Specify the value of which to take the square root.</param>
 	/// <returns>Square root of a quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> Sqrt(const tQuaternion<T>& x);
+	tQuat<T> Sqrt(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1516,7 +1516,7 @@ namespace TRAP::Math
 	/// <param name="q">Specifies a quaternion of which to calculate the length.</param>
 	/// <returns>Norm of a quaternion.</returns>
 	template<typename T>
-	T Length(const tQuaternion<T>& q);
+	T Length(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1570,7 +1570,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second of two quaternions.</param>
 	/// <returns>Compute a cross product.</returns>
 	template<typename T>
-	constexpr T Dot(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	constexpr T Dot(const tQuat<T>& x, const tQuat<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1602,7 +1602,7 @@ namespace TRAP::Math
 	/// <param name="q2">Specifies the second of two quaternions.</param>
 	/// <returns>Compute a cross product.</returns>
 	template<typename T>
-	constexpr tQuaternion<T> Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
+	constexpr tQuat<T> Cross(const tQuat<T>& q1, const tQuat<T>& q2);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1622,7 +1622,7 @@ namespace TRAP::Math
 	/// <param name="q">Specifies the quaternion to normalize.</param>
 	/// <returns>Normalized quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> Normalize(const tQuaternion<T>& q);
+	tQuat<T> Normalize(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2139,7 +2139,7 @@ namespace TRAP::Math
 	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
 	/// <returns>Interpolated quaternions.</returns>
 	template<typename T>
-	tQuaternion<T> SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
+	tQuat<T> SLerp(const tQuat<T>& x, const tQuat<T>& y, T a);
 
 	/// <summary>
 	/// Spherical linear interpolation of two quaternions with multiple spins over rotation axis.
@@ -2156,7 +2156,7 @@ namespace TRAP::Math
 	/// <param name="k">Additional spin count. If value is negative interpolation will be on "long" path.</param>
 	/// <returns>Interpolated quaternions.</returns>
 	template<typename T, typename S>
-	tQuaternion<T> SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a, S k);
+	tQuat<T> SLerp(const tQuat<T>& x, const tQuat<T>& y, T a, S k);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2167,7 +2167,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to conjugate.</param>
 	/// <returns>Conjugated quaternion.</returns>
 	template<typename T>
-	constexpr tQuaternion<T> Conjugate(const tQuaternion<T>& q);
+	constexpr tQuat<T> Conjugate(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2178,7 +2178,7 @@ namespace TRAP::Math
 	/// <param name="q">Specifies the quaternion of which to take the inverse.</param>
 	/// <returns>Inverted quaternion.</returns>
 	template<typename T>
-	constexpr tQuaternion<T> Inverse(const tQuaternion<T>& q);
+	constexpr tQuat<T> Inverse(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2189,7 +2189,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angles from.</param>
 	/// <returns>Euler angles, pitch as x, yaw as y, roll as z. The result is expressed in radians.</returns>
 	template<typename T>
-	Vec<3, T> EulerAngles(const tQuaternion<T>& x);
+	Vec<3, T> EulerAngles(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2200,7 +2200,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Roll value of euler angles expressed in radians.</returns>
 	template<typename T>
-	T Roll(const tQuaternion<T>& q);
+	T Roll(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2211,7 +2211,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Pitch value of euler angles expressed in radians.</returns>
 	template<typename T>
-	T Pitch(const tQuaternion<T>& q);
+	T Pitch(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2222,7 +2222,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to retrieve Euler angle from.</param>
 	/// <returns>Yaw value of euler angles expressed in radians.</returns>
 	template<typename T>
-	T Yaw(const tQuaternion<T>& x);
+	T Yaw(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2233,7 +2233,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
-	Mat<3, 3, T> Mat3Cast(const tQuaternion<T>& q);
+	Mat<3, 3, T> Mat3Cast(const tQuat<T>& q);
 	/// <summary>
 	/// Converts a quaternion to a 4 * 4 matrix.
 	/// </summary>
@@ -2241,7 +2241,7 @@ namespace TRAP::Math
 	/// <param name="q">Quaternion to convert.</param>
 	/// <returns>Converted matrix.</returns>
 	template<typename T>
-	Mat<4, 4, T> Mat4Cast(const tQuaternion<T>& q);
+	Mat<4, 4, T> Mat4Cast(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2252,7 +2252,7 @@ namespace TRAP::Math
 	/// <param name="m">Pure rotation matrix to convert.</param>
 	/// <returns>Converted quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> QuaternionCast(const Mat<3, 3, T>& m);
+	tQuat<T> QuaternionCast(const Mat<3, 3, T>& m);
 	/// <summary>
 	/// Converts a pure rotation 4 * 4 matrix to a quaternion.
 	/// </summary>
@@ -2260,7 +2260,7 @@ namespace TRAP::Math
 	/// <param name="m">Pure rotation matrix to convert.</param>
 	/// <returns>Converted quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> QuaternionCast(const Mat<4, 4, T>& m);
+	tQuat<T> QuaternionCast(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2272,7 +2272,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<typename T>
-	constexpr Vec<4, bool> LessThan(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	constexpr Vec<4, bool> LessThan(const tQuat<T>& x, const tQuat<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2284,7 +2284,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<typename T>
-	constexpr Vec<4, bool> LessThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	constexpr Vec<4, bool> LessThanEqual(const tQuat<T>& x, const tQuat<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2296,7 +2296,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<typename T>
-	constexpr Vec<4, bool> GreaterThan(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	constexpr Vec<4, bool> GreaterThan(const tQuat<T>& x, const tQuat<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2308,7 +2308,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<typename T>
-	constexpr Vec<4, bool> GreaterThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	constexpr Vec<4, bool> GreaterThanEqual(const tQuat<T>& x, const tQuat<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2320,7 +2320,7 @@ namespace TRAP::Math
 	/// <param name="up">Up vector, how the camera is oriented. Typically (0, 1, 0).</param>
 	/// <returns>Look at quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up);
+	tQuat<T> QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2332,7 +2332,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x == y.</returns>
 	template<typename T>
-	Vec<4, bool> Equal(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y);
 
 	/// <summary>
 	/// Perform a component-wise equal-to comparison of two quaternions taking epsilon into account.
@@ -2343,7 +2343,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| < epsilon.</returns>
 	template<typename T>
-	Vec<4, bool> Equal(const tQuaternion<T>& x, const tQuaternion<T>& y, T epsilon);
+	Vec<4, bool> Equal(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2355,7 +2355,7 @@ namespace TRAP::Math
 	/// <param name="y">Specifies the second quaternion to be used in the comparison operation.</param>
 	/// <returns>Component-wise comparison of result x != y.</returns>
 	template<typename T>
-	Vec<4, bool> NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y);
 
 	/// <summary>
 	/// Perform a component-wise not-equal-to comparison of two quaternions taking epsilon into account.
@@ -2366,7 +2366,7 @@ namespace TRAP::Math
 	/// <param name="epsilon"></param>
 	/// <returns>Component-wise comparison of |x - y| >= epsilon.</returns>
 	template<typename T>
-	Vec<4, bool> NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y, T epsilon);
+	Vec<4, bool> NotEqual(const tQuat<T>& x, const tQuat<T>& y, T epsilon);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2377,7 +2377,7 @@ namespace TRAP::Math
 	/// <param name="x">Quaternion.</param>
 	/// <returns>Quaternion rotation angle.</returns>
 	template<typename T>
-	T Angle(const tQuaternion<T>& x);
+	T Angle(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2388,7 +2388,7 @@ namespace TRAP::Math
 	/// <param name="x">Quaternion.</param>
 	/// <returns>Rotation axis.</returns>
 	template<typename T>
-	Vec<3, T> Axis(const tQuaternion<T>& x);
+	Vec<3, T> Axis(const tQuat<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2400,7 +2400,7 @@ namespace TRAP::Math
 	/// <param name="v">Axis of the quaternion, must be normalized.</param>
 	/// <returns>Quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> AngleAxis(const T& angle, const Vec<3, T>& v);
+	tQuat<T> AngleAxis(const T& angle, const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2413,7 +2413,7 @@ namespace TRAP::Math
 	/// <param name="v">Axis of the rotation.</param>
 	/// <returns>Rotated quaternion.</returns>
 	template<typename T>
-	tQuaternion<T> Rotate(const tQuaternion<T>& q, const T& angle, const Vec<3, T>& v);
+	tQuat<T> Rotate(const tQuat<T>& q, const T& angle, const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Vector-------------------------------------------------------------------------------------------------------------//
@@ -3536,7 +3536,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L,
 }
 
 template<typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Mix(const tQuaternion<T>& x, const tQuaternion<T>& y, T a)
+TRAP::Math::tQuat<T> TRAP::Math::Mix(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'mix' only accepts floating-point inputs");
 
@@ -3547,7 +3547,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Mix(const tQuaternion<T>& x, const tQuate
 	if(cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
-		return tQuaternion<T>(Mix(x.w, y.w, a), Mix(x.x, y.x, a), Mix(x.y, y.y, a), Mix(x.z, y.z, a));
+		return tQuat<T>(Mix(x.w, y.w, a), Mix(x.x, y.x, a), Mix(x.y, y.y, a), Mix(x.z, y.z, a));
 	}
 
 	T angle = ACos(cosTheta);
@@ -3698,7 +3698,7 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsNaN(const Vec<L, T>& v)
 }
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuaternion<T>& q)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuat<T>& q)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsNan' only accepts floating-point inputs");
 
@@ -3725,7 +3725,7 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::IsInf(const Vec<L, T>& v)
 }
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuaternion<T>& q)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuat<T>& q)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
@@ -3851,7 +3851,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Lerp(const Vec<L, T>& x, const Vec<L, T>& y, c
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::Lerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'lerp' only accepts floating-point inputs");
 
@@ -3882,12 +3882,12 @@ TRAP::Math::Vec<L, T> TRAP::Math::Pow(const Vec<L, T>& base, const Vec<L, T>& ex
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Pow(const tQuaternion<T>& x, T y)
+TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, T y)
 {
 	//Raising to the power of 0 should yield 1
 	//Needed to prevent a division by 0 error later on
 	if (y > -Epsilon<T>() && y < Epsilon<T>())
-		return tQuaternion<T>(1, 0, 0, 0);
+		return tQuat<T>(1, 0, 0, 0);
 
 	//To deal with non-unit quaternions
 	T magnitude = Sqrt(x.x * x.x + x.y * x.y + x.z * x.z + x.w * x.w);
@@ -3906,7 +3906,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Pow(const tQuaternion<T>& x, T y)
 		if(vectorMagnitude < std::numeric_limits<T>::min())
 		{
 			//Equivalent to raising a real number to a power
-			return tQuaternion<T>(Pow(x.w, y), 0, 0, 0);
+			return tQuat<T>(Pow(x.w, y), 0, 0, 0);
 		}
 
 		angle = ASin(Sqrt(vectorMagnitude) / magnitude);
@@ -3920,7 +3920,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Pow(const tQuaternion<T>& x, T y)
 	T newAngle = angle * y;
 	T div = Sin(newAngle) / Sin(angle);
 	T mag = Pow(magnitude, y - static_cast<T>(1));
-	return tQuaternion<T>(Cos(newAngle) * magnitude * mag, x.x * div * mag, x.y * div * mag, x.z * div * mag);
+	return tQuat<T>(Cos(newAngle) * magnitude * mag, x.x * div * mag, x.y * div * mag, x.z * div * mag);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3941,15 +3941,15 @@ TRAP::Math::Vec<L, T> TRAP::Math::Exp(const Vec<L, T>& x)
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Exp(const tQuaternion<T>& q)
+TRAP::Math::tQuat<T> TRAP::Math::Exp(const tQuat<T>& q)
 {
 	Vec<3, T> u(q.x, q.y, q.z);
 	T const angle = Length(u);
 	if (angle < Epsilon<T>())
-		return tQuaternion<T>();
+		return tQuat<T>();
 
 	const Vec<3, T> v(u / angle);
-	return tQuaternion<T>(Cos(angle), Sin(angle) * v);
+	return tQuat<T>(Cos(angle), Sin(angle) * v);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3970,7 +3970,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Log(const Vec<L, T>& x)
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Log(const tQuaternion<T>& q)
+TRAP::Math::tQuat<T> TRAP::Math::Log(const tQuat<T>& q)
 {
 	Vec<3, T> u(q.x, q.y, q.z);
 	T vec3Len = Length(u);
@@ -3978,16 +3978,16 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Log(const tQuaternion<T>& q)
 	if(vec3Len < Epsilon<T>())
 	{
 		if (q.w > static_cast<T>(0))
-			return tQuaternion<T>(Log(q.w), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+			return tQuat<T>(Log(q.w), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 		if (q.w < static_cast<T>(0))
-			return tQuaternion<T>(Log(-q.w), PI<T>(), static_cast<T>(0), static_cast<T>(0));
-		return tQuaternion<T>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(),
+			return tQuat<T>(Log(-q.w), PI<T>(), static_cast<T>(0), static_cast<T>(0));
+		return tQuat<T>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(),
 		                      std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
 	}
 
 	T t = ATan(vec3Len, T(q.w)) / vec3Len;
 	T quatLen2 = vec3Len * vec3Len + q.w * q.w;
-	return tQuaternion<T>(static_cast<T>(0.5)* Log(quatLen2), t* q.x, t* q.y, t* q.z);
+	return tQuat<T>(static_cast<T>(0.5)* Log(quatLen2), t* q.x, t* q.y, t* q.z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4044,7 +4044,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Sqrt(const Vec<L, T>& x)
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Sqrt(const tQuaternion<T>& x)
+TRAP::Math::tQuat<T> TRAP::Math::Sqrt(const tQuat<T>& x)
 {
 	return Pow(x, static_cast<T>(0.5));
 }
@@ -4089,7 +4089,7 @@ T TRAP::Math::Length(const Vec<L, T>& v)
 }
 
 template <typename T>
-T TRAP::Math::Length(const tQuaternion<T>& q)
+T TRAP::Math::Length(const tQuat<T>& q)
 {
 	return Sqrt(Dot(q, q));
 }
@@ -4133,7 +4133,7 @@ constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 }
 
 template <typename T>
-constexpr T TRAP::Math::Dot(const tQuaternion<T>& x, const tQuaternion<T>& y)
+constexpr T TRAP::Math::Dot(const tQuat<T>& x, const tQuat<T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
@@ -4163,12 +4163,12 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::Cross(const tQuat<T>& q1, const tQuat<T>& q2)
 {
-	return tQuaternion<T>(q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
-						  q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
-						  q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z,
-						  q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x);
+	return tQuat<T>(q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
+					q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
+					q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z,
+					q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4182,14 +4182,14 @@ TRAP::Math::Vec<L, T> TRAP::Math::Normalize(const Vec<L, T>& x)
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Normalize(const tQuaternion<T>& q)
+TRAP::Math::tQuat<T> TRAP::Math::Normalize(const tQuat<T>& q)
 {
 	T len = Length(q);
 	if (len <= static_cast<T>(0)) //Problem
-		return tQuaternion<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 
 	T oneOverLen = static_cast<T>(1) / len;
-	return tQuaternion<T>(q.w * oneOverLen, q.x * oneOverLen, q.y * oneOverLen, q.z * oneOverLen);
+	return tQuat<T>(q.w * oneOverLen, q.x * oneOverLen, q.y * oneOverLen, q.z * oneOverLen);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4833,11 +4833,11 @@ typename T::colType TRAP::Math::Column(const T& m, const int32_t index)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a)
+TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
 
-	tQuaternion<T> z = y;
+	tQuat<T> z = y;
 
 	T cosTheta = Dot(x, y);
 
@@ -4854,8 +4854,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQua
 	if (cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
-		return tQuaternion<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
-		return tQuaternion<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
+		return tQuat<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
 	}
 
 	T angle = ACos(cosTheta);
@@ -4865,12 +4864,12 @@ TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQua
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T, typename S>
-TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a, S k)
+TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, T a, S k)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
 	static_assert(std::numeric_limits<S>::is_integer, "'SLerp' only accepts integers for spin count");
 
-	tQuaternion<T> z = y;
+	tQuat<T> z = y;
 
 	T cosTheta = Dot(x, y);
 
@@ -4887,7 +4886,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQua
 	if(cosTheta > static_cast<T>(1) - Epsilon<T>())
 	{
 		//Linear interpolation
-		return tQuaternion<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
+		return tQuat<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
 	}
 	else
 	{
@@ -4901,15 +4900,15 @@ TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQua
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::Conjugate(const tQuaternion<T>& q)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::Conjugate(const tQuat<T>& q)
 {
-	return tQuaternion<T>(q.w, -q.x, -q.y, -q.z);
+	return tQuat<T>(q.w, -q.x, -q.y, -q.z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::Inverse(const tQuaternion<T>& q)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::Inverse(const tQuat<T>& q)
 {
 	return Conjugate(q) / Dot(q, q);
 }
@@ -4917,7 +4916,7 @@ constexpr TRAP::Math::tQuaternion<T> TRAP::Math::Inverse(const tQuaternion<T>& q
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Vec<3, T> TRAP::Math::EulerAngles(const tQuaternion<T>& x)
+TRAP::Math::Vec<3, T> TRAP::Math::EulerAngles(const tQuat<T>& x)
 {
 	return Vec<3, T>(Pitch(x), Yaw(x), Roll(x));
 }
@@ -4925,7 +4924,7 @@ TRAP::Math::Vec<3, T> TRAP::Math::EulerAngles(const tQuaternion<T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-T TRAP::Math::Roll(const tQuaternion<T>& q)
+T TRAP::Math::Roll(const tQuat<T>& q)
 {
 	const T y = static_cast<T>(2) * (q.x * q.y + q.w * q.z);
 	const T x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
@@ -4939,7 +4938,7 @@ T TRAP::Math::Roll(const tQuaternion<T>& q)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-T TRAP::Math::Pitch(const tQuaternion<T>& q)
+T TRAP::Math::Pitch(const tQuat<T>& q)
 {
 	const T y = static_cast<T>(2) * (q.y * q.z + q.w * q.x);
 	const T x = q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z;
@@ -4953,7 +4952,7 @@ T TRAP::Math::Pitch(const tQuaternion<T>& q)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-T TRAP::Math::Yaw(const tQuaternion<T>& x)
+T TRAP::Math::Yaw(const tQuat<T>& x)
 {
 	return ASin(Clamp(static_cast<T>(-2)* (x.x * x.z - x.w * x.y), static_cast<T>(-1), static_cast<T>(1)));
 }
@@ -4961,7 +4960,7 @@ T TRAP::Math::Yaw(const tQuaternion<T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuaternion<T>& q)
+TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuat<T>& q)
 {
 	Mat<3, 3, T> result(T(1));
 	T qxx(q.x * q.x);
@@ -4990,13 +4989,13 @@ TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuaternion<T>& q)
 }
 
 template <typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat4Cast(const tQuaternion<T>& q)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat4Cast(const tQuat<T>& q)
 {
 	return Mat<4, 4, T>(Mat3Cast(q));
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
+TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 {
 	T fourXSquaredMinus1 = m[0][0] - m[1][1] - m[2][2];
 	T fourYSquaredMinus1 = m[1][1] - m[0][0] - m[2][2];
@@ -5027,29 +5026,29 @@ TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 	switch (biggestIndex)
 	{
 	case 0:
-		return tQuaternion<T>(biggestVal, (m[1][2] - m[2][1]) * mult, (m[2][0] - m[0][2]) * mult,
-		                      (m[0][1] - m[1][0]) * mult);
+		return tQuat<T>(biggestVal, (m[1][2] - m[2][1]) * mult, (m[2][0] - m[0][2]) * mult,
+		                (m[0][1] - m[1][0]) * mult);
 
 	case 1:
-		return tQuaternion<T>((m[1][2] - m[2][1]) * mult, biggestVal, (m[0][1] + m[1][0]) * mult,
-		                      (m[2][0] + m[0][2]) * mult);
+		return tQuat<T>((m[1][2] - m[2][1]) * mult, biggestVal, (m[0][1] + m[1][0]) * mult,
+		                (m[2][0] + m[0][2]) * mult);
 
 	case 2:
-		return tQuaternion<T>((m[2][0] - m[0][2]) * mult, (m[0][1] + m[1][0]) * mult, biggestVal,
-		                      (m[1][2] + m[2][1]) * mult);
+		return tQuat<T>((m[2][0] - m[0][2]) * mult, (m[0][1] + m[1][0]) * mult, biggestVal,
+		                (m[1][2] + m[2][1]) * mult);
 
 	case 3:
-		return tQuaternion<T>((m[0][1] - m[1][0]) * mult, (m[2][0] + m[0][2]) * mult, (m[1][2] + m[2][1]) * mult,
-		                      biggestVal);
+		return tQuat<T>((m[0][1] - m[1][0]) * mult, (m[2][0] + m[0][2]) * mult, (m[1][2] + m[2][1]) * mult,
+		                biggestVal);
 
 	default:
 		TRAP_ASSERT(false);
-		return tQuaternion<T>(1, 0, 0, 0);
+		return tQuat<T>(1, 0, 0, 0);
 	}
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionCast(const Mat<4, 4, T>& m)
+TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<4, 4, T>& m)
 {
 	return QuaternionCast(Mat<3, 3, T>(m));
 }
@@ -5057,7 +5056,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionCast(const Mat<4, 4, T>& m)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuaternion<T>& x, const tQuaternion<T>& y)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuat<T>& x, const tQuat<T>& y)
 {
 	Vec<4, bool> result(false, false, false, false);
 	for (uint32_t i = 0; i < x.Length(); ++i)
@@ -5069,7 +5068,7 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuaternion<T>& x,
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuat<T>& x, const tQuat<T>& y)
 {
 	Vec<4, bool> result(false, false, false, false);
 	for (uint32_t i = 0; i < x.Length(); ++i)
@@ -5081,7 +5080,7 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuaternion<T
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuaternion<T>& x, const tQuaternion<T>& y)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuat<T>& x, const tQuat<T>& y)
 {
 	Vec<4, bool> result(false, false, false, false);
 	for (uint32_t i = 0; i < x.Length(); ++i)
@@ -5093,7 +5092,7 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuaternion<T>&
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuat<T>& x, const tQuat<T>& y)
 {
 	Vec<4, bool> result(false, false, false, false);
 	for (uint32_t i = 0; i < x.Length(); ++i)
@@ -5105,7 +5104,7 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuaternio
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up)
+TRAP::Math::tQuat<T> TRAP::Math::QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up)
 {
 	Mat<3, 3, T> result;
 
@@ -5120,7 +5119,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionLookAt(const Vec<3, T>& directi
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuaternion<T>& x, const tQuaternion<T>& y)
+TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y)
 {
 	Vec<4, bool> result;
 	for (uint32_t i = 0; i < x.Length(); ++i)
@@ -5130,7 +5129,7 @@ TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuaternion<T>& x, const tQuate
 }
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuaternion<T>& x, const tQuaternion<T>& y, T epsilon)
+TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, T epsilon)
 {
 	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
 	return LessThan(Abs(v), Vec<4, T>(epsilon));
@@ -5139,7 +5138,7 @@ TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuaternion<T>& x, const tQuate
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y)
+TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y)
 {
 	Vec<4, bool> result;
 	for (uint32_t i = 0; i < x.Length(); ++i)
@@ -5149,7 +5148,7 @@ TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuaternion<T>& x, const tQu
 }
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y, T epsilon)
+TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, T epsilon)
 {
 	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
 	return GreaterThanEqual(Abs(v), Vec<4, T>(epsilon));
@@ -5158,7 +5157,7 @@ TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuaternion<T>& x, const tQu
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-T TRAP::Math::Angle(const tQuaternion<T>& x)
+T TRAP::Math::Angle(const tQuat<T>& x)
 {
 	if (Abs(x.w) > CosOneOverTwo<T>())
 		return ASin(Sqrt(x.x * x.x + x.y * x.y + x.z * x.z)) * static_cast<T>(2);
@@ -5169,7 +5168,7 @@ T TRAP::Math::Angle(const tQuaternion<T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Vec<3, T> TRAP::Math::Axis(const tQuaternion<T>& x)
+TRAP::Math::Vec<3, T> TRAP::Math::Axis(const tQuat<T>& x)
 {
 	const T tmp1 = static_cast<T>(1) - x.w * x.w;
 
@@ -5183,18 +5182,18 @@ TRAP::Math::Vec<3, T> TRAP::Math::Axis(const tQuaternion<T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::AngleAxis(const T& angle, const Vec<3, T>& v)
+TRAP::Math::tQuat<T> TRAP::Math::AngleAxis(const T& angle, const Vec<3, T>& v)
 {
 	const T a(angle);
 	const T s = Sin(a * static_cast<T>(0.5));
 
-	return tQuaternion<T>(Cos(a * static_cast<T>(0.5)), v * s);
+	return tQuat<T>(Cos(a * static_cast<T>(0.5)), v * s);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Rotate(const tQuaternion<T>& q, const T& angle, const Vec<3, T>& v)
+TRAP::Math::tQuat<T> TRAP::Math::Rotate(const tQuat<T>& q, const T& angle, const Vec<3, T>& v)
 {
 	Vec<3, T> tmp = v;
 
@@ -5211,7 +5210,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Rotate(const tQuaternion<T>& q, const T& 
 	const T angleRad(angle);
 	const T sin = Sin(angleRad * static_cast<T>(0.5));
 
-	return q * tQuaternion<T>(Cos(angleRad * static_cast<T>(0.5)), tmp.x * sin, tmp.y * sin, tmp.z * sin);
+	return q * tQuat<T>(Cos(angleRad * static_cast<T>(0.5)), tmp.x * sin, tmp.y * sin, tmp.z * sin);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

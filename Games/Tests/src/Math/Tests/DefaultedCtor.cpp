@@ -62,9 +62,9 @@ namespace DefaultedCtor
         int32_t error = 0;
 
         {
-            const TRAP::Math::Quaternion a = TRAP::Math::Quaternion(1, 0, 0, 0);
-            TRAP::Math::Quaternion b;
-            std::memcpy(&b, &a, sizeof(TRAP::Math::Quaternion));
+            const TRAP::Math::Quat a = TRAP::Math::Quat(1, 0, 0, 0);
+            TRAP::Math::Quat b;
+            std::memcpy(&b, &a, sizeof(TRAP::Math::Quat));
             error += TRAP::Math::All(TRAP::Math::Equal(b, a, TRAP::Math::Epsilon<float>())) ? 0 : 1;
         }
 

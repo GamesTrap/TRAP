@@ -71,7 +71,7 @@ const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetViewMatrix() cons
 
 void TRAP::Graphics::OrthographicCamera::RecalculateViewMatrix()
 {
-	const Math::Mat4 transform = Translate(m_position) * Mat4Cast(Math::Quaternion(Radians(m_rotation)));
+	const Math::Mat4 transform = Translate(m_position) * Mat4Cast(Math::Quat(Radians(m_rotation)));
 
 	m_viewMatrix = Inverse(transform);
 }

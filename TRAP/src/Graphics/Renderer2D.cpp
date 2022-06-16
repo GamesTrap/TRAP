@@ -249,7 +249,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 	Math::Mat4 transformation;
 	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
 		transformation = Math::Translate(transform.Position) *
-		                 Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
+		                 Mat4Cast(Math::Quat(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 

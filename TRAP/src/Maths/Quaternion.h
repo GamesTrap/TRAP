@@ -40,24 +40,24 @@ Modified by: Jan "GamesTrap" Schuerkamp
 namespace TRAP::Math
 {
 	template<typename T>
-	struct tQuaternion
+	struct tQuat
 	{
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		constexpr tQuaternion(tQuaternion&&) = default;
+		constexpr tQuat(tQuat&&) = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~tQuaternion() = default;
+		~tQuat() = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr tQuaternion<T>& operator=(tQuaternion&&) = default;
+		constexpr tQuat<T>& operator=(tQuat&&) = default;
 
 		//Implementation detail
 		using valueType = T;
-		using type = tQuaternion<T>;
+		using type = tQuat<T>;
 
 		//Data
 		T x, y, z, w;
@@ -67,25 +67,25 @@ namespace TRAP::Math
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		constexpr tQuaternion() = default;
+		constexpr tQuat() = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		constexpr tQuaternion(const tQuaternion& q) = default;
+		constexpr tQuat(const tQuat& q) = default;
 
 		/// <summary>
 		/// Explicit basic constructor.
 		/// </summary>
-		constexpr tQuaternion(T s, const Vec<3, T>& v);
+		constexpr tQuat(T s, const Vec<3, T>& v);
 		/// <summary>
 		/// Explicit basic constructor.
 		/// </summary>
-		constexpr tQuaternion(T w, T x, T y, T z);
+		constexpr tQuat(T w, T x, T y, T z);
 
 		//Conversion constructors
 
 		template<typename U>
-		constexpr explicit tQuaternion(const tQuaternion<T>& q);
+		constexpr explicit tQuat(const tQuat<T>& q);
 
 		//Explicit conversion operators
 		//explicit operator Mat<3, 3, T>() const;
@@ -94,31 +94,31 @@ namespace TRAP::Math
 		/// <summary>
 		/// Create a quaternion from two normalized axis.
 		/// </summary>
-		tQuaternion(const Vec<3, T>& u, const Vec<3, T>& v);
+		tQuat(const Vec<3, T>& u, const Vec<3, T>& v);
 
 		/// <summary>
 		/// Build a quaternion from euler angles (pitch, yaw, roll).
 		/// </summary>
 		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
-		constexpr explicit tQuaternion(const Vec<3, T>& eulerAnglesInRadians);
-		explicit tQuaternion(const Mat<3, 3, T>& m);
-		explicit tQuaternion(const Mat<4, 4, T>& m);
+		constexpr explicit tQuat(const Vec<3, T>& eulerAnglesInRadians);
+		explicit tQuat(const Mat<3, 3, T>& m);
+		explicit tQuat(const Mat<4, 4, T>& m);
 
 		//Unary arithmetic operators
-		constexpr tQuaternion<T>& operator=(const tQuaternion<T>& q) = default;
+		constexpr tQuat<T>& operator=(const tQuat<T>& q) = default;
 
 		template<typename U>
-		constexpr tQuaternion<T>& operator=(const tQuaternion<U>& q);
+		constexpr tQuat<T>& operator=(const tQuat<U>& q);
 		template<typename U>
-		constexpr tQuaternion<T>& operator+=(const tQuaternion<U>& q);
+		constexpr tQuat<T>& operator+=(const tQuat<U>& q);
 		template<typename U>
-		constexpr tQuaternion<T>& operator-=(const tQuaternion<U>& q);
+		constexpr tQuat<T>& operator-=(const tQuat<U>& q);
 		template<typename U>
-		constexpr tQuaternion<T>& operator*=(const tQuaternion<U>& r);
+		constexpr tQuat<T>& operator*=(const tQuat<U>& r);
 		template<typename U>
-		constexpr tQuaternion<T>& operator*=(U s);
+		constexpr tQuat<T>& operator*=(U s);
 		template<typename U>
-		constexpr tQuaternion<T>& operator/=(U s);
+		constexpr tQuat<T>& operator/=(U s);
 
 		/// <summary>
 		/// Retrieve the count of components of a quaternion.
@@ -137,52 +137,52 @@ namespace TRAP::Math
 	//Unary bit operators
 
 	template<typename T>
-	constexpr tQuaternion<T> operator+(const tQuaternion<T>& q);
+	constexpr tQuat<T> operator+(const tQuat<T>& q);
 
 	template<typename T>
-	constexpr tQuaternion<T> operator-(const tQuaternion<T>& q);
+	constexpr tQuat<T> operator-(const tQuat<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Binary operators
 
 	template<typename T>
-	constexpr tQuaternion<T> operator+(const tQuaternion<T>& q, const tQuaternion<T>& p);
+	constexpr tQuat<T> operator+(const tQuat<T>& q, const tQuat<T>& p);
 
 	template<typename T>
-	constexpr tQuaternion<T> operator-(const tQuaternion<T>& q, const tQuaternion<T>& p);
+	constexpr tQuat<T> operator-(const tQuat<T>& q, const tQuat<T>& p);
 
 	template<typename T>
-	constexpr tQuaternion<T> operator*(const tQuaternion<T>& q, const tQuaternion<T>& p);
+	constexpr tQuat<T> operator*(const tQuat<T>& q, const tQuat<T>& p);
 
 	template<typename T>
-	constexpr Vec<3, T> operator*(const tQuaternion<T>& q, const Vec<3, T>& v);
+	constexpr Vec<3, T> operator*(const tQuat<T>& q, const Vec<3, T>& v);
 
 	template<typename T>
-	constexpr Vec<3, T> operator*(const Vec<3, T>& v, const tQuaternion<T>& q);
+	constexpr Vec<3, T> operator*(const Vec<3, T>& v, const tQuat<T>& q);
 
 	template<typename T>
-	constexpr Vec<4, T> operator*(const tQuaternion<T>& q, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator*(const tQuat<T>& q, const Vec<4, T>& v);
 
 	template<typename T>
-	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const tQuaternion<T>& q);
+	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const tQuat<T>& q);
 
 	template<typename T>
-	constexpr tQuaternion<T> operator*(const tQuaternion<T>& q, const T& s);
+	constexpr tQuat<T> operator*(const tQuat<T>& q, const T& s);
 
 	template<typename T>
-	constexpr tQuaternion<T> operator*(const T& s, const tQuaternion<T>& q);
+	constexpr tQuat<T> operator*(const T& s, const tQuat<T>& q);
 
 	template<typename T>
-	constexpr tQuaternion<T> operator/(const tQuaternion<T>& q, const T& s);
+	constexpr tQuat<T> operator/(const tQuat<T>& q, const T& s);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Boolean operators
 
 	template<typename T>
-	constexpr bool operator==(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
+	constexpr bool operator==(const tQuat<T>& q1, const tQuat<T>& q2);
 
 	template<typename T>
-	constexpr bool operator!=(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
+	constexpr bool operator!=(const tQuat<T>& q1, const tQuat<T>& q2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -192,9 +192,9 @@ namespace TRAP::Math
 namespace std
 {
 	template<typename T>
-	struct hash<TRAP::Math::tQuaternion<T>>
+	struct hash<TRAP::Math::tQuat<T>>
 	{
-		constexpr std::size_t operator()(const TRAP::Math::tQuaternion<T>& q) const
+		constexpr std::size_t operator()(const TRAP::Math::tQuat<T>& q) const
 		{
 			std::size_t seed = 0;
 			hash<T> hasher;
@@ -207,13 +207,13 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 //Explicit basic constructors
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T>::tQuaternion(T s, const Vec<3, T>& v)
+constexpr TRAP::Math::tQuat<T>::tQuat(T s, const Vec<3, T>& v)
 	: x(v.x), y(v.y), z(v.z), w(s)
 {
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T>::tQuaternion(T w, T x, T y, T z)
+constexpr TRAP::Math::tQuat<T>::tQuat(T w, T x, T y, T z)
 	: x(x), y(y), z(z), w(w)
 {
 }
@@ -223,7 +223,7 @@ constexpr TRAP::Math::tQuaternion<T>::tQuaternion(T w, T x, T y, T z)
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>::tQuaternion(const tQuaternion<T>& q)
+constexpr TRAP::Math::tQuat<T>::tQuat(const tQuat<T>& q)
 	: x(static_cast<T>(q.x)), y(static_cast<T>(q.y)), z(static_cast<T>(q.z)), w(static_cast<T>(q.w))
 {
 }
@@ -232,13 +232,13 @@ constexpr TRAP::Math::tQuaternion<T>::tQuaternion(const tQuaternion<T>& q)
 //Explicit conversion operators
 
 /*template <typename T>
-TRAP::Math::tQuaternion<T>::operator Mat<3, 3, T>() const
+TRAP::Math::tQuat<T>::operator Mat<3, 3, T>() const
 {
 	return Mat3Cast(*this);
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T>::operator Mat<4, 4, T>() const
+TRAP::Math::tQuat<T>::operator Mat<4, 4, T>() const
 {
 	return Mat4Cast(*this);
 }*/
@@ -246,7 +246,7 @@ TRAP::Math::tQuaternion<T>::operator Mat<4, 4, T>() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::tQuaternion<T>::tQuaternion(const Vec<3, T>& u, const Vec<3, T>& v)
+TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 {
 	//TODO Can't use TRAP::Math::Sqrt here
 	T normUNormV = std::sqrt(Dot(u, u) * Dot(v, v));
@@ -267,14 +267,14 @@ TRAP::Math::tQuaternion<T>::tQuaternion(const Vec<3, T>& u, const Vec<3, T>& v)
 		t = Cross(u, v);
 	}
 
-	*this = Normalize(tQuaternion<T>(realPart, t.x, t.y, t.z));
+	*this = Normalize(tQuat<T>(realPart, t.x, t.y, t.z));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Build quaternion from euler angles
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T>::tQuaternion(const Vec<3, T>& eulerAnglesInRadians)
+constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 {
 	Vec<3, T> c = Cos(eulerAnglesInRadians * T(0.5));
 	Vec<3, T> s = Sin(eulerAnglesInRadians * T(0.5));
@@ -286,13 +286,13 @@ constexpr TRAP::Math::tQuaternion<T>::tQuaternion(const Vec<3, T>& eulerAnglesIn
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T>::tQuaternion(const Mat<3, 3, T>& m)
+TRAP::Math::tQuat<T>::tQuat(const Mat<3, 3, T>& m)
 {
 	*this = QuaternionCast(m);
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T>::tQuaternion(const Mat<4, 4, T>& m)
+TRAP::Math::tQuat<T>::tQuat(const Mat<4, 4, T>& m)
 {
 	*this = QuaternionCast(m);
 }
@@ -302,7 +302,7 @@ TRAP::Math::tQuaternion<T>::tQuaternion(const Mat<4, 4, T>& m)
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator=(const tQuaternion<U>& q)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator=(const tQuat<U>& q)
 {
 	this->w = static_cast<T>(q.w);
 	this->x = static_cast<T>(q.x);
@@ -314,28 +314,28 @@ constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator=(cons
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator+=(const tQuaternion<U>& q)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator+=(const tQuat<U>& q)
 {
-	const tQuaternion<T> p(q);
+	const tQuat<T> p(q);
 
-	return (*this = tQuaternion<T>(this->w + p.w, this->x + p.x, this->y + p.y, this->z + p.z));
+	return (*this = tQuat<T>(this->w + p.w, this->x + p.x, this->y + p.y, this->z + p.z));
 }
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator-=(const tQuaternion<U>& q)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator-=(const tQuat<U>& q)
 {
-	const tQuaternion<T> p(q);
+	const tQuat<T> p(q);
 
-	return (*this = tQuaternion<T>(this->w - p.w, this->x - p.x, this->y - p.y, this->z - p.z));
+	return (*this = tQuat<T>(this->w - p.w, this->x - p.x, this->y - p.y, this->z - p.z));
 }
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator*=(const tQuaternion<U>& r)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const tQuat<U>& r)
 {
-	const tQuaternion<T> p(*this);
-	const tQuaternion<T> q(r);
+	const tQuat<T> p(*this);
+	const tQuat<T> q(r);
 
 	this->w = p.w * q.w - p.x * q.x - p.y * q.y - p.z * q.z;
 	this->x = p.w * q.x + p.x * q.w + p.y * q.z - p.z * q.y;
@@ -347,22 +347,22 @@ constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator*=(con
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator*=(U s)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(U s)
 {
-	return (*this = tQuaternion<T>(this->w * s, this->x * s, this->y * s, this->z * s));
+	return (*this = tQuat<T>(this->w * s, this->x * s, this->y * s, this->z * s));
 }
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuaternion<T>& TRAP::Math::tQuaternion<T>::operator/=(U s)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(U s)
 {
-	return (*this = tQuaternion<T>(this->w / s, this->x / s, this->y / s, this->z / s));
+	return (*this = tQuat<T>(this->w / s, this->x / s, this->y / s, this->z / s));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr int TRAP::Math::tQuaternion<T>::Length()
+constexpr int TRAP::Math::tQuat<T>::Length()
 {
 	return 4;
 }
@@ -371,7 +371,7 @@ constexpr int TRAP::Math::tQuaternion<T>::Length()
 //Component Access
 
 template <typename T>
-constexpr T& TRAP::Math::tQuaternion<T>::operator[](int i)
+constexpr T& TRAP::Math::tQuat<T>::operator[](int i)
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
@@ -381,7 +381,7 @@ constexpr T& TRAP::Math::tQuaternion<T>::operator[](int i)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr const T& TRAP::Math::tQuaternion<T>::operator[](int i) const
+constexpr const T& TRAP::Math::tQuat<T>::operator[](int i) const
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
@@ -391,7 +391,7 @@ constexpr const T& TRAP::Math::tQuaternion<T>::operator[](int i) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::tQuaternion<T>::ToString()
+std::string TRAP::Math::tQuat<T>::ToString()
 {
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)
@@ -401,7 +401,7 @@ std::string TRAP::Math::tQuaternion<T>::ToString()
 	else
 		return "Unknown type";
 
-	return "Quaternion" + postfix + "(" + std::to_string(w) + ", {" + std::to_string(x) + ", " +
+	return "Quat" + postfix + "(" + std::to_string(w) + ", {" + std::to_string(x) + ", " +
 	       std::to_string(y) + ", " + std::to_string(z) + "})";
 }
 
@@ -413,40 +413,40 @@ std::string TRAP::Math::tQuaternion<T>::ToString()
 //Unary bit operators
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator+(const tQuaternion<T>& q)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q)
 {
 	return q;
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator-(const tQuaternion<T>& q)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q)
 {
-	return tQuaternion<T>(-q.w, -q.x, -q.y, -q.z);
+	return tQuat<T>(-q.w, -q.x, -q.y, -q.z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Binary operators
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator+(const tQuaternion<T>& q, const tQuaternion<T>& p)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator+(const tQuat<T>& q, const tQuat<T>& p)
 {
-	return tQuaternion<T>(q) += p;
+	return tQuat<T>(q) += p;
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator-(const tQuaternion<T>& q, const tQuaternion<T>& p)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator-(const tQuat<T>& q, const tQuat<T>& p)
 {
-	return tQuaternion<T>(q) -= p;
+	return tQuat<T>(q) -= p;
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator*(const tQuaternion<T>& q, const tQuaternion<T>& p)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const tQuat<T>& p)
 {
-	return tQuaternion<T>(q) *= p;
+	return tQuat<T>(q) *= p;
 }
 
 template <typename T>
-constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuaternion<T>& q, const Vec<3, T>& v)
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<3, T>& v)
 {
 	const Vec<3, T> quaternionVector(q.x, q.y, q.z);
 	const Vec<3, T> uv(Cross(quaternionVector, v));
@@ -456,52 +456,52 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const tQuaternion<T>& q, c
 }
 
 template <typename T>
-constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const Vec<3, T>& v, const tQuaternion<T>& q)
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator*(const Vec<3, T>& v, const tQuat<T>& q)
 {
 	return Inverse(q) * v;
 }
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const tQuaternion<T>& q, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const tQuat<T>& q, const Vec<4, T>& v)
 {
 	return Vec<4, T>(q * Vec<3, T>(v), v.w);
 }
 
 template <typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const tQuaternion<T>& q)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const tQuat<T>& q)
 {
 	return Inverse(q) * v;
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator*(const tQuaternion<T>& q, const T& s)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const tQuat<T>& q, const T& s)
 {
-	return tQuaternion<T>(q.w * s, q.x * s, q.y * s, q.z * s);
+	return tQuat<T>(q.w * s, q.x * s, q.y * s, q.z * s);
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator*(const T& s, const tQuaternion<T>& q)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator*(const T& s, const tQuat<T>& q)
 {
 	return q * s;
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuaternion<T> TRAP::Math::operator/(const tQuaternion<T>& q, const T& s)
+constexpr TRAP::Math::tQuat<T> TRAP::Math::operator/(const tQuat<T>& q, const T& s)
 {
-	return tQuaternion<T>(q.w / s, q.x / s, q.y / s, q.z / s);
+	return tQuat<T>(q.w / s, q.x / s, q.y / s, q.z / s);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //Boolean operators
 
 template <typename T>
-constexpr bool TRAP::Math::operator==(const tQuaternion<T>& q1, const tQuaternion<T>& q2)
+constexpr bool TRAP::Math::operator==(const tQuat<T>& q1, const tQuat<T>& q2)
 {
 	return q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w;
 }
 
 template <typename T>
-constexpr bool TRAP::Math::operator!=(const tQuaternion<T>& q1, const tQuaternion<T>& q2)
+constexpr bool TRAP::Math::operator!=(const tQuat<T>& q1, const tQuat<T>& q2)
 {
 	return q1.x != q2.x && q1.y != q2.y && q1.z != q2.z && q1.w != q2.w;
 }

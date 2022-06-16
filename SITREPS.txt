@@ -2695,3 +2695,4 @@ SITREP 06/15/2022|22w24a1
 SITREP 06/16/2022|22w24a2
     - Changed TRAP Engine version to 22w24a2(0.7.152)
     - Mat3, Mat4, Vec2, Vec3, Vec4 & Quaternion Added ToString functions ~<20 mins
+    - Math Renamed Quaternion to Quat ~<20 mins

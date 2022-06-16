@@ -52,7 +52,7 @@ namespace TRAP
 		{
 			if(Rotation.x != 0.0f || Rotation.y != 0.0f || Rotation.z != 0.0f)
 			{
-				const Math::Mat4 rotation = Mat4Cast(Math::Quaternion(Rotation));
+				const Math::Mat4 rotation = Mat4Cast(Math::Quat(Rotation));
 				return Math::Translate(Position) * rotation * Math::Scale(Scale);
 			}
 

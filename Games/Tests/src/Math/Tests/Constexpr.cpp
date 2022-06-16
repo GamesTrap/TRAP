@@ -478,12 +478,12 @@ namespace Constexpr
     void TestQuaternion()
     {
         {
-            static_assert(TRAP::Math::Quaternion::Length() == 4, "Math: Failed constexpr");
-            static_assert(TRAP::Math::Quaternion(1.0f, TRAP::Math::Vec3(0.0f)).w > 0.0f, "Math: Failed constexpr");
-            static_assert(TRAP::Math::Quaternion(1.0f, 0.0f, 0.0f, 0.0f).w > 0.0f, "Math: Failed constexpr");
+            static_assert(TRAP::Math::Quat::Length() == 4, "Math: Failed constexpr");
+            static_assert(TRAP::Math::Quat(1.0f, TRAP::Math::Vec3(0.0f)).w > 0.0f, "Math: Failed constexpr");
+            static_assert(TRAP::Math::Quat(1.0f, 0.0f, 0.0f, 0.0f).w > 0.0f, "Math: Failed constexpr");
 
-            constexpr TRAP::Math::Quaternion q = TRAP::Math::Quaternion();
-            static_assert(q.x - TRAP::Math::Quaternion(1.0f, TRAP::Math::Vec3(0.0f)).x <= TRAP::Math::Epsilon<float>(), "Math: Failed constexpr");
+            constexpr TRAP::Math::Quat q = TRAP::Math::Quat();
+            static_assert(q.x - TRAP::Math::Quat(1.0f, TRAP::Math::Vec3(0.0f)).x <= TRAP::Math::Epsilon<float>(), "Math: Failed constexpr");
         }
     }
 }
