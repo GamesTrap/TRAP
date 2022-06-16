@@ -42,8 +42,6 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 
 ## 3rd Party Libraries used by TRAP™ Engine
 
-### Required
-
 :::{tab} Required
 The following libraries are required to build TRAP™.
 They are provided in the TRAP™ repository.

@@ -3489,50 +3489,49 @@ TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 template<typename genTypeT, typename genTypeU>
 constexpr genTypeT TRAP::Math::Mix(genTypeT x, genTypeT y, genTypeU a)
 {
-	static_assert(std::numeric_limits<genTypeU>::is_iec559,
-	              "'Mix' only accepts floating-point inputs for the interpolator a");
+	if constexpr (std::is_same_v<genTypeU, bool>)
+		return a ? y : x;
+	else
+	{
+		static_assert(std::numeric_limits<genTypeU>::is_iec559,
+					"'Mix' only accepts floating-point inputs for the interpolator a");
+		return static_cast<genTypeT>(static_cast<genTypeU>(x) *
+									(static_cast<genTypeU>(1) - a) + static_cast<genTypeU>(y) * a);
 
-	return static_cast<genTypeT>(static_cast<genTypeU>(x) *
-	                             (static_cast<genTypeU>(1) - a) + static_cast<genTypeU>(y) * a);
-}
-
-template<typename genTypeT>
-constexpr genTypeT TRAP::Math::Mix(genTypeT x, genTypeT y, const bool a)
-{
-	return a ? y : x;
+	}
 }
 
 template<uint32_t L, typename T, typename U>
 constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, U a)
 {
-	static_assert(std::numeric_limits<U>::is_iec559,
-	              "'Mix' only accepts floating-point inputs for the interpolator a");
+	if constexpr (std::is_same_v<U, bool>)
+		return a ? y : x;
+	else
+	{
+		static_assert(std::numeric_limits<U>::is_iec559,
+					"'Mix' only accepts floating-point inputs for the interpolator a");
 
-	return Vec<L, T>(Vec<L, U>(x) * (static_cast<U>(1) - a) + Vec<L, U>(y) * a);
-}
-
-template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, const bool a)
-{
-	return a ? y : x;
+		return Vec<L, T>(Vec<L, U>(x) * (static_cast<U>(1) - a) + Vec<L, U>(y) * a);
+	}
 }
 
 template<uint32_t L, typename T, typename U>
 constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, U>& a)
 {
-	static_assert(std::numeric_limits<U>::is_iec559,
-	              "'Mix' only accepts floating-point inputs for the interpolator a");
+	if constexpr (std::is_same_v<U, bool>)
+	{
+		Vec<L, T> result;
+		for (int32_t i = 0; i < Vec<L, T>::Length(); ++i)
+			result[i] = a[i] ? y[i] : x[i];
+		return result;
+	}
+	else
+	{
+		static_assert(std::numeric_limits<U>::is_iec559,
+					"'Mix' only accepts floating-point inputs for the interpolator a");
 
-	return Vec<L, T>(Vec<L, U>(x) * (static_cast<U>(1) - a) + Vec<L, U>(y) * a);
-}
-
-template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, bool>& a)
-{
-	Vec<L, T> result;
-	for(int32_t i = 0; i < Vec<L, T>::Length(); ++i)
-		result[i] = a[i] ? y[i] : x[i];
-	return result;
+		return Vec<L, T>(Vec<L, U>(x) * (static_cast<U>(1) - a) + Vec<L, U>(y) * a);
+	}
 }
 
 template<typename T>

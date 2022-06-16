@@ -2700,3 +2700,5 @@ SITREP 06/16/2022|22w24a2
     - Docs Replaced ReadTheDocs theme with Fora ~<10 mins
     - Docs Added 3 new extensions | Updated generatedocs.lua ~<20 mins
     - Docs converted reST files to MyST ~<30 mins
+    - Math Fixed compiler error on MSVC ~<10 mins
+    - Added needed Windows redists ~<10 mins
