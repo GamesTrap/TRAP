@@ -2696,3 +2696,6 @@ SITREP 06/16/2022|22w24a2
     - Changed TRAP Engine version to 22w24a2(0.7.152)
     - Mat3, Mat4, Vec2, Vec3, Vec4 & Quaternion Added ToString functions ~<20 mins
     - Math Renamed Quaternion to Quat ~<20 mins
+    - Docs Added automatic TRAP version updating on build ~<5 mins
+    - Docs Replaced ReadTheDocs theme with Fora ~<10 mins
+    - Docs Added 3 new extensions | Updated generatedocs.lua ~<20 mins

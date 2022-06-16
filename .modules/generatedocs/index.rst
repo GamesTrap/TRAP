@@ -26,13 +26,10 @@ Minimum System Requirements
 
 - OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
 - Processor: AVX2 support, TBD
-- Graphics Card: TBD
+- Graphics Card: TBD with Vulkan 1.1 support
 - Memory: 4 GB RAM
 - Storage: 5+ GB available space
-- Any of these RenderAPIs
-- - Vulkan: Version 1.2
-- - OpenGL: Version 4.6
-- Additional Notes: -
+- Additional Notes:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Recommended System Requirements
@@ -40,13 +37,10 @@ Recommended System Requirements
 
 - OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
 - Processor: AVX2 support, TBD
-- Graphics Card: TBD
+- Graphics Card: TBD with Vulkan 1.1 support
 - Memory: 4 GB RAM
 - Storage: 10+ GB available space
-- Any of these RenderAPIs
-- - Vulkan: Version 1.2
-- - OpenGL: Version 4.6
-- Additional Notes: -
+- Additional Notes:
 
 ----------------------------------------
 3rd Party Libraries used by TRAP Engine:
@@ -57,6 +51,16 @@ Recommended System Requirements
 - `GLSLang <https://github.com/GamesTrap/glslang>`_
 - `SPIRV-Cross <https://github.com/GamesTrap/SPIRV-Cross>`_
 - `Entt <https://github.com/skypjack/entt>`_
+- `ModernDialogs <https://github.com/GamesTrap/ModernDialogs>`_
+- `VulkanMemoryAllocator <https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator>`_
+- `YAMLCpp <https://github.com/jbeder/yaml-cpp>`_
+- `SDL_gamecontrollerdb.h from SDL <https://github.com/libsdl-org/SDL/blob/main/src/joystick/SDL_gamecontrollerdb.h>`_
+- `Volk <https://github.com/zeux/volk>`_
+
+| Optional:
+
+- `DiscordGameSDK <https://discord.com/developers/docs/game-sdk/sdk-starter-guide>`_
+- `NVIDIA® Nsight™ Aftermath SDK <https://developer.nvidia.com/nsight-aftermath>`_
 
 .. toctree::
    :maxdepth: 2

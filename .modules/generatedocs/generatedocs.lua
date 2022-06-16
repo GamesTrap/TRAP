@@ -54,6 +54,35 @@ newaction
                 os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > /dev/null 2>&1")
             end
 
+            local out, errorCode = os.outputof("pip list | grep -F furo")
+            if(errorCode ~= 0) then
+                print("Furo theme is not installed!")
+                print("Installing Furo theme...")
+                os.execute("pip install -U furo  > /dev/null 2>&1")
+            end
+
+            local out, errorCode = os.outputof("pip list | grep -F sphinx_inline_tabs")
+            local out2, errorCode2 = os.outputof("pip list | grep -F sphinx-inline-tabs")
+            if(errorCode ~= 0 and errorCode2 ~= 0) then
+                print("Sphinx-Inline-Tabs is not installed!")
+                print("Installing Sphinx-Inline-Tabs...")
+                os.execute("pip install -U sphinx-inline-tabs  > /dev/null 2>&1")
+            end
+
+            local out, errorCode = os.outputof("pip list | grep -F sphinxext-opengraph")
+            if(errorCode ~= 0) then
+                print("SphinxExt-OpenGraph is not installed!")
+                print("Installing SphinxExt-OpenGraph...")
+                os.execute("pip install -U sphinxext-opengraph  > /dev/null 2>&1")
+            end
+
+            local out, errorCode = os.outputof("pip list | grep -F sphinx-copybutton")
+            if(errorCode ~= 0) then
+                print("Sphinx-CopyButton is not installed!")
+                print("Installing Sphinx-CopyButton...")
+                os.execute("pip install -U sphinx-copybutton  > /dev/null 2>&1")
+            end
+
             if(res == false) then
                 success = false
                 return
@@ -94,6 +123,35 @@ newaction
                 print("Sphinx-InlineSyntaxHighlight is not installed!")
                 print("Installing Sphinx-InlineSyntaxHighlight...")
                 os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > NUL")
+            end
+
+            local out, errorCode = os.outputof("pip list | findstr furo")
+            if(errorCode ~= 0) then
+                print("Furo theme is not installed!")
+                print("Installing Furo theme...")
+                os.execute("pip install -U furo  > NUL")
+            end
+
+            local out, errorCode = os.outputof("pip list | findstr sphinx_inline_tabs")
+            local out2, errorCode2 = os.outputof("pip list | findstr sphinx-inline-tabs")
+            if(errorCode ~= 0 and errorCode2 ~= 0) then
+                print("Sphinx-Inline-Tabs is not installed!")
+                print("Installing Sphinx-Inline-Tabs...")
+                os.execute("pip install -U sphinx-inline-tabs  > NUL")
+            end
+
+            local out, errorCode = os.outputof("pip list | findstr sphinxext-opengraph")
+            if(errorCode ~= 0) then
+                print("SphinxExt-OpenGraph is not installed!")
+                print("Installing SphinxExt-OpenGraph...")
+                os.execute("pip install -U sphinxext-opengraph  > NUL")
+            end
+
+            local out, errorCode = os.outputof("pip list | findstr sphinx-copybutton")
+            if(errorCode ~= 0) then
+                print("Sphinx-CopyButton is not installed!")
+                print("Installing Sphinx-CopyButton...")
+                os.execute("pip install -U sphinx-copybutton  > NUL")
             end
 
             if(res == false) then

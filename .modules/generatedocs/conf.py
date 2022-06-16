@@ -13,16 +13,33 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+from os.path import exists
+from io import open
 
 # -- Project information -----------------------------------------------------
 
 project = 'TRAP'
-copyright = '2019-2021 Jan "GamesTrap" Schürkamp All Rights Reserved'
+copyright = '2019-2022 Jan "GamesTrap" Schürkamp All Rights Reserved'
 author = 'Jan "GamesTrap" Schuerkamp'
 
 # The full version, including alpha/beta/rc tags
-release = '0.7.38'
+#Retrieve version number from Base.h
+basedotHPath = '../../TRAP/src/Core/Base.h'
+basedothExists = exists(basedotHPath)
+if basedothExists:
+    with open(basedotHPath) as f:
+        for line in f:
+            if line.startswith('constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION('):
+                #Remove 'constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION('
+                line = line[len('constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION('):]
+                #Remove ');\n' from end
+                line = line[:-len(');\n')]
+                #Replace ', ' with '.'
+                line = line.replace(', ', '.')
+                release = line
+                break
+else:
+    release = 'Unknown'
 
 highlight_language = 'cpp'
 primary_domain = 'cpp'
@@ -34,7 +51,10 @@ primary_domain = 'cpp'
 # ones.
 
 extensions = ['sphinx.ext.githubpages',
-              'sphinxcontrib.inlinesyntaxhighlight']
+              'sphinxcontrib.inlinesyntaxhighlight',
+              'sphinx_inline_tabs',
+              'sphinxext.opengraph',
+              'sphinx_copybutton']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -49,16 +69,16 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 html_theme_path = ['_themes']
-html_logo = 'Branding/TRAPWhiteLogo.png'
+# html_logo = 'Branding/TRAPWhiteLogo.png'
 html_favicon = 'Branding/TRAPWhiteLogo64x64.ico'
-html_theme_options = {
-    'analytics_id': 'UA-154200595-2',  #  Provided by Google in your dashboard
-    'display_version': True,
-    'prev_next_buttons_location': 'none',
-    'style_external_links': False,
-}
+# html_theme_options = {
+#     'analytics_id': 'UA-154200595-2',  #  Provided by Google in your dashboard
+#     'display_version': True,
+#     'prev_next_buttons_location': 'none',
+#     'style_external_links': False,
+# }
 html_copy_source = False
 html_show_sourcelink = False
 html_use_opensearch = 'https://gamestrap.github.io/TRAP/'
@@ -68,5 +88,24 @@ html_show_sphinx = False
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+# html_css_files = ['custom.css']
+# html_js_files = ['custom.js']
 
-html_css_files = ['theme.css', 'custom.css', 'rtd_dark.css']
+#Extension settings
+
+#Furo
+html_theme_options = {
+    "light_logo": "TRAPDarkLogo.png",
+    "dark_logo": "TRAPWhiteLogo.png",
+    "sidebar_hide_name": True,
+    "announcement": "This documentation is still WIP and may contain errors and/or outdated code!", #Remove this once website is in a usable state
+    # "top_of_page_button": "edit",
+    # "source_repository": "https://github.com/GamesTrap/TRAP",
+    # "source_branch": "master",
+    # "source_directory": ".modules/generatedocs",
+}
+
+#SphinxExt-OpenGraph
+ogp_site_url = 'https://gamestrap.github.io/TRAP/'
+ogp_site_name = 'TRAP Documentation'
+ogp_image = '_static/TRAPWhiteLogo.png'

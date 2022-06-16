@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['level_1522',['Level',['../class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc',1,'TRAP::Log']]],
-  ['linuxwindowmanager_1523',['LinuxWindowManager',['../class_t_r_a_p_1_1_application.html#a4986fdbc4890edfd84e12ce4fd534616',1,'TRAP::Application']]]
+  ['hint_2514',['Hint',['../class_t_r_a_p_1_1_i_n_t_e_r_n_a_l_1_1_windowing_a_p_i.html#a9954c68c97c88cc331aaf4f0c411880f',1,'TRAP::INTERNAL::WindowingAPI']]]
 ];
