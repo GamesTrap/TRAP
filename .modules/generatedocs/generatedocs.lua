@@ -83,6 +83,13 @@ newaction
                 os.execute("pip install -U sphinx-copybutton  > /dev/null 2>&1")
             end
 
+            local out, errorCode = os.outputof("pip list | grep -F myst-parser")
+            if(errorCode ~= 0) then
+                print("MyST-Parser is not installed!")
+                print("Installing MyST-Parser...")
+                os.execute("pip install -U myst-parser  > /dev/null 2>&1")
+            end
+
             if(res == false) then
                 success = false
                 return
@@ -152,6 +159,13 @@ newaction
                 print("Sphinx-CopyButton is not installed!")
                 print("Installing Sphinx-CopyButton...")
                 os.execute("pip install -U sphinx-copybutton  > NUL")
+            end
+
+            local out, errorCode = os.outputof("pip list | findstr myst-parser")
+            if(errorCode ~= 0) then
+                print("MyST-Parser is not installed!")
+                print("Installing MyST-Parser...")
+                os.execute("pip install -U myst-parser  > NUL")
             end
 
             if(res == false) then

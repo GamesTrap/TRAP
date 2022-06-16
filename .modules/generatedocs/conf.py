@@ -54,7 +54,8 @@ extensions = ['sphinx.ext.githubpages',
               'sphinxcontrib.inlinesyntaxhighlight',
               'sphinx_inline_tabs',
               'sphinxext.opengraph',
-              'sphinx_copybutton']
+              'sphinx_copybutton',
+              'myst_parser']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -109,3 +110,20 @@ html_theme_options = {
 ogp_site_url = 'https://gamestrap.github.io/TRAP/'
 ogp_site_name = 'TRAP Documentation'
 ogp_image = '_static/TRAPWhiteLogo.png'
+
+#MyST-Parser
+myst_enable_extensions = [
+    #"amsmath",
+    "colon_fence",
+    "deflist",
+    #"dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    #"linkify",
+    "replacements",
+    #"smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
+]
