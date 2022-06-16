@@ -20,6 +20,7 @@ newaction
             print("Checking Doxygen")
             local out, errorCode = os.outputof("doxygen --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find Doxygen")
                 res = false
             end
@@ -27,6 +28,7 @@ newaction
             print("Checking Python")
             local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
                 res = false
             end
@@ -34,6 +36,7 @@ newaction
             print("Checking pip")
             local out, errorCode = os.outputof("pip --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 res = false
             end
@@ -41,6 +44,7 @@ newaction
             print("Checking Sphinx")
             local out, errorCode = os.outputof("sphinx-build --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx is not installed!")
                 print("Installing Sphinx...")
                 os.execute("pip install -U sphinx  > /dev/null 2>&1")
@@ -49,6 +53,7 @@ newaction
             print("Checking Sphinx-Extensions")
             local out, errorCode = os.outputof("pip list | grep -F sphinxcontrib-inlinesyntaxhighlight")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx-InlineSyntaxHighlight is not installed!")
                 print("Installing Sphinx-InlineSyntaxHighlight...")
                 os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > /dev/null 2>&1")
@@ -56,6 +61,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | grep -F furo")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Furo theme is not installed!")
                 print("Installing Furo theme...")
                 os.execute("pip install -U furo  > /dev/null 2>&1")
@@ -64,6 +70,7 @@ newaction
             local out, errorCode = os.outputof("pip list | grep -F sphinx_inline_tabs")
             local out2, errorCode2 = os.outputof("pip list | grep -F sphinx-inline-tabs")
             if(errorCode ~= 0 and errorCode2 ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx-Inline-Tabs is not installed!")
                 print("Installing Sphinx-Inline-Tabs...")
                 os.execute("pip install -U sphinx-inline-tabs  > /dev/null 2>&1")
@@ -71,6 +78,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | grep -F sphinxext-opengraph")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("SphinxExt-OpenGraph is not installed!")
                 print("Installing SphinxExt-OpenGraph...")
                 os.execute("pip install -U sphinxext-opengraph  > /dev/null 2>&1")
@@ -78,6 +86,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | grep -F sphinx-copybutton")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx-CopyButton is not installed!")
                 print("Installing Sphinx-CopyButton...")
                 os.execute("pip install -U sphinx-copybutton  > /dev/null 2>&1")
@@ -85,6 +94,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | grep -F myst-parser")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("MyST-Parser is not installed!")
                 print("Installing MyST-Parser...")
                 os.execute("pip install -U myst-parser  > /dev/null 2>&1")
@@ -98,6 +108,7 @@ newaction
             print("Checking Doxygen")
             local out, errorCode = os.outputof("doxygen --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find Doxygen")
                 res = false
             end
@@ -105,6 +116,7 @@ newaction
             print("Checking Python")
             local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find Python")
                 res = false
             end
@@ -112,6 +124,7 @@ newaction
             print("Checking pip")
             local out, errorCode = os.outputof("pip --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 res = false
             end
@@ -119,6 +132,7 @@ newaction
             print("Checking Sphinx")
             local out, errorCode = os.outputof("sphinx-build --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx is not installed!")
                 print("Installing Sphinx...")
                 os.execute("pip install -U sphinx  > NUL")
@@ -127,6 +141,7 @@ newaction
             print("Checking Sphinx-Extensions")
             local out, errorCode = os.outputof("pip list | findstr sphinxcontrib-inlinesyntaxhighlight")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx-InlineSyntaxHighlight is not installed!")
                 print("Installing Sphinx-InlineSyntaxHighlight...")
                 os.execute("pip install -U sphinxcontrib-inlinesyntaxhighlight  > NUL")
@@ -134,6 +149,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | findstr furo")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Furo theme is not installed!")
                 print("Installing Furo theme...")
                 os.execute("pip install -U furo  > NUL")
@@ -142,6 +158,7 @@ newaction
             local out, errorCode = os.outputof("pip list | findstr sphinx_inline_tabs")
             local out2, errorCode2 = os.outputof("pip list | findstr sphinx-inline-tabs")
             if(errorCode ~= 0 and errorCode2 ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx-Inline-Tabs is not installed!")
                 print("Installing Sphinx-Inline-Tabs...")
                 os.execute("pip install -U sphinx-inline-tabs  > NUL")
@@ -149,6 +166,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | findstr sphinxext-opengraph")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("SphinxExt-OpenGraph is not installed!")
                 print("Installing SphinxExt-OpenGraph...")
                 os.execute("pip install -U sphinxext-opengraph  > NUL")
@@ -156,6 +174,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | findstr sphinx-copybutton")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("Sphinx-CopyButton is not installed!")
                 print("Installing Sphinx-CopyButton...")
                 os.execute("pip install -U sphinx-copybutton  > NUL")
@@ -163,6 +182,7 @@ newaction
 
             local out, errorCode = os.outputof("pip list | findstr myst-parser")
             if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
                 print("MyST-Parser is not installed!")
                 print("Installing MyST-Parser...")
                 os.execute("pip install -U myst-parser  > NUL")
@@ -173,6 +193,7 @@ newaction
                 return
             end
         else
+            term.setTextColor(term.errorColor)
             print("Unsupported OS: " .. os.host())
             success = false
             return
@@ -227,8 +248,10 @@ newaction
 
     onEnd = function()
         if(success == true) then
-            print("Documentation generation successful")
+            term.setTextColor(term.infoColor)
+            print("Documentation generated successfully")
         else
+            term.setTextColor(term.errorColor)
             print("Documentation generation failed")
         end
     end

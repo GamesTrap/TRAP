@@ -2,6 +2,7 @@ premake.modules.generatecontrollermappings = {}
 local m = premake.modules.generatecontrollermappings
 
 local p = premake
+local success = true
 
 newaction
 {
@@ -22,6 +23,8 @@ newaction
         if templateFile ~= nil then
             templateFile:close()
         else
+            success = false
+            term.setTextColor(term.errorColor)
             print("Failed to find template file " .. templatePath)
             return
         end
@@ -34,6 +37,8 @@ newaction
         if sourceFile ~= nil then
             sourceFile:close()
         else
+            success = false
+            term.setTextColor(term.errorColor)
             print("Failed to find source file " .. sourcePath)
             return
         end
@@ -78,7 +83,13 @@ newaction
     end,
 
     onEnd = function()
-        print("Controller Mappings generation complete")
+        if(success) then
+            term.setTextColor(term.infoColor)
+            print("Controller Mappings generation finished successfully")
+        else
+            term.setTextColor(term.errorColor)
+            print("Controller Mappings generation failed!")
+        end
     end
 }
 

@@ -5,22 +5,6 @@ local p = premake
 
 success = true
 
-function CheckWindowsStuff()
-    print("Checking Python")
-    if(os.outputof("python --version > NUL") == nil) then
-        print("Unable to find Python 3")
-        return false
-    end
-
-    print("Checking pip")
-    if(os.outputof("pip --version > NUL") == nil) then
-        print("Unable to find pip")
-        return false
-    end
-
-    return true
-end
-
 newaction
 {
     trigger = "generatevulkanloader",
@@ -33,6 +17,7 @@ newaction
             print("Checking Python")
             local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
                 res = false
             end
@@ -40,6 +25,7 @@ newaction
             print("Checking pip")
             local out, errorCode = os.outputof("pip --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 res = false
             end
@@ -47,6 +33,7 @@ newaction
             print("Checking Python")
             local out, errorCode = os.outputof("python --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
                 res = false
             end
@@ -54,10 +41,12 @@ newaction
             print("Checking pip")
             local out, errorCode = os.outputof("pip --version")
             if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 res = false
             end
         else
+            term.setTextColor(term.errorColor)
             print("Unsupported OS: " .. os.host())
             success = false
             return
@@ -86,8 +75,10 @@ newaction
 
     onEnd = function()
         if(success) then
-            print("Vulkan loader generation successful")
+            term.setTextColor(term.infoColor)
+            print("Vulkan loader generated successfully")
         else
+            term.setTextColor(term.errorColor)
             print("Vulkan loader generation failed")
         end
     end
