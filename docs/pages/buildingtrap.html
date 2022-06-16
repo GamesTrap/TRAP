@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="Building TRAP" />
+<meta property="og:title" content="Building TRAP™" />
   
 <meta property="og:type" content="website" />
   
@@ -12,15 +12,15 @@
   
 <meta property="og:site_name" content="TRAP Documentation" />
   
-<meta property="og:description" content="Requirements: TRAP Engine requires the VulkanSDK. TRAP Engine requires a GPU that is Vulkan 1.1 or newer compatible. First clone the repository with git clone --recursive https://github.com/GamesTr..." />
+<meta property="og:description" content="Requirements: TRAP™ Engine requires the VulkanSDK. TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible. First clone the repository with git clone --recursive https://github.com/Games..." />
   
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
   
 <meta property="og:image:alt" content="TRAP Documentation" />
-  <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Getting Started" href="gettingstarted.html" /><link rel="prev" title="TRAP Engine" href="../index.html" />
+  <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Getting Started" href="gettingstarted.html" /><link rel="prev" title="TRAP™ Engine" href="../index.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
-        <title>Building TRAP - TRAP 0.7.152 documentation</title>
+        <title>Building TRAP™ - TRAP 0.7.152 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -179,8 +179,8 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">TRAP:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Building TRAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP™ Engine</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Building TRAP™</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
 </ul>
@@ -217,29 +217,29 @@
         </div>
         <article role="main">
           <section id="building-trap">
-<span id="buildingtrap"></span><h1>Building TRAP<a class="headerlink" href="#building-trap" title="Permalink to this headline">#</a></h1>
+<span id="buildingtrap"></span><h1>Building TRAP™<a class="headerlink" href="#building-trap" title="Permalink to this headline">#</a></h1>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">#</a></h2>
-<p>TRAP Engine requires the <a class="reference external" href="https://vulkan.lunarg.com/sdk/home/">VulkanSDK</a>.</p>
-<p>TRAP Engine requires a GPU that is Vulkan 1.1 or newer compatible.</p>
+<p>TRAP™ Engine requires the <a class="reference external" href="https://vulkan.lunarg.com/sdk/home/">VulkanSDK</a>.</p>
+<p>TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible.</p>
 <p>First clone the repository with <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--recursive</span> <span class="pre">https://github.com/GamesTrap/TRAP</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If the repository has already been cloned non-recursively, use <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span></code> to clone the necessary submodules.</p>
 </div>
-<p>TRAP uses <a class="reference external" href="https://premake.github.io/">Premake 5</a> as a build generation tool.</p>
+<p>TRAP™ uses <a class="reference external" href="https://premake.github.io/">Premake 5</a> as a build generation tool.</p>
 <p>Follow <a class="reference external" href="https://premake.github.io/download.html">these</a> instructions in order to install it.</p>
 <p>Then, follow the steps relevant to your operating system.</p>
-</section>
-<section id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">#</a></h2>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Windows</label><div class="tab-content docutils container">
 <p>Premake 5 can generate project files for several Visual Studio versions.</p>
 <p>For example, run <code class="code docutils literal notranslate"><span class="pre">premake</span> <span class="pre">vs2022</span></code> to generate the <code class="code docutils literal notranslate"><span class="pre">.sln</span></code> and <code class="code docutils literal notranslate"><span class="pre">.vcxproj</span></code> files for Visual Studio 2022.</p>
-</section>
-<section id="linux">
-<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">#</a></h2>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Linux</label><div class="tab-content docutils container">
 <p>Premake 5 can generate makefile project files.</p>
 <p>For example, run <code class="code docutils literal notranslate"><span class="pre">premake</span> <span class="pre">gmake2</span></code> to generate the <code class="code docutils literal notranslate"><span class="pre">Makefile</span></code> files.</p>
+</div>
+</div>
 </section>
 </section>
 
@@ -299,10 +299,8 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Building TRAP</a><ul>
+<li><a class="reference internal" href="#">Building TRAP™</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#windows">Windows</a></li>
-<li><a class="reference internal" href="#linux">Linux</a></li>
 </ul>
 </li>
 </ul>

@@ -1,12 +1,12 @@
 (buildingtrap)=
 
-# Building TRAP
+# Building TRAP™
 
 ## Requirements
 
-TRAP Engine requires the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/).
+TRAP™ Engine requires the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/).
 
-TRAP Engine requires a GPU that is Vulkan 1.1 or newer compatible.
+TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible.
 
 First clone the repository with {code}`git clone --recursive https://github.com/GamesTrap/TRAP`.
 
@@ -14,20 +14,21 @@ First clone the repository with {code}`git clone --recursive https://github.com/
 If the repository has already been cloned non-recursively, use {code}`git submodule update --init` to clone the necessary submodules.
 :::
 
-TRAP uses [Premake 5](https://premake.github.io/) as a build generation tool.
+TRAP™ uses [Premake 5](https://premake.github.io/) as a build generation tool.
 
 Follow [these](https://premake.github.io/download.html) instructions in order to install it.
 
 Then, follow the steps relevant to your operating system.
 
-## Windows
+:::{tab} Windows
 
-Premake 5 can generate project files for several Visual Studio versions.
+   Premake 5 can generate project files for several Visual Studio versions.
 
-For example, run {code}`premake vs2022` to generate the {code}`.sln` and {code}`.vcxproj` files for Visual Studio 2022.
+   For example, run {code}`premake vs2022` to generate the {code}`.sln` and {code}`.vcxproj` files for Visual Studio 2022.
+:::
+:::{tab} Linux
 
-## Linux
+   Premake 5 can generate makefile project files.
 
-Premake 5 can generate makefile project files.
-
-For example, run {code}`premake gmake2` to generate the {code}`Makefile` files.
+   For example, run {code}`premake gmake2` to generate the {code}`Makefile` files.
+:::

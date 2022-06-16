@@ -1,21 +1,21 @@
 (trap-engine)=
 
-# TRAP Engine
+# TRAP™ Engine
 
 ```{image} Branding/TRAP.gif
 :align: center
-:alt: Powered by TRAP Engine
+:alt: Powered by TRAP™ Engine
 :height: 450px
 :width: 800px
 ```
 
-TRAP is a cross-platform, high performance Game Engine currently in development.
+TRAP™ is a cross-platform, high performance Game Engine currently in development.
 
 :::{warning}
 This documentation is still WIP and may contain errors and/or outdated code!
 :::
 
-To build TRAP follow the guide on this page: {ref}`buildingtrap`.
+To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 
 ## System Requirements
 
@@ -37,7 +37,9 @@ To build TRAP follow the guide on this page: {ref}`buildingtrap`.
 - Storage: 10+ GB available space
 - Additional Notes:
 
-## 3rd Party Libraries used by TRAP Engine:
+## 3rd Party Libraries used by TRAP™ Engine
+
+### Required
 
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
@@ -50,7 +52,7 @@ To build TRAP follow the guide on this page: {ref}`buildingtrap`.
 - [SDL_gamecontrollerdb.h from SDL](https://github.com/libsdl-org/SDL/blob/main/src/joystick/SDL_gamecontrollerdb.h)
 - [Volk](https://github.com/zeux/volk)
 
-Optional:
+### Optional
 
 - [DiscordGameSDK](https://discord.com/developers/docs/game-sdk/sdk-starter-guide)
 - [NVIDIA® Nsight™ Aftermath SDK](https://developer.nvidia.com/nsight-aftermath)
