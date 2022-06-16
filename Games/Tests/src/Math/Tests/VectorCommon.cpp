@@ -138,6 +138,167 @@ namespace VectorCommon
 
         return error;
     }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+    int32_t TestToString()
+    {
+        int32_t error = 0;
+
+        {
+            TRAP::Math::Vec2 a1(1, 2);
+            std::string a2 = a1.ToString();
+            error += a2 != std::string("Vec2f(1.000000, 2.000000)") ? 1 : 0;
+
+            TRAP::Math::Vec3 b1(1, 2, 3);
+            std::string b2 = b1.ToString();
+            error += b2 != std::string("Vec3f(1.000000, 2.000000, 3.000000)") ? 1 : 0;
+
+            TRAP::Math::Vec4 c1(1, 2, 3, 4);
+            std::string c2 = c1.ToString();
+            error += c2 != std::string("Vec4f(1.000000, 2.000000, 3.000000, 4.000000)") ? 1 : 0;
+
+            TRAP::Math::Vec2d j1(1, 2);
+            std::string j2 = j1.ToString();
+            error += j2 != std::string("Vec2d(1.000000, 2.000000)") ? 1 : 0;
+
+            TRAP::Math::Vec3d k1(1, 2, 3);
+            std::string k2 = k1.ToString();
+            error += k2 != std::string("Vec3d(1.000000, 2.000000, 3.000000)") ? 1 : 0;
+
+            TRAP::Math::Vec4d l1(1, 2, 3, 4);
+            std::string l2 = l1.ToString();
+            error += l2 != std::string("Vec4d(1.000000, 2.000000, 3.000000, 4.000000)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2b m1(false, true);
+            std::string m2 = m1.ToString();
+            error += m2 != std::string("Vec2b(false, true)") ? 1 : 0;
+
+            TRAP::Math::Vec3b o1(false, true, false);
+            std::string o2 = o1.ToString();
+            error += o2 != std::string("Vec3b(false, true, false)") ? 1 : 0;
+
+            TRAP::Math::Vec4b p1(false, true, false, true);
+            std::string p2 = p1.ToString();
+            error += p2 != std::string("Vec4b(false, true, false, true)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2i d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2i32(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3i e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3i32(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4i f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4i32(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2i8 d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2i8(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3i8 e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3i8(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4i8 f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4i8(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2i16 d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2i16(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3i16 e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3i16(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4i16 f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4i16(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2i64 d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2i64(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3i64 e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3i64(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4i64 f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4i64(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2ui d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2ui32(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3ui e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3ui32(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4ui f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4ui32(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2ui8 d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2ui8(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3ui8 e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3ui8(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4ui8 f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4ui8(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2ui16 d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2ui16(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3ui16 e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3ui16(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4ui16 f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4ui16(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        {
+            TRAP::Math::Vec2ui64 d1(1, 2);
+            std::string d2 = d1.ToString();
+            error += d2 != std::string("Vec2ui64(1, 2)") ? 1 : 0;
+
+            TRAP::Math::Vec3ui64 e1(1, 2, 3);
+            std::string e2 = e1.ToString();
+            error += e2 != std::string("Vec3ui64(1, 2, 3)") ? 1 : 0;
+
+            TRAP::Math::Vec4ui64 f1(1, 2, 3, 4);
+            std::string f2 = f1.ToString();
+            error += f2 != std::string("Vec4ui64(1, 2, 3, 4)") ? 1 : 0;
+        }
+
+        return error;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -160,6 +321,8 @@ int32_t RunVectorCommonTests()
     error += VectorCommon::TestURound();
 
     error += VectorCommon::TestLog2();
+
+    error += VectorCommon::TestToString();
 
     return error;
 }

@@ -129,6 +129,8 @@ namespace TRAP::Math
 		//Component Access
 		constexpr T& operator[](int i);
 		constexpr const T& operator[](int i) const;
+
+		std::string ToString();
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -384,6 +386,23 @@ constexpr const T& TRAP::Math::tQuaternion<T>::operator[](int i) const
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
 	return (&x)[i];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+std::string TRAP::Math::tQuaternion<T>::ToString()
+{
+	std::string postfix = "";
+	if constexpr(std::is_same_v<T, float>)
+		postfix = "f";
+	else if constexpr(std::is_same_v<T, double>)
+		postfix = "d";
+	else
+		return "Unknown type";
+
+	return "Quaternion" + postfix + "(" + std::to_string(w) + ", {" + std::to_string(x) + ", " +
+	       std::to_string(y) + ", " + std::to_string(z) + "})";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

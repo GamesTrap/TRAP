@@ -156,6 +156,8 @@ namespace TRAP::Math
 		constexpr Vec<4, T>& operator>>=(U scalar);
 		template<typename U>
 		constexpr Vec<4, T>& operator>>=(const Vec<4, U> & v);
+
+		std::string ToString();
 	};
 
 	//Unary operators
@@ -636,6 +638,41 @@ template<typename U>
 constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const Vec<4, U>& v)
 {
 	return (*this = Vec<4, T>(this->x >> v.x, this->y >> v.y, this->z >> v.z, this->w >> v.w));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+std::string TRAP::Math::Vec<4, T>::ToString()
+{
+	std::string postfix = "";
+	if constexpr(std::is_same_v<T, float>)
+		postfix = "f";
+	else if constexpr(std::is_same_v<T, double>)
+		postfix = "d";
+	else if constexpr(std::is_same_v<T, bool>)
+		return std::string("Vec4b") + "(" + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ", " + (z ? "true" : "false") + ", " + (w ? "true" : "false") + ")";
+	else if constexpr(std::is_same_v<T, int8_t>)
+	    postfix = "i8";
+	else if constexpr(std::is_same_v<T, int16_t>)
+	    postfix = "i16";
+	else if constexpr(std::is_same_v<T, int32_t>)
+	    postfix = "i32";
+	else if constexpr(std::is_same_v<T, int64_t>)
+	    postfix = "i64";
+	else if constexpr(std::is_same_v<T, uint8_t>)
+	    postfix = "ui8";
+	else if constexpr(std::is_same_v<T, uint16_t>)
+	    postfix = "ui16";
+	else if constexpr(std::is_same_v<T, uint32_t>)
+	    postfix = "ui32";
+	else if constexpr(std::is_same_v<T, uint64_t>)
+	    postfix = "ui64";
+	else
+		return "Unknown type";
+
+	return "Vec4" + postfix + "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+	       ", " + std::to_string(w) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

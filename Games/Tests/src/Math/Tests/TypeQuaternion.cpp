@@ -565,6 +565,23 @@ namespace TypeQuaternion
 
         return error;
     }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+    int32_t TestToString()
+    {
+        int32_t error = 0;
+
+        TRAP::Math::Quaternion a1 = TRAP::Math::Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+        std::string a2 = a1.ToString();
+        error += a2 != std::string("Quaternionf(1.000000, {2.000000, 3.000000, 4.000000})") ? 1 : 0;
+
+        TRAP::Math::Quaterniond b1 = TRAP::Math::Quaterniond(1.0, 2.0, 3.0, 4.0);
+        std::string b2 = b1.ToString();
+        error += b2 != std::string("Quaterniond(1.000000, {2.000000, 3.000000, 4.000000})") ? 1 : 0;
+
+        return error;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -606,6 +623,8 @@ int32_t RunTypeQuaternionTests()
     error += TypeQuaternion::TestQuatEuler();
     error += TypeQuaternion::TestQuatSLerp();
     error += TypeQuaternion::TestQuatSLerpSpins();
+
+    error += TypeQuaternion::TestToString();
 
     return error;
 }

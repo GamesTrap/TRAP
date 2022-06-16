@@ -2678,16 +2678,20 @@ SITREP 06/11/2022|22w23c1
 SITREP 06/15/2022|22w24a1
     - Changed TRAP Engine version to 22w24a1(0.7.151)
     - Fixed Math bugs: ~>300 mins
-        - Math Mat3 & Mat4 Removed explicit on conversion constructors
-        - Math Mat3 & Mat4 Fixed Length returning false value
-        - Math Mat4 Fixed + operator
-        - Math Quaternion Fixed an uncompilable constructor
-        - Math Vec2, Vec3 & Vec4 Removed all Vec<1, X> stuff
-        - Math Made some functions constexpr
-        - Math Added Equal, NotEqual, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, Not functions for scalars
-        - Math Fixed FrExp constant output variable
-        - Math Removed all ULP stuff
-        - Math Added Row & Column functions to retrieve rows and columns from matrices
-        - Math Fixed some functions not compiling in constexpr context
-        - Math Fixed other minor bugs
+        - Mat3 & Mat4 Removed explicit on conversion constructors
+        - Mat3 & Mat4 Fixed Length returning false value
+        - Mat4 Fixed + operator
+        - Quaternion Fixed an uncompilable constructor
+        - Vec2, Vec3 & Vec4 Removed all Vec<1, X> stuff
+        - Made some functions constexpr
+        - Added Equal, NotEqual, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, Not functions for scalars
+        - Fixed FrExp constant output variable
+        - Removed all ULP stuff
+        - Added Row & Column functions to retrieve rows and columns from matrices
+        - Fixed some functions not compiling in constexpr context
+        - Fixed other minor bugs
     - Tests Added MathTests ~>240 mins
+
+SITREP 06/16/2022|22w24a2
+    - Changed TRAP Engine version to 22w24a2(0.7.152)
+    - Mat3, Mat4, Vec2, Vec3, Vec4 & Quaternion Added ToString functions ~<20 mins

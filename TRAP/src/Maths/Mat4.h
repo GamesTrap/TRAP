@@ -168,6 +168,8 @@ namespace TRAP::Math
 		constexpr Mat<4, 4, T>& operator--();
 		constexpr Mat<4, 4, T> operator++(int);
 		constexpr Mat<4, 4, T> operator--(int);
+
+		std::string ToString();
 	};
 
 	//Unary operators
@@ -527,6 +529,28 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int)
 	--*this;
 
 	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+std::string TRAP::Math::Mat<4, 4, T>::ToString()
+{
+	std::string postfix = "";
+	if constexpr(std::is_same_v<T, float>)
+		postfix = "f";
+	else if constexpr(std::is_same_v<T, double>)
+		postfix = "d";
+	else
+		return "Unknown type";
+
+	return "Mat4" + postfix + "((" + std::to_string(value[0][0]) + ", " + std::to_string(value[0][1]) + ", " +
+	       std::to_string(value[0][2]) + ", " + std::to_string(value[0][3]) + "), (" + std::to_string(value[1][0]) +
+		   ", " + std::to_string(value[1][1]) + ", " + std::to_string(value[1][2]) + ", " +
+		   std::to_string(value[1][3]) + "), (" + std::to_string(value[2][0]) + ", " + std::to_string(value[2][1]) +
+		   ", " + std::to_string(value[2][2]) + ", " + std::to_string(value[2][3]) + "), (" +
+		   std::to_string(value[3][0]) + ", " + std::to_string(value[3][1]) + ", " + std::to_string(value[3][2]) +
+		   ", " + std::to_string(value[3][3]) + "))";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
