@@ -1,6 +1,6 @@
-# Building TRAP™
-
 (buildingtrap)=
+
+# Building TRAP™
 
 ## Requirements
 
@@ -50,3 +50,29 @@ Python 3 is required in order to update the Vulkan loader.
 :::
 
 To update the Vulkan loader run the `GenerateVulkanLoader` script inside the `GeneratorScripts` folder.
+
+(additionallibraries)=
+
+## Additional libraries
+
+:::{tab} Discord Game SDK
+To install the Discord Game SDK do the following:
+
+1. Download the [Discord Game SDK](https://discord.com/developers/docs/game-sdk/sdk-starter-guide)
+2. Extract the contents of the downloaded SDK to the `Dependencies/DiscordGameSDK` folder.
+
+TRAP™ will then automatically detect if the Discord Game SDK is installed properly on the next run of any of the GenerateProject scripts inside the `GeneratorScripts` folder.
+
+If everything went right, feel free to use the TRAP::Utils::Discord namespace.
+:::
+:::{tab} NVIDIA® Nsight™ Aftermath SDK
+To install the NVIDIA® Nsight™ Aftermath SDK do the following:
+
+1. Create an account on the [NVIDIA Developer site](https://developer.nvidia.com/).
+2. Download the [NVIDIA® Nsight™ Aftermath SDK](https://developer.nvidia.com/nsight-aftermath).
+3. Extract the contents of the downloaded SDK to the `Dependencies/Nsight-Aftermath` folder.
+
+TRAP™ will then automatically detect if the NVIDIA® Nsight™ Aftermath SDK is installed properly on the next run of any of the GenerateProject scripts inside the `GeneratorScripts` folder.
+
+If everything went right, feel free to use the `ENABLE_NSIGHT_AFTERMATH` macro in Base.h to enable Nsight-Aftermath in debug builds.
+:::

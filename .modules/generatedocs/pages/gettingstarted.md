@@ -1,5 +1,5 @@
-# Getting Started
-
 (gettingstarted)=
+
+# Getting Started
 
 More Info Soon.

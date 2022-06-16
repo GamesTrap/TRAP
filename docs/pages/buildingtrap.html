@@ -217,9 +217,9 @@
         </div>
         <article role="main">
           <section id="building-trap">
-<h1>Building TRAP™<a class="headerlink" href="#building-trap" title="Permalink to this headline">#</a></h1>
+<span id="buildingtrap"></span><h1>Building TRAP™<a class="headerlink" href="#building-trap" title="Permalink to this headline">#</a></h1>
 <section id="requirements">
-<span id="buildingtrap"></span><h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">#</a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">#</a></h2>
 <p>TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible.</p>
 <p>Please install the <a class="reference external" href="https://vulkan.lunarg.com/sdk/home/">VulkanSDK</a> and make sure that the <code class="docutils literal notranslate"><span class="pre">VULKAN_SDK</span></code> environment variable is set properly.</p>
 <p>If you want to be able to build the documentation and to update the Vulkan loader you need to install <a class="reference external" href="https://www.python.org/downloads/">Python3</a>.</p>
@@ -265,6 +265,30 @@ By default it is shipped with the TRAP™ repository.</p>
 <p>Python 3 is required in order to update the Vulkan loader.</p>
 </div>
 <p>To update the Vulkan loader run the <code class="docutils literal notranslate"><span class="pre">GenerateVulkanLoader</span></code> script inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
+</section>
+<section id="additional-libraries">
+<span id="additionallibraries"></span><h2>Additional libraries<a class="headerlink" href="#additional-libraries" title="Permalink to this headline">#</a></h2>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Discord Game SDK</label><div class="tab-content docutils container">
+<p>To install the Discord Game SDK do the following:</p>
+<ol class="arabic simple">
+<li><p>Download the <a class="reference external" href="https://discord.com/developers/docs/game-sdk/sdk-starter-guide">Discord Game SDK</a></p></li>
+<li><p>Extract the contents of the downloaded SDK to the <code class="docutils literal notranslate"><span class="pre">Dependencies/DiscordGameSDK</span></code> folder.</p></li>
+</ol>
+<p>TRAP™ will then automatically detect if the Discord Game SDK is installed properly on the next run of any of the GenerateProject scripts inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
+<p>If everything went right, feel free to use the TRAP::Utils::Discord namespace.</p>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">NVIDIA® Nsight™ Aftermath SDK</label><div class="tab-content docutils container">
+<p>To install the NVIDIA® Nsight™ Aftermath SDK do the following:</p>
+<ol class="arabic simple">
+<li><p>Create an account on the <a class="reference external" href="https://developer.nvidia.com/">NVIDIA Developer site</a>.</p></li>
+<li><p>Download the <a class="reference external" href="https://developer.nvidia.com/nsight-aftermath">NVIDIA® Nsight™ Aftermath SDK</a>.</p></li>
+<li><p>Extract the contents of the downloaded SDK to the <code class="docutils literal notranslate"><span class="pre">Dependencies/Nsight-Aftermath</span></code> folder.</p></li>
+</ol>
+<p>TRAP™ will then automatically detect if the NVIDIA® Nsight™ Aftermath SDK is installed properly on the next run of any of the GenerateProject scripts inside the <code class="docutils literal notranslate"><span class="pre">GeneratorScripts</span></code> folder.</p>
+<p>If everything went right, feel free to use the <code class="docutils literal notranslate"><span class="pre">ENABLE_NSIGHT_AFTERMATH</span></code> macro in Base.h to enable Nsight-Aftermath in debug builds.</p>
+</div>
+</div>
 </section>
 </section>
 
@@ -331,6 +355,7 @@ By default it is shipped with the TRAP™ repository.</p>
 <li><a class="reference internal" href="#generate-documentation">Generate documentation</a></li>
 <li><a class="reference internal" href="#update-controller-mappings">Update controller mappings</a></li>
 <li><a class="reference internal" href="#update-vulkan-loader">Update Vulkan loader</a></li>
+<li><a class="reference internal" href="#additional-libraries">Additional libraries</a></li>
 </ul>
 </li>
 </ul>
