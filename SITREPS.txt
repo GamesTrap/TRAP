@@ -2702,3 +2702,6 @@ SITREP 06/16/2022|22w24a2
     - Docs converted reST files to MyST ~<30 mins
     - Math Fixed compiler error on MSVC ~<10 mins
     - Added needed Windows redists ~<10 mins
+
+SITREP 06/17/2022|22w24b1
+    - Changed License now using the TRAP™ Engine EULA (modified Apache 2) ~>60 mins

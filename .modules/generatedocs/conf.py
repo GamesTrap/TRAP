@@ -51,7 +51,7 @@ primary_domain = 'cpp'
 # ones.
 
 extensions = ['sphinx.ext.githubpages',
-              'sphinxcontrib.inlinesyntaxhighlight',
+              #'sphinxcontrib.inlinesyntaxhighlight',
               'sphinx_inline_tabs',
               'sphinxext.opengraph',
               'sphinx_copybutton',
@@ -121,7 +121,7 @@ myst_enable_extensions = [
     "html_admonition",
     "html_image",
     #"linkify",
-    "replacements",
+    #"replacements",
     #"smartquotes",
     "strikethrough",
     "substitution",

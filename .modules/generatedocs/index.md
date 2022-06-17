@@ -66,6 +66,7 @@ The user is required to supply these. See the {ref}`additionallibraries` section
 - [NVIDIA® Nsight™ Aftermath SDK](https://developer.nvidia.com/nsight-aftermath)
 :::
 
+
 ```{toctree}
 :caption: 'TRAP:'
 :hidden: true
@@ -74,5 +75,7 @@ The user is required to supply these. See the {ref}`additionallibraries` section
 self
 pages/buildingtrap
 pages/gettingstarted
+pages/eula
 pages/reference
+
 ```
