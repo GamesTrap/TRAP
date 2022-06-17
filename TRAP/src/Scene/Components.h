@@ -77,7 +77,7 @@ namespace TRAP
 	/// <summary>
 	/// Camera component.
 	/// Optional component containing camera data.
-	/// </summar>
+	/// </summary>
 	struct CameraComponent
 	{
 		SceneCamera Camera;

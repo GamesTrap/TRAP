@@ -105,11 +105,11 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="set">Descriptor set to use the samplers with.</param>
 		/// <param name="binding">Binding point of the samplers.</param>
-		/// <param name="sampler">Samplers to use.</param>
+		/// <param name="samplers">Samplers to use.</param>
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
-						 Window*) override;
+						 Window* window) override;
 		/// <summary>
 		/// Use uniform buffer object with this shader on the given window.
 		/// </summary>

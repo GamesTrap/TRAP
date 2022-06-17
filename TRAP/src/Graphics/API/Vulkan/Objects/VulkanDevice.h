@@ -55,7 +55,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Retrieve the Vulkan physical device.
 		/// </summary>
-		/// <retruns>Vulkan physical device.</retruns>
+		/// <returns>Vulkan physical device.</returns>
 		VulkanPhysicalDevice* GetPhysicalDevice() const;
 
 		/// <summary>

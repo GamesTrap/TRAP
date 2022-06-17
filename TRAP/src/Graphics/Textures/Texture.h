@@ -90,6 +90,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Create an empty texture.
 		/// </summary>
+		/// <param name="name">Name for the texture.</param>
 		/// <param name="width">Width for the texture.</param>
 		/// <param name="height">Height for the texture.</param>
 		/// <param name="bitsPerPixel">Bits per pixel for the texture.</param>

@@ -128,7 +128,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="set">Descriptor set to use the samplers with.</param>
 		/// <param name="binding">Binding point of the samplers.</param>
-		/// <param name="sampler">Samplers to use.</param>
+		/// <param name="samplers">Samplers to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseSamplers(uint32_t set, uint32_t binding,
 		                         const std::vector<TRAP::Graphics::Sampler*>& samplers,
@@ -171,7 +171,7 @@ namespace TRAP::Graphics
 		/// <param name="filePath">File path of the shader.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Scope<Shader> CreateFromFile(const std::filesystem::path& filepath,
+		static Scope<Shader> CreateFromFile(const std::filesystem::path& filePath,
 		                                    const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Create a shader from file.

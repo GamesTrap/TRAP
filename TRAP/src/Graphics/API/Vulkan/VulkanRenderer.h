@@ -86,7 +86,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="vsync">Enable or disable VSync.</param>
 		/// <param name="window">Window to set VSync for. Default: Main Window.</param>
-		void SetVSync(bool vsync, Window* Window) override;
+		void SetVSync(bool vsync, Window* window) override;
 
 		/// <summary>
 		/// Set the clear color to be used by the given window.
@@ -121,19 +121,19 @@ namespace TRAP::Graphics::API
 		/// Enable or disable depth testing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable depth testing.</param>
-		/// <parma name="window">Window to set depth testing for. Default: Main Window.</parma>
+		/// <param name="window">Window to set depth testing for. Default: Main Window.</param>
 		void SetDepthTesting(bool enabled, Window* window) override;
 		/// <summary>
 		/// Enable or disable depth writing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable depth writing.</param>
-		/// <parma name="window">Window to set depth writing for. Default: Main Window.</parma>
+		/// <param name="window">Window to set depth writing for. Default: Main Window.</param>
 		void SetDepthWriting(bool enabled, Window* window) override;
 		/// <summary>
 		/// Set the depth function for the given window.
 		/// </summary>
 		/// <param name="function">Function to use for depth testing.</param>
-		/// <parma name="window">Window to set depth function for. Default: Main Window.</parma>
+		/// <param name="window">Window to set depth function for. Default: Main Window.</param>
 		void SetDepthFunction(CompareMode function, Window* window) override;
 		/// <summary>
 		/// Set the depth action to perform when depth testing fails for the given window.
@@ -144,8 +144,8 @@ namespace TRAP::Graphics::API
 		void SetDepthFail(StencilOp front, StencilOp back, Window* window) override;
 		/// <summary>
 		/// Set the depth bias (scalar factor to add to each fragments depth value) for the given window.
-		/// </sumary>
-		/// <param name="bias">Depth bias.</param>
+		/// </summary>
+		/// <param name="depthBias">Depth bias.</param>
 		/// <param name="window">Window to set the depth bias for. Default: Main Window.</param>
 		void SetDepthBias(int32_t depthBias, Window* window) override;
 		/// <summary>
@@ -158,7 +158,7 @@ namespace TRAP::Graphics::API
 		/// Enable or disable stencil testing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable stencil testing.</param>
-		/// <parma name="window">Window to set stencil testing for. Default: Main Window.</parma>
+		/// <param name="window">Window to set stencil testing for. Default: Main Window.</param>
 		void SetStencilTesting(bool enabled, Window* window) override;
 		/// <summary>
 		/// Set the stencil action to perform when stencil testing fails for the given window.
@@ -179,7 +179,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="front">Function to use on the front for stencil testing.</param>
 		/// <param name="back">Function to use on the back for stencil testing.</param>
-		/// <parma name="window">Window to set stencil functions for. Default: Main Window.</parma>
+		/// <param name="window">Window to set stencil functions for. Default: Main Window.</param>
 		void SetStencilFunction(CompareMode front, CompareMode back, Window* window) override;
 		/// <summary>
 		/// Set the stencil mask for the given window.
@@ -237,6 +237,7 @@ namespace TRAP::Graphics::API
 		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
+		/// <param name="window">Window to set the shading rate for. Default: Main Window.</param>
 		void SetShadingRate(ShadingRate shadingRate,
 							TRAP::Graphics::Texture* texture,
 							ShadingRateCombiner postRasterizerRate,

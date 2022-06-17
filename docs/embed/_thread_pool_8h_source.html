@@ -129,83 +129,83 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 <div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_thread_pool.html#a6d9f01ded673f3e53ab3eb0fa286d816">   36</a></span>&#160;        <a class="code" href="class_t_r_a_p_1_1_thread_pool.html">ThreadPool</a>(<a class="code" href="class_t_r_a_p_1_1_thread_pool.html">ThreadPool</a>&amp;&amp;) = delete;</div>
 <div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_thread_pool.html#a7cf44ab817376f5410f1c34673f27031">   40</a></span>&#160;        <a class="code" href="class_t_r_a_p_1_1_thread_pool.html">ThreadPool</a>&amp; operator=(<a class="code" href="class_t_r_a_p_1_1_thread_pool.html">ThreadPool</a>&amp;&amp;) = delete;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        template&lt;typename F, typename... Args&gt;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">EnqueueWork</a>(F&amp;&amp; f, Args&amp;&amp;... args);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        template&lt;typename F, typename... Args&gt;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        [[nodiscard]] auto <a class="code" href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">EnqueueTask</a>(F&amp;&amp; f, Args&amp;&amp;... args) -&gt; std::future&lt;std::invoke_result_t&lt;F, Args...&gt;&gt;;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    private:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        using Proc = std::function&lt;<span class="keywordtype">void</span>()&gt;;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        using <a class="code" href="class_t_r_a_p_1_1_blocking_queue.html">Queue</a> = <a class="code" href="class_t_r_a_p_1_1_blocking_queue.html">BlockingQueue</a>&lt;Proc&gt;;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        using Queues = std::vector&lt;<a class="code" href="class_t_r_a_p_1_1_blocking_queue.html">Queue</a>&gt;;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        Queues m_queues;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        using Threads = std::vector&lt;std::thread&gt;;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        Threads m_threads;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        uint32_t m_maxThreadsCount;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        std::atomic&lt;uint32_t&gt; m_index = 0;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        inline static constexpr uint32_t K = 3;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    };</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        template&lt;typename F, typename... Args&gt;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">EnqueueWork</a>(F&amp;&amp; f, Args&amp;&amp;... args);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        template&lt;typename F, typename... Args&gt;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        [[nodiscard]] auto <a class="code" href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">EnqueueTask</a>(F&amp;&amp; f, Args&amp;&amp;... args) -&gt; std::future&lt;std::invoke_result_t&lt;F, Args...&gt;&gt;;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    private:</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        using Proc = std::function&lt;<span class="keywordtype">void</span>()&gt;;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        using <a class="code" href="class_t_r_a_p_1_1_blocking_queue.html">Queue</a> = <a class="code" href="class_t_r_a_p_1_1_blocking_queue.html">BlockingQueue</a>&lt;Proc&gt;;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        using Queues = std::vector&lt;<a class="code" href="class_t_r_a_p_1_1_blocking_queue.html">Queue</a>&gt;;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        Queues m_queues;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        using Threads = std::vector&lt;std::thread&gt;;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        Threads m_threads;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        uint32_t m_maxThreadsCount;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        std::atomic&lt;uint32_t&gt; m_index = 0;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        inline static constexpr uint32_t K = 3;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    };</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;template &lt;typename F, typename ... Args&gt;</div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">   80</a></span>&#160;<span class="keywordtype">void</span> TRAP::<a class="code" href="class_t_r_a_p_1_1_thread_pool.html">ThreadPool</a>::<a class="code" href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">EnqueueWork</a>(F&amp;&amp; f, Args&amp;&amp;... args)</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;{</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">auto</span> work = [p = std::forward&lt;F&gt;(f), t = { std::forward&lt;Args&gt;(args)... }]()</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        std::apply(p, t);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    };</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keyword">const</span> uint32_t i = m_index++;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">for</span> (uint32_t n = 0; n &lt; m_maxThreadsCount * K; ++n)</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">if</span> (m_queues[(i + n) % m_maxThreadsCount].TryPush(std::move(work)))</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    m_queues[i % m_maxThreadsCount].Push(work);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;template &lt;typename F, typename ... Args&gt;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">   82</a></span>&#160;<span class="keywordtype">void</span> TRAP::<a class="code" href="class_t_r_a_p_1_1_thread_pool.html">ThreadPool</a>::<a class="code" href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">EnqueueWork</a>(F&amp;&amp; f, Args&amp;&amp;... args)</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;{</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">auto</span> work = [p = std::forward&lt;F&gt;(f), t = { std::forward&lt;Args&gt;(args)... }]()</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        std::apply(p, t);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    };</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keyword">const</span> uint32_t i = m_index++;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">for</span> (uint32_t n = 0; n &lt; m_maxThreadsCount * K; ++n)</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">if</span> (m_queues[(i + n) % m_maxThreadsCount].TryPush(std::move(work)))</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    m_queues[i % m_maxThreadsCount].Push(work);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> ... Args&gt;</div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">  100</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">TRAP::ThreadPool::EnqueueTask</a>(F&amp;&amp; f, Args&amp;&amp;... args) -&gt; std::future&lt;std::invoke_result_t&lt;F, Args...&gt;&gt;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;{</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">using</span> TaskReturnType = std::invoke_result_t&lt;F, Args...&gt;;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keyword">using</span> TaskType = std::packaged_task&lt;TaskReturnType()&gt;;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">auto</span> task = std::make_shared&lt;TaskType&gt;(std::bind(std::forward&lt;F&gt;(f), std::forward&lt;Args&gt;(args)...));</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    std::future&lt;TaskReturnType&gt; result = task-&gt;get_future();</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">auto</span> work = [task]()</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        (*task)();</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    };</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">const</span> uint32_t i = m_index++;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">for</span> (uint32_t n = 0; n &lt; m_maxThreadsCount * K; ++n)</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    {</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">if</span> (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    }</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    m_queues[i % m_maxThreadsCount].Push(std::move(work));</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> ... Args&gt;</div>
+<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">  102</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">TRAP::ThreadPool::EnqueueTask</a>(F&amp;&amp; f, Args&amp;&amp;... args) -&gt; std::future&lt;std::invoke_result_t&lt;F, Args...&gt;&gt;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;{</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">using</span> TaskReturnType = std::invoke_result_t&lt;F, Args...&gt;;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">using</span> TaskType = std::packaged_task&lt;TaskReturnType()&gt;;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">auto</span> task = std::make_shared&lt;TaskType&gt;(std::bind(std::forward&lt;F&gt;(f), std::forward&lt;Args&gt;(args)...));</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    std::future&lt;TaskReturnType&gt; result = task-&gt;get_future();</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keyword">auto</span> work = [task]()</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        (*task)();</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    };</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keyword">const</span> uint32_t i = m_index++;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">for</span> (uint32_t n = 0; n &lt; m_maxThreadsCount * K; ++n)</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">if</span> (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    }</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;}</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*TRAP_THREADPOOL_H*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    m_queues[i % m_maxThreadsCount].Push(std::move(work));</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*TRAP_THREADPOOL_H*/</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_blocking_queue_html"><div class="ttname"><a href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a></div><div class="ttdef"><b>Definition:</b> <a href="_blocking_queue_8h_source.html#l00007">BlockingQueue.h:8</a></div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html">TRAP::ThreadPool</a></div><div class="ttdoc">ThreadPool is a multi-threading task scheduler. Note: ThreadPool should only be used for small tasks!</div><div class="ttdef"><b>Definition:</b> <a href="_thread_pool_8h_source.html#l00012">ThreadPool.h:13</a></div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html_a79c3da5fd2f8eed3ebe93a6361db3b95"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html#a79c3da5fd2f8eed3ebe93a6361db3b95">TRAP::ThreadPool::~ThreadPool</a></div><div class="ttdeci">~ThreadPool() noexcept</div><div class="ttdoc">Destructor.</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html_abd33dad44a49430b8fad3acfb377e203"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">TRAP::ThreadPool::EnqueueWork</a></div><div class="ttdeci">void EnqueueWork(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Enqueue work (Call given function on separate thread).</div><div class="ttdef"><b>Definition:</b> <a href="_thread_pool_8h_source.html#l00080">ThreadPool.h:80</a></div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html_abd33dad44a49430b8fad3acfb377e203"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html#abd33dad44a49430b8fad3acfb377e203">TRAP::ThreadPool::EnqueueWork</a></div><div class="ttdeci">void EnqueueWork(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Enqueue work (Call given function on separate thread).</div><div class="ttdef"><b>Definition:</b> <a href="_thread_pool_8h_source.html#l00082">ThreadPool.h:82</a></div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html_ac76dbc1dde6c8208db2fa785e444c3b2"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html#ac76dbc1dde6c8208db2fa785e444c3b2">TRAP::ThreadPool::ThreadPool</a></div><div class="ttdeci">ThreadPool(uint32_t threads=(std::thread::hardware_concurrency() - 1))</div><div class="ttdoc">Constructor.</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html_afc2751ed10859165bb870ea7d0be986f"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">TRAP::ThreadPool::EnqueueTask</a></div><div class="ttdeci">auto EnqueueTask(F &amp;&amp;f, Args &amp;&amp;... args) -&gt; std::future&lt; std::invoke_result_t&lt; F, Args... &gt;&gt;</div><div class="ttdoc">Enqueue task (Call given function on seperate thread and get a future).</div><div class="ttdef"><b>Definition:</b> <a href="_thread_pool_8h_source.html#l00100">ThreadPool.h:100</a></div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_thread_pool_html_afc2751ed10859165bb870ea7d0be986f"><div class="ttname"><a href="class_t_r_a_p_1_1_thread_pool.html#afc2751ed10859165bb870ea7d0be986f">TRAP::ThreadPool::EnqueueTask</a></div><div class="ttdeci">auto EnqueueTask(F &amp;&amp;f, Args &amp;&amp;... args) -&gt; std::future&lt; std::invoke_result_t&lt; F, Args... &gt;&gt;</div><div class="ttdoc">Enqueue task (Call given function on seperate thread and get a future).</div><div class="ttdef"><b>Definition:</b> <a href="_thread_pool_8h_source.html#l00102">ThreadPool.h:102</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

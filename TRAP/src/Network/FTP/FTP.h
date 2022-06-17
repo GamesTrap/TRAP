@@ -395,7 +395,7 @@ namespace TRAP::Network
 		/// The append parameter controls whether the remote file is
 		/// appended to or overwritten if it already exists.
 		/// </summary>
-		/// <param name="file">Path of the local file to upload.</param>
+		/// <param name="localFile">Path of the local file to upload.</param>
 		/// <param name="remotePath">The directory in which to put the file on the server.</param>
 		/// <param name="mode">Transfer mode.</param>
 		/// <param name="append">

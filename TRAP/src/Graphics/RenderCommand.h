@@ -134,7 +134,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Set depth function for the given window.
 		/// </summary>
-		/// <param name="comapreMode">Depth compare mode. Default: CompareMode::Less.</param>
+		/// <param name="compareMode">Depth compare mode. Default: CompareMode::Less.</param>
 		/// <param name="window">Window to set depth function for. Default: Main Window.</param>
 		static void SetDepthFunction(CompareMode compareMode = CompareMode::Less, Window* window = nullptr);
 		/// <summary>
@@ -153,7 +153,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Set depth bias slope factor for the given window.
 		/// </summary>
-		/// <param name="bias">Depth bias slope factor.</param>
+		/// <param name="slopeFactor">Depth bias slope factor.</param>
 		/// <param name="window">Window to set depth bias for. Default: Main Window.</param>
 		static void SetDepthBiasSlopeFactor(float slopeFactor, Window* window = nullptr);
 
@@ -227,6 +227,7 @@ namespace TRAP::Graphics
 		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
+		/// <param name="window">Window to set shading rate for. Default: Main Window.</param>
 		static void SetShadingRate(ShadingRate shadingRate,
 						           Texture* texture,
 		                           ShadingRateCombiner postRasterizerRate,

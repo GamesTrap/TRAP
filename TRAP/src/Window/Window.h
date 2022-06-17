@@ -449,6 +449,7 @@ namespace TRAP
 		/// <param name="width">Width for the new window.</param>
 		/// <param name="height">Height for the new window.</param>
 		/// <param name="refreshRate">Refresh rate for the new window.</param>
+		/// <param name="vsync">Whether to enable VSync for the new window or not.</param>
 		/// <param name="displayMode">Display mode for the new window.</param>
 		/// <param name="advanced">Optional advanced properties to be used for the new window.</param>
 		/// <param name="monitor">Monitor to be used by the new window.</param>

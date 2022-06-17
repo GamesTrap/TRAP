@@ -1381,7 +1381,7 @@ namespace TRAP::Math
 	///
 	/// Exp2 function is defined for input values of x defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
-	/// </summar>
+	/// </summary>
 	/// <typeparam name="genType">Floating-point scalar or vector type.</typeparam>
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>
@@ -1393,7 +1393,7 @@ namespace TRAP::Math
 	///
 	/// Exp2 function is defined for input values of x defined in the range (inf-, inf+)
 	/// in the limit of the type qualifier.
-	/// </summar>
+	/// </summary>
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
 	/// <param name="x">Specify the value of the power to which 2 will be raised.</param>
 	/// <returns>2 raised to the x power.</returns>

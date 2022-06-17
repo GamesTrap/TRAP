@@ -45,6 +45,7 @@ namespace TRAP
 		/// <typeparam name="F">Functor to work on.</typeparam>
 		/// <typeparam name="...Args">Parameters of the functor.</typeparam>
 		/// <param name="f">Functor to work on.</param>
+		/// <param name="args">Optional arguments.</param>
 		template<typename F, typename... Args>
 		void EnqueueWork(F&& f, Args&&... args);
 
@@ -54,6 +55,7 @@ namespace TRAP
 		/// <typeparam name="F">Functor to work on.</typeparam>
 		/// <typeparam name="...Args">Parameters of the functor.</typeparam>
 		/// <param name="f">Functor to work on.</param>
+		/// <param name="args">Optional arguments.</param>
 		/// <returns>Future for the result of the given functor.</returns>
 		template<typename F, typename... Args>
 		[[nodiscard]] auto EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>;

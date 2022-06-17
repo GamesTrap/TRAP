@@ -72,7 +72,7 @@ class OrthographicCameraController
 		/// <summary>
 		/// Receive and handle mouse scroll and framebuffer resize events.
 		/// </summary>
-		/// <param name="event">Event to handle.</param>
+		/// <param name="e">Event to handle.</param>
 		void OnEvent(Events::Event& e);
 
 		/// <summary>

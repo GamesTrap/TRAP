@@ -92,7 +92,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="set">Descriptor set to use the samplers with.</param>
 		/// <param name="binding">Binding point of the samplers.</param>
-		/// <param name="sampler">Samplers to use.</param>
+		/// <param name="samplers">Samplers to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
