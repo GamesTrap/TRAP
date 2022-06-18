@@ -11,7 +11,7 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP/pulls?q=is%3Aopen+is%3Apr)
 [![GitHub](https://img.shields.io/badge/license-TRAP%E2%84%A2%20Engine%20EULA-lightgrey)](https://gamestrap.github.io/TRAP/pages/eula.html)
 
-TRAPVK-Alpha is a cross-platform, high performance game engine currently in development.  
+TRAP™ is a cross-platform, high performance game engine currently in development.  
 
 For information like system requirements, build guide, API reference and other stuff please visit [https://gamestrap.github.io/TRAP](https://gamestrap.github.io/TRAP)
 
