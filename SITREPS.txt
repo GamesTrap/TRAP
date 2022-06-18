@@ -2707,3 +2707,5 @@ SITREP 06/17/2022|22w24b1
     - Changed License now using the TRAP™ Engine EULA (modified Apache 2) ~>60 mins
     - Docs Fixed doxygen warnings ~<10 mins
     - Docs now use Breathe + Exhale to generate a good looking API reference ~>60 mins
+    - Docs Removed old reference page ~<10 mins
+    - Updated README ~<5 mins
