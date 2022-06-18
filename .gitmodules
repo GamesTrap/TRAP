@@ -1,0 +1,22 @@
+[submodule "Dependencies/ModernDialogs"]
+	path = Dependencies/ModernDialogs
+	url = https://github.com/GamesTrap/ModernDialogs.git
+[submodule "Dependencies/VulkanMemoryAllocator"]
+	path = Dependencies/VulkanMemoryAllocator
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
+[submodule "Dependencies/EnTT"]
+	path = Dependencies/EnTT
+	url = https://github.com/skypjack/entt.git
+[submodule "Dependencies/ImGui"]
+	path = Dependencies/ImGui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+[submodule "Dependencies/YAMLCpp"]
+	path = Dependencies/YAMLCpp
+	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "Dependencies/SPIRV-Cross"]
+	path = Dependencies/SPIRV-Cross
+	url = https://github.com/KhronosGroup/SPIRV-Cross.git
+[submodule "Dependencies/GLSLang"]
+	path = Dependencies/GLSLang
+	url = https://github.com/KhronosGroup/glslang.git
