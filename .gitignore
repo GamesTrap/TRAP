@@ -195,3 +195,5 @@ Dependencies/Nsight-Aftermath/Readme.md
 Dependencies/Nsight-Aftermath/nsight-aftermath-usage-guidelines.txt
 TRAP.TODO
 compile_commands.json
+.modules/generatedocs/api/**
+.modules/generatedocs/doxygen_docs/**

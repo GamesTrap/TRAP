@@ -19,6 +19,7 @@ newaction
             if(errorCode ~= 0) then
                 term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
+                term.setTextColor(nil)
                 res = false
             end
 
@@ -27,6 +28,7 @@ newaction
             if(errorCode ~= 0) then
                 term.setTextColor(term.errorColor)
                 print("Unable to find pip")
+                term.setTextColor(nil)
                 res = false
             end
         elseif(os.host() == "windows") then
@@ -35,6 +37,7 @@ newaction
             if(errorCode ~= 0) then
                 term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
+                term.setTextColor(nil)
                 res = false
             end
 
@@ -43,11 +46,13 @@ newaction
             if(errorCode ~= 0) then
                 term.setTextColor(term.errorColor)
                 print("Unable to find pip")
+                term.setTextColor(nil)
                 res = false
             end
         else
             term.setTextColor(term.errorColor)
             print("Unsupported OS: " .. os.host())
+            term.setTextColor(nil)
             success = false
             return
         end
@@ -77,9 +82,11 @@ newaction
         if(success) then
             term.setTextColor(term.infoColor)
             print("Vulkan loader generated successfully")
+            term.setTextColor(nil)
         else
             term.setTextColor(term.errorColor)
             print("Vulkan loader generation failed")
+            term.setTextColor(nil)
         end
     end
 }

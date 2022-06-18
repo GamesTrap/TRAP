@@ -8,7 +8,10 @@
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Time/Timer.h"
 
+//TODO Exhale bug
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 int main(int32_t argc, char** argv);
+#endif
 
 namespace TRAP
 {

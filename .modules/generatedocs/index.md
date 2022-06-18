@@ -78,4 +78,5 @@ pages/gettingstarted
 pages/eula
 pages/reference
 
+api/library_root
 ```

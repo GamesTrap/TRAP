@@ -26,6 +26,7 @@ newaction
             success = false
             term.setTextColor(term.errorColor)
             print("Failed to find template file " .. templatePath)
+            term.setTextColor(nil)
             return
         end
 
@@ -40,6 +41,7 @@ newaction
             success = false
             term.setTextColor(term.errorColor)
             print("Failed to find source file " .. sourcePath)
+            term.setTextColor(nil)
             return
         end
 
@@ -86,9 +88,11 @@ newaction
         if(success) then
             term.setTextColor(term.infoColor)
             print("Controller Mappings generation finished successfully")
+            term.setTextColor(nil)
         else
             term.setTextColor(term.errorColor)
             print("Controller Mappings generation failed!")
+            term.setTextColor(nil)
         end
     end
 }

@@ -55,7 +55,9 @@ extensions = ['sphinx.ext.githubpages',
               'sphinx_inline_tabs',
               'sphinxext.opengraph',
               'sphinx_copybutton',
-              'myst_parser']
+              'myst_parser',
+              'breathe',
+              'exhale']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -127,3 +129,20 @@ myst_enable_extensions = [
     "substitution",
     "tasklist",
 ]
+
+#Breathe
+breathe_projects = {
+    "TRAP": "doxygen_docs/xml"
+}
+breathe_default_project = "TRAP"
+
+#Exhale
+exhale_args = {
+    "containmentFolder": "./api",
+    "rootFileName": "library_root.rst",
+    "rootFileTitle": "API Reference",
+    "doxygenStripFromPath": "..",
+    "createTreeView": True,
+    #"contentsDirectives": False,
+    "contentsSpecifiers": [":local:", ":backlink: none", ":class: this-will-duplicate-information-and-it-is-still-useful-here"],
+}

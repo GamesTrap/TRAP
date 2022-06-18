@@ -150,7 +150,10 @@ namespace TRAP::Network
 		static const IPv4Address Broadcast; //The "broadcast" address (for sending UDP messages to everyone on a local network)
 
 	private:
+//TODO Exhale bug
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 		friend bool operator<(const IPv4Address& left, const IPv4Address& right);
+#endif
 
 		/// <summary>
 		/// Resolve the given address string.
@@ -178,6 +181,8 @@ namespace TRAP::Network
 	/// <returns>True if both addresses are not equal.</returns>
 	bool operator!=(const IPv4Address& left, const IPv4Address& right);
 
+//TODO Exhale bug
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 	/// <summary>
 	/// Overload of < operator to compare two IP addresses.
 	/// </summary>
@@ -225,6 +230,7 @@ namespace TRAP::Network
 	/// <param name="address">IP address to print.</param>
 	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv4Address& address);
+#endif
 }
 
 #endif /*TRAP_IPV4ADDRESS_H*/

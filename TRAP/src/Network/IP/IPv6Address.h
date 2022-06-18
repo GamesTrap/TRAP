@@ -100,7 +100,10 @@ namespace TRAP::Network
 		static const IPv6Address LocalHost; //The "localhost" address (for connecting a computer to itself locally)
 
 	private:
+//TODO Exhale bug
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 		friend bool operator<(const IPv6Address& left, const IPv6Address& right);
+#endif
 
 		/// <summary>
 		/// Resolve the given address string.
@@ -128,6 +131,8 @@ namespace TRAP::Network
 	/// <returns>True if both addresses are not equal.</returns>
 	bool operator!=(const IPv6Address& left, const IPv6Address& right);
 
+//TODO Exhale bug
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 	/// <summary>
 	/// Overload of < operator to compare two IP addresses.
 	/// </summary>
@@ -175,6 +180,7 @@ namespace TRAP::Network
 	/// <param name="address">IP address to print.</param>
 	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv6Address& address);
+#endif
 }
 
 #endif /*TRAP_IPV6ADDRESS_H*/

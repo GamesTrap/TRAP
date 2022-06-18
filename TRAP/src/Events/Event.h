@@ -171,7 +171,10 @@ namespace TRAP::Events
 
 }
 
+//TODO Exhale bug
+#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
+#endif
 
 MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
