@@ -21,8 +21,8 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 
 :::{tab} Minimum
    %Game Input needs the following OS:
-%- OS: Window 10 19H1/Ubuntu 18.04.2 or newer (64-Bit versions only)
-- OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
+%- OS: Window 10 19H1/Ubuntu 18.04.6 or newer (64-Bit versions only)
+- OS: Windows 7/Ubuntu 18.04.6 or newer (64-Bit versions only)
 - Processor: AVX2 support, TBD
 - Graphics Card: TBD with Vulkan 1.1 support
 - Memory: 4 GB RAM
@@ -31,8 +31,8 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 :::
 :::{tab} Recommended
    %Game Input needs the following OS:
-%- OS: Window 10 19H1/Ubuntu 18.04.2 or newer (64-Bit versions only)
-- OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
+%- OS: Window 10 19H1/Ubuntu 18.04.6 or newer (64-Bit versions only)
+- OS: Windows 7/Ubuntu 18.04.6 or newer (64-Bit versions only)
 - Processor: AVX2 support, TBD
 - Graphics Card: TBD with Vulkan 1.1 support
 - Memory: 4 GB RAM

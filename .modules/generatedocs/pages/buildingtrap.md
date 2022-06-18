@@ -6,9 +6,17 @@
 
 TRAP™ Engine requires a GPU that is Vulkan 1.1 or newer compatible.
 
+:::{tab} Windows
+Please install the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/).
+
+If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/).
+:::
+:::{tab} Linux
 Please install the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/) and make sure that the `VULKAN_SDK` environment variable is set properly.
 
-If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python3](https://www.python.org/downloads/).
+If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/).
+Make sure Python 3 can be used from Terminal via the `python` command.
+:::
 
 ## Cloning the repository
 
