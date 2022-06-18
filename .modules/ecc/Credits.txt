@@ -1,0 +1,2 @@
+Copied from https://github.com/MattBystrin/premake-ecc
+Modified by Jan "GamesTrap" Schuerkamp on 26.03.2022
