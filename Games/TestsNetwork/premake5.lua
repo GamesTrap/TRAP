@@ -105,6 +105,13 @@ project "TestsNetwork"
 		end
 
 	filter "system:windows"
+		links
+		{
+			-- Needed for Networking
+			"ws2_32",
+			"wsock32"
+		}
+
 		-- Discord Game SDK stuff
 		if os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll.lib") and
 		   os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
@@ -124,8 +131,7 @@ project "TestsNetwork"
 
 			postbuildcommands
 			{
-				"{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
-
+				"{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 			}
 
 			defines "USE_DISCORD_GAME_SDK"

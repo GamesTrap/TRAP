@@ -3144,7 +3144,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(const Vec<L, T>& x)
 {
 	Vec<L, T> result{};
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::abs(x[i]);
+		result[i] = Abs(x[i]);
 	return result;
 }
 

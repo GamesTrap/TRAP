@@ -62,6 +62,14 @@ project "Headless-Tests"
 			"SPIRV-Cross-HLSL"
 		}
 
+	filter "system:windows"
+		links
+		{
+			-- Needed for Networking
+			"ws2_32",
+			"wsock32"
+		}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"

@@ -23,13 +23,12 @@ project "ConvertToSPIRV"
 		"%{IncludeDir.SPIRV}"
 	}
 
-	filter "system:windows"
-		links
-		{
-			"GLSLang",
-			"SPIRV",
-			"GLSLang-Default-Resource-Limits",
-		}
+	links
+	{
+		"GLSLang",
+		"SPIRV",
+		"GLSLang-Default-Resource-Limits",
+	}
 
 	filter "system:linux"
 		links

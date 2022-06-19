@@ -2703,10 +2703,19 @@ SITREP 06/16/2022|22w24a2
     - Math Fixed compiler error on MSVC ~<10 mins
     - Added needed Windows redists ~<10 mins
 
-SITREP 06/17/2022|22w24b1
+SITREP 06/17/2022|22w24
     - Changed License now using the TRAP™ Engine EULA (modified Apache 2) ~>60 mins
     - Docs Fixed doxygen warnings ~<10 mins
     - Docs now use Breathe + Exhale to generate a good looking API reference ~>60 mins
     - Docs Removed old reference page ~<10 mins
     - Updated README ~<5 mins
     - Moved MathTests to HeadlessTests ~<5 mins
+    - Brought TRAP back to GitHub
+
+SITREP 06/19/2022|22w24b1
+    - Changed TRAP Engine version to 22w24b1(0.8.0)
+    - Added Build CI ~>35 mins
+    - Windows Added missing links for networking ~<5 mins
+    - TestNetwork Fixed Windows postbuildcommand not copying DiscordGameSDK dll ~<5 mins
+    - Math Fixed Abs for Vectors not being able to compile in constexpr context ~<5 mins
+    - ConvertToSPIRV Fixed Linux missing libraries ~<5 mins
