@@ -14,6 +14,19 @@ If you want to be able to build the documentation and to update the Vulkan loade
 :::{tab} Linux
 Please install the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/) and make sure that the `VULKAN_SDK` environment variable is set properly.
 
+TRAP™ also depends on some X11 development packages.  
+To install those run the following command in a terminal:
+
+```sh
+sudo apt install xorg-dev
+```
+
+or to only install the required packages
+
+```sh
+sudo apt install libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
+```
+
 If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/).
 Make sure Python 3 can be used from Terminal via the `python` command.
 :::
