@@ -144,5 +144,5 @@ exhale_args = {
     "doxygenStripFromPath": "..",
     "createTreeView": True,
     #"contentsDirectives": False,
-    "contentsSpecifiers": [":local:", ":backlink: none", ":class: this-will-duplicate-information-and-it-is-still-useful-here"],
+    "contentsSpecifiers": [":local:", ":backlinks: none", ":class: this-will-duplicate-information-and-it-is-still-useful-here"],
 }

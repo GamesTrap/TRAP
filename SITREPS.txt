@@ -2722,3 +2722,4 @@ SITREP 06/19/2022|22w24b1
 
 SITREP 06/20/2022|22w25a1
     - Added GitHub Actions workflow to build docs ~>30 mins
+    - Updated the GitHub Actions docs workflow ~<5 mins

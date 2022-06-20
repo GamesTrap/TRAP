@@ -131,6 +131,15 @@ newaction
                 os.execute("pip install -U myst-parser  > /dev/null 2>&1")
             end
 
+            local out, errorCode = os.outputof("pip list | grep -F Pygments")
+            if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
+                print("Pygments is not installed!")
+                term.setTextColor(nil)
+                print("Installing Pygments...")
+                os.execute("pip install -U Pygments  > /dev/null 2>&1")
+            end
+
         elseif(os.host() == "windows") then
             print("Checking Doxygen")
             local out, errorCode = os.outputof("doxygen --version")
@@ -244,6 +253,15 @@ newaction
                 term.setTextColor(nil)
                 print("Installing MyST-Parser...")
                 os.execute("pip install -U myst-parser  > NUL")
+            end
+
+            local out, errorCode = os.outputof("pip list | findstr Pygments")
+            if(errorCode ~= 0) then
+                term.setTextColor(term.warningColor)
+                print("Pygments is not installed!")
+                term.setTextColor(nil)
+                print("Installing Pygments...")
+                os.execute("pip install -U Pygments  > NUL")
             end
         else
             term.setTextColor(term.errorColor)
