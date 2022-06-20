@@ -47,7 +47,7 @@ jobs:
         git config user.email "<>"
     # Commit & push updated docs to master
     - name: Commit & push changes to master
-    - run: |
+      run: |
         git add docs/**
         git commit -m "[CI] Updated docs"
         git push origin master
