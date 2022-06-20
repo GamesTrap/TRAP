@@ -50,4 +50,4 @@ jobs:
       run: |
         git add docs/**
         git commit -m "[CI] Updated docs"
-        git push origin master
+        git push
