@@ -27,8 +27,8 @@ or to only install the required packages
 sudo apt install libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
 ```
 
-If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/).
-Make sure Python 3 can be used from Terminal via the `python` command.
+If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/) and [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html).
+Make sure Python 3 and Sphinx can be used from Terminal via the `python` and `sphinx-build` commands.
 :::
 
 ## Cloning the repository

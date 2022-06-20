@@ -1,0 +1,42 @@
+# Documentation Build. This generated the Documentation website for TRAP™
+
+name: Build-Docs
+
+# Controls when the workflow will run
+on:
+  # Only run this action manually
+  workflow_dispatch:
+
+jobs:
+  build-docs-linux:
+    name: Build Docs Linux
+    runs-on: ubuntu-latest
+    # env:
+    steps:
+    # Check-out repository and submodules under $GITHUB_WORKSPACE
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+    # Install doxygen
+    - name: Install doxygen
+      run: sudo apt install doxygen
+    # Install Sphinx
+    - name: Install Sphinx
+      run: sudo apt install python3-sphinx
+    # Make python 3 available as python
+    - name: Make python3 available as python
+      run: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+    # Make pip3 available as pip
+    - name: Make pip3 available as pip
+      run: sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+    # Make scripts and premake executable
+    - name: Set Execute flags
+      run: |
+        chmod +x libs/premake5/linux/premake5
+        chmod +x GeneratorScripts/GenerateDocumentation.sh
+    # Generate docs
+    - name: Generate Documentation
+      run: |
+        cd GeneratorScripts/
+        ./GenerateDocumentation.sh
+        cd ..

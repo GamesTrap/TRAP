@@ -14,7 +14,6 @@ newaction
     description = "Generate Documentation",
 
     execute = function()
-    local res = true
         print("Checking Dependencies")
         if(os.host() == "linux") then
             print("Checking Doxygen")
@@ -23,7 +22,9 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find Doxygen")
                 term.setTextColor(nil)
-                res = false
+                success = false
+                return
+
             end
 
             print("Checking Python")
@@ -32,7 +33,8 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find Python 3")
                 term.setTextColor(nil)
-                res = false
+                success = false
+                return
             end
 
             print("Checking pip")
@@ -41,17 +43,18 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 term.setTextColor(nil)
-                res = false
+                success = false
+                return
             end
 
             print("Checking Sphinx")
             local out, errorCode = os.outputof("sphinx-build --version")
             if(errorCode ~= 0) then
                 term.setTextColor(term.warningColor)
-                print("Sphinx is not installed!")
+                print("Unable to find sphinx-build!")
                 term.setTextColor(nil)
-                print("Installing Sphinx...")
-                os.execute("pip install -U sphinx  > /dev/null 2>&1")
+                success = false
+                return
             end
 
             print("Checking Sphinx-Extensions")
@@ -128,10 +131,6 @@ newaction
                 os.execute("pip install -U myst-parser  > /dev/null 2>&1")
             end
 
-            if(res == false) then
-                success = false
-                return
-            end
         elseif(os.host() == "windows") then
             print("Checking Doxygen")
             local out, errorCode = os.outputof("doxygen --version")
@@ -139,7 +138,8 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find Doxygen")
                 term.setTextColor(nil)
-                res = false
+                success = false
+                return
             end
 
             print("Checking Python")
@@ -148,7 +148,8 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find Python")
                 term.setTextColor(nil)
-                res = false
+                success = false
+                return
             end
 
             print("Checking pip")
@@ -157,17 +158,18 @@ newaction
                 term.setTextColor(term.errorColor)
                 print("Unable to find pip")
                 term.setTextColor(nil)
-                res = false
+                success = false
+                return
             end
 
             print("Checking Sphinx")
             local out, errorCode = os.outputof("sphinx-build --version")
             if(errorCode ~= 0) then
                 term.setTextColor(term.warningColor)
-                print("Sphinx is not installed!")
+                print("Unable to find sphinx-build!")
                 term.setTextColor(nil)
-                print("Installing Sphinx...")
-                os.execute("pip install -U sphinx  > NUL")
+                success = false
+                return
             end
 
             print("Checking Sphinx-Extensions")
@@ -242,11 +244,6 @@ newaction
                 term.setTextColor(nil)
                 print("Installing MyST-Parser...")
                 os.execute("pip install -U myst-parser  > NUL")
-            end
-
-            if(res == false) then
-                success = false
-                return
             end
         else
             term.setTextColor(term.errorColor)
