@@ -122,7 +122,7 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	//Check if Vulkan capable
 	if (s_Renderer->IsVulkanCapable())
 		return RenderAPI::Vulkan;
-	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
+	TP_WARN(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.1 capable!");
 
 
 #ifndef TRAP_HEADLESS_MODE
@@ -135,7 +135,7 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	TRAP::Application::Shutdown();
 	exit(-1);
 #else
-	TP_WARN(Log::RendererVulkanPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
+	TP_WARN(Log::RendererPrefix, "Disabling RendererAPI, no compatible RenderAPI was found!");
 	return RenderAPI::NONE;
 #endif
 }
@@ -317,29 +317,39 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		}
 
 		//Required: Instance Extensions
-		//Optional in Headless mode.
+		//Surface extensions are optional in Headless mode.
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-		if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
-			!API::VulkanInstance::IsExtensionSupported(reqExt[1]) ||
-			!API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
+
+		if (reqExt[0].empty() ||
+		    reqExt[1].empty() ||
+			!API::VulkanInstance::IsExtensionSupported(reqExt[0]) ||
+			!API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 		{
 			GPUSettings.SurfaceSupported = false;
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed required instance extension test");
-#ifndef TRAP_HEADLESS_MODE
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
+			TP_WARN(Log::RendererVulkanPrefix, "Failed required instance extension test");
+			TP_WARN(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 			s_isVulkanCapable = false;
 			return s_isVulkanCapable;
-#endif
 		}
 		else
 		{
 			GPUSettings.SurfaceSupported = true;
 			instanceExtensions.push_back(reqExt[0]);
 			instanceExtensions.push_back(reqExt[1]);
-			instanceExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 		}
+
+		if(!API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
+		{
+			TP_WARN(Log::RendererVulkanPrefix, "Failed required instance extension test");
+			TP_WARN(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
+			TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+			s_isVulkanCapable = false;
+			return s_isVulkanCapable;
+		}
+		else
+			instanceExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 
 		//Create Instance
 		VkInstance instance = VK_NULL_HANDLE;
@@ -358,14 +368,15 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			if(physicalDevices.empty())
 			{
 				s_isVulkanCapable = false;
-				TP_CRITICAL(Log::RendererVulkanPrefix,
-							"Failed to find a suitable GPU meeting all requirements!");
+				TP_WARN(Log::RendererVulkanPrefix,
+						"Failed to find a suitable GPU meeting all requirements!");
 			}
 		}
 		else
 		{
+			VkCall(res);
 			s_isVulkanCapable = false;
-			TP_CRITICAL(Log::RendererVulkanPrefix, "Failed to create Vulkan instance!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Failed to create Vulkan instance!");
 		}
 	}
 	else
@@ -378,7 +389,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 	}
 	else
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
+		TP_WARN(Log::RendererVulkanPrefix, "Failed Vulkan capability tester!");
 		TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 	}
 

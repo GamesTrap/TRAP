@@ -268,7 +268,8 @@ TRAP::Application::~Application()
 	m_layerStack.Shutdown();
 
 	TRAP::Utils::Discord::Destroy();
-	Input::Shutdown();
+	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+		Input::Shutdown();
 
 #ifndef TRAP_HEADLESS_MODE
 	if(m_window->GetWidth() > 0)
