@@ -40,11 +40,14 @@ jobs:
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
+    # Setup git config
+    - name: Setup git config
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
     # Commit & push updated docs to master
     - name: Commit & push changes to master
     - run: |
-        git config user.name GamesTrap
-        git config user.email <gamestrap@web.de>
         git add docs/**
         git commit -m "[CI] Updated docs"
-        git push master
+        git push origin master
