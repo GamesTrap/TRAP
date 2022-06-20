@@ -282,6 +282,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		windowManager = LinuxWindowManager::X11;
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		Utils::Dialogs::ShowMsgBox("Unsupported window manager", "Window manager is unsupported!\n"
 									"TRAP™ currently only supports X11\n"
 									//"TRAP™ uses X11 or Wayland\n"
@@ -291,6 +292,9 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported window manager!");
 		TRAP::Application::Shutdown();
 		exit(-1);
+#else
+		return LinuxWindowManager::Unknown;
+#endif
 	}
 #endif
 

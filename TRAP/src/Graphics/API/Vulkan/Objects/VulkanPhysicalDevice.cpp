@@ -132,6 +132,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
 
 	// Surface & Present test
+#ifndef TRAP_HEADLESS_MODE
 	{
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
@@ -188,6 +189,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 			}
 		}
 	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -492,12 +494,15 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		// Required: Create Vulkan Instance
 
 		// Init WindowingAPI needed here for instance extensions
+		// Disabled in Headless mode.
+#ifndef TRAP_HEADLESS_MODE
 		if (!INTERNAL::WindowingAPI::Init())
 		{
 			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
-					 "\" Failed to initialize WindowingAPI!");
+					"\" Failed to initialize WindowingAPI!");
 			TRAP::Application::Shutdown();
 		}
+#endif
 
 		// Required: Create Vulkan Surface Test Window
 		// Disabled in Headless mode.

@@ -13,8 +13,6 @@ ComputeTests::ComputeTests()
 
 void ComputeTests::OnAttach()
 {
-    TRAP::Application::GetWindow()->SetTitle("Headless Async Compute Test");
-
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
         return;
 
@@ -96,18 +94,6 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         TRAP::Application::Shutdown();
         return;
     }
-
-    //TODO Wait quue idle for graphics and compute then take screenshot and stop
-    // static float time = 0.0f;
-    // time += deltaTime.GetSeconds();
-    // if(time >= 5.0f)
-    // {
-    //     //Screenshot
-	//     TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
-	//     TRAP::INTERNAL::PPMImage::Save(testImage.get(), "compute.ppm");
-
-    //     TRAP::Application::Shutdown();
-    // }
 
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//

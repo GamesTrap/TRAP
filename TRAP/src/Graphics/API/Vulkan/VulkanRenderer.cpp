@@ -145,7 +145,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 {
 	TRAP_ASSERT(p);
 
-	if(p->Window->IsMinimized() || p->Recording)
+	if(p->Recording || (p->Window && p->Window->IsMinimized()))
 		return;
 
 	//Start Recording
@@ -205,7 +205,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 
 void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* const p)
 {
-	if(p->Window->IsMinimized() || !p->Recording)
+	if(!p->Recording || (p->Window && p->Window->IsMinimized()))
 		return;
 
 

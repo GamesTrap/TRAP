@@ -90,7 +90,8 @@ TRAP::Application::Application(std::string gameName)
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
 	//TODO Future remove when Wayland Windows are implemented
-	if (TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Wayland)
+	TRAP::Utils::LinuxWindowManager linuxWM = TRAP::Utils::GetLinuxWindowManager();
+	if (linuxWM == TRAP::Utils::LinuxWindowManager::Wayland)
 	{
         TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!",
 		                                 "Wayland is currently not supported by TRAP™! Please use X11 instead\n"
@@ -171,6 +172,7 @@ TRAP::Application::Application(std::string gameName)
 #endif
 
 	//Window creation stuff
+	if(linuxWM != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
 		WindowProps::AdvancedProps advWinProps{};
 		advWinProps.Maximized = maximized;
@@ -190,7 +192,7 @@ TRAP::Application::Application(std::string gameName)
 		m_window = std::make_unique<Window>(winProps);
 		m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
-		//Update Window Title (Debug/DebWithRelInfo)
+		//Update Window Title (Debug/RelWithDebInfo)
 #ifdef TRAP_HEADLESS_MODE
 		if(renderAPI != Graphics::RenderAPI::NONE)
 		{
@@ -200,6 +202,13 @@ TRAP::Application::Application(std::string gameName)
 		}
 #endif
 	}
+#ifdef TRAP_HEADLESS_MODE
+	else //Headless without X11 or Wayland
+	{
+		if(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+			TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(nullptr);
+	}
+#endif
 
 #ifndef TRAP_HEADLESS_MODE
 	//Update Viewport
@@ -226,8 +235,11 @@ TRAP::Application::Application(std::string gameName)
 	}
 
 	//Initialize Input for Joysticks
-	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
-	Input::Init();
+	if(linuxWM != TRAP::Utils::LinuxWindowManager::Unknown)
+	{
+		Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
+		Input::Init();
+	}
 
 #ifndef TRAP_HEADLESS_MODE
 	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
@@ -368,7 +380,8 @@ void TRAP::Application::Run()
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window.get());
 
-		TRAP::Window::OnUpdate();
+		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+			TRAP::Window::OnUpdate();
 
 		UpdateHotReloading();
 

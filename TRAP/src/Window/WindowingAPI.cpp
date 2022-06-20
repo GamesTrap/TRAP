@@ -1795,11 +1795,11 @@ std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 //Returns whether the Vulkan loader and an ICD have been found.
 bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 {
-	if(!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
-		return false;
-	}
+	// if(!s_Data.Initialized)
+	// {
+	// 	InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+	// 	return false;
+	// }
 
 	return InitVulkan(1);
 }
@@ -1809,11 +1809,11 @@ bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
 //Returns the Vulkan instance extensions required by TRAP.
 std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
 {
-	if(!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
-		return {};
-	}
+	// if(!s_Data.Initialized)
+	// {
+	// 	InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
+	// 	return {};
+	// }
 
 	if (!InitVulkan(2))
 		return {};

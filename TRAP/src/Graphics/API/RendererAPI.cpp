@@ -296,10 +296,13 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 
 	s_isVulkanCapableFirstTest = false;
 
-	if (!INTERNAL::WindowingAPI::Init())
+	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
-		TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
-		TRAP::Application::Shutdown();
+		if (!INTERNAL::WindowingAPI::Init())
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
+			TRAP::Application::Shutdown();
+		}
 	}
 
 	if (INTERNAL::WindowingAPI::VulkanSupported())

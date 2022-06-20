@@ -2721,5 +2721,7 @@ SITREP 06/19/2022|22w24b1
     - ConvertToSPIRV Fixed Linux missing libraries ~<5 mins
 
 SITREP 06/20/2022|22w25a1
+    - Changed TRAP Engine version to 22w25a1(0.8.1)
     - Added GitHub Actions workflow to build docs ~>30 mins
     - Updated the GitHub Actions docs workflow ~<5 mins
+    - Added ability to use Headless in a WindowManager-less environment ~>20 mins
