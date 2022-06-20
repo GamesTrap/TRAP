@@ -40,3 +40,11 @@ jobs:
         cd GeneratorScripts/
         ./GenerateDocumentation.sh
         cd ..
+    # Push update docs to master
+    - uses: actions/checkout@v3
+    - run: |
+        git config user.name GamesTrap
+        git config user.email <gamestrap@web.de>
+        git add .
+        git commit -m "[CI] Updated docs"
+        git push
