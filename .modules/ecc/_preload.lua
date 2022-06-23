@@ -24,9 +24,7 @@
 		end,
 
 		execute = function()
-			local dir = {}
-			dir.location = _MAIN_SCRIPT_DIR
-			p.generate(dir, "compile_commands.json", p.modules.ecc.generateFile)
+			p.modules.ecc.onExecute()
 		end
 	}
 

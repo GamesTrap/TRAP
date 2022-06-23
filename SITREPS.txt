@@ -2725,3 +2725,6 @@ SITREP 06/20/2022|22w25a1
     - Added GitHub Actions workflow to build docs ~>30 mins
     - Updated the GitHub Actions docs workflow ~<5 mins
     - Added ability to use Headless in a WindowManager-less environment ~>50 mins
+
+SITREP 06/23/2022|22w25a1
+    - Updated compile_commands.json generator ~>30 mins
