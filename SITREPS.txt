@@ -2730,3 +2730,4 @@ SITREP 06/23/2022|22w25a1
     - Updated compile_commands.json generator ~>30 mins
 SITREP 06/25/2022|22w25a2
     - Docs Added difference between normal and headless mode on getting started page ~<20 mins
+    - README Added Build-CI status badge ~<5 mins

@@ -2,7 +2,7 @@
 
 ![TRAP](Branding/TRAP.gif?raw=true "TRAP")
 
-<!-- [![Build Status](https://travis-ci.com/GamesTrap/TRAP.svg?branch=master)](https://travis-ci.com/GamesTrap/TRAP) -->
+[![Build-CI](https://github.com/GamesTrap/TRAP/actions/workflows/build.yml/badge.svg)](https://github.com/GamesTrap/TRAP/actions/workflows/build.yml)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP)
 [![GitHub repo size](https://img.shields.io/github/repo-size/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GamesTrap/TRAP?include_prereleases)](https://github.com/GamesTrap/TRAP/releases)
