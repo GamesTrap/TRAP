@@ -231,8 +231,6 @@ namespace TRAP::Math
 	template<typename T>
 	constexpr Vec<3, T> operator^(const Vec<3, T>& v1, const Vec<3, T>& v2);
 
-//TODO Exhale bug
-#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 	template<typename T>
 	constexpr Vec<3, T> operator<<(const Vec<3, T>& v, T scalar);
 
@@ -250,7 +248,6 @@ namespace TRAP::Math
 
 	template<typename T>
 	constexpr Vec<3, T> operator>>(const Vec<3, T>& v1, const Vec<3, T>& v2);
-#endif
 
 	template<typename T>
 	constexpr Vec<3, T> operator~(const Vec<3, T>& v);
@@ -873,8 +870,6 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator^(const Vec<3, T>& v1, const
 	return Vec<3, T>(v1.x ^ v2.x, v1.y ^ v2.y, v1.z ^ v2.z);
 }
 
-//TODO Exhale bug
-#if !defined(DOXYGEN_DOCUMENTATION_BUILD)
 template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator<<(const Vec<3, T>& v, T scalar)
 {
@@ -910,7 +905,6 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator>>(const Vec<3, T>& v1, cons
 {
 	return Vec<3, T>(v1.x >> v2.x, v1.y >> v2.y, v1.z >> v2.z);
 }
-#endif
 
 template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::operator~(const Vec<3, T>& v)
