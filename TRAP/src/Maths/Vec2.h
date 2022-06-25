@@ -146,7 +146,7 @@ namespace TRAP::Math
 		template<typename U>
 		constexpr Vec<2, T>& operator>>=(const Vec<2, U>& v);
 
-		std::string ToString();
+		std::string ToString() const;
 	};
 
 	//Unary operators
@@ -618,7 +618,7 @@ constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator>>=(const Vec<2,
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::Vec<2, T>::ToString()
+std::string TRAP::Math::Vec<2, T>::ToString() const
 {
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)

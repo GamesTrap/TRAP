@@ -166,7 +166,7 @@ namespace TRAP::Math
 		constexpr Mat<3, 3, T> operator++(int32_t);
 		constexpr Mat<3, 3, T> operator--(int32_t);
 
-		std::string ToString();
+		std::string ToString() const;
 	};
 
 	//Unary operators
@@ -472,7 +472,7 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::Mat<3, 3, T>::ToString()
+std::string TRAP::Math::Mat<3, 3, T>::ToString() const
 {
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)

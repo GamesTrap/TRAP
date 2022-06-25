@@ -2728,8 +2728,11 @@ SITREP 06/20/2022|22w25a1
 
 SITREP 06/23/2022|22w25a1
     - Updated compile_commands.json generator ~>30 mins
+
 SITREP 06/25/2022|22w25a2
     - Changed TRAP Engine version to 22w25a2(0.8.2)
     - Docs Added difference between normal and headless mode on getting started page ~<20 mins
     - README Added Build-CI status badge ~<5 mins
     - Removed the temporary Exhale bug fix (problems with operators containing '<' or '>') ~<5 mins
+    - Added ToString functions to Math classes (Vec, Mat & Quat) ~<15 mins
+    - Added templates for Math classes on output stream operator so they use x.ToString function ~<10 mins

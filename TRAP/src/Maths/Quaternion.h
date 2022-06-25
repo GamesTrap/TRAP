@@ -130,7 +130,7 @@ namespace TRAP::Math
 		constexpr T& operator[](int i);
 		constexpr const T& operator[](int i) const;
 
-		std::string ToString();
+		std::string ToString() const;
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -391,7 +391,7 @@ constexpr const T& TRAP::Math::tQuat<T>::operator[](int i) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::tQuat<T>::ToString()
+std::string TRAP::Math::tQuat<T>::ToString() const
 {
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)

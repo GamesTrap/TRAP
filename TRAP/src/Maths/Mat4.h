@@ -169,7 +169,7 @@ namespace TRAP::Math
 		constexpr Mat<4, 4, T> operator++(int);
 		constexpr Mat<4, 4, T> operator--(int);
 
-		std::string ToString();
+		std::string ToString() const;
 	};
 
 	//Unary operators
@@ -534,7 +534,7 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Math::Mat<4, 4, T>::ToString()
+std::string TRAP::Math::Mat<4, 4, T>::ToString() const
 {
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)

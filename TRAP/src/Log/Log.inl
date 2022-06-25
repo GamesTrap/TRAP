@@ -1,6 +1,8 @@
 #ifndef TRAP_LOG_INL
 #define TRAP_LOG_INL
 
+#include "Maths/Types.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 template <typename ... Args>
@@ -243,5 +245,29 @@ void TRAP::Log::Critical(Args&& ... args)
 	}
 }
 #endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+//Math ToString for streams
+
+//Vectors
+template<typename OStream, uint32_t L, typename T>
+inline OStream& operator<<(OStream& os, const TRAP::Math::Vec<L, T>& vec)
+{
+	return os << vec.ToString();
+}
+
+//Matrices
+template<typename OStream, uint32_t L, typename T>
+inline OStream& operator<<(OStream& os, const TRAP::Math::Mat<L, L, T>& mat)
+{
+	return os << mat.ToString();
+}
+
+//Quaternion
+template<typename OStream, typename T>
+inline OStream& operator<<(OStream& os, const TRAP::Math::tQuat<T>& quat)
+{
+	return os << quat.ToString();
+}
 
 #endif /*TRAP_LOG_INL*/
