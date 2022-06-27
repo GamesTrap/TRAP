@@ -2736,3 +2736,16 @@ SITREP 06/25/2022|22w25a2
     - Removed the temporary Exhale bug fix (problems with operators containing '<' or '>') ~<5 mins
     - Added ToString functions to Math classes (Vec, Mat & Quat) ~<15 mins
     - Added templates for Math classes on output stream operator so they use x.ToString function ~<10 mins
+
+SITREP 06/27/2022|22w26a1
+    - Changed TRAP Engine version to 22w26a1(0.8.3)
+    - Removed DummyShader ~<5 mins
+    - Shader Removed the CreateFromFile function used by HotReloading ~<5 mins
+    - Shader Added Reload function to reload shader without needing to reconstruct it ~<15 mins
+    - Shader Added IsShaderValid function ~<5 mins
+    - (Vulkan)Shader Made GetNumThreadsPerGroup virtual ~<5 mins
+    - (Vulkan)Shader Added virtual Init and Shutdown functions to reduce code redundancy ~<10 mins
+    - Shader updated other constructor accordingly ~<10 mins
+    - VulkanShader Added two new constructors ~<10 mins
+    - ShaderManager now uses Shaders Reload function instead of destructing/constructing ~<20 mins
+    - VulkanRenderer BindShader now detects invalid shaders and applies the correct fallback ~<10 mins

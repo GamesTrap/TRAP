@@ -962,17 +962,23 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	{
 		ComputePipelineDesc& cpd = std::get<ComputePipelineDesc>(data->ComputePipelineDesc.Pipeline);
 
-		if(cpd.ShaderProgram != shader)
+		if(!shader->IsShaderValid())
+		{
+			//Overwrite invalid shader with fallback
+			shader = TRAP::Graphics::ShaderManager::Get("FallbackCompute");
+
+			cpd.ShaderProgram = shader;
+			cpd.RootSignature = shader->GetRootSignature();
+		}
+		else if(shader->IsShaderValid() && cpd.ShaderProgram != shader)
 		{
 			cpd.ShaderProgram = shader;
 			cpd.RootSignature = shader->GetRootSignature();
 		}
 
-		VulkanShader* vkShader = dynamic_cast<VulkanShader*>(shader);
-
-		data->CurrentComputeWorkGroupSize.x = static_cast<float>(vkShader->GetNumThreadsPerGroup()[0]);
-		data->CurrentComputeWorkGroupSize.y = static_cast<float>(vkShader->GetNumThreadsPerGroup()[1]);
-		data->CurrentComputeWorkGroupSize.z = static_cast<float>(vkShader->GetNumThreadsPerGroup()[2]);
+		data->CurrentComputeWorkGroupSize.x = static_cast<float>(shader->GetNumThreadsPerGroup()[0]);
+		data->CurrentComputeWorkGroupSize.y = static_cast<float>(shader->GetNumThreadsPerGroup()[1]);
+		data->CurrentComputeWorkGroupSize.z = static_cast<float>(shader->GetNumThreadsPerGroup()[2]);
 
 		data->CurrentComputePipeline = GetPipeline(data->ComputePipelineDesc);
 		data->ComputeCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentComputePipeline);
@@ -991,7 +997,15 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 
-		if(gpd.ShaderProgram != shader)
+		if(!shader->IsShaderValid())
+		{
+			//Overwrite invalid shader with fallback
+			shader = TRAP::Graphics::ShaderManager::Get("FallbackGraphics");
+
+			gpd.ShaderProgram = shader;
+			gpd.RootSignature = shader->GetRootSignature();
+		}
+		else if(shader->IsShaderValid() && gpd.ShaderProgram != shader)
 		{
 			gpd.ShaderProgram = shader;
 			gpd.RootSignature = shader->GetRootSignature();

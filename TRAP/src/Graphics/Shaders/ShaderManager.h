@@ -78,7 +78,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// </summary>
 	/// <param name="shader">Shader to reload.</param>
 	/// <returns>Pointer to reloaded shader on success, nullptr otherwise.</returns>
-	Shader* Reload(const Shader* const shader);
+	Shader* Reload(Shader* const shader);
 	/// <summary>
 	/// Reload all currently loaded shaders.
 	/// </summary>

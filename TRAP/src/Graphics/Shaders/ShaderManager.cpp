@@ -153,17 +153,9 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 		//Name
 		if(Exists(nameOrPath))
 		{
-			const std::filesystem::path path = Shaders[nameOrPath]->GetFilePath();
-			std::string error;
-			if (!path.empty())
-			{
-				const RendererAPI::ShaderStage stages = Shaders[nameOrPath]->GetShaderStages();
-				const std::vector<Shader::Macro> macros = Shaders[nameOrPath]->GetMacros();
-				Shaders[nameOrPath].reset();
-				Shaders[nameOrPath] = Shader::CreateFromFile(nameOrPath, path, stages, &macros);
-				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
-				return Shaders[nameOrPath].get();
-			}
+			auto* shader = Shaders[nameOrPath].get();
+			if(!shader->GetFilePath().empty())
+				shader->Reload();
 		}
 		else
 			TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrPath, "\" to reload.");
@@ -185,7 +177,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Shader* const shader)
+TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(Shader* const shader)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -195,19 +187,14 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const Shader* cons
 		return nullptr;
 	}
 
-	const std::string name = shader->GetName();
-	const std::filesystem::path path = shader->GetFilePath();
-	const RendererAPI::ShaderStage stages = Shaders[name]->GetShaderStages();
-	const std::vector<Shader::Macro> macros = shader->GetMacros();
-
-	if (path.empty())
+	if(shader->GetFilePath().empty())
 		return nullptr;
 
-	Shaders[name].reset();
-	Shaders[name] = Shader::CreateFromFile(name, path, stages, &macros);
-	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
+	shader->Reload();
 
-	return Shaders[name].get();
+	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", shader->GetName(), "\"");
+
+	return shader;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

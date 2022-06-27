@@ -16,10 +16,32 @@ namespace TRAP::Graphics::API
 		/// Constructor.
 		/// </summary>
 		/// <param name="name">Name for the shader.</param>
+		/// <param name="filePath">Filepath of the shader.</param>
 		/// <param name="desc">Binary shader description.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		/// <param name="valid">Whether the shader is valid or not. Default: true.</param>
+		VulkanShader(std::string name, std::filesystem::path filepath, const RendererAPI::BinaryShaderDesc& desc,
+		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="name">Name for the shader.</param>
+		/// <param name="desc">Binary shader description.</param>
+		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		/// <param name="valid">Whether the shader is valid or not. Default: true.</param>
 		VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-		             const std::vector<Macro>* userMacros = nullptr);
+		             const std::vector<Macro>* userMacros = nullptr, bool valid = true);
+		/// <summary>
+		/// Constructor.
+		///
+		/// Note: Used for invalid shaders, this doesn't create a usable shader.
+		/// </summary>
+		/// <param name="name">Name for the shader.</param>
+		/// <param name="filepath">Filepath of the shader.</param>
+		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
+		VulkanShader(std::string name, std::filesystem::path filepath,
+		             const std::vector<Macro>* userMacros = nullptr,
+					 RendererAPI::ShaderStage stages = RendererAPI::ShaderStage::None);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -41,12 +63,6 @@ namespace TRAP::Graphics::API
 		/// Move assignment operator.
 		/// </summary>
 		VulkanShader& operator=(VulkanShader&&) = default;
-
-		/// <summary>
-		/// Retrieve the shaders thread count per work group.
-		/// </summary>
-		/// <returns>Shaders thread count per work group.</returns>
-		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const;
 
 		/// <summary>
 		/// Retrieve the Vulkan shader module handles of each contained shader stage.
@@ -131,6 +147,23 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* storageBuffer,
 		             uint64_t size, Window* window) override;
+
+		/// <summary>
+		/// Retrieve the shaders thread count per work group.
+		/// </summary>
+		/// <returns>Shaders thread count per work group.</returns>
+		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const override;
+
+	protected:
+		/// <summary>
+		/// Initialize API dependent shader.
+		/// </summary>
+		/// <param name="desc">Binary shader description.</param>
+		void Init(const RendererAPI::BinaryShaderDesc& desc) override;
+		/// <summary>
+		/// Shutdown API dependent shader.
+		/// </summary>
+		void Shutdown() override;
 
 	private:
 		/// <summary>

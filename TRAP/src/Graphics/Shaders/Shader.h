@@ -56,6 +56,12 @@ namespace TRAP::Graphics
 		virtual ~Shader() = default;
 
 		/// <summary>
+		/// Reload shader.
+		/// </summary>
+		/// <returns>True on successful reload (valid shader), else (invalid shader) otherwise.</returns>
+		bool Reload();
+
+		/// <summary>
 		/// Retrieve the name of the shader.
 		/// </summary>
 		/// <returns>Name of the shader.</returns>
@@ -89,6 +95,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <returns>Descriptor sets of the shader.</returns>
 		const std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const;
+
+
+		/// <summary>
+		/// Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
+		/// </summary>
+		/// <returns>True if shader is valid, false otherwise.</returns>
+		bool IsShaderValid() const;
 
 		/// <summary>
 		/// Use shader for rendering on the given window.
@@ -156,6 +169,12 @@ namespace TRAP::Graphics
 							 uint64_t size = 0, Window* window = nullptr) = 0;
 
 		/// <summary>
+		/// Retrieve the shaders thread count per work group.
+		/// </summary>
+		/// <returns>Shaders thread count per work group.</returns>
+		virtual const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const = 0;
+
+		/// <summary>
 		/// Create a shader from file.
 		/// </summary>
 		/// <param name="name">Name for the shader.</param>
@@ -174,18 +193,6 @@ namespace TRAP::Graphics
 		static Scope<Shader> CreateFromFile(const std::filesystem::path& filePath,
 		                                    const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
-		/// Create a shader from file.
-		/// Used by the HotReloading system.
-		/// </summary>
-		/// <param name="name">Name for the shader.</param>
-		/// <param name="filePath">File path of the shader.</param>
-		/// <param name="stages">Shader stages used before reloading.</param>
-		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
-		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Scope<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
-		                                    RendererAPI::ShaderStage stages,
-		                                    const std::vector<Macro>* userMacros = nullptr);
-		/// <summary>
 		/// Create a shader from GLSL source.
 		/// </summary>
 		/// <param name="name">Name for the shader.</param>
@@ -198,12 +205,23 @@ namespace TRAP::Graphics
 		static std::array<std::string, 2> SupportedShaderFormatSuffixes;
 
 	protected:
+		/// <summary>
+		/// Initialize API dependent shader.
+		/// </summary>
+		/// <param name="desc">Binary shader description.</param>
+		virtual void Init(const RendererAPI::BinaryShaderDesc& desc) = 0;
+		/// <summary>
+		/// Shutdown API dependent shader.
+		/// </summary>
+		virtual void Shutdown() = 0;
+
 		std::string m_name;
 		std::filesystem::path m_filepath;
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
 		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
+		bool m_valid;
 
 	private:
 		/// <summary>
