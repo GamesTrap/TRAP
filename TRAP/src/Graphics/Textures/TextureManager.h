@@ -127,14 +127,20 @@ namespace TRAP::Graphics::TextureManager
 	/// Reload a texture via its name or path.
 	/// </summary>
 	/// <param name="nameOrPath">Name or path of a texture.</param>
-	/// <returns>Pointer to reloaded texture on success, nullptr otherwise.</returns>
+	/// <returns>
+	/// Pointer to texture if found (even on unsuccessful reload), nullptr otherwise.
+	/// Should only return nullptr if the texture was not found.
+	/// </returns>
 	Texture* Reload(const std::string& nameOrPath);
 	/// <summary>
 	/// Reload a texture.
 	/// </summary>
 	/// <param name="texture">Texture to reload.</param>
-	/// <returns>Pointer to reloaded texture on success, nullptr otherwise.</returns>
-	Texture* Reload(const Texture* const texture);
+	/// <returns>
+	/// Pointer to texture if found (even on unsuccessful reload), nullptr otherwise.
+	/// Should only return nullptr if the texture was not found.
+	/// </returns>
+	Texture* Reload(Texture* const texture);
 	/// <summary>
 	/// Reload all currently loaded textures.
 	/// </summary>

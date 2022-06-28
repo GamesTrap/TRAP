@@ -267,74 +267,46 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 		//Name
 		if(Exists(nameOrPath))
 		{
-			const TextureType textureType = Textures[nameOrPath]->GetType();
-			std::filesystem::path filePath = Textures[nameOrPath]->GetFilePath();
+			auto* texture = Textures[nameOrPath].get();
+			if(texture->Reload())
+				TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
 
-			if (filePath.empty())
-			{
-				TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", nameOrPath, "\" to reload.");
-				return nullptr;
-			}
-
-			const std::string name = Textures[nameOrPath]->GetName();
-
-			if (textureType == TextureType::Texture2D)
-			{
-				Textures[nameOrPath].reset();
-				Textures[nameOrPath] = Texture::CreateFromFile(name, filePath, TextureType::Texture2D);
-				Textures[nameOrPath]->AwaitLoading();
-				TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", nameOrPath, "\"");
-				return Textures[nameOrPath].get();
-			}
-			if (textureType == TextureType::TextureCube)
-			{
-				if (Textures[nameOrPath])
-				{
-					const TextureCubeFormat textureFormat = Textures[nameOrPath]->GetCubeFormat();
-
-					std::array<std::filesystem::path, 6> filePaths{};
-					for (uint32_t i = 0; i < Textures[nameOrPath]->GetFilePaths().size(); i++)
-						filePaths[i] = Textures[nameOrPath]->GetFilePaths()[i];
-
-					Textures[nameOrPath].reset();
-					if (textureFormat == TextureCubeFormat::Cross /*||
-					    textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
-						Textures[nameOrPath] = Texture::CreateFromFile(name, filePath, TextureType::TextureCube, textureFormat);
-					else
-						Textures[nameOrPath] = Texture::CreateFromFiles(name, filePaths);
-					Textures[nameOrPath]->AwaitLoading();
-
-					TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", nameOrPath, "\"");
-					return Textures[nameOrPath].get();
-				}
-			}
-			else
-				//Shouldn't be reached
-				TP_WARN(Log::TextureManagerPrefix, "Unknown texture type: \"", nameOrPath, "\"");
+			return texture;
 		}
 		else
 			TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", nameOrPath, "\" to reload.");
 	}
-	else
+	else //Path
 	{
-		//Path
 		for (const auto& [name, texture] : Textures)
+		{
 			if (texture->GetType() == TextureType::Texture2D)
 			{
 				if (FS::IsPathEquivalent(nameOrPath, texture->GetFilePath()))
-					return Reload(texture.get());
+				{
+					if(texture->Reload())
+						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
+
+					return texture.get();
+				}
 			}
 			else if (texture->GetType() == TextureType::TextureCube)
 			{
 				for (uint32_t i = 0; i < texture->GetFilePaths().size(); i++)
 				{
-					if (!texture->GetFilePaths()[i].empty())
+					if (texture->GetFilePaths()[i].empty())
+						continue;
+
+					if (FS::IsPathEquivalent(nameOrPath, texture->GetFilePaths()[i]))
 					{
-						if (FS::IsPathEquivalent(nameOrPath, texture->GetFilePaths()[i]))
-							return Reload(texture.get());
+						if(texture->Reload())
+							TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
+
+						return texture.get();
 					}
 				}
 			}
+		}
 
 		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"",
 		        std::filesystem::path(nameOrPath).generic_u8string(), "\" to reload.");
@@ -345,56 +317,20 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const Texture* const texture)
+TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(Texture* const texture)
 {
 	TP_PROFILE_FUNCTION();
 
-	if(Exists(texture->GetName()))
+	if(!Exists(texture->GetName()))
 	{
-		const std::string name = texture->GetName();
-		const TextureType textureType = Textures[name]->GetType();
-		std::filesystem::path filePath = Textures[name]->GetFilePath();
-
-		if (filePath.empty())
-		{
-			TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", name, "\" to reload.");
-			return nullptr;
-		}
-
-		if (textureType == TextureType::Texture2D)
-		{
-			Textures[name].reset();
-			Textures[name] = Texture::CreateFromFile(name, filePath, TextureType::Texture2D);
-			Textures[name]->AwaitLoading();
-			TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", name, "\"");
-			return Textures[name].get();
-		}
-		if (textureType == TextureType::TextureCube)
-		{
-			const TextureCubeFormat textureFormat = texture->GetCubeFormat();
-
-			std::array<std::filesystem::path, 6> filePaths{};
-			for (uint32_t i = 0; i < texture->GetFilePaths().size(); i++)
-				filePaths[i] = texture->GetFilePaths()[i];
-
-			Textures[name].reset();
-			if (textureFormat == TextureCubeFormat::Cross /*||
-				textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
-				Textures[name] = Texture::CreateFromFile(name, filePath, TextureType::TextureCube, textureFormat);
-			else
-				Textures[name] = Texture::CreateFromFiles(name, filePaths);
-			Textures[name]->AwaitLoading();
-
-			TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
-			return Textures[name].get();
-		}
-
-		TP_WARN(Log::TextureManagerPrefix, "Unknown texture type: \"", name, "\"");
-	}
-	else
 		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", texture->GetName(), "\" to reload.");
+		return nullptr;
+	}
 
-	return nullptr;
+	if(texture->Reload())
+		TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", texture->GetName(), "\"");
+
+	return texture;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

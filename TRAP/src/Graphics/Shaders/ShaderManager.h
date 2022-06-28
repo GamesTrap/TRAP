@@ -71,13 +71,19 @@ namespace TRAP::Graphics::ShaderManager
 	/// Reload a shader via its name or path.
 	/// </summary>
 	/// <param name="nameOrPath">Name or path of a shader.</param>
-	/// <returns>Pointer to reloaded shader on success, nullptr otherwise.</returns>
+	/// <returns>
+	/// Pointer to shader if found (even on unsucessful reload), nullptr otherwise.
+	/// Should only return nullptr if the shader was not found.
+	/// </returns>
 	Shader* Reload(const std::string& nameOrPath);
 	/// <summary>
 	/// Reload a shader.
 	/// </summary>
 	/// <param name="shader">Shader to reload.</param>
-	/// <returns>Pointer to reloaded shader on success, nullptr otherwise.</returns>
+	/// <returns>
+	/// Pointer to shader if found (even on unsuccessful reload), nullptr otherwise.
+	/// Should only return nullptr if the shader was not found.
+	/// </returns>
 	Shader* Reload(Shader* const shader);
 	/// <summary>
 	/// Reload all currently loaded shaders.

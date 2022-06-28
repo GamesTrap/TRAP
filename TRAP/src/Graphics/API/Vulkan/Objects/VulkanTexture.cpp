@@ -84,34 +84,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
 
 TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 {
-#ifdef VERBOSE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
-#endif
-
-	if (m_ownsImage && m_vkImage)
-	{
-		if (TRAP::Graphics::API::ImageFormatIsSinglePlane(m_imageFormat))
-		{
-			vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
-		}
-		else
-		{
-			vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
-			vkFreeMemory(m_device->GetVkDevice(), m_vkDeviceMemory, nullptr);
-		}
-	}
-
-	if (m_vkSRVDescriptor)
-		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVDescriptor, nullptr);
-
-	if (m_vkSRVStencilDescriptor)
-		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVStencilDescriptor, nullptr);
-
-	if (!m_vkUAVDescriptors.empty())
-	{
-		for (uint32_t i = 0; i < m_mipLevels; ++i)
-			vkDestroyImageView(m_device->GetVkDevice(), m_vkUAVDescriptors[i], nullptr);
-	}
+	Shutdown();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -500,6 +473,48 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string& name)
 #else
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanTexture::Shutdown()
+{
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
+#endif
+
+	if (m_ownsImage && m_vkImage)
+	{
+		if (TRAP::Graphics::API::ImageFormatIsSinglePlane(m_imageFormat))
+			vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
+		else
+		{
+			vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
+			vkFreeMemory(m_device->GetVkDevice(), m_vkDeviceMemory, nullptr);
+		}
+	}
+
+	if (m_vkSRVDescriptor)
+		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVDescriptor, nullptr);
+
+	if (m_vkSRVStencilDescriptor)
+		vkDestroyImageView(m_device->GetVkDevice(), m_vkSRVStencilDescriptor, nullptr);
+
+	if (!m_vkUAVDescriptors.empty())
+	{
+		for (uint32_t i = 0; i < m_mipLevels; ++i)
+			vkDestroyImageView(m_device->GetVkDevice(), m_vkUAVDescriptors[i], nullptr);
+
+		m_vkUAVDescriptors.clear();
+	}
+
+	m_syncToken = 0;
+	m_lazilyAllocated = false;
+	m_vkSRVDescriptor = VK_NULL_HANDLE;
+	m_vkSRVStencilDescriptor = VK_NULL_HANDLE;
+	m_vkImage = VK_NULL_HANDLE;
+	m_vkAllocation = {};
+	m_vkDeviceMemory = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

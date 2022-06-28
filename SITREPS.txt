@@ -2745,7 +2745,14 @@ SITREP 06/27/2022|22w26a1
     - Shader Added IsShaderValid function ~<5 mins
     - (Vulkan)Shader Made GetNumThreadsPerGroup virtual ~<5 mins
     - (Vulkan)Shader Added virtual Init and Shutdown functions to reduce code redundancy ~<10 mins
-    - Shader updated other constructor accordingly ~<10 mins
+    - Shader updated other constructors accordingly ~<10 mins
     - VulkanShader Added two new constructors ~<10 mins
     - ShaderManager now uses Shaders Reload function instead of destructing/constructing ~<20 mins
     - VulkanRenderer BindShader now detects invalid shaders and applies the correct fallback ~<10 mins
+
+SITREP 06/28/2022|22w26a2
+    - Changed TRAP Engine version to 22w26a2(0.8.4)
+    - Texture Added virtual Shutdown function ~<5 mins
+    - Texture Added Reload function to reload texture without needing to reconstruct it ~<15 mins
+    - Texture Fixed HotReloading paths not getting added ~<10 mins
+    - TextureManager now uses Textures Reload function instead of destructing/constructing ~<20 mins

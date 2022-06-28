@@ -154,8 +154,10 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 		if(Exists(nameOrPath))
 		{
 			auto* shader = Shaders[nameOrPath].get();
-			if(!shader->GetFilePath().empty())
-				shader->Reload();
+			if(shader->Reload())
+				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
+
+			return shader;
 		}
 		else
 			TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", nameOrPath, "\" to reload.");
@@ -165,7 +167,12 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 		for (const auto& [name, shader] : Shaders)
 		{
 			if (FS::IsPathEquivalent(nameOrPath, shader->GetFilePath()))
-				return Reload(shader.get());
+			{
+				if(shader->Reload())
+					TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
+
+				return shader.get();
+			}
 		}
 
 		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"",
@@ -187,12 +194,8 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(Shader* const shad
 		return nullptr;
 	}
 
-	if(shader->GetFilePath().empty())
-		return nullptr;
-
-	shader->Reload();
-
-	TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", shader->GetName(), "\"");
+	if(shader->Reload())
+		TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", shader->GetName(), "\"");
 
 	return shader;
 }

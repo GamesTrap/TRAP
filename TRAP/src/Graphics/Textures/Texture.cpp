@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "FS/FS.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include "Graphics/API/Objects/Queue.h"
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
 																			  std::array<std::filesystem::path, 6> filepaths,
@@ -24,6 +25,19 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 	case RenderAPI::Vulkan:
 	{
 		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepaths));
+
+		//Hot Reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+		{
+			for(const std::filesystem::path& path : texture->m_filepaths)
+			{
+				if(path.empty())
+					continue;
+
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+			}
+		}
+
 		break;
 	}
 
@@ -76,6 +90,19 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 	case RenderAPI::Vulkan:
 	{
 		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
+
+		//Hot Reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+		{
+			for(const std::filesystem::path& path : texture->m_filepaths)
+			{
+				if(path.empty())
+					continue;
+
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+			}
+		}
+
 		break;
 	}
 
@@ -123,6 +150,19 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 	case RenderAPI::Vulkan:
 	{
 		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
+
+		//Hot Reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+		{
+			for(const std::filesystem::path& path : texture->m_filepaths)
+			{
+				if(path.empty())
+					continue;
+
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+			}
+		}
+
 		break;
 	}
 
@@ -204,6 +244,19 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 	case RenderAPI::Vulkan:
 	{
 		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), filepaths);
+
+		//Hot Reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+		{
+			for(const std::filesystem::path& path : texture->m_filepaths)
+			{
+				if(path.empty())
+					continue;
+
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+			}
+		}
+
 		break;
 	}
 
@@ -281,6 +334,19 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 	case RenderAPI::Vulkan:
 	{
 		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
+
+		//Hot Reloading
+		if(TRAP::Application::IsHotReloadingEnabled())
+		{
+			for(const std::filesystem::path& path : texture->m_filepaths)
+			{
+				if(path.empty())
+					continue;
+
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+			}
+		}
+
 		break;
 	}
 
@@ -491,6 +557,49 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube
 	                        RendererAPI::ResourceState::ShaderResource);
 
 	return fallbackCubeTex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::Texture::Reload()
+{
+	TP_PROFILE_FUNCTION();
+
+	//Can't reload if there is no filepath
+	if(m_textureType == TextureType::Texture2D && m_filepaths[0].empty())
+		return false;
+	if(m_textureType == TextureType::TextureCube)
+	{
+		for(const auto& path : m_filepaths)
+		{
+			if(path.empty())
+				return false;
+		}
+	}
+
+	//Make sure rendering using the texture finished before reloading it.
+	RendererAPI::GetGraphicsQueue()->WaitQueueIdle();
+	RendererAPI::GetComputeQueue()->WaitQueueIdle();
+
+	//Shutdown the current texture
+	Shutdown();
+
+	//Load texture
+	TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+	desc.Filepaths = m_filepaths;
+	desc.IsCubemap = m_textureType == TextureType::TextureCube;
+	desc.Type = m_textureCubeFormat;
+	desc.CreationFlag = RendererAPI::TextureCreationFlags::None;
+	desc.Texture = this;
+
+	if(static_cast<bool>(m_descriptorTypes & RendererAPI::DescriptorType::RWTexture))
+		desc.CreationFlag |= RendererAPI::TextureCreationFlags::Storage;
+
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &m_syncToken);
+
+	AwaitLoading();
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1046,15 +1155,4 @@ TRAP::Graphics::Texture::Texture()
 	  m_ownsImage(true),
 	  m_textureCubeFormat(TextureCubeFormat::NONE)
 {
-	//Hot Reloading
-	if(TRAP::Application::IsHotReloadingEnabled())
-	{
-		for(const std::filesystem::path& path : m_filepaths)
-		{
-			if(path.empty())
-				continue;
-
-			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
-		}
-	}
 }

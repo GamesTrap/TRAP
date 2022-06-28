@@ -102,6 +102,12 @@ namespace TRAP::Graphics::API
 		/// <param name="name">Name for the texture.</param>
 		void SetTextureName(const std::string& name) const override;
 
+	protected:
+		/// <summary>
+		/// Shutdown API dependent texture.
+		/// </summary>
+		void Shutdown() override;
+
 	private:
 		/// <summary>
 		/// Pre Initialization step run by every constructor.

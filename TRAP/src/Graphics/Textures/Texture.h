@@ -139,7 +139,17 @@ namespace TRAP::Graphics
 		/// </summary>
 		Texture& operator=(Texture&&) = default;
 
+		/// <summary>
+		/// Initialize the Texture.
+		/// </summary>
+		/// <param name="desc">Texture description.</param>
 		virtual void Init(const RendererAPI::TextureDesc& desc) = 0;
+
+		/// <summary>
+		/// Reload texture.
+		/// </summary>
+		/// <returns>True on successful reload (valid texture), else (invalid texture) otherwise.</returns>
+		bool Reload();
 
 		/// <summary>
 		/// Retrieve the name of the texture.
@@ -304,7 +314,13 @@ namespace TRAP::Graphics
 		/// <returns>Array of splitted textures.</returns>
 		template<typename T>
 		static std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Image* const image);
+
 	protected:
+		/// <summary>
+		/// Shutdown API dependent texture.
+		/// </summary>
+		virtual void Shutdown() = 0;
+
 		/// <summary>
 		/// Validate texture limits.
 		/// </summary>

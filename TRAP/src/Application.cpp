@@ -365,21 +365,20 @@ void TRAP::Application::Run()
 
 				tickTimer.Reset();
 			}
-		}
 
 #ifndef TRAP_HEADLESS_MODE
-		ImGuiLayer::Begin();
-		{
-			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
+			// ImGuiLayer::Begin();
+			// {
+			// 	TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-			for (const auto& layer : m_layerStack)
-				layer->OnImGuiRender();
-		}
-		ImGuiLayer::End();
+			// 	for (const auto& layer : m_layerStack)
+			// 		layer->OnImGuiRender();
+			// }
+			// ImGuiLayer::End();
 #endif
 
-		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window.get());
+		}
 
 		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 			TRAP::Window::OnUpdate();
