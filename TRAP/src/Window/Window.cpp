@@ -503,7 +503,6 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 	Scope<INTERNAL::WindowingAPI::InternalCursor> internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
 	INTERNAL::WindowingAPI::SetCursor(m_window.get(), internalCursor.get());
-	INTERNAL::ImGuiWindowing::SetCustomCursor(internalCursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -517,7 +516,6 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspo
 			image, xHotspot, yHotspot
 		);
 	INTERNAL::WindowingAPI::SetCursor(m_window.get(), cursor.get());
-	INTERNAL::ImGuiWindowing::SetCustomCursor(cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -24,6 +24,8 @@ project "ImGui"
         "ImGui/imgui_demo.cpp"
     }
 
+    defines "IMGUI_DISABLE_OBSOLETE_FUNCTIONS"
+
     filter "configurations:Debug"
 	    runtime "Debug"
 		symbols "On"

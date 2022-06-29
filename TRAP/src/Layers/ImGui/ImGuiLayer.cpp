@@ -79,7 +79,10 @@ void TRAP::ImGuiLayer::OnAttach()
 	style.ScaleAllSizes(scaleFactor);
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
 		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
 
 	SetDarkThemeColors();
 
@@ -124,9 +127,11 @@ void TRAP::ImGuiLayer::OnAttach()
 			m_imguiPipelineCache.get()
 		)->GetVkPipelineCache();
 		initInfo.DescriptorPool = m_imguiDescriptorPool;
-		initInfo.Allocator = nullptr;
+		initInfo.Subpass = 0;
 		initInfo.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount;
 		initInfo.ImageCount = TRAP::Graphics::RendererAPI::ImageCount;
+		initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		initInfo.Allocator = nullptr;
 		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
 
 		ImGui_ImplVulkan_Init(&initInfo, dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
@@ -151,6 +156,7 @@ void TRAP::ImGuiLayer::OnDetach()
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
+		Graphics::RendererAPI::GetRenderer()->WaitIdle();
 		m_imguiPipelineCache->Save(TRAP::FS::GetGameTempFolderPath() / "ImGui.cache");
 		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
@@ -218,11 +224,14 @@ void TRAP::ImGuiLayer::End()
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
-		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-		                                dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
-										(
-											winData.GraphicCommandBuffers[winData.ImageIndex]
-										)->GetVkCommandBuffer());
+		if(!Application::GetWindow()->IsMinimized())
+		{
+			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+											dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+											(
+												winData.GraphicCommandBuffers[winData.ImageIndex]
+											)->GetVkCommandBuffer());
+		}
 	}
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

@@ -2756,3 +2756,12 @@ SITREP 06/28/2022|22w26a2
     - Texture Added Reload function to reload texture without needing to reconstruct it ~<15 mins
     - Texture Fixed HotReloading paths not getting added ~<10 mins
     - TextureManager now uses Textures Reload function instead of destructing/constructing ~<20 mins
+
+SITREP 06/29/2022|22w26b1
+    - Changed TRAP Engine version to 22w26b1(0.8.5)
+    - Updated ImGui submodule ~<5 mins
+    - ImGui Disabled usage of obsolete functions ~<5 mins
+    - Input Added MAKE_ENUM_FLAG for ControllerDPad enum ~<5 mins
+    - Updated ImGuiLayer ~<10 mins
+    - Updated ImGuiVulkanBackend ~>20 mins
+    - ImGuiWindowing complete overhaul ~>40 mins

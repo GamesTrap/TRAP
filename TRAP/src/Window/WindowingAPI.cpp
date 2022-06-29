@@ -2431,8 +2431,6 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 
 		if(s_Data.Callbacks.Monitor)
 			s_Data.Callbacks.Monitor(mon, connected);
-
-		ImGuiWindowing::MonitorCallback(mon, true);
 	}
 	else
 	{
@@ -2447,8 +2445,6 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 				break;
 			}
 		}
-
-		ImGuiWindowing::MonitorCallback(monitor.get(), false);
 	}
 }
 
@@ -2470,8 +2466,6 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 			break;
 		}
 	}
-
-	ImGuiWindowing::MonitorCallback(monitor.get(), false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

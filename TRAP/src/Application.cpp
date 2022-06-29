@@ -367,14 +367,14 @@ void TRAP::Application::Run()
 			}
 
 #ifndef TRAP_HEADLESS_MODE
-			// ImGuiLayer::Begin();
-			// {
-			// 	TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
+			ImGuiLayer::Begin();
+			{
+				TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-			// 	for (const auto& layer : m_layerStack)
-			// 		layer->OnImGuiRender();
-			// }
-			// ImGuiLayer::End();
+				for (const auto& layer : m_layerStack)
+					layer->OnImGuiRender();
+			}
+			ImGuiLayer::End();
 #endif
 
 			Graphics::RenderCommand::Present(m_window.get());

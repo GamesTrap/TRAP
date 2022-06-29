@@ -29,11 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Core/PlatformDetection.h"
 #include "Window/WindowingAPI.h"
-
-namespace TRAP::Graphics
-{
-	enum class RenderAPI;
-}
+#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::INTERNAL
 {
@@ -60,44 +56,73 @@ namespace TRAP::INTERNAL
 		/// Starts a new ImGui frame.
 		/// </summary>
 		static void NewFrame();
-		/// <summary>
-		/// Set a custom cursor to be shown in ImGui UIs.
-		/// </summary>
-		/// <param name="cursor">Cursor to show.</param>
-		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
 
 		/// <summary>
-		/// Callback to notify ImGui that a monitor was connected or disconnected.
+		/// Install ImGui callbacks.
 		/// </summary>
-		/// <param name="unused1">Monitor whose status changed.</param>
-		/// <param name="unused2">Whether monitor got connected or disconnected.</param>
-		static void MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2);
+		/// <param name="window">Window to set callbacks for.</param>
+		static void InstallCallbacks(WindowingAPI::InternalWindow* window);
+		/// <summary>
+		/// Restore old callbacks.
+		/// </summary>
+		/// <param name="window">Window to restore callbacks for.</param>
+		static void RestoreCallbacks(WindowingAPI::InternalWindow* window);
+
 	private:
-		static WindowingAPI::InternalWindow* s_window; //Main Window
-		static double s_time;
-		static std::array<bool, 5> s_mouseJustPressed;
-		static std::array<Scope<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> s_mouseCursors;
-		static bool s_installedCallbacks;
-		static bool s_wantUpdateMonitors;
-		static Scope<WindowingAPI::InternalCursor> s_customCursor;
-		static TRAP::Graphics::RenderAPI s_renderAPI;
+		/// <summary>
+		/// Data struct for ImGui user data.
+		/// </summary>
+		struct ImGuiTRAPData
+		{
+			WindowingAPI::InternalWindow* Window;
+			Graphics::RenderAPI ClientAPI;
+			double Time;
+			const WindowingAPI::InternalWindow* MouseWindow;
+			std::array<TRAP::Scope<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> MouseCursors;
+			ImVec2 LastValidMousePos;
+			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows;
+			bool InstalledCallbacks;
+			bool WantUpdateMonitors;
 
-		//Chain WindowingAPI callbacks for main viewport: Our callbacks will call the user's
-		//                                                previously installed callbacks, if any.
-		static WindowingAPI::MouseButtonFunc s_prevUserCallbackMouseButton;
-		static WindowingAPI::ScrollFunc s_prevUserCallbackScroll;
-		static WindowingAPI::KeyFunc s_prevUserCallbackKey;
-		static WindowingAPI::CharFunc s_prevUserCallbackChar;
+			//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
+			WindowingAPI::WindowFocusFunc PrevUserCallbackWindowFocus;
+			WindowingAPI::CursorPositionFunc PrevUserCallbackCursorPos;
+			WindowingAPI::CursorEnterFunc PrevUserCallbackCursorEnter;
+			WindowingAPI::MouseButtonFunc PrevUserCallbackMouseButton;
+			WindowingAPI::ScrollFunc PrevUserCallbackScroll;
+			WindowingAPI::KeyFunc PrevUserCallbackKey;
+			WindowingAPI::CharFunc PrevUserCallbackChar;
+			WindowingAPI::MonitorFunc PrevUserCallbackMonitor;
+
+			ImGuiTRAPData()
+				: Window(nullptr), ClientAPI(Graphics::RenderAPI::NONE), Time(0.0), MouseWindow(nullptr),
+				  LastValidMousePos(0.0f, 0.0f), KeyOwnerWindows(), InstalledCallbacks(false), WantUpdateMonitors(false),
+				  PrevUserCallbackWindowFocus(nullptr), PrevUserCallbackCursorPos(nullptr), PrevUserCallbackCursorEnter(nullptr),
+				  PrevUserCallbackMouseButton(nullptr), PrevUserCallbackScroll(nullptr), PrevUserCallbackKey(nullptr),
+				  PrevUserCallbackChar(nullptr), PrevUserCallbackMonitor(nullptr)
+			{
+				KeyOwnerWindows.resize(static_cast<int32_t>(TRAP::Input::Key::Menu));
+			}
+		};
 
 		/// <summary>
 		/// Data struct for an ImGuiViewport.
 		/// </summary>
 		struct ImGuiViewportDataTRAP
 		{
-			Scope<WindowingAPI::InternalWindow> Window = nullptr;
-			WindowingAPI::InternalWindow* WindowPtr = nullptr;
-			bool WindowOwned = false;
-			int32_t IgnoreWindowSizeEventFrame = -1;
+			Scope<WindowingAPI::InternalWindow> Window;
+			WindowingAPI::InternalWindow* WindowPtr;
+			bool WindowOwned;
+			int32_t IgnoreWindowPosEventFrame;
+			int32_t IgnoreWindowSizeEventFrame;
+
+			/// <summary>
+			/// Constructor.
+			/// </summary>
+			ImGuiViewportDataTRAP()
+				: Window(nullptr), WindowPtr(nullptr), WindowOwned(false),
+				  IgnoreWindowPosEventFrame(-1), IgnoreWindowSizeEventFrame(-1)
+			{}
 
 			/// <summary>
 			/// Destructor
@@ -109,38 +134,24 @@ namespace TRAP::INTERNAL
 		};
 
 		/// <summary>
-		/// Initialize the platform interface.
+		/// Window Focus callback.
 		/// </summary>
-		static void InitPlatformInterface();
+		/// <param name="window">Affected window.</param>
+		/// <param name="focused">Is window focused or not.</param>
+		static void WindowFocusCallback(const WindowingAPI::InternalWindow* window, bool focused);
 		/// <summary>
-		/// Update the mouse button states and the position.
+		/// Cursor enter callback.
 		/// </summary>
-		static void UpdateMousePosAndButtons();
+		/// <param name="window">Affected window.</param>
+		/// <param name="entered">Cursor entered or leaved window.</param>
+		static void CursorEnterCallback(const WindowingAPI::InternalWindow* window, bool entered);
 		/// <summary>
-		/// Update mouse cursor mode and shape.
+		/// Cursor position callback.
 		/// </summary>
-		static void UpdateMouseCursor();
-		/// <summary>
-		/// Update gamepad states.
-		/// </summary>
-		static void UpdateGamepads();
-		/// <summary>
-		/// Update all ImGui monitor states.
-		/// </summary>
-		static void UpdateMonitors();
-
-		/// <summary>
-		/// Retrieve data from clipboard as string.
-		/// </summary>
-		/// <param name="userData">Unused user data.</param>
-		/// <returns>Clipboard string.</returns>
-		static const char* GetClipboardText(void* userData);
-		/// <summary>
-		/// Set clipboard text.
-		/// </summary>
-		/// <param name="userData">Unused user data.</param>
-		/// <param name="text">Text to set.</param>
-		static void SetClipboardText(void* userData, const char* text);
+		/// <param name="window">Affected window.</param>
+		/// <param name="xPos">Cursor x position of the window.</param>
+		/// <param name="yPos">Cursor y position of the window.</param>
+		static void CursorPosCallback(const WindowingAPI::InternalWindow* window, double xPos, double yPos);
 		/// <summary>
 		/// Mouse button callback.
 		/// </summary>
@@ -170,6 +181,78 @@ namespace TRAP::INTERNAL
 		/// <param name="codePoint">UTF-32 code point.</param>
 		static void CharCallback(const WindowingAPI::InternalWindow* window, uint32_t codePoint);
 		/// <summary>
+		/// Monitor callback.
+		/// </summary>
+		/// <param name="monitor">Affected monitor.</param>
+		/// <param name="connected">Monitor connected or disconnected.</param>
+		static void MonitorCallback(const WindowingAPI::InternalMonitor* monitor, bool connected);
+
+		/// <summary>
+		/// Get the backend data provided by user.
+		/// </summary>
+		/// <returns>Pointer to backend data.</returns>
+		static ImGuiTRAPData* GetBackendData();
+
+		/// <summary>
+		/// Get clipboard text.
+		/// </summary>
+		/// <param name="userData">Unused.</param>
+		/// <returns>Clipboard content.</returns>
+		static const char* GetClipboardText(void* userData);
+		/// <summary>
+		/// Set the clipboard text.
+		/// </summary>
+		/// <param name="userData">Unused.</param>
+		/// <param name="text">Text to set on clipboard.</param>
+		static void SetClipboardText(void* userData, const char* text);
+
+		/// <summary>
+		/// Convert a TRAP::Input::Key into an ImGuiKey.
+		/// </summary>
+		/// <param name="key">Key to convert.</param>
+		/// <returns>Converted key.</returns>
+		static ImGuiKey KeyToImGuiKey(Input::Key key);
+
+		/// <summary>
+		/// Update modifier keys.
+		/// </summary>
+		/// <param name="window">Window to check modifier keys on.</param>
+		static void UpdateKeyModifiers(WindowingAPI::InternalWindow* window);
+
+		/// <summary>
+		/// Translate untranslated keys from the WindowingAPI
+		/// back to translated keys to be used by ImGui:
+		/// </summary>
+		/// <param name="key">Key to translate.</param>
+		/// <returns>Translated key.</returns>
+		static Input::Key TranslateUntranslateKey(Input::Key key);
+
+		/// <summary>
+		/// Update the ImGui mouse data.
+		/// </summary>
+		static void UpdateMouseData();
+		/// <summary>
+		/// Update the ImGui mouse cursor.
+		/// </summary>
+		static void UpdateMouseCursor();
+		/// <summary>
+		/// Update the ImGui gamepad data.
+		/// </summary>
+		static void UpdateGamepads();
+		/// <summary>
+		/// Update the ImGui monitor data.
+		/// </summary>
+		static void UpdateMonitors();
+
+		//-------------------------------------------------------------------------------------------------------------------//
+		//MULTI-VIEWPORT | PLATFORM INTERFACE SUPPORT
+		//This is an _advanced_ and _optional_ feature,
+		//allowing the back-end to create and handle multiple viewports simultaneously.
+		//If you are new to dear imgui or creating a new binding for dear imgui,
+		//it is recommended that you completely ignore this section first...
+		//-------------------------------------------------------------------------------------------------------------------//
+
+		/// <summary>
 		/// Window close callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
@@ -178,100 +261,109 @@ namespace TRAP::INTERNAL
 		/// Window position callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
-		/// <param name="x">X position.</param>
-		/// <param name="y">Y position.</param>
-		static void WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t x, int32_t y);
+		/// <param name="xPos">New x position.</param>
+		/// <param name="yPos">New y position.</param>
+		static void WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// Window size callback.
 		/// </summary>
 		/// <param name="window">Affected window.</param>
-		/// <param name="width">Width.</param>
-		/// <param name="height">Height.</param>
+		/// <param name="width">New width.</param>
+		/// <param name="height">New height.</param>
 		static void WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t width, int32_t height);
+
 		/// <summary>
-		/// Create a new window to be handled by ImGui.
+		/// Create a new ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
+		/// <param name="viewport">Viewport to create window for.</param>
 		static void CreateWindow(ImGuiViewport* viewport);
 		/// <summary>
-		/// Destroy a window which is handled by ImGui.
+		/// Destroy an ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
+		/// <param name="viewport">Viewport to destroy window on.</param>
 		static void DestroyWindow(ImGuiViewport* viewport);
 		/// <summary>
-		/// Show/Display a window which is handled by ImGui.
+		/// Show an ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
+		/// <param name="viewport">Viewport to show window for.</param>
 		static void ShowWindow(ImGuiViewport* viewport);
 		/// <summary>
-		/// Retrieve the position of a window which is handled by ImGui.
+		/// Retrieve the ImGui Window position.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <returns>Current window position.</returns>
+		/// <param name="viewport">Viewport to retrieve position for.</param>
+		/// <returns>Window position.</returns>
 		static ImVec2 GetWindowPos(ImGuiViewport* viewport);
 		/// <summary>
-		/// Set the position of a window which is handled by ImGui.
+		/// Set the position for the ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <param name="pos">New window position.</param>
-		static void SetWindowPos(ImGuiViewport* viewport, ImVec2 pos);
+		/// <param name="viewport">Viewport to set window position on.</param>
+		/// <param name="pos">Position to set.</param>
+		static void SetWindowPos(ImGuiViewport* viewport, const ImVec2 pos);
 		/// <summary>
-		/// Retrieve the size of a window which is handled by ImGui.
+		/// Retrieve the ImGui Window size.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <returns>Current window size.</returns>
+		/// <param name="viewport">Viewport to retrieve size for.</param>
+		/// <returns>Window size.</returns>
 		static ImVec2 GetWindowSize(ImGuiViewport* viewport);
 		/// <summary>
-		/// Set the size of a window which is handled by ImGui.
+		/// Set the size for the ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <param name="size">New window size.</param>
-		static void SetWindowSize(ImGuiViewport* viewport, ImVec2 size);
+		/// <param name="viewport">Viewport to set window size on.</param>
+		/// <param name="size">Size to set.</param>
+		static void SetWindowSize(ImGuiViewport* viewport, const ImVec2 size);
 		/// <summary>
-		/// Set the title of a window which is handled by ImGui.
+		/// Set the title for the ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <param name="title">New window title.</param>
+		/// <param name="viewport">Viewport to set window title on.</param>
+		/// <param name="title">Title to set.</param>
 		static void SetWindowTitle(ImGuiViewport* viewport, const char* title);
 		/// <summary>
-		/// Focus a window which is handled by ImGui.
+		/// Set focus for the ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
+		/// <param name="viewport">Viewport to set window focus on.</param>
 		static void SetWindowFocus(ImGuiViewport* viewport);
 		/// <summary>
-		/// Retrieve focus state of a window which is handled by ImGui.
+		/// Retrieve the ImGui Window focus state.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <returns>True if window has focus, false otherwise.</returns>
+		/// <param name="viewport">Viewport to retrieve focus state for.</param>
+		/// <returns>Focus state.</returns>
 		static bool GetWindowFocus(ImGuiViewport* viewport);
 		/// <summary>
-		/// Retrieve minimization state of a window which is handled by ImGui.
+		/// Retrieve the ImGui Window minimization state.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <returns>True if window is minimized, false otherwise.</returns>
+		/// <param name="viewport">Viewport to retrieve minimization state for.</param>
+		/// <returns>Minimization state.</returns>
 		static bool GetWindowMinimized(ImGuiViewport* viewport);
 		/// <summary>
-		/// Set transparency/alpha value of a window which is handled by ImGui.
+		/// Set the alpha value for the ImGui Window.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <param name="alpha">New alpha value.</param>
-		static void SetWindowAlpha(ImGuiViewport* viewport, float alpha);
+		/// <param name="viewport">Viewport to set alpha value on.</param>
+		/// <param name="alpha">Alpha value.</param>
+		static void SetWindowAlpha(ImGuiViewport* viewport, const float alpha);
+
+		//--------------------------------------------------------------------------------------------------------
+		// Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)
+		//--------------------------------------------------------------------------------------------------------
+
 		/// <summary>
-		/// Render window which is handled by ImGui.
-		/// Note: This function does not actually render anything when using RenderAPI::Vulkan.
+		/// Create a Vulkan surface for ImGui.
 		/// </summary>
-		/// <param name="unused"></param>
-		static void RenderWindow(ImGuiViewport* viewport, void* unused);
+		/// <param name="viewport">Viewport to create surface for.</param>
+		/// <param name="vkInstance">Vulkan instance.</param>
+		/// <param name="vkAllocator">Vulkan allocator.</param>
+		/// <param name="outVkSurface">Output for Vulkan surface.</param>
+		/// <returns>Vulkan error code.</returns>
+		static int32_t CreateVkSurface(ImGuiViewport* viewport, const ImU64 vkInstance,
+		                               const void* vkAllocator, ImU64* outVkSurface);
+
 		/// <summary>
-		/// Create a Vulkan surface for a window which is handled by ImGui.
+		/// Initialize the platform interface.
 		/// </summary>
-		/// <param name="viewport">Viewport data from ImGui.</param>
-		/// <param name="vkInstance">VkInstance to create surface with.</param>
-		/// <param name="vkAllocator">VkAllocationCallbacks to be used for surface creation.</param>
-		/// <param name="outVkSurface">Out pointer to surface handle.</param>
-		/// <returns>VkResult of the surface creation.</returns>
-		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator,
-		                               ImU64* outVkSurface);
+		static void InitPlatformInterface();
+		/// <summary>
+		/// Shutdown the platform interface.
+		/// </summary>
+		static void ShutdownPlatformInterface();
 	};
 }
 

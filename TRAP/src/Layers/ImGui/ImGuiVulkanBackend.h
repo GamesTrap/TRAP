@@ -31,9 +31,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 // This needs to be used along with a Platform Backend (e.g. GLFW, SDL, Win32, custom..)
 
 // Implemented features:
-//  [X] Renderer: Support for large meshes (64k+ vertices) with 16-bit indices.
-// Missing features:
-//  [ ] Renderer: User texture binding. Changes of ImTextureID aren't supported by this backend! See https://github.com/ocornut/imgui/pull/914
+//  [X] Renderer: Large meshes support (64+k vertices) with 16-bit indices.
+//  [x] Renderer: Multi-viewport / platform windows. With issues (flickering when creating a new viewport).
+//  [X] Renderer: User texture binding. See ImGuiLayer for more details.
 
 // You can use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
@@ -49,8 +49,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 // - Helper ImGui_ImplVulkanH_XXX functions and structures are only used by this example (main.cpp) and by
 //   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
 // Read comments in imgui_impl_vulkan.h.
-
-//#include "imgui.h"      // IMGUI_IMPL_API
 
 #include <vulkan/vulkan.h>
 
@@ -68,7 +66,7 @@ struct ImGui_ImplVulkan_InitInfo
     uint32_t                        Subpass;
     uint32_t                        MinImageCount;          // >= 2
     uint32_t                        ImageCount;             // >= MinImageCount
-    VkSampleCountFlagBits           MSAASamples;            // >= VK_SAMPLE_COUNT_1_BIT
+    VkSampleCountFlagBits           MSAASamples;            // >= VK_SAMPLE_COUNT_1_BIT (0 -> default to VK_SAMPLE_COUNT_1_BIT)
     const VkAllocationCallbacks*    Allocator;
     void                            (*CheckVkResultFn)(VkResult err);
 };
@@ -155,7 +153,7 @@ struct ImGui_ImplVulkanH_Window
     ImGui_ImplVulkanH_Window()
     {
         memset(this, 0, sizeof(*this));
-        PresentMode = VK_PRESENT_MODE_MAX_ENUM_KHR;
+        PresentMode = static_cast<VkPresentModeKHR>(~0); //Ensure we get an error if user doesn't set this.
         ClearEnable = true;
     }
 };
