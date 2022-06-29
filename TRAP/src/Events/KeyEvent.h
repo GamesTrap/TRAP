@@ -52,13 +52,6 @@ namespace TRAP::Events
 		/// </summary>
 		KeyEvent& operator=(KeyEvent&&) = default;
 
-		/// <summary>
-		/// Get a string representation for a non printable key (space key for example).
-		/// </summary>
-		/// <param name="key">Key to get.</param>
-		/// <returns>String representation.</returns>
-		static std::string NonPrintableKeyToString(Input::Key key);
-
 		Input::Key m_key;
 	};
 

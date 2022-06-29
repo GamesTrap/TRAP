@@ -3611,7 +3611,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			if(diff == event.xkey.time || (diff > 0 && diff < (static_cast<Time>(1u) << 31u)))
 			{
 				if(keyCode)
-					InputKey(window, key, keyCode, true);
+					InputKey(window, key, keyCode, Input::KeyState::Pressed);
 
 				window->KeyPressTimes[keyCode] = event.xkey.time;
 			}
@@ -3648,7 +3648,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			KeySym keySym = 0;
 			s_Data.XLIB.LookupString(&event.xkey, nullptr, 0, &keySym, nullptr);
 
-			InputKey(window, static_cast<Input::Key>(key), keyCode, true);
+			InputKey(window, static_cast<Input::Key>(key), keyCode, Input::KeyState::Pressed);
 
 			const uint32_t character = KeySymToUnicode(keySym);
 			if(character != 0xFFFFFFFFu)
@@ -3685,18 +3685,18 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			}
 		}
 
-		InputKey(window, key, keyCode, false);
+		InputKey(window, key, keyCode, Input::KeyState::Released);
 		return;
 	}
 
 	case ButtonPress:
 	{
 		if(event.xbutton.button == Button1)
-			InputMouseClick(window, Input::MouseButton::Left, true);
+			InputMouseClick(window, Input::MouseButton::Left, Input::KeyState::Pressed);
 		else if(event.xbutton.button == Button2)
-			InputMouseClick(window, Input::MouseButton::Middle, true);
+			InputMouseClick(window, Input::MouseButton::Middle, Input::KeyState::Pressed);
 		else if(event.xbutton.button == Button3)
-			InputMouseClick(window, Input::MouseButton::Right, true);
+			InputMouseClick(window, Input::MouseButton::Right, Input::KeyState::Pressed);
 
 		//Modern X provides scroll events as mouse button presses
 		else if(event.xbutton.button == Button4)
@@ -3712,7 +3712,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		{
 			//Additional buttons after 7 are treated as regular buttons
 			//We subtract 4 to fill the gap left by scroll input above
-			InputMouseClick(window, static_cast<Input::MouseButton>(event.xbutton.button - Button1 - 4), true);
+			InputMouseClick(window, static_cast<Input::MouseButton>(event.xbutton.button - Button1 - 4), Input::KeyState::Pressed);
 		}
 
 		return;
@@ -3721,16 +3721,16 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	case ButtonRelease:
 	{
 		if(event.xbutton.button == Button1)
-			InputMouseClick(window, Input::MouseButton::Left, false);
+			InputMouseClick(window, Input::MouseButton::Left, Input::KeyState::Released);
 		else if(event.xbutton.button == Button2)
-			InputMouseClick(window, Input::MouseButton::Middle, false);
+			InputMouseClick(window, Input::MouseButton::Middle, Input::KeyState::Released);
 		else if(event.xbutton.button == Button3)
-			InputMouseClick(window, Input::MouseButton::Right, false);
+			InputMouseClick(window, Input::MouseButton::Right, Input::KeyState::Released);
 		else if(event.xbutton.button > 7)
 		{
 			//Additional buttons after 7 are treated as regular buttons
 			//We subtract 4 to fill the gap left by scroll input above
-			InputMouseClick(window, static_cast<Input::MouseButton>(event.xbutton.button - Button1 - 4), false);
+			InputMouseClick(window, static_cast<Input::MouseButton>(event.xbutton.button - Button1 - 4), Input::KeyState::Released);
 		}
 
 		return;

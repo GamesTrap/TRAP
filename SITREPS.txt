@@ -2765,3 +2765,12 @@ SITREP 06/29/2022|22w26b1
     - Updated ImGuiLayer ~<10 mins
     - Updated ImGuiVulkanBackend ~>20 mins
     - ImGuiWindowing complete overhaul ~>40 mins
+
+SITREP 06/30/2022|22w26b2
+    - Changed TRAP Engine version to 22w26b2(0.8.6)
+    - KeyEvent Moved NonPrintableKeyToString to Input (silenced error in TRAP::Input::GetKeyName) ~<5 mins
+    - Input Added KeyState enum ~<5 mins
+    - WindowingAPI now uses the TRAP::Input::KeyState instead of plain bools ~<15 mins
+    - WindowingAPI now also emits KeyState::Repeat in key callback (only in key callback!) ~<10 mins
+    - Updated Window ~<5 mins
+    - Updated ImGuiWindowing ~<10 mins

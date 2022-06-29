@@ -209,6 +209,16 @@ namespace TRAP
 		};
 
 		/// <summary>
+		/// Key state.
+		/// </summary>
+		enum class KeyState
+		{
+			Released,
+			Pressed,
+			Repeat
+		};
+
+		/// <summary>
 		/// Mouse buttons.
 		/// </summary>
 		enum class MouseButton

@@ -1156,11 +1156,11 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetKeyCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::Key key, const bool pressed)
+		[](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::Key key, const Input::KeyState state)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-			if(pressed)
+			if(state == Input::KeyState::Pressed || state == Input::KeyState::Repeat)
 			{
 				if(data.KeyRepeatCounts.find(static_cast<uint16_t>(key)) == data.KeyRepeatCounts.end())
 				{
@@ -1211,14 +1211,14 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetMouseButtonCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::MouseButton button, const bool pressed)
+		[](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::MouseButton button, const Input::KeyState state)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 			if (!data.EventCallback)
 				return;
 
-			if (pressed)
+			if (state == Input::KeyState::Pressed)
 			{
 				Events::MouseButtonPressEvent event(button, data.Win);
 				data.EventCallback(event);

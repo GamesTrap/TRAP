@@ -157,8 +157,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
 		/// <param name="mouseButton">The mouse button that was pressed or released.</param>
-		/// <param name="pressed">True if mouse button is pressed, false otherwise.</param>
-		using MouseButtonFunc = void(*)(const InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
+		/// <param name="state">State of the mouse button (pressed or released).</param>
+		using MouseButtonFunc = void(*)(const InternalWindow* window, Input::MouseButton mouseButton, TRAP::Input::KeyState state);
 		/// <summary>
 		/// The function pointer type for cursor position callbacks.
 		/// </summary>
@@ -183,9 +183,9 @@ namespace TRAP::INTERNAL
 		/// The function pointer type for keyboard key callbacks.
 		/// </summary>
 		/// <param name="window">The window that received the event.</param>
-		/// <param name="key">The key that was pressed or released.</param>
-		/// <param name="pressed">True if key is pressed, false if it is released.</param>
-		using KeyFunc = void(*)(const InternalWindow* window, Input::Key key, bool pressed);
+		/// <param name="key">The key that was pressed, repeated or released.</param>
+		/// <param name="state">The state of the key.</param>
+		using KeyFunc = void(*)(const InternalWindow* window, Input::Key key, Input::KeyState state);
 		/// <summary>
 		/// The function pointer type for Unicode character callbacks.
 		/// </summary>
@@ -1077,8 +1077,8 @@ namespace TRAP::INTERNAL
 			int32_t MaxWidth = -1, MaxHeight = -1;
 
 			CursorMode cursorMode = CursorMode::Normal;
-			std::array<bool, 8> MouseButtons{};
-			std::array<bool, 349 + 1> Keys{};
+			std::array<TRAP::Input::KeyState, static_cast<uint32_t>(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
+			std::array<TRAP::Input::KeyState, static_cast<uint32_t>(TRAP::Input::Key::Menu) + 1> Keys{};
 			//Virtual cursor position when cursor is disabled
 			double VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
 			bool RawMouseMotion = false;
@@ -2129,7 +2129,7 @@ namespace TRAP::INTERNAL
 		static const char* GetKeyName(Input::Key key, int32_t scanCode);
 		/// <summary>
 		/// This function returns the last state reported for the specified key to the
-		/// specified window. The returned state is pressed (true) or released (false).
+		/// specified window. The returned state is KeyState::Pressed or KeyState::Released.
 		///
 		/// The key functions deal with physical keys, with key token named after their use
 		/// on the standard US keyboard layout. If you want to input text, use the Unicode
@@ -2143,7 +2143,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to query.</param>
 		/// <param name="key">Key to get last reported state from.</param>
 		/// <returns>Last reported state of the specified key.</returns>
-		static bool GetKey(const InternalWindow* window, Input::Key key);
+		static TRAP::Input::KeyState GetKey(const InternalWindow* window, Input::Key key);
 		/// <summary>
 		/// This function returns the last state reported for the specified mouse button
 		/// to the specified window. The returned state is pressed (true) or released (false).
@@ -2154,7 +2154,7 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to query.</param>
 		/// <param name="button">Mouse button to get last reported state from.</param>
 		/// <returns>Last reported state of the specified mouse button.</returns>
-		static bool GetMouseButton(const InternalWindow* window, Input::MouseButton button);
+		static TRAP::Input::KeyState GetMouseButton(const InternalWindow* window, Input::MouseButton button);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the cursor relative to the
 		/// upper-left corner of the content area of the specified window. The window must have
@@ -3464,8 +3464,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="key">Key that is pressed or released.</param>
 		/// <param name="scancode">Scan code of the key which is pressed or released.</param>
-		/// <param name="pressed">Whether the given key is pressed or released.</param>
-		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool pressed);
+		/// <param name="state">State of the key (pressed, repeated or released).</param>
+		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, Input::KeyState state);
 		/// <summary>
 		/// Notifies shared code of a Unicode codepoint input event.
 		/// The 'plain' parameter determines whether to emit a regular character event.
@@ -3478,8 +3478,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="button">Mouse button that is pressed or released.</param>
-		/// <param name="pressed">Whether the mouse button is pressed or released.</param>
-		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, bool pressed);
+		/// <param name="state">Mouse button state (pressed or released).</param>
+		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, TRAP::Input::KeyState state);
 		/// <summary>
 		/// Notifies shared code of a scroll event.
 		/// </summary>

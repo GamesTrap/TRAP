@@ -86,7 +86,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                  (Application::GetWindow()->GetInternalWindow()), key);
 
-	return state;
+	return static_cast<bool>(state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -109,7 +109,7 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                  (window->GetInternalWindow()), key);
 
-	return state;
+	return static_cast<bool>(state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -122,7 +122,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 	                                                          (Application::GetWindow()->GetInternalWindow()),
 															  button);
 
-	return state;
+	return static_cast<bool>(state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -140,7 +140,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* c
 	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (window->GetInternalWindow()), button);
 
-	return state;
+	return static_cast<bool>(state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -244,17 +244,201 @@ float TRAP::Input::GetMouseY(const Window* const window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Get a string representation for a non printable key (space key for example).
+/// </summary>
+/// <param name="key">Key to get.</param>
+/// <returns>String representation.</returns>
+std::string NonPrintableKeyToString(const TRAP::Input::Key key)
+{
+	switch(key)
+	{
+	case TRAP::Input::Key::Unknown:
+		return "Unknown";
+
+	case TRAP::Input::Key::Space:
+		return "Space";
+
+	case TRAP::Input::Key::Grave_Accent:
+		return "Grave Accent";
+
+	case TRAP::Input::Key::Escape:
+		return "Escape";
+
+	case TRAP::Input::Key::Enter:
+		return "Enter";
+
+	case TRAP::Input::Key::Tab:
+		return "Tab";
+
+	case TRAP::Input::Key::Backspace:
+		return "Backspace";
+
+	case TRAP::Input::Key::Insert:
+		return "Insert";
+
+	case TRAP::Input::Key::Delete:
+		return "Delete";
+
+	case TRAP::Input::Key::Right:
+		return "Right";
+
+	case TRAP::Input::Key::Left:
+		return "Left";
+
+	case TRAP::Input::Key::Down:
+		return "Down";
+
+	case TRAP::Input::Key::Up:
+		return "Up";
+
+	case TRAP::Input::Key::Page_Up:
+		return "Page Up";
+
+	case TRAP::Input::Key::Page_Down:
+		return "Page Down";
+
+	case TRAP::Input::Key::Home:
+		return "Home";
+
+	case TRAP::Input::Key::End:
+		return "End";
+
+	case TRAP::Input::Key::Caps_Lock:
+		return "Caps Lock";
+
+	case TRAP::Input::Key::Scroll_Lock:
+		return "Scroll Lock";
+
+	case TRAP::Input::Key::Num_Lock:
+		return "Num Lock";
+
+	case TRAP::Input::Key::Print_Screen:
+		return "Print Screen";
+
+	case TRAP::Input::Key::Pause:
+		return "Pause";
+
+	case TRAP::Input::Key::F1:
+		return "F1";
+
+	case TRAP::Input::Key::F2:
+		return "F2";
+
+	case TRAP::Input::Key::F3:
+		return "F3";
+
+	case TRAP::Input::Key::F4:
+		return "F4";
+
+	case TRAP::Input::Key::F5:
+		return "F5";
+
+	case TRAP::Input::Key::F6:
+		return "F6";
+
+	case TRAP::Input::Key::F7:
+		return "F7";
+
+	case TRAP::Input::Key::F8:
+		return "F8";
+
+	case TRAP::Input::Key::F9:
+		return "F9";
+
+	case TRAP::Input::Key::F10:
+		return "F10";
+
+	case TRAP::Input::Key::F11:
+		return "F11";
+
+	case TRAP::Input::Key::F12:
+		return "F12";
+
+	case TRAP::Input::Key::F13:
+		return "F13";
+
+	case TRAP::Input::Key::F14:
+		return "F14";
+
+	case TRAP::Input::Key::F15:
+		return "F15";
+
+	case TRAP::Input::Key::F16:
+		return "F16";
+
+	case TRAP::Input::Key::F17:
+		return "F17";
+
+	case TRAP::Input::Key::F18:
+		return "F18";
+
+	case TRAP::Input::Key::F19:
+		return "F19";
+
+	case TRAP::Input::Key::F20:
+		return "F20";
+
+	case TRAP::Input::Key::F21:
+		return "F21";
+
+	case TRAP::Input::Key::F22:
+		return "F22";
+
+	case TRAP::Input::Key::F23:
+		return "F23";
+
+	case TRAP::Input::Key::F24:
+		return "F24";
+
+	case TRAP::Input::Key::F25:
+		return "F25";
+
+	case TRAP::Input::Key::KP_Enter:
+		return "Numpad Enter";
+
+	case TRAP::Input::Key::Left_Shift:
+		return "Left Shift";
+
+	case TRAP::Input::Key::Left_Control:
+		return "Left Control";
+
+	case TRAP::Input::Key::Left_ALT:
+		return "Left ALT";
+
+	case TRAP::Input::Key::Left_Super:
+		return "Left Windows/Super";
+
+	case TRAP::Input::Key::Right_Shift:
+		return "Right Shift";
+
+	case TRAP::Input::Key::Right_Control:
+		return "Right Control";
+
+	case TRAP::Input::Key::Right_ALT:
+		return "Right ALT";
+
+	case TRAP::Input::Key::Right_Super:
+		return "Right Windows/Super";
+
+	case TRAP::Input::Key::Menu:
+		return "Menu";
+
+	default:
+		return "";
+	}
+}
+
 std::string TRAP::Input::GetKeyName(const Key key)
 {
 	TP_PROFILE_FUNCTION();
 
-	if (!INTERNAL::WindowingAPI::GetKeyName(key, 0))
-	{
-		TP_ERROR(Log::InputPrefix, "Couldn't get name of key: ", static_cast<uint32_t>(key), "!");
-		return "";
-	}
+	const char* name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
 
-	return INTERNAL::WindowingAPI::GetKeyName(key, 0);
+	if (!name)
+		return NonPrintableKeyToString(key);
+
+	return name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

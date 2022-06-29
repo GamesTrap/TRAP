@@ -23,188 +23,6 @@ TRAP::Events::KeyEvent::KeyEvent(const Input::Key key)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key)
-{
-	switch(key)
-	{
-	case Input::Key::Unknown:
-		return "Unknown";
-
-	case Input::Key::Space:
-		return "Space";
-
-	case Input::Key::Grave_Accent:
-		return "Grave Accent";
-
-	case Input::Key::Escape:
-		return "Escape";
-
-	case Input::Key::Enter:
-		return "Enter";
-
-	case Input::Key::Tab:
-		return "Tab";
-
-	case Input::Key::Backspace:
-		return "Backspace";
-
-	case Input::Key::Insert:
-		return "Insert";
-
-	case Input::Key::Delete:
-		return "Delete";
-
-	case Input::Key::Right:
-		return "Right";
-
-	case Input::Key::Left:
-		return "Left";
-
-	case Input::Key::Down:
-		return "Down";
-
-	case Input::Key::Up:
-		return "Up";
-
-	case Input::Key::Page_Up:
-		return "Page Up";
-
-	case Input::Key::Page_Down:
-		return "Page Down";
-
-	case Input::Key::Home:
-		return "Home";
-
-	case Input::Key::End:
-		return "End";
-
-	case Input::Key::Caps_Lock:
-		return "Caps Lock";
-
-	case Input::Key::Scroll_Lock:
-		return "Scroll Lock";
-
-	case Input::Key::Num_Lock:
-		return "Num Lock";
-
-	case Input::Key::Print_Screen:
-		return "Print Screen";
-
-	case Input::Key::Pause:
-		return "Pause";
-
-	case Input::Key::F1:
-		return "F1";
-
-	case Input::Key::F2:
-		return "F2";
-
-	case Input::Key::F3:
-		return "F3";
-
-	case Input::Key::F4:
-		return "F4";
-
-	case Input::Key::F5:
-		return "F5";
-
-	case Input::Key::F6:
-		return "F6";
-
-	case Input::Key::F7:
-		return "F7";
-
-	case Input::Key::F8:
-		return "F8";
-
-	case Input::Key::F9:
-		return "F9";
-
-	case Input::Key::F10:
-		return "F10";
-
-	case Input::Key::F11:
-		return "F11";
-
-	case Input::Key::F12:
-		return "F12";
-
-	case Input::Key::F13:
-		return "F13";
-
-	case Input::Key::F14:
-		return "F14";
-
-	case Input::Key::F15:
-		return "F15";
-
-	case Input::Key::F16:
-		return "F16";
-
-	case Input::Key::F17:
-		return "F17";
-
-	case Input::Key::F18:
-		return "F18";
-
-	case Input::Key::F19:
-		return "F19";
-
-	case Input::Key::F20:
-		return "F20";
-
-	case Input::Key::F21:
-		return "F21";
-
-	case Input::Key::F22:
-		return "F22";
-
-	case Input::Key::F23:
-		return "F23";
-
-	case Input::Key::F24:
-		return "F24";
-
-	case Input::Key::F25:
-		return "F25";
-
-	case Input::Key::KP_Enter:
-		return "Numpad Enter";
-
-	case Input::Key::Left_Shift:
-		return "Left Shift";
-
-	case Input::Key::Left_Control:
-		return "Left Control";
-
-	case Input::Key::Left_ALT:
-		return "Left ALT";
-
-	case Input::Key::Left_Super:
-		return "Left Windows/Super";
-
-	case Input::Key::Right_Shift:
-		return "Right Shift";
-
-	case Input::Key::Right_Control:
-		return "Right Control";
-
-	case Input::Key::Right_ALT:
-		return "Right ALT";
-
-	case Input::Key::Right_Super:
-		return "Right Windows/Super";
-
-	case Input::Key::Menu:
-		return "Menu";
-
-	default:
-		return "";
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -224,10 +42,10 @@ uint32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
 
 std::string TRAP::Events::KeyPressEvent::ToString() const
 {
-	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
+	std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyPressEvent: " + (name ? name : NonPrintableKeyToString(m_key)) +
-		   "(" + std::to_string(static_cast<int32_t>(m_key)) + ") (" + std::to_string(m_repeatCount) + " repeats)";
+	return "KeyPressEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ") (" +
+	       std::to_string(m_repeatCount) + " repeats)";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -271,10 +89,9 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Windo
 
 std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
-	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
+	std::string name = TRAP::Input::GetKeyName(m_key);
 
-	return "KeyReleaseEvent: " + (name ? name : NonPrintableKeyToString(m_key)) + "(" +
-		   std::to_string(static_cast<int32_t>(m_key)) + ")";
+	return "KeyReleaseEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

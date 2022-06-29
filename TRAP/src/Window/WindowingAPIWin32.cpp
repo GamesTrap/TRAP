@@ -500,7 +500,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		Input::Key key = Input::Key::Unknown;
 		int32_t scanCode = 0;
-		const bool action = (HIWORD(lParam) & KF_UP) ? false : true;
+		const Input::KeyState state = (HIWORD(lParam) & KF_UP) ? Input::KeyState::Released : Input::KeyState::Pressed;
 
 		scanCode = (HIWORD(lParam) & (KF_EXTENDED | 0xFF));
 		if(!scanCode)
@@ -559,22 +559,22 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			break;
 		}
 
-		if (!action && wParam == VK_SHIFT)
+		if (state == Input::KeyState::Released && wParam == VK_SHIFT)
 		{
 			//HACK: Release both Shift keys on Shift up event, as when both
 			//      are pressed the first release does not emit any event
 			//NOTE: The other half of this is in PlatformPollEvents
-			InputKey(windowPtr, Input::Key::Left_Shift, scanCode, action);
-			InputKey(windowPtr, Input::Key::Right_Shift, scanCode, action);
+			InputKey(windowPtr, Input::Key::Left_Shift, scanCode, state);
+			InputKey(windowPtr, Input::Key::Right_Shift, scanCode, state);
 		}
 		else if (wParam == VK_SNAPSHOT)
 		{
 			//HACK: Key down is not reported for the Print Screen Key
-			InputKey(windowPtr, key, scanCode, true);
-			InputKey(windowPtr, key, scanCode, false);
+			InputKey(windowPtr, key, scanCode, Input::KeyState::Pressed);
+			InputKey(windowPtr, key, scanCode, Input::KeyState::Released);
 		}
 		else
-			InputKey(windowPtr, key, scanCode, action);
+			InputKey(windowPtr, key, scanCode, state);
 
 		break;
 	}
@@ -590,7 +590,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		uint32_t i;
 		Input::MouseButton button;
-		bool pressed;
+		Input::KeyState state;
 
 		if (uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONUP)
 			button = Input::MouseButton::Left;
@@ -605,21 +605,21 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 		if (uMsg == WM_LBUTTONDOWN || uMsg == WM_RBUTTONDOWN ||
 			uMsg == WM_MBUTTONDOWN || uMsg == WM_XBUTTONDOWN)
-			pressed = true;
+			state = Input::KeyState::Pressed;
 		else
-			pressed = false;
+			state = Input::KeyState::Released;
 
 		for (i = 0; i <= static_cast<uint32_t>(Input::MouseButton::Eight); i++)
-			if (windowPtr->MouseButtons[i])
+			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
 		if (i > static_cast<uint32_t>(Input::MouseButton::Eight))
 			SetCapture(hWnd);
 
-		InputMouseClick(windowPtr, button, pressed);
+		InputMouseClick(windowPtr, button, state);
 
 		for (i = 0; i <= static_cast<uint32_t>(Input::MouseButton::Eight); i++)
-			if (windowPtr->MouseButtons[i])
+			if (windowPtr->MouseButtons[i] == Input::KeyState::Pressed)
 				break;
 
 		if (i > static_cast<uint32_t>(TRAP::Input::MouseButton::Eight))
@@ -2668,10 +2668,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 				if ((GetAsyncKeyState(vk) & 0x8000))
 					continue;
-				if (windowPtr->Keys[static_cast<int32_t>(key)] != true)
+				if (windowPtr->Keys[static_cast<int32_t>(key)] != Input::KeyState::Pressed)
 					continue;
 
-				InputKey(windowPtr, key, scanCode, false);
+				InputKey(windowPtr, key, scanCode, Input::KeyState::Released);
 			}
 		}
 	}

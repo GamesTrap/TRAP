@@ -297,17 +297,17 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::InternalWindow* window,
-                                                         Input::MouseButton mouseButton, const bool pressed)
+                                                         Input::MouseButton mouseButton, const Input::KeyState state)
 {
 	ImGuiTRAPData* bd = GetBackendData();
 	if (bd->PrevUserCallbackMouseButton != nullptr && window == bd->Window)
-		bd->PrevUserCallbackMouseButton(window, mouseButton, pressed);
+		bd->PrevUserCallbackMouseButton(window, mouseButton, state);
 
 	UpdateKeyModifiers(bd->Window);
 
 	ImGuiIO& io = ImGui::GetIO();
 	if(static_cast<int32_t>(mouseButton) >= 0 && static_cast<int32_t>(mouseButton) < ImGuiMouseButton_COUNT)
-		io.AddMouseButtonEvent(static_cast<int32_t>(mouseButton), pressed);
+		io.AddMouseButtonEvent(static_cast<int32_t>(mouseButton), (state == Input::KeyState::Pressed));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,24 +326,25 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::Internal
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key,
-                                                 const bool pressed)
+                                                 const Input::KeyState state)
 {
 	ImGuiTRAPData* bd = GetBackendData();
 	if (bd->PrevUserCallbackKey != nullptr && window == bd->Window)
-		bd->PrevUserCallbackKey(window, key, pressed);
+		bd->PrevUserCallbackKey(window, key, state);
 
-	//TODO Maybe change bool pressed to enum for Pressed, Released, Repeat
+	if(state != Input::KeyState::Pressed && state != Input::KeyState::Released)
+		return;
 
 	UpdateKeyModifiers(bd->Window);
 
 	if(static_cast<int32_t>(key) >= 0 && static_cast<int32_t>(key) < static_cast<int32_t>(bd->KeyOwnerWindows.size()))
-		bd->KeyOwnerWindows[static_cast<int32_t>(key)] = pressed ? window : nullptr;
+		bd->KeyOwnerWindows[static_cast<int32_t>(key)] = (state == Input::KeyState::Pressed) ? window : nullptr;
 
 	key = TranslateUntranslateKey(key);
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuiKey imguiKey = KeyToImGuiKey(key);
-	io.AddKeyEvent(imguiKey, pressed);
+	io.AddKeyEvent(imguiKey, (state == Input::KeyState::Pressed));
 
 	//We don't support the old API
 	//io.SetKeyEventNativeData();
@@ -518,14 +519,14 @@ ImGuiKey TRAP::INTERNAL::ImGuiWindowing::KeyToImGuiKey(const TRAP::Input::Key ke
 void TRAP::INTERNAL::ImGuiWindowing::UpdateKeyModifiers(WindowingAPI::InternalWindow* window)
 {
 	ImGuiIO& io = ImGui::GetIO();
-	io.AddKeyEvent(ImGuiKey_ModCtrl, WindowingAPI::GetKey(window, Input::Key::Left_Control) ||
-		                             WindowingAPI::GetKey(window, Input::Key::Right_Control));
-	io.AddKeyEvent(ImGuiKey_ModShift, WindowingAPI::GetKey(window, Input::Key::Left_Shift) ||
-									  WindowingAPI::GetKey(window, Input::Key::Right_Shift));
-	io.AddKeyEvent(ImGuiKey_ModAlt, WindowingAPI::GetKey(window, Input::Key::Left_ALT) ||
-									WindowingAPI::GetKey(window, Input::Key::Right_ALT));
-	io.AddKeyEvent(ImGuiKey_ModSuper, WindowingAPI::GetKey(window, Input::Key::Left_Super) ||
-									  WindowingAPI::GetKey(window, Input::Key::Right_Super));
+	io.AddKeyEvent(ImGuiKey_ModCtrl, static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Left_Control)) ||
+		                             static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Right_Control)));
+	io.AddKeyEvent(ImGuiKey_ModShift, static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Left_Shift)) ||
+									  static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Right_Shift)));
+	io.AddKeyEvent(ImGuiKey_ModAlt, static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Left_ALT)) ||
+									static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Right_ALT)));
+	io.AddKeyEvent(ImGuiKey_ModSuper, static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Left_Super)) ||
+									  static_cast<bool>(WindowingAPI::GetKey(window, Input::Key::Right_Super)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -869,7 +870,7 @@ void TRAP::INTERNAL::ImGuiWindowing::DestroyWindow(ImGuiViewport* viewport)
 			for(int32_t i = 0; i < static_cast<int32_t>(bd->KeyOwnerWindows.size()); ++i)
 			{
 				if(bd->KeyOwnerWindows[i] == vd->WindowPtr)
-					KeyCallback(vd->WindowPtr, static_cast<TRAP::Input::Key>(i), false); //Later params are only used for main viewport, on which this function is never called.
+					KeyCallback(vd->WindowPtr, static_cast<TRAP::Input::Key>(i), Input::KeyState::Released); //Later params are only used for main viewport, on which this function is never called.
 			}
 
 			WindowingAPI::DestroyWindow(std::move(vd->Window));

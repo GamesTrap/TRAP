@@ -1464,20 +1464,20 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a keyboard key for the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::Key key)
+TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::Key key)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
-		return false;
+		return Input::KeyState::Released;
 	}
 
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
 		InputError(Error::Invalid_Enum, " Invalid key: " + std::to_string(static_cast<int32_t>(key)));
-		return false;
+		return Input::KeyState::Released;
 	}
 
 	return window->Keys[static_cast<uint32_t>(key)];
@@ -1486,14 +1486,14 @@ bool TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::K
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a mouse button for the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, Input::MouseButton button)
+TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, Input::MouseButton button)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
-		return false;
+		return Input::KeyState::Released;
 	}
 
 	return window->MouseButtons[static_cast<uint32_t>(button)];
@@ -2019,21 +2019,30 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 
 //Notifies shared code of a physical key event
 void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t,
-                                            const bool pressed)
+                                            Input::KeyState state)
 {
 	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(static_cast<int32_t>(key) >= 0 || key == Input::Key::Unknown);
+	TRAP_ASSERT(key != Input::Key::Unknown);
+	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released);
 
 	if(key == Input::Key::Unknown)
-		return;
+	{
+		bool repeated = false;
 
-	if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
-		return;
+		if(state == Input::KeyState::Released && window->Keys[static_cast<uint32_t>(key)] == Input::KeyState::Released)
+			return;
 
-	window->Keys[static_cast<uint32_t>(key)] = pressed;
+		if(state == Input::KeyState::Pressed && window->Keys[static_cast<uint32_t>(key)] == Input::KeyState::Pressed)
+			repeated = true;
+
+		window->Keys[static_cast<uint32_t>(key)] = state;
+
+		if(repeated)
+			state = Input::KeyState::Repeat;
+	}
 
 	if (window->Callbacks.Key)
-		window->Callbacks.Key(window, key, pressed);
+		window->Callbacks.Key(window, key, state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2055,15 +2064,19 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const
 
 //Notifies shared code of a mouse button click event
 void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button,
-                                                   const bool pressed)
+                                                   const Input::KeyState state)
 {
 	TRAP_ASSERT(window != nullptr);
 	TRAP_ASSERT(static_cast<int32_t>(button) >= 0);
+	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released);
 
-	window->MouseButtons[static_cast<uint32_t>(button)] = pressed;
+	if(static_cast<int32_t>(button) < 0 || button > Input::MouseButton::Eight)
+		return;
+
+	window->MouseButtons[static_cast<uint32_t>(button)] = state;
 
 	if (window->Callbacks.MouseButton)
-		window->Callbacks.MouseButton(window, button, pressed);
+		window->Callbacks.MouseButton(window, button, state);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2194,17 +2207,17 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, cons
 
 	for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
 	{
-		if (window->Keys[key])
+		if (window->Keys[key] == Input::KeyState::Pressed)
 		{
 			const int32_t scanCode = PlatformGetKeyScanCode(static_cast<Input::Key>(key));
-			InputKey(window, static_cast<Input::Key>(key), scanCode, false);
+			InputKey(window, static_cast<Input::Key>(key), scanCode, Input::KeyState::Released);
 		}
 	}
 
 	for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
 	{
-		if (window->MouseButtons[button])
-			InputMouseClick(window, static_cast<Input::MouseButton>(button), false);
+		if (window->MouseButtons[button] == Input::KeyState::Pressed)
+			InputMouseClick(window, static_cast<Input::MouseButton>(button), Input::KeyState::Pressed);
 	}
 }
 

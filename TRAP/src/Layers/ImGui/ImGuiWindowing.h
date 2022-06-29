@@ -157,9 +157,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="mouseButton">Affected mouse button.</param>
-		/// <param name="pressed">Is button pressed or not.</param>
+		/// <param name="state">Mouse button state (pressed or released).</param>
 		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton,
-		                                bool pressed);
+		                                Input::KeyState state);
 		/// <summary>
 		/// Scroll callback.
 		/// </summary>
@@ -172,8 +172,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Affected window.</param>
 		/// <param name="key">Keyboard key.</param>
-		/// <param name="pressed">Is key pressed or not.</param>
-		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, bool pressed);
+		/// <param name="state">Key state (pressed, repeated or released).</param>
+		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, Input::KeyState state);
 		/// <summary>
 		/// Char callback.
 		/// </summary>
