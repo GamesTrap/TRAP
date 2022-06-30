@@ -3513,6 +3513,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		keyCode = static_cast<int32_t>(event.xkey.keycode);
 
 	filtered = s_Data.XLIB.FilterEvent(&event, 0);
+	if(filtered)
+		return;
 
 	if(s_Data.RandR.Available)
 	{
@@ -3833,9 +3835,6 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	case ClientMessage:
 	{
 		//Custom client message, probably from the window manager
-
-		if(filtered)
-			return;
 
 		if(event.xclient.message_type == 0)
 			return;

@@ -930,6 +930,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 			int8_t maximum = 1;
 			uint32_t charOffset = 0;
 
+			//Input modifiers
 			if (splittedField[1][0] == '+')
 			{
 				minimum = 0;
@@ -966,6 +967,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 				e->AxisScale = static_cast<int8_t>(2 / (maximum - minimum));
 				e->AxisOffset = static_cast<int8_t>(-(maximum + minimum));
 
+				//Invert axis input modifier
 				if (splittedField[1][charOffset] == '~')
 				{
 					e->AxisScale = static_cast<int8_t>(-e->AxisScale);

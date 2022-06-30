@@ -20,24 +20,24 @@ To build TRAP™ follow the guide on this page: {ref}`buildingtrap`.
 ## System Requirements
 
 :::{tab} Minimum
-   %Game Input needs the following OS:
-%- OS: Window 10 19H1/Ubuntu 18.04.6 or newer (64-Bit versions only)
+
 - OS: Windows 7/Ubuntu 18.04.6 or newer (64-Bit versions only)
-- Processor: AVX2 support, TBD
-- Graphics Card: TBD with Vulkan 1.1 support
+- Processor: Intel or AMD CPU with AVX2 support
+- Graphics Card: AMD, NVIDIA with Vulkan 1.1 support (Intel untested)
 - Memory: 4 GB RAM
 - Storage: 5+ GB available space
-- Additional Notes:
+- Additional Notes: -
+
 :::
 :::{tab} Recommended
-   %Game Input needs the following OS:
-%- OS: Window 10 19H1/Ubuntu 18.04.6 or newer (64-Bit versions only)
+
 - OS: Windows 7/Ubuntu 18.04.6 or newer (64-Bit versions only)
-- Processor: AVX2 support, TBD
-- Graphics Card: TBD with Vulkan 1.1 support
+- Processor: Intel or AMD CPU with AVX2 support
+- Graphics Card: AMD, NVIDIA with Vulkan 1.1 support (Intel untested)
 - Memory: 4 GB RAM
 - Storage: 10+ GB available space
-- Additional Notes:
+- Additional Notes: -
+
 :::
 
 ## 3rd Party Libraries used by TRAP™ Engine
