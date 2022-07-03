@@ -120,7 +120,6 @@ namespace TRAP::Graphics::API
 		static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
 			                                              const std::array<uint8_t, 16>& physicalDeviceUUID);
 
-
 	private:
 		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();
 		/// <summary>
@@ -173,6 +172,12 @@ namespace TRAP::Graphics::API
 		/// Load a list of available instance layers.
 		/// </summary>
 		void LoadAllPhysicalDeviceExtensions();
+
+		/// <summary>
+		/// Retrieve the max usable MSAA sample count for the GPU.
+		/// </summary>
+		/// <returns>Max usable MSAA sample count.</returns>
+		uint32_t GetMaxUsableMSAASampleCount();
 
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;

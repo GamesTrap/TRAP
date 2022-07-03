@@ -2774,3 +2774,8 @@ SITREP 06/30/2022|22w26b2
     - WindowingAPI now also emits KeyState::Repeat in key callback (only in key callback!) ~<10 mins
     - Updated Window ~<5 mins
     - Updated ImGuiWindowing ~<10 mins
+
+SITREP 07/03/2022|22w26c1
+    - Changed TRAP Engine version to 22w26c1(0.8.7)
+    - RendererAPI GPUSettings Added MaxMSAASampleCount ~<5 mins
+    - VulkanPhysicalDevice now sets max supported MSAA sample count ~<15 mins

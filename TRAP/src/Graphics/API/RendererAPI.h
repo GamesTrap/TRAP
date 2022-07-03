@@ -2310,6 +2310,7 @@ namespace TRAP::Graphics
 			uint32_t MaxPushConstantSize;
 			uint32_t MaxSamplerAllocationCount;
 			uint32_t MaxTessellationControlPoints;
+			uint32_t MaxMSAASampleCount;
 			float MaxAnisotropy;
 
 			uint32_t WaveLaneCount;
