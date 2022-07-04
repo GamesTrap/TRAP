@@ -75,6 +75,7 @@ The user is required to supply these. See the {ref}`additionallibraries` section
 self
 pages/buildingtrap
 pages/gettingstarted
+pages/changelog
 pages/eula
 
 api/library_root

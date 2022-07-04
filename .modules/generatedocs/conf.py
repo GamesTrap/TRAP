@@ -55,6 +55,7 @@ extensions = ['sphinx.ext.githubpages',
               'sphinx_inline_tabs',
               'sphinxext.opengraph',
               'sphinx_copybutton',
+              'sphinx_design',
               'myst_parser',
               'breathe',
               'exhale']

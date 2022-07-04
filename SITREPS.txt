@@ -193,7 +193,7 @@ SITREP 07/21/2019|19w29a2
 
 SITREP 07/22/2019|19w30a1
     - Changed TRAP Engine version to 19w30a1(0.4.9)
-    - Removed unused Exception class <5 mins
+    - Removed unused Exception class ~<5 mins
     - Removed MsgBoxLinux(Will be re-added without the need of GTK)
 
 SITREP 07/24/2019|19w30a2
@@ -212,7 +212,7 @@ SITREP 07/27/2019|19w30a4
     - Migrated UBO for Matrices to the abstract Renderer ~>20 mins
     - Added Projection Matrix recalculation on resizing ~>15 mins
     - Added support for Model(Transformation) Matrix ~>35 mins
-    - Added new FPS calculation method thx to Nilusss <10 mins
+    - Added new FPS calculation method thx to Nilusss ~<10 mins
 
 SITREP 07/28/2019|19w30a5
     - Changed TRAP Engine version to 19w30a5(0.5.2)
@@ -453,7 +453,7 @@ SITREP 09/24/2019|19w39a2
 SITREP 09/28/2019|19w39a3
     - Changed TRAP Engine version to 19w39a3(0.5.40)
     - Worked on Event/Core documentation ~>60 mins
-    - Changed some things in Core.h <10 mins
+    - Changed some things in Core.h ~<10 mins
     - Changed some macro/template names ~>10 mins
 
 SITREP 09/29/2019|19w39a4
@@ -705,8 +705,8 @@ SITREP 01/04/2020|20w01a1
         - Added ability to set resizable state upon window creation ~<10 mins
         - Added ability to set custom image as mouse cursor ~<20 mins
         - Added ability to query maximized, minimized and resizable states from a window ~<30 mins
-        - Replaced every TRAP_BIND_EVENT_FN with lambdas <~20 mins
-        - Removed TRAP_BIND_EVENT_FN instead use lambdas now <~20 mins
+        - Replaced every TRAP_BIND_EVENT_FN with lambdas ~<20 mins
+        - Removed TRAP_BIND_EVENT_FN instead use lambdas now ~<20 mins
         - Fixed TRAP::Window crash if no EventCallbackFn was set ~<20 mins
         - Updated Docs
 
@@ -783,7 +783,7 @@ SITREP 01/21/2020|20w04a2
 
 SITREP 01/26/2020|20w04a3
     - Changed TRAP Engine version to 20w04a3(0.6.03)
-    - Reworked Math API (Vec1-4, Mat3-4, General)~>309 mins
+    - Reworked Math API (Vec1-4, Mat3-4, General) ~>309 mins
     - Updated GLSLang submodule ~<10 mins
     - VulkanShader now convert GLSL to SPIRV 1.5 (Need Vulkan 1.2 SDK) ~<20 mins
     - Renamed Events ~<20 mins
@@ -1144,8 +1144,7 @@ SITREP 07/19/2020|20w29a3
     - Fixed Bug in Test3D PerspectiveCameraController when x rotation is bigger than 90° or smaller than -90° ~<10 mins
     - Fixed Bug when Camera gets an OnFrameBufferResizeEvent where width or/and height is 0 ~<10 mins
     - Added RawMouseInput entry to Engine.cfg ~<20 mins
-    - Tried to implement DirectInput rumble via Force Feedback but all my controller do not report the needed
-      Force Feedback flag so I can't test this feature properly! Help wanted :O ~>30 mins
+    - Tried to implement DirectInput rumble via Force Feedback but all my controller do not report the needed Force Feedback flag so I can't test this feature properly! Help wanted :O ~>30 mins
 
 SITREP 07/20/2020|20w30a1
     - Changed TRAP Engine version to 20w30a1(0.6.51)
@@ -1470,8 +1469,7 @@ SITREP 12/16/2020|20w51a1
     - Updated VulkanInits ~<10 mins
     - Added VulkanRootSignature ~<90 mins
     - Added some getters to VulkanShader ~<20 mins
-    - Added DescriptorTypeToVkDescriptorType & ShaderStageToVkShaderStageFlags
-      functions in VulkanCommon ~<15 mins
+    - Added DescriptorTypeToVkDescriptorType & ShaderStageToVkShaderStageFlags functions in VulkanCommon ~<15 mins
     - Fixed TRAP_ASSERT checking wrong variable ~<10 mins
 
 SITREP 12/17/2020|20w51a2
@@ -1579,8 +1577,7 @@ SITREP 01/15/2021|21w02a2
 
 SITREP 01/16/2021|21w02a3
     - Changed TRAP Engine version to 21w02a3(0.7.20)
-    - Integrated code from VulkanTest into RendererAPI ~>75 mins
-      (Queues, CommandPools, CommandBuffers, Fences, Semaphores, SwapChain)
+    - Integrated code from VulkanTest into RendererAPI (Queues, CommandPools, CommandBuffers, Fences, Semaphores, SwapChain) ~>75 mins
 
 SITREP 01/24/2021|21w03a1
     - Changed TRAP Engine version to 21w03a1(0.7.21)
@@ -1922,11 +1919,8 @@ SITREP 06/27/2021|21w25a4
 SITREP 07/03/2021|21w26a1
     - Changed TRAP Engine version to 21w26a1(0.7.54)
     - Added SamplerHash class for RendererAPI::SamplerDesc hashing ~<15 mins
-    - Sampler Added GetMinFilter, GetMagFilter, GetMipMapMode, GetAddressU, GetAddressV,
-      GetAddressW, GetMipLodBias, GetMaxAnisotropy, GetCompareFunc, GetForceMipLevel &
-      GetMipLevel functions ~<20 mins
-    - Sampler Added caching of newly created Samplers so they are reused instead of always
-      creating new ones (should prevent from ever reaching maxSamplerAllocationCount limit)
+    - Sampler Added GetMinFilter, GetMagFilter, GetMipMapMode, GetAddressU, GetAddressV, GetAddressW, GetMipLodBias, GetMaxAnisotropy, GetCompareFunc, GetForceMipLevel & GetMipLevel functions ~<20 mins
+    - Sampler Added caching of newly created Samplers so they are reused instead of always creating new ones (should prevent from ever reaching maxSamplerAllocationCount limit)
     - Replaced some push_back with emplace_back ~<10 mins
     - VulkanShader Added UseSampler & UseSamplers functions to bind given Sampler(s) to Descriptor ~<15 mins
     - VulkanTextureTests Replaced direct Sampler binding with abstraction ~<10 mins
@@ -2159,8 +2153,7 @@ SITREP 09/25/2021|21w38a2
     - StorageBuffer Removed IsWritable function ~<5 mins
     - Made StorageBuffer always Mapped ~<5 mins
     - Renderer Now uses StorageBuffers for ModelMatrices ~<20 mins
-    - Renderer Now uses DrawInstanced & DrawIndexedInstanced to leverage gl_BaseInstance
-      as an index for the ModelMatrices StorageBuffer ~<10 mins
+    - Renderer Now uses DrawInstanced & DrawIndexedInstanced to leverage gl_BaseInstance as an index for the ModelMatrices StorageBuffer ~<10 mins
     - Updated all Shaders to use StorageBuffers for ModelMatrices ~<15 mins
     - Tests Removed TestTexture Shader ~<5 mins
     - Renderer Removed ModelMatrices UniformBuffer ~<5 mins
@@ -2388,8 +2381,7 @@ SITREP 02/22/2022|22w08a1
     - Removed Headless RenderAPI ~<10 mins
     - Relaxed IsVulkanCapable checks when using Headless mode ~<20 mins
     - Config Added "NONE" RenderAPI to ConvertToString/Type ~<5 mins
-    - Added SIGINT capture routines for Headless mode to capture CTRL+C & [X] button
-      closes to normally shutdown ~<10 mins
+    - Added SIGINT capture routines for Headless mode to capture CTRL+C & [X] button closes to normally shutdown ~<10 mins
     - Made Log & Config paths local to executable in Headless mode ~<5 mins
     - Allowed using RenderAPI::NONE when using Headless mode ~<10 mins
     - Renderers now get correctly shutdown when using Headless mode ~<10 mins
@@ -2515,8 +2507,7 @@ SITREP 04/30/2022|22w17b3
 SITREP 05/01/2022|22w17c1
     - Changed TRAP Engine version to 22w17c1(0.7.130)
     - Application cleaned up Main Window creation ~<10 mins
-    - Corrected memory model (only use smart pointers when we care
-                              about ownership, else use raw pointers) ~>120 mins
+    - Corrected memory model (only use smart pointers when we care about ownership, else use raw pointers) ~>120 mins
     - Removed window parameter from OrthographicCameraController ~<5 mins
 
 SITREP 05/03/2022|22w18a1
@@ -2779,3 +2770,6 @@ SITREP 07/03/2022|22w26c1
     - Changed TRAP Engine version to 22w26c1(0.8.7)
     - RendererAPI GPUSettings Added MaxMSAASampleCount ~<5 mins
     - VulkanPhysicalDevice now sets max supported MSAA sample count ~<15 mins
+
+SITREP 07/04/2022|22w26c1
+    - Docs Added changelog page generator ~>30 mins
