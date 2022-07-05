@@ -2771,5 +2771,9 @@ SITREP 07/03/2022|22w26c1
     - RendererAPI GPUSettings Added MaxMSAASampleCount ~<5 mins
     - VulkanPhysicalDevice now sets max supported MSAA sample count ~<15 mins
 
-SITREP 07/04/2022|22w26c1
+SITREP 07/04/2022|22w27a1
     - Docs Added changelog page generator ~>30 mins
+
+SITREP 07/05/2022|22w27a1
+    - Changed TRAP Engine version to 22w27a1(0.8.8)
+    - Fixed WindowingAPI::InputKey not processing keys correctly ~<5 mins

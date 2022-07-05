@@ -2025,7 +2025,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key k
 	TRAP_ASSERT(key != Input::Key::Unknown);
 	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released);
 
-	if(key == Input::Key::Unknown)
+	if(key != Input::Key::Unknown)
 	{
 		bool repeated = false;
 

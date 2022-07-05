@@ -829,9 +829,9 @@ VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineM
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.rasterizationSamples = sampleCount;
-	info.sampleShadingEnable = sampleShading;
-	info.minSampleShading = 0.0f;
+	info.rasterizationSamples = sampleCount; //TODO MSAA
+	info.sampleShadingEnable = sampleShading; //TODO SSAA
+	info.minSampleShading = sampleShading ? 1.0f : 0.0f;
 	info.pSampleMask = nullptr;
 	info.alphaToCoverageEnable = VK_FALSE;
 	info.alphaToOneEnable = VK_FALSE;
