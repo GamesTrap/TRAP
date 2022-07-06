@@ -200,7 +200,12 @@ void TRAP::ImGuiLayer::Begin()
 			winData.GraphicCommandBuffers[winData.ImageIndex]
 		);
 		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
-			TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
+		{
+			if(winData.SampleCount != TRAP::Graphics::RendererAPI::SampleCount::SampleCount1) //MSAA
+				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargetsMSAA()[winData.ImageIndex]);
+			else //No MSAA
+				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
+		}
 		ImGui_ImplVulkan_NewFrame();
 	}
 

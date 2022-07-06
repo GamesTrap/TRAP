@@ -299,7 +299,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		descColor.NativeHandle = nullptr;
 		descColor.SampleCount = desc.SampleCount;
 		for (uint32_t i = 0; i < imageCount; ++i)
-			m_renderTargetsMSAAResolve.push_back(RenderTarget::Create(descColor));
+			m_renderTargetsMSAA.push_back(RenderTarget::Create(descColor));
 	}
 
 	//////////////
@@ -319,7 +319,7 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 {
 	m_device->WaitIdle();
 
-	m_renderTargetsMSAAResolve.clear();
+	m_renderTargetsMSAA.clear();
 	m_renderTargets.clear();
 
 	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);

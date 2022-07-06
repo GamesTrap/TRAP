@@ -215,8 +215,15 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 	const auto* winData = s_perWindowDataMap[window].get();
 
 #ifndef TRAP_HEADLESS_MODE
-	GetRenderer()->BindRenderTarget(winData->SwapChain->GetRenderTargets()[winData->ImageIndex], nullptr, nullptr,
-	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
+	//Get correct RenderTarget
+	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
+	if(winData->SampleCount != RendererAPI::SampleCount::SampleCount1) //MSAA enabled
+		renderTarget = winData->SwapChain->GetRenderTargetsMSAA()[winData->ImageIndex];
+	else //No MSAA
+		renderTarget = winData->SwapChain->GetRenderTargets()[winData->ImageIndex];
+
+	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
+									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 #else
 	GetRenderer()->BindRenderTarget(winData->RenderTargets[winData->ImageIndex], nullptr, nullptr,
 	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
@@ -407,7 +414,6 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 	{
 #ifdef TRAP_HEADLESS_MODE
 		RenderTargets[i].reset();
-		MSAAResolveRenderTargets[i].reset();
 #endif
 
 		RenderCompleteSemaphores[i].reset();

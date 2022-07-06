@@ -59,7 +59,6 @@ namespace TRAP::Graphics
 
 		/// <summary>
 		/// Retrieve the render targets used by the swapchain.
-		/// Note: If MSAA is enabled this actually returns the MSAA render targets.
 		/// </summary>
 		/// <returns>Render targets used by the swapchain.</returns>
 		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const;
@@ -67,12 +66,7 @@ namespace TRAP::Graphics
 		/// Retrieve the render targets used by the swapchain to resolve MSAA.
 		/// </summary>
 		/// <returns>Render targets used by the swapchain to resolve MSAA.</returns>
-		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargetsMSAAResolve() const;
-		/// <summary>
-		/// Retrieve the actual render targets used by the swapchain to present.
-		/// </summary>
-		/// <returns>Render targets used by the swapchain to present.</returns>
-		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargetsNonMSAA() const;
+		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargetsMSAA() const;
 
 		/// <summary>
 		/// Toggle Vsync on and off.
@@ -87,7 +81,7 @@ namespace TRAP::Graphics
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
-		std::vector<TRAP::Ref<RenderTarget>> m_renderTargetsMSAAResolve;
+		std::vector<TRAP::Ref<RenderTarget>> m_renderTargetsMSAA;
 	};
 }
 

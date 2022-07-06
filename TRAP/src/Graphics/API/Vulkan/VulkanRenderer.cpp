@@ -155,7 +155,10 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
 	p->CurrentSwapChainImageIndex = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
-	renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+	if(p->SampleCount != RendererAPI::SampleCount::SampleCount1)
+		renderTarget = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
+	else
+		renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 #else
 	p->CurrentSwapChainImageIndex = (p->CurrentSwapChainImageIndex + 1) % RendererAPI::ImageCount;
 	renderTarget = p->RenderTargets[p->CurrentSwapChainImageIndex];
@@ -214,16 +217,14 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 #ifndef TRAP_HEADLESS_MODE
 	if(p->SampleCount != RendererAPI::SampleCount::SampleCount1) //Inject MSAA resolve pass
 		MSAAResolvePass(p);
-	else
-	{
-		//Transition RenderTarget to Present
-		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-																   std::numeric_limits<uint32_t>::max(),
-																   std::numeric_limits<uint32_t>::max());
-		RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
-									ResourceState::RenderTarget, ResourceState::Present};
-		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-	}
+
+	//Transition RenderTarget to Present
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+																std::numeric_limits<uint32_t>::max(),
+																std::numeric_limits<uint32_t>::max());
+	TRAP::Ref<RenderTarget> presentRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+	RenderTargetBarrier barrier{presentRenderTarget, ResourceState::RenderTarget, ResourceState::Present};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 
 #endif
 
@@ -386,8 +387,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* con
 
 void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p)
 {
-	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
-	TRAP::Ref<Graphics::RenderTarget> presentRT = p->SwapChain->GetRenderTargetsNonMSAA()[p->CurrentSwapChainImageIndex];
+	TRAP::Ref<Graphics::RenderTarget> presentRT = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
 
 	//Stop running render pass
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
@@ -430,9 +431,6 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 
 	//Transition MSAAResolveRT from ShaderResource to RenderTarget
 	barrier = {MSAAResolveRT, ResourceState::ShaderResource, ResourceState::Present};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-	//Transition presentRT from RenderTarget to Present
-	barrier = {presentRT, ResourceState::RenderTarget, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 }
 
@@ -893,7 +891,10 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 
 	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
-	renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
+	if(data->SampleCount != RendererAPI::SampleCount::SampleCount1)
+		renderTarget = data->SwapChain->GetRenderTargetsMSAA()[data->ImageIndex];
+	else
+		renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
 #else
 	renderTarget = data->RenderTargets[data->ImageIndex];
 #endif
@@ -1526,7 +1527,11 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 #ifdef TRAP_HEADLESS_MODE
 	TRAP::Ref<RenderTarget> rT = winData->RenderTargets[lastFrame];
 #else
-	TRAP::Ref<RenderTarget> rT = winData->SwapChain->GetRenderTargets()[lastFrame];
+	TRAP::Ref<RenderTarget> rT = nullptr;
+	if(winData->SampleCount != RendererAPI::SampleCount::SampleCount1)
+		rT = winData->SwapChain->GetRenderTargetsMSAA()[lastFrame];
+	else
+		rT = winData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
 	const uint8_t channelCount = static_cast<uint8_t>(ImageFormatChannelCount(rT->GetImageFormat()));
@@ -1694,7 +1699,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 
 	//Graphics Pipeline
 #ifndef TRAP_HEADLESS_MODE
-	const std::vector<TRAP::Ref<RenderTarget>>& rT = p->SwapChain->GetRenderTargets();
+	const std::vector<TRAP::Ref<RenderTarget>>& rT = p->SampleCount != RendererAPI::SampleCount::SampleCount1 ?
+	                                                 p->SwapChain->GetRenderTargetsMSAA() :
+													 p->SwapChain->GetRenderTargets();
 #else
 	const std::array<TRAP::Ref<RenderTarget>, RendererAPI::ImageCount>& rT = p->RenderTargets;
 #endif

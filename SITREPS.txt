@@ -2790,3 +2790,6 @@ SITREP 07/06/2022|22w27a2
         - VulkanRenderer Added MSAA resolve shaders for 2x, 4x, 8x and 16x MSAA ~<10 mins
         - VulkanRenderer Added MSAAResolvePass function ~>60 mins
         - ImGuiLayer now uses SampleCount from PerWindowData ~<5 mins
+        - SwapChain Removed GetRenderTargetsNonMSAA() & GetRenderTargetsMSAAResolve ~<5 mins
+        - SwapChain Added GetRenderTargetsMSAA() ~<5 mins
+        - RendererAPI, VulkanRenderer & ImGuiLayer Updated GetRenderTargets usage ~<10 mins
