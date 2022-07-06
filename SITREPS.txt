@@ -2801,3 +2801,4 @@ SITREP 07/06/2022|22w27a2
         - ImGuiLayer Added SetMSAASamples function ~<5 mins
         - Updated AntiAliasing test ~<5 mins
         - RendererAPI Renamed SampleCount enum values ~<5 mins
+        - VulkanRenderer Added missing destruction of the MSAA resolve shaders ~<5 mins

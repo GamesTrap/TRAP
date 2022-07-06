@@ -115,6 +115,9 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
 
+	for(uint32_t i = 0; i < s_MSAAResolveShaders.size(); ++i)
+		s_MSAAResolveShaders[i].reset();
+
 	s_descriptorPool.reset();
 
 	s_ResourceLoader.reset();
