@@ -407,6 +407,7 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 	{
 #ifdef TRAP_HEADLESS_MODE
 		RenderTargets[i].reset();
+		MSAAResolveRenderTargets[i].reset();
 #endif
 
 		RenderCompleteSemaphores[i].reset();

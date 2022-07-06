@@ -776,9 +776,9 @@ namespace TRAP::Graphics
 		{
 			SampleCount1 = BIT(0),
 			SampleCount2 = BIT(1),
-			SampleCount4 = BIT(3),
-			SampleCount8 = BIT(4),
-			SampleCount16 = BIT(5)
+			SampleCount4 = BIT(2),
+			SampleCount8 = BIT(3),
+			SampleCount16 = BIT(4)
 		};
 
 		/// <summary>
@@ -1986,6 +1986,8 @@ namespace TRAP::Graphics
 			uint32_t ClearStencil = 0;
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
+			//MSAA sample count (1 = no MSAA)
+			RendererAPI::SampleCount SampleCount = SampleCount::SampleCount1;
 		};
 
 		/// <summary>
@@ -2381,6 +2383,7 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
+			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::SampleCount8; //TODO Set via RenderCommand instead
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;

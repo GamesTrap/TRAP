@@ -130,7 +130,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.Subpass = 0;
 		initInfo.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount;
 		initInfo.ImageCount = TRAP::Graphics::RendererAPI::ImageCount;
-		initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		initInfo.MSAASamples = static_cast<VkSampleCountFlagBits>(winData.SampleCount);
 		initInfo.Allocator = nullptr;
 		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
 

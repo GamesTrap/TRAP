@@ -2777,3 +2777,16 @@ SITREP 07/04/2022|22w27a1
 SITREP 07/05/2022|22w27a1
     - Changed TRAP Engine version to 22w27a1(0.8.8)
     - Fixed WindowingAPI::InputKey not processing keys correctly ~<5 mins
+    - Branch MSAA:
+        - Tests Added AntiAliasing test ~>40 mins
+
+SITREP 07/06/2022|22w27a2
+    - Branch MSAA:
+        - Embed Added MSAAResolveShader ~<20 mins
+        - (Vulkan)SwapChain Added additional RenderTargets for MSAA ~<15 mins
+        - RendererAPI Fixed SampleCount enum ~<5 mins
+        - RendererAPI Added SampleCount to SwapChainDesc ~<5 mins
+        - RendererAPI PerWindowData Added SampleCount (currently hardcoded to 8x MSAA) ~<5 mins
+        - VulkanRenderer Added MSAA resolve shaders for 2x, 4x, 8x and 16x MSAA ~<10 mins
+        - VulkanRenderer Added MSAAResolvePass function ~>60 mins
+        - ImGuiLayer now uses SampleCount from PerWindowData ~<5 mins

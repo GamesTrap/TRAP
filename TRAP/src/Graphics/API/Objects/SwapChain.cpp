@@ -53,12 +53,31 @@ TRAP::Graphics::SwapChain::~SwapChain()
 	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
 #endif
 
+	m_renderTargetsMSAAResolve.clear();
 	m_renderTargets.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargets() const
+{
+	//If MSAA is enabled then we need to return the MSAA render targets
+	if(!m_renderTargetsMSAAResolve.empty())
+		return m_renderTargetsMSAAResolve;
+
+	return m_renderTargets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargetsMSAAResolve() const
+{
+	return m_renderTargetsMSAAResolve;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargetsNonMSAA() const
 {
 	return m_renderTargets;
 }

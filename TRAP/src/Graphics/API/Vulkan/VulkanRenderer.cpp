@@ -8,6 +8,7 @@
 #include "Utils/Dialogs/Dialogs.h"
 #include "FS/FS.h"
 #include "VulkanCommon.h"
+#include "Embed.h"
 
 #include "Objects/VulkanSemaphore.h"
 #include "Objects/VulkanFence.h"
@@ -94,6 +95,8 @@ std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
 std::unordered_map<uint64_t,
                    TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
+
+std::array<TRAP::Scope<TRAP::Graphics::Shader>, 4> TRAP::Graphics::API::VulkanRenderer::s_MSAAResolveShaders{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -208,15 +211,20 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	if(!p->Recording)
 		return;
 
-
 #ifndef TRAP_HEADLESS_MODE
-	//Transition RenderTarget to Present
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-	                                                           std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
-	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
-	                            ResourceState::RenderTarget, ResourceState::Present};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	if(p->SampleCount != RendererAPI::SampleCount::SampleCount1) //Inject MSAA resolve pass
+		MSAAResolvePass(p);
+	else
+	{
+		//Transition RenderTarget to Present
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+																   std::numeric_limits<uint32_t>::max(),
+																   std::numeric_limits<uint32_t>::max());
+		RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex],
+									ResourceState::RenderTarget, ResourceState::Present};
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	}
+
 #endif
 
 	//End Recording
@@ -280,6 +288,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
 		swapChainDesc.EnableVSync = p->CurrentVSync;
+		swapChainDesc.SampleCount = p->SampleCount;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		p->CurrentSwapChainImageIndex = 0;
@@ -309,6 +318,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 			rTDesc.MipLevels = 1;
 			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+			rTDesc.SampleCount = p->SampleCount;
 
 			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 			{
@@ -374,6 +384,60 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p)
+{
+	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+	TRAP::Ref<Graphics::RenderTarget> presentRT = p->SwapChain->GetRenderTargetsNonMSAA()[p->CurrentSwapChainImageIndex];
+
+	//Stop running render pass
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+															   std::numeric_limits<uint32_t>::max(),
+															   std::numeric_limits<uint32_t>::max());
+	//Transition MSAAResolveRT from RenderTarget to ShaderResource
+	RenderTargetBarrier barrier = {MSAAResolveRT, ResourceState::RenderTarget, ResourceState::ShaderResource};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	//Transition presentRT from Present to RenderTarget
+	barrier = {presentRT, ResourceState::Present, ResourceState::RenderTarget};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+
+	//Set load actions to clear the screen to black
+	RendererAPI::LoadActionsDesc loadActions{};
+	loadActions.LoadActionsColor[0] = RendererAPI::LoadActionType::Clear;
+	loadActions.ClearColorValues[0] = presentRT->GetClearColor();
+
+	//Bind the presentRT as RenderTarget
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({presentRT}, nullptr, &loadActions, nullptr, nullptr,
+															   std::numeric_limits<uint32_t>::max(),
+															   std::numeric_limits<uint32_t>::max());
+	Shader* resolveShader = s_MSAAResolveShaders[TRAP::Math::Sqrt(static_cast<uint32_t>(p->SampleCount))].get();
+
+	//Temporarily disable MSAA
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+	gpd.SampleCount = RendererAPI::SampleCount::SampleCount1;
+
+	//Run the MSAA resolve shader
+	resolveShader->UseTexture(1, 0, MSAAResolveRT->GetTexture());
+	resolveShader->Use();
+	p->GraphicCommandBuffers[p->ImageIndex]->Draw(3, 0);
+
+	//Reset MSAA state
+	gpd.SampleCount = p->SampleCount;
+
+	//Stop running render pass
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+															   std::numeric_limits<uint32_t>::max(),
+															   std::numeric_limits<uint32_t>::max());
+
+	//Transition MSAAResolveRT from ShaderResource to RenderTarget
+	barrier = {MSAAResolveRT, ResourceState::ShaderResource, ResourceState::Present};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	//Transition presentRT from RenderTarget to Present
+	barrier = {presentRT, ResourceState::RenderTarget, ResourceState::Present};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view gameName)
 {
 	m_instance = TRAP::MakeRef<VulkanInstance>(gameName, SetupInstanceLayers(), SetupInstanceExtensions());
@@ -424,6 +488,13 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	AddDefaultResources();
 
 	s_ResourceLoader = TRAP::MakeScope<ResourceLoader>();
+
+	for(uint32_t i = 0; i < s_MSAAResolveShaders.size(); ++i)
+	{
+		uint32_t sampleCount = TRAP::Math::Pow(2u, i + 1u);
+		std::vector<TRAP::Graphics::Shader::Macro> macros{{"SAMPLE_COUNT", std::to_string(sampleCount)}};
+		s_MSAAResolveShaders[i] = TRAP::Graphics::Shader::CreateFromSource("TRAP_MSAA_Resolve_x" + std::to_string(sampleCount), TRAP::Embed::MSAAResolveShader, &macros);
+	}
 
 	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
@@ -1595,6 +1666,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		swapChainDesc.ClearColor = p->ClearColor;
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
+		swapChainDesc.SampleCount = p->SampleCount;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		if (!p->SwapChain)
@@ -1612,6 +1684,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 	rTDesc.MipLevels = 1;
 	rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
 	rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+	rTDesc.SampleCount = p->SampleCount;
 	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 		p->RenderTargets[i] = RenderTarget::Create(rTDesc);
 

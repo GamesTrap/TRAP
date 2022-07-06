@@ -739,7 +739,6 @@ namespace TRAP::Graphics::API
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndGraphicRecording(PerWindowData* const p);
 
-
 		/// <summary>
 		/// Start recording the compute pipeline.
 		/// </summary>
@@ -750,6 +749,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndComputeRecording(PerWindowData* const p);
+
+		/// <summary>
+		/// Resolve the MSAA pass.
+		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
+		/// </summary>
+		/// <param name="p">Per window data used for recording.</param>
+		static void MSAAResolvePass(PerWindowData* const p);
 
 		std::string m_rendererTitle;
 
@@ -769,6 +775,8 @@ namespace TRAP::Graphics::API
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
+
+		static std::array<TRAP::Scope<Shader>, 4> s_MSAAResolveShaders;
 
 		static VulkanRenderer* s_renderer;
 	};
