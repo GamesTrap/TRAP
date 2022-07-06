@@ -952,11 +952,30 @@ void TRAP::Graphics::API::VulkanRenderer::SetAntiAliasing(const AntiAliasing ant
 	{
 		sampleCount = GPUSettings.MaxMSAASampleCount;
 	}
+	else if((antiAliasing == AntiAliasing::MSAA || antiAliasing == AntiAliasing::SSAA) &&
+	         sampleCount == SampleCount::One)
+	{
+		sampleCount = SampleCount::Two;
+	}
 	else if(antiAliasing == AntiAliasing::Off)
 		sampleCount = SampleCount::One;
 
 	p->NewAntiAliasing = antiAliasing;
 	p->NewSampleCount = sampleCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::GetAntiAliasing(AntiAliasing& outAntiAliasing,
+                                                          SampleCount& outSampleCount, Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	PerWindowData* const p = s_perWindowDataMap[window].get();
+
+	outAntiAliasing = p->NewAntiAliasing;
+	outSampleCount = p->NewSampleCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

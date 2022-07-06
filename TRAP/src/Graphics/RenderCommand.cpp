@@ -179,6 +179,14 @@ void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAlias
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
+                                                    Window* window)
+{
+	RendererAPI::GetRenderer()->GetAntiAliasing(outAntiAliasing, outSampleCount, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha, Window* window)
 {
 	RendererAPI::GetRenderer()->SetBlendMode(modeRGB, modeAlpha, window);

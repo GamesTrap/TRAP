@@ -250,6 +250,13 @@ namespace TRAP::Graphics::API
 		/// <param name="sampleCount">Sample count to use.</param>
 		/// <param name="window">Window to set anti aliasing for. Default: Main Window.</param>
 		void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount, Window* window = nullptr) override;
+		/// <summary>
+		/// Retrieve the anti aliasing method and the sample count of the window.
+		/// </summary>
+		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
+		/// <param name="outSampleCount">Output: Used sample count.</param>
+		/// <param name="window">Window to get anti aliasing from. Default: Main Window.</param>
+		void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, Window* window = nullptr) override;
 
 		/// <summary>
 		/// Clear the given window's render target.

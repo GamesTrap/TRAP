@@ -253,8 +253,50 @@ inline TRAP::Graphics::RenderAPI TRAP::Utils::String::ConvertToType<TRAP::Graphi
 	if (Utils::String::CompareAnyCase("NONE", input))
 		return Graphics::RenderAPI::NONE;
 
-	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::API::RenderAPI!");
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RenderAPI!");
 	return Graphics::RenderAPI::NONE;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Utils::String::ConvertToType<TRAP::Graphics::RendererAPI::AntiAliasing>(const std::string& input)
+{
+	if (Utils::String::CompareAnyCase("off", input))
+		return Graphics::RendererAPI::AntiAliasing::Off;
+
+	if (Utils::String::CompareAnyCase("msaa", input))
+		return Graphics::RendererAPI::AntiAliasing::MSAA;
+
+	if (Utils::String::CompareAnyCase("ssaa", input))
+		return Graphics::RendererAPI::AntiAliasing::SSAA;
+
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::AntiAliasing!");
+	return Graphics::RendererAPI::AntiAliasing::Off;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline TRAP::Graphics::RendererAPI::SampleCount TRAP::Utils::String::ConvertToType<TRAP::Graphics::RendererAPI::SampleCount>(const std::string& input)
+{
+	if (Utils::String::CompareAnyCase("1", input))
+		return Graphics::RendererAPI::SampleCount::One;
+
+	if (Utils::String::CompareAnyCase("2", input))
+		return Graphics::RendererAPI::SampleCount::Two;
+
+	if (Utils::String::CompareAnyCase("4", input))
+		return Graphics::RendererAPI::SampleCount::Four;
+
+	if (Utils::String::CompareAnyCase("8", input))
+		return Graphics::RendererAPI::SampleCount::Eight;
+
+	if (Utils::String::CompareAnyCase("16", input))
+		return Graphics::RendererAPI::SampleCount::Sixteen;
+
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::SampleCount!");
+	return Graphics::RendererAPI::SampleCount::One;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -405,6 +447,54 @@ inline std::string TRAP::Utils::String::ConvertToString<TRAP::Graphics::RenderAP
 
 	case Graphics::RenderAPI::NONE:
 		return "NONE";
+
+	default:
+		return "";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline std::string TRAP::Utils::String::ConvertToString<TRAP::Graphics::RendererAPI::AntiAliasing>(const Graphics::RendererAPI::AntiAliasing value)
+{
+	switch (value)
+	{
+	case Graphics::RendererAPI::AntiAliasing::Off:
+		return "Off";
+
+	case Graphics::RendererAPI::AntiAliasing::MSAA:
+		return "MSAA";
+
+	case Graphics::RendererAPI::AntiAliasing::SSAA:
+		return "SSAA";
+
+	default:
+		return "";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline std::string TRAP::Utils::String::ConvertToString<TRAP::Graphics::RendererAPI::SampleCount>(const Graphics::RendererAPI::SampleCount value)
+{
+	switch (value)
+	{
+	case Graphics::RendererAPI::SampleCount::One:
+		return "1";
+
+	case Graphics::RendererAPI::SampleCount::Two:
+		return "2";
+
+	case Graphics::RendererAPI::SampleCount::Four:
+		return "4";
+
+	case Graphics::RendererAPI::SampleCount::Eight:
+		return "8";
+
+	case Graphics::RendererAPI::SampleCount::Sixteen:
+		return "16";
 
 	default:
 		return "";

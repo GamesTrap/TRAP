@@ -2804,3 +2804,6 @@ SITREP 07/06/2022|22w27a2
         - VulkanRenderer Added missing destruction of the MSAA resolve shaders ~<5 mins
         - VulkanRenderer Fixed using wrong resolve shader ~<5 mins
         - AntiAliasing test Added option to set anti aliasing method and sample count ~<15 mins
+        - RendererAPI/VulkanRenderer Added GetAntiAliasing function ~<5 mins
+        - ConvertToType/ConvertToString Added specialization for AntiAliasing and SampleCount enums ~<10 mins
+        - Application Added saving and loading of AntiAliasing and AntiAliasingQuality values ~<10 mins

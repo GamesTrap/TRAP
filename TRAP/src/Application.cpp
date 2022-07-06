@@ -222,6 +222,11 @@ TRAP::Application::Application(std::string gameName)
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
+		//Set Anti aliasing
+		Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
+		Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, sampleCount);
+
 		//Always added as a fallback shader
 		Graphics::ShaderManager::LoadSource("FallbackGraphics", Embed::FallbackGraphicsShader)->Use();
 		Graphics::ShaderManager::LoadSource("FallbackCompute", Embed::FallbackComputeShader)->Use();
@@ -293,6 +298,15 @@ TRAP::Application::~Application()
 	{
 		const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
+	}
+
+	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+	{
+		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
+		Graphics::SampleCount sampleCount = Graphics::SampleCount::One;
+		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, sampleCount);
+		m_config.Set("AntiAliasing", antiAliasing);
+		m_config.Set("AntiAliasingQuality", sampleCount);
 	}
 
 	std::filesystem::path cfgPath = "engine.cfg";
