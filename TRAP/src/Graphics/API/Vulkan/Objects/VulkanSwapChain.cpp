@@ -294,7 +294,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	}
 
 	//Create MSAA resolve images if needed
-	if(desc.AntiAliasing == RendererAPI::AntiAliasing::MSAA || desc.AntiAliasing == RendererAPI::AntiAliasing::SSAA)
+	if(desc.SampleCount != RendererAPI::SampleCount::SampleCount1)
 	{
 		descColor.NativeHandle = nullptr;
 		descColor.SampleCount = desc.SampleCount;
@@ -384,6 +384,17 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 	//Toggle VSync on or off
 	//For Vulkan we need to remove the SwapChain and recreate it with correct VSync option
+	DeInitSwapchain();
+	InitSwapchain(desc);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::SampleCount sampleCount)
+{
+	RendererAPI::SwapChainDesc desc = m_desc;
+	desc.SampleCount = sampleCount;
+
 	DeInitSwapchain();
 	InitSwapchain(desc);
 }

@@ -291,8 +291,11 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
 		swapChainDesc.EnableVSync = p->CurrentVSync;
-		swapChainDesc.SampleCount = p->SampleCount;
-		swapChainDesc.AntiAliasing = p->AntiAliasing;
+		if(p->AntiAliasing == AntiAliasing::Off || p->AntiAliasing == AntiAliasing::MSAA ||
+		   p->AntiAliasing == AntiAliasing::SSAA)
+			swapChainDesc.SampleCount = p->SampleCount;
+		else
+			swapChainDesc.SampleCount = SampleCount::SampleCount1;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		p->CurrentSwapChainImageIndex = 0;
@@ -531,9 +534,35 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 			p->SwapChain->ToggleVSync();
 		p->CurrentVSync = p->NewVSync;
 	}
+	bool updateImGui = false;
+	if (p->NewAntiAliasing != p->AntiAliasing || p->NewSampleCount != p->SampleCount) //Change sample count only between frames!
+	{
+		p->AntiAliasing = p->NewAntiAliasing;
+		p->SampleCount = p->NewSampleCount;
+
+		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).SampleCount = p->SampleCount;
+		updateImGui = true;
+
+		if(p->SwapChain)
+		{
+			if(p->AntiAliasing == RendererAPI::AntiAliasing::MSAA ||
+			   p->AntiAliasing == RendererAPI::AntiAliasing::SSAA ||
+			   p->AntiAliasing == RendererAPI::AntiAliasing::Off)
+			{
+				p->SwapChain->SetSampleCount(p->SampleCount);
+			}
+			else //Every other anti aliasing doesn't set the swapchains sample count
+				p->SwapChain->SetSampleCount(RendererAPI::SampleCount::SampleCount1);
+		}
+	}
 #endif
 	StartComputeRecording(p);
 	StartGraphicRecording(p);
+
+#ifndef TRAP_HEADLESS_MODE
+	if(updateImGui)
+		TRAP::Application::GetImGuiLayer().SetMSAASamples(static_cast<uint32_t>(p->SampleCount));
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -881,6 +910,30 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
 	p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(shadingRate, texture, postRasterizerRate, finalRate);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetAntiAliasing(const AntiAliasing antiAliasing, SampleCount sampleCount,
+                                                          Window* window)
+{
+	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= sampleCount, "Sample count is higher than max supported by GPU");
+
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	PerWindowData* const p = s_perWindowDataMap[window].get();
+
+	if((antiAliasing == AntiAliasing::MSAA || antiAliasing == AntiAliasing::SSAA) &&
+	    sampleCount > GPUSettings.MaxMSAASampleCount)
+	{
+		sampleCount = GPUSettings.MaxMSAASampleCount;
+	}
+	else if(antiAliasing == AntiAliasing::Off)
+		sampleCount = SampleCount::SampleCount1;
+
+	p->NewAntiAliasing = antiAliasing;
+	p->NewSampleCount = sampleCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1676,8 +1729,11 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		swapChainDesc.ClearColor = p->ClearColor;
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
-		swapChainDesc.SampleCount = p->SampleCount;
-		swapChainDesc.AntiAliasing = p->AntiAliasing;
+		if(p->AntiAliasing == AntiAliasing::Off || p->AntiAliasing == AntiAliasing::MSAA ||
+		   p->AntiAliasing == AntiAliasing::SSAA)
+			swapChainDesc.SampleCount = p->SampleCount;
+		else
+			swapChainDesc.SampleCount = SampleCount::SampleCount1;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		if (!p->SwapChain)

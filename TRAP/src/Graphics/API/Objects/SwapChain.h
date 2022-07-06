@@ -73,6 +73,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		virtual void ToggleVSync() = 0;
 
+		/// <summary>
+		/// Set sample count used by anti aliasing.
+		/// </summary>
+		virtual void SetSampleCount(RendererAPI::SampleCount sampleCount) = 0;
+
 	protected:
 		/// <summary>
 		/// Constructor.

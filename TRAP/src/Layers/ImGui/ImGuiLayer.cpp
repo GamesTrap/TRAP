@@ -163,7 +163,11 @@ void TRAP::ImGuiLayer::OnDetach()
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
-		vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
+		if(m_imguiDescriptorPool)
+		{
+			vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
+			m_imguiDescriptorPool = nullptr;
+		}
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
 
 		ImGui_ImplVulkan_Shutdown();
@@ -183,6 +187,14 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 		event.Handled |= event.IsInCategory(Events::EventCategory::Mouse) & io.WantCaptureMouse;
 		event.Handled |= event.IsInCategory(Events::EventCategory::Keyboard) & io.WantCaptureKeyboard;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::ImGuiLayer::SetMSAASamples(const uint32_t sampleCount)
+{
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
+		ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(sampleCount));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

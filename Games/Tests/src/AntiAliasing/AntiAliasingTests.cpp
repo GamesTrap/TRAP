@@ -33,9 +33,7 @@ void AntiAliasingTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 	const float angle = TRAP::Application::GetTime().GetSeconds() * TRAP::Math::PI<float>();
 
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
-	//TODO Enable MSAA
 	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
-	//TODO Disable MSAA
 	TRAP::Graphics::Renderer2D::DrawQuad({ { 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
 	TRAP::Graphics::Renderer2D::EndScene();
 
@@ -56,7 +54,10 @@ void AntiAliasingTests::OnImGuiRender()
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
 	if(ImGui::Checkbox("MSAA", &m_msaa))
 	{
-		//TODO Enable/Disable MSAA
+		if(m_msaa)
+			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::MSAA, TRAP::Graphics::SampleCount::SampleCount8);
+		else
+			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::Off, TRAP::Graphics::SampleCount::SampleCount1);
 	}
 	ImGui::Text("Press ESC to close");
 	ImGui::End();

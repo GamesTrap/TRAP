@@ -71,6 +71,8 @@ namespace TRAP::Graphics
 		enum class ShadingRate;
 		enum class ShadingRateCombiner;
 		enum class ResourceState;
+		enum class AntiAliasing;
+		enum class SampleCount;
 		enum class QueueType;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
@@ -339,6 +341,14 @@ namespace TRAP::Graphics
 						            TRAP::Graphics::Texture* texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, Window* window = nullptr) = 0;
+		/// <summary>
+		/// Set the anti aliasing method and the sample count for the window.
+		/// Use AntiAliasing::Off and SampleCount::SampleCount1 to disable anti aliasing.
+		/// </summary>
+		/// <param name="antiAliasing">Anti aliasing method to use.</param>
+		/// <param name="sampleCount">Sample count to use.</param>
+		/// <param name="window">Window to set anti aliasing for. Default: Main Window.</param>
+		virtual void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount, Window* window = nullptr) = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -788,7 +798,7 @@ namespace TRAP::Graphics
 		{
 			Off,
 			MSAA,
-			// SSAA
+			SSAA
 		};
 
 		/// <summary>
@@ -1998,8 +2008,6 @@ namespace TRAP::Graphics
 			bool EnableVSync{};
 			//Anti aliasing sample count (1 = no AA)
 			RendererAPI::SampleCount SampleCount = SampleCount::SampleCount1;
-			//Anti aliasing method
-			RendererAPI::AntiAliasing AntiAliasing = AntiAliasing::Off;
 		};
 
 		/// <summary>
@@ -2324,7 +2332,7 @@ namespace TRAP::Graphics
 			uint32_t MaxPushConstantSize;
 			uint32_t MaxSamplerAllocationCount;
 			uint32_t MaxTessellationControlPoints;
-			uint32_t MaxMSAASampleCount;
+			SampleCount MaxMSAASampleCount;
 			float MaxAnisotropy;
 
 			uint32_t WaveLaneCount;
@@ -2395,8 +2403,10 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
-			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::SampleCount8; //TODO Set via RenderCommand instead
-			RendererAPI::AntiAliasing AntiAliasing = RendererAPI::AntiAliasing::MSAA; //TODO Set via RenderCommand instead
+			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::SampleCount1;
+			RendererAPI::AntiAliasing AntiAliasing = RendererAPI::AntiAliasing::Off;
+			RendererAPI::SampleCount NewSampleCount = RendererAPI::SampleCount::SampleCount1;
+			RendererAPI::AntiAliasing NewAntiAliasing = RendererAPI::AntiAliasing::Off;
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;

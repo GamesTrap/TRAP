@@ -57,6 +57,14 @@ namespace TRAP::Graphics
 	/// Different resource states.
 	/// </summary>
 	using ResourceState = RendererAPI::ResourceState;
+	/// <summary>
+	/// Different anti aliasing methods.
+	/// </summary>
+	using AntiAliasing = RendererAPI::AntiAliasing;
+	/// <summary>
+	/// Different sample counts for anti aliasing.
+	/// </summary>
+	using SampleCount = RendererAPI::SampleCount;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.
@@ -232,6 +240,14 @@ namespace TRAP::Graphics
 						           Texture* texture,
 		                           ShadingRateCombiner postRasterizerRate,
 							       ShadingRateCombiner finalRate, Window* window = nullptr);
+		/// <summary>
+		/// Set the anti aliasing method and the sample count for the window.
+		/// Use AntiAliasing::Off and SampleCount::SampleCount1 to disable anti aliasing.
+		/// </summary>
+		/// <param name="antiAliasing">Anti aliasing method to use.</param>
+		/// <param name="sampleCount">Sample count to use.</param>
+		/// <param name="window">Window to set anti aliasing for. Default: Main Window.</param>
+		static void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount, Window* window = nullptr);
 
 		//Blending functions
 

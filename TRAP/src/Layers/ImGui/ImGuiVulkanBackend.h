@@ -84,6 +84,7 @@ IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMinImageCount(uint32_t min_ima
 IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
 IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
 IMGUI_IMPL_API void           ImGui_ImplVulkan_ClearCache();
+IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
 
 //-------------------------------------------------------------------------
 // Internal / Miscellaneous Vulkan Helpers

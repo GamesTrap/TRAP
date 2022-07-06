@@ -2794,3 +2794,8 @@ SITREP 07/06/2022|22w27a2
         - SwapChain Added GetRenderTargetsMSAA() ~<5 mins
         - RendererAPI, VulkanRenderer & ImGuiLayer Updated GetRenderTargets usage ~<10 mins
         - RendererAPI Added AntiAliasing enum ~<5 mins
+        - (Vulkan)SwapChain Added SetSampleCount function ~<5 mins
+        - RenderCommand/RendererAPI Added SetAntiAliasing function <10 mins
+        - ImGuiVulkanBackend Added ImGui_ImplVulkan_SetMSAASamples function ~<10 mins
+        - ImGuiLayer Added SetMSAASamples function ~<5 mins
+        - Updated AntiAliasing test ~<5 mins
