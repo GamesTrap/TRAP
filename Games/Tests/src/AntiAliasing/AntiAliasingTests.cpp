@@ -1,7 +1,7 @@
 #include "AntiAliasingTests.h"
 
 AntiAliasingTests::AntiAliasingTests()
-	: Layer("AntiAliasing"), m_fpsTimer(), m_msaa(false),
+	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(TRAP::Graphics::SampleCount::Two),
 	  m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
 	             static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 	           static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
@@ -52,13 +52,46 @@ void AntiAliasingTests::OnImGuiRender()
 {
 	ImGui::Begin("AntiAliasing", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
-	if(ImGui::Checkbox("MSAA", &m_msaa))
+
+	bool updateAA = false;
+
+	constexpr std::array<const char*, 2/*3*/> antiAliasingMethods{"Off", "MSAA"/*, "SSAA"*/};
+	static int32_t currentAA = 0;
+	if(ImGui::Combo("Anti aliasing", &currentAA, antiAliasingMethods.data(), static_cast<int32_t>(antiAliasingMethods.size())))
 	{
-		if(m_msaa)
-			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::MSAA, TRAP::Graphics::SampleCount::Eight);
-		else
-			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::Off, TRAP::Graphics::SampleCount::One);
+		if(currentAA == 0)
+			m_antiAliasing = TRAP::Graphics::AntiAliasing::Off;
+		else if(currentAA == 1)
+			m_antiAliasing = TRAP::Graphics::AntiAliasing::MSAA;
+		else if(currentAA == 2)
+			m_antiAliasing = TRAP::Graphics::AntiAliasing::SSAA;
+
+		updateAA = true;
 	}
+
+	if(currentAA != 0)
+	{
+		static int32_t maxSupportedQualitySize = static_cast<int32_t>((TRAP::Math::Log(static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)) / TRAP::Math::Log(2.0f)));
+		constexpr std::array<const char*, 4> sampleCounts{"x2", "x4", "x8", "x16"};
+		static int32_t currentAAQuality = 0;
+		if(ImGui::Combo("Anti aliasing quality", &currentAAQuality, sampleCounts.data(), maxSupportedQualitySize))
+		{
+			if(currentAAQuality == 0)
+				m_sampleCount = TRAP::Graphics::SampleCount::Two;
+			else if(currentAAQuality == 1)
+				m_sampleCount = TRAP::Graphics::SampleCount::Four;
+			else if(currentAAQuality == 2)
+				m_sampleCount = TRAP::Graphics::SampleCount::Eight;
+			else if(currentAAQuality == 3)
+				m_sampleCount = TRAP::Graphics::SampleCount::Sixteen;
+
+			updateAA = true;
+		}
+	}
+
+	if(updateAA)
+		TRAP::Graphics::RenderCommand::SetAntiAliasing(m_antiAliasing, m_sampleCount);
+
 	ImGui::Text("Press ESC to close");
 	ImGui::End();
 }

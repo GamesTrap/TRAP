@@ -2802,3 +2802,5 @@ SITREP 07/06/2022|22w27a2
         - Updated AntiAliasing test ~<5 mins
         - RendererAPI Renamed SampleCount enum values ~<5 mins
         - VulkanRenderer Added missing destruction of the MSAA resolve shaders ~<5 mins
+        - VulkanRenderer Fixed using wrong resolve shader ~<5 mins
+        - AntiAliasing test Added option to set anti aliasing method and sample count ~<15 mins

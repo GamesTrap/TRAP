@@ -21,7 +21,8 @@ private:
 
 	TRAP::Utils::Timer m_fpsTimer;
 
-	bool m_msaa;
+	TRAP::Graphics::AntiAliasing m_antiAliasing;
+	TRAP::Graphics::SampleCount m_sampleCount;
 
 	TRAP::Graphics::OrthographicCamera m_camera;
 };

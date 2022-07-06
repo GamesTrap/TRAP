@@ -419,7 +419,27 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({presentRT}, nullptr, &loadActions, nullptr, nullptr,
 															   std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
-	Shader* resolveShader = s_MSAAResolveShaders[TRAP::Math::Sqrt(static_cast<uint32_t>(p->SampleCount))].get();
+
+	uint32_t shaderIndex = 0;
+	switch(p->SampleCount)
+	{
+	case SampleCount::Two:
+		shaderIndex = 0;
+		break;
+	case SampleCount::Four:
+		shaderIndex = 1;
+		break;
+	case SampleCount::Eight:
+		shaderIndex = 2;
+		break;
+	case SampleCount::Sixteen:
+		shaderIndex = 3;
+		break;
+	default:
+		shaderIndex = 0;
+		break;
+	}
+	Shader* resolveShader = s_MSAAResolveShaders[shaderIndex].get();
 
 	//Temporarily disable MSAA
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
