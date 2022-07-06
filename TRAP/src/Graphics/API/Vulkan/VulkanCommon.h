@@ -462,19 +462,19 @@ constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(
 {
 	switch(sampleCount)
 	{
-	case RendererAPI::SampleCount::SampleCount1:
+	case RendererAPI::SampleCount::One:
 		return VK_SAMPLE_COUNT_1_BIT;
 
-	case RendererAPI::SampleCount::SampleCount2:
+	case RendererAPI::SampleCount::Two:
 		return VK_SAMPLE_COUNT_2_BIT;
 
-	case RendererAPI::SampleCount::SampleCount4:
+	case RendererAPI::SampleCount::Four:
 		return VK_SAMPLE_COUNT_4_BIT;
 
-	case RendererAPI::SampleCount::SampleCount8:
+	case RendererAPI::SampleCount::Eight:
 		return VK_SAMPLE_COUNT_8_BIT;
 
-	case RendererAPI::SampleCount::SampleCount16:
+	case RendererAPI::SampleCount::Sixteen:
 		return VK_SAMPLE_COUNT_16_BIT;
 
 	default:

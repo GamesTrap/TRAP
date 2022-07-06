@@ -55,9 +55,9 @@ void AntiAliasingTests::OnImGuiRender()
 	if(ImGui::Checkbox("MSAA", &m_msaa))
 	{
 		if(m_msaa)
-			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::MSAA, TRAP::Graphics::SampleCount::SampleCount8);
+			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::MSAA, TRAP::Graphics::SampleCount::Eight);
 		else
-			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::Off, TRAP::Graphics::SampleCount::SampleCount1);
+			TRAP::Graphics::RenderCommand::SetAntiAliasing(TRAP::Graphics::AntiAliasing::Off, TRAP::Graphics::SampleCount::One);
 	}
 	ImGui::Text("Press ESC to close");
 	ImGui::End();

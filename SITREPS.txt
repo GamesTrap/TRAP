@@ -2800,3 +2800,4 @@ SITREP 07/06/2022|22w27a2
         - ImGuiVulkanBackend Added ImGui_ImplVulkan_SetMSAASamples function ~<10 mins
         - ImGuiLayer Added SetMSAASamples function ~<5 mins
         - Updated AntiAliasing test ~<5 mins
+        - RendererAPI Renamed SampleCount enum values ~<5 mins

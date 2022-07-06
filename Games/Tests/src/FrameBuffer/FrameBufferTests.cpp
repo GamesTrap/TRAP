@@ -67,7 +67,7 @@ void FrameBufferTests::OnAttach()
     desc.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
     desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-    desc.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::SampleCount1;
+    desc.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
     desc.SampleQuality = 0;
     desc.Name = "Test Framebuffer";
     m_renderTarget = TRAP::Graphics::RenderTarget::Create(desc);

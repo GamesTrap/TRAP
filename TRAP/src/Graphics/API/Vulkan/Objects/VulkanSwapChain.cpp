@@ -282,7 +282,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	descColor.ClearColor = desc.ClearColor;
 	descColor.ClearDepth = desc.ClearDepth;
 	descColor.ClearStencil = desc.ClearStencil;
-	descColor.SampleCount = RendererAPI::SampleCount::SampleCount1;
+	descColor.SampleCount = RendererAPI::SampleCount::One;
 	descColor.SampleQuality = 0;
 	descColor.StartState = RendererAPI::ResourceState::Present;
 
@@ -294,7 +294,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	}
 
 	//Create MSAA resolve images if needed
-	if(desc.SampleCount != RendererAPI::SampleCount::SampleCount1)
+	if(desc.SampleCount != RendererAPI::SampleCount::One)
 	{
 		descColor.NativeHandle = nullptr;
 		descColor.SampleCount = desc.SampleCount;

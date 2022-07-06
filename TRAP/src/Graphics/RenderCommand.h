@@ -242,7 +242,7 @@ namespace TRAP::Graphics
 							       ShadingRateCombiner finalRate, Window* window = nullptr);
 		/// <summary>
 		/// Set the anti aliasing method and the sample count for the window.
-		/// Use AntiAliasing::Off and SampleCount::SampleCount1 to disable anti aliasing.
+		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
 		/// </summary>
 		/// <param name="antiAliasing">Anti aliasing method to use.</param>
 		/// <param name="sampleCount">Sample count to use.</param>

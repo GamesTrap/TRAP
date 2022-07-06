@@ -842,7 +842,7 @@ uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const
 
 bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& desc)
 {
-    if(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1)
+    if(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1)
 	{
 		TP_ERROR(Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
 		TRAP_ASSERT(false);

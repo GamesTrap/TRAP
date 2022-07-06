@@ -302,7 +302,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	if (depthMipSlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthMipSlice, 1, frameBufferHash);
 
-	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::SampleCount1;
+	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::One;
 
 	VulkanRenderer::RenderPassMap& renderPassMap = VulkanRenderer::GetRenderPassMap();
 	VulkanRenderer::FrameBufferMap& frameBufferMap = VulkanRenderer::GetFrameBufferMap();

@@ -295,7 +295,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		   p->AntiAliasing == AntiAliasing::SSAA)
 			swapChainDesc.SampleCount = p->SampleCount;
 		else
-			swapChainDesc.SampleCount = SampleCount::SampleCount1;
+			swapChainDesc.SampleCount = SampleCount::One;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		p->CurrentSwapChainImageIndex = 0;
@@ -420,7 +420,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 
 	//Temporarily disable MSAA
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-	gpd.SampleCount = RendererAPI::SampleCount::SampleCount1;
+	gpd.SampleCount = RendererAPI::SampleCount::One;
 
 	//Run the MSAA resolve shader
 	resolveShader->UseTexture(1, 0, MSAAResolveRT->GetTexture());
@@ -552,7 +552,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 				p->SwapChain->SetSampleCount(p->SampleCount);
 			}
 			else //Every other anti aliasing doesn't set the swapchains sample count
-				p->SwapChain->SetSampleCount(RendererAPI::SampleCount::SampleCount1);
+				p->SwapChain->SetSampleCount(RendererAPI::SampleCount::One);
 		}
 	}
 #endif
@@ -930,7 +930,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetAntiAliasing(const AntiAliasing ant
 		sampleCount = GPUSettings.MaxMSAASampleCount;
 	}
 	else if(antiAliasing == AntiAliasing::Off)
-		sampleCount = SampleCount::SampleCount1;
+		sampleCount = SampleCount::One;
 
 	p->NewAntiAliasing = antiAliasing;
 	p->NewSampleCount = sampleCount;
@@ -1733,7 +1733,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		   p->AntiAliasing == AntiAliasing::SSAA)
 			swapChainDesc.SampleCount = p->SampleCount;
 		else
-			swapChainDesc.SampleCount = SampleCount::SampleCount1;
+			swapChainDesc.SampleCount = SampleCount::One;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		if (!p->SwapChain)
@@ -2092,7 +2092,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	textureDesc.Format = ImageFormat::R8G8B8A8_UNORM;
 	textureDesc.Height = 1;
 	textureDesc.MipLevels = 1;
-	textureDesc.SampleCount = SampleCount::SampleCount1;
+	textureDesc.SampleCount = SampleCount::One;
 	textureDesc.StartState = ResourceState::Common;
 	textureDesc.Descriptors = DescriptorType::Texture;
 	textureDesc.Width = 1;
@@ -2130,11 +2130,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 	//2D MS Texture
 	textureDesc.Descriptors = DescriptorType::Texture;
-	textureDesc.SampleCount = SampleCount::SampleCount4;
+	textureDesc.SampleCount = SampleCount::Four;
 	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
 	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMS)] = std::move(vkTex);
-	textureDesc.SampleCount = SampleCount::SampleCount1;
+	textureDesc.SampleCount = SampleCount::One;
 
 	//2D Texture Array
 	textureDesc.ArraySize = 2;
@@ -2148,11 +2148,11 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 
 	//2D MS Texture Array
 	textureDesc.Descriptors = DescriptorType::Texture;
-	textureDesc.SampleCount = SampleCount::SampleCount4;
+	textureDesc.SampleCount = SampleCount::Four;
 	vkTex = TRAP::MakeScope<TRAP::Graphics::API::VulkanTexture>();
 	vkTex->Init(textureDesc);
 	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMSArray)] = std::move(vkTex);
-	textureDesc.SampleCount = SampleCount::SampleCount1;
+	textureDesc.SampleCount = SampleCount::One;
 
 	//3D Texture
 	textureDesc.Depth = 2;

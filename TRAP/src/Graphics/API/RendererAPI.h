@@ -343,7 +343,7 @@ namespace TRAP::Graphics
 							        ShadingRateCombiner finalRate, Window* window = nullptr) = 0;
 		/// <summary>
 		/// Set the anti aliasing method and the sample count for the window.
-		/// Use AntiAliasing::Off and SampleCount::SampleCount1 to disable anti aliasing.
+		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
 		/// </summary>
 		/// <param name="antiAliasing">Anti aliasing method to use.</param>
 		/// <param name="sampleCount">Sample count to use.</param>
@@ -784,11 +784,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class SampleCount
 		{
-			SampleCount1 = BIT(0),
-			SampleCount2 = BIT(1),
-			SampleCount4 = BIT(2),
-			SampleCount8 = BIT(3),
-			SampleCount16 = BIT(4)
+			One = BIT(0),
+			Two = BIT(1),
+			Four = BIT(2),
+			Eight = BIT(3),
+			Sixteen = BIT(4)
 		};
 
 		/// <summary>
@@ -1405,7 +1405,7 @@ namespace TRAP::Graphics
 			//Number of mip levels
 			uint32_t MipLevels = 1;
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage
-			//only support SampleCount1).
+			//only support One).
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
@@ -2007,7 +2007,7 @@ namespace TRAP::Graphics
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
 			//Anti aliasing sample count (1 = no AA)
-			RendererAPI::SampleCount SampleCount = SampleCount::SampleCount1;
+			RendererAPI::SampleCount SampleCount = SampleCount::One;
 		};
 
 		/// <summary>
@@ -2403,9 +2403,9 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
-			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::SampleCount1;
+			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
 			RendererAPI::AntiAliasing AntiAliasing = RendererAPI::AntiAliasing::Off;
-			RendererAPI::SampleCount NewSampleCount = RendererAPI::SampleCount::SampleCount1;
+			RendererAPI::SampleCount NewSampleCount = RendererAPI::SampleCount::One;
 			RendererAPI::AntiAliasing NewAntiAliasing = RendererAPI::AntiAliasing::Off;
 			bool Recording;
 
