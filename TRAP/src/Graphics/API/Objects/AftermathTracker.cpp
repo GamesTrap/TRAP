@@ -36,11 +36,14 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
     std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
     std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
 
-    std::filesystem::path filePath = TRAP::FS::GetDocumentsFolderPath() / TRAP::Application::GetGameName() /
-                                     "crash-dumps" / ("crash_" + dateTimeStamp + ".dump");
+    std::filesystem::path folderPath = TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() /
+                                       "crash-dumps";
+    std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
     std::lock_guard lock(mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
     std::memcpy(buffer.data(), gpuCrashDump, gpuCrashDumpSize);
+    if(!TRAP::FS::FileOrFolderExists(folderPath))
+        TRAP::FS::CreateFolder(folderPath);
     TRAP::FS::WriteFile(filePath, buffer);
 #endif
 }

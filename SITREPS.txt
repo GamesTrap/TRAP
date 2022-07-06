@@ -2777,3 +2777,6 @@ SITREP 07/04/2022|22w27a1
 SITREP 07/05/2022|22w27a1
     - Changed TRAP Engine version to 22w27a1(0.8.8)
     - Fixed WindowingAPI::InputKey not processing keys correctly ~<5 mins
+
+SITREP 07/06/2022|22w27a2
+    - AftermathTracker Fixed unable to save crash dump ~<5 mins
