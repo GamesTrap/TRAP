@@ -2781,6 +2781,7 @@ SITREP 07/05/2022|22w27a1
         - Tests Added AntiAliasing test ~>40 mins
 
 SITREP 07/06/2022|22w27a2
+    - AftermathTracker Fixed unable to save crash dump ~<5 mins
     - Branch MSAA:
         - Embed Added MSAAResolveShader ~<20 mins
         - (Vulkan)SwapChain Added additional RenderTargets for MSAA ~<15 mins
