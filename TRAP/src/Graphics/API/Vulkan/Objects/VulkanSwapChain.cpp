@@ -294,7 +294,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	}
 
 	//Create MSAA resolve images if needed
-	if(desc.SampleCount != RendererAPI::SampleCount::SampleCount1)
+	if(desc.AntiAliasing == RendererAPI::AntiAliasing::MSAA || desc.AntiAliasing == RendererAPI::AntiAliasing::SSAA)
 	{
 		descColor.NativeHandle = nullptr;
 		descColor.SampleCount = desc.SampleCount;

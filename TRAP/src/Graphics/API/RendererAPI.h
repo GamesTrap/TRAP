@@ -782,6 +782,16 @@ namespace TRAP::Graphics
 		};
 
 		/// <summary>
+		/// Enum describing the different anti aliasing methods.
+		/// </summary>
+		enum class AntiAliasing
+		{
+			Off,
+			MSAA,
+			// SSAA
+		};
+
+		/// <summary>
 		/// Enum bit flags used by texture creation.
 		/// </summary>
 		enum class TextureCreationFlags
@@ -1986,8 +1996,10 @@ namespace TRAP::Graphics
 			uint32_t ClearStencil = 0;
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
-			//MSAA sample count (1 = no MSAA)
+			//Anti aliasing sample count (1 = no AA)
 			RendererAPI::SampleCount SampleCount = SampleCount::SampleCount1;
+			//Anti aliasing method
+			RendererAPI::AntiAliasing AntiAliasing = AntiAliasing::Off;
 		};
 
 		/// <summary>
@@ -2384,6 +2396,7 @@ namespace TRAP::Graphics
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::SampleCount8; //TODO Set via RenderCommand instead
+			RendererAPI::AntiAliasing AntiAliasing = RendererAPI::AntiAliasing::MSAA; //TODO Set via RenderCommand instead
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;

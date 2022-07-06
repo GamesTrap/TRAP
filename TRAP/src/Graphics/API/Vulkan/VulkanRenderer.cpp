@@ -155,7 +155,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
 	p->CurrentSwapChainImageIndex = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
-	if(p->SampleCount != RendererAPI::SampleCount::SampleCount1)
+	if(p->AntiAliasing == RendererAPI::AntiAliasing::MSAA ||
+	   p->AntiAliasing == RendererAPI::AntiAliasing::SSAA)
 		renderTarget = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
 	else
 		renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
@@ -215,7 +216,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		return;
 
 #ifndef TRAP_HEADLESS_MODE
-	if(p->SampleCount != RendererAPI::SampleCount::SampleCount1) //Inject MSAA resolve pass
+	if(p->AntiAliasing == RendererAPI::AntiAliasing::MSAA ||
+	   p->AntiAliasing == RendererAPI::AntiAliasing::SSAA) //Inject MSAA resolve pass
 		MSAAResolvePass(p);
 
 	//Transition RenderTarget to Present
@@ -290,6 +292,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		swapChainDesc.ClearStencil = p->ClearStencil;
 		swapChainDesc.EnableVSync = p->CurrentVSync;
 		swapChainDesc.SampleCount = p->SampleCount;
+		swapChainDesc.AntiAliasing = p->AntiAliasing;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		p->CurrentSwapChainImageIndex = 0;
@@ -891,7 +894,8 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 
 	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
-	if(data->SampleCount != RendererAPI::SampleCount::SampleCount1)
+	if(data->AntiAliasing == RendererAPI::AntiAliasing::MSAA ||
+	   data->AntiAliasing == RendererAPI::AntiAliasing::SSAA)
 		renderTarget = data->SwapChain->GetRenderTargetsMSAA()[data->ImageIndex];
 	else
 		renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
@@ -1528,7 +1532,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 	TRAP::Ref<RenderTarget> rT = winData->RenderTargets[lastFrame];
 #else
 	TRAP::Ref<RenderTarget> rT = nullptr;
-	if(winData->SampleCount != RendererAPI::SampleCount::SampleCount1)
+	if(winData->AntiAliasing == RendererAPI::AntiAliasing::MSAA ||
+	   winData->AntiAliasing == RendererAPI::AntiAliasing::SSAA)
 		rT = winData->SwapChain->GetRenderTargetsMSAA()[lastFrame];
 	else
 		rT = winData->SwapChain->GetRenderTargets()[lastFrame];
@@ -1672,6 +1677,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
 		swapChainDesc.SampleCount = p->SampleCount;
+		swapChainDesc.AntiAliasing = p->AntiAliasing;
 		p->SwapChain = SwapChain::Create(swapChainDesc);
 
 		if (!p->SwapChain)
@@ -1699,7 +1705,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 
 	//Graphics Pipeline
 #ifndef TRAP_HEADLESS_MODE
-	const std::vector<TRAP::Ref<RenderTarget>>& rT = p->SampleCount != RendererAPI::SampleCount::SampleCount1 ?
+	const std::vector<TRAP::Ref<RenderTarget>>& rT = (p->AntiAliasing == RendererAPI::AntiAliasing::MSAA ||
+	                                                  p->AntiAliasing == RendererAPI::AntiAliasing::SSAA) ?
 	                                                 p->SwapChain->GetRenderTargetsMSAA() :
 													 p->SwapChain->GetRenderTargets();
 #else

@@ -2793,3 +2793,4 @@ SITREP 07/06/2022|22w27a2
         - SwapChain Removed GetRenderTargetsNonMSAA() & GetRenderTargetsMSAAResolve ~<5 mins
         - SwapChain Added GetRenderTargetsMSAA() ~<5 mins
         - RendererAPI, VulkanRenderer & ImGuiLayer Updated GetRenderTargets usage ~<10 mins
+        - RendererAPI Added AntiAliasing enum ~<5 mins
