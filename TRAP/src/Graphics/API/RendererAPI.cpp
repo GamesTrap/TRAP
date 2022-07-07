@@ -214,9 +214,9 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 
 	const auto* winData = s_perWindowDataMap[window].get();
 
+	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 #ifndef TRAP_HEADLESS_MODE
 	//Get correct RenderTarget
-	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 	if(winData->AntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
 		renderTarget = winData->SwapChain->GetRenderTargetsMSAA()[winData->ImageIndex];
 	else //No MSAA
@@ -225,7 +225,12 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 #else
-	GetRenderer()->BindRenderTarget(winData->RenderTargets[winData->ImageIndex], nullptr, nullptr,
+	if(winData->AntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
+		renderTarget = winData->RenderTargetsMSAA[winData->ImageIndex];
+	else //No MSAA
+		renderTarget = winData->RenderTargets[winData->ImageIndex];
+
+	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 #endif
 }

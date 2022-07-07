@@ -2813,3 +2813,5 @@ SITREP 07/07/2022|22w27a3
         - Added sample shading to MSAA if supported ~<10 mins
         - Removed SSAA stuff ~<10 mins
         - Fixed screenshot capturing when using MSAA ~<5 mins
+        - HeadlessTests Added AntiAliasing test ~<10 mins
+        -
