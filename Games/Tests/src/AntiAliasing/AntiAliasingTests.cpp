@@ -54,7 +54,7 @@ void AntiAliasingTests::OnImGuiRender()
 
 	bool updateAA = false;
 
-	constexpr std::array<const char*, 2/*3*/> antiAliasingMethods{"Off", "MSAA"/*, "SSAA"*/};
+	constexpr std::array<const char*, 2> antiAliasingMethods{"Off", "MSAA"};
 	static int32_t currentAA = static_cast<uint32_t>(m_antiAliasing);
 	if(ImGui::Combo("Anti aliasing", &currentAA, antiAliasingMethods.data(), static_cast<int32_t>(antiAliasingMethods.size())))
 	{
@@ -62,8 +62,6 @@ void AntiAliasingTests::OnImGuiRender()
 			m_antiAliasing = TRAP::Graphics::AntiAliasing::Off;
 		else if(currentAA == 1)
 			m_antiAliasing = TRAP::Graphics::AntiAliasing::MSAA;
-		else if(currentAA == 2)
-			m_antiAliasing = TRAP::Graphics::AntiAliasing::SSAA;
 
 		updateAA = true;
 	}

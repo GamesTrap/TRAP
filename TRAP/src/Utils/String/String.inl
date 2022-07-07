@@ -268,9 +268,6 @@ inline TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Utils::String::ConvertToT
 	if (Utils::String::CompareAnyCase("msaa", input))
 		return Graphics::RendererAPI::AntiAliasing::MSAA;
 
-	if (Utils::String::CompareAnyCase("ssaa", input))
-		return Graphics::RendererAPI::AntiAliasing::SSAA;
-
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::AntiAliasing!");
 	return Graphics::RendererAPI::AntiAliasing::Off;
 }
@@ -465,9 +462,6 @@ inline std::string TRAP::Utils::String::ConvertToString<TRAP::Graphics::Renderer
 
 	case Graphics::RendererAPI::AntiAliasing::MSAA:
 		return "MSAA";
-
-	case Graphics::RendererAPI::AntiAliasing::SSAA:
-		return "SSAA";
 
 	default:
 		return "";

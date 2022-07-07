@@ -804,8 +804,7 @@ namespace TRAP::Graphics
 		enum class AntiAliasing
 		{
 			Off,
-			MSAA,
-			SSAA
+			MSAA
 		};
 
 		/// <summary>

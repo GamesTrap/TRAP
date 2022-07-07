@@ -213,8 +213,7 @@ void TRAP::ImGuiLayer::Begin()
 		);
 		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
 		{
-			if(winData.AntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA ||
-			   winData.AntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::SSAA) //MSAA
+			if(winData.AntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
 				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargetsMSAA()[winData.ImageIndex]);
 			else //No MSAA
 				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
