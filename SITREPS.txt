@@ -2807,3 +2807,7 @@ SITREP 07/06/2022|22w27a2
         - RendererAPI/VulkanRenderer Added GetAntiAliasing function ~<5 mins
         - ConvertToType/ConvertToString Added specialization for AntiAliasing and SampleCount enums ~<10 mins
         - Application Added saving and loading of AntiAliasing and AntiAliasingQuality values ~<10 mins
+
+SITREP 07/07/2022|22w27a3
+    - Branch MSAA:
+        - Added sample shading to MSAA if supported ~<10 mins

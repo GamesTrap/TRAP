@@ -2352,6 +2352,7 @@ namespace TRAP::Graphics
 			bool FillModeNonSolid;
 			bool SurfaceSupported;
 			bool PresentSupported;
+			bool SampleRateShadingSupported;
 
 			//Variable rate shading capabilities
 			TRAP::Graphics::RendererAPI::ShadingRate ShadingRates;

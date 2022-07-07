@@ -583,7 +583,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 	StartGraphicRecording(p);
 
 #ifndef TRAP_HEADLESS_MODE
-	if(updateImGui)
+	if(updateImGui) //To set MSAA sample count for ImGui we need a running render pass.
 		TRAP::Application::GetImGuiLayer().SetMSAASamples(static_cast<uint32_t>(p->SampleCount));
 #endif
 }

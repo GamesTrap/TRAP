@@ -131,6 +131,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	RendererAPI::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
 	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
+	RendererAPI::GPUSettings.SampleRateShadingSupported = m_physicalDeviceFeatures.sampleRateShading;
 
 	// Surface & Present test
 #ifndef TRAP_HEADLESS_MODE

@@ -822,7 +822,8 @@ VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineView
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
-	                                                                                                      const bool sampleShading) noexcept
+	                                                                                                      const bool sampleShading,
+																										  const float sampleShadingRate) noexcept
 {
 	VkPipelineMultisampleStateCreateInfo info;
 
@@ -831,7 +832,7 @@ VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineM
 	info.flags = 0;
 	info.rasterizationSamples = sampleCount;
 	info.sampleShadingEnable = sampleShading;
-	info.minSampleShading = sampleShading ? 1.0f : 0.0f;
+	info.minSampleShading = sampleShading ? sampleShadingRate : 0.0f;
 	info.pSampleMask = nullptr;
 	info.alphaToCoverageEnable = VK_FALSE;
 	info.alphaToOneEnable = VK_FALSE;
