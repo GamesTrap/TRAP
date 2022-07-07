@@ -1311,6 +1311,22 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(TRAP::Graphics::API::VulkanTexture* srcImage,
+															const RendererAPI::ResourceState srcState,
+															TRAP::Graphics::API::VulkanTexture* dstImage,
+															const RendererAPI::ResourceState dstState)
+{
+	VkImageResolve imageResolve{};
+	imageResolve.srcSubresource = {srcImage->GetAspectMask(), 0, 0, 1};
+	imageResolve.dstSubresource = {dstImage->GetAspectMask(), 0, 0, 1};
+	imageResolve.extent = {srcImage->GetWidth(), srcImage->GetHeight(), srcImage->GetDepth()};
+
+	vkCmdResolveImage(m_vkCommandBuffer, srcImage->GetVkImage(), ResourceStateToVkImageLayout(srcState),
+	                  dstImage->GetVkImage(), ResourceStateToVkImageLayout(dstState), 1, &imageResolve);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const
 {
 	return m_activeRenderPass;

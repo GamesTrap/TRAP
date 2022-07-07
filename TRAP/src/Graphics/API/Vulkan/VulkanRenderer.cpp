@@ -96,8 +96,6 @@ std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics
 std::unordered_map<uint64_t,
                    TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
 
-std::array<TRAP::Scope<TRAP::Graphics::Shader>, 4> TRAP::Graphics::API::VulkanRenderer::s_MSAAResolveShaders{};
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
@@ -114,9 +112,6 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
-
-	for(uint32_t i = 0; i < s_MSAAResolveShaders.size(); ++i)
-		s_MSAAResolveShaders[i].reset();
 
 	s_descriptorPool.reset();
 
@@ -404,6 +399,9 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 #ifndef TRAP_HEADLESS_MODE
 	TRAP::Ref<Graphics::RenderTarget> presentRT = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
+
+	VulkanTexture* presentTex = dynamic_cast<VulkanTexture*>(presentRT->GetTexture());
+	VulkanTexture* MSAAResolveTex = dynamic_cast<VulkanTexture*>(MSAAResolveRT->GetTexture());
 #else
 	TRAP::Ref<Graphics::RenderTarget> presentRT = p->RenderTargets[p->CurrentSwapChainImageIndex];
 	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
@@ -413,72 +411,23 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
 															   std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max());
-	//Transition MSAAResolveRT from RenderTarget to ShaderResource
-	RenderTargetBarrier barrier = {MSAAResolveRT, ResourceState::RenderTarget, ResourceState::ShaderResource};
+
+	//Transition MSAAResolveRT from RenderTarget to CopySource
+	RenderTargetBarrier barrier = {MSAAResolveRT, ResourceState::RenderTarget, ResourceState::CopySource};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#ifndef TRAP_HEADLESS_MODE
-	//Transition presentRT from Present to RenderTarget
-	barrier = {presentRT, ResourceState::Present, ResourceState::RenderTarget};
+	//Transition presentRT from Present to CopyDestination
+	barrier = {presentRT, ResourceState::Present, ResourceState::CopyDestination};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#endif
 
-	//Set load actions to clear the screen to black
-	RendererAPI::LoadActionsDesc loadActions{};
-	loadActions.LoadActionsColor[0] = RendererAPI::LoadActionType::Clear;
-	loadActions.ClearColorValues[0] = presentRT->GetClearColor();
+	VulkanCommandBuffer* vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
+	vkCmdBuf->ResolveImage(MSAAResolveTex, ResourceState::CopySource, presentTex, ResourceState::CopyDestination);
 
-	//Bind the presentRT as RenderTarget
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({presentRT}, nullptr, &loadActions, nullptr, nullptr,
-															   std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
-
-	uint32_t shaderIndex = 0;
-	switch(p->SampleCount)
-	{
-	case SampleCount::Two:
-		shaderIndex = 0;
-		break;
-	case SampleCount::Four:
-		shaderIndex = 1;
-		break;
-	case SampleCount::Eight:
-		shaderIndex = 2;
-		break;
-	case SampleCount::Sixteen:
-		shaderIndex = 3;
-		break;
-	default:
-		shaderIndex = 0;
-		break;
-	}
-	Shader* resolveShader = s_MSAAResolveShaders[shaderIndex].get();
-
-	//Temporarily disable MSAA
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-	gpd.SampleCount = RendererAPI::SampleCount::One;
-
-	//Run the MSAA resolve shader
-	resolveShader->UseTexture(1, 0, MSAAResolveRT->GetTexture());
-	resolveShader->Use();
-	p->GraphicCommandBuffers[p->ImageIndex]->Draw(3, 0);
-
-	//Reset MSAA state
-	gpd.SampleCount = p->SampleCount;
-
-	//Stop running render pass
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-															   std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
-
-#ifndef TRAP_HEADLESS_MODE
-	//Transition MSAAResolveRT from ShaderResource to Present
-	barrier = {MSAAResolveRT, ResourceState::ShaderResource, ResourceState::Present};
+	//Transition presentRT from CopyDestination to RenderTarget
+	barrier = {presentRT, ResourceState::CopyDestination, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#else
-	//Transition MSAAResolveRT from ShaderResource to RenderTarget
-	barrier = {MSAAResolveRT, ResourceState::ShaderResource, ResourceState::RenderTarget};
+	//Transition MSAAResolveRT from CopySource to Present
+	barrier = {MSAAResolveRT, ResourceState::CopySource, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -533,13 +482,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 	AddDefaultResources();
 
 	s_ResourceLoader = TRAP::MakeScope<ResourceLoader>();
-
-	for(uint32_t i = 0; i < s_MSAAResolveShaders.size(); ++i)
-	{
-		uint32_t sampleCount = TRAP::Math::Pow(2u, i + 1u);
-		std::vector<TRAP::Graphics::Shader::Macro> macros{{"SAMPLE_COUNT", std::to_string(sampleCount)}};
-		s_MSAAResolveShaders[i] = TRAP::Graphics::Shader::CreateFromSource("TRAP_MSAA_Resolve_x" + std::to_string(sampleCount), TRAP::Embed::MSAAResolveShader, &macros);
-	}
 
 	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");

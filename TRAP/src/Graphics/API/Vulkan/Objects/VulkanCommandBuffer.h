@@ -14,6 +14,7 @@ namespace TRAP::Graphics::API
 	class VulkanCommandPool;
 	class VulkanDevice;
 	class VulkanQueue;
+	class VulkanTexture;
 
 	class VulkanCommandBuffer final : public CommandBuffer
 	{
@@ -348,6 +349,16 @@ namespace TRAP::Graphics::API
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
 		void Clear(uint32_t stencil, uint32_t width, uint32_t height) override;
+
+		/// <summary>
+		/// Resolve a multisample color texture to a non-multisample color texture.
+		/// </summary>
+		/// <param name="srcImage">Source multisample color texture to resolve.</param>
+		/// <param name="srcState">Source texture state.</param>
+		/// <param name="dstImage">Destination non-multisample color texture to resolve into.</param>
+		/// <param name="dstState">Destination texture state.</param>
+		void ResolveImage(API::VulkanTexture* srcImage, RendererAPI::ResourceState srcState,
+		                  API::VulkanTexture* dstImage, RendererAPI::ResourceState dstState);
 
 		/// <summary>
 		/// Retrieve the currently active VkRenderPass.

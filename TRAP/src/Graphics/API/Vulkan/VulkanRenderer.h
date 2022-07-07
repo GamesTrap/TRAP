@@ -791,8 +791,6 @@ namespace TRAP::Graphics::API
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 
-		static std::array<TRAP::Scope<Shader>, 4> s_MSAAResolveShaders;
-
 		static VulkanRenderer* s_renderer;
 	};
 }

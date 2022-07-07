@@ -299,7 +299,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		descColor.NativeHandle = nullptr;
 		descColor.SampleCount = desc.SampleCount;
 		for (uint32_t i = 0; i < imageCount; ++i)
-			m_renderTargetsMSAA.push_back(RenderTarget::Create(descColor));
+			m_renderTargetsMSAA.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
 	}
 
 	//////////////

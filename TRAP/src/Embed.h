@@ -105,40 +105,6 @@ namespace TRAP::Embed
 	)"
 	};
 
-	inline static constexpr const char* MSAAResolveShader
-	{
-		R"(
-#shader vertex
-
-		void main()
-		{
-			//Produce a fullscreen triangle
-			gl_Position.x = (gl_VertexIndex == 2) ?  3.0f : -1.0f;
-			gl_Position.y = (gl_VertexIndex == 0) ? -3.0f :  1.0f;
-			gl_Position.zw = vec2(0.0f, 1.0f);
-		}
-
-#shader fragment
-
-		layout(location = 0) out vec4 FragColor;
-
-		layout(UpdateFreqDynamic, binding = 0) uniform texture2DMS MSAASource;
-		layout(UpdateFreqDynamic, binding = 1) uniform sampler DummySampler;
-
-		void main()
-		{
-			vec4 value = vec4(0.0f);
-
-			ivec2 texCoord = ivec2(gl_FragCoord.xy);
-			for(int i = 0; i < SAMPLE_COUNT; ++i)
-				value += texelFetch(sampler2DMS(MSAASource, DummySampler), texCoord, i);
-			value /= SAMPLE_COUNT;
-
-			FragColor = value;
-		}
-		)"
-	};
-
 	/// <summary>
 	/// Default debug image pixel data RGBA 32BPP
 	/// </summary>

@@ -2814,4 +2814,7 @@ SITREP 07/07/2022|22w27a3
         - Removed SSAA stuff ~<10 mins
         - Fixed screenshot capturing when using MSAA ~<5 mins
         - HeadlessTests Added AntiAliasing test ~<10 mins
-        -
+        - VulkanRenderer/Embed Removed MSAA resolve shaders ~<5 mins
+        - VulkanCommandBuffer Added ResolveImage function to resolve MSAA images into non MSAA images ~<20 mins
+        - VulkanInits Added VK_IMAGE_USAGE_TRANSFER_DST_BIT to SwapChainCreateInfoKHR ~<5 mins
+        - VulkanRenderer replaced manual MSAA resolve shaders with vkCmdResolveImage ~>20 mins
