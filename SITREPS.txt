@@ -2818,3 +2818,4 @@ SITREP 07/07/2022|22w27a3
         - VulkanCommandBuffer Added ResolveImage function to resolve MSAA images into non MSAA images ~<20 mins
         - VulkanInits Added VK_IMAGE_USAGE_TRANSFER_DST_BIT to SwapChainCreateInfoKHR ~<5 mins
         - VulkanRenderer replaced manual MSAA resolve shaders with vkCmdResolveImage ~>20 mins
+        - VulkanRenderer made MSAAResolvePass function compatible with Headless mode ~<10 mins

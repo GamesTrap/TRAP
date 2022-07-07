@@ -399,13 +399,13 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 #ifndef TRAP_HEADLESS_MODE
 	TRAP::Ref<Graphics::RenderTarget> presentRT = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
-
-	VulkanTexture* presentTex = dynamic_cast<VulkanTexture*>(presentRT->GetTexture());
-	VulkanTexture* MSAAResolveTex = dynamic_cast<VulkanTexture*>(MSAAResolveRT->GetTexture());
 #else
 	TRAP::Ref<Graphics::RenderTarget> presentRT = p->RenderTargets[p->CurrentSwapChainImageIndex];
 	TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
 #endif
+
+	VulkanTexture* presentTex = dynamic_cast<VulkanTexture*>(presentRT->GetTexture());
+	VulkanTexture* MSAAResolveTex = dynamic_cast<VulkanTexture*>(MSAAResolveRT->GetTexture());
 
 	//Stop running render pass
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
@@ -415,9 +415,15 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 	//Transition MSAAResolveRT from RenderTarget to CopySource
 	RenderTargetBarrier barrier = {MSAAResolveRT, ResourceState::RenderTarget, ResourceState::CopySource};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#ifndef TRAP_HEADLESS_MODE
 	//Transition presentRT from Present to CopyDestination
 	barrier = {presentRT, ResourceState::Present, ResourceState::CopyDestination};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#else
+	//Transition presentRT from RenderTarget to CopyDestination
+	barrier = {presentRT, ResourceState::RenderTarget, ResourceState::CopyDestination};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#endif
 
 	VulkanCommandBuffer* vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
 	vkCmdBuf->ResolveImage(MSAAResolveTex, ResourceState::CopySource, presentTex, ResourceState::CopyDestination);
@@ -425,9 +431,15 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p
 	//Transition presentRT from CopyDestination to RenderTarget
 	barrier = {presentRT, ResourceState::CopyDestination, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#ifndef TRAP_HEADLESS_MODE
 	//Transition MSAAResolveRT from CopySource to Present
 	barrier = {MSAAResolveRT, ResourceState::CopySource, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#else
+	//Transition MSAAResolveRT from CopySource to RenderTarget
+	barrier = {MSAAResolveRT, ResourceState::CopySource, ResourceState::RenderTarget};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
