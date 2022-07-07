@@ -2777,6 +2777,45 @@ SITREP 07/04/2022|22w27a1
 SITREP 07/05/2022|22w27a1
     - Changed TRAP Engine version to 22w27a1(0.8.8)
     - Fixed WindowingAPI::InputKey not processing keys correctly ~<5 mins
+    - Branch MSAA:
+        - Tests Added AntiAliasing test ~>40 mins
 
 SITREP 07/06/2022|22w27a2
     - AftermathTracker Fixed unable to save crash dump ~<5 mins
+    - Branch MSAA:
+        - Embed Added MSAAResolveShader ~<20 mins
+        - (Vulkan)SwapChain Added additional RenderTargets for MSAA ~<15 mins
+        - RendererAPI Fixed SampleCount enum ~<5 mins
+        - RendererAPI Added SampleCount to SwapChainDesc ~<5 mins
+        - RendererAPI PerWindowData Added SampleCount (currently hardcoded to 8x MSAA) ~<5 mins
+        - VulkanRenderer Added MSAA resolve shaders for 2x, 4x, 8x and 16x MSAA ~<10 mins
+        - VulkanRenderer Added MSAAResolvePass function ~>60 mins
+        - ImGuiLayer now uses SampleCount from PerWindowData ~<5 mins
+        - SwapChain Removed GetRenderTargetsNonMSAA() & GetRenderTargetsMSAAResolve ~<5 mins
+        - SwapChain Added GetRenderTargetsMSAA() ~<5 mins
+        - RendererAPI, VulkanRenderer & ImGuiLayer Updated GetRenderTargets usage ~<10 mins
+        - RendererAPI Added AntiAliasing enum ~<5 mins
+        - (Vulkan)SwapChain Added SetSampleCount function ~<5 mins
+        - RenderCommand/RendererAPI Added SetAntiAliasing function <10 mins
+        - ImGuiVulkanBackend Added ImGui_ImplVulkan_SetMSAASamples function ~<10 mins
+        - ImGuiLayer Added SetMSAASamples function ~<5 mins
+        - Updated AntiAliasing test ~<5 mins
+        - RendererAPI Renamed SampleCount enum values ~<5 mins
+        - VulkanRenderer Added missing destruction of the MSAA resolve shaders ~<5 mins
+        - VulkanRenderer Fixed using wrong resolve shader ~<5 mins
+        - AntiAliasing test Added option to set anti aliasing method and sample count ~<15 mins
+        - RendererAPI/VulkanRenderer Added GetAntiAliasing function ~<5 mins
+        - ConvertToType/ConvertToString Added specialization for AntiAliasing and SampleCount enums ~<10 mins
+        - Application Added saving and loading of AntiAliasing and AntiAliasingQuality values ~<10 mins
+
+SITREP 07/07/2022|22w27a3
+    - Branch MSAA:
+        - Added sample shading to MSAA if supported ~<10 mins
+        - Removed SSAA stuff ~<10 mins
+        - Fixed screenshot capturing when using MSAA ~<5 mins
+        - HeadlessTests Added AntiAliasing test ~<10 mins
+        - VulkanRenderer/Embed Removed MSAA resolve shaders ~<5 mins
+        - VulkanCommandBuffer Added ResolveImage function to resolve MSAA images into non MSAA images ~<20 mins
+        - VulkanInits Added VK_IMAGE_USAGE_TRANSFER_DST_BIT to SwapChainCreateInfoKHR ~<5 mins
+        - VulkanRenderer replaced manual MSAA resolve shaders with vkCmdResolveImage ~>20 mins
+        - VulkanRenderer made MSAAResolvePass function compatible with Headless mode ~<10 mins

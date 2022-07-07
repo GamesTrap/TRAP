@@ -104,7 +104,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	RendererAPI::GPUSettings.MaxPushConstantSize = m_physicalDeviceProperties.limits.maxPushConstantsSize;
 	RendererAPI::GPUSettings.MaxSamplerAllocationCount = m_physicalDeviceProperties.limits.maxSamplerAllocationCount;
 	RendererAPI::GPUSettings.MaxTessellationControlPoints = m_physicalDeviceProperties.limits.maxTessellationPatchSize;
-	RendererAPI::GPUSettings.MaxMSAASampleCount = GetMaxUsableMSAASampleCount();
+	RendererAPI::GPUSettings.MaxMSAASampleCount = static_cast<RendererAPI::SampleCount>(TRAP::Math::Min(GetMaxUsableMSAASampleCount(), static_cast<uint32_t>(VK_SAMPLE_COUNT_16_BIT)));
 
 	// maxBoundDescriptorSets not needed because engine is always limited to 4 descriptor sets
 
@@ -131,6 +131,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 	RendererAPI::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
 	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
+	RendererAPI::GPUSettings.SampleRateShadingSupported = m_physicalDeviceFeatures.sampleRateShading;
 
 	// Surface & Present test
 #ifndef TRAP_HEADLESS_MODE

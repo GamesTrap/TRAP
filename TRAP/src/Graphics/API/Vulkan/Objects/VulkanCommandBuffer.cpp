@@ -302,7 +302,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	if (depthMipSlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthMipSlice, 1, frameBufferHash);
 
-	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::SampleCount1;
+	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::One;
 
 	VulkanRenderer::RenderPassMap& renderPassMap = VulkanRenderer::GetRenderPassMap();
 	VulkanRenderer::FrameBufferMap& frameBufferMap = VulkanRenderer::GetFrameBufferMap();
@@ -1307,6 +1307,22 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 	attachment.clearValue.depthStencil = { 1.0f, stencil };
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(TRAP::Graphics::API::VulkanTexture* srcImage,
+															const RendererAPI::ResourceState srcState,
+															TRAP::Graphics::API::VulkanTexture* dstImage,
+															const RendererAPI::ResourceState dstState)
+{
+	VkImageResolve imageResolve{};
+	imageResolve.srcSubresource = {srcImage->GetAspectMask(), 0, 0, 1};
+	imageResolve.dstSubresource = {dstImage->GetAspectMask(), 0, 0, 1};
+	imageResolve.extent = {srcImage->GetWidth(), srcImage->GetHeight(), srcImage->GetDepth()};
+
+	vkCmdResolveImage(m_vkCommandBuffer, srcImage->GetVkImage(), ResourceStateToVkImageLayout(srcState),
+	                  dstImage->GetVkImage(), ResourceStateToVkImageLayout(dstState), 1, &imageResolve);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

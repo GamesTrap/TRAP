@@ -53,6 +53,7 @@ TRAP::Graphics::SwapChain::~SwapChain()
 	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
 #endif
 
+	m_renderTargetsMSAA.clear();
 	m_renderTargets.clear();
 }
 
@@ -61,4 +62,11 @@ TRAP::Graphics::SwapChain::~SwapChain()
 const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargets() const
 {
 	return m_renderTargets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargetsMSAA() const
+{
+	return m_renderTargetsMSAA;
 }

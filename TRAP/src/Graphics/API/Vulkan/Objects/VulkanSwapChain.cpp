@@ -282,7 +282,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	descColor.ClearColor = desc.ClearColor;
 	descColor.ClearDepth = desc.ClearDepth;
 	descColor.ClearStencil = desc.ClearStencil;
-	descColor.SampleCount = RendererAPI::SampleCount::SampleCount1;
+	descColor.SampleCount = RendererAPI::SampleCount::One;
 	descColor.SampleQuality = 0;
 	descColor.StartState = RendererAPI::ResourceState::Present;
 
@@ -291,6 +291,15 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	{
 		descColor.NativeHandle = images[i];
 		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
+	}
+
+	//Create MSAA resolve images if needed
+	if(desc.SampleCount != RendererAPI::SampleCount::One)
+	{
+		descColor.NativeHandle = nullptr;
+		descColor.SampleCount = desc.SampleCount;
+		for (uint32_t i = 0; i < imageCount; ++i)
+			m_renderTargetsMSAA.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
 	}
 
 	//////////////
@@ -310,8 +319,7 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 {
 	m_device->WaitIdle();
 
-	for (auto& m_renderTarget : m_renderTargets)
-		m_renderTarget.reset();
+	m_renderTargetsMSAA.clear();
 	m_renderTargets.clear();
 
 	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
@@ -376,6 +384,17 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 	//Toggle VSync on or off
 	//For Vulkan we need to remove the SwapChain and recreate it with correct VSync option
+	DeInitSwapchain();
+	InitSwapchain(desc);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::SampleCount sampleCount)
+{
+	RendererAPI::SwapChainDesc desc = m_desc;
+	desc.SampleCount = sampleCount;
+
 	DeInitSwapchain();
 	InitSwapchain(desc);
 }

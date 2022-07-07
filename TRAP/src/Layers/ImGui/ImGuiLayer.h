@@ -37,6 +37,12 @@ namespace TRAP
 		void OnEvent(Events::Event& event) override;
 
 		/// <summary>
+		/// Set the MSAA sample count.
+		/// </summary>
+		/// <param name="sampleCount">Sample count to use.</param>
+		void SetMSAASamples(uint32_t sampleCount);
+
+		/// <summary>
 		/// Begin a new ImGui frame.
 		/// </summary>
 		static void Begin();

@@ -455,9 +455,11 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="sampleCount">Number of samples.</param>
 	/// <param name="sampleShading">True to enable sample shading.</param>
+	/// <param name="sampleShadingRate">Rate used for sample shading if enabled.</param>
 	/// <returns>VkPipelineMultisampleStateCreateInfo.</returns>
 	VkPipelineMultisampleStateCreateInfo PipelineMultisampleStateCreateInfo(VkSampleCountFlagBits sampleCount,
-	                                                                        bool sampleShading) noexcept;
+	                                                                        bool sampleShading,
+																			float sampleShadingRate) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline dynamic state create info.

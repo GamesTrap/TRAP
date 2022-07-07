@@ -242,6 +242,21 @@ namespace TRAP::Graphics::API
 							TRAP::Graphics::Texture* texture,
 							ShadingRateCombiner postRasterizerRate,
 							ShadingRateCombiner finalRate, Window* window = nullptr) override;
+		/// <summary>
+		/// Set the anti aliasing method and the sample count for the window.
+		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
+		/// </summary>
+		/// <param name="antiAliasing">Anti aliasing method to use.</param>
+		/// <param name="sampleCount">Sample count to use.</param>
+		/// <param name="window">Window to set anti aliasing for. Default: Main Window.</param>
+		void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount, Window* window = nullptr) override;
+		/// <summary>
+		/// Retrieve the anti aliasing method and the sample count of the window.
+		/// </summary>
+		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
+		/// <param name="outSampleCount">Output: Used sample count.</param>
+		/// <param name="window">Window to get anti aliasing from. Default: Main Window.</param>
+		void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, Window* window = nullptr) override;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -739,7 +754,6 @@ namespace TRAP::Graphics::API
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndGraphicRecording(PerWindowData* const p);
 
-
 		/// <summary>
 		/// Start recording the compute pipeline.
 		/// </summary>
@@ -750,6 +764,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndComputeRecording(PerWindowData* const p);
+
+		/// <summary>
+		/// Resolve the MSAA pass.
+		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
+		/// </summary>
+		/// <param name="p">Per window data used for recording.</param>
+		static void MSAAResolvePass(PerWindowData* const p);
 
 		std::string m_rendererTitle;
 

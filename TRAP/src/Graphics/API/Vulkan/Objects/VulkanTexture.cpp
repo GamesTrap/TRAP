@@ -92,7 +92,7 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &desc)
 {
 	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Invalid resolution");
-	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::SampleCount1 && desc.MipLevels > 1), "Multi-Sampled texture cannot have mip maps");
+	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1), "Multi-Sampled texture cannot have mip maps");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");

@@ -1670,6 +1670,31 @@ void ImGui_ImplVulkan_ClearCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
+{
+	const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
+    ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
+
+    v->MSAASamples = sampleCount;
+    bd->RenderPass = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+		(
+			winData.GraphicCommandBuffers[winData.ImageIndex]
+		)->GetActiveVkRenderPass();
+
+    //Delete old pipeline
+    if (bd->Pipeline)
+    {
+        vkDestroyPipeline(v->Device, bd->Pipeline, v->Allocator);
+        bd->Pipeline = VK_NULL_HANDLE;
+    }
+
+    //Create new pipeline
+    ImGui_ImplVulkan_CreatePipeline(v->Device, v->Allocator, v->PipelineCache, bd->RenderPass, v->MSAASamples, &bd->Pipeline, bd->Subpass);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void ImGui_ImplVulkanH_DestroyAllViewportsRenderBuffers(VkDevice device, const VkAllocationCallbacks* allocator)
 {
     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();

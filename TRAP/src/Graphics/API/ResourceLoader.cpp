@@ -1154,7 +1154,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	textureDesc.Depth = 1; //TODO Change when we support a texture format that can hold 3D textures like KTX
 	textureDesc.ArraySize = 1; //TODO Change when we support a texture format than can contain multiple images in one file like KTX
 	textureDesc.Descriptors = RendererAPI::DescriptorType::Texture;
-	textureDesc.SampleCount = RendererAPI::SampleCount::SampleCount1;
+	textureDesc.SampleCount = RendererAPI::SampleCount::One;
 	textureDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::Common;
 	textureDesc.Flags |= textureLoadDesc.CreationFlag;
 	if(static_cast<bool>(textureDesc.Flags & RendererAPI::TextureCreationFlags::Storage))

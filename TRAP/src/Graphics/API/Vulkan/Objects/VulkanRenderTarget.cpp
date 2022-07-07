@@ -117,9 +117,8 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	textureDesc.Name = desc.Name;
 
-	TRAP::Scope<VulkanTexture> vkTex = TRAP::MakeScope<VulkanTexture>();
-	vkTex->Init(textureDesc);
-	m_texture = std::move(vkTex);
+	m_texture = TRAP::MakeScope<VulkanTexture>();
+	m_texture->Init(textureDesc);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
 	if (desc.Height > 1)

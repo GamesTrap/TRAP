@@ -822,16 +822,17 @@ VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineView
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
-	                                                                                                      const bool sampleShading) noexcept
+	                                                                                                      const bool sampleShading,
+																										  const float sampleShadingRate) noexcept
 {
 	VkPipelineMultisampleStateCreateInfo info;
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
-	info.rasterizationSamples = sampleCount; //TODO MSAA
-	info.sampleShadingEnable = sampleShading; //TODO SSAA
-	info.minSampleShading = sampleShading ? 1.0f : 0.0f;
+	info.rasterizationSamples = sampleCount;
+	info.sampleShadingEnable = sampleShading;
+	info.minSampleShading = sampleShading ? sampleShadingRate : 0.0f;
 	info.pSampleMask = nullptr;
 	info.alphaToCoverageEnable = VK_FALSE;
 	info.alphaToOneEnable = VK_FALSE;
@@ -979,7 +980,7 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 	info.imageColorSpace = surfaceFormat.colorSpace;
 	info.imageExtent = imageExtent;
 	info.imageArrayLayers = 1;
-	info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 	info.imageSharingMode = sharingMode;
 	info.queueFamilyIndexCount = queueFamilyIndexCount;
 	info.pQueueFamilyIndices = queueFamilyIndices.data();

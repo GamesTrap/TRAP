@@ -1,5 +1,6 @@
 #include <TRAP.h>
 
+#include "AntiAliasing/AntiAliasingTests.h"
 #include "Headless/HeadlessTests.h"
 #include "Compute/ComputeTests.h"
 #include "Math/MathTests.h"
@@ -10,9 +11,10 @@ public:
 	explicit HeadlessTestsApp(std::string gameName)
 		: Application(std::move(gameName))
 	{
+		PushLayer(std::make_unique<AntiAliasingTests>());
 		// PushLayer(std::make_unique<ComputeTests>());
 		// PushLayer(std::make_unique<HeadlessTests>());
-		PushLayer(std::make_unique<MathTests>());
+		// PushLayer(std::make_unique<MathTests>());
 	}
 };
 

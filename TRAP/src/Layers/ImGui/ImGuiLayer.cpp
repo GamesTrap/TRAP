@@ -130,7 +130,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.Subpass = 0;
 		initInfo.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount;
 		initInfo.ImageCount = TRAP::Graphics::RendererAPI::ImageCount;
-		initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		initInfo.MSAASamples = static_cast<VkSampleCountFlagBits>(winData.SampleCount);
 		initInfo.Allocator = nullptr;
 		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
 
@@ -163,7 +163,11 @@ void TRAP::ImGuiLayer::OnDetach()
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
-		vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
+		if(m_imguiDescriptorPool)
+		{
+			vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
+			m_imguiDescriptorPool = nullptr;
+		}
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
 
 		ImGui_ImplVulkan_Shutdown();
@@ -187,6 +191,14 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::ImGuiLayer::SetMSAASamples(const uint32_t sampleCount)
+{
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
+		ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(sampleCount));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::ImGuiLayer::Begin()
 {
 	TP_PROFILE_FUNCTION();
@@ -200,7 +212,12 @@ void TRAP::ImGuiLayer::Begin()
 			winData.GraphicCommandBuffers[winData.ImageIndex]
 		);
 		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
-			TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
+		{
+			if(winData.AntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
+				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargetsMSAA()[winData.ImageIndex]);
+			else //No MSAA
+				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
+		}
 		ImGui_ImplVulkan_NewFrame();
 	}
 

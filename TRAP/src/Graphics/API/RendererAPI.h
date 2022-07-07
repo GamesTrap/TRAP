@@ -71,6 +71,8 @@ namespace TRAP::Graphics
 		enum class ShadingRate;
 		enum class ShadingRateCombiner;
 		enum class ResourceState;
+		enum class AntiAliasing;
+		enum class SampleCount;
 		enum class QueueType;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
@@ -339,6 +341,21 @@ namespace TRAP::Graphics
 						            TRAP::Graphics::Texture* texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, Window* window = nullptr) = 0;
+		/// <summary>
+		/// Set the anti aliasing method and the sample count for the window.
+		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
+		/// </summary>
+		/// <param name="antiAliasing">Anti aliasing method to use.</param>
+		/// <param name="sampleCount">Sample count to use.</param>
+		/// <param name="window">Window to set anti aliasing for. Default: Main Window.</param>
+		virtual void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount, Window* window = nullptr) = 0;
+		/// <summary>
+		/// Retrieve the anti aliasing method and the sample count of the window.
+		/// </summary>
+		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
+		/// <param name="outSampleCount">Output: Used sample count.</param>
+		/// <param name="window">Window to get anti aliasing from. Default: Main Window.</param>
+		virtual void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, Window* window = nullptr) = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -774,11 +791,20 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class SampleCount
 		{
-			SampleCount1 = BIT(0),
-			SampleCount2 = BIT(1),
-			SampleCount4 = BIT(3),
-			SampleCount8 = BIT(4),
-			SampleCount16 = BIT(5)
+			One = BIT(0),
+			Two = BIT(1),
+			Four = BIT(2),
+			Eight = BIT(3),
+			Sixteen = BIT(4)
+		};
+
+		/// <summary>
+		/// Enum describing the different anti aliasing methods.
+		/// </summary>
+		enum class AntiAliasing
+		{
+			Off,
+			MSAA
 		};
 
 		/// <summary>
@@ -1385,7 +1411,7 @@ namespace TRAP::Graphics
 			//Number of mip levels
 			uint32_t MipLevels = 1;
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage
-			//only support SampleCount1).
+			//only support One).
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
@@ -1986,6 +2012,8 @@ namespace TRAP::Graphics
 			uint32_t ClearStencil = 0;
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
+			//Anti aliasing sample count (1 = no AA)
+			RendererAPI::SampleCount SampleCount = SampleCount::One;
 		};
 
 		/// <summary>
@@ -2310,7 +2338,7 @@ namespace TRAP::Graphics
 			uint32_t MaxPushConstantSize;
 			uint32_t MaxSamplerAllocationCount;
 			uint32_t MaxTessellationControlPoints;
-			uint32_t MaxMSAASampleCount;
+			SampleCount MaxMSAASampleCount;
 			float MaxAnisotropy;
 
 			uint32_t WaveLaneCount;
@@ -2323,6 +2351,7 @@ namespace TRAP::Graphics
 			bool FillModeNonSolid;
 			bool SurfaceSupported;
 			bool PresentSupported;
+			bool SampleRateShadingSupported;
 
 			//Variable rate shading capabilities
 			TRAP::Graphics::RendererAPI::ShadingRate ShadingRates;
@@ -2381,11 +2410,16 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
+			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
+			RendererAPI::AntiAliasing AntiAliasing = RendererAPI::AntiAliasing::Off;
+			RendererAPI::SampleCount NewSampleCount = RendererAPI::SampleCount::One;
+			RendererAPI::AntiAliasing NewAntiAliasing = RendererAPI::AntiAliasing::Off;
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
 			bool Resize = false;
 			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif

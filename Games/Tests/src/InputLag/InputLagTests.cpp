@@ -52,7 +52,7 @@ void InputLagTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void InputLagTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void InputLagTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 {
 	SampleInput();
 }
