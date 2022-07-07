@@ -1,5 +1,7 @@
 #include "AntiAliasingTests.h"
 
+#include <ImageLoader/PortableMaps/PPMImage.h>
+
 AntiAliasingTests::AntiAliasingTests()
 	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(TRAP::Graphics::SampleCount::Two),
 	  m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
@@ -116,6 +118,12 @@ bool AntiAliasingTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 		TRAP::Application::Shutdown();
+	if (e.GetKey() == TRAP::Input::Key::P && e.GetRepeatCount() == 0 && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control))
+	{
+        //Screenshot
+	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();
+	    TRAP::INTERNAL::PPMImage::Save(testImage.get(), "antialiasing.ppm");
+	}
 
 	return false;
 }

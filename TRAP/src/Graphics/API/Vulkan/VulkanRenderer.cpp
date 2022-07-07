@@ -1606,17 +1606,14 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 	auto* winData = s_perWindowDataMap[window].get();
 	uint32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
 
-	//Wait for queue to finish rendering
+	//Wait for queues to finish
+	s_computeQueue->WaitQueueIdle();
 	s_graphicQueue->WaitQueueIdle();
 
 #ifdef TRAP_HEADLESS_MODE
 	TRAP::Ref<RenderTarget> rT = winData->RenderTargets[lastFrame];
 #else
-	TRAP::Ref<RenderTarget> rT = nullptr;
-	if(winData->AntiAliasing == RendererAPI::AntiAliasing::MSAA)
-		rT = winData->SwapChain->GetRenderTargetsMSAA()[lastFrame];
-	else
-		rT = winData->SwapChain->GetRenderTargets()[lastFrame];
+	TRAP::Ref<RenderTarget> rT = winData->SwapChain->GetRenderTargets()[lastFrame];
 #endif
 
 	const uint8_t channelCount = static_cast<uint8_t>(ImageFormatChannelCount(rT->GetImageFormat()));
