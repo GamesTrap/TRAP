@@ -11,7 +11,7 @@
   
 <meta property="og:site_name" content="TRAP Documentation" />
   
-<meta property="og:description" content="Generated on 07/04/2022 2022 TRAP™ Engine 07/04/2022|22w26c1 Docs Added changelog page generator. TRAP™ Engine 0.8.7 - 07/03/2022|22w26c1 RendererAPI GPUSettings Added MaxMSAASampleCount, VulkanPhy..." />
+<meta property="og:description" content="Generated on 07/09/2022 2022 TRAP™ Engine 0.8.9 - 07/07/2022|22w27b1 Updated Networking. TRAP™ Engine 07/07/2022|22w27a3 Branch MSAA:- Added sample shading to MSAA if supported, Removed SSAA stuff,..." />
   
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
   
@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="TRAP™ Engine End User License Agreement" href="eula.html" /><link rel="prev" title="Getting Started" href="gettingstarted.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Changelog - TRAP 0.8.7 documentation</title>
+        <title>Changelog - TRAP 0.8.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.7 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -543,6 +543,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1ac5f93959197622a7afc8ac9d9e7c378c.html">Function ImGui_ImplVulkan_Shutdown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1af90a69b2696bdf247258421ad17d6b2d.html">Function ImGui_ImplVulkan_UpdateTextureInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1a5c3481cf560433b8f1937b760a3e150b.html">Function ImGui_ImplVulkan_UploadFontsTexture</a></li>
@@ -700,7 +701,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1ae63078366bc69d912b1cd40b75e73193.html">Function TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1ab155bff60cde47bfe47f22b6d2a46858.html">Function TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1a94e515d381f417cf440c68fdb1d8f75e.html">Function TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1aa06877bab84548db27cb10bf204eeb2e.html">Function TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1ab8ad476ae38d4c882081d985db8c9e28.html">Function TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1af215d70c779b39218a42320d676a6d8b.html">Function TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1a4394d5c661f8f0f0ef9083a91a6f822e.html">Function TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_VulkanInits_8h_1abf9996d4be4b50c02b29c62955c4b788.html">Function TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo</a></li>
@@ -1245,11 +1246,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a25e610212b914f8e9b8b851c18d93d9d.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; std::string &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a58b85ff206fe18030d29f0f46abeeed1.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RenderAPI &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1aa7009e1dd24b7ec5511c40ad9cde0711.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RendererAPI::AntiAliasing &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a0755c7c68dbcad1e565f609c0ab9f273.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RendererAPI::SampleCount &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1abea3d8f1d31430861a620b938ff9b039.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Window::DisplayMode &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8h_1a31ea953f94f3e1f8b1be81c81503e870.html">Template Function TRAP::Utils::String::ConvertToType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1accf39631f866bf20cf55950cc6d7d22d.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; std::string &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a3bcb3840c60928349de9f53a071229ff.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; std::string_view &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a7bec15a8021590eed8d62d4be2828600.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RenderAPI &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a34e022a43684ef1802378243e7cf6116.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RendererAPI::AntiAliasing &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a3ac4b8850cde7766011299bdf9ee9078.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RendererAPI::SampleCount &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8inl_1a94bf9ed3351bd40d408c73e361d42530.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Window::DisplayMode &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8h_1a964e031e6fce0fe72fa6ad1d9d2f2d80.html">Function TRAP::Utils::String::FindToken(const char *, std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_String_8h_1a3ea2b9f0da81bc7956fc15ac50c0cb74.html">Function TRAP::Utils::String::FindToken(std::string_view, std::string_view)</a></li>
@@ -1342,6 +1347,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/define_Win_8h_1a7b2918d422b3a1fe86a641f74818bb55.html">Define WM_MOUSEHWHEEL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/define_Win_8h_1a3e39d5f7fe13772b34a4ad42907084d6.html">Define WM_UNICHAR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_Sampler_8h_1a0241baf0038e4c093011ad27e7dc232f.html">Typedef TRAP::Graphics::AddressMode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1aad455a9fac3ca52b320a5c950b11a4a3.html">Typedef TRAP::Graphics::AntiAliasing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_ResourceLoader_8h_1a02c0778690ae93af09eae99d2713e964.html">Typedef TRAP::Graphics::API::SyncToken</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1a230cb31da835484d26dd44cc3f4ae95b.html">Typedef TRAP::Graphics::BlendConstant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1a35e3ecc16245929fc50dad1713312889.html">Typedef TRAP::Graphics::BlendMode</a></li>
@@ -1355,6 +1361,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1aca5f4521aa9af19c623f6fbfb5178499.html">Typedef TRAP::Graphics::PrimitiveTopology</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1a1728aa83a71619fa0e624f9858164eaa.html">Typedef TRAP::Graphics::QueueType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1a548207678476bacc0550249f5cd14226.html">Typedef TRAP::Graphics::ResourceState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1a9cb9a53af84b438fa967d663c0d43dea.html">Typedef TRAP::Graphics::SampleCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_Sampler_8h_1a919ceddb817f36ad0217a891f4c664dc.html">Typedef TRAP::Graphics::SamplerDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1ad57505dd361796233d1b4aea5eb1fa16.html">Typedef TRAP::Graphics::ShadingRate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/typedef_RenderCommand_8h_1a805286f499e722d6ed4c6d29c2d86cd5.html">Typedef TRAP::Graphics::ShadingRateCombiner</a></li>
@@ -1465,7 +1472,7 @@
         <article role="main">
           <div class="section" id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">#</a></h1>
-<p>Generated on 07/04/2022</p>
+<p>Generated on 07/09/2022</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in-slide-down">
 <summary class="sd-summary-title sd-card-header">
 2022<div class="sd-summary-down docutils">
@@ -1475,7 +1482,97 @@
 </summary><div class="sd-summary-content sd-card-body docutils">
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
 <summary class="sd-summary-title sd-card-header">
-TRAP™ Engine 07/04/2022|22w26c1<div class="sd-summary-down docutils">
+TRAP™ Engine 0.8.9 - 07/07/2022|22w27b1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Updated Networking</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 07/07/2022|22w27a3<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Branch MSAA:</p>
+<ul>
+<li><p class="sd-card-text">Added sample shading to MSAA if supported</p></li>
+<li><p class="sd-card-text">Removed SSAA stuff</p></li>
+<li><p class="sd-card-text">Fixed screenshot capturing when using MSAA</p></li>
+<li><p class="sd-card-text">HeadlessTests Added AntiAliasing test</p></li>
+<li><p class="sd-card-text">VulkanRenderer/Embed Removed MSAA resolve shaders</p></li>
+<li><p class="sd-card-text">VulkanCommandBuffer Added ResolveImage function to resolve MSAA images into non MSAA images</p></li>
+<li><p class="sd-card-text">VulkanInits Added VK_IMAGE_USAGE_TRANSFER_DST_BIT to SwapChainCreateInfoKHR</p></li>
+<li><p class="sd-card-text">VulkanRenderer replaced manual MSAA resolve shaders with vkCmdResolveImage</p></li>
+<li><p class="sd-card-text">VulkanRenderer made MSAAResolvePass function compatible with Headless mode</p></li>
+</ul>
+</li>
+<li><p class="sd-card-text">Merged MSAA into dev</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 07/06/2022|22w27a2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">AftermathTracker Fixed unable to save crash dump</p></li>
+<li><p class="sd-card-text">Branch MSAA:</p>
+<ul>
+<li><p class="sd-card-text">Embed Added MSAAResolveShader</p></li>
+<li><p class="sd-card-text">(Vulkan)SwapChain Added additional RenderTargets for MSAA</p></li>
+<li><p class="sd-card-text">RendererAPI Fixed SampleCount enum</p></li>
+<li><p class="sd-card-text">RendererAPI Added SampleCount to SwapChainDesc</p></li>
+<li><p class="sd-card-text">RendererAPI PerWindowData Added SampleCount (currently hardcoded to 8x MSAA)</p></li>
+<li><p class="sd-card-text">VulkanRenderer Added MSAA resolve shaders for 2x, 4x, 8x and 16x MSAA</p></li>
+<li><p class="sd-card-text">VulkanRenderer Added MSAAResolvePass function</p></li>
+<li><p class="sd-card-text">ImGuiLayer now uses SampleCount from PerWindowData</p></li>
+<li><p class="sd-card-text">SwapChain Removed GetRenderTargetsNonMSAA() &amp; GetRenderTargetsMSAAResolve</p></li>
+<li><p class="sd-card-text">SwapChain Added GetRenderTargetsMSAA()</p></li>
+<li><p class="sd-card-text">RendererAPI, VulkanRenderer &amp; ImGuiLayer Updated GetRenderTargets usage</p></li>
+<li><p class="sd-card-text">RendererAPI Added AntiAliasing enum</p></li>
+<li><p class="sd-card-text">(Vulkan)SwapChain Added SetSampleCount function</p></li>
+<li><p class="sd-card-text">RenderCommand/RendererAPI Added SetAntiAliasing function &lt;10 mins</p></li>
+<li><p class="sd-card-text">ImGuiVulkanBackend Added ImGui_ImplVulkan_SetMSAASamples function</p></li>
+<li><p class="sd-card-text">ImGuiLayer Added SetMSAASamples function</p></li>
+<li><p class="sd-card-text">Updated AntiAliasing test</p></li>
+<li><p class="sd-card-text">RendererAPI Renamed SampleCount enum values</p></li>
+<li><p class="sd-card-text">VulkanRenderer Added missing destruction of the MSAA resolve shaders</p></li>
+<li><p class="sd-card-text">VulkanRenderer Fixed using wrong resolve shader</p></li>
+<li><p class="sd-card-text">AntiAliasing test Added option to set anti aliasing method and sample count</p></li>
+<li><p class="sd-card-text">RendererAPI/VulkanRenderer Added GetAntiAliasing function</p></li>
+<li><p class="sd-card-text">ConvertToType/ConvertToString Added specialization for AntiAliasing and SampleCount enums</p></li>
+<li><p class="sd-card-text">Application Added saving and loading of AntiAliasing and AntiAliasingQuality values</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.8 - 07/05/2022|22w27a1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Fixed WindowingAPI::InputKey not processing keys correctly</p></li>
+<li><p class="sd-card-text">Branch MSAA:</p>
+<ul>
+<li><p class="sd-card-text">Tests Added AntiAliasing test</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 07/04/2022|22w27a1<div class="sd-summary-down docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="sd-summary-up docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>

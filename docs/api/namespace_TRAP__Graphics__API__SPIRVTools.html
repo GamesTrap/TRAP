@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Namespace TRAP::Graphics::API::VulkanInits" href="namespace_TRAP__Graphics__API__VulkanInits.html" /><link rel="prev" title="Namespace TRAP::Graphics::API::ShaderReflection" href="namespace_TRAP__Graphics__API__ShaderReflection.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Namespace TRAP::Graphics::API::SPIRVTools - TRAP 0.8.7 documentation</title>
+        <title>Namespace TRAP::Graphics::API::SPIRVTools - TRAP 0.8.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.7 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.9 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -543,6 +543,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a1140b281b5df05d3a20b07d979ee0250.html">Function ImGui_ImplVulkan_NewFrame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab20cc208b1400091be27ed1e57c8ce41.html">Function ImGui_ImplVulkan_RenderDrawData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab6c61e9c9d8e8c314866e5d9b48b58b5.html">Function ImGui_ImplVulkan_SetMinImageCount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ab8a288c1e4fa698cd1a83ae466d497ef.html">Function ImGui_ImplVulkan_SetMSAASamples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ac5f93959197622a7afc8ac9d9e7c378c.html">Function ImGui_ImplVulkan_Shutdown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1af90a69b2696bdf247258421ad17d6b2d.html">Function ImGui_ImplVulkan_UpdateTextureInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a5c3481cf560433b8f1937b760a3e150b.html">Function ImGui_ImplVulkan_UploadFontsTexture</a></li>
@@ -700,7 +701,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ae63078366bc69d912b1cd40b75e73193.html">Function TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ab155bff60cde47bfe47f22b6d2a46858.html">Function TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a94e515d381f417cf440c68fdb1d8f75e.html">Function TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1aa06877bab84548db27cb10bf204eeb2e.html">Function TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ab8ad476ae38d4c882081d985db8c9e28.html">Function TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1af215d70c779b39218a42320d676a6d8b.html">Function TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4394d5c661f8f0f0ef9083a91a6f822e.html">Function TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1abf9996d4be4b50c02b29c62955c4b788.html">Function TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo</a></li>
@@ -1245,11 +1246,15 @@
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a25e610212b914f8e9b8b851c18d93d9d.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; std::string &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a58b85ff206fe18030d29f0f46abeeed1.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RenderAPI &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1aa7009e1dd24b7ec5511c40ad9cde0711.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RendererAPI::AntiAliasing &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a0755c7c68dbcad1e565f609c0ab9f273.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RendererAPI::SampleCount &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1abea3d8f1d31430861a620b938ff9b039.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Window::DisplayMode &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a31ea953f94f3e1f8b1be81c81503e870.html">Template Function TRAP::Utils::String::ConvertToType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1accf39631f866bf20cf55950cc6d7d22d.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; std::string &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a3bcb3840c60928349de9f53a071229ff.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; std::string_view &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a7bec15a8021590eed8d62d4be2828600.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RenderAPI &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a34e022a43684ef1802378243e7cf6116.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RendererAPI::AntiAliasing &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a3ac4b8850cde7766011299bdf9ee9078.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RendererAPI::SampleCount &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a94bf9ed3351bd40d408c73e361d42530.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Window::DisplayMode &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a964e031e6fce0fe72fa6ad1d9d2f2d80.html">Function TRAP::Utils::String::FindToken(const char *, std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a3ea2b9f0da81bc7956fc15ac50c0cb74.html">Function TRAP::Utils::String::FindToken(std::string_view, std::string_view)</a></li>
@@ -1342,6 +1347,7 @@
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a7b2918d422b3a1fe86a641f74818bb55.html">Define WM_MOUSEHWHEEL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a3e39d5f7fe13772b34a4ad42907084d6.html">Define WM_UNICHAR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_Sampler_8h_1a0241baf0038e4c093011ad27e7dc232f.html">Typedef TRAP::Graphics::AddressMode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1aad455a9fac3ca52b320a5c950b11a4a3.html">Typedef TRAP::Graphics::AntiAliasing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_ResourceLoader_8h_1a02c0778690ae93af09eae99d2713e964.html">Typedef TRAP::Graphics::API::SyncToken</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1a230cb31da835484d26dd44cc3f4ae95b.html">Typedef TRAP::Graphics::BlendConstant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1a35e3ecc16245929fc50dad1713312889.html">Typedef TRAP::Graphics::BlendMode</a></li>
@@ -1355,6 +1361,7 @@
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1aca5f4521aa9af19c623f6fbfb5178499.html">Typedef TRAP::Graphics::PrimitiveTopology</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1a1728aa83a71619fa0e624f9858164eaa.html">Typedef TRAP::Graphics::QueueType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1a548207678476bacc0550249f5cd14226.html">Typedef TRAP::Graphics::ResourceState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1a9cb9a53af84b438fa967d663c0d43dea.html">Typedef TRAP::Graphics::SampleCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_Sampler_8h_1a919ceddb817f36ad0217a891f4c664dc.html">Typedef TRAP::Graphics::SamplerDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1ad57505dd361796233d1b4aea5eb1fa16.html">Typedef TRAP::Graphics::ShadingRate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="typedef_RenderCommand_8h_1a805286f499e722d6ed4c6d29c2d86cd5.html">Typedef TRAP::Graphics::ShadingRateCombiner</a></li>
