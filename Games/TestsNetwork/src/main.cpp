@@ -10,8 +10,8 @@ public:
 	explicit TestsNetwork(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		PushLayer(std::make_unique<FTPTests>());
-		// PushLayer(std::make_unique<SocketTests>());
+		// PushLayer(std::make_unique<FTPTests>());
+		PushLayer(std::make_unique<SocketTests>());
 		// PushLayer(std::make_unique<IPv6Tests>());
 	}
 };

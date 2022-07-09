@@ -16,7 +16,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv6Address();
+		IPv6Address() = default;
 
 		/// <summary>
 		/// Construct the address from a string.

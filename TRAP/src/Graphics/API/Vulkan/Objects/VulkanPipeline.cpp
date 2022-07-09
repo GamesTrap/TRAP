@@ -293,7 +293,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		(
 			SampleCountToVkSampleCount(graphicsDesc.SampleCount),
 			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? RendererAPI::GPUSettings.SampleRateShadingSupported : VK_FALSE,
-			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? 0.25 : 0.0f
+			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? 0.25f : 0.0f
 		);
 
 		VkPipelineRasterizationStateCreateInfo rs = graphicsDesc.RasterizerState ?

@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2019 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -34,17 +34,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/ByteSwap.h"
 
-const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None;
+const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::LocalHost(127, 0, 0, 1);
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 255, 255, 255);
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::IPv4Address::IPv4Address()
-	: m_address(0), m_valid(false)
-{
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
