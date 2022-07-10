@@ -1,6 +1,12 @@
 #ifndef TRAP_CONVERTHASHTOSTRING_H
 #define TRAP_CONVERTHASHTOSTRING_H
 
+#include <array>
+#include <cstdint>
+#include <iomanip>
+#include <string>
+#include <sstream>
+
 namespace TRAP::Utils::Hash
 {
 	/// <summary>

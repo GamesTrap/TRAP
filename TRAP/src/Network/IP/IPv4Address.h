@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_IPV4ADDRESS_H
 #define TRAP_IPV4ADDRESS_H
 
+#include <string_view>
+
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network

@@ -4,7 +4,6 @@
 #include "Events/Event.h"
 #include "ImageLoader/Image.h"
 #include "WindowingAPI.h"
-#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP
 {

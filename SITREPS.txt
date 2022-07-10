@@ -2824,3 +2824,6 @@ SITREP 07/07/2022|22w27a3
 SITREP 07/07/2022|22w27b1
     - Changed TRAP Engine version to 22w27b1(0.8.9)
     - Updated Networking ~<10 mins
+    - Moved Linux only includes from TRAPPCH.h into Utils/Linux.h ~<5 mins
+    - Moved Windows only includes from TRAPPCH.h into Utils/Win.h ~<5 mins
+    - Removed TRAPPCH.h include from ImGuiLayer.h (this affected a lot of files) ~>60 mins

@@ -1,6 +1,14 @@
 #ifndef TRAP_INSTRUMENTOR_H
 #define TRAP_INSTRUMENTOR_H
 
+#include <fstream>
+#include <chrono>
+#include <thread>
+#include <mutex>
+
+#include "Core/Base.h"
+#include "Core/PlatformDetection.h"
+
 namespace TRAP::Utils::Debug
 {
 	/// <summary>

@@ -1,6 +1,9 @@
 #ifndef TRAP_IPV6ADDRESS_H
 #define TRAP_IPV6ADDRESS_H
 
+#include <array>
+#include <string>
+
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network

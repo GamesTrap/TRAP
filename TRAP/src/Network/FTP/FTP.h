@@ -29,6 +29,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_FTP_H
 #define TRAP_FTP_H
 
+#include <filesystem>
+#include <string>
+
 #include "Network/Sockets/TCPSocket.h"
 #include "Utils/Time/TimeStep.h"
 

@@ -1,6 +1,8 @@
 #ifndef TRAP_NETWORK_TCPSOCKETIPV6_H
 #define TRAP_NETWORK_TCPSOCKETIPV6_H
 
+#include <vector>
+
 #include "Socket.h"
 #include "Network/IP/IPv6Address.h"
 #include "Utils/Time/TimeStep.h"

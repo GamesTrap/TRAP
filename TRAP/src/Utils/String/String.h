@@ -2,6 +2,7 @@
 #define TRAP_STRING_H
 
 #include "Window/Window.h"
+#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Utils::String
 {

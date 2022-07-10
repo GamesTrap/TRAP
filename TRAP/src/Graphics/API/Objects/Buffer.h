@@ -1,5 +1,6 @@
 #ifndef TRAP_BUFFER_H
 #define TRAP_BUFFER_H
+
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics

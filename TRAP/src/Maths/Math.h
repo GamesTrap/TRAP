@@ -3520,7 +3520,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L,
 {
 	if constexpr (std::is_same_v<U, bool>)
 	{
-		Vec<L, T> result;
+		Vec<L, T> result{};
 		for (int32_t i = 0; i < Vec<L, T>::Length(); ++i)
 			result[i] = a[i] ? y[i] : x[i];
 		return result;
@@ -3816,7 +3816,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, T y)
 {
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::fmod(x[i], y);
+		result[i] = static_cast<T>(std::fmod(x[i], y));
 	return result;
 }
 
@@ -3825,7 +3825,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, const Vec<L, T>& y)
 {
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::fmod(x[i], y[i]);
+		result[i] = static_cast<T>(std::fmod(x[i], y[i]));
 	return result;
 }
 
@@ -4019,7 +4019,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Log2(const Vec<L, T>& x)
 {
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::log2(x[i]);
+		result[i] = static_cast<T>(std::log2(x[i]));
 	return result;
 }
 
@@ -4324,7 +4324,7 @@ TRAP::Math::Mat<L, L, T> TRAP::Math::OuterProduct(const Vec<L, T>& c, const Vec<
 	static_assert(std::numeric_limits<T>::is_iec559, "'OuterProduct' only accepts floating-point inputs");
 
 	Mat<L, L, T> m;
-	for (uint32_t i = 0; i < m.Length(); ++i)
+	for (int32_t i = 0; i < m.Length(); ++i)
 		m[i] = c * r[i];
 	return m;
 }
@@ -5787,11 +5787,13 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLine
 	                     clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<3, T>(static_cast<T>(0.0031308)))),
 						 colorLinear.w);
 	}
+	else
+	{
+		const Vec<L, T> clampedColor(Clamp(colorLinear, static_cast<T>(0), static_cast<T>(1)));
 
-	const Vec<L, T> clampedColor(Clamp(colorLinear, static_cast<T>(0), static_cast<T>(1)));
-
-	return Mix(Pow(clampedColor, Vec<L, T>(gammaCorrection)) * static_cast<T>(1.055) - static_cast<T>(0.055),
-	           clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<L, T>(static_cast<T>(0.0031308))));
+		return Mix(Pow(clampedColor, Vec<L, T>(gammaCorrection)) * static_cast<T>(1.055) - static_cast<T>(0.055),
+				   clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<L, T>(static_cast<T>(0.0031308))));
+	}
 }
 
 template<uint32_t L, typename T>
@@ -5808,11 +5810,13 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertLinearToSRGB(const Vec<L, T>& colorLine
 	                     clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<3, T>(static_cast<T>(0.0031308)))),
 						 colorLinear.w);
 	}
+	else
+	{
+		const Vec<L, T> clampedColor(Clamp(colorLinear, static_cast<T>(0), static_cast<T>(1)));
 
-	const Vec<L, T> clampedColor(Clamp(colorLinear, static_cast<T>(0), static_cast<T>(1)));
-
-	return Mix(Pow(clampedColor, Vec<L, T>(gammaCorrection)) * static_cast<T>(1.055) - static_cast<T>(0.055),
-	           clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<L, T>(static_cast<T>(0.0031308))));
+		return Mix(Pow(clampedColor, Vec<L, T>(gammaCorrection)) * static_cast<T>(1.055) - static_cast<T>(0.055),
+				   clampedColor * static_cast<T>(12.92), LessThan(clampedColor, Vec<L, T>(static_cast<T>(0.0031308))));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5830,10 +5834,12 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB
 	                             Vec<3, T>(gammaCorrection)), vec3ColorSRGB * static_cast<T>(0.07739938080495356037151702786378),
 			             LessThanEqual(vec3ColorSRGB, Vec<3, T>(static_cast<T>(0.04045)))), colorSRGB.w);
 	}
-
-	return Mix(Pow((colorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
-	               Vec<L, T>(gammaCorrection)), colorSRGB * static_cast<T>(0.07739938080495356037151702786378),
-			   LessThanEqual(colorSRGB, Vec<L, T>(static_cast<T>(0.04045))));
+	else
+	{
+		return Mix(Pow((colorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
+					   Vec<L, T>(gammaCorrection)), colorSRGB * static_cast<T>(0.07739938080495356037151702786378),
+				   LessThanEqual(colorSRGB, Vec<L, T>(static_cast<T>(0.04045))));
+	}
 }
 
 template<uint32_t L, typename T>
@@ -5847,10 +5853,12 @@ TRAP::Math::Vec<L, T> TRAP::Math::ConvertSRGBToLinear(const Vec<L, T>& colorSRGB
 	                             Vec<3, T>(gamma)), vec3ColorSRGB * static_cast<T>(0.07739938080495356037151702786378),
 			             LessThanEqual(vec3ColorSRGB, Vec<3, T>(static_cast<T>(0.04045)))), colorSRGB.w);
 	}
-
-	return Mix(Pow((colorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
-	               Vec<L, T>(gamma)), colorSRGB * static_cast<T>(0.07739938080495356037151702786378),
-			   LessThanEqual(colorSRGB, Vec<L, T>(static_cast<T>(0.04045))));
+	else
+	{
+		return Mix(Pow((colorSRGB + static_cast<T>(0.055)) * static_cast<T>(0.94786729857819905213270142180095),
+					   Vec<L, T>(gamma)), colorSRGB * static_cast<T>(0.07739938080495356037151702786378),
+				   LessThanEqual(colorSRGB, Vec<L, T>(static_cast<T>(0.04045))));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

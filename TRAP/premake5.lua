@@ -27,6 +27,7 @@ project "TRAP"
 	removefiles
 	{
 		"src/Utils/Win.h",
+		"src/Utils/Linux.h",
 		"src/Log/ANSILog.cpp",
 		"src/Log/WindowsLog.cpp",
 		"src/Input/WindowsInput.cpp",
@@ -121,6 +122,7 @@ project "TRAP"
 		-- Add Linux-specific files
         files
         {
+			"src/Utils/Linux.h",
 			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",

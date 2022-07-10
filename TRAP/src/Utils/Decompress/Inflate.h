@@ -22,6 +22,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_INFLATE_H
 #define TRAP_INFLATE_H
 
+#include <array>
+#include <cstdint>
+#include <vector>
+
 namespace TRAP::Utils::Decompress
 {
 	namespace INTERNAL

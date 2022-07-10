@@ -1,5 +1,8 @@
 #ifndef TRAP_VULKANPHYSICALDEVICE_H
 #define TRAP_VULKANPHYSICALDEVICE_H
+
+#include <map>
+
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API

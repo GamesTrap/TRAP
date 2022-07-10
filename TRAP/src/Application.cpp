@@ -425,7 +425,7 @@ void TRAP::Application::OnEvent(Events::Event& e)
 		{
 			return OnWindowClose(event);
 		});
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& event)
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([](Events::FrameBufferResizeEvent& event)
 		{
 			return OnFrameBufferResize(event);
 		});

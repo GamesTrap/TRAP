@@ -69,6 +69,8 @@ namespace TRAP::INTERNAL
 		static void RestoreCallbacks(WindowingAPI::InternalWindow* window);
 
 	private:
+		static std::string s_clipboardText;
+
 		/// <summary>
 		/// Data struct for ImGui user data.
 		/// </summary>

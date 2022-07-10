@@ -1,6 +1,10 @@
 #ifndef TRAP_THREADPOOL_H
 #define TRAP_THREADPOOL_H
 
+#include <functional>
+#include <future>
+#include <atomic>
+
 #include "BlockingQueue.h"
 
 namespace TRAP

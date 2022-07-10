@@ -1,6 +1,8 @@
 #ifndef TRAP_DYNAMICLOADING_H
 #define TRAP_DYNAMICLOADING_H
 
+#include <string>
+
 namespace TRAP::Utils::DynamicLoading
 {
     /// <summary>

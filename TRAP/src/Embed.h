@@ -1,6 +1,9 @@
 #ifndef TRAP_EMBED_H
 #define TRAP_EMBED_H
 
+#include <array>
+#include <cstdint>
+
 namespace TRAP::Embed
 {
 	/// <summary>

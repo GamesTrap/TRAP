@@ -1,6 +1,8 @@
 #ifndef TRAP_NETWORK_UDPSOCKETIPV6_H
 #define TRAP_NETWORK_UDPSOCKETIPV6_H
 
+#include <vector>
+
 #include "Socket.h"
 #include "Network/IP/IPv6Address.h"
 

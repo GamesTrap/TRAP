@@ -142,7 +142,7 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* data, const uint64_t
 	desc.Buffer = m_storageBuffers[imageIndex];
 	desc.DstOffset = offset;
 	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	std::memcpy(data, desc.MappedData, size);
+	memcpy(data, desc.MappedData, size);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[imageIndex]);
 }
 

@@ -29,6 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_SOCKETSELECTOR_H
 #define TRAP_NETWORK_SOCKETSELECTOR_H
 
+#include "Core/Base.h"
 namespace TRAP::Utils
 {
 	struct TimeStep;

@@ -786,35 +786,35 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 		if(shaders[i].empty())
 			continue;
 
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
-		#endif
-			std::string preProcessedSource;
-			glslShaders[i] = PreProcessGLSLForSPIRVConversion(shaders[i].data(), IndexToStage[i],
-														      preProcessedSource);
-			if (preProcessedSource.empty())
-				return{};
+#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Pre-Processing ", StageToStr.at(IndexToStage[i]), " shader");
+#endif
+		std::string preProcessedSource;
+		glslShaders[i] = PreProcessGLSLForSPIRVConversion(shaders[i].data(), IndexToStage[i],
+															preProcessedSource);
+		if (preProcessedSource.empty())
+			return{};
 
-			const char* preProcessedCStr = preProcessedSource.c_str();
-			glslShaders[i]->setStrings(&preProcessedCStr, 1);
+		const char* preProcessedCStr = preProcessedSource.c_str();
+		glslShaders[i]->setStrings(&preProcessedCStr, 1);
 
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", StageToStr.at(IndexToStage[i]), " shader");
-		#endif
-			if (!ParseGLSLang(glslShaders[i].get()))
-				return{};
+#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Parsing ", StageToStr.at(IndexToStage[i]), " shader");
+#endif
+		if (!ParseGLSLang(glslShaders[i].get()))
+			return{};
 
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", StageToStr.at(IndexToStage[i]), " shader");
-		#endif
-			glslang::TProgram program;
-			if (!LinkGLSLang(glslShaders[i].get(), program))
-				return{};
+#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::ShaderGLSLPrefix, "Linking ", StageToStr.at(IndexToStage[i]), " shader");
+#endif
+		glslang::TProgram program;
+		if (!LinkGLSLang(glslShaders[i].get(), program))
+			return{};
 
-		#ifdef ENABLE_GRAPHICS_DEBUG
-			TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
-		#endif
-			const std::vector<uint32_t> SPIRV = ConvertToSPIRV(IndexToStage[i], program);
+#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::ShaderSPIRVPrefix, "Converting GLSL -> SPIR-V");
+#endif
+		const std::vector<uint32_t> SPIRV = ConvertToSPIRV(IndexToStage[i], program);
 
 		switch(i)
 		{

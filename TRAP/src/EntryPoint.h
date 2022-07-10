@@ -5,6 +5,7 @@
 #include "Core/PlatformDetection.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
+//Only used by OpenGL
 extern "C"
 {
 	inline _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;		  //Utilize NVIDIA GPU

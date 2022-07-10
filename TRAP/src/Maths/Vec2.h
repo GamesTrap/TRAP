@@ -620,33 +620,30 @@ constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator>>=(const Vec<2,
 template<typename T>
 std::string TRAP::Math::Vec<2, T>::ToString() const
 {
-	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)
-		postfix = "f";
+		return "Vec2f(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, double>)
-		postfix = "d";
+		return "Vec2d(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, bool>)
-		return std::string("Vec2b") + "(" + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ")";
+		return std::string("Vec2b(") + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ")";
 	else if constexpr(std::is_same_v<T, int8_t>)
-	    postfix = "i8";
+		return "Vec2i8(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, int16_t>)
-	    postfix = "i16";
+		return "Vec2i16(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, int32_t>)
-	    postfix = "i32";
+		return "Vec2i32(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, int64_t>)
-	    postfix = "i64";
+		return "Vec2i64(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, uint8_t>)
-	    postfix = "ui8";
+		return "Vec2ui8(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, uint16_t>)
-	    postfix = "ui16";
+		return "Vec2ui16(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, uint32_t>)
-	    postfix = "ui32";
+		return "Vec2ui32(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, uint64_t>)
-	    postfix = "ui64";
+		return "Vec2ui64(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else
 		return "Unknown type";
-
-	return "Vec2" + postfix + "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

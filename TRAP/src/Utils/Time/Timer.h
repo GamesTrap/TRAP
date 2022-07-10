@@ -1,6 +1,8 @@
 #ifndef TRAP_TIMER_H
 #define TRAP_TIMER_H
 
+#include <chrono>
+
 namespace TRAP::Utils
 {
 	/// <summary>

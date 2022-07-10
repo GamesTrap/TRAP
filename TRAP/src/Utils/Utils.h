@@ -1,6 +1,9 @@
 #ifndef TRAP_UTILS_H
 #define TRAP_UTILS_H
 
+#include <array>
+#include <string>
+
 namespace TRAP::Utils
 {
 	/// <summary>

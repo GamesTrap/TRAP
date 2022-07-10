@@ -3,6 +3,9 @@
 
 #include <bitset>
 
+#include "Core/Base.h"
+#include "TRAP_Assert.h"
+
 namespace TRAP::Utils::Memory
 {
 	/// <summary>
@@ -12,7 +15,7 @@ namespace TRAP::Utils::Memory
 	/// <typeparam name="T">Primitive data type.</typeparam>
 	/// <param name="t">Primitive data type.</param>
 	template<typename T>
-	inline static void SwapBytes(T& t)
+	inline static void SwapBytes(T& /*t*/)
 	{
 		TRAP_ASSERT(false, "Invalid template type used for byte swapping!");
 	}

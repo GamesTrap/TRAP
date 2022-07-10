@@ -50,7 +50,22 @@ Modified by: Jan "GamesTrap" Schuerkamp
 //   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
 // Read comments in imgui_impl_vulkan.h.
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #include <vulkan/vulkan.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//ImGUI
+#include <imgui.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 // Initialization data, for ImGui_ImplVulkan_Init()
 // [Please zero-clear before use!]

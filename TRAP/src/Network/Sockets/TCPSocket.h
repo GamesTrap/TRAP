@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_TCPSOCKET_H
 #define TRAP_NETWORK_TCPSOCKET_H
 
+#include <vector>
+
 #include "Socket.h"
 #include "Utils/Time/TimeStep.h"
 

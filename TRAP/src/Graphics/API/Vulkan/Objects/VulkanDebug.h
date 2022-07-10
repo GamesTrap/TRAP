@@ -1,6 +1,9 @@
 #ifndef TRAP_VULKANDEBUG_H
 #define TRAP_VULKANDEBUG_H
 
+#include "Core/Base.h"
+#include "Graphics/API/RendererAPI.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanInstance;

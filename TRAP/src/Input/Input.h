@@ -31,11 +31,16 @@ The above license only applies to some of the Controller specific parts of this 
 
 #include "Core/PlatformDetection.h" //Needed for OS dependent includes
 
-#include "Maths/Math.h"
-#include "Events/Event.h"
-
 #include <functional>
 #include <array>
+#include <string_view>
+
+#ifdef TRAP_PLATFORM_LINUX
+#include "Utils/Linux.h"
+#endif
+
+#include "Maths/Math.h"
+#include "Events/Event.h"
 
 namespace TRAP
 {
@@ -923,7 +928,7 @@ namespace TRAP
 			std::string Path{};
 			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
 			std::array<int32_t, ABS_CNT> ABSMap{};
-			std::array<struct input_absinfo, ABS_CNT> ABSInfo{};
+			std::array<input_absinfo, ABS_CNT> ABSInfo{};
 			std::array<std::array<int32_t, 4>, 2> DPads{};
 		};
 #endif

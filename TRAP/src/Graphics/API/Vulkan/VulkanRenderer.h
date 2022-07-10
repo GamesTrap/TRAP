@@ -1,6 +1,8 @@
 #ifndef TRAP_VULKANRENDERER_H
 #define TRAP_VULKANRENDERER_H
 
+#include <thread>
+
 #include "Graphics/API/RendererAPI.h"
 #include "Maths/Math.h"
 #include "Window/WindowingAPI.h"

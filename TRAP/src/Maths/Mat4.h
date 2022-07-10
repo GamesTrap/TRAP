@@ -32,6 +32,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_MAT4_H
 #define TRAP_MAT4_H
 
+#include <array>
+
 #include "Vec4.h"
 #include "Core/PlatformDetection.h"
 #include "Core/Base.h"

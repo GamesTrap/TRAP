@@ -63,4 +63,94 @@
 	#define OCR_HAND 32649
 #endif
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//WinAPI
+#include <Dbt.h>
+#include <dwmapi.h>
+#include <imm.h>
+#include <KnownFolders.h>
+#include <ShlObj_core.h>
+#include <Shobjidl.h>
+//XInput
+#include <Xinput.h>
+//DirectInput
+#ifndef DIDFT_OPTIONAL
+	#define DIDFT_OPTIONAL 0x80000000
+#endif
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0800
+#endif
+#include <basetsd.h>
+#include <dinput.h>
+#include <WinSock2.h>
+#include <winsock.h>
+#include <WS2tcpip.h>
+#include <shellapi.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#ifdef far
+	#undef far
+#endif
+#ifdef min
+	#undef min
+#endif
+#ifdef max
+	#undef max
+#endif
+#ifdef CreateWindow
+	#undef CreateWindow
+#endif
+#ifdef GetWindowStyle
+	#undef GetWindowStyle
+#endif
+#ifdef GetWindowExStyle
+	#undef GetWindowExStyle
+#endif
+#ifdef IsMaximized
+	#undef IsMaximized
+#endif
+#ifdef IsMinimized
+	#undef IsMinimized
+#endif
+#ifdef IsRestored
+	#undef IsRestored
+#endif
+#ifdef near
+	#undef near
+#endif
+#ifdef DELETE
+	#undef DELETE
+#endif
+#ifdef isnan
+	#undef isnan
+#endif
+#ifdef isinf
+	#undef isinf
+#endif
+#ifdef log2
+	#undef log2
+#endif
+#ifdef GetKeyboardLayoutName
+	#undef GetKeyboardLayoutName
+#endif
+#ifdef GetMessage
+	#undef GetMessage
+#endif
+#ifdef CreateDirectory
+	#undef CreateDirectory
+#endif
+#ifdef DeleteFile
+	#undef DeleteFile
+#endif
+#ifdef BeginUpdateResource
+	#undef BeginUpdateResource
+#endif
+#ifdef EndUpdateResource
+	#undef EndUpdateResource
+#endif
+
 #endif /*TRAP_WIN_H*/

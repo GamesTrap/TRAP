@@ -1,6 +1,25 @@
 #ifndef TRAP_SPIRVTOOLS_H
 #define TRAP_SPIRVTOOLS_H
 
+#include <array>
+#include <cstdint>
+#include <string>
+#include <vector>
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//SPIRV
+#include <glslang/Public/ShaderLang.h>
+#include <SPIRV/GlslangToSpv.h>
+//SPIRV to GLSL
+#include <spirv_glsl.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#include "Core/Base.h"
+
 namespace TRAP::Graphics::API::SPIRVTools
 {
 	struct Type

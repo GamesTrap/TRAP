@@ -1,6 +1,10 @@
 #ifndef TRAP_ADLER32_H
 #define TRAP_ADLER32_H
 
+#include <array>
+#include <cstdint>
+#include <string_view>
+
 namespace TRAP::Utils::Hash
 {
 	/// <summary>

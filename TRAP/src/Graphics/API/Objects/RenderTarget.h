@@ -25,11 +25,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		RenderTarget(const RenderTarget&) = default;
+		RenderTarget(const RenderTarget&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		RenderTarget& operator=(const RenderTarget&) = default;
+		RenderTarget& operator=(const RenderTarget&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>

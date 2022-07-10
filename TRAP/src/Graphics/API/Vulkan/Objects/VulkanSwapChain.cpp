@@ -12,7 +12,6 @@
 #include "VulkanRenderTarget.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-
 TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
 	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
 	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance()),

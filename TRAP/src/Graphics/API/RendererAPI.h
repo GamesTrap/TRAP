@@ -1,6 +1,8 @@
 #ifndef TRAP_RENDERERAPI_H
 #define TRAP_RENDERERAPI_H
 
+#include <variant>
+
 #include "Maths/Math.h"
 #include "Window/Window.h"
 

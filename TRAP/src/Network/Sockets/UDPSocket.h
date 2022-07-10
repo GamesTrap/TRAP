@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_UDPSOCKET_H
 #define TRAP_NETWORK_UDPSOCKET_H
 
+#include <vector>
+
 #include "Socket.h"
 #include "Network/IP/IPv4Address.h"
 

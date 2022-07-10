@@ -1,6 +1,8 @@
 #ifndef TRAP_AFTERMATHTRACKER_H
 #define TRAP_AFTERMATHTRACKER_H
 
+#include <string>
+
 namespace TRAP::Graphics::AftermathTracker
 {
 	/// <summary>

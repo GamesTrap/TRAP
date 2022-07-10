@@ -29,6 +29,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_PACKET_H
 #define TRAP_NETWORK_PACKET_H
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 namespace TRAP::Network
 {
 	class TCPSocket;

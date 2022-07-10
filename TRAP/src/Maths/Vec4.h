@@ -35,6 +35,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Types.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
+#include "Utils/Utils.h"
 
 namespace TRAP::Math
 {
@@ -645,34 +646,40 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const Vec<4,
 template<typename T>
 std::string TRAP::Math::Vec<4, T>::ToString() const
 {
-	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)
-		postfix = "f";
+		return "Vec4f(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, double>)
-		postfix = "d";
+		return "Vec4d(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, bool>)
-		return std::string("Vec4b") + "(" + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ", " + (z ? "true" : "false") + ", " + (w ? "true" : "false") + ")";
+		return std::string("Vec4b(") + (x ? "true" : "false") + ", " + (y ? "true" : "false") + ", " + (z ? "true" : "false") + ", " + (w ? "true" : "false") + ")";
 	else if constexpr(std::is_same_v<T, int8_t>)
-	    postfix = "i8";
+		return "Vec4i8(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, int16_t>)
-	    postfix = "i16";
+		return "Vec4i16(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, int32_t>)
-	    postfix = "i32";
+		return "Vec4i32(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, int64_t>)
-	    postfix = "i64";
+		return "Vec4i64(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, uint8_t>)
-	    postfix = "ui8";
+		return "Vec4ui8(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, uint16_t>)
-	    postfix = "ui16";
+		return "Vec4ui16(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, uint32_t>)
-	    postfix = "ui32";
+		return "Vec4ui32(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else if constexpr(std::is_same_v<T, uint64_t>)
-	    postfix = "ui64";
+		return "Vec4ui64(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+			", " + std::to_string(w) + ")";
 	else
 		return "Unknown type";
-
-	return "Vec4" + postfix + "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
-	       ", " + std::to_string(w) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

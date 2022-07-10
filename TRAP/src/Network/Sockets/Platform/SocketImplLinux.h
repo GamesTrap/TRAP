@@ -29,15 +29,12 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_SOCKETIMPLLINUX_H
 #define TRAP_NETWORK_SOCKETIMPLLINUX_H
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#include "Network/Sockets/Socket.h"
+#include <array>
+
+#include "Utils/Linux.h"
 #include "Core/PlatformDetection.h"
+
+#include "Network/Sockets/Socket.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 

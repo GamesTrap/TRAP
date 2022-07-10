@@ -1,6 +1,8 @@
 #ifndef TRAP_DISCORDGAMESDK_H
 #define TRAP_DISCORDGAMESDK_H
 
+#include <string>
+
 namespace discord
 {
     class Core;

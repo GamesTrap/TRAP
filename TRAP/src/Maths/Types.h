@@ -1,6 +1,8 @@
 #ifndef TRAP_TYPES_H
 #define TRAP_TYPES_H
 
+#include <cstdint>
+
 namespace TRAP::Math
 {
 	template<uint32_t L, typename T> struct Vec;

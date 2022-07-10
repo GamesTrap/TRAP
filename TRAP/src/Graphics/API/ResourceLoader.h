@@ -1,6 +1,10 @@
 #ifndef TRAP_RESOURCELOADER_H
 #define TRAP_RESOURCELOADER_H
 
+#include <atomic>
+#include <condition_variable>
+#include <thread>
+
 #include "RendererAPI.h"
 #include "ImageLoader/Image.h"
 

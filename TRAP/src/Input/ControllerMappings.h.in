@@ -1,6 +1,9 @@
 #ifndef TRAP_CONTROLLERMAPPINGS_H
 #define TRAP_CONTROLLERMAPPINGS_H
 
+#include <vector>
+#include <string>
+
 // SDL_GameControllerDB project under the following license:
 //
 // Simple DirectMedia Layer

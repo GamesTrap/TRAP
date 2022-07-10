@@ -29,6 +29,24 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define TRAP_WINDOWINGAPI_H
 
 #include "Core/PlatformDetection.h"
+
+#include <forward_list>
+
+#ifdef TRAP_PLATFORM_LINUX
+#include "Utils/Linux.h"
+#elif defined(TRAP_PLATFORM_WINDOWS)
+#include "Utils/Win.h"
+#endif
+
+//VulkanAPI
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <vulkan/vulkan.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 #include "ImageLoader/Image.h"
 #include "Input/Input.h"
 

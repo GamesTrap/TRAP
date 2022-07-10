@@ -32,6 +32,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_QUATERNION_H
 #define TRAP_QUATERNION_H
 
+#include <cmath>
+
 #include "Vec3.h"
 #include "Core/PlatformDetection.h"
 #include "Core/Base.h"

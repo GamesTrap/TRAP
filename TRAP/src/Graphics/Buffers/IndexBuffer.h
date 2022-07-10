@@ -197,7 +197,7 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64
 	desc.Buffer = m_indexBuffer;
 	desc.DstOffset = offset;
 	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	std::memcpy(desc.MappedData, indices, size);
+	memcpy(desc.MappedData, indices, size);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 
 	if constexpr(std::is_same_v<T, uint16_t>)

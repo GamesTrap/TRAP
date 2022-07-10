@@ -3,7 +3,6 @@
 
 #include "Window/WindowingAPI.h"
 
-
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;

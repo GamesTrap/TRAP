@@ -1,6 +1,10 @@
 #ifndef TRAP_SHA2_H
 #define TRAP_SHA2_H
 
+#include <array>
+#include <cstdint>
+#include <string_view>
+
 namespace TRAP::Utils::Hash
 {
 	/// <summary>

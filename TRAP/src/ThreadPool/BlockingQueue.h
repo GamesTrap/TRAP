@@ -1,6 +1,10 @@
 #ifndef TRAP_BLOCKINGQUEUE_H
 #define TRAP_BLOCKINGQUEUE_H
 
+#include <mutex>
+#include <queue>
+#include <condition_variable>
+
 namespace TRAP
 {
 	template<typename T>

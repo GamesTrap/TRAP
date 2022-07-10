@@ -26,11 +26,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanRenderTarget(const VulkanRenderTarget&) = default;
+		VulkanRenderTarget(const VulkanRenderTarget&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanRenderTarget& operator=(const VulkanRenderTarget&) = default;
+		VulkanRenderTarget& operator=(const VulkanRenderTarget&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>

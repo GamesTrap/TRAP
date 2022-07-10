@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <filesystem>
 
 namespace TRAP
 {

@@ -1,6 +1,16 @@
 #ifndef TRAP_VULKANMEMORYALLOCATOR_H
 #define TRAP_VULKANMEMORYALLOCATOR_H
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <vk_mem_alloc.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#include "Core/Base.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanInstance;

@@ -4,7 +4,6 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/SwapChain.h"
 
-
 namespace TRAP::Graphics::API
 {
 	class VulkanMemoryAllocator;

@@ -3,6 +3,7 @@
 
 #include "Image.h"
 #include "Embed.h"
+#include "Utils/Profiler/Instrumentor.h"
 
 namespace TRAP::INTERNAL
 {

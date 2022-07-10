@@ -1,9 +1,25 @@
 #ifndef TRAP_IMGUILAYER_H
 #define TRAP_IMGUILAYER_H
 
-#include "Layers/Layer.h"
+//VulkanAPI
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <vulkan/vulkan.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
-#include "TRAPPCH.h"
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//ImGUI
+#include <imgui.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#include "Layers/Layer.h"
 
 namespace TRAP
 {

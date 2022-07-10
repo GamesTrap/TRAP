@@ -1,6 +1,18 @@
 #ifndef TRAP_SHADER_H
 #define TRAP_SHADER_H
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//SPIRV
+#include <glslang/Public/ShaderLang.h>
+#include <SPIRV/GlslangToSpv.h>
+//SPIRV to GLSL
+#include <spirv_glsl.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Buffers/UniformBuffer.h"
 #include "Graphics/Buffers/StorageBuffer.h"
@@ -422,16 +434,18 @@ namespace TRAP::Graphics
 				/* .maxMeshViewCountNV = */ 4,
 				/* .maxDualSourceDrawBuffersEXT = */ 1,
 
-				/* TLimits */
-				/* .nonInductiveForLoops = */ true,
-				/* .whileLoops = */ true,
-				/* .doWhileLoops = */ true,
-				/* .generalUniformIndexing = */ true,
-				/* .generalAttributeMatrixVectorIndexing = */ true,
-				/* .generalVaryingIndexing = */ true,
-				/* .generalSamplerIndexing = */ true,
-				/* .generalVariableIndexing = */ true,
-				/* .generalConstantMatrixVectorIndexing = */ true
+				{
+					/* TLimits */
+					/* .nonInductiveForLoops = */ true,
+					/* .whileLoops = */ true,
+					/* .doWhileLoops = */ true,
+					/* .generalUniformIndexing = */ true,
+					/* .generalAttributeMatrixVectorIndexing = */ true,
+					/* .generalVaryingIndexing = */ true,
+					/* .generalSamplerIndexing = */ true,
+					/* .generalVariableIndexing = */ true,
+					/* .generalConstantMatrixVectorIndexing = */ true
+				}
 			};
 		}
 	};

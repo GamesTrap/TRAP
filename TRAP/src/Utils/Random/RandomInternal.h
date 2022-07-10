@@ -1,6 +1,10 @@
 #ifndef TRAP_RANDOMINTERNAL_H
 #define TRAP_RANDOMINTERNAL_H
 
+#include <cstdint>
+#include <iterator>
+#include <type_traits>
+
 namespace TRAP::Utils::INTERNAL
 {
     /// <summary>

@@ -29,6 +29,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_NETWORK_HTTP_H
 #define TRAP_NETWORK_HTTP_H
 
+#include <map>
+
 #include "Network/IP/IPv4Address.h"
 #include "Network/Sockets/TCPSocket.h"
 #include "Network/Sockets/TCPSocketIPv6.h"

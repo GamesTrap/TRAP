@@ -2,6 +2,7 @@
 #define TRAP_CORE_H
 
 #include <memory>
+
 #include "PlatformDetection.h"
 
 //Set this define to enable RenderDoc layer

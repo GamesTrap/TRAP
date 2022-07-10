@@ -1,6 +1,10 @@
 #ifndef TRAP_FILEWATCHER_H
 #define TRAP_FILEWATCHER_H
 
+#include <filesystem>
+#include <functional>
+#include <thread>
+
 namespace TRAP::Events
 {
     class Event;

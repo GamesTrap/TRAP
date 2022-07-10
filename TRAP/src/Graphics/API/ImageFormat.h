@@ -25,6 +25,8 @@
 #ifndef TRAP_IMAGEFORMAT_H
 #define TRAP_IMAGEFORMAT_H
 
+#include <cstdint>
+
 namespace TRAP::Graphics::API
 {
     enum class ImageFormat

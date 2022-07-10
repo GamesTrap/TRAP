@@ -4,8 +4,6 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-#include "Graphics/API/Vulkan/Objects/VulkanQueue.h" //TODO REMOVE
-
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName) noexcept
 {
 	VkApplicationInfo info;

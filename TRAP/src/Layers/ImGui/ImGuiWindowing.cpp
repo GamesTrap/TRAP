@@ -29,6 +29,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Application.h"
 #include "Maths/Math.h"
 
+std::string TRAP::INTERNAL::ImGuiWindowing::s_clipboardText{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, const bool installCallbacks,
                                           const TRAP::Graphics::RenderAPI renderAPI)
 {
@@ -387,7 +391,8 @@ TRAP::INTERNAL::ImGuiWindowing::ImGuiTRAPData* TRAP::INTERNAL::ImGuiWindowing::G
 
 const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void* /*userData*/)
 {
-	return WindowingAPI::GetClipboardString().c_str();
+	s_clipboardText = WindowingAPI::GetClipboardString();
+	return s_clipboardText.c_str();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1,6 +1,8 @@
 #ifndef TRAP_APPLICATION_H
 #define TRAP_APPLICATION_H
 
+#include <thread>
+
 #include "Layers/ImGui/ImGuiLayer.h"
 
 #include "Utils/Config/Config.h"

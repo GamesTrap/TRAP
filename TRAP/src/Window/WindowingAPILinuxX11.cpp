@@ -39,7 +39,24 @@ Modified by: Jan "GamesTrap" Schuerkamp
 //Action for EWMH client messages
 static constexpr int32_t _NET_WM_STATE_REMOVE = 0;
 static constexpr int32_t _NET_WM_STATE_ADD = 1;
-static constexpr int32_t _NET_WM_STATE_TOGGLE = 2;
+
+//Additional mouse button names for XButtonEvent
+static constexpr int32_t Button6 = 6;
+static constexpr int32_t Button7 = 7;
+
+//Motif WM hints flags
+static constexpr int32_t MWM_HINTS_DECORATIONS = 2;
+static constexpr int32_t MWM_DECOR_ALL = 1;
+
+static constexpr int32_t TRAP_XDND_VERSION = 5;
+
+//Atom values
+static constexpr int32_t None = 0;
+
+static constexpr int32_t KeyPress = 2;
+static constexpr int32_t KeyRelease = 3;
+
+static constexpr uint32_t InvalidCodepoint = 0xFFFFFFFFu;
 
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
 int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* mi)
@@ -331,7 +348,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 		{
 			SendEventToWM(window,
 						  s_Data.NET_WM_STATE,
-						  1,
+						  _NET_WM_STATE_ADD,
 						  static_cast<int64_t>(s_Data.NET_WM_STATE_FULLSCREEN),
 						  0, 1, 0);
 		}
@@ -354,10 +371,10 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 		//Enable compositor bypass
 		if(!window->Transparent)
 		{
-			uint64_t value = 1;
+			const uint64_t value = 1;
 
 			s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_BYPASS_COMPOSITOR, XA_CARDINAL,
-			                           32, PropModeReplace, reinterpret_cast<uint8_t*>(&value), 1);
+			                           32, PropModeReplace, reinterpret_cast<const uint8_t*>(&value), 1);
 		}
 	}
 	else
@@ -369,7 +386,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 		{
 			SendEventToWM(window,
 						  s_Data.NET_WM_STATE,
-						  0,
+						  _NET_WM_STATE_REMOVE,
 						  static_cast<int64_t>(s_Data.NET_WM_STATE_FULLSCREEN),
 						  0, 1, 0);
 		}
@@ -1041,11 +1058,11 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 	else
 		selectionString = s_Data.ClipboardString;
 
-	if(request->property == 0)
+	if(request->property == None)
 	{
 		//The requestor is a legacy client
 		//We don't support legacy clients, so fail here
-		return 0;
+		return None;
 	}
 
 	if(request->target == s_Data.TARGETS)
@@ -1074,15 +1091,17 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 			uint32_t j = 0;
 
 			for(j = 0; j < formats.size(); j++)
+			{
 				if(targets[i] == formats[j])
 					break;
+			}
 
 			if(j < formats.size())
 				s_Data.XLIB.ChangeProperty(s_Data.display, request->requestor, targets[i + 1], targets[i], 8,
 				                           PropModeReplace, reinterpret_cast<uint8_t*>(selectionString.data()),
 										   static_cast<int>(selectionString.size()));
 			else
-				targets[i + 1] = 0;
+				targets[i + 1] = None;
 		}
 
 		s_Data.XLIB.ChangeProperty(s_Data.display, request->requestor, request->property, s_Data.ATOM_PAIR, 32,
@@ -1122,7 +1141,7 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 
 	//The request target is not supported
 
-	return 0;
+	return None;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1147,7 +1166,7 @@ void TRAP::INTERNAL::WindowingAPI::HandleSelectionRequest(XEvent& event)
 //Push contents of our selection to clipboard manager
 void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 {
-	s_Data.XLIB.ConvertSelection(s_Data.display, s_Data.CLIPBOARD_MANAGER, s_Data.SAVE_TARGETS, 0,
+	s_Data.XLIB.ConvertSelection(s_Data.display, s_Data.CLIPBOARD_MANAGER, s_Data.SAVE_TARGETS, None,
 	                             s_Data.HelperWindowHandle, CurrentTime);
 
 	while(true)
@@ -1273,8 +1292,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, Wi
 		int32_t count = 0;
 
 		if(WNDConfig.Floating)
+		{
 			if(s_Data.NET_WM_STATE_ABOVE)
 				states[count++] = s_Data.NET_WM_STATE_ABOVE;
+		}
 
 		if(WNDConfig.Maximized)
 		{
@@ -1732,7 +1753,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 		      &notification))
 			WaitForX11Event(nullptr);
 
-		if(notification.xselection.property == 0)
+		if(notification.xselection.property == None)
 			continue;
 
 		s_Data.XLIB.CheckIfEvent(s_Data.display, &dummy, IsSelPropNewValueNotify,
@@ -1793,7 +1814,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(Atom selection)
 
 		s_Data.XLIB.Free(data);
 
-		if(!(selectionString->empty()))
+		if(!selectionString->empty())
 			break;
 	}
 
@@ -2693,7 +2714,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow* window, 
 	window->WarpCursorPosX = static_cast<int32_t>(xPos);
 	window->WarpCursorPosY = static_cast<int32_t>(yPos);
 
-	s_Data.XLIB.WarpPointer(s_Data.display, 0, window->Handle, 0, 0, 0, 0, static_cast<int32_t>(xPos),
+	s_Data.XLIB.WarpPointer(s_Data.display, None, window->Handle, 0, 0, 0, 0, static_cast<int32_t>(xPos),
 	                        static_cast<int32_t>(yPos));
 	s_Data.XLIB.Flush(s_Data.display);
 }
@@ -2719,7 +2740,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 {
 	if(image)
 	{
-		uint32_t longCount = 2 + image->GetWidth() * image->GetHeight();
+		const uint32_t longCount = 2 + image->GetWidth() * image->GetHeight();
 
 		std::vector<uint64_t> icon{};
 		icon.resize(longCount);
@@ -2813,8 +2834,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWind
 		uint64_t status = 0;
 	} hints{};
 
-	hints.Flags = 2; //MWM_HINTS_DECORATIONS
-	hints.Decorations = enabled ? 1 : 0; //1 = MWM_DECOR_ALL
+	hints.Flags = MWM_HINTS_DECORATIONS; //MWM_HINTS_DECORATIONS
+	hints.Decorations = enabled ? MWM_DECOR_ALL : 0; //1 = MWM_DECOR_ALL
 
 	s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.MOTIF_WM_HINTS, s_Data.MOTIF_WM_HINTS, 32,
 	                           PropModeReplace, reinterpret_cast<uint8_t*>(&hints), sizeof(hints) / sizeof(int64_t));
@@ -2898,11 +2919,11 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 	if (enabled)
 	{
 		Region region = s_Data.XLIB.CreateRegion();
-		s_Data.XShape.CombineRegion(s_Data.display, window->Handle, 2, 0, 0, region, 0);
+		s_Data.XShape.CombineRegion(s_Data.display, window->Handle, ShapeInput, 0, 0, region, ShapeSet);
 		s_Data.XLIB.DestroyRegion(region);
 	}
 	else
-		s_Data.XShape.CombineMask(s_Data.display, window->Handle, 2, 0, 0, 0, 0);
+		s_Data.XShape.CombineMask(s_Data.display, window->Handle, ShapeInput, 0, 0, None, ShapeSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3338,7 +3359,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* 
 
 	if(PlatformWindowVisible(window))
 	{
-		SendEventToWM(window, s_Data.NET_WM_STATE, 1, static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_VERT),
+		SendEventToWM(window, s_Data.NET_WM_STATE, _NET_WM_STATE_ADD,
+		              static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_VERT),
 		              static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
 	}
 	else
@@ -3405,7 +3427,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(const Internal
 	if(!s_Data.NET_WM_STATE || !s_Data.NET_WM_STATE_DEMANDS_ATTENTION)
 		return;
 
-	SendEventToWM(window, s_Data.NET_WM_STATE, 1, static_cast<int64_t>(s_Data.NET_WM_STATE_DEMANDS_ATTENTION), 0, 1, 0);
+	SendEventToWM(window, s_Data.NET_WM_STATE, _NET_WM_STATE_ADD,
+	              static_cast<int64_t>(s_Data.NET_WM_STATE_DEMANDS_ATTENTION), 0, 1, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3437,7 +3460,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* window)
 	else if(PlatformWindowVisible(window))
 	{
 		if(s_Data.NET_WM_STATE && s_Data.NET_WM_STATE_MAXIMIZED_VERT && s_Data.NET_WM_STATE_MAXIMIZED_HORZ)
-			SendEventToWM(window, s_Data.NET_WM_STATE, 0, static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_VERT),
+			SendEventToWM(window, s_Data.NET_WM_STATE, _NET_WM_STATE_REMOVE,
+			              static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_VERT),
 			              static_cast<int64_t>(s_Data.NET_WM_STATE_MAXIMIZED_HORZ), 1, 0);
 	}
 
@@ -3509,7 +3533,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	bool filtered = false;
 
 	//HACK: Save scanCode as some IMs clear the field in s_Data.XLIB.FilterEvent
-	if(event.type == 2 || event.type == 3)
+	if(event.type == KeyPress || event.type == KeyRelease)
 		keyCode = static_cast<int32_t>(event.xkey.keycode);
 
 	filtered = s_Data.XLIB.FilterEvent(&event, 0);
@@ -3596,7 +3620,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		return;
 	}
 
-	case 2:
+	case KeyPress:
 	{
 		const Input::Key key = TranslateKey(keyCode);
 
@@ -3653,14 +3677,14 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			InputKey(window, static_cast<Input::Key>(key), keyCode, Input::KeyState::Pressed);
 
 			const uint32_t character = KeySymToUnicode(keySym);
-			if(character != 0xFFFFFFFFu)
+			if(character != InvalidCodepoint)
 				InputChar(window, character);
 		}
 
 		return;
 	}
 
-	case 3:
+	case KeyRelease:
 	{
 		const Input::Key key = TranslateKey(keyCode);
 
@@ -3673,7 +3697,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				XEvent next;
 				s_Data.XLIB.PeekEvent(s_Data.display, &next);
 
-				if(next.type == 2 &&
+				if(next.type == KeyPress &&
 					next.xkey.window == event.xkey.window &&
 					next.xkey.keycode == static_cast<uint32_t>(keyCode))
 				{
@@ -3705,9 +3729,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			InputScroll(window, 0.0, 1.0);
 		else if(event.xbutton.button == Button5)
 			InputScroll(window, 0.0, -1.0);
-		else if(event.xbutton.button == 6)
+		else if(event.xbutton.button == Button6)
 			InputScroll(window, 1.0, 0.0);
-		else if(event.xbutton.button == 7)
+		else if(event.xbutton.button == Button7)
 			InputScroll(window, -1.0, 0.0);
 
 		else
@@ -3728,7 +3752,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			InputMouseClick(window, Input::MouseButton::Middle, Input::KeyState::Released);
 		else if(event.xbutton.button == Button3)
 			InputMouseClick(window, Input::MouseButton::Right, Input::KeyState::Released);
-		else if(event.xbutton.button > 7)
+		else if(event.xbutton.button > Button7)
 		{
 			//Additional buttons after 7 are treated as regular buttons
 			//We subtract 4 to fill the gap left by scroll input above
@@ -3836,13 +3860,16 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	{
 		//Custom client message, probably from the window manager
 
-		if(event.xclient.message_type == 0)
+		if(filtered)
+			return;
+
+		if(event.xclient.message_type == None)
 			return;
 
 		if(event.xclient.message_type == s_Data.WM_PROTOCOLS)
 		{
 			const Atom protocol = event.xclient.data.l[0];
-			if(protocol == 0)
+			if(protocol == None)
 				return;
 
 			if(protocol == s_Data.WM_DELETE_WINDOW)
@@ -3870,9 +3897,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			s_Data.XDND.Source = event.xclient.data.l[0];
 			s_Data.XDND.Version = static_cast<int32_t>(event.xclient.data.l[1] >> 24);
-			s_Data.XDND.Format = 0;
+			s_Data.XDND.Format = None;
 
-			if(s_Data.XDND.Version > 5)
+			if(s_Data.XDND.Version > TRAP_XDND_VERSION)
 				return;
 
 			if(list)
@@ -3901,7 +3928,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			//The drag operation has finished by dropping on the window
 			Time time = CurrentTime;
 
-			if(s_Data.XDND.Version > 5)
+			if(s_Data.XDND.Version > TRAP_XDND_VERSION)
 				return;
 
 			if(s_Data.XDND.Format)
@@ -3921,7 +3948,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				reply.xclient.format = 32;
 				reply.xclient.data.l[0] = static_cast<int64_t>(window->Handle);
 				reply.xclient.data.l[1] = 0; //The drag was rejected
-				reply.xclient.data.l[2] = 0;
+				reply.xclient.data.l[2] = None;
 
 				s_Data.XLIB.SendEvent(s_Data.display, s_Data.XDND.Source, 0, NoEventMask, &reply);
 				s_Data.XLIB.Flush(s_Data.display);
@@ -3935,7 +3962,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			::Window dummy = 0;
 			int32_t xPos = 0, yPos = 0;
 
-			if(s_Data.XDND.Version > 5)
+			if(s_Data.XDND.Version > TRAP_XDND_VERSION)
 				return;
 
 			s_Data.XLIB.TranslateCoordinates(s_Data.display, s_Data.Root, window->Handle, xAbs, yAbs, &xPos, &yPos,

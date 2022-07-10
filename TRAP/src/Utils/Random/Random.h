@@ -1,7 +1,11 @@
 #ifndef TRAP_RANDOM_H
 #define TRAP_RANDOM_H
 
+#include <random>
+#include <algorithm>
+
 #include "RandomInternal.h"
+#include "Core/Base.h"
 #include "TRAP_Assert.h"
 
 namespace TRAP::Utils
