@@ -2827,3 +2827,9 @@ SITREP 07/07/2022|22w27b1
     - Moved Linux only includes from TRAPPCH.h into Utils/Linux.h ~<5 mins
     - Moved Windows only includes from TRAPPCH.h into Utils/Win.h ~<5 mins
     - Removed TRAPPCH.h include from ImGuiLayer.h (this affected a lot of files) ~>60 mins
+
+SITREP 07/10/2022|22w27c1
+    - Changed TRAP Engine version to 22w27c1(0.8.10)
+    - Updated VulkanLoader ~<5 mins
+    - VulkanLoader Added ability to be included in multiple files ~<10 mins
+    - Replaced #include <vulkan/vulkan.h> with VulkanLoader.h ~<5 mins

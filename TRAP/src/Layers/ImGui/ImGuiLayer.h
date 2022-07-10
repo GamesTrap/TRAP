@@ -1,15 +1,6 @@
 #ifndef TRAP_IMGUILAYER_H
 #define TRAP_IMGUILAYER_H
 
-//VulkanAPI
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
-#include <vulkan/vulkan.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
-
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
@@ -19,6 +10,7 @@
 	#pragma warning(pop)
 #endif
 
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "Layers/Layer.h"
 
 namespace TRAP

@@ -16,7 +16,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #endif
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 217
+#define VULKANLOADER_HEADER_VERSION 220
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -435,6 +435,10 @@ struct VkDeviceTable
 #if defined(VK_EXT_sample_locations)
 	PFN_vkCmdSetSampleLocationsEXT vkCmdSetSampleLocationsEXT;
 #endif /* defined(VK_EXT_sample_locations) */
+#if defined(VK_EXT_shader_module_identifier)
+	PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT;
+	PFN_vkGetShaderModuleIdentifierEXT vkGetShaderModuleIdentifierEXT;
+#endif /* defined(VK_EXT_shader_module_identifier) */
 #if defined(VK_EXT_transform_feedback)
 	PFN_vkCmdBeginQueryIndexedEXT vkCmdBeginQueryIndexedEXT;
 	PFN_vkCmdBeginTransformFeedbackEXT vkCmdBeginTransformFeedbackEXT;
@@ -1141,6 +1145,10 @@ extern PFN_vkSetPrivateDataEXT vkSetPrivateDataEXT;
 extern PFN_vkCmdSetSampleLocationsEXT vkCmdSetSampleLocationsEXT;
 extern PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT vkGetPhysicalDeviceMultisamplePropertiesEXT;
 #endif /* defined(VK_EXT_sample_locations) */
+#if defined(VK_EXT_shader_module_identifier)
+extern PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT;
+extern PFN_vkGetShaderModuleIdentifierEXT vkGetShaderModuleIdentifierEXT;
+#endif /* defined(VK_EXT_shader_module_identifier) */
 #if defined(VK_EXT_tooling_info)
 extern PFN_vkGetPhysicalDeviceToolPropertiesEXT vkGetPhysicalDeviceToolPropertiesEXT;
 #endif /* defined(VK_EXT_tooling_info) */
@@ -1579,6 +1587,14 @@ extern PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
 
 #endif
 
+// For Visual Studio IntelliSense.
+#if defined(__cplusplus) && defined(__INTELLISENSE__)
+#define VULKANLOADER_IMPLEMENTATION
+#endif
+
+#ifdef VULKANLOADER_IMPLEMENTATION
+#undef VULKANLOADER_IMPLEMENTATION
+
 #ifdef _WIN32
 	typedef const char* LPCSTR;
 	typedef struct HINSTANCE__* HINSTANCE;
@@ -1620,7 +1636,7 @@ static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* context, const char* nam
 	return vkGetDeviceProcAddr((VkDevice)context, name);
 }
 
-inline VkResult VkInitialize()
+VkResult VkInitialize()
 {
 #if defined(_WIN32)
 	HMODULE module = LoadLibraryA("vulkan-1.dll");
@@ -1644,14 +1660,14 @@ inline VkResult VkInitialize()
 	return VK_SUCCESS;
 }
 
-inline void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
+void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
 {
 	vkGetInstanceProcAddr = handler;
 
 	VkGenLoadLoader(NULL, vkGetInstanceProcAddrStub);
 }
 
-inline uint32_t VkGetInstanceVersion()
+uint32_t VkGetInstanceVersion()
 {
 #if defined(VK_VERSION_1_1)
 	uint32_t apiVersion = 0;
@@ -1665,36 +1681,36 @@ inline uint32_t VkGetInstanceVersion()
 	return 0;
 }
 
-inline void VkLoadInstance(VkInstance instance)
+void VkLoadInstance(VkInstance instance)
 {
 	loadedInstance = instance;
 	VkGenLoadInstance(instance, vkGetInstanceProcAddrStub);
 	VkGenLoadDevice(instance, vkGetInstanceProcAddrStub);
 }
 
-inline void VkLoadInstanceOnly(VkInstance instance)
+void VkLoadInstanceOnly(VkInstance instance)
 {
     loadedInstance = instance;
     VkGenLoadInstance(instance, vkGetInstanceProcAddrStub);
 }
 
-inline VkInstance VkGetLoadedInstance()
+VkInstance VkGetLoadedInstance()
 {
 	return loadedInstance;
 }
 
-inline void VkLoadDevice(VkDevice device)
+void VkLoadDevice(VkDevice device)
 {
 	loadedDevice = device;
 	VkGenLoadDevice(device, vkGetDeviceProcAddrStub);
 }
 
-inline VkDevice VkGetLoadedDevice()
+VkDevice VkGetLoadedDevice()
 {
 	return loadedDevice;
 }
 
-inline void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device)
+void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device)
 {
 	VkGenLoadDeviceTable(table, device, vkGetDeviceProcAddrStub);
 }
@@ -2223,6 +2239,10 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, con
 #if defined(VK_EXT_sample_locations)
 	vkCmdSetSampleLocationsEXT = (PFN_vkCmdSetSampleLocationsEXT)load(context, "vkCmdSetSampleLocationsEXT");
 #endif /* defined(VK_EXT_sample_locations) */
+#if defined(VK_EXT_shader_module_identifier)
+	vkGetShaderModuleCreateInfoIdentifierEXT = (PFN_vkGetShaderModuleCreateInfoIdentifierEXT)load(context, "vkGetShaderModuleCreateInfoIdentifierEXT");
+	vkGetShaderModuleIdentifierEXT = (PFN_vkGetShaderModuleIdentifierEXT)load(context, "vkGetShaderModuleIdentifierEXT");
+#endif /* defined(VK_EXT_shader_module_identifier) */
 #if defined(VK_EXT_transform_feedback)
 	vkCmdBeginQueryIndexedEXT = (PFN_vkCmdBeginQueryIndexedEXT)load(context, "vkCmdBeginQueryIndexedEXT");
 	vkCmdBeginTransformFeedbackEXT = (PFN_vkCmdBeginTransformFeedbackEXT)load(context, "vkCmdBeginTransformFeedbackEXT");
@@ -2856,6 +2876,10 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 #if defined(VK_EXT_sample_locations)
 	table->vkCmdSetSampleLocationsEXT = (PFN_vkCmdSetSampleLocationsEXT)load(context, "vkCmdSetSampleLocationsEXT");
 #endif /* defined(VK_EXT_sample_locations) */
+#if defined(VK_EXT_shader_module_identifier)
+	table->vkGetShaderModuleCreateInfoIdentifierEXT = (PFN_vkGetShaderModuleCreateInfoIdentifierEXT)load(context, "vkGetShaderModuleCreateInfoIdentifierEXT");
+	table->vkGetShaderModuleIdentifierEXT = (PFN_vkGetShaderModuleIdentifierEXT)load(context, "vkGetShaderModuleIdentifierEXT");
+#endif /* defined(VK_EXT_shader_module_identifier) */
 #if defined(VK_EXT_transform_feedback)
 	table->vkCmdBeginQueryIndexedEXT = (PFN_vkCmdBeginQueryIndexedEXT)load(context, "vkCmdBeginQueryIndexedEXT");
 	table->vkCmdBeginTransformFeedbackEXT = (PFN_vkCmdBeginTransformFeedbackEXT)load(context, "vkCmdBeginTransformFeedbackEXT");
@@ -3570,6 +3594,10 @@ inline PFN_vkSetPrivateDataEXT vkSetPrivateDataEXT;
 inline PFN_vkCmdSetSampleLocationsEXT vkCmdSetSampleLocationsEXT;
 inline PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT vkGetPhysicalDeviceMultisamplePropertiesEXT;
 #endif /* defined(VK_EXT_sample_locations) */
+#if defined(VK_EXT_shader_module_identifier)
+inline PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT;
+inline PFN_vkGetShaderModuleIdentifierEXT vkGetShaderModuleIdentifierEXT;
+#endif /* defined(VK_EXT_shader_module_identifier) */
 #if defined(VK_EXT_tooling_info)
 inline PFN_vkGetPhysicalDeviceToolPropertiesEXT vkGetPhysicalDeviceToolPropertiesEXT;
 #endif /* defined(VK_EXT_tooling_info) */
@@ -4012,6 +4040,8 @@ inline PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
+
+#endif //VULKANLOADER_IMPLEMENTATION
 
 /*
 Copyright (c) 2018-2019 Arseny Kapoulkine

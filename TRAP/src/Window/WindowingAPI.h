@@ -38,15 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Win.h"
 #endif
 
-//VulkanAPI
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
-#include <vulkan/vulkan.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
-
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 #include "ImageLoader/Image.h"
 #include "Input/Input.h"
 

@@ -143,6 +143,14 @@ struct VkDeviceTable
 
 #endif
 
+// For Visual Studio IntelliSense.
+#if defined(__cplusplus) && defined(__INTELLISENSE__)
+#define VULKANLOADER_IMPLEMENTATION
+#endif
+
+#ifdef VULKANLOADER_IMPLEMENTATION
+#undef VULKANLOADER_IMPLEMENTATION
+
 #ifdef _WIN32
 	typedef const char* LPCSTR;
 	typedef struct HINSTANCE__* HINSTANCE;
@@ -184,7 +192,7 @@ static PFN_vkVoidFunction vkGetDeviceProcAddrStub(void* context, const char* nam
 	return vkGetDeviceProcAddr((VkDevice)context, name);
 }
 
-inline VkResult VkInitialize()
+VkResult VkInitialize()
 {
 #if defined(_WIN32)
 	HMODULE module = LoadLibraryA("vulkan-1.dll");
@@ -208,14 +216,14 @@ inline VkResult VkInitialize()
 	return VK_SUCCESS;
 }
 
-inline void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
+void VkInitializeCustom(PFN_vkGetInstanceProcAddr handler)
 {
 	vkGetInstanceProcAddr = handler;
 
 	VkGenLoadLoader(NULL, vkGetInstanceProcAddrStub);
 }
 
-inline uint32_t VkGetInstanceVersion()
+uint32_t VkGetInstanceVersion()
 {
 #if defined(VK_VERSION_1_1)
 	uint32_t apiVersion = 0;
@@ -229,36 +237,36 @@ inline uint32_t VkGetInstanceVersion()
 	return 0;
 }
 
-inline void VkLoadInstance(VkInstance instance)
+void VkLoadInstance(VkInstance instance)
 {
 	loadedInstance = instance;
 	VkGenLoadInstance(instance, vkGetInstanceProcAddrStub);
 	VkGenLoadDevice(instance, vkGetInstanceProcAddrStub);
 }
 
-inline void VkLoadInstanceOnly(VkInstance instance)
+void VkLoadInstanceOnly(VkInstance instance)
 {
     loadedInstance = instance;
     VkGenLoadInstance(instance, vkGetInstanceProcAddrStub);
 }
 
-inline VkInstance VkGetLoadedInstance()
+VkInstance VkGetLoadedInstance()
 {
 	return loadedInstance;
 }
 
-inline void VkLoadDevice(VkDevice device)
+void VkLoadDevice(VkDevice device)
 {
 	loadedDevice = device;
 	VkGenLoadDevice(device, vkGetDeviceProcAddrStub);
 }
 
-inline VkDevice VkGetLoadedDevice()
+VkDevice VkGetLoadedDevice()
 {
 	return loadedDevice;
 }
 
-inline void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device)
+void VkLoadDeviceTable(struct VkDeviceTable* table, VkDevice device)
 {
 	VkGenLoadDeviceTable(table, device, vkGetDeviceProcAddrStub);
 }
@@ -308,6 +316,8 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
+
+#endif //VULKANLOADER_IMPLEMENTATION
 
 /*
 Copyright (c) 2018-2019 Arseny Kapoulkine

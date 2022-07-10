@@ -53,19 +53,13 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
-#include <vulkan/vulkan.h>
-#ifdef _MSC_VER
-	#pragma warning(pop)
-#endif
-
-#ifdef _MSC_VER
-	#pragma warning(push, 0)
-#endif
 //ImGUI
 #include <imgui.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
+
+#include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
 
 // Initialization data, for ImGui_ImplVulkan_Init()
 // [Please zero-clear before use!]
