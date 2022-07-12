@@ -324,6 +324,30 @@ namespace TRAP::Graphics
 		/// <param name="SPIRV">SPIRV binary data.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.</returns>
 		static RendererAPI::BinaryShaderDesc LoadSPIRV(const std::vector<uint32_t>& SPIRV);
+		/// <summary>
+		/// Check if the ending of the given path is a supported shader file ending.
+		/// </summary>
+		/// <param name="filePath">File path to check.</param>
+		/// <returns>True if file ending is supported, false otherwise.</returns>
+		static bool IsFileEndingSupported(const std::filesystem::path& filePath);
+		/// <summary>
+		/// Shader pre initialization.
+		///
+		/// 1. Checks if file type is supported shader type.
+		/// 2. Loads shader file from disk.
+		/// 3. If GLSL convert to SPIRV else loads SPIRV code.
+		/// 4. Check for invalid shader stages.
+		/// </summary>
+		/// <param name="name">Name of the shader.</param>
+		/// <param name="filePath">File path of the shader.</param>
+		/// <param name="userMacros">Optional user provided macros.</param>
+		/// <param name="outShaderDesc">Output binary shader description.</param>
+		/// <param name="outFailShader">Optional Output used if pre initialization failed.</param>
+		/// <returns>
+		/// True on successful pre initialization, false otherwise.
+		/// If false outFailShader may be filled with a fail shader.
+		/// </returns>
+		static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Scope<Shader>& outFailShader);
 
 		static bool s_glslangInitialized;
 

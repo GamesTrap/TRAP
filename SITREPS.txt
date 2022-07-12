@@ -2840,3 +2840,4 @@ SITREP 07/12/2022|22w28a1
     - TestNetwork now uses TRAP-Headless ~<5 mins
     - WindowingAPI Windows Fixed right shift key when using CJK IME ~<5 mins
     - VulkanPhysicalDevice now rates max MSAA sample count ~<5 mins
+    - Shader Removed CreateFromFile redundancy ~<15 mins
