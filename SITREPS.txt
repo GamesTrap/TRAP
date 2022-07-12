@@ -2839,3 +2839,4 @@ SITREP 07/12/2022|22w28a1
     - TRAP-Headless Fixed crash when using RenderAPI::NONE (Application::Run() tried to present) ~<5 mins
     - TestNetwork now uses TRAP-Headless ~<5 mins
     - WindowingAPI Windows Fixed right shift key when using CJK IME ~<5 mins
+    - VulkanPhysicalDevice now rates max MSAA sample count ~<5 mins

@@ -760,6 +760,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		score += devProps.limits.maxImageDimension2D;
 		score += devProps.limits.maxImageDimensionCube;
 
+		// Optionally: Check max supported MSAA sample count
+		VkSampleCountFlags sampleCounts = TRAP::Math::Min(devProps.limits.framebufferColorSampleCounts,
+														  devProps.limits.framebufferDepthSampleCounts);
+		sampleCounts = TRAP::Math::Min(sampleCounts, devProps.limits.framebufferStencilSampleCounts);
+		score += static_cast<uint32_t>(sampleCounts) * 10;
+
 		// Optionally: Check if Anisotropic Filtering is supported
 		if (devFeatures.samplerAnisotropy)
 			score += 500;

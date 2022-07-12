@@ -165,7 +165,8 @@ namespace TRAP::Graphics::API
 		/// 19. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
 		/// 20. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
 		/// 21. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
-		/// 22. Optionally check if anisotropic filtering is supported (500 score).
+		/// 22. Optionally check max sample count for MSAA. (Sample count * 10 score).
+		/// 23. Optionally check if anisotropic filtering is supported (500 score).
 		/// </summary>
 		/// <param name="physicalDevices">Vulkan physical devices to rate.</param>
 		/// <param name="instance">Vulkan instance used to retrieve the physical devices.</param>
