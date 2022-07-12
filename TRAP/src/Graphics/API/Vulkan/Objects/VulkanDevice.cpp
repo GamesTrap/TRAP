@@ -27,11 +27,11 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
 #endif
 
-	std::vector<const char*> extensions(m_deviceExtensions.size());
+	std::vector<const char*> extensions{};
 	for (uint32_t i = 0; i < m_deviceExtensions.size(); i++)
 	{
 		if (m_physicalDevice->IsExtensionSupported(m_deviceExtensions[i]))
-			extensions[i] = m_deviceExtensions[i].c_str();
+			extensions.push_back(m_deviceExtensions[i].c_str());
 		else
 			m_deviceExtensions.erase(m_deviceExtensions.begin() + i);
 	}
@@ -87,21 +87,14 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 	VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures{};
 	bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR;
-	bufferDeviceAddressFeatures.bufferDeviceAddress = VK_TRUE;
 	VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeatures{};
 	rayTracingPipelineFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
-	rayTracingPipelineFeatures.rayTracingPipeline = VK_TRUE;
 	VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures{};
 	accelerationStructureFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
-	accelerationStructureFeatures.accelerationStructure = VK_TRUE;
 	VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
 	rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
-	rayQueryFeatures.rayQuery = VK_TRUE;
 	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
-	shadingRateFeatures.pipelineFragmentShadingRate = VK_TRUE;
-	shadingRateFeatures.primitiveFragmentShadingRate = VK_TRUE;
-	shadingRateFeatures.attachmentFragmentShadingRate = VK_TRUE;
 
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{

@@ -390,8 +390,8 @@ void TRAP::Application::Run()
 			}
 			ImGuiLayer::End();
 #endif
-
-			Graphics::RenderCommand::Present(m_window.get());
+			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+				Graphics::RenderCommand::Present(m_window.get());
 		}
 
 		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)

@@ -518,6 +518,10 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		if(scanCode == 0x16)
 			scanCode = 0x45;
 
+		//HACK: CJK IME sets the extended bit for right shift
+		if(scanCode == 0x136)
+			scanCode = 0x36;
+
 		key = s_Data.KeyCodes[scanCode];
 
 		//The CTRL keys require special handling

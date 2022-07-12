@@ -37,7 +37,12 @@ project "TestsNetwork"
 
 	links
 	{
-		"TRAP"
+		"TRAP-Headless"
+	}
+
+	defines
+	{
+		"TRAP_HEADLESS_MODE"
 	}
 
 	filter "system:linux"
