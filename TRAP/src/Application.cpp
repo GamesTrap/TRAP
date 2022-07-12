@@ -22,6 +22,7 @@
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
 #include "Utils/Discord/DiscordGameSDK.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -48,6 +49,57 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
+static bool CheckSingleProcessLinux()
+{
+	static int32_t socketFD = -1;
+	static int32_t rc = 1;
+	constexpr static uint16_t port = 49420; //Just a free (hopefully) random port
+
+	if(socketFD == -1 || rc)
+	{
+		socketFD = -1;
+		rc = 1;
+
+		socketFD = socket(AF_INET, SOCK_DGRAM, 0);
+		if(socketFD < 0)
+			return false;
+
+		sockaddr_in name;
+		name.sin_family = AF_INET;
+		name.sin_port = port;
+		name.sin_addr.s_addr = INADDR_ANY;
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(name.sin_port);
+
+		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
+			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
+
+		rc = bind(socketFD, reinterpret_cast<sockaddr*>(&name), sizeof(name));
+	}
+
+	return (socketFD != -1 && rc == 0);
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
+static bool CheckSingleProcessWindows()
+{
+	HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
+	if(!hMutex) //Error creating mutex
+		return false;
+	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
+		return false;
+
+	return true;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Application::Application(std::string gameName)
 	: m_hotReloadingEnabled(false),
 	  m_timer(),
@@ -69,8 +121,25 @@ TRAP::Application::Application(std::string gameName)
 	signal(SIGINT, [](int) {TRAP::Application::Shutdown(); });
 #elif defined(TRAP_PLATFORM_WINDOWS)
 	SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE);
-	//SetConsoleCtrlHandler(NULL, TRUE);
 #endif
+#endif
+
+	//Single process mode
+#ifdef ENABLE_SINGLE_PROCESS_ONLY
+	bool singleProcess = true;
+	#ifdef TRAP_PLATFORM_LINUX
+		singleProcess = CheckSingleProcessLinux();
+	#elif defined(TRAP_PLATFORM_WINDOWS)
+		singleProcess = CheckSingleProcessWindows();
+	#endif
+
+	if(!singleProcess)
+	{
+		Utils::Dialogs::ShowMsgBox("TRAP™ already running", "A TRAP™ Application is already running!\n"
+		                           "Error code: 0x0012", Utils::Dialogs::Style::Error,
+								   Utils::Dialogs::Buttons::Quit);
+		std::exit(0x0012);
+	}
 #endif
 
 	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP modules...");

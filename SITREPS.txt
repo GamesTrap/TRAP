@@ -2841,3 +2841,6 @@ SITREP 07/12/2022|22w28a1
     - WindowingAPI Windows Fixed right shift key when using CJK IME ~<5 mins
     - VulkanPhysicalDevice now rates max MSAA sample count ~<5 mins
     - Shader Removed CreateFromFile redundancy ~<15 mins
+    - Base Added ENABLE_SINGLE_PROCESS_ONLY macro which makes the engine only run a single instance of itself ~<5 mins
+        - Added error code 0x0012 "A TRAP Application is already running"
+    - Application Implemented the checks for ENABLE_SINGLE_PROCESS_ONLY ~>20 mins

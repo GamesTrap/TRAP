@@ -51,6 +51,14 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Single process mode.
+//This macro makes the engine only allow one instance of itself to run at a time.
+//Any subsequent attempts to run a TRAP application will fail with a message box stating that a
+//TRAP application is already running.
+// #define ENABLE_SINGLE_PROCESS_ONLY
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 /// <summary>
 /// Construct a version number.
 /// </summary>
