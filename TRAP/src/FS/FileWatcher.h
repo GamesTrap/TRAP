@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <functional>
 #include <thread>
+#include <atomic>
 
 namespace TRAP::Events
 {
@@ -65,7 +66,7 @@ namespace TRAP::FS
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		FileWatcher(FileWatcher&&) = default;
+		FileWatcher(FileWatcher&&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -73,12 +74,7 @@ namespace TRAP::FS
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		FileWatcher& operator=(FileWatcher&&) = default;
-
-        /// <summary>
-        /// Skip the next file event.
-        /// </summary>
-        void SkipNextFileChange();
+		FileWatcher& operator=(FileWatcher&&) = delete;
 
         /// <summary>
         /// Sets the callback function that is called when a file event occurs.
@@ -93,14 +89,14 @@ namespace TRAP::FS
 
         /// <summary>Adds a new folder path to the tracked paths.</summary>
         /// <param name="path">Folder path to track.</param>
-        void AddFolder(std::filesystem::path path);
+        void AddFolder(const std::filesystem::path& path);
         /// <summary>Adds new folder paths to the tracked paths.</summary>
         /// <param name="paths">Folder paths to track.</param>
         void AddFolders(const std::vector<std::filesystem::path>& paths);
 
         /// <summary>Removes a folder path from the tracked paths.</summary>
         /// <param name="path">Folder path to untrack.</param>
-        void RemoveFolder(std::filesystem::path path);
+        void RemoveFolder(const std::filesystem::path& path);
         /// <summary>Removes folder paths from the tracked paths.</summary>
         /// <param name="paths">Folder paths to untrack.</param>
         void RemoveFolders(const std::vector<std::filesystem::path>& paths);
@@ -123,21 +119,14 @@ namespace TRAP::FS
 
         /// <summary>
         /// Watch over files.
-        /// Used by Windows.
         /// </summary>
-        void WatchWindows();
-        /// <summary>
-        /// Watch over files.
-        /// Used by Linux.
-        /// </summary>
-        void WatchLinux();
+        void Watch();
 
         std::thread m_thread;
         EventCallbackFn m_callback;
-        std::vector<std::filesystem::path> m_paths;
+        std::vector<std::filesystem::path> m_paths; //No synchronization needed since it's only changed when m_thread is not running.
         bool m_recursive;
-        bool m_run;
-        bool m_skipNextFileChange;
+        std::atomic<bool> m_run;
 
 #ifdef TRAP_PLATFORM_WINDOWS
         HANDLE m_killEvent = nullptr;

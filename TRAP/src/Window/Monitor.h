@@ -23,12 +23,34 @@ namespace TRAP
 			/// <param name="width">Width.</param>
 			/// <param name="height">Height.</param>
 			/// <param name="refreshRate">Refresh rate.</param>
-			VideoMode(int32_t width, int32_t height, int32_t refreshRate);
+			constexpr VideoMode(int32_t width, int32_t height, int32_t refreshRate);
 
 			int32_t Width = 0;
 			int32_t Height = 0;
 			int32_t RefreshRate = 0;
 		};
+
+
+		/// <summary>
+		/// Destructor.
+		/// </summary>
+		~Monitor() = default;
+		/// <summary>
+		/// Copy constructor.
+		/// </summary>
+		Monitor(const Monitor&) = default;
+		/// <summary>
+		/// Copy assignment operator.
+		/// </summary>
+		Monitor& operator=(const Monitor&) = default;
+		/// <summary>
+		/// Move constructor.
+		/// </summary>
+		Monitor(Monitor&&) = default;
+		/// <summary>
+		/// Move assignment operator.
+		/// </summary>
+		Monitor& operator=(Monitor&&) = default;
 
 		/// <summary>
 		/// Retrieve the name of a monitor.
@@ -44,7 +66,7 @@ namespace TRAP
 		/// Retrieve the current video mode.
 		/// </summary>
 		/// <returns>Current video mode</returns>
-		VideoMode GetCurrentVideoMode() const;
+		constexpr VideoMode GetCurrentVideoMode() const;
 		/// <summary>
 		/// Retrieve the monitors content scale.
 		/// </summary>
@@ -106,7 +128,7 @@ namespace TRAP
 		/// Check whether the monitor is currently used by a window.
 		/// </summary>
 		/// <returns>True if monitor is currently used, false otherwise.</returns>
-		bool IsInUse() const;
+		constexpr bool IsInUse() const;
 		/// <summary>
 		/// Retrieve the monitors ID.
 		///
@@ -119,7 +141,7 @@ namespace TRAP
 		/// Retrieve a pointer to the internal monitor.
 		/// </summary>
 		/// <returns>Pointer to the internal monitor of the Monitor.</returns>
-		void* GetInternalMonitor() const;
+		constexpr void* GetInternalMonitor() const;
 
 		/// <summary>
 		/// Retrieve all currently connected monitors.
@@ -143,6 +165,34 @@ namespace TRAP
 
 		friend TRAP::Monitor TRAP::Window::GetMonitor() const;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const int32_t refreshRate)
+	: Width(width), Height(height), RefreshRate(refreshRate)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
+{
+	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height,
+	                  m_handle->CurrentMode.RefreshRate };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr bool TRAP::Monitor::IsInUse() const
+{
+	return m_handle->Window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void* TRAP::Monitor::GetInternalMonitor() const
+{
+	return m_handle;
 }
 
 #endif /*TRAP_MONITOR_H*/

@@ -2,19 +2,12 @@
 #include "FileEvent.h"
 
 #include "FS/FileWatcher.h"
+#include <stdexcept>
 
 TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FS::FileStatus status, std::filesystem::path path,
                                                std::filesystem::path oldName)
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::FS::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
-{
-    return m_status;
-}
+{}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -40,13 +33,6 @@ std::string TRAP::Events::FileChangeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType()
-{
-	return EventType::FileChange;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 {
 	return GetStaticType();
@@ -54,7 +40,7 @@ TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::Events::FileChangeEvent::GetName() const
+std::string TRAP::Events::FileChangeEvent::GetName() const
 {
 	return "FileChange";
 }
@@ -85,6 +71,6 @@ std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FS::FileStat
         return "Erased";
 
     default:
-        return "";
+        throw std::invalid_argument("Unimplemented enum->string value for TRAP::FS::FileStatus");
     }
 }

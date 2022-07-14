@@ -126,14 +126,19 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 	s_pipelines.clear();
 
-	for(auto& [hash, cache] : s_pipelineCaches)
+	const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+	if(tempFolder)
 	{
-		if(!cache)
-			continue;
+		for(auto& [hash, cache] : s_pipelineCaches)
+		{
+			if(!cache)
+				continue;
 
-		cache->Save(TRAP::FS::GetGameTempFolderPath() / (std::to_string(hash) + ".cache"));
-		cache.reset();
+			cache->Save(*tempFolder / (std::to_string(hash) + ".cache"));
+			cache.reset();
+		}
 	}
+
 	s_pipelineCaches.clear();
 
 	//Free everything in order
@@ -2395,22 +2400,28 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 
 	const auto cacheIt = s_pipelineCaches.find(hash);
 
-	if (cacheIt == s_pipelineCaches.end())
+	const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+	if(tempFolder)
 	{
-		PipelineCacheLoadDesc cacheDesc{};
-		cacheDesc.Path = TRAP::FS::GetGameTempFolderPath() / (std::to_string(hash) + ".cache");
-		s_pipelineCaches.insert({ hash, PipelineCache::Create(cacheDesc) });
-	}
+		std::pair<std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>>::iterator, bool> res;
+		if (cacheIt == s_pipelineCaches.end())
+		{
+			PipelineCacheLoadDesc cacheDesc{};
+			cacheDesc.Path = *tempFolder / (std::to_string(hash) + ".cache");
+			res = s_pipelineCaches.try_emplace(hash, PipelineCache::Create(cacheDesc));
+		}
 
-	desc.Cache = s_pipelineCaches[hash];
+		if(res.second) //Got inserted
+			desc.Cache = res.first->second;
+	}
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
 #endif
 	TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
-	s_pipelines.insert({ hash, std::move(pipeline) });
+	const auto pipeRes = s_pipelines.try_emplace(hash, pipeline);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
 #endif
-	return s_pipelines[hash];
+	return pipeRes.first->second;
 }

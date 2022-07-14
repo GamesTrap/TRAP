@@ -45,7 +45,7 @@ namespace TRAP::Events
         /// Get the status of the file.
         /// </summary>
         /// <returns>The status of the file.</returns>
-        TRAP::FS::FileStatus GetStatus() const;
+        constexpr TRAP::FS::FileStatus GetStatus() const;
         /// <summary>
         /// Get the path of the file.
         /// </summary>
@@ -68,7 +68,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -78,7 +78,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -97,6 +97,20 @@ namespace TRAP::Events
         std::filesystem::path m_path;
         std::filesystem::path m_oldName;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::FS::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
+{
+	return m_status;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType()
+{
+	return EventType::FileChange;
 }
 
 #endif /*TRAP_FILEEVENT_H*/

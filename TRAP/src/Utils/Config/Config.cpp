@@ -21,12 +21,12 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 	m_data.clear();
 
 	//Load
-	const std::string input = FS::ReadTextFile(file);
-	if (input.empty())
+	const auto input = FS::ReadTextFile(file);
+	if (!input)
 		return false;
 
 	TP_INFO(TRAP::Log::ConfigPrefix, "Loading file: \"", file.generic_u8string(), "\"");
-	std::vector<std::string_view> lines = String::SplitStringView(input, '\n');
+	std::vector<std::string_view> lines = String::SplitStringView(*input, '\n');
 
 	for (const auto& line : lines)
 	{
@@ -64,10 +64,10 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 	TP_INFO(TRAP::Log::ConfigPrefix, "Saving file: \"", file.generic_u8string(), "\"");
 
 	//Read the file into a vector and replace the values of the keys that match with our map
-	const std::string input = FS::ReadTextFile(file);
-	if (!input.empty())
+	const auto input = FS::ReadTextFile(file);
+	if (input)
 	{
-		const std::vector<std::string> lines = String::SplitString(input, '\n');
+		const std::vector<std::string> lines = String::SplitString(*input, '\n');
 
 		for (const auto& line : lines)
 		{

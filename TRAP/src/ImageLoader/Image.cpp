@@ -222,7 +222,15 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 {
 	TP_PROFILE_FUNCTION();
 
-	const std::string fileFormat = Utils::String::ToLower(FS::GetFileEnding(filepath));
+	if(!IsSupportedImageFile(filepath))
+	{
+		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image \"", filepath, "\"!");
+		TP_WARN(Log::ImagePrefix, "Using default image!");
+		return MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+	}
+
+	const auto fileEnding = FS::GetFileEnding(filepath);
+	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
 	Scope<Image> result;
 
@@ -246,7 +254,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 		result = MakeScope<INTERNAL::RadianceImage>(filepath);
 	else if (fileFormat == ".qoi")
 		result = MakeScope<INTERNAL::QOIImage>(filepath);
-	else
+	else //Shouldn't be reached, just in case
 	{
 		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image format ", fileFormat, "!");
 		TP_WARN(Log::ImagePrefix, "Using default image!");
@@ -302,7 +310,11 @@ bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
-	const std::string fileFormat = Utils::String::ToLower(FS::GetFileEnding(filepath));
+	const auto fileEnding = FS::GetFileEnding(filepath);
+	if(!fileEnding)
+		return false;
+
+	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
 	return std::any_of(SupportedImageFormatSuffixes.cbegin(), SupportedImageFormatSuffixes.cend(), [fileFormat](const std::string_view suffix)
 	{

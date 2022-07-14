@@ -52,7 +52,11 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
 	//Set imgui.ini path
-	m_imguiIniPath = (TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "imgui.ini").generic_string();
+	const auto docsFolder = TRAP::FS::GetGameDocumentsFolderPath();
+	if(docsFolder)
+		m_imguiIniPath = (*docsFolder / "imgui.ini").generic_u8string();
+	else //Fallback
+		m_imguiIniPath = "imgui.ini";
 	io.IniFilename = m_imguiIniPath.c_str();
 
 	const auto contentScale = Application::GetWindow()->GetContentScale();
@@ -108,9 +112,15 @@ void TRAP::ImGuiLayer::OnAttach()
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
-		TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
-		cacheDesc.Path = TRAP::FS::GetGameTempFolderPath() / "ImGui.cache";
-		m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+		const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+		if(tempFolder)
+		{
+			TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
+			cacheDesc.Path = *tempFolder / "ImGui.cache";
+			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+		}
+		else //Create empty cache as fallback
+			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(TRAP::Graphics::RendererAPI::PipelineCacheDesc{});
 
 		//This initializes ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo initInfo{};
@@ -157,7 +167,9 @@ void TRAP::ImGuiLayer::OnDetach()
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-		m_imguiPipelineCache->Save(TRAP::FS::GetGameTempFolderPath() / "ImGui.cache");
+		const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+		if(tempFolder)
+			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
 		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(

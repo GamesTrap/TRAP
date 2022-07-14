@@ -283,14 +283,19 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 		if(response.IsOK())
 		{
 			//Extract the filename from the file path
-			std::filesystem::path filename = TRAP::FS::GetFileNameWithEnding(remoteFile);
+			const auto filename = TRAP::FS::GetFileNameWithEnding(remoteFile);
+			if(!filename)
+			{
+				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", remoteFile.generic_u8string(), "!");
+				return Response(Response::Status::InvalidFile);
+			}
 
 			//Create missing directories if any
-			if(!std::filesystem::exists(path))
-				std::filesystem::create_directories(path);
+			if(!TRAP::FS::FileOrFolderExists(path) && !TRAP::FS::CreateFolder(path))
+				return Response(Response::Status::InvalidFile);
 
 			//Create the file and truncate it if necessary
-			std::filesystem::path filePath = path / filename;
+			std::filesystem::path filePath = path / *filename;
 			std::ofstream file(filePath, std::ios::binary | std::ios::trunc);
 			if (!file.is_open() || !file.good())
 			{
@@ -334,7 +339,12 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 	}
 
 	//Extract the filename from the file path
-	std::string filename = FS::GetFileNameWithEnding(localFile);
+	const auto filename = TRAP::FS::GetFileNameWithEnding(localFile);
+	if(!filename)
+	{
+		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", localFile.generic_u8string(), "!");
+		return Response(Response::Status::InvalidFile);
+	}
 
 	//Open a data channel using the given transfer mode
 	DataChannel data(*this);
@@ -342,7 +352,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 	if (response.IsOK())
 	{
 		//Tell the server to start the transfer
-		response = SendCommand(append ? "APPE" : "STOR", (remotePath / filename).generic_u8string());
+		response = SendCommand(append ? "APPE" : "STOR", (remotePath / *filename).generic_u8string());
 		if (response.IsOK())
 		{
 			//Send the file data

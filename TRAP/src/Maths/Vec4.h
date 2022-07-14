@@ -58,7 +58,7 @@ namespace TRAP::Math
 		constexpr Vec(const Vec<4, T> & v) = default;
 
 		//Explicit basic constructors
-		constexpr explicit Vec(T scalar);
+		explicit constexpr Vec(T scalar);
 		constexpr Vec(T x, T y, T z, T w);
 
 		//Explicit conversions
@@ -72,7 +72,7 @@ namespace TRAP::Math
 		constexpr Vec(const Vec<2, A> & xy, B z, C w);
 		//Explicit conversions
 		template<typename A, typename B, typename C>
-		constexpr explicit Vec(A x, const Vec<2, B> & yz, C w);
+		explicit constexpr Vec(A x, const Vec<2, B> & yz, C w);
 		//Explicit conversions
 		template<typename A, typename B, typename C>
 		constexpr Vec(A x, B y, const Vec<2, C> & zw);
@@ -88,7 +88,7 @@ namespace TRAP::Math
 
 		//Explicit conversions
 		template<typename U>
-		constexpr explicit Vec(const Vec<4, U> & v);
+		explicit constexpr Vec(const Vec<4, U> & v);
 
 		constexpr Vec(Vec&&) = default;
 		~Vec() = default;

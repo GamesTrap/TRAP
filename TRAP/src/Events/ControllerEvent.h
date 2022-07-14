@@ -21,7 +21,7 @@ namespace TRAP::Events
 		/// Retrieve the affected controller.
 		/// </summary>
 		/// <returns>Controller.</returns>
-		Input::Controller GetController() const;
+		constexpr Input::Controller GetController() const;
 
 		/// <summary>
 		/// Retrieve the category flags of the event.
@@ -97,7 +97,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -107,7 +107,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 	};
 
 	/// <summary>
@@ -152,7 +152,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -162,8 +162,33 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController() const
+{
+	return m_controller;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::ControllerConnectEvent::GetStaticType()
+{
+	return EventType::ControllerConnect;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::ControllerDisconnectEvent::GetStaticType()
+{
+	return EventType::ControlledDisconnect;
 }
 
 #endif /*TRAP_CONTROLLEREVENT_H*/

@@ -54,7 +54,7 @@ static bool CheckSingleProcessLinux()
 {
 	static int32_t socketFD = -1;
 	static int32_t rc = 1;
-	constexpr static uint16_t port = 49420; //Just a free (hopefully) random port
+	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
 
 	if(socketFD == -1 || rc)
 	{
@@ -148,14 +148,6 @@ TRAP::Application::Application(std::string gameName)
 	s_Instance = this;
 	m_mainThreadID = std::this_thread::get_id();
 
-	//Set main log file path
-	std::filesystem::path logFilePath = "logs/trap.log";
-#ifndef TRAP_HEADLESS_MODE
-	logFilePath = FS::GetGameDocumentsFolderPath() / "logs/trap.log";
-#endif
-	TRAP::FS::CreateFolder(TRAP::FS::GetFolderPath(logFilePath));
-	TRAP::TRAPLog.SetFilePath(logFilePath);
-
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
 	//TODO Future remove when Wayland Windows are implemented
@@ -173,9 +165,18 @@ TRAP::Application::Application(std::string gameName)
 
 	FS::Init();
 
+	//Set main log file path
+	const auto logFolder = FS::GetGameLogFolderPath();
+	if(logFolder)
+		TRAP::TRAPLog.SetFilePath(*logFolder / "trap.log");
+	else //Fallback to current directory
+		TRAP::TRAPLog.SetFilePath("trap.log");
+
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
-	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
+	const auto docsFolder = FS::GetGameDocumentsFolderPath();
+	if(docsFolder)
+		cfgPath = *docsFolder / "engine.cfg";
 #endif
 	if (!m_config.LoadFromFile(cfgPath))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
@@ -380,7 +381,9 @@ TRAP::Application::~Application()
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
-	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
+	const auto docsFolder = FS::GetGameDocumentsFolderPath();
+	if(docsFolder)
+		cfgPath = *docsFolder / "engine.cfg";
 #endif
 	m_config.SaveToFile(cfgPath);
 	m_window.reset();
@@ -852,9 +855,13 @@ void TRAP::Application::UpdateHotReloading()
 bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
 	if(event.GetStatus() != FS::FileStatus::Modified)
-		return true; //Only handle modified files
+		return false; //Only handle modified files
 
-	std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(event.GetPath()));
+	const auto fileEnding = FS::GetFileEnding(event.GetPath());
+	if(!fileEnding) //Ignore files without an extension
+		return false;
+
+	std::string fEnding = Utils::String::ToLower(*fileEnding);
 
 	//Is it a texture?
 	bool texture = false;
@@ -881,7 +888,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	}
 
 	if(!texture && !shader)
-		return true; //Not a texture or shader
+		return false; //Not a texture or shader
 
 	if(texture)
 	{
@@ -891,7 +898,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		for(const auto& p : m_hotReloadingTexturePaths)
 		{
 			if(FS::IsPathEquivalent(p, event.GetPath()))
-				return true;
+				return false;
 		}
 
 		m_hotReloadingTexturePaths.push_back(event.GetPath());
@@ -904,11 +911,11 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		for(const auto& p : m_hotReloadingShaderPaths)
 		{
 			if(FS::IsPathEquivalent(p, event.GetPath()))
-				return true;
+				return false;
 		}
 
 		m_hotReloadingShaderPaths.push_back(event.GetPath());
 	}
 
-	return true; //Don't send this event to other listeners
+	return false;
 }

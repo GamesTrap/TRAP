@@ -87,7 +87,7 @@ namespace TRAP::Math
 		//Conversion constructors
 
 		template<typename U>
-		constexpr explicit tQuat(const tQuat<T>& q);
+		explicit constexpr tQuat(const tQuat<T>& q);
 
 		//Explicit conversion operators
 		//explicit operator Mat<3, 3, T>() const;
@@ -102,7 +102,7 @@ namespace TRAP::Math
 		/// Build a quaternion from euler angles (pitch, yaw, roll).
 		/// </summary>
 		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
-		constexpr explicit tQuat(const Vec<3, T>& eulerAnglesInRadians);
+		explicit constexpr tQuat(const Vec<3, T>& eulerAnglesInRadians);
 		explicit tQuat(const Mat<3, 3, T>& m);
 		explicit tQuat(const Mat<4, 4, T>& m);
 

@@ -214,9 +214,9 @@ bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
 
 	for (const std::string_view path : paths)
 	{
-		std::string data = TRAP::FS::ReadTextFile(path);
-		if(!data.empty())
-			TRAP::Input::UpdateControllerMappings(data);
+		const auto data = TRAP::FS::ReadTextFile(path);
+		if(data)
+			TRAP::Input::UpdateControllerMappings(*data);
 	}
 
 	return true;

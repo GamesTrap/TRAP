@@ -65,9 +65,17 @@ bool TRAP::Graphics::Shader::Reload()
 	isSPIRV = CheckSPIRVMagicNumber(m_filepath);
 
 	if (!isSPIRV)
-		glslSource = FS::ReadTextFile(m_filepath);
+	{
+		const auto loadedData = FS::ReadTextFile(m_filepath);
+		if(loadedData)
+			glslSource = *loadedData;
+	}
 	else
-		SPIRVSource = Convert8To32(FS::ReadFile(m_filepath));
+	{
+		const auto loadedData = FS::ReadFile(m_filepath);
+		if(loadedData)
+			SPIRVSource = Convert8To32(*loadedData);
+	}
 
 	if(isSPIRV && SPIRVSource.empty())
 		TP_ERROR(Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", m_name, "\"!");
@@ -193,7 +201,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
-			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(filePath));
+		{
+			const auto folderPath = FS::GetFolderPath(filePath);
+			if(folderPath)
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+		}
 
 		return result;
 	}
@@ -216,19 +228,30 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	RendererAPI::BinaryShaderDesc desc{};
 	Scope<Shader> failShader = nullptr;
-	std::string name = FS::GetFileName(filePath);
-	if(!PreInit(name, filePath, userMacros, desc, failShader))
+	const auto name = FS::GetFileName(filePath);
+	if(!name)
+	{
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::ShaderPrefix, "Name is empty!");
+		return nullptr;
+	}
+
+	if(!PreInit(*name, filePath, userMacros, desc, failShader))
 		return failShader;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, filePath, desc, userMacros);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(*name, filePath, desc, userMacros);
 
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
-			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(filePath));
+		{
+			const auto folderPath = FS::GetFolderPath(filePath);
+			if(folderPath)
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+		}
 
 		return result;
 	}
@@ -476,7 +499,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 	glslang::TShader::ForbidIncluder includer;
-	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->preprocess(&DefaultTBuiltInResource, 460, ECoreProfile, true, true,
 		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
@@ -496,7 +519,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 
 bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
 {
-	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->parse(&DefaultTBuiltInResource, 460, true,
 	                  static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
@@ -776,11 +799,15 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 
 bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& filePath)
 {
-	std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(filePath));
+	const auto fileEnding = FS::GetFileEnding(filePath);
+	if(!fileEnding)
+		return false;
+
+	const std::string fileEndingLower = Utils::String::ToLower(*fileEnding);
 	bool supportedFormat = false;
 	for(const auto& fmt : SupportedShaderFormatSuffixes)
 	{
-		if(fEnding == fmt)
+		if(fileEndingLower == fmt)
 		{
 			supportedFormat = true;
 			break;
@@ -814,9 +841,17 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
-			glslSource = FS::ReadTextFile(filePath);
+		{
+			const auto loadedData = FS::ReadTextFile(filePath);
+			if(loadedData)
+				glslSource = *loadedData;
+		}
 		else
-			SPIRVSource = Convert8To32(FS::ReadFile(filePath));
+		{
+			const auto loadedData = FS::ReadFile(filePath);
+			if(loadedData)
+				SPIRVSource = Convert8To32(*loadedData);
+		}
 	}
 
 	if(isSPIRV)

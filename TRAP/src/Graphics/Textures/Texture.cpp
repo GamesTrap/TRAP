@@ -14,7 +14,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::TexturePrefix, "Invalid name!");
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
 
@@ -31,10 +32,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FS::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -96,10 +98,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FS::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -141,7 +144,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 	TP_PROFILE_FUNCTION();
 
-	const std::string name = FS::GetFileName(filepath);
+	const auto name = FS::GetFileName(filepath);
+	if(!name)
+	{
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
+	}
 
 	TRAP::Scope<Texture> texture = nullptr;
 
@@ -149,17 +158,18 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FS::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -250,10 +260,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FS::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -340,10 +351,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FS::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 

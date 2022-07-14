@@ -80,7 +80,7 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 /// <returns>Major version number.</returns>
 constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) >> 22;
+	return version >> 22u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,7 +92,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 /// <returns>Minor version number.</returns>
 constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) >> 12;
+	return version >> 12u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -104,7 +104,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 /// <returns>Patch version number.</returns>
 constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) & 0xFFF;
+	return version & 0xFFFu;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,7 +112,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 12);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -190,7 +190,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
 template <typename T>
 constexpr T BIT(T x)
 {
-	return 1 << x;
+	return T(1) << x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

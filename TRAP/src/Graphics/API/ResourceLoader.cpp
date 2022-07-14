@@ -1170,7 +1170,11 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	//https://github.com/GPUOpen-Effects/FidelityFX-SPD/blob/master/sample/src/VK/CSDownsampler.glsl
 	if(!textureLoadDesc.Filepaths[0].empty() && supported)
 	{
-		textureDesc.Name = FS::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
+		const auto fileName = FS::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);
+		if(fileName)
+			textureDesc.Name = *fileName;
+		else
+			textureDesc.Name = "Unknown";
 
 		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
 		{

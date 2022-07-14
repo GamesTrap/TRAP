@@ -28,6 +28,8 @@
 #ifndef TRAP_FS_H
 #define TRAP_FS_H
 
+#include <optional>
+
 #include "Application.h"
 #include "FileWatcher.h"
 
@@ -53,7 +55,7 @@ namespace TRAP
 		/// <summary>
 		/// Shuts down the File System.
 		/// </summary>
-		void Shutdown();
+		constexpr void Shutdown();
 
         /// <summary>
 		/// Read the given binary file.
@@ -63,20 +65,21 @@ namespace TRAP
 		/// <param name="path">File path.</param>
 		/// <returns>
 		/// Vector with file content on success.
-		/// Empty vector if an error has occurred.
+		/// Empty optional if an error has occurred.
 		/// </returns>
-		std::vector<uint8_t> ReadFile(const std::filesystem::path& path);
+		std::optional<std::vector<uint8_t>> ReadFile(const std::filesystem::path& path);
         /// <summary>
 		/// Read the given text file.
+		/// Line endings are automatically converted to LF ('\n').
 		///
 		/// Prints an error if path is empty.
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <returns>
 		/// String with file content on success.
-		/// Empty string if an error has occurred.
+		/// Empty optional if an error has occurred.
 		/// </returns>
-		std::string ReadTextFile(const std::filesystem::path& path);
+		std::optional<std::string> ReadTextFile(const std::filesystem::path& path);
 
         /// <summary>
 		/// Write the given data as binary to the given file path.
@@ -85,7 +88,7 @@ namespace TRAP
 		/// <param name="buffer">Data to be written.</param>
 		/// <param name="mode">Write mode to use.</param>
 		/// <returns>True if path could be resolved and data has been written, false otherwise.</returns>
-		bool WriteFile(const std::filesystem::path& path, std::vector<uint8_t>& buffer,
+		bool WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer,
 		               WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given file path.
@@ -164,77 +167,82 @@ namespace TRAP
 		/// <param name="path">Path to a file or folder.</param>
 		/// <returns>
 		/// File or folder size in bytes.
-		/// 0 if an error has occurred.
+		/// Empty optional if an error has occurred.
 		/// </returns>
-		uintmax_t GetFileOrFolderSize(const std::filesystem::path& path, bool recursive = true);
+		std::optional<uintmax_t> GetFileOrFolderSize(const std::filesystem::path& path, bool recursive = true);
         /// <summary>
 		/// Get the last write time of a file or folder.
 		/// </summary>
 		/// <param name="path">Path to a file or folder.</param>
 		/// <returns>
 		/// Last write time of the file or folder.
-		/// std::filesystem::file_time_type::min() if an error has occurred.
+		/// Empty optional if an error has occurred.
 		/// </returns>
-		std::filesystem::file_time_type GetLastWriteTime(const std::filesystem::path& path);
+		std::optional<std::filesystem::file_time_type> GetLastWriteTime(const std::filesystem::path& path);
 
         /// <summary>
 		/// Get only the filename without its folders from a file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
-		/// <returns>String only containing the filename without its folders.</returns>
-		std::string GetFileNameWithEnding(const std::filesystem::path& path);
+		/// <returns>String only containing the filename without its folders on success, empty optional otherwise.</returns>
+		std::optional<std::string> GetFileNameWithEnding(const std::filesystem::path& path);
         /// <summary>
 		/// Get only the filename without its folders and ending/suffix from a file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
-		/// <returns>String only containing the filename without its folders and file ending.</returns>
-		std::string GetFileName(const std::filesystem::path& path);
+		/// <returns>String only containing the filename without its folders and file ending on success, empty optional otherwise.</returns>
+		std::optional<std::string> GetFileName(const std::filesystem::path& path);
         /// <summary>
 		/// Get only the file ending without its name from a file path.
 		/// </summary>
 		/// <param name="path">File path.</param>
-		/// <returns>String only containing the file ending without its file name.</returns>
-		std::string GetFileEnding(const std::filesystem::path& path);
+		/// <returns>String only containing the file ending without its file name on success, empty optional otherwise.</returns>
+		std::optional<std::string> GetFileEnding(const std::filesystem::path& path);
 
 		/// <summary>
 		/// Get only the folder without the filename and its ending.
 		/// </summary>
 		/// <param name="filePath">File path.</param>
-		/// <returns>Folder path from file path.</returns>
-		std::filesystem::path GetFolderPath(const std::filesystem::path& filePath);
+		/// <returns>Folder path from file path on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetFolderPath(const std::filesystem::path& filePath);
 
         /// <summary>
-		/// Get the path to the temp folder.
+		/// Get the path to the temp folder of the engine.
 		/// </summary>
-		/// <returns>Path to the temp folder.</returns>
-		std::filesystem::path GetTempFolderPath();
+		/// <returns>Path to the temp folder on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetTempFolderPath();
         /// <summary>
 		/// Get the path to the temp folder of the game.
 		/// </summary>
-		/// <returns>Path to the temp folder.</returns>
-		std::filesystem::path GetGameTempFolderPath();
+		/// <returns>Path to the temp folder on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetGameTempFolderPath();
 		/// <summary>
 		/// Get the path to the current working folder.
 		/// </summary>
-		/// <returns>Path to the current working folder.</returns>
-		std::filesystem::path GetCurrentFolderPath();
+		/// <returns>Path to the current working folder on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetCurrentFolderPath();
 		/// <summary>
 		/// Get the path to the users documents folder.
 		/// </summary>
-		/// <returns>Path to the users documents folder.</returns>
-		std::filesystem::path GetDocumentsFolderPath();
+		/// <returns>Path to the users documents folder on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetDocumentsFolderPath();
 		/// <summary>
 		/// Get the path to the users documents folder for the game.
 		/// </summary>
-		/// <returns>Path to the users documents folder for the game.</returns>
-		std::filesystem::path GetGameDocumentsFolderPath();
+		/// <returns>Path to the users documents folder for the game on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetGameDocumentsFolderPath();
+		/// <summary>
+		/// Get the path to the log folder for the game.
+		/// </summary>
+		/// <returns>Path to the log folder for the game on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> GetGameLogFolderPath();
 
 		/// <summary>
 		/// Checks whether the paths p1 and p2 resolve to the same file system file/folder.
 		/// </summary>
 		/// <param name="p1">File/folder path.</param>
 		/// <param name="p2">File/folder path</param>
-		/// <returns>true if the p1 and p2 refer to the same file/folder, false otherwise.</returns>
+		/// <returns>True if p1 and p2 refer to the same file or folder, false otherwise.</returns>
 		bool IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
 		/// <summary>
 		/// Get whether the path p is an absolute path or not.
@@ -267,14 +275,14 @@ namespace TRAP
 		/// Converts a path to an absolute path.
 		/// </summary>
 		/// <param name="p">Path to convert.</param>
-		/// <returns>Absolute path on success, empty path otherwise.</returns>
-		std::filesystem::path ToAbsolutePath(const std::filesystem::path& p);
+		/// <returns>Absolute path on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> ToAbsolutePath(const std::filesystem::path& p);
 		/// <summary>
 		/// Converts a path to a relative path.
 		/// </summary>
 		/// <param name="p">Path to convert.</param>
-		/// <returns>Relative path on success, empty path otherwise.</returns>
-		std::filesystem::path ToRelativePath(const std::filesystem::path& p);
+		/// <returns>Relative path on success, empty optional otherwise.</returns>
+		std::optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p);
 
 		/// <summary>
 		/// Opens the file browser at the given path.
@@ -302,6 +310,15 @@ namespace TRAP
 		/// <returns>True on success, false otherwise.</returns>
 		bool OpenExternally(const std::filesystem::path& p);
     };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr void TRAP::FS::Shutdown()
+{
+	TP_PROFILE_FUNCTION();
+
+	TP_DEBUG(Log::FileSystemPrefix, "Shutting down File System");
 }
 
 #endif /*TRAP_FS_H*/

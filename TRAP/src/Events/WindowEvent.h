@@ -23,7 +23,7 @@ namespace TRAP::Events
 		/// <param name="width">New Window width.</param>
 		/// <param name="height">New Window height.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		WindowResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
+		constexpr WindowResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -49,17 +49,17 @@ namespace TRAP::Events
 		/// Retrieve the new window width.
 		/// </summary>
 		/// <returns>Width.</returns>
-		uint32_t GetWidth() const;
+		constexpr uint32_t GetWidth() const;
 		/// <summary>
 		/// Retrieve the new window height.
 		/// </summary>
 		/// <returns>Height.</returns>
-		uint32_t GetHeight() const;
+		constexpr uint32_t GetHeight() const;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowResizeEvent.
@@ -71,7 +71,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -81,7 +81,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -103,7 +103,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowMinimizeEvent(TRAP::Window* window);
+		explicit constexpr WindowMinimizeEvent(TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -129,7 +129,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowMinimizeEvent.
@@ -141,7 +141,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -151,7 +151,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -172,7 +172,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowMaximizeEvent(TRAP::Window* window);
+		explicit constexpr WindowMaximizeEvent(TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -198,7 +198,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 		/// <summary>
 		/// Get a string representation of the WindowMaximizeEvent.
 		/// </summary>
@@ -209,7 +209,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -219,7 +219,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -240,7 +240,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowRestoreEvent(TRAP::Window* window);
+		explicit constexpr WindowRestoreEvent(TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -266,7 +266,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowRestoreEvent.
@@ -278,7 +278,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -288,7 +288,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -309,7 +309,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowCloseEvent(TRAP::Window* window);
+		explicit constexpr WindowCloseEvent(TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -335,7 +335,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowCloseEvent.
@@ -347,7 +347,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -357,7 +357,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -380,7 +380,7 @@ namespace TRAP::Events
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		WindowMoveEvent(int32_t x, int32_t y, TRAP::Window* window);
+		constexpr WindowMoveEvent(int32_t x, int32_t y, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -406,22 +406,22 @@ namespace TRAP::Events
 		/// Retrieve the new window x position.
 		/// </summary>
 		/// <returns>Window x position.</returns>
-		int32_t GetX() const;
+		constexpr int32_t GetX() const;
 		/// <summary>
 		/// Retrieve the new window y position.
 		/// </summary>
 		/// <returns>Window y position.</returns>
-		int32_t GetY() const;
+		constexpr int32_t GetY() const;
 		/// <summary>
 		/// Retrieve the new window position.
 		/// </summary>
 		/// <returns>Window position</returns>
-		Math::Vec2i GetPosition() const;
+		constexpr Math::Vec2i GetPosition() const;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowMoveEvent.
@@ -433,7 +433,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -443,7 +443,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -465,7 +465,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowFocusEvent(TRAP::Window* window);
+		explicit constexpr WindowFocusEvent(TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -491,7 +491,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowFocusEvent.
@@ -503,7 +503,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -513,7 +513,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -534,7 +534,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowLostFocusEvent(TRAP::Window* window);
+		explicit constexpr WindowLostFocusEvent(TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -560,7 +560,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowLostFocusEvent.
@@ -572,7 +572,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -582,7 +582,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -635,7 +635,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowDropEvent.
@@ -647,7 +647,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -657,7 +657,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -681,7 +681,7 @@ namespace TRAP::Events
 		/// <param name="xScale">New x content scale.</param>
 		/// <param name="yScale">New y content scale.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit WindowContentScaleEvent(float xScale, float yScale, TRAP::Window* window);
+		explicit constexpr WindowContentScaleEvent(float xScale, float yScale, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -707,22 +707,22 @@ namespace TRAP::Events
 		/// Retrieve the new x content scale.
 		/// </summary>
 		/// <returns>Window x content scale.</returns>
-		float GetXScale() const;
+		constexpr float GetXScale() const;
 		/// <summary>
 		/// Retrieve the new y content scale.
 		/// </summary>
 		/// <returns>Window y content scale.</returns>
-		float GetYScale() const;
+		constexpr float GetYScale() const;
 		/// <summary>
 		/// Retrieve the new content scale.
 		/// </summary>
 		/// <returns>Window content scale.</returns>
-		Math::Vec2 GetScale() const;
+		constexpr Math::Vec2 GetScale() const;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowContentScaleEvent.
@@ -734,7 +734,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -744,7 +744,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -769,7 +769,7 @@ namespace TRAP::Events
 		/// <param name="width">New framebuffer width.</param>
 		/// <param name="height">New framebuffer height.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		FrameBufferResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
+		constexpr FrameBufferResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -795,22 +795,22 @@ namespace TRAP::Events
 		/// Retrieve the new framebuffer width.
 		/// </summary>
 		/// <returns>Framebuffer width.</returns>
-		uint32_t GetWidth() const;
+		constexpr uint32_t GetWidth() const;
 		/// <summary>
 		/// Retrieve the new framebuffer height.
 		/// </summary>
 		/// <returns>Framebuffer height.</returns>
-		uint32_t GetHeight() const;
+		constexpr uint32_t GetHeight() const;
 		/// <summary>
 		/// Retrieve the new framebuffer size.
 		/// </summary>
 		/// <returns>Framebuffer size.</returns>
-		Math::Vec2ui GetSize() const;
+		constexpr Math::Vec2ui GetSize() const;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the FrameBufferResizeEvent.
@@ -822,7 +822,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -832,7 +832,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -843,6 +843,322 @@ namespace TRAP::Events
 		uint32_t m_width, m_height;
 		TRAP::Window* m_window;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height,
+   															 TRAP::Window* window)
+	: m_width(width), m_height(height), m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr uint32_t TRAP::Events::WindowResizeEvent::GetWidth() const
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr uint32_t TRAP::Events::WindowResizeEvent::GetHeight() const
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowResizeEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetStaticType()
+{
+	return EventType::WindowResize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window* window)
+	: m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowMinimizeEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetStaticType()
+{
+	return EventType::WindowMinimize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window* window)
+	: m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowMaximizeEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetStaticType()
+{
+	return EventType::WindowMaximize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window* window)
+	: m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowRestoreEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetStaticType()
+{
+	return EventType::WindowRestore;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window* window)
+	: m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowCloseEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetStaticType()
+{
+	return EventType::WindowClose;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowMoveEvent::WindowMoveEvent(const int32_t x, const int32_t y, TRAP::Window* window)
+	: m_x(x), m_y(y), m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr int32_t TRAP::Events::WindowMoveEvent::GetX() const
+{
+	return m_x;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr int32_t TRAP::Events::WindowMoveEvent::GetY() const
+{
+	return m_y;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Math::Vec2i TRAP::Events::WindowMoveEvent::GetPosition() const
+{
+	return {m_x, m_y};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowMoveEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetStaticType()
+{
+	return EventType::WindowMove;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window* window)
+	: m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowFocusEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetStaticType()
+{
+	return EventType::WindowFocus;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window* window)
+	: m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowLostFocusEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetStaticType()
+{
+	return EventType::WindowLostFocus;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowDropEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetStaticType()
+{
+	return EventType::WindowDrop;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale,
+	TRAP::Window* window)
+	: m_XScale(xScale), m_YScale(yScale), m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr float TRAP::Events::WindowContentScaleEvent::GetXScale() const
+{
+	return m_XScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr float TRAP::Events::WindowContentScaleEvent::GetYScale() const
+{
+	return m_YScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Math::Vec2 TRAP::Events::WindowContentScaleEvent::GetScale() const
+{
+	return {m_XScale, m_YScale};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::WindowContentScaleEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetStaticType()
+{
+	return EventType::WindowContentScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height,
+                                                             TRAP::Window* window)
+	: m_width(width), m_height(height), m_window(window)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetWidth() const
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const
+{
+	return {m_width, m_height};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Window* TRAP::Events::FrameBufferResizeEvent::GetWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetStaticType()
+{
+	return EventType::FrameBufferResize;
 }
 
 #endif /*TRAP_WINDOWEVENT_H*/

@@ -33,15 +33,18 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
                  void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
+    const auto docsFolder = TRAP::FS::GetDocumentsFolderPath();
+    if(!docsFolder)
+        return;
+
     std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
     std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
 
-    std::filesystem::path folderPath = TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() /
-                                       "crash-dumps";
+    std::filesystem::path folderPath = *docsFolder / "TRAP" / TRAP::Application::GetGameName() / "crash-dumps";
     std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
     std::lock_guard lock(mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
-    std::memcpy(buffer.data(), gpuCrashDump, gpuCrashDumpSize);
+    std::copy_n(reinterpret_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
     if(!TRAP::FS::FileOrFolderExists(folderPath))
         TRAP::FS::CreateFolder(folderPath);
     TRAP::FS::WriteFile(filePath, buffer);
