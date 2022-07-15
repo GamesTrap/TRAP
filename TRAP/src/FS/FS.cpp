@@ -136,7 +136,7 @@ bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::strin
         return false;
     }
 
-    file.write(reinterpret_cast<const char*>(text.data()), static_cast<int64_t>(text.size()));
+    file.write(static_cast<const char*>(text.data()), static_cast<int64_t>(text.size()));
     file.close();
 
     return true;

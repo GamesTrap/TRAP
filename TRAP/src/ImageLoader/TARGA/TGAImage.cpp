@@ -31,13 +31,13 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	header.IDLength = static_cast<uint8_t>(file.get());
 	header.ColorMapType = static_cast<uint8_t>(file.get());
 	header.ImageType = static_cast<uint8_t>(file.get());
-	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), 2);
-	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), 2);
+	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), sizeof(uint16_t));
 	header.ColorMapDepth = static_cast<uint8_t>(file.get());
-	file.read(reinterpret_cast<char*>(&header.XOffset), 2);
-	file.read(reinterpret_cast<char*>(&header.YOffset), 2);
-	file.read(reinterpret_cast<char*>(&header.Width), 2);
-	file.read(reinterpret_cast<char*>(&header.Height), 2);
+	file.read(reinterpret_cast<char*>(&header.XOffset), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.YOffset), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint16_t));
 	header.BitsPerPixel = static_cast<uint8_t>(file.get());
 	header.ImageDescriptor = static_cast<uint8_t>(file.get());
 

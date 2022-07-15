@@ -1401,7 +1401,7 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const TRAP::Image* const im
 	native->xhot = xHotSpot;
 	native->yhot = yHotSpot;
 
-	const uint8_t* source = reinterpret_cast<const uint8_t*>(image->GetPixelData());
+	const uint8_t* source = static_cast<const uint8_t*>(image->GetPixelData());
 	XcursorPixel* target = native->pixels;
 
 	for(uint32_t i = 0; i < image->GetWidth() * image->GetHeight(); i++, target++, source += 4)
@@ -2745,8 +2745,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 		std::vector<uint64_t> icon{};
 		icon.resize(longCount);
 		uint64_t* target = icon.data();
-		std::vector<uint8_t> imgData(reinterpret_cast<const uint8_t*>(image->GetPixelData()),
-		                             reinterpret_cast<const uint8_t*>(image->GetPixelData()) +
+		std::vector<uint8_t> imgData(static_cast<const uint8_t*>(image->GetPixelData()),
+		                             static_cast<const uint8_t*>(image->GetPixelData()) +
 									 image->GetPixelDataSize());
 
 		*target++ = image->GetWidth();

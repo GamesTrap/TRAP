@@ -1721,7 +1721,7 @@ static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
 
     // Create surface
     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
-    VkResult err = static_cast<VkResult>(platform_io.Platform_CreateVkSurface(viewport, reinterpret_cast<ImU64>(v->Instance), reinterpret_cast<const void*>(v->Allocator), reinterpret_cast<ImU64*>(&wd->Surface)));
+    VkResult err = static_cast<VkResult>(platform_io.Platform_CreateVkSurface(viewport, reinterpret_cast<ImU64>(v->Instance), static_cast<const void*>(v->Allocator), reinterpret_cast<ImU64*>(&wd->Surface)));
     check_vk_result(err);
 
     // Check for WSI support

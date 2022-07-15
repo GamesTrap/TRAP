@@ -134,9 +134,9 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	std::array<uint32_t, 4> regs = CPUID(0, 0);
 	const uint32_t HFS = regs[0];
 	//Get Vendor
-	const std::string vendorID = std::string(reinterpret_cast<const char*>(&regs[1]), 4) +
-		                         std::string(reinterpret_cast<const char*>(&regs[3]), 4) +
-		                         std::string(reinterpret_cast<const char*>(&regs[2]), 4);
+	const std::string vendorID = std::string(reinterpret_cast<char*>(&regs[1]), sizeof(uint32_t)) +
+		                         std::string(reinterpret_cast<char*>(&regs[3]), sizeof(uint32_t)) +
+		                         std::string(reinterpret_cast<char*>(&regs[2]), sizeof(uint32_t));
 	regs = CPUID(1, 0);
 	cpu.HyperThreaded = regs[3] & 0x10000000; //Get Hyper-threading
 
@@ -241,10 +241,10 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	for (uint32_t i = 0x80000002; i < 0x80000005; ++i)
 	{
 		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[0]), 4);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[1]), 4);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[2]), 4);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[3]), 4);
+		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[0]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[1]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[2]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[3]), sizeof(uint32_t));
 	}
 
 	uint32_t lastAlphaChar = 0;

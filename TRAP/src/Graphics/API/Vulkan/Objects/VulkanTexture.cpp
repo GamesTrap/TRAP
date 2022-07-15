@@ -224,7 +224,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 				VkExternalMemoryHandleTypeFlagBits HandleType;
 			};
 
-			ImportHandleInfo *handleInfo = reinterpret_cast<ImportHandleInfo *>(desc.NativeHandle);
+			ImportHandleInfo *handleInfo = reinterpret_cast<ImportHandleInfo*>(desc.NativeHandle);
 			importInfo.handle = handleInfo->Handle;
 			importInfo.handleType = handleInfo->HandleType;
 

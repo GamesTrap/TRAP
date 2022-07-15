@@ -110,7 +110,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<const int8_t*>(&m_data[m_readPos]);
+		data = *reinterpret_cast<int8_t*>(&m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -123,7 +123,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<const uint8_t*>(&m_data[m_readPos]);
+		data = *reinterpret_cast<uint8_t*>(&m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 

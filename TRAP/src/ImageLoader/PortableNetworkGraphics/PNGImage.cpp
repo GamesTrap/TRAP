@@ -59,8 +59,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		while (nextChunk.MagicNumber != "IEND")
 		{
 			file.read(reinterpret_cast<char*>(&nextChunk.Length), sizeof(uint32_t));
-			file.read(reinterpret_cast<char*>(nextChunk.MagicNumber.data()),
-			          static_cast<std::streamsize>(nextChunk.MagicNumber.size()));
+			file.read(nextChunk.MagicNumber.data(), static_cast<std::streamsize>(nextChunk.MagicNumber.size()));
 			if (needSwap)
 				Utils::Memory::SwapBytes(nextChunk.Length);
 

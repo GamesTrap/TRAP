@@ -2852,7 +2852,7 @@ SITREP 07/14/2022|22w28b1
         - Events GetName() replaced const char* with std::string ~<15 mins
         - Events Made GetStaticType() constexpr ~<15 mins
         - EventDispatcher Made constructor and Dispatch() constexpr ~<5 mins
-        - EventCategory Made ^, ~, ^= operators constexpr ~<5 mins
+        - EventCategory Made operators constexpr ~<5 mins
         - FileChangeEvent FileStatusToString() now throws invalid_argument if enum value isn't valid ~<5 mins
         - Made some functions constexpr in
             - FileChangeEvent
@@ -2897,3 +2897,7 @@ SITREP 07/14/2022|22w28b1
         - Application Added fallback paths for engine.cfg and trap.log ~<5 mins
         - Updated Application ~<10 mins
         - Updated ControllerTests ~<5 mins
+
+SITREP 07/15/2022|22w28b2
+    - Branch STL:
+        - Replaced reinterpret_cast with static_cast where possible ~<10 mins

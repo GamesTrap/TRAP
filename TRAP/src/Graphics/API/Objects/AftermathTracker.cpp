@@ -44,7 +44,7 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
     std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
     std::lock_guard lock(mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
-    std::copy_n(reinterpret_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
+    std::copy_n(static_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
     if(!TRAP::FS::FileOrFolderExists(folderPath))
         TRAP::FS::CreateFolder(folderPath);
     TRAP::FS::WriteFile(filePath, buffer);
