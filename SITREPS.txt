@@ -2907,3 +2907,4 @@ SITREP 07/16/2022|22w28b3
         - TRAP_Assert Made path to file absolute ~<5 mins
         - Utils backported C++20s std::bitcast ~<10 mins
         - Application CheckSingleProcessLinux() now uses Utils::BitCast instead of reinterpret_cast ~<5 mins
+        - Vulkan every VkSetObjectName() call now uses Utils::BitCast instead of reinterpret_cast ~<5 mins

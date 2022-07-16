@@ -1,4 +1,5 @@
 #include "TRAPPCH.h"
+#include "Utils/Utils.h"
 #include "VulkanPipeline.h"
 
 #include "VulkanRenderPass.h"
@@ -360,8 +361,8 @@ void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkPipeline, uint64_t>(m_vkPipeline), VK_OBJECT_TYPE_PIPELINE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkPipeline), VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkPipeline, uint64_t>(m_vkPipeline), VK_DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT, name);
 #endif
 }

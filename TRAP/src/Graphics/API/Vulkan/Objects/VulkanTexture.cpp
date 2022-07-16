@@ -469,9 +469,9 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string& name)
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkImage, uint64_t>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkImage, uint64_t>(m_vkImage), VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, name);
 #endif
 }
 
