@@ -76,7 +76,8 @@ static bool CheckSingleProcessLinux()
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
 
-		rc = bind(socketFD, reinterpret_cast<sockaddr*>(&name), sizeof(name));
+		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
+		rc = bind(socketFD, &convertedSock, sizeof(name));
 	}
 
 	return (socketFD != -1 && rc == 0);

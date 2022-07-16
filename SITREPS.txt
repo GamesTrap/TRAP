@@ -2901,3 +2901,9 @@ SITREP 07/14/2022|22w28b1
 SITREP 07/15/2022|22w28b2
     - Branch STL:
         - Replaced reinterpret_cast with static_cast where possible ~<10 mins
+
+SITREP 07/16/2022|22w28b3
+        - TRAP_Assert Removed type from macros ~<5 mins
+        - TRAP_Assert Made path to file absolute ~<5 mins
+        - Utils backported C++20s std::bitcast ~<10 mins
+        - Application CheckSingleProcessLinux() now uses Utils::BitCast instead of reinterpret_cast ~<5 mins

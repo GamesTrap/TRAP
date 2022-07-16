@@ -390,7 +390,7 @@ void TRAP::FS::FileWatcher::Watch()
         }
     }
 
-    std::array<char, 2048> buf{};
+    std::array<char, 2048> buf{}; //Can't be a inotify_event array because it includes a flexible array member.
     std::filesystem::path oldName;
 
     //Thread work loop
@@ -452,7 +452,7 @@ void TRAP::FS::FileWatcher::Watch()
         std::size_t offset = 0;
         while(offset < static_cast<std::size_t>(len)) //Process events
         {
-            const inotify_event* event = reinterpret_cast<const inotify_event*>(buf.data() + offset);
+            const inotify_event* event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
             if(!event->len)
             {
                 offset += sizeof(inotify_event) + event->len;

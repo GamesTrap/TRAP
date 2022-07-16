@@ -3,6 +3,8 @@
 
 #include <array>
 #include <string>
+#include <type_traits>
+#include <bit>
 
 namespace TRAP::Utils
 {
@@ -103,6 +105,21 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <returns>errno string.</returns>
 	std::string GetStrError();
+#endif
+
+#ifdef __cpp_lib_bit_cast
+	using BitCast = std::bit_cast;
+#else
+	template<typename From, typename To>
+	inline typename std::enable_if<std::integral_constant<bool, (sizeof(From) == sizeof(To)) &&
+	                                                            std::is_trivially_copyable<From>::value &&
+																std::is_trivially_copyable<To>::value>::value, To>::type
+	BitCast(const From& from) noexcept
+	{
+		union U{U(){}; char storage[sizeof(To)]; typename std::remove_const<To>::type dest;} u; //Instead of To dest; because To doesn't require DefaultConstructible.
+		memcpy(&u.dest, &from, sizeof(from));
+		return u.dest;
+	}
 #endif
 }
 

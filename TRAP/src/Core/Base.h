@@ -178,7 +178,6 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 12);
 #define TRAP_EXPAND_MACRO(x) x
 #define TRAP_STRINGIFY_MACRO(x) #x
 
-#include "TRAP_Assert.h"
 #include "Log/Log.h"
 
 /// <summary>
