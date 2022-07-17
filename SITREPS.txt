@@ -2918,3 +2918,4 @@ SITREP 07/17/2022|22w28b4
         - Replaced memcpy with std::copy or std::copy_n ~>30 mins
         - Removed std:: from memset ~<5 mins
         - Removed/Replaced memset where possible ~>15 mins
+        - Replaced remaining memset calls with std::fill or std::fill_n ~<30 mins

@@ -450,7 +450,7 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
         wrb->Index = 0;
         wrb->Count = v->ImageCount;
         wrb->FrameRenderBuffers = static_cast<ImGui_ImplVulkanH_FrameRenderBuffers*>(IM_ALLOC(sizeof(ImGui_ImplVulkanH_FrameRenderBuffers) * wrb->Count));
-        memset(wrb->FrameRenderBuffers, 0, sizeof(ImGui_ImplVulkanH_FrameRenderBuffers) * wrb->Count);
+        std::fill_n(wrb->FrameRenderBuffers, wrb->Count, ImGui_ImplVulkanH_FrameRenderBuffers());
     }
     IM_ASSERT(wrb->Count == v->ImageCount);
     wrb->Index = (wrb->Index + 1) % wrb->Count;
@@ -1410,8 +1410,8 @@ void ImGui_ImplVulkanH_CreateWindowSwapChain(VkPhysicalDevice physical_device, V
         IM_ASSERT(wd->Frames == nullptr);
         wd->Frames = static_cast<ImGui_ImplVulkanH_Frame*>(IM_ALLOC(sizeof(ImGui_ImplVulkanH_Frame) * wd->ImageCount));
         wd->FrameSemaphores = static_cast<ImGui_ImplVulkanH_FrameSemaphores*>(IM_ALLOC(sizeof(ImGui_ImplVulkanH_FrameSemaphores) * wd->ImageCount));
-        memset(wd->Frames, 0, sizeof(wd->Frames[0]) * wd->ImageCount);
-        memset(wd->FrameSemaphores, 0, sizeof(wd->FrameSemaphores[0]) * wd->ImageCount);
+        std::fill_n(wd->Frames, wd->ImageCount, ImGui_ImplVulkanH_Frame());
+        std::fill_n(wd->FrameSemaphores, wd->ImageCount, ImGui_ImplVulkanH_FrameSemaphores());
         for (uint32_t i = 0; i < wd->ImageCount; i++)
             wd->Frames[i].Backbuffer = backbuffers[i];
     }
