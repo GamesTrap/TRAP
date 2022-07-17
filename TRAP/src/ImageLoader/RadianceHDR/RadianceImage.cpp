@@ -236,7 +236,7 @@ bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 
 		{
 			for(int32_t i = scanline[0 + scanlineIndex][E] << rshift; i > 0; i--)
 			{
-				memcpy(&scanline[0 + scanlineIndex][0], &scanline[-1 + scanlineIndex][0], 4);
+				std::copy_n(&scanline[-1 + scanlineIndex][0], 4, &scanline[0 + scanlineIndex][0]);
 				scanlineIndex++;
 				length--;
 			}

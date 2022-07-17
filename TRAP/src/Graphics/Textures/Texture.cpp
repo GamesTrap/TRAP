@@ -801,15 +801,16 @@ void TRAP::Graphics::Texture::Update(const void* data, const uint32_t sizeInByte
 	updateDesc.MipLevel = mipLevel;
 	updateDesc.ArrayLayer = arrayLayer;
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
-	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single memcpy is enough
-		memcpy(updateDesc.MappedData, data, updateDesc.RowCount * updateDesc.SrcRowStride);
+	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
+		std::copy_n(static_cast<const uint8_t*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
+		            static_cast<uint8_t*>(updateDesc.MappedData));
 	else //Needs row by row copy
 	{
 		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 		{
-			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-				   static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
-				   updateDesc.SrcRowStride);
+			std::copy_n(static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+			            updateDesc.SrcRowStride,
+						static_cast<uint8_t*>(updateDesc.MappedData) + r * updateDesc.DstRowStride);
 		}
 	}
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
@@ -1073,7 +1074,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
 								   static_cast<std::size_t>(img->GetColorFormat()));
-		memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+		std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
 			for(uint32_t y = 0; y < img->GetHeight(); ++y)
@@ -1099,7 +1100,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 	if(img->GetBitsPerChannel() == 16)
 	{
 		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() * static_cast<std::size_t>(img->GetColorFormat()));
-		memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+		std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
 			for(uint32_t y = 0; y < img->GetHeight(); ++y)
@@ -1125,7 +1126,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 
 	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
 								 static_cast<std::size_t>(img->GetColorFormat()));
-	memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+	std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 	for(uint32_t x = 0; x < img->GetWidth(); ++x)
 	{
 		for(uint32_t y = 0; y < img->GetHeight(); ++y)

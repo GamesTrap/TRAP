@@ -143,7 +143,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 		length -= bytes;
 		dataPtr += bytes;
 	}
-	memcpy(m.data() + pos, dataPtr, length);
+	std::copy_n(dataPtr, length, m.data() + pos);
 	pos += length;
 
 	m[pos++] = 0x06;
@@ -152,7 +152,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 	Transform(m.data(), 1, A, rate);
 
 	std::array<uint8_t, hs / 8> result{};
-	memcpy(result.data(), A.data(), result.size());
+	std::copy_n(reinterpret_cast<const uint8_t*>(A.data()), result.size(), result.data());
 
 	return result;
 }
@@ -185,7 +185,7 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 		length -= bytes;
 		dataPtr += bytes;
 	}
-	memcpy(m.data() + pos, dataPtr, length);
+	std::copy_n(dataPtr, length, m.data() + pos);
 	pos += length;
 
 	m[pos++] = 0x06;
@@ -194,7 +194,7 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 	Transform(m.data(), 1, A, rate);
 
 	std::array<uint8_t, hs / 8> result{};
-	memcpy(result.data(), A.data(), result.size());
+	std::copy_n(reinterpret_cast<const uint8_t*>(A.data()), result.size(), result.data());
 
 	return result;
 }

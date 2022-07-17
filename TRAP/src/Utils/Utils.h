@@ -4,7 +4,6 @@
 #include <array>
 #include <string>
 #include <type_traits>
-#include <bit>
 
 namespace TRAP::Utils
 {

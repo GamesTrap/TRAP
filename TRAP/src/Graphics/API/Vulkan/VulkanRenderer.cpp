@@ -1595,8 +1595,9 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	s_graphicQueue->WaitQueueIdle();
 
 	//Copy to CPU memory.
-	memcpy(outPixelData, buffer->GetCPUMappedAddress(), static_cast<std::size_t>(renderTarget->GetWidth()) *
-																renderTarget->GetHeight() * formatByteWidth);
+	std::copy_n(static_cast<uint8_t*>(buffer->GetCPUMappedAddress()),
+	            static_cast<std::size_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth,
+				static_cast<uint8_t*>(outPixelData));
 
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);

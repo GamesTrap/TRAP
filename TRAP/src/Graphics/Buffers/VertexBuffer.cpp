@@ -91,7 +91,7 @@ void TRAP::Graphics::VertexBuffer::SetData(float* data, const uint64_t size, con
 	desc.Buffer = m_vertexBuffer;
 	desc.DstOffset = offset;
 	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	memcpy(desc.MappedData, static_cast<void*>(data), size);
+	std::copy_n(data, size, static_cast<float*>(desc.MappedData));
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 }
 

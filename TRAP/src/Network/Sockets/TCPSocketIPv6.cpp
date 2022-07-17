@@ -66,9 +66,9 @@ TRAP::Network::IPv6Address TRAP::Network::TCPSocketIPv6::GetRemoteAddress() cons
 	{
 		std::array<uint8_t, 16> addr{};
 #ifdef TRAP_PLATFORM_WINDOWS
-		memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+		std::copy_n(address.sin6_addr.u.Byte, addr.size(), addr.data());
 #else
-		memcpy(addr.data(), address.sin6_addr.s6_addr, addr.size());
+		std::copy_n(address.sin6_addr.s6_addr, addr.size(), addr.data());
 #endif
 		return IPv6Address(addr);
 	}
@@ -298,9 +298,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 	std::vector<char> blockToSend(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
-	memcpy(&blockToSend[0], &packetSize, sizeof(packetSize));
+	std::copy_n(reinterpret_cast<const uint8_t*>(&packetSize), sizeof(packetSize), blockToSend.data());
 	if (size > 0)
-		memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
+		std::copy_n(static_cast<const uint8_t*>(data), size, blockToSend.data() + sizeof(packetSize));
 
 	//Send the data block
 	std::size_t sent = 0;
@@ -369,7 +369,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
 			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
-			memcpy(begin, buffer.data(), received);
+			std::copy_n(buffer.data(), received, begin);
 		}
 	}
 

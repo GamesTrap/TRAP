@@ -364,7 +364,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				else
 				{
 					TRAP_ASSERT(data);
-					memcpy(updateDesc.MappedData, static_cast<const uint8_t*>(data) + offset, chunkSize);
+					std::copy_n(static_cast<const uint8_t*>(data) + offset, chunkSize, static_cast<uint8_t*>(updateDesc.MappedData));
 				}
 				EndUpdateResource(updateDesc, token);
 			}
@@ -380,7 +380,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			{
 				TRAP_ASSERT(!desc.Desc.Size || desc.Data);
 				if(desc.Data)
-					memcpy(updateDesc.MappedData, desc.Data, desc.Desc.Size);
+					std::copy_n(static_cast<const uint8_t*>(desc.Data), desc.Desc.Size, static_cast<uint8_t*>(updateDesc.MappedData));
 			}
 			EndUpdateResource(updateDesc, token);
 		}
@@ -1085,7 +1085,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 					uint8_t* dstData = data + subSlicePitch * z;
 					for(uint32_t r = 0; r < subNumRows; ++r)
-						memcpy(dstData + r * subRowPitch, pixelData + r * subRowSize, subRowSize);
+						std::copy_n(pixelData + r * subRowSize, subRowSize, dstData + r * subRowPitch);
 				}
 			}
 

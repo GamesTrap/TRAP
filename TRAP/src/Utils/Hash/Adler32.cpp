@@ -30,7 +30,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t len
 	Memory::SwapBytes(adler32);
 
 	std::array<uint8_t, 4> result{};
-	memcpy(result.data(), &adler32, result.size());
+	std::copy_n(reinterpret_cast<const uint8_t*>(&adler32), result.size(), result.data());
 
 	return result;
 }
