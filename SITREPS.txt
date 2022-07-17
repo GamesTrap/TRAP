@@ -2914,3 +2914,4 @@ SITREP 07/16/2022|22w28b3
 SITREP 07/17/2022|22w28b4
     - Branch STL:
         - Replaced reinterpret_cast with Utils::BitCast in various files ~>15 mins
+        - Removed std:: from memcpy ~<5 mins

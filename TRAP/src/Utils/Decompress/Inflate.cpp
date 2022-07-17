@@ -683,7 +683,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 	if (bytePos + LEN > size)
 		return false; //Error: Reading outside of in buffer
 
-	std::memcpy(out.data() + pos, reader.Data + bytePos, LEN);
+	memcpy(out.data() + pos, reader.Data + bytePos, LEN);
 	pos += LEN;
 	bytePos += LEN;
 
@@ -784,14 +784,14 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			out.resize(pos + length);
 			if(distance < length)
 			{
-				std::memcpy(out.data() + pos, out.data() + backward, distance);
+				memcpy(out.data() + pos, out.data() + backward, distance);
 				pos += distance;
 				for (std::size_t forward = distance; forward < length; ++forward)
 					out[pos++] = out[backward++];
 			}
 			else
 			{
-				std::memcpy(out.data() + pos, out.data() + backward, length);
+				memcpy(out.data() + pos, out.data() + backward, length);
 				pos += length;
 			}
 		}
@@ -852,7 +852,7 @@ bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t s
 		}
 	}
 
-	std::memcpy(destination, result.data(), result.size());
+	memcpy(destination, result.data(), result.size());
 
 	return true;
 }

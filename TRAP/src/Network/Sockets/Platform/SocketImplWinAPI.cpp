@@ -61,7 +61,7 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 {
 	sockaddr_in6 addr{};
 	std::memset(&addr, 0, sizeof(addr));
-	std::memcpy(addr.sin6_addr.u.Byte, address.data(), address.size());
+	memcpy(addr.sin6_addr.u.Byte, address.data(), address.size());
 	addr.sin6_family = AF_INET6;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)

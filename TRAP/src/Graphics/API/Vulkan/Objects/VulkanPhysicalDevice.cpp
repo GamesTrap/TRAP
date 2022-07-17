@@ -68,7 +68,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 											 m_queueFamilyProperties.data());
 
 	// Copy UUID
-	std::memcpy(m_deviceUUID.data(), m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size());
+	memcpy(m_deviceUUID.data(), m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size());
 
 	// Capabilities for VulkanRenderer
 	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
@@ -374,7 +374,7 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 		vkGetPhysicalDeviceProperties2(device, &props2);
 
 		// Copy UUID
-		std::memcpy(testUUID.data(), physicalDeviceIDProperties.deviceUUID, testUUID.size());
+		memcpy(testUUID.data(), physicalDeviceIDProperties.deviceUUID, testUUID.size());
 
 		bool same = true;
 		for (uint32_t i = 0; i < physicalDeviceUUID.size(); i++)
@@ -785,7 +785,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		vkGetPhysicalDeviceProperties2(dev, &props2);
 
 		// Copy UUID
-		std::memcpy(physicalDeviceUUID.data(), physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size());
+		memcpy(physicalDeviceUUID.data(), physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size());
 
 		TP_INFO(Log::RendererVulkanPrefix, "Found GPU: \"", devProps.deviceName, '(', TRAP::Utils::UUIDToString(physicalDeviceUUID), ')', "\" Score: ", score);
 		s_availablePhysicalDeviceUUIDs.emplace(score, physicalDeviceUUID);

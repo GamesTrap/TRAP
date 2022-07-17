@@ -364,7 +364,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				else
 				{
 					TRAP_ASSERT(data);
-					std::memcpy(updateDesc.MappedData, static_cast<const uint8_t*>(data) + offset, chunkSize);
+					memcpy(updateDesc.MappedData, static_cast<const uint8_t*>(data) + offset, chunkSize);
 				}
 				EndUpdateResource(updateDesc, token);
 			}
@@ -380,7 +380,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			{
 				TRAP_ASSERT(!desc.Desc.Size || desc.Data);
 				if(desc.Data)
-					std::memcpy(updateDesc.MappedData, desc.Data, desc.Desc.Size);
+					memcpy(updateDesc.MappedData, desc.Data, desc.Desc.Size);
 			}
 			EndUpdateResource(updateDesc, token);
 		}

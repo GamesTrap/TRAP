@@ -1073,7 +1073,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
 								   static_cast<std::size_t>(img->GetColorFormat()));
-		std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+		memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
 			for(uint32_t y = 0; y < img->GetHeight(); ++y)
@@ -1099,7 +1099,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 	if(img->GetBitsPerChannel() == 16)
 	{
 		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() * static_cast<std::size_t>(img->GetColorFormat()));
-		std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+		memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
 			for(uint32_t y = 0; y < img->GetHeight(); ++y)
@@ -1125,7 +1125,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 
 	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
 								 static_cast<std::size_t>(img->GetColorFormat()));
-	std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+	memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
 	for(uint32_t x = 0; x < img->GetWidth(); ++x)
 	{
 		for(uint32_t y = 0; y < img->GetHeight(); ++y)

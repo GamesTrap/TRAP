@@ -46,7 +46,7 @@ void TRAP::Network::Packet::Append(const void* data, const std::size_t sizeInByt
 
 	const std::size_t start = m_data.size();
 	m_data.resize(start + sizeInBytes);
-	std::memcpy(&m_data[start], data, sizeInBytes);
+	memcpy(&m_data[start], data, sizeInBytes);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -270,7 +270,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* data)
 	if((length > 0) && CheckSize(length))
 	{
 		//Then extract characters
-		std::memcpy(data, &m_data[m_readPos], length);
+		memcpy(data, &m_data[m_readPos], length);
 		data[length] = '\0';
 
 		//Update reading position

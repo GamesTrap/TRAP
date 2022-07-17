@@ -329,9 +329,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 	std::vector<char> blockToSend(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
-	std::memcpy(&blockToSend[0], &packetSize, sizeof(packetSize));
+	memcpy(&blockToSend[0], &packetSize, sizeof(packetSize));
 	if (size > 0)
-		std::memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
+		memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
 
 	//Send the data block
 	std::size_t sent = 0;
@@ -400,7 +400,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
 			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
-			std::memcpy(begin, buffer.data(), received);
+			memcpy(begin, buffer.data(), received);
 		}
 	}
 
