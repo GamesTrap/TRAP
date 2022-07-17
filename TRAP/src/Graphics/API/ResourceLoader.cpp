@@ -360,7 +360,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				updateDesc.DstOffset = offset;
 				BeginUpdateResource(updateDesc);
 				if (desc.ForceReset)
-					std::memset(updateDesc.MappedData, 0, chunkSize);
+					memset(updateDesc.MappedData, 0, chunkSize);
 				else
 				{
 					TRAP_ASSERT(data);
@@ -375,7 +375,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			updateDesc.Buffer = desc.Buffer;
 			BeginUpdateResource(updateDesc);
 			if (desc.ForceReset)
-				std::memset(updateDesc.MappedData, 0, desc.Desc.Size);
+				memset(updateDesc.MappedData, 0, desc.Desc.Size);
 			else
 			{
 				TRAP_ASSERT(!desc.Desc.Size || desc.Data);

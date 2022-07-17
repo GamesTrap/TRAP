@@ -199,7 +199,7 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 #endif
 
 	char buffer[9];
-	std::memset(buffer, 0, sizeof(buffer));
+	memset(buffer, 0, sizeof(buffer));
 	std::strftime(buffer, sizeof(buffer), "%T", &tm);
 
 	return buffer;
@@ -219,7 +219,7 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 #endif
 
 	char buffer[20];
-	std::memset(buffer, 0, sizeof(buffer));
+	memset(buffer, 0, sizeof(buffer));
 	std::strftime(buffer, sizeof(buffer), "%F %T", &tm);
 
 	return buffer;

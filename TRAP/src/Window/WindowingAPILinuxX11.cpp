@@ -3311,7 +3311,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 			return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
 
-		std::memset(&sci, 0, sizeof(sci));
+		memset(&sci, 0, sizeof(sci));
 		sci.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
 		sci.connection = connection;
 		sci.window = window->Handle;
@@ -3337,7 +3337,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 
-	std::memset(&sci, 0, sizeof(sci));
+	memset(&sci, 0, sizeof(sci));
 	sci.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
 	sci.dpy = s_Data.display;
 	sci.window = window->Handle;
