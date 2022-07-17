@@ -35,9 +35,7 @@
 
 namespace TRAP
 {
-	namespace FileSystem = FS;
-
-	namespace FS
+	namespace FileSystem
     {
         /// <summary>
 		/// Write mode to be used by writing operations.
@@ -314,7 +312,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void TRAP::FS::Shutdown()
+constexpr void TRAP::FileSystem::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 

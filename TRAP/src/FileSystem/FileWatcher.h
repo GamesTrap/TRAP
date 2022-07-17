@@ -11,7 +11,7 @@ namespace TRAP::Events
     class Event;
 }
 
-namespace TRAP::FS
+namespace TRAP::FileSystem
 {
     /// <summary>
     /// Specifies the status of a file.

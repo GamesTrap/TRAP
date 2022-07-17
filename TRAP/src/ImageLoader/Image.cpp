@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Image.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Utils/String/String.h"
 
 #include "PortableMaps/PGMImage.h"
@@ -229,7 +229,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 		return MakeScope<INTERNAL::CustomImage>(filepath, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 	}
 
-	const auto fileEnding = FS::GetFileEnding(filepath);
+	const auto fileEnding = FileSystem::GetFileEnding(filepath);
 	const std::string fileFormat = Utils::String::ToLower(*fileEnding);
 
 	Scope<Image> result;
@@ -310,7 +310,7 @@ bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
-	const auto fileEnding = FS::GetFileEnding(filepath);
+	const auto fileEnding = FileSystem::GetFileEnding(filepath);
 	if(!fileEnding)
 		return false;
 

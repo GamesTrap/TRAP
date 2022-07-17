@@ -3,7 +3,7 @@
 
 #include "Application.h"
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	: eMax(-127), eMin(127)
@@ -18,7 +18,7 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	TP_DEBUG(Log::ImageRadiancePrefix, "Loading image: \"",
 	         m_filepath.generic_u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);

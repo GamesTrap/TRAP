@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"
 
@@ -66,13 +66,13 @@ bool TRAP::Graphics::Shader::Reload()
 
 	if (!isSPIRV)
 	{
-		const auto loadedData = FS::ReadTextFile(m_filepath);
+		const auto loadedData = FileSystem::ReadTextFile(m_filepath);
 		if(loadedData)
 			glslSource = *loadedData;
 	}
 	else
 	{
-		const auto loadedData = FS::ReadFile(m_filepath);
+		const auto loadedData = FileSystem::ReadFile(m_filepath);
 		if(loadedData)
 			SPIRVSource = Convert8To32(*loadedData);
 	}
@@ -202,7 +202,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
-			const auto folderPath = FS::GetFolderPath(filePath);
+			const auto folderPath = FileSystem::GetFolderPath(filePath);
 			if(folderPath)
 				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 		}
@@ -228,7 +228,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	RendererAPI::BinaryShaderDesc desc{};
 	Scope<Shader> failShader = nullptr;
-	const auto name = FS::GetFileName(filePath);
+	const auto name = FileSystem::GetFileName(filePath);
 	if(!name)
 	{
 		TRAP_ASSERT(false, "Name is empty!");
@@ -248,7 +248,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
-			const auto folderPath = FS::GetFolderPath(filePath);
+			const auto folderPath = FileSystem::GetFolderPath(filePath);
 			if(folderPath)
 				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 		}
@@ -309,7 +309,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& filePath)
 {
 	//Check SPIRV Magic Number
-	if (!FS::FileOrFolderExists(filePath))
+	if (!FileSystem::FileOrFolderExists(filePath))
 		return false;
 
 	std::ifstream file(filePath, std::ios::binary);
@@ -797,7 +797,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 
 bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& filePath)
 {
-	const auto fileEnding = FS::GetFileEnding(filePath);
+	const auto fileEnding = FileSystem::GetFileEnding(filePath);
 	if(!fileEnding)
 		return false;
 
@@ -840,13 +840,13 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 
 		if (!isSPIRV)
 		{
-			const auto loadedData = FS::ReadTextFile(filePath);
+			const auto loadedData = FileSystem::ReadTextFile(filePath);
 			if(loadedData)
 				glslSource = *loadedData;
 		}
 		else
 		{
-			const auto loadedData = FS::ReadFile(filePath);
+			const auto loadedData = FileSystem::ReadFile(filePath);
 			if(loadedData)
 				SPIRVSource = Convert8To32(*loadedData);
 		}

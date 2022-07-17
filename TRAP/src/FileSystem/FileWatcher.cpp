@@ -1,11 +1,11 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
-#include "FS.h"
+#include "FileSystem.h"
 #include "Events/FileEvent.h"
 #include "Utils/Utils.h"
 
-TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
+TRAP::FileSystem::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
     : m_recursive(recursive), m_run(true)
 {
     if(paths.empty())
@@ -17,7 +17,7 @@ TRAP::FS::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FS::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
+TRAP::FileSystem::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
     : m_recursive(recursive), m_run(true)
 {
     if(path.empty())
@@ -29,34 +29,34 @@ TRAP::FS::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FS::FileWatcher::~FileWatcher()
+TRAP::FileSystem::FileWatcher::~FileWatcher()
 {
     Shutdown();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
+void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
 {
     m_callback = callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FS::FileWatcher::EventCallbackFn TRAP::FS::FileWatcher::GetEventCallback()
+TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::GetEventCallback()
 {
     return m_callback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::AddFolder(const std::filesystem::path& path)
+void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
     if(path.empty())
         return;
 
     //Always use absolute paths
-    const auto absPath = FS::ToAbsolutePath(path);
+    const auto absPath = FileSystem::ToAbsolutePath(path);
     if(!absPath)
         return;
 
@@ -71,7 +71,7 @@ void TRAP::FS::FileWatcher::AddFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
+void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
     if(paths.empty())
         return;
@@ -81,7 +81,7 @@ void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>&
     for (const auto& path : paths)
     {
         //Always use absolute paths
-        const auto absPath = FS::ToAbsolutePath(path);
+        const auto absPath = FileSystem::ToAbsolutePath(path);
         if(!absPath) //Skip invalid paths
             continue;
 
@@ -95,10 +95,10 @@ void TRAP::FS::FileWatcher::AddFolders(const std::vector<std::filesystem::path>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::RemoveFolder(const std::filesystem::path& path)
+void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
     //Always use absolute paths
-    const auto absPath = FS::ToAbsolutePath(path);
+    const auto absPath = FileSystem::ToAbsolutePath(path);
     if(!absPath)
         return;
 
@@ -114,7 +114,7 @@ void TRAP::FS::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
+void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
     if(paths.empty())
         return;
@@ -124,7 +124,7 @@ void TRAP::FS::FileWatcher::RemoveFolders(const std::vector<std::filesystem::pat
     for(const auto& path : paths)
     {
         //Always use absolute paths
-        const auto& absPath = FS::ToAbsolutePath(path);
+        const auto& absPath = FileSystem::ToAbsolutePath(path);
         if(!absPath) //Skip empty path
             continue;
 
@@ -137,14 +137,14 @@ void TRAP::FS::FileWatcher::RemoveFolders(const std::vector<std::filesystem::pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::filesystem::path> TRAP::FS::FileWatcher::GetFolders() const
+std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() const
 {
     return m_paths;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::Init()
+void TRAP::FileSystem::FileWatcher::Init()
 {
     if(m_paths.empty())
         return;
@@ -156,12 +156,12 @@ void TRAP::FS::FileWatcher::Init()
 #elif defined(TRAP_PLATFORM_LINUX)
     m_killEvent = eventfd(0, 0);
 #endif
-    m_thread = std::thread(&TRAP::FS::FileWatcher::Watch, this);
+    m_thread = std::thread(&TRAP::FileSystem::FileWatcher::Watch, this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::FileWatcher::Shutdown()
+void TRAP::FileSystem::FileWatcher::Shutdown()
 {
     if(!m_run)
         return;
@@ -193,7 +193,7 @@ void TRAP::FS::FileWatcher::Shutdown()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_PLATFORM_WINDOWS
-void TRAP::FS::FileWatcher::Watch()
+void TRAP::FileSystem::FileWatcher::Watch()
 {
     //Thread init
     std::vector<Events::FileChangeEvent> events;
@@ -323,7 +323,7 @@ void TRAP::FS::FileWatcher::Watch()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #elif defined(TRAP_PLATFORM_LINUX)
-void TRAP::FS::FileWatcher::Watch()
+void TRAP::FileSystem::FileWatcher::Watch()
 {
     //Thread init
     std::vector<Events::FileChangeEvent> events;

@@ -11,7 +11,7 @@
 
 #include "Components.h"
 #include "Entity.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 namespace YAML
 {
@@ -178,7 +178,7 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 	out << YAML::EndSeq;
 	out << YAML::EndMap;
 
-	if(!FS::WriteTextFile(filepath, out.c_str()))
+	if(!FileSystem::WriteTextFile(filepath, out.c_str()))
 		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: \"", filepath.generic_u8string(), "\" failed!");
 }
 
@@ -193,7 +193,7 @@ void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 
 bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
-	if (!FS::FileOrFolderExists(filepath))
+	if (!FileSystem::FileOrFolderExists(filepath))
 	{
 		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.generic_u8string(), "\" doesn't exists!");
 		return false;

@@ -2,7 +2,7 @@
 #include "Config.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -21,7 +21,7 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 	m_data.clear();
 
 	//Load
-	const auto input = FS::ReadTextFile(file);
+	const auto input = FileSystem::ReadTextFile(file);
 	if (!input)
 		return false;
 
@@ -64,7 +64,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 	TP_INFO(TRAP::Log::ConfigPrefix, "Saving file: \"", file.generic_u8string(), "\"");
 
 	//Read the file into a vector and replace the values of the keys that match with our map
-	const auto input = FS::ReadTextFile(file);
+	const auto input = FileSystem::ReadTextFile(file);
 	if (input)
 	{
 		const std::vector<std::string> lines = String::SplitString(*input, '\n');
@@ -133,7 +133,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 		ss << '\n';
 	}
 
-	return FS::WriteTextFile(file, ss.str());
+	return FileSystem::WriteTextFile(file, ss.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

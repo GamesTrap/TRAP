@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 TRAP::Log TRAP::TRAPLog{};
 
@@ -48,9 +48,9 @@ void TRAP::Log::Save()
 	TP_PROFILE_FUNCTION();
 
 	//Build final path and filename
-	const auto folderPath = FS::GetFolderPath(m_path);
-	const auto fileName = FS::GetFileName(m_path);
-	const auto fileEnding = FS::GetFileEnding(m_path);
+	const auto folderPath = FileSystem::GetFolderPath(m_path);
+	const auto fileName = FileSystem::GetFileName(m_path);
+	const auto fileEnding = FileSystem::GetFileEnding(m_path);
 	if(!folderPath || !fileName || !fileEnding)
 	{
 		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path.generic_u8string());
@@ -64,7 +64,7 @@ void TRAP::Log::Save()
 	for (const auto& [level, message] : m_buffer)
 		output += message + '\n';
 
-	if(!TRAP::FS::WriteTextFile(logFile, output))
+	if(!TRAP::FileSystem::WriteTextFile(logFile, output))
 		TP_ERROR(LoggerPrefix, "Failed to save: ", logFile.generic_u8string());
 }
 

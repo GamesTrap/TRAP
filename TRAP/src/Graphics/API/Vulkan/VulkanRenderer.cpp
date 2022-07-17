@@ -6,7 +6,7 @@
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 #include "Utils/Dialogs/Dialogs.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "VulkanCommon.h"
 #include "Embed.h"
 
@@ -126,7 +126,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 	s_pipelines.clear();
 
-	const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
 		for(auto& [hash, cache] : s_pipelineCaches)
@@ -2401,7 +2401,7 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 
 	const auto cacheIt = s_pipelineCaches.find(hash);
 
-	const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+	const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 	if(tempFolder)
 	{
 		std::pair<std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>>::iterator, bool> res;

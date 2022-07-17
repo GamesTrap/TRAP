@@ -31,7 +31,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/IP/IPv4Address.h"
 #include "Utils/Time/TimeStep.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 namespace TRAP::Network
 {
@@ -283,7 +283,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 		if(response.IsOK())
 		{
 			//Extract the filename from the file path
-			const auto filename = TRAP::FS::GetFileNameWithEnding(remoteFile);
+			const auto filename = TRAP::FileSystem::GetFileNameWithEnding(remoteFile);
 			if(!filename)
 			{
 				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", remoteFile.generic_u8string(), "!");
@@ -291,7 +291,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 			}
 
 			//Create missing directories if any
-			if(!TRAP::FS::FileOrFolderExists(path) && !TRAP::FS::CreateFolder(path))
+			if(!TRAP::FileSystem::FileOrFolderExists(path) && !TRAP::FileSystem::CreateFolder(path))
 				return Response(Response::Status::InvalidFile);
 
 			//Create the file and truncate it if necessary
@@ -327,7 +327,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
                                                         const std::filesystem::path& remotePath,
 														TransferMode mode, bool append)
 {
-	if(!FS::FileOrFolderExists(localFile))
+	if(!FileSystem::FileOrFolderExists(localFile))
 		return Response(Response::Status::InvalidFile);
 
 	//Get the contents of the file to send
@@ -339,7 +339,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 	}
 
 	//Extract the filename from the file path
-	const auto filename = TRAP::FS::GetFileNameWithEnding(localFile);
+	const auto filename = TRAP::FileSystem::GetFileNameWithEnding(localFile);
 	if(!filename)
 	{
 		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", localFile.generic_u8string(), "!");

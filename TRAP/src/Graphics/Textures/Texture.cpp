@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 #include "Application.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Objects/Queue.h"
 
@@ -32,7 +32,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FS::GetFolderPath(path);
+				const auto folderPath = FileSystem::GetFolderPath(path);
 				if(!folderPath)
 					continue;
 
@@ -98,7 +98,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FS::GetFolderPath(path);
+				const auto folderPath = FileSystem::GetFolderPath(path);
 				if(!folderPath)
 					continue;
 
@@ -144,7 +144,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 	TP_PROFILE_FUNCTION();
 
-	const auto name = FS::GetFileName(filepath);
+	const auto name = FileSystem::GetFileName(filepath);
 	if(!name)
 	{
 		TRAP_ASSERT(false, "Name is empty!");
@@ -165,7 +165,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FS::GetFolderPath(path);
+				const auto folderPath = FileSystem::GetFolderPath(path);
 				if(!folderPath)
 					continue;
 
@@ -260,7 +260,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FS::GetFolderPath(path);
+				const auto folderPath = FileSystem::GetFolderPath(path);
 				if(!folderPath)
 					continue;
 
@@ -351,7 +351,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FS::GetFolderPath(path);
+				const auto folderPath = FileSystem::GetFolderPath(path);
 				if(!folderPath)
 					continue;
 

@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "AftermathTracker.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
@@ -33,7 +33,7 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
                  void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-    const auto docsFolder = TRAP::FS::GetDocumentsFolderPath();
+    const auto docsFolder = TRAP::FileSystem::GetDocumentsFolderPath();
     if(!docsFolder)
         return;
 
@@ -45,9 +45,9 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
     std::lock_guard lock(mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
     std::copy_n(static_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
-    if(!TRAP::FS::FileOrFolderExists(folderPath))
-        TRAP::FS::CreateFolder(folderPath);
-    TRAP::FS::WriteFile(filePath, buffer);
+    if(!TRAP::FileSystem::FileOrFolderExists(folderPath))
+        TRAP::FileSystem::CreateFolder(folderPath);
+    TRAP::FileSystem::WriteFile(filePath, buffer);
 #endif
 }
 

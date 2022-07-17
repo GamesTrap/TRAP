@@ -2,7 +2,7 @@
 #include "PGMImage.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
 
@@ -15,7 +15,7 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 
 	TP_DEBUG(Log::ImagePGMPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);

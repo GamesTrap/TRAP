@@ -2,7 +2,7 @@
 #include "PipelineCache.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 TRAP::Graphics::PipelineCache::PipelineCache()
 {
@@ -51,7 +51,7 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 		if(!std::filesystem::exists(desc.Path))
 			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 
-		const auto data = TRAP::FS::ReadFile(desc.Path);
+		const auto data = TRAP::FileSystem::ReadFile(desc.Path);
 		if(!data)
 			return TRAP::Graphics::PipelineCache::Create(cacheDesc); //Empty cache
 

@@ -1,10 +1,10 @@
 #include "TRAPPCH.h"
 #include "FileEvent.h"
 
-#include "FS/FileWatcher.h"
+#include "FileSystem/FileWatcher.h"
 #include <stdexcept>
 
-TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FS::FileStatus status, std::filesystem::path path,
+TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
                                                std::filesystem::path oldName)
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
 {}
@@ -54,23 +54,23 @@ TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FS::FileStatus status)
+std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FileSystem::FileStatus status)
 {
     switch(status)
     {
-    case TRAP::FS::FileStatus::Created:
+    case TRAP::FileSystem::FileStatus::Created:
         return "Created";
 
-    case TRAP::FS::FileStatus::Renamed:
+    case TRAP::FileSystem::FileStatus::Renamed:
         return "Renamed";
 
-    case TRAP::FS::FileStatus::Modified:
+    case TRAP::FileSystem::FileStatus::Modified:
         return "Modified";
 
-    case TRAP::FS::FileStatus::Erased:
+    case TRAP::FileSystem::FileStatus::Erased:
         return "Erased";
 
     default:
-        throw std::invalid_argument("Unimplemented enum->string value for TRAP::FS::FileStatus");
+        throw std::invalid_argument("Unimplemented enum->string value for TRAP::FileSystem::FileStatus");
     }
 }

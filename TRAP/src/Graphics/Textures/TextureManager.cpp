@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "TextureManager.h"
 #include "Texture.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> Textures;
 
@@ -282,7 +282,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 		{
 			if (texture->GetType() == TextureType::Texture2D)
 			{
-				if (FS::IsPathEquivalent(nameOrPath, texture->GetFilePath()))
+				if (FileSystem::IsPathEquivalent(nameOrPath, texture->GetFilePath()))
 				{
 					if(texture->Reload())
 						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -297,7 +297,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 					if (texture->GetFilePaths()[i].empty())
 						continue;
 
-					if (FS::IsPathEquivalent(nameOrPath, texture->GetFilePaths()[i]))
+					if (FileSystem::IsPathEquivalent(nameOrPath, texture->GetFilePaths()[i]))
 					{
 						if(texture->Reload())
 							TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -371,7 +371,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 	{
 		if (texture->GetType() == TextureType::Texture2D)
 		{
-			if (FS::IsPathEquivalent(texture->GetFilePath(), path))
+			if (FileSystem::IsPathEquivalent(texture->GetFilePath(), path))
 				return true;
 		}
 		else if(texture->GetType() == TextureType::TextureCube)
@@ -379,7 +379,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 			const std::array<std::filesystem::path, 6> imageFilePaths = texture->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
 			{
-				if (FS::IsPathEquivalent(filePath, path))
+				if (FileSystem::IsPathEquivalent(filePath, path))
 					return true;
 			}
 		}

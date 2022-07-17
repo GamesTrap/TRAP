@@ -2,8 +2,8 @@
 #include "Application.h"
 
 #include "Core/Base.h"
-#include "FS/FS.h"
-#include "FS/FileWatcher.h"
+#include "FileSystem/FileSystem.h"
+#include "FileSystem/FileWatcher.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
@@ -164,10 +164,10 @@ TRAP::Application::Application(std::string gameName)
 		exit(-1);
 	}
 
-	FS::Init();
+	FileSystem::Init();
 
 	//Set main log file path
-	const auto logFolder = FS::GetGameLogFolderPath();
+	const auto logFolder = FileSystem::GetGameLogFolderPath();
 	if(logFolder)
 		TRAP::TRAPLog.SetFilePath(*logFolder / "trap.log");
 	else //Fallback to current directory
@@ -175,7 +175,7 @@ TRAP::Application::Application(std::string gameName)
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
-	const auto docsFolder = FS::GetGameDocumentsFolderPath();
+	const auto docsFolder = FileSystem::GetGameDocumentsFolderPath();
 	if(docsFolder)
 		cfgPath = *docsFolder / "engine.cfg";
 #endif
@@ -382,7 +382,7 @@ TRAP::Application::~Application()
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
-	const auto docsFolder = FS::GetGameDocumentsFolderPath();
+	const auto docsFolder = FileSystem::GetGameDocumentsFolderPath();
 	if(docsFolder)
 		cfgPath = *docsFolder / "engine.cfg";
 #endif
@@ -401,7 +401,7 @@ TRAP::Application::~Application()
 		Graphics::RendererAPI::Shutdown();
 	}
 
-	FS::Shutdown();
+	FileSystem::Shutdown();
 
 	s_Instance = nullptr;
 
@@ -680,7 +680,7 @@ std::string TRAP::Application::GetGameName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FS::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 {
 	if(s_Instance->m_hotReloadingFileWatcher)
 		return s_Instance->m_hotReloadingFileWatcher.get();
@@ -703,7 +703,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FS::FileWatcher>("", false);
+		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
@@ -855,10 +855,10 @@ void TRAP::Application::UpdateHotReloading()
 
 bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
-	if(event.GetStatus() != FS::FileStatus::Modified)
+	if(event.GetStatus() != FileSystem::FileStatus::Modified)
 		return false; //Only handle modified files
 
-	const auto fileEnding = FS::GetFileEnding(event.GetPath());
+	const auto fileEnding = FileSystem::GetFileEnding(event.GetPath());
 	if(!fileEnding) //Ignore files without an extension
 		return false;
 
@@ -898,7 +898,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingTexturePaths)
 		{
-			if(FS::IsPathEquivalent(p, event.GetPath()))
+			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
 				return false;
 		}
 
@@ -911,7 +911,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingShaderPaths)
 		{
-			if(FS::IsPathEquivalent(p, event.GetPath()))
+			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
 				return false;
 		}
 

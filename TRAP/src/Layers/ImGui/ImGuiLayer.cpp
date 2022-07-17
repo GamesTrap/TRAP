@@ -26,7 +26,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -52,7 +52,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
 	//Set imgui.ini path
-	const auto docsFolder = TRAP::FS::GetGameDocumentsFolderPath();
+	const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
 	if(docsFolder)
 		m_imguiIniPath = (*docsFolder / "imgui.ini").generic_u8string();
 	else //Fallback
@@ -111,7 +111,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
-		const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 		if(tempFolder)
 		{
 			TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
@@ -166,7 +166,7 @@ void TRAP::ImGuiLayer::OnDetach()
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-		const auto tempFolder = TRAP::FS::GetGameTempFolderPath();
+		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
 		if(tempFolder)
 			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
 		m_imguiPipelineCache.reset();

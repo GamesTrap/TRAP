@@ -2919,3 +2919,9 @@ SITREP 07/17/2022|22w28b4
         - Removed std:: from memset ~<5 mins
         - Removed/Replaced memset where possible ~>15 mins
         - Replaced remaining memset calls with std::fill or std::fill_n ~<30 mins
+
+SITREP 07/18/2022|22w29a1
+    - Branch STL:
+        - Replaced TRAP::FS with TRAP::FileSystem ~<10 mins
+        - Renamed FS.h/FS.cpp to FileSystem.h/FileSystem.cpp ~<5 mins
+        - Renamed src/FS folder to src/FileSystem ~<5 mins

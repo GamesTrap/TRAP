@@ -78,7 +78,7 @@ namespace TRAP::Utils::Debug
 		/// Begin a new profiling session.
 		/// </summary>
 		/// <param name="name">Name for the new session.</param>
-		/// <param name="filePath">Non-VFS file path for the new session.</param>
+		/// <param name="filePath">File path for the new session.</param>
 		void BeginSession(const std::string& name, const std::string& filePath = "results.json");
 		/// <summary>
 		/// End current profiling session.

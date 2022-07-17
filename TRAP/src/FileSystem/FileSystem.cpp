@@ -1,5 +1,5 @@
 #include "TRAPPCH.h"
-#include "FS.h"
+#include "FileSystem.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -10,7 +10,7 @@ std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::FS::Init()
+void TRAP::FileSystem::Init()
 {
     TP_PROFILE_FUNCTION();
 
@@ -41,7 +41,7 @@ void TRAP::FS::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::vector<uint8_t>> TRAP::FS::ReadFile(const std::filesystem::path& path)
+std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -65,7 +65,7 @@ std::optional<std::vector<uint8_t>> TRAP::FS::ReadFile(const std::filesystem::pa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FS::ReadTextFile(const std::filesystem::path& path)
+std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -94,7 +94,7 @@ std::optional<std::string> TRAP::FS::ReadTextFile(const std::filesystem::path& p
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer, const WriteMode mode)
+bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer, const WriteMode mode)
 {
     TP_PROFILE_FUNCTION();
 
@@ -118,7 +118,7 @@ bool TRAP::FS::WriteFile(const std::filesystem::path& path, const std::vector<ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::string_view text, const WriteMode mode)
+bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const std::string_view text, const WriteMode mode)
 {
     TP_PROFILE_FUNCTION();
 
@@ -144,7 +144,7 @@ bool TRAP::FS::WriteTextFile(const std::filesystem::path& path, const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::CreateFolder(const std::filesystem::path& path)
+bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -165,7 +165,7 @@ bool TRAP::FS::CreateFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::DeleteFileOrFolder(const std::filesystem::path& path)
+bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -211,7 +211,7 @@ bool TRAP::FS::DeleteFileOrFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
+bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
     if(FileOrFolderExists(newPath))
         return false;
@@ -231,28 +231,28 @@ bool TRAP::FS::MoveFolder(const std::filesystem::path& oldPath, const std::files
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder)
+bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder)
 {
     return MoveFolder(filePath, destFolder / filePath.filename());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
+bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
     return MoveFolder(oldPath, newPath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::RenameFile(const std::filesystem::path& oldPath, const std::string_view newName)
+bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const std::string_view newName)
 {
     return RenameFolder(oldPath, (oldPath.parent_path() / newName / oldPath.extension()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::FileOrFolderExists(const std::filesystem::path& path)
+bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -274,7 +274,7 @@ bool TRAP::FS::FileOrFolderExists(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<uintmax_t> TRAP::FS::GetFileOrFolderSize(const std::filesystem::path& path, const bool recursive)
+std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path, const bool recursive)
 {
     TP_PROFILE_FUNCTION();
 
@@ -378,7 +378,7 @@ std::optional<uintmax_t> TRAP::FS::GetFileOrFolderSize(const std::filesystem::pa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::file_time_type> TRAP::FS::GetLastWriteTime(const std::filesystem::path& path)
+std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -399,7 +399,7 @@ std::optional<std::filesystem::file_time_type> TRAP::FS::GetLastWriteTime(const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FS::GetFileNameWithEnding(const std::filesystem::path& path)
+std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -411,7 +411,7 @@ std::optional<std::string> TRAP::FS::GetFileNameWithEnding(const std::filesystem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FS::GetFileName(const std::filesystem::path& path)
+std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -423,7 +423,7 @@ std::optional<std::string> TRAP::FS::GetFileName(const std::filesystem::path& pa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FS::GetFileEnding(const std::filesystem::path& path)
+std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem::path& path)
 {
     TP_PROFILE_FUNCTION();
 
@@ -435,7 +435,7 @@ std::optional<std::string> TRAP::FS::GetFileEnding(const std::filesystem::path& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetFolderPath(const std::filesystem::path& filePath)
+std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::filesystem::path& filePath)
 {
     TP_PROFILE_FUNCTION();
 
@@ -447,7 +447,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetFolderPath(const std::filesyst
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetTempFolderPath()
+std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
 {
     std::error_code ec;
     const std::filesystem::path path = std::filesystem::temp_directory_path(ec);
@@ -463,7 +463,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetTempFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetGameTempFolderPath()
+std::optional<std::filesystem::path> TRAP::FileSystem::GetGameTempFolderPath()
 {
     const auto tempFolder = GetTempFolderPath();
     if(!tempFolder)
@@ -474,7 +474,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetGameTempFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetCurrentFolderPath()
+std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
 {
     std::error_code ec;
     const std::filesystem::path path = std::filesystem::current_path(ec);
@@ -490,7 +490,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetCurrentFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetDocumentsFolderPath()
+std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
     PWSTR path = nullptr;
@@ -522,7 +522,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetDocumentsFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetGameDocumentsFolderPath()
+std::optional<std::filesystem::path> TRAP::FileSystem::GetGameDocumentsFolderPath()
 {
 	const auto docsFolder = GetDocumentsFolderPath();
     if(!docsFolder)
@@ -533,7 +533,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetGameDocumentsFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::GetGameLogFolderPath()
+std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 {
 #ifndef TRAP_HEADLESS_MODE
     const auto docsFolder = GetGameDocumentsFolderPath();
@@ -548,7 +548,7 @@ std::optional<std::filesystem::path> TRAP::FS::GetGameLogFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
+bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
 {
     std::error_code ec;
     const bool res = std::filesystem::equivalent(p1, p2, ec);
@@ -564,7 +564,7 @@ bool TRAP::FS::IsPathEquivalent(const std::filesystem::path& p1, const std::file
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::IsPathAbsolute(const std::filesystem::path& p)
+bool TRAP::FileSystem::IsPathAbsolute(const std::filesystem::path& p)
 {
     //is_absolute() may throw implementation-defined exception
     try
@@ -580,7 +580,7 @@ bool TRAP::FS::IsPathAbsolute(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::IsPathRelative(const std::filesystem::path& p)
+bool TRAP::FileSystem::IsPathRelative(const std::filesystem::path& p)
 {
     //is_relative() may throw implementation-defined exception
     try
@@ -596,7 +596,7 @@ bool TRAP::FS::IsPathRelative(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::IsFolder(const std::filesystem::path& p)
+bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 {
     std::error_code ec;
     const bool res = std::filesystem::is_directory(p, ec);
@@ -612,7 +612,7 @@ bool TRAP::FS::IsFolder(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::IsFile(const std::filesystem::path& p)
+bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 {
     std::error_code ec;
     const bool res = std::filesystem::is_regular_file(p, ec);
@@ -628,7 +628,7 @@ bool TRAP::FS::IsFile(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::ToAbsolutePath(const std::filesystem::path& p)
+std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
 {
     if(p.is_absolute())
         return p;
@@ -647,7 +647,7 @@ std::optional<std::filesystem::path> TRAP::FS::ToAbsolutePath(const std::filesys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FS::ToRelativePath(const std::filesystem::path& p)
+std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p)
 {
     if(p.is_relative())
         return p;
@@ -666,7 +666,7 @@ std::optional<std::filesystem::path> TRAP::FS::ToRelativePath(const std::filesys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::OpenFolderInFileBrowser(const std::filesystem::path& p)
+bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
 {
     if(!FileOrFolderExists(p) || !IsFolder(p))
         return false;
@@ -702,7 +702,7 @@ bool TRAP::FS::OpenFolderInFileBrowser(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::OpenFileInFileBrowser(const std::filesystem::path& p)
+bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 {
     if(!FileOrFolderExists(p) || !IsFile(p))
         return false;
@@ -742,7 +742,7 @@ bool TRAP::FS::OpenFileInFileBrowser(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FS::OpenExternally(const std::filesystem::path& p)
+bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 {
     if(!FileOrFolderExists(p))
         return false;
