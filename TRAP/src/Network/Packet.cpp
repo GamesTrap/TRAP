@@ -110,7 +110,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int8_t*>(&m_data[m_readPos]);
+		data = static_cast<int8_t>(m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -123,7 +123,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint8_t*>(&m_data[m_readPos]);
+		data = static_cast<uint8_t>(m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -136,7 +136,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int16_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -153,7 +153,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint16_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -170,7 +170,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int32_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -187,7 +187,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint32_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -204,7 +204,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int64_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -221,7 +221,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint64_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -238,7 +238,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<float*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 		m_readPos += sizeof(data);
 	}
 
@@ -251,7 +251,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<double*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 		m_readPos += sizeof(data);
 	}
 

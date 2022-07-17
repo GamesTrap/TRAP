@@ -50,7 +50,7 @@ uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 
 	//Retrieve information about the local end of the socket
 	sockaddr_in6 address{};
-	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in6);
 	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 	{
 		uint16_t res = address.sin6_port;
@@ -79,8 +79,8 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint1
 		return Status::Error;
 
 	//Bind the socket to the specified port
-	sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
-	if(bind(GetHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
+	const sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
+	if(bind(GetHandle(), reinterpret_cast<const sockaddr*>(&addr), sizeof(sockaddr_in6)) == -1)
 	{
 		//Not likely to happen, but...
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to bind listener socket to port", port);
@@ -119,7 +119,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIP
 
 	//Accept a new connection
 	sockaddr_in6 address{};
-	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(address);
+	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(sockaddr_in6);
 	const SocketHandle remote = ::accept(GetHandle(), reinterpret_cast<sockaddr*>(&address), &length);
 
 	//Check for errors

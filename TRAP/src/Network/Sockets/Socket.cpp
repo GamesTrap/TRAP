@@ -125,7 +125,7 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 	{
 		//Disable the Nagle algorithm (i.e. removes buffering of TCP packets)
 		int32_t yes = 1;
-		if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&yes), sizeof(yes)) == -1)
+		if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, &yes, sizeof(yes)) == -1)
 		{
 			TP_ERROR(Log::NetworkSocketPrefix,
 						"Failed to set socket option \"TCP_NODELAY\"; all your TCP packets will be buffered");
@@ -135,7 +135,7 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 	{
 		//Enable broadcast by default for UDP sockets
 		int32_t yes = 1;
-		if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<char*>(&yes), sizeof(yes)) == -1)
+		if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, &yes, sizeof(yes)) == -1)
 		{
 			TP_ERROR(Log::NetworkSocketPrefix, "Failed to enable broadcast on UDP socket");
 		}

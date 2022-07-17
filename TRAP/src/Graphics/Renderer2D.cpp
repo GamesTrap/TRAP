@@ -189,8 +189,7 @@ void TRAP::Graphics::Renderer2D::EndScene()
 {
 	TP_PROFILE_FUNCTION();
 
-	const uint32_t dataSize = static_cast<uint32_t>(reinterpret_cast<uint8_t*>(s_data.QuadVertexBufferPtr) -
-		                                            reinterpret_cast<uint8_t*>(s_data.QuadVertexBufferBase));
+	const uint32_t dataSize = (s_data.QuadVertexBufferPtr - s_data.QuadVertexBufferBase) * sizeof(QuadVertex);
 	if (dataSize)
 	{
 		//Update Vertices

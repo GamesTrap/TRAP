@@ -1083,7 +1083,7 @@ bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_
 
     // Setup backend capabilities flags
     ImGui_ImplVulkan_Data* bd = IM_NEW(ImGui_ImplVulkan_Data)();
-    io.BackendRendererUserData = reinterpret_cast<void*>(bd);
+    io.BackendRendererUserData = bd;
     io.BackendRendererName = "TRAP_Vulkan";
     io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  // We can honor the ImDrawCmd::VtxOffset field, allowing for large meshes.
     io.BackendFlags |= ImGuiBackendFlags_RendererHasViewports;  // We can create multi-viewports on the Renderer side (optional)
@@ -1721,7 +1721,8 @@ static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
 
     // Create surface
     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
-    VkResult err = static_cast<VkResult>(platform_io.Platform_CreateVkSurface(viewport, reinterpret_cast<ImU64>(v->Instance), static_cast<const void*>(v->Allocator), reinterpret_cast<ImU64*>(&wd->Surface)));
+    const ImU64 instance = TRAP::Utils::BitCast<VkInstance, ImU64>(v->Instance);
+    const VkResult err = static_cast<VkResult>(platform_io.Platform_CreateVkSurface(viewport, instance, static_cast<const void*>(v->Allocator), reinterpret_cast<ImU64*>(&wd->Surface)));
     check_vk_result(err);
 
     // Check for WSI support

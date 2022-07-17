@@ -46,7 +46,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, 
 
 	//Setup back-end capabilities flags
 	ImGuiTRAPData* bd = IM_NEW(ImGuiTRAPData)();
-	io.BackendPlatformUserData = reinterpret_cast<void*>(bd);
+	io.BackendPlatformUserData = bd;
 	io.BackendPlatformName = "TRAP";
 	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors; //We can honor GetMouseCursor() values (optional)
 	io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos; //We can honor io.WantSetMousePos requests (optional, rarely used)
@@ -102,7 +102,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, 
 
 	//Our mouse update function expect PlatformHandle to be filled for the main viewport
 	ImGuiViewport* mainViewport = ImGui::GetMainViewport();
-	mainViewport->PlatformHandle = reinterpret_cast<void*>(bd->Window);
+	mainViewport->PlatformHandle = bd->Window;
 #ifdef TRAP_PLATFORM_WINDOWS
 	mainViewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(bd->Window);
 #endif
@@ -1020,7 +1020,8 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	IM_UNUSED(bd);
 	IM_ASSERT(bd->ClientAPI == TRAP::Graphics::RenderAPI::Vulkan);
-	const VkResult err = WindowingAPI::CreateWindowSurface(reinterpret_cast<VkInstance>(vkInstance),
+	const VkInstance instance = Utils::BitCast<const ImU64, const VkInstance>(vkInstance);
+	const VkResult err = WindowingAPI::CreateWindowSurface(instance,
 	                                                       vd->WindowPtr,
 	                                                       static_cast<const VkAllocationCallbacks*>(vkAllocator),
 														   *reinterpret_cast<VkSurfaceKHR*>(outVkSurface));
@@ -1062,7 +1063,7 @@ void TRAP::INTERNAL::ImGuiWindowing::InitPlatformInterface()
 	vd->WindowPtr = bd->Window;
 	vd->WindowOwned = false;
 	main_viewport->PlatformUserData = vd;
-	main_viewport->PlatformHandle = reinterpret_cast<void*>(bd->Window);
+	main_viewport->PlatformHandle = bd->Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

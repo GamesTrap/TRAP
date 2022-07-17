@@ -65,12 +65,11 @@ void TRAP::ImGuiLayer::OnAttach()
 		scaleFactor = contentScale.x;
 
 	ImFontConfig fontConfig;
-	fontConfig.FontDataOwnedByAtlas = false;
-	//While looking like UB Casting const uint8_t* to void* in this instance is okay because the memory will only be copied by ImGui because of the above line
-	io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(const_cast<uint8_t*>(Embed::OpenSansBoldTTFData.data())),
+	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
+	io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansBoldTTFData.data()),
 	                               static_cast<int32_t>(Embed::OpenSansBoldTTFData.size()),
 								   scaleFactor * 18.0f, &fontConfig);
-	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(const_cast<uint8_t*>(Embed::OpenSansTTFData.data())),
+	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansTTFData.data()),
 	                                                static_cast<int32_t>(Embed::OpenSansTTFData.size()),
 													scaleFactor * 18.0f, &fontConfig);
 

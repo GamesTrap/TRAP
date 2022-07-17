@@ -171,7 +171,7 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 			{
 				if(result)
 				{
-					std::memcpy(ip.data(), &reinterpret_cast<sockaddr_in6*>(result->ai_addr)->sin6_addr, 16);
+					memcpy(ip.data(), &reinterpret_cast<sockaddr_in6*>(result->ai_addr)->sin6_addr, ip.size());
 					freeaddrinfo(result);
 					m_address = ip;
 					m_valid = true;

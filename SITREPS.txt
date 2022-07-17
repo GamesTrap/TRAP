@@ -2903,8 +2903,14 @@ SITREP 07/15/2022|22w28b2
         - Replaced reinterpret_cast with static_cast where possible ~<10 mins
 
 SITREP 07/16/2022|22w28b3
+    - Branch STL:
         - TRAP_Assert Removed type from macros ~<5 mins
         - TRAP_Assert Made path to file absolute ~<5 mins
         - Utils backported C++20s std::bitcast ~<10 mins
         - Application CheckSingleProcessLinux() now uses Utils::BitCast instead of reinterpret_cast ~<5 mins
         - Vulkan every VkSetObjectName() call now uses Utils::BitCast instead of reinterpret_cast ~<5 mins
+        - Renderer2D EndScene() Removed reinterpret_cast from vertex data size calculation ~<5 mins
+
+SITREP 07/17/2022|22w28b4
+    - Branch STL:
+        - Replaced reinterpret_cast with Utils::BitCast in various files ~>15 mins

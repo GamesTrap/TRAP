@@ -49,11 +49,13 @@ uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 		return 0; //We failed to retrieve the port
 
 	//Retrieve information about the local end of the socket
-	sockaddr_in address{};
-	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+	sockaddr address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
+	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t res = address.sin_port;
+		const sockaddr_in finalAddress = Utils::BitCast<sockaddr, sockaddr_in>(address);
+
+		uint16_t res = finalAddress.sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(res);
@@ -79,8 +81,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t 
 		return Status::Error;
 
 	//Bind the socket to the specified port
-	sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
-	if(bind(GetHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
+	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
+	const sockaddr finalAddr = Utils::BitCast<const sockaddr_in, const sockaddr>(addr);
+	if(bind(GetHandle(), &finalAddr, sizeof(sockaddr_in)) == -1)
 	{
 		//Not likely to happen, but...
 		TP_ERROR(Log::NetworkTCPListenerPrefix, "Failed to bind listener socket to port", port);
@@ -118,9 +121,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& sock
 	}
 
 	//Accept a new connection
-	sockaddr_in address{};
-	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(address);
-	const SocketHandle remote = ::accept(GetHandle(), reinterpret_cast<sockaddr*>(&address), &length);
+	sockaddr address{};
+	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(sockaddr_in);
+	const SocketHandle remote = ::accept(GetHandle(), &address, &length);
 
 	//Check for errors
 	if (remote == INTERNAL::Network::SocketImpl::InvalidSocket())

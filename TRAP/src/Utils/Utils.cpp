@@ -98,7 +98,7 @@ TRAP::Utils::Endian TRAP::Utils::GetEndian()
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
 	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
-#if __cplusplus > 201703L
+#if __cpp_lib_endian
 	static Endian endian = static_cast<Endian>(std::endian::native == std::endian::little);
 #else
 	static Endian endian = static_cast<Endian>(uVal[0] == 1);
@@ -116,19 +116,18 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	if(!cpu.Model.empty())
 		return cpu;
 
-	auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)->std::array <uint32_t, 4>
+	static constexpr auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)
 	{
-		std::array<uint32_t, 4> regs{};
+		std::array<int32_t, 4> regs{};
 	#ifdef TRAP_PLATFORM_WINDOWS
-		__cpuidex(reinterpret_cast<int32_t*>(regs.data()), static_cast<int32_t>(funcID),
-		          static_cast<int32_t>(subFuncID));
+		__cpuidex(regs.data(), static_cast<int32_t>(funcID), static_cast<int32_t>(subFuncID));
 	#else
 		asm volatile
 			("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
 				: "a" (funcID), "c" (subFuncID));
 	#endif
 
-		return regs;
+		return Utils::BitCast<std::array<int32_t, 4>, std::array<uint32_t, 4>>(regs);
 	};
 
 	std::array<uint32_t, 4> regs = CPUID(0, 0);
@@ -241,18 +240,18 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	for (uint32_t i = 0x80000002; i < 0x80000005; ++i)
 	{
 		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[0]), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[1]), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[2]), sizeof(uint32_t));
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[3]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[0]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[1]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[2]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[3]), sizeof(uint32_t));
 	}
 
-	uint32_t lastAlphaChar = 0;
+	int32_t lastAlphaChar = 0;
 	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
 	{
 		if (isalnum(*it))
 		{
-			lastAlphaChar = static_cast<uint32_t>(it - cpu.Model.rbegin());
+			lastAlphaChar = it - cpu.Model.rbegin();
 			break;
 		}
 	}
