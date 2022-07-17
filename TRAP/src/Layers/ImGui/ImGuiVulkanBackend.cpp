@@ -123,7 +123,7 @@ struct ImGui_ImplVulkan_ViewportData
     ImGui_ImplVulkanH_Window                Window;             // Used by secondary viewports only
     ImGui_ImplVulkanH_WindowRenderBuffers   RenderBuffers;      // Used by all viewports
 
-    ImGui_ImplVulkan_ViewportData()         { WindowOwned = false; memset(&RenderBuffers, 0, sizeof(RenderBuffers)); }
+    ImGui_ImplVulkan_ViewportData()         { WindowOwned = false; RenderBuffers = {}; }
     ~ImGui_ImplVulkan_ViewportData()        { }
 };
 
@@ -157,10 +157,12 @@ struct ImGui_ImplVulkan_Data
     ImGui_ImplVulkanH_WindowRenderBuffers MainWindowRenderBuffers;
 
     ImGui_ImplVulkan_Data()
-    {
-        memset(this, 0, sizeof(*this));
-        BufferMemoryAlignment = 256;
-    }
+        : VulkanInitInfo(), RenderPass(VK_NULL_HANDLE), BufferMemoryAlignment(256), PipelineCreateFlags(),
+          DescriptorSetLayout(VK_NULL_HANDLE), PipelineLayout(VK_NULL_HANDLE), DescriptorSet(VK_NULL_HANDLE),
+          Pipeline(VK_NULL_HANDLE), Subpass(), ShaderModuleVert(VK_NULL_HANDLE), ShaderModuleFrag(VK_NULL_HANDLE),
+          FontSampler(VK_NULL_HANDLE), FontMemory(VK_NULL_HANDLE), FontImage(VK_NULL_HANDLE), FontView(VK_NULL_HANDLE),
+          FontDescriptorSet(VK_NULL_HANDLE), UploadBufferMemory(VK_NULL_HANDLE), UploadBuffer(VK_NULL_HANDLE)
+    {}
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

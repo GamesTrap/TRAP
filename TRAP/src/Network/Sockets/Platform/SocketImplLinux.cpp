@@ -41,7 +41,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
 	sockaddr_in addr{};
-	memset(&addr, 0, sizeof(addr));
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 	{
@@ -62,7 +61,6 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
                                                                 uint16_t port)
 {
 	sockaddr_in6 addr{};
-	memset(&addr, 0, sizeof(addr));
 	std::copy(address.begin(), address.end(), addr.sin6_addr.s6_addr);
 	addr.sin6_family = AF_INET6;
 

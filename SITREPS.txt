@@ -2917,3 +2917,4 @@ SITREP 07/17/2022|22w28b4
         - Removed std:: from memcpy ~<5 mins
         - Replaced memcpy with std::copy or std::copy_n ~>30 mins
         - Removed std:: from memset ~<5 mins
+        - Removed/Replaced memset where possible ~>15 mins

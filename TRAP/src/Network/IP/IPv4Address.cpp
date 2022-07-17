@@ -198,7 +198,6 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 		{
 			//Not a valid address, try to convert it as a host name
 			addrinfo hints{};
-			memset(&hints, 0, sizeof(hints));
 			hints.ai_family = AF_INET;
 			addrinfo* result = nullptr;
 			if(getaddrinfo(address.data(), nullptr, &hints, &result) == 0)

@@ -198,11 +198,10 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 	localtime_r(&time, &tm);
 #endif
 
-	char buffer[9];
-	memset(buffer, 0, sizeof(buffer));
-	std::strftime(buffer, sizeof(buffer), "%T", &tm);
+	std::array<char, 9> buffer{};
+	strftime(buffer.data(), buffer.size(), "%T", &tm);
 
-	return buffer;
+	return std::string(buffer.begin(), buffer.end());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -218,9 +217,8 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 	localtime_r(&time, &tm);
 #endif
 
-	char buffer[20];
-	memset(buffer, 0, sizeof(buffer));
-	std::strftime(buffer, sizeof(buffer), "%F %T", &tm);
+	std::array<char, 20> buffer{};
+	strftime(buffer.data(), buffer.size(), "%F %T", &tm);
 
-	return buffer;
+	return std::string(buffer.begin(), buffer.end());
 }

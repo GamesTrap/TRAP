@@ -3291,9 +3291,6 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 {
 	if(s_Data.VK.KHR_XCB_Surface && s_Data.XCB.Handle)
 	{
-		VkXcbSurfaceCreateInfoKHR sci{};
-		PFN_vkCreateXcbSurfaceKHR vkCreateXcbSurfaceKHR = nullptr;
-
 		xcb_connection_t* connection = s_Data.XCB.GetXCBConnection(s_Data.display);
 		if(!connection)
 		{
@@ -3301,7 +3298,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 			return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
 
-		vkCreateXcbSurfaceKHR = reinterpret_cast<PFN_vkCreateXcbSurfaceKHR>(vkGetInstanceProcAddr
+		PFN_vkCreateXcbSurfaceKHR vkCreateXcbSurfaceKHR = reinterpret_cast<PFN_vkCreateXcbSurfaceKHR>(vkGetInstanceProcAddr
 			(
 				instance, "vkCreateXcbSurfaceKHR"
 			));
@@ -3311,7 +3308,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 			return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
 
-		memset(&sci, 0, sizeof(sci));
+		VkXcbSurfaceCreateInfoKHR sci{};
 		sci.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
 		sci.connection = connection;
 		sci.window = window->Handle;
@@ -3324,10 +3321,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		return err;
 	}
 
-	VkXlibSurfaceCreateInfoKHR sci{};
-	PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR = nullptr;
-
-	vkCreateXlibSurfaceKHR = reinterpret_cast<PFN_vkCreateXlibSurfaceKHR>(vkGetInstanceProcAddr
+	PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR = reinterpret_cast<PFN_vkCreateXlibSurfaceKHR>(vkGetInstanceProcAddr
 		(
 			instance, "vkCreateXlibSurfaceKHR"
 		));
@@ -3337,7 +3331,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 
-	memset(&sci, 0, sizeof(sci));
+	VkXlibSurfaceCreateInfoKHR sci{};
 	sci.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
 	sci.dpy = s_Data.display;
 	sci.window = window->Handle;

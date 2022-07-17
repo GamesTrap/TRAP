@@ -131,7 +131,6 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 	std::array<uint8_t, rate / 8> m{};
 	std::size_t pos = 0;
 	std::array<uint64_t, 25> A{};
-	memset(A.data(), 0, A.size());
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 	constexpr std::size_t r = rate / 8;
@@ -173,7 +172,6 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 	std::array<uint8_t, rate / 8> m{};
 	std::size_t pos = 0;
 	std::array<uint64_t, 25> A{};
-	memset(A.data(), 0, A.size());
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 	constexpr std::size_t r = rate / 8;

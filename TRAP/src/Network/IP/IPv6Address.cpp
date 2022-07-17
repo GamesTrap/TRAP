@@ -164,7 +164,6 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 		{
 			//Not a valid address, try to convert it as a host name
 			addrinfo hints{};
-			memset(&hints, 0, sizeof(hints));
 			hints.ai_family = AF_INET6;
 			addrinfo* result = nullptr;
 			if(getaddrinfo(lowerAddress.c_str(), nullptr, &hints, &result) == 0)

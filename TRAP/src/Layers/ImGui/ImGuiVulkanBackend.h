@@ -161,10 +161,12 @@ struct ImGui_ImplVulkanH_Window
     ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores;
 
     ImGui_ImplVulkanH_Window()
+        : Width(), Height(), Swapchain(VK_NULL_HANDLE), Surface(VK_NULL_HANDLE), SurfaceFormat(),
+          PresentMode(static_cast<VkPresentModeKHR>(~0)), RenderPass(VK_NULL_HANDLE),
+          Pipeline(VK_NULL_HANDLE), ClearEnable(true), ClearValue(), FrameIndex(), ImageCount(),
+          SemaphoreIndex(), Frames(nullptr), FrameSemaphores(nullptr)
     {
-        memset(this, 0, sizeof(*this));
-        PresentMode = static_cast<VkPresentModeKHR>(~0); //Ensure we get an error if user doesn't set this.
-        ClearEnable = true;
+        // PresentMode = static_cast<VkPresentModeKHR>(~0); //Ensure we get an error if user doesn't set this.
     }
 };
 
