@@ -13,7 +13,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::RGB;
 
-	TP_DEBUG(Log::ImagePPMPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
+	TP_DEBUG(Log::ImagePPMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
 	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
@@ -21,7 +21,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePPMPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImagePPMPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImagePPMPrefix, "Using default image!");
 		return;
 	}

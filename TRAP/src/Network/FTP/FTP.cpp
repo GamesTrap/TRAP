@@ -206,7 +206,7 @@ TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(cons
 	if(response.IsOK())
 	{
 		//Tell the server to send us the listing
-		response = SendCommand("NLST", directory.generic_u8string());
+		response = SendCommand("NLST", directory.u8string());
 		if(response.IsOK())
 		{
 			//Receive the listing
@@ -224,7 +224,7 @@ TRAP::Network::FTP::ListingResponse TRAP::Network::FTP::GetDirectoryListing(cons
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::ChangeDirectory(const std::filesystem::path& directory)
 {
-	return SendCommand("CWD", directory.generic_u8string());
+	return SendCommand("CWD", directory.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -238,14 +238,14 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::ParentDirectory()
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::CreateDirectory(const std::filesystem::path& name)
 {
-	return SendCommand("MKD", name.generic_u8string());
+	return SendCommand("MKD", name.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteDirectory(const std::filesystem::path& name)
 {
-	return SendCommand("RMD", name.generic_u8string());
+	return SendCommand("RMD", name.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -253,9 +253,9 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteDirectory(const std::file
 TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::filesystem::path& file,
    															const std::filesystem::path& newName)
 {
-	Response response = SendCommand("RNFR", file.generic_u8string());
+	Response response = SendCommand("RNFR", file.u8string());
 	if (response.IsOK())
-		response = SendCommand("RNTO", newName.generic_u8string());
+		response = SendCommand("RNTO", newName.u8string());
 
 	return response;
 }
@@ -264,7 +264,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::RenameFile(const std::filesyste
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::filesystem::path& name)
 {
-	return SendCommand("DELE", name.generic_u8string());
+	return SendCommand("DELE", name.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -279,14 +279,14 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 	if(response.IsOK())
 	{
 		//Tell the server to start the transfer
-		response = SendCommand("RETR", remoteFile.generic_u8string());
+		response = SendCommand("RETR", remoteFile.u8string());
 		if(response.IsOK())
 		{
 			//Extract the filename from the file path
 			const auto filename = TRAP::FileSystem::GetFileNameWithEnding(remoteFile);
 			if(!filename)
 			{
-				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", remoteFile.generic_u8string(), "!");
+				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", remoteFile.u8string(), "!");
 				return Response(Response::Status::InvalidFile);
 			}
 
@@ -299,7 +299,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 			std::ofstream file(filePath, std::ios::binary | std::ios::trunc);
 			if (!file.is_open() || !file.good())
 			{
-				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", filePath.generic_u8string(), "!");
+				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", filePath.u8string(), "!");
 				return Response(Response::Status::InvalidFile);
 			}
 
@@ -334,7 +334,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 	std::ifstream file(localFile, std::ios::binary);
 	if (!file.is_open() || !file.good())
 	{
-		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", localFile.generic_u8string(), "!");
+		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open file path: ", localFile.u8string(), "!");
 		return Response(Response::Status::InvalidFile);
 	}
 
@@ -342,7 +342,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 	const auto filename = TRAP::FileSystem::GetFileNameWithEnding(localFile);
 	if(!filename)
 	{
-		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", localFile.generic_u8string(), "!");
+		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't get file name from file path: ", localFile.u8string(), "!");
 		return Response(Response::Status::InvalidFile);
 	}
 
@@ -352,7 +352,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 	if (response.IsOK())
 	{
 		//Tell the server to start the transfer
-		response = SendCommand(append ? "APPE" : "STOR", (remotePath / *filename).generic_u8string());
+		response = SendCommand(append ? "APPE" : "STOR", (remotePath / *filename).u8string());
 		if (response.IsOK())
 		{
 			//Send the file data

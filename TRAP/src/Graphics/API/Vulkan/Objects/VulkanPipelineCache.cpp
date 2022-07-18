@@ -60,7 +60,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path&
 
 	if (!TRAP::FileSystem::WriteFile(path, data))
 		TP_ERROR(Log::RendererVulkanPipelineCachePrefix, "Saving of PipelineCache to path: \"",
-		         path.generic_u8string(), "\" failed!");
+		         path.u8string(), "\" failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

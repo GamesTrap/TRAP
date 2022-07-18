@@ -316,7 +316,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 
 	if(!file.is_open())
 	{
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath.generic_u8string());
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath.u8string());
 		return false;
 	}
 
@@ -814,7 +814,7 @@ bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& 
 
 	if(!supportedFormat)
 	{
-		TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
+		TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.u8string(), "\" suffix is not supported!");
 		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file");
 		return false;
 	}

@@ -17,7 +17,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
+	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
 	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
@@ -25,7 +25,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageQOIPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImageQOIPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImageQOIPrefix, "Using default image!");
 		return;
 	}
@@ -36,7 +36,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
     if(fileSize < sizeof(Header) + EndMarker.size())
     {
-        TP_ERROR(Log::ImageQOIPrefix, "File size is too small: ", m_filepath.generic_u8string(), "!");
+        TP_ERROR(Log::ImageQOIPrefix, "File size is too small: ", m_filepath.u8string(), "!");
         TP_WARN(Log::ImageQOIPrefix, "Using default image!");
         return;
     }

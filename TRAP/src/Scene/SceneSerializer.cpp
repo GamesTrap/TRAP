@@ -179,7 +179,7 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 	out << YAML::EndMap;
 
 	if(!FileSystem::WriteTextFile(filepath, out.c_str()))
-		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: \"", filepath.generic_u8string(), "\" failed!");
+		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: \"", filepath.u8string(), "\" failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -195,18 +195,18 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
 	if (!FileSystem::FileOrFolderExists(filepath))
 	{
-		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.generic_u8string(), "\" doesn't exists!");
+		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.u8string(), "\" doesn't exists!");
 		return false;
 	}
 
 	YAML::Node data;
 	try
 	{
-		data = YAML::LoadFile(filepath.generic_u8string());
+		data = YAML::LoadFile(filepath.u8string());
 	}
 	catch(const YAML::ParserException& ex)
 	{
-		TP_ERROR(Log::SceneSerializerPrefix, "Failed to load scene file: \"", filepath.generic_u8string(), "\" ", ex.what());
+		TP_ERROR(Log::SceneSerializerPrefix, "Failed to load scene file: \"", filepath.u8string(), "\" ", ex.what());
 	}
 
 	if (!data["Scene"])

@@ -69,8 +69,7 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		const sockaddr_in addrIn = Utils::BitCast<sockaddr, sockaddr_in>(address);
-		uint16_t port = addrIn.sin_port;
+		uint16_t port = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -94,8 +93,7 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getpeername(GetHandle(), &address, &size) != -1)
 	{
-		const sockaddr_in addrIn = Utils::BitCast<sockaddr, sockaddr_in>(address);
-		uint32_t addr = addrIn.sin_addr.s_addr;
+		uint32_t addr = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_addr.s_addr;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(addr);
@@ -118,8 +116,7 @@ uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getpeername(GetHandle(), &address, &size) != -1)
 	{
-		const sockaddr_in addrIn = Utils::BitCast<sockaddr, sockaddr_in>(address);
-		uint16_t port = addrIn.sin_port;
+		uint16_t port = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);

@@ -137,8 +137,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	INTERNAL::Network::SocketImpl::Close(sock);
 
 	//Finally build the IP address
-	address = Utils::BitCast<sockaddr, sockaddr_in>(convertedAddress);
-	uint32_t addr = address.sin_addr.s_addr;
+	uint32_t addr = Utils::BitCast<sockaddr, sockaddr_in>(convertedAddress).sin_addr.s_addr;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(addr);

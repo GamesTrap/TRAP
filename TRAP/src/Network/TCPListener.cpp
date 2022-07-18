@@ -53,9 +53,7 @@ uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
 	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		const sockaddr_in finalAddress = Utils::BitCast<sockaddr, sockaddr_in>(address);
-
-		uint16_t res = finalAddress.sin_port;
+		uint16_t res = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(res);

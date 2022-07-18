@@ -106,7 +106,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
     if(std::find(m_paths.begin(), m_paths.end(), *absPath) != m_paths.end())
     {
         Shutdown();
-        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), (*absPath).generic_u8string()),
+        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), (*absPath)),
                         m_paths.end());
         Init();
     }
@@ -128,7 +128,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
         if(!absPath) //Skip empty path
             continue;
 
-        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), (*absPath).generic_u8string()),
+        m_paths.erase(std::remove(m_paths.begin(), m_paths.end(), (*absPath).u8string()),
                       m_paths.end());
     }
 
@@ -263,7 +263,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
                 }
                const std::size_t filenameLength = notify->FileNameLength / sizeof(wchar_t);
 
-                std::filesystem::path filePath = (m_paths[i] / std::filesystem::path(std::wstring(notify->FileName, filenameLength))).generic_u8string();
+                std::filesystem::path filePath = (m_paths[i] / std::filesystem::path(std::wstring(notify->FileName, filenameLength)));
                 FileStatus status;
                 std::filesystem::path oldFileName = "";
 
@@ -355,7 +355,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
     for(const auto& path : m_paths)
     {
-        const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, path.generic_u8string().c_str(),
+        const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, path.u8string().c_str(),
                                              IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
         if(wd < 0)
@@ -376,7 +376,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
             for(const auto& p : it)
             {
-                const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, p.path().generic_u8string().c_str(),
+                const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, p.path().u8string().c_str(),
                                                     IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                 if(wd < 0)
@@ -385,7 +385,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
                     continue; //Skip failed entry
                 }
 
-                watchDescriptors[wd] = p.path().generic_u8string();
+                watchDescriptors[wd] = p.path();
             }
         }
     }
@@ -460,7 +460,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             }
 
             FileStatus status = FileStatus::Created;
-            std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(event->name).generic_u8string();
+            std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(event->name);
             bool isDir = std::filesystem::is_directory(filePath);
             std::filesystem::path oldFileName = "";
 
@@ -468,7 +468,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             {
                 if(isDir && m_recursive) //Add to tracking list
                 {
-                    const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, filePath.generic_u8string().c_str(),
+                    const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, filePath.u8string().c_str(),
                                                             IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
                     if(wd < 0)

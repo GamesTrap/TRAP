@@ -309,7 +309,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 		}
 
 		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"",
-		        std::filesystem::path(nameOrPath).generic_u8string(), "\" to reload.");
+		        std::filesystem::path(nameOrPath).u8string(), "\" to reload.");
 	}
 
 	return nullptr;

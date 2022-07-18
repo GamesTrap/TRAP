@@ -1020,8 +1020,7 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	IM_UNUSED(bd);
 	IM_ASSERT(bd->ClientAPI == TRAP::Graphics::RenderAPI::Vulkan);
-	const VkInstance instance = Utils::BitCast<const ImU64, const VkInstance>(vkInstance);
-	const VkResult err = WindowingAPI::CreateWindowSurface(instance,
+	const VkResult err = WindowingAPI::CreateWindowSurface(Utils::BitCast<const ImU64, const VkInstance>(vkInstance),
 	                                                       vd->WindowPtr,
 	                                                       static_cast<const VkAllocationCallbacks*>(vkAllocator),
 														   *reinterpret_cast<VkSurfaceKHR*>(outVkSurface));

@@ -27,8 +27,8 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
 
 std::string TRAP::Events::FileChangeEvent::ToString() const
 {
-    return "FileChangeEvent: Path: " + m_path.generic_u8string() + " Status: " +
-           FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.generic_u8string());
+    return "FileChangeEvent: Path: " + m_path.u8string() + " Status: " +
+           FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
