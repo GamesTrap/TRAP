@@ -56,7 +56,7 @@ namespace TRAP
 		/// Retrieve the name of a monitor.
 		/// </summary>
 		/// <returns>Name of the monitor.</returns>
-		const std::string& GetName() const;
+		std::string GetName() const;
 		/// <summary>
 		/// Retrieve a list of available video modes for the monitor.
 		/// </summary>

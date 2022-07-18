@@ -128,7 +128,7 @@ TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::KeyLayoutEvent::GetLayout() const
+std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
 {
 	return m_layout;
 }

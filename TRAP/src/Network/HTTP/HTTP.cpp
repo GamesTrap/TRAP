@@ -31,10 +31,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Utils/String/String.h"
 
-TRAP::Network::HTTP::Request::Request(const std::string& uri, const Method method, std::string body)
+TRAP::Network::HTTP::Request::Request(const std::string uri, const Method method, std::string body)
 	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(std::move(body))
 {
-	SetURI(uri);
+	SetURI(std::move(uri));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -147,14 +147,13 @@ TRAP::Network::HTTP::Response::Response()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Network::HTTP::Response::GetField(const std::string& field) const
+std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) const
 {
 	const FieldTable::const_iterator it = m_fields.find(Utils::String::ToLower(field));
 	if (it != m_fields.end())
 		return it->second;
 
-	static const std::string empty;
-	return empty;
+	return "";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -180,7 +179,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Network::HTTP::Response::GetBody() const
+std::string TRAP::Network::HTTP::Response::GetBody() const
 {
 	return m_body;
 }
@@ -294,10 +293,10 @@ TRAP::Network::HTTP::HTTP()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::HTTP(const std::string& host, const uint16_t port)
+TRAP::Network::HTTP::HTTP(const std::string host, const uint16_t port)
 	: m_port(0)
 {
-	SetHost(host, port);
+	SetHost(std::move(host), port);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

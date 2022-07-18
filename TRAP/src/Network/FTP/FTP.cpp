@@ -81,7 +81,7 @@ TRAP::Network::FTP::Response::Status TRAP::Network::FTP::Response::GetStatus() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Network::FTP::Response::GetMessage() const
+std::string TRAP::Network::FTP::Response::GetMessage() const
 {
 	return m_message;
 }

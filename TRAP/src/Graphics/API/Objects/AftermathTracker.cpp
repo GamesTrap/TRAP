@@ -191,12 +191,12 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string& name)
+void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
     /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
     {
-        AftermathCall(setEventMarker(aftermathHandle, name.c_str(), name.size()));
+        AftermathCall(setEventMarker(aftermathHandle, name.data(), name.size()));
     }*/
 #endif
 }

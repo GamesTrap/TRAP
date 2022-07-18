@@ -72,7 +72,7 @@ namespace TRAP::Network
 			/// <param name="uri">Target URI.</param>
 			/// <param name="method">Method to use for the request.</param>
 			/// <param name="body">Content of the request's body.</param>
-			explicit Request(const std::string& uri = "/", Method method = Method::GET, std::string body = "");
+			explicit Request(std::string uri = "/", Method method = Method::GET, std::string body = "");
 
 			/// <summary>
 			/// Set the value of a field.
@@ -217,7 +217,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="field">Name of the field to get.</param>
 			/// <returns>Value of the field, or empty string if not found.</returns>
-			const std::string& GetField(const std::string& field) const;
+			std::string GetField(const std::string& field) const;
 
 			/// <summary>
 			/// Get the response status code.
@@ -252,7 +252,7 @@ namespace TRAP::Network
 			/// - an error message (in case of an error)
 			/// </summary>
 			/// <returns>The response body.</returns>
-			const std::string& GetBody() const;
+			std::string GetBody() const;
 
 		private:
 			friend class HTTP;
@@ -301,7 +301,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="host">Web server to connect to.</param>
 		/// <param name="port">Port to use for connection.</param>
-		explicit HTTP(const std::string& host, uint16_t port = 0);
+		explicit HTTP(std::string host, uint16_t port = 0);
 
 		/// <summary>
 		/// Move constructor.

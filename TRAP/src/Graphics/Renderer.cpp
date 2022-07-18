@@ -53,7 +53,7 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Renderer::GetTitle()
+std::string TRAP::Graphics::Renderer::GetTitle()
 {
 	return RendererAPI::GetRenderer()->GetTitle();
 }

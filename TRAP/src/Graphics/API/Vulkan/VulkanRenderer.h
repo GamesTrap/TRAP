@@ -470,7 +470,7 @@ namespace TRAP::Graphics::API
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		const std::string& GetTitle() const override;
+		std::string GetTitle() const override;
 		/// <summary>
 		/// Retrieve whether VSync is enabled or not for the given window.
 		/// </summary>

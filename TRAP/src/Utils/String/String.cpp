@@ -52,7 +52,7 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str
 
 	while (end <= std::string::npos)
 	{
-		std::string token = std::string(str.substr(start, end - start));
+		std::string token = str.substr(start, end - start);
 
 		if (!token.empty())
 			result.push_back(token);

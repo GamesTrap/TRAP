@@ -461,7 +461,7 @@ bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string& name) const
+void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view name) const
 {
 	TRAP_ASSERT(!name.empty());
 

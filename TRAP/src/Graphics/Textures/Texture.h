@@ -155,7 +155,7 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the texture.
 		/// </summary>
 		/// <returns>Name of the texture.</returns>
-		const std::string& GetName() const;
+		std::string GetName() const;
 		/// <summary>
 		/// Retrieve the texture type.
 		/// </summary>
@@ -282,7 +282,7 @@ namespace TRAP::Graphics
 		/// Set the texture name.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-        virtual void SetTextureName(const std::string& name) const = 0;
+        virtual void SetTextureName(const std::string_view name) const = 0;
 
 		/// <summary>
 		/// Retrieve whether the texture owns the image data.

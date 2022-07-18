@@ -311,7 +311,7 @@ namespace TRAP::Events
 		/// Retrieve the human-readable name of the new keyboard layout.
 		/// </summary>
 		/// <returns>Name of new keyboard layout.</returns>
-		const std::string& GetLayout() const;
+		std::string GetLayout() const;
 
 		/// <summary>
 		/// Get a string representation of the KeyLayoutEvent.

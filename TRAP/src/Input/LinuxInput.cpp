@@ -186,7 +186,7 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Attempt to open the specified controller device
-bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
+bool TRAP::Input::OpenControllerDeviceLinux(const std::string path)
 {
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
@@ -296,7 +296,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		return false;
 	}
 
-	LinuxCon.Path = path;
+	LinuxCon.Path = std::move(path);
 	con->LinuxCon = LinuxCon;
 
 	PollABSStateLinux(con);

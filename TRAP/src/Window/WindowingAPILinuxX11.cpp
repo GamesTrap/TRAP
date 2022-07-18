@@ -3243,7 +3243,7 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(int32_t scanCo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string& string)
 {
-	s_Data.ClipboardString = std::string(string);
+	s_Data.ClipboardString = string;
 
 	s_Data.XLIB.SetSelectionOwner(s_Data.display, s_Data.CLIPBOARD, s_Data.HelperWindowHandle, CurrentTime);
 

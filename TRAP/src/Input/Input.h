@@ -892,7 +892,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="path">Path to the controller file.</param>
 		/// <returns>True if the controller was opened successfully, false otherwise.</returns>
-		static bool OpenControllerDeviceLinux(const std::string& path);
+		static bool OpenControllerDeviceLinux(std::string path);
 		/// <summary>
 		/// Poll state of absolute axes for the specified controller.
 		/// </summary>

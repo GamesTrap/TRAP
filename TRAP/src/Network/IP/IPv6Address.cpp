@@ -21,10 +21,10 @@ const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::arra
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address::IPv6Address(const std::string& address)
+TRAP::Network::IPv6Address::IPv6Address(const std::string address)
 	: m_address(), m_valid(false)
 {
-	Resolve(address);
+	Resolve(std::move(address));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -30,7 +30,7 @@ namespace TRAP::Graphics
 		/// Example when using Vulkan: "[Vulkan 1.1.108]"
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		static const std::string& GetTitle();
+		static std::string GetTitle();
 		/// <summary>
 		/// Retrieve the frames per second.
 		/// </summary>

@@ -122,7 +122,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Shader::GetName() const
+std::string TRAP::Graphics::Shader::GetName() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -131,7 +131,7 @@ const std::string& TRAP::Graphics::Shader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Graphics::Shader::GetFilePath() const
+std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 {
 	TP_PROFILE_FUNCTION();
 

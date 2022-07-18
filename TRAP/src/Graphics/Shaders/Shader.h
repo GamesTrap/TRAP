@@ -77,13 +77,13 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the shader.
 		/// </summary>
 		/// <returns>Name of the shader.</returns>
-		const std::string& GetName() const;
+		std::string GetName() const;
 
 		/// <summary>
 		/// Retrieve the file path of the shader.
 		/// </summary>
 		/// <returns>File path of the shader.</returns>
-		const std::filesystem::path& GetFilePath() const;
+		std::filesystem::path GetFilePath() const;
 
 		/// <summary>
 		/// Retrieve the shader stages of the shader.

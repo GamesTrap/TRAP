@@ -255,7 +255,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
 	                                                                                                 const uint32_t height,
-	                                                                                                 const std::string& title,
+	                                                                                                 const std::string title,
 	                                                                                                 InternalMonitor* monitor)
 {
 	TRAP_ASSERT(!title.empty(), "[Window] Empty title provided!");
@@ -279,7 +279,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 
 	WNDConfig.Width = width;
 	WNDConfig.Height = height;
-	WNDConfig.Title = title;
+	WNDConfig.Title = std::move(title);
 
 	Scope<InternalWindow> window = MakeScope<InternalWindow>();
 

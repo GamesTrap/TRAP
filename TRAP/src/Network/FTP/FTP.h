@@ -150,7 +150,7 @@ namespace TRAP::Network
 			/// Get the full message contained in the response.
 			/// </summary>
 			/// <returns>The response message.</returns>
-			const std::string& GetMessage() const;
+			std::string GetMessage() const;
 
 		private:
 			Status m_status; //Status code returned from the server

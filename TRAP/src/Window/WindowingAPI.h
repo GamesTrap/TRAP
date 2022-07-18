@@ -1347,7 +1347,7 @@ namespace TRAP::INTERNAL
 		/// <param name="title">UTF-8 encoded title for the new window.</param>
 		/// <param name="monitor">Optional monitor to use for the new window.</param>
 		/// <returns>On success a new internal window, or nullptr if an error occurred.</returns>
-		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, const std::string& title,
+		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, std::string title,
 		                                          InternalMonitor* monitor);
 		/// <summary>
 		/// This function sets the value of the close flag of the specified window. This can be used

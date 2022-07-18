@@ -101,7 +101,7 @@ namespace TRAP::Graphics::API
 		/// Set the name of the texture.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-		void SetTextureName(const std::string& name) const override;
+		void SetTextureName(const std::string_view name) const override;
 
 	protected:
 		/// <summary>

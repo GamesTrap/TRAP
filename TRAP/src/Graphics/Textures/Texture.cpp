@@ -616,7 +616,7 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Texture::GetName() const
+std::string TRAP::Graphics::Texture::GetName() const
 {
 	return m_name;
 }

@@ -2927,3 +2927,7 @@ SITREP 07/18/2022|22w29a1
         - Renamed src/FS folder to src/FileSystem ~<5 mins
         - Replaced generic_u8string() with u8string() ~<10 mins
         - Utilize std::filesystem::file_size more ~<5 mins
+
+SITREP 07/19/2022|22w29a2
+    - Branch STL:
+        - Replaced const std::string& with const std::string_view where possible ~<15 mins

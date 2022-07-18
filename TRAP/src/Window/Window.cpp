@@ -90,7 +90,7 @@ uint32_t TRAP::Window::GetActiveWindows() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Window::GetTitle() const noexcept
+std::string TRAP::Window::GetTitle() const noexcept
 {
 	return m_data.Title;
 }
