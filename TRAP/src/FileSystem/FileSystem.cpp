@@ -48,15 +48,25 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
-    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    const auto fileSize = TRAP::FileSystem::GetFileOrFolderSize(path);
+
+    std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
     {
 		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: \"", path.u8string(), "\"");
         return std::nullopt;
     }
 
-    std::vector<uint8_t> buffer(file.tellg());
-    file.seekg(0);
+    std::vector<uint8_t> buffer;
+    if(fileSize)
+        buffer.resize(*fileSize);
+    else //Fallback
+    {
+        file.seekg(0, std::ios::end);
+        buffer.resize(file.tellg());
+        file.seekg(0);
+    }
+
     file.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
     file.close();
 

@@ -30,9 +30,16 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 		return;
 	}
 
-    file.seekg(0, std::ios::end);
-    const std::size_t fileSize = file.tellg();
-    file.seekg(0);
+    const auto size = FileSystem::GetFileOrFolderSize(filepath);
+    std::size_t fileSize;
+    if(size)
+        fileSize = *size;
+    else //Fallback
+    {
+        file.seekg(0, std::ios::end);
+        fileSize = file.tellg();
+        file.seekg(0);
+    }
 
     if(fileSize < sizeof(Header) + EndMarker.size())
     {
