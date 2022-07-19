@@ -129,19 +129,19 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 	{
 		uint32_t paramIndex = param.Index;
 
-		VALIDATE_DESCRIPTOR(param.Name || (paramIndex != std::numeric_limits<uint32_t>::max()),
+		VALIDATE_DESCRIPTOR(!param.Name.empty() || (paramIndex != std::numeric_limits<uint32_t>::max()),
 		                    "DescriptorData has nullptr name and invalid index");
 
 		const RendererAPI::DescriptorInfo* desc = (paramIndex != std::numeric_limits<uint32_t>::max()) ?
 		                                          (&rootSignature->GetDescriptors()[paramIndex]) :
-												  rootSignature->GetDescriptor(param.Name);
+												  rootSignature->GetDescriptor(param.Name.c_str());
 		if(paramIndex != std::numeric_limits<uint32_t>::max())
 		{
 			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param index ", paramIndex);
 		}
 		else
 		{
-			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param name ", param.Name);
+			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param name ", param.Name.c_str());
 		}
 
 		const RendererAPI::DescriptorType type = desc->Type;

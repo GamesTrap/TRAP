@@ -959,8 +959,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowTitle(ImGuiViewport* viewport, con
 
 	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	std::string t(title);
-	WindowingAPI::SetWindowTitle(vd->WindowPtr, t);
+	WindowingAPI::SetWindowTitle(vd->WindowPtr, title);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

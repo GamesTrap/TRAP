@@ -21,7 +21,7 @@ int64_t CurrentAppID = 639903785971613728;
 TRAP::Utils::Discord::Activity CurrentActivity{};
 
 //Forward declares
-void DiscordLogger(discord::LogLevel logLevel, const char* msg);
+void DiscordLogger(discord::LogLevel logLevel, std::string_view msg);
 void DiscordLogResult(discord::Result res);
 #endif
 
@@ -148,7 +148,7 @@ discord::Core* TRAP::Utils::Discord::GetDiscordCore()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_DISCORD_GAME_SDK
-void DiscordLogger(const discord::LogLevel logLevel, const char* msg)
+void DiscordLogger(const discord::LogLevel logLevel, const std::string_view msg)
 {
     switch (logLevel)
     {

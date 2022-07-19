@@ -851,9 +851,9 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Return the atom ID only if it is listed in the specified array
-Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, const char* atomName)
+Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, const std::string_view atomName)
 {
-	const Atom atom = s_Data.XLIB.InternAtom(s_Data.display, atomName, 0);
+	const Atom atom = s_Data.XLIB.InternAtom(s_Data.display, atomName.data(), 0);
 
 	for(uint64_t i = 0; i < atomCount; i++)
 	{
@@ -1876,19 +1876,19 @@ int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display*, XEvent* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Convert the specified Latin-1 string to UTF-8
-std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const char* source)
+std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const std::string_view source)
 {
 	std::size_t size = 1;
 	const char* sp = nullptr;
 
-	for(sp = source; *sp; sp++)
+	for(sp = source.data(); *sp; sp++)
 		size += (*sp & 0x80) ? 2 : 1;
 
 	std::string target{};
 	target.resize(size);
 	char* tp = target.data();
 
-	for(sp = source; *sp; sp++)
+	for(sp = source.data(); *sp; sp++)
 		tp += EncodeUTF8(tp, *sp);
 
 	return target;
@@ -2521,7 +2521,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, const std::string& title)
 {
 	if (s_Data.XLIB.UTF8)
 	{
@@ -2542,7 +2542,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 					           s_Data.UTF8_STRING,
 					           8,
 					           PropModeReplace,
-					           reinterpret_cast<uint8_t*>(title.data()),
+					           reinterpret_cast<const uint8_t*>(title.data()),
 					           static_cast<int32_t>(title.size()));
 
 	s_Data.XLIB.ChangeProperty(s_Data.display,
@@ -2551,7 +2551,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 					           s_Data.UTF8_STRING,
 					           8,
 					           PropModeReplace,
-					           reinterpret_cast<uint8_t*>(title.data()),
+					           reinterpret_cast<const uint8_t*>(title.data()),
 					           static_cast<int32_t>(title.size()));
 
 	s_Data.XLIB.Flush(s_Data.display);
@@ -2577,7 +2577,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 		if(theme)
 		{
 			const int32_t size = s_Data.XCursor.GetDefaultSize(s_Data.display);
-			const char* name = nullptr;
+			std::string name = "default";
 
 			if(type == CursorType::Arrow)
 				name = "default";
@@ -2600,7 +2600,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 			else if(type == CursorType::NotAllowed)
 				name = "not-allowed";
 
-			XcursorImage* image = s_Data.XCursor.LibraryLoadImage(name, theme, size);
+			XcursorImage* image = s_Data.XCursor.LibraryLoadImage(name.c_str(), theme, size);
 			if(image)
 			{
 				cursor->Handle = s_Data.XCursor.ImageLoadCursor(s_Data.display, image);
@@ -3507,7 +3507,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow*)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Reports the specified error, appending information about the last X Error
-void TRAP::INTERNAL::WindowingAPI::InputErrorX11(Error error, const char* message)
+void TRAP::INTERNAL::WindowingAPI::InputErrorX11(Error error, const std::string& message)
 {
 	std::vector<char> buffer{};
 	buffer.resize(1024);
@@ -3515,7 +3515,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(Error error, const char* messag
 
 	buffer.shrink_to_fit();
 
-	InputError(error, "[X11] " + std::string(message) + ": " + buffer.data());
+	InputError(error, "[X11] " + message + ": " + buffer.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

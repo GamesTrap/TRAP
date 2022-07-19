@@ -177,10 +177,8 @@ namespace TRAP::Network
 		Packet& operator<<(uint64_t data);
 		Packet& operator<<(float data);
 		Packet& operator<<(double data);
-		Packet& operator<<(const char* data);
 		Packet& operator<<(const std::string_view data);
-		Packet& operator<<(const wchar_t* data);
-		Packet& operator<<(const std::wstring& data);
+		Packet& operator<<(const std::wstring_view data);
 
 	protected:
 		friend class TCPSocket;

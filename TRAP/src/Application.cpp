@@ -299,8 +299,8 @@ TRAP::Application::Application(std::string gameName)
 		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, sampleCount);
 
 		//Always added as a fallback shader
-		Graphics::ShaderManager::LoadSource("FallbackGraphics", Embed::FallbackGraphicsShader)->Use();
-		Graphics::ShaderManager::LoadSource("FallbackCompute", Embed::FallbackComputeShader)->Use();
+		Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader))->Use();
+		Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader))->Use();
 
 		//Always added as a fallback texture
 		Graphics::TextureManager::Add(Graphics::Texture::CreateFallback2D());

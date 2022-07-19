@@ -49,14 +49,6 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address::IPv4Address(const char* address)
-	: m_address(0), m_valid(false)
-{
-	Resolve(address);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
                                         const uint8_t byte3)
 	: m_address(static_cast<uint32_t>((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)

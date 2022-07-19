@@ -90,9 +90,9 @@ std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::Utils::String::FindToken(const char* str, const std::string_view token)
+const char* TRAP::Utils::String::FindToken(const std::string_view str, const std::string_view token)
 {
-	const char* t = strstr(str, token.data());
+	const char* t = strstr(str.data(), token.data());
 	while (t)
 	{
 		const bool left = str == t || isspace(t[-1]);
@@ -104,13 +104,6 @@ const char* TRAP::Utils::String::FindToken(const char* str, const std::string_vi
 		t = strstr(t, token.data());
 	}
 	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const char* TRAP::Utils::String::FindToken(const std::string_view str, const std::string_view token)
-{
-	return FindToken(str.data(), token);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

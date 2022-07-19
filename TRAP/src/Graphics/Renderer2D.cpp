@@ -108,7 +108,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	                                                   sizeof(Renderer2DData::UniformCamera),
 		                                               UpdateFrequency::Dynamic);
 
-	s_data.TextureShader = Shader::CreateFromSource("Renderer2D", Embed::Renderer2DShader);
+	s_data.TextureShader = Shader::CreateFromSource("Renderer2D", std::string(Embed::Renderer2DShader));
 	const Scope<Image> whiteImage = Image::LoadFromMemory(2, 2, Image::ColorFormat::RGBA,
 	                                                      std::vector<uint8_t>{255, 255, 255, 255,
 																			   255, 255, 255, 255,

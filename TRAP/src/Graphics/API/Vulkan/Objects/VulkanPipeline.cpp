@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	}
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	if(desc.Name && m_vkPipeline != VK_NULL_HANDLE)
+	if(!desc.Name.empty() && m_vkPipeline != VK_NULL_HANDLE)
 		SetPipelineName(desc.Name);
 #endif
 }

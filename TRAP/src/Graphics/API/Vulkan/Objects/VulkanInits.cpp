@@ -113,7 +113,7 @@ VkDebugMarkerObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerObje
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g,
-                                                                          const float b, const char* name) noexcept
+                                                                          const float b, const std::string_view name) noexcept
 {
 	VkDebugUtilsLabelEXT info{};
 
@@ -122,7 +122,7 @@ VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const 
 	info.color[1] = g;
 	info.color[2] = b;
 	info.color[3] = 1.0f;
-	info.pLabelName = name;
+	info.pLabelName = name.data();
 
 	return info;
 }
@@ -130,7 +130,7 @@ VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo(const float r, const float g,
-                                                                                   const float b, const char* name) noexcept
+                                                                                   const float b, const std::string_view name) noexcept
 {
 	VkDebugMarkerMarkerInfoEXT info{};
 
@@ -139,7 +139,7 @@ VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerIn
 	info.color[1] = g;
 	info.color[2] = b;
 	info.color[3] = 1.0f;
-	info.pMarkerName = name;
+	info.pMarkerName = name.data();
 
 	return info;
 }
@@ -735,7 +735,7 @@ VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateI
 
 VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
 	                                                                                            VkShaderModule module,
-	                                                                                            const char* name) noexcept
+	                                                                                            const std::string_view name) noexcept
 {
 	VkPipelineShaderStageCreateInfo info;
 
@@ -744,7 +744,7 @@ VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShader
 	info.flags = 0;
 	info.stage = stage;
 	info.module = module;
-	info.pName = name;
+	info.pName = name.data();
 	info.pSpecializationInfo = nullptr;
 
 	return info;

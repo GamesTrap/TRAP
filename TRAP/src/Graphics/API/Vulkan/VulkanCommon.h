@@ -45,7 +45,7 @@ namespace TRAP::Graphics::API
 	/// <param name="file">Name of the file where the function is in that called the error checker.</param>
 	/// <param name="line">Line number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
-	constexpr bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
+	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file, int32_t line);
 	/// <summary>
 	/// Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// </summary>
@@ -361,7 +361,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::API::ErrorCheck(VkResult result, const char* function, const char* file, int32_t line)
+constexpr bool TRAP::Graphics::API::ErrorCheck(VkResult result, const std::string_view function, const std::string_view file, int32_t line)
 {
 	if(result >= 0)
 		return true;

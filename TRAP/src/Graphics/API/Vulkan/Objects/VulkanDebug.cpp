@@ -83,18 +83,18 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 																	 const uint64_t /*object*/,
 																	 const size_t /*location*/,
 																	 const int32_t messageCode,
-																	 const char* layerPrefix,
-																	 const char* message, void* /*userData*/)
+																	 const std::string_view layerPrefix,
+																	 const std::string_view message, void* /*userData*/)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
 	if(flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-		TP_INFO(str, '[', layerPrefix ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_INFO(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 	if(flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-		TP_WARN(str, '[', layerPrefix ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_WARN(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 	if(flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-		TP_ERROR(str, '[', layerPrefix ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_ERROR(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 
 	return VK_FALSE;
 }

@@ -136,13 +136,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="color">Color for the debug marker.</param>
 		/// <param name="name">Name of the marker.</param>
-		void AddDebugMarker(const TRAP::Math::Vec3& color, const char* name) const override;
+		void AddDebugMarker(const TRAP::Math::Vec3& color, std::string_view name) const override;
 		/// <summary>
 		/// Start a debug marker region.
 		/// </summary>
 		/// <param name="color">Color for the debug marker.</param>
 		/// <param name="name">Name of the marker.</param>
-		void BeginDebugMarker(const TRAP::Math::Vec3& color, const char* name) const override;
+		void BeginDebugMarker(const TRAP::Math::Vec3& color, std::string_view name) const override;
 		/// <summary>
 		/// End the currently running debug marker region.
 		/// </summary>

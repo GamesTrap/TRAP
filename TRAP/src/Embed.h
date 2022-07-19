@@ -3,13 +3,14 @@
 
 #include <array>
 #include <cstdint>
+#include <string_view>
 
 namespace TRAP::Embed
 {
 	/// <summary>
 	/// Fallback Graphics shader
 	/// </summary>
-	inline static constexpr const char* FallbackGraphicsShader
+	inline static constexpr std::string_view FallbackGraphicsShader
 	{
 		R"(
 #shader vertex
@@ -43,7 +44,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Fallback Compute shader
 	/// </summary>
-	inline static constexpr const char* FallbackComputeShader
+	inline static constexpr std::string_view FallbackComputeShader
 	{
 		R"(
 #shader compute
@@ -60,7 +61,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// 2D Renderer shader
 	/// </summary>
-	inline static constexpr const char* Renderer2DShader
+	inline static constexpr std::string_view Renderer2DShader
 	{
 		R"(
 #shader vertex

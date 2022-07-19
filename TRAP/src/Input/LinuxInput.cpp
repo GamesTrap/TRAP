@@ -43,14 +43,14 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 bool TRAP::Input::InitController()
 {
-	const char* dirName = "/dev/input";
+	constexpr std::string_view dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
 	if(s_linuxController.INotify > 0)
 	{
 		//HACK: Register for IN_ATTRIB to get notified when udev is done
 		//This works well in practice but the true way is libudev
-		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName,
+		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName.data(),
 		                                            IN_CREATE | IN_ATTRIB | IN_DELETE);
 	}
 
@@ -63,7 +63,7 @@ bool TRAP::Input::InitController()
 
 	int32_t count = 0;
 
-	DIR* dir = opendir(dirName);
+	DIR* dir = opendir(dirName.data());
 	if(dir)
 	{
 		dirent* entry = nullptr;
@@ -75,7 +75,7 @@ bool TRAP::Input::InitController()
 			if (regexec(&s_linuxController.Regex, entry->d_name, 1, &match, 0) != 0)
 				continue;
 
-			std::string path = dirName;
+			std::string path = std::string(dirName);
 			path += '/';
 			path += entry->d_name;
 

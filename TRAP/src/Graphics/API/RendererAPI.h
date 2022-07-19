@@ -1895,7 +1895,7 @@ namespace TRAP::Graphics
 			uint32_t PipelineExtensionCount{};
 
 			//Name for the pipeline
-			const char* Name{};
+			std::string Name{};
 		};
 
 		/// <summary>
@@ -1971,7 +1971,7 @@ namespace TRAP::Graphics
 			//Type of indirect argument
 			IndirectArgumentType Type{};
 			//Name of descriptor
-			const char* Name{};
+			std::string Name{};
 			//Index of descriptor
 			uint32_t Index{};
 		};
@@ -2112,7 +2112,7 @@ namespace TRAP::Graphics
 		{
 			//User can either set name of descriptor or index (index in RootSignature->Descriptors array)
 			//Name of descriptor
-			const char* Name{};
+			std::string Name{};
 			/// <summary>
 			/// Range(s) to bind (buffer, offset, size)
 			/// </summary>

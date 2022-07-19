@@ -467,20 +467,6 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const char* data)
-{
-	//First insert string length
-	const uint32_t length = static_cast<uint32_t>(std::strlen(data));
-	*this << length;
-
-	//Then insert characters
-	Append(data, length * sizeof(char));
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view data)
 {
 	//First insert string length
@@ -496,33 +482,15 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const wchar_t* data)
-{
-	//First insert string length
-	const uint32_t length = static_cast<uint32_t>(std::wcslen(data));
-	*this << length;
-
-	//Then insert characters
-	for (const wchar_t* c = data; *c != L'\0'; ++c)
-		*this << static_cast<uint32_t>(*c);
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring& data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view data)
 {
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
 	*this << length;
 
 	//Then insert characters
-	if(length > 0)
-	{
-		for(const auto& c : data)
-			*this << static_cast<uint32_t>(c);
-	}
+	if (length > 0)
+		Append(data.data(), length * sizeof(std::wstring::value_type));
 
 	return *this;
 }
