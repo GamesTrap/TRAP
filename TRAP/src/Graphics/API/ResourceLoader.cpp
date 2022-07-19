@@ -360,7 +360,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				updateDesc.DstOffset = offset;
 				BeginUpdateResource(updateDesc);
 				if (desc.ForceReset)
-					std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), chunkSize, 0u);
+					std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), chunkSize, static_cast<uint8_t>(0u));
 				else
 				{
 					TRAP_ASSERT(data);
@@ -375,7 +375,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			updateDesc.Buffer = desc.Buffer;
 			BeginUpdateResource(updateDesc);
 			if (desc.ForceReset)
-				std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), desc.Desc.Size, 0u);
+				std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), desc.Desc.Size, static_cast<uint8_t>(0u));
 			else
 			{
 				TRAP_ASSERT(!desc.Desc.Size || desc.Data);

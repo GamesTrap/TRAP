@@ -372,22 +372,22 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 		if(Utils::String::StartsWith(lowerLine, "#shader"))
 		{
 			//Detect shader type
-			if (Utils::String::FindToken(lowerLine, "vertex"))
+			if (lowerLine.find("vertex") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Vertex;
-			else if (Utils::String::FindToken(lowerLine, "fragment") ||
-				     Utils::String::FindToken(lowerLine, "pixel"))
+			else if (lowerLine.find("fragment") != std::string::npos ||
+				     lowerLine.find("pixel") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Fragment;
-			else if (Utils::String::FindToken(lowerLine, "geometry"))
+			else if (lowerLine.find("geometry") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Geometry;
-			else if (Utils::String::FindToken(lowerLine, "tessellation"))
+			else if (lowerLine.find("tessellation") != std::string::npos)
 			{
 				//Either Control or Evaluation
-				if (Utils::String::FindToken(lowerLine, "control"))
+				if (lowerLine.find("control") != std::string::npos)
 					currentShaderStage = RendererAPI::ShaderStage::TessellationControl;
-				else if (Utils::String::FindToken(lowerLine, "evaluation"))
+				else if (lowerLine.find("evaluation") != std::string::npos)
 					currentShaderStage = RendererAPI::ShaderStage::TessellationEvaluation;
 			}
-			else if (Utils::String::FindToken(lowerLine, "compute"))
+			else if (lowerLine.find("compute") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Compute;
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
@@ -400,7 +400,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 
 			shaderStages |= currentShaderStage;
 		}
-		else if(Utils::String::FindToken(lowerLine, "#version")) //Check for unnecessary "#version" define
+		else if(lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
 			TP_WARN(Log::ShaderGLSLPrefix, "Found tag: \"", lines[i], "\" this is unnecessary! Skipping line: ", i);
 		else if(currentShaderStage != RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
 		{

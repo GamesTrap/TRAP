@@ -3423,13 +3423,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Index for the sorted internal video mode.</returns>
 		static int32_t CompareVideoModes(const void* fp, const void* sp);
 		/// <summary>
-		/// Searches an extension string for the specified extension.
-		/// </summary>
-		/// <param name="string">String to search in given extension.</param>
-		/// <param name="extensions">Extension to test.</param>
-		/// <returns>True if given string is inside the given extension.</returns>
-		static bool StringInExtensionString(const char* string, const char* extensions);
-		/// <summary>
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>
 		/// <param name="window">Internal window to update.</param>

@@ -53,16 +53,6 @@ namespace TRAP::Utils::String
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Find a token in a string.
-	/// </summary>
-	/// <param name="string">String to query.</param>
-	/// <param name="token">Token to find in string.</param>
-	/// <returns>If found string starting on first occurrence of the token, nullptr otherwise.</returns>
-	const char* FindToken(std::string_view str, std::string_view token);
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	/// <summary>
 	/// Check if a string starts with contents another string or char.
 	/// </summary>
 	/// <param name="string">String to check.</param>

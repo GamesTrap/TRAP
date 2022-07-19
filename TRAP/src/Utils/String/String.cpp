@@ -90,24 +90,6 @@ std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::Utils::String::FindToken(const std::string_view str, const std::string_view token)
-{
-	const char* t = strstr(str.data(), token.data());
-	while (t)
-	{
-		const bool left = str == t || isspace(t[-1]);
-		const bool right = !t[token.size()] || isspace(t[token.size()]);
-		if (left && right)
-			return t;
-
-		t += token.size();
-		t = strstr(t, token.data());
-	}
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::string_view start)
 {
 	return str.find(start) == 0;

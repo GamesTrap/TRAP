@@ -1855,32 +1855,6 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Searches an extension string for the specified extension
-bool TRAP::INTERNAL::WindowingAPI::StringInExtensionString(const char* string, const char* extensions)
-{
-	const char* start = extensions;
-
-	while(true)
-	{
-		const char* where = strstr(start, string);
-		if (!where)
-			return false;
-
-		const char* terminator = where + strlen(string);
-		if (where == start || *(where - 1) == ' ')
-		{
-			if (*terminator == ' ' || *terminator == '\0')
-				break;
-		}
-
-		start = terminator;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult result)
 {
 	switch (result)

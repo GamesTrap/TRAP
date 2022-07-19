@@ -146,7 +146,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 	pos += length;
 
 	m[pos++] = 0x06;
-	std::fill_n(m.data() + pos, r - pos, 0u);
+	std::fill_n(m.data() + pos, r - pos, static_cast<uint8_t>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 
@@ -187,7 +187,7 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 	pos += length;
 
 	m[pos++] = 0x06;
-	std::fill_n(m.data() + pos, r - pos, 0u);
+	std::fill_n(m.data() + pos, r - pos, static_cast<uint8_t>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 

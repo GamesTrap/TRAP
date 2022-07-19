@@ -2932,3 +2932,5 @@ SITREP 07/19/2022|22w29a2
     - Branch STL:
         - Replaced const std::string& with const std::string_view where possible ~<15 mins
         - Replaced const char* with const std::string_view where possible ~<20 mins
+        - Removed String::FindToken() ~<5 mins
+        - Removed WindowingAPI::StringInExtensionString() ~<5 mins

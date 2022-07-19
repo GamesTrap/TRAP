@@ -298,11 +298,11 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* data, uint64_t l
 	m[pos++] = 0x80;
 	if(pos > 56)
 	{
-		std::fill_n(m.data() + pos, 64 - pos, 0u);
+		std::fill_n(m.data() + pos, 64 - pos, static_cast<uint8_t>(0u));
 		Transform(&m[0], 1, hash);
 		pos = 0;
 	}
-	std::fill_n(m.data() + pos, 56 - pos, 0u);
+	std::fill_n(m.data() + pos, 56 - pos, static_cast<uint8_t>(0u));
 	uint64_t mLength = total;
 	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
 	std::copy_n(reinterpret_cast<uint8_t*>(&mLength), 64 / 8, &m[0] + (64 - 8));
@@ -361,11 +361,11 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* data, uint64_t l
 	m[pos++] = 0x80;
 	if(pos > 112)
 	{
-		std::fill_n(m.data() + pos, 128 - pos, 0u);
+		std::fill_n(m.data() + pos, 128 - pos, static_cast<uint8_t>(0u));
 		Transform(&m[0], 1, hash);
 		pos = 0;
 	}
-	std::fill_n(m.data() + pos, 128 - pos, 0u);
+	std::fill_n(m.data() + pos, 128 - pos, static_cast<uint8_t>(0u));
 	uint64_t mLength = total;
 	TRAP::Utils::Memory::SwapBytes<uint64_t>(mLength);
 	std::copy_n(reinterpret_cast<const uint8_t*>(&mLength), 64 / 8, &m[0] + (128 - 8));
