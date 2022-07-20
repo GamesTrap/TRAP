@@ -195,7 +195,7 @@ bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
             return false;
         }
 
-        bool res = std::filesystem::remove_all(path, ec) > 1;
+        const bool res = std::filesystem::remove_all(path, ec) > 1;
 
         if(ec)
         {
@@ -809,8 +809,8 @@ std::optional<std::filesystem::path> GetHomeFolderPathLinux()
     if(!homeDir.empty())
         return homeDir;
 
-    uid_t uid = getuid();
-    const char* homeEnv = std::getenv("HOME");
+    const uid_t uid = getuid();
+    const char* homeEnv = getenv("HOME");
     if(uid != 0 && homeEnv)
     {
         //We only acknowledge HOME if not root.
@@ -824,7 +824,7 @@ std::optional<std::filesystem::path> GetHomeFolderPathLinux()
     if(bufSize < 0)
         bufSize = 16384;
     std::vector<char> buffer(bufSize, '\0');
-    int32_t errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
+    const int32_t errorCode = getpwuid_r(uid, &pwd, buffer.data(), buffer.size(), &pw);
     if(errorCode)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")");
@@ -867,7 +867,7 @@ std::optional<std::filesystem::path> GetDocumentsFolderPathLinux()
     documentsDir = "$HOME/Documents";
 
     //Get config folder
-    const char* tempRes = std::getenv("XDG_CONFIG_HOME");
+    const char* tempRes = getenv("XDG_CONFIG_HOME");
     std::filesystem::path configPath{};
     if(tempRes)
         configPath = tempRes;

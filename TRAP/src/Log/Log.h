@@ -25,6 +25,11 @@ namespace TRAP
 		/// </summary>
 		explicit Log();
 		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="filePath">Path for the log file.</param>
+		explicit Log(std::filesystem::path filePath);
+		/// <summary>
 		///	Destructor.
 		/// </summary>
 		~Log();
@@ -56,7 +61,7 @@ namespace TRAP
 		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
 		/// </summary>
 		/// <param name="filePath">File path.</param>
-		void SetFilePath(std::filesystem::path filePath);
+		void SetFilePath(const std::filesystem::path& filePath);
 
 		/// <summary>
 		/// Importance levels.
@@ -122,13 +127,13 @@ namespace TRAP
 		/// <summary>
 		/// Save all collected messages to file.
 		/// </summary>
-		void Save();
+		void Save() const;
 		/// <summary>
 		/// Clears all buffered messages.
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[22w29a2]";
+		inline static constexpr auto WindowVersion =                        "[22w29a3]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";

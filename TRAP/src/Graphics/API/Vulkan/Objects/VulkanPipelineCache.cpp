@@ -16,9 +16,8 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
 #endif
 
-	VkPipelineCacheCreateInfo psoCacheCreateInfo;
-	psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data,
-	                                                          PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
+	const VkPipelineCacheCreateInfo psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data,
+	                                                     PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
 	VkCall(vkCreatePipelineCache(m_device->GetVkDevice(), &psoCacheCreateInfo, nullptr, &m_cache));
 }
 

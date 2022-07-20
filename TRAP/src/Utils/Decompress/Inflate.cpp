@@ -404,7 +404,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the code. The bit reader must already have been ensured at least 15bits
-uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader)
+uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
 {
 	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
 	const uint16_t l = TableLength[code];
@@ -522,7 +522,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	for(i = 0; i < NumCodes; i++)
 	{
 		const uint32_t symbol = Codes[i];
-		uint32_t l = Lengths[i];
+		const uint32_t l = Lengths[i];
 		if (l <= FirstBits)
 			continue; //Symbols that fit in first table dont increase secondary table size
 		//Get the FIRSTBITS(9u) MSBs, the MSBs of the symbol are encoded first.

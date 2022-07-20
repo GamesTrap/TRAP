@@ -15,6 +15,14 @@ TRAP::Log::Log()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Log::Log(std::filesystem::path filePath)
+	: m_path(std::move(filePath))
+{
+	m_buffer.reserve(256);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Log::~Log()
 {
 	Save();
@@ -29,7 +37,7 @@ const std::filesystem::path& TRAP::Log::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetFilePath(std::filesystem::path filePath)
+void TRAP::Log::SetFilePath(const std::filesystem::path& filePath)
 {
 	m_path = std::move(filePath);
 }
@@ -43,7 +51,7 @@ const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::Save()
+void TRAP::Log::Save() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -82,7 +90,7 @@ void TRAP::Log::Clear()
 
 std::string TRAP::Log::GetTimeStamp()
 {
-	std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
+	const std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
 	return "[" + timeStamp + ']';
 }
 

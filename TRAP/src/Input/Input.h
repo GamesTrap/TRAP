@@ -892,7 +892,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="path">Path to the controller file.</param>
 		/// <returns>True if the controller was opened successfully, false otherwise.</returns>
-		static bool OpenControllerDeviceLinux(std::string path);
+		static bool OpenControllerDeviceLinux(std::filesystem::path path);
 		/// <summary>
 		/// Poll state of absolute axes for the specified controller.
 		/// </summary>
@@ -925,7 +925,7 @@ namespace TRAP
 			int32_t FD = 0;
 			bool VibrationSupported = false;
 			int16_t CurrentVibration = -1;
-			std::string Path{};
+			std::filesystem::path Path{};
 			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
 			std::array<int32_t, ABS_CNT> ABSMap{};
 			std::array<input_absinfo, ABS_CNT> ABSInfo{};

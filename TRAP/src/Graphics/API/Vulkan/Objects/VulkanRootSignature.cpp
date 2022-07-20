@@ -54,7 +54,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//be considered the same resource)
 	for(auto* sh : desc.Shaders)
 	{
-		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
+		const TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
 		(
 			sh
 		)->GetReflection();
@@ -68,11 +68,11 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 		for(auto& res : reflection->ShaderResources)
 		{
-			auto resNameIt = indexMap.find(res.Name);
+			const auto resNameIt = indexMap.find(res.Name);
 			if(resNameIt == indexMap.end())
 			{
-				auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
-				                          [res](const ShaderReflection::ShaderResource& a)
+				const auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
+				                                [res](const ShaderReflection::ShaderResource& a)
 				{
 					return (a.Type == res.Type) && (a.UsedStages == res.UsedStages) &&
 					       (((a.Reg ^ res.Reg) | (a.Set ^ res.Set)) == 0);
@@ -160,7 +160,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			binding.descriptorCount = descInfo.Size;
 			binding.descriptorType = DescriptorTypeToVkDescriptorType(descInfo.Type);
 
-			std::string name = Utils::String::ToLower(res.Name);
+			const std::string name = Utils::String::ToLower(res.Name);
 
 			//If a user specified a uniform buffer to be used as a dynamic uniform buffer change its type to
 			//VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC
@@ -191,12 +191,12 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				layouts[setIndex].DynamicDescriptors.emplace_back(&descInfo);
 
 			//Find if the given descriptor is a static sampler
-			auto it = staticSamplerMap.find(descInfo.Name);
-			bool hasStaticSampler = it != staticSamplerMap.end();
+			const auto it = staticSamplerMap.find(descInfo.Name);
+			const bool hasStaticSampler = it != staticSamplerMap.end();
 			if (hasStaticSampler)
 			{
 				TP_INFO("Descriptor (", descInfo.Name, "): User specified Static Sampler");
-				VkSampler sampler = it->second->GetVkSampler();
+				const VkSampler sampler = it->second->GetVkSampler();
 				binding.pImmutableSamplers = &sampler;
 			}
 
@@ -270,7 +270,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 		if(createLayout)
 		{
-			VkDescriptorSetLayoutCreateInfo layoutInfo = VulkanInits::DescriptorSetLayoutCreateInfo(layout.Bindings);
+			const VkDescriptorSetLayoutCreateInfo layoutInfo = VulkanInits::DescriptorSetLayoutCreateInfo(layout.Bindings);
 
 			VkCall(vkCreateDescriptorSetLayout(m_device->GetVkDevice(), &layoutInfo, nullptr,
 			                                   &m_vkDescriptorSetLayouts[i]));
@@ -307,10 +307,10 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			descriptorSetLayouts[descriptorSetLayoutCount++] = m_vkDescriptorSetLayouts[i];
 	}
 
-	VkPipelineLayoutCreateInfo addInfo = VulkanInits::PipelineLayoutCreateInfo(descriptorSetLayoutCount,
-	                                                                           descriptorSetLayouts.data(),
-																			   m_vkPushConstantCount,
-																			   pushConstants.data());
+	const VkPipelineLayoutCreateInfo addInfo = VulkanInits::PipelineLayoutCreateInfo(descriptorSetLayoutCount,
+	                                                                                 descriptorSetLayouts.data(),
+																			         m_vkPushConstantCount,
+																			         pushConstants.data());
 	VkCall(vkCreatePipelineLayout(m_device->GetVkDevice(), &addInfo, nullptr, &m_pipelineLayout));
 
 	//Update templates
@@ -431,7 +431,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				++entryCount;
 			}
 
-			VkDescriptorUpdateTemplateCreateInfo createInfo = VulkanInits::DescriptorUpdateTemplateCreateInfo
+			const VkDescriptorUpdateTemplateCreateInfo createInfo = VulkanInits::DescriptorUpdateTemplateCreateInfo
 			(
 				m_vkDescriptorSetLayouts[setIndex], entryCount, entries.data(),
 				VkPipelineBindPointTranslator[static_cast<uint32_t>(m_pipelineType)],

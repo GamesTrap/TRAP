@@ -2934,3 +2934,12 @@ SITREP 07/19/2022|22w29a2
         - Replaced const char* with const std::string_view where possible ~<20 mins
         - Removed String::FindToken() ~<5 mins
         - Removed WindowingAPI::StringInExtensionString() ~<5 mins
+        - Removed std:: from getenv ~<5 mins
+
+SITREP 07/20/2022|22w29a3
+    - Branch STL:
+        - Checked for const correctness ~>240 mins
+        - Memory::SwapBytes() Added safety against const and non ref values ~<5 mins
+        - Moved Utils::GetStrError() to Utils::String::GetStrError() ~<5 mins
+        - Utils::String::ConvertToString() Added Utils::LinuxWindowManager overload ~<5 mins
+        - Utils::String::ConvertToType() Added Utils::LinuxWindowManager overload ~<5 mins

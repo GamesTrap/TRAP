@@ -48,7 +48,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 	}
 
 	//File uses big-endian
-	bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
+	const bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
 
 	//Load Chunk
 	Data data{};
@@ -315,7 +315,7 @@ uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static std::array<std::string, 11> UnusedChunks
+static const std::array<std::string, 11> UnusedChunks
 {
 	"cHRM", "gAMA", "iCCP", "hIST", "pHYs", "sPLT", "tIME", "iTXt", "tEXt", "zTXt", "eXIf"
 };
@@ -331,7 +331,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 
 	if (alreadyLoaded.IHDR)
 	{
-		bool unusedChunk = std::any_of(UnusedChunks.begin(), UnusedChunks.end(), [&nextChunk](const std::string_view magicNum)
+		const bool unusedChunk = std::any_of(UnusedChunks.begin(), UnusedChunks.end(), [&nextChunk](const std::string_view magicNum)
 		{
 			return magicNum == nextChunk.MagicNumber;
 		});
@@ -406,7 +406,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 		Utils::Memory::SwapBytes(ihdrChunk.Height);
 	}
 
-	std::array<uint8_t, 17> CRCData
+	const std::array<uint8_t, 17> CRCData
 	{
 		'I', 'H', 'D', 'R',
 		reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[3], reinterpret_cast<uint8_t*>(&ihdrChunk.Width)[2],
@@ -417,7 +417,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 		ihdrChunk.InterlaceMethod
 	};
 
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != ihdrChunk.CRC[0] && crc[1] != ihdrChunk.CRC[1] && crc[2] != ihdrChunk.CRC[2] &&
 	    crc[3] != ihdrChunk.CRC[3])
 	{
@@ -485,9 +485,9 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 	const uint8_t renderingIntent = static_cast<uint8_t>(file.get());
 	file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
-	std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
+	const std::array<uint8_t, 5> CRCData{ 's', 'R', 'G', 'B', renderingIntent };
 
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "sRGB CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
@@ -543,9 +543,9 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		const uint8_t grayAlpha2 = static_cast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
-		std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
+		const std::array<uint8_t, 6> CRCData{ 't', 'R', 'N', 'S', grayAlpha1, grayAlpha2 };
 
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+		const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
 			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
@@ -567,7 +567,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		const uint8_t blueAlpha2 = static_cast<uint8_t>(file.get());
 		file.read(reinterpret_cast<char*>(CRC.data()), CRC.size());
 
-		std::array<uint8_t, 10> CRCData
+		const std::array<uint8_t, 10> CRCData
 		{
 			't', 'R', 'N', 'S',
 			redAlpha1, redAlpha2,
@@ -575,7 +575,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 			blueAlpha1, blueAlpha2
 		};
 
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+		const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
 			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
@@ -602,7 +602,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		for (uint32_t i = 0; i < paletteAlpha.size(); i++)
 			CRCData[i + 4] = paletteAlpha[i];
 
-		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+		const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
 			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
@@ -668,7 +668,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 		CRCData[j++ + 4] = i.Blue;
 	}
 
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "PLTE CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
@@ -698,7 +698,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 	for (uint32_t i = 0; i < compressedData.size(); i++)
 		CRCData[i + 4] = compressedData[i];
 
-	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
+	const std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "IDAT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
@@ -857,7 +857,7 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 		return false;
 	}
 
-	uint8_t* buf = &source[sourceLength - 4];
+	const uint8_t* buf = &source[sourceLength - 4];
 	const std::array<uint8_t, 4> adler32 =
 	{
 		buf[0],
@@ -865,7 +865,7 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 		buf[2],
 		buf[3]
 	};
-	std::array<uint8_t, 4> checksum = Utils::Hash::Adler32(destination, destinationLength);
+	const std::array<uint8_t, 4> checksum = Utils::Hash::Adler32(destination, destinationLength);
 
 	if (checksum[0] != adler32[0] && checksum[1] != adler32[1] && checksum[2] != adler32[2] &&
 	    checksum[3] != adler32[3])
@@ -883,11 +883,11 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
-	const uint8_t* scanline,
-	const uint8_t* precon,
-	const std::size_t byteWidth,
-	const uint8_t filterType,
-	const std::size_t length)
+	                                            const uint8_t* scanline,
+	                                            const uint8_t* precon,
+	                                            const std::size_t byteWidth,
+	                                            const uint8_t filterType,
+	                                            const std::size_t length)
 {
 	//For PNG Filter Method 0
 	//UnFilter a PNG Image Scanline by Scanline.
@@ -1030,7 +1030,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const u
 	//width and height are image dimensions or dimensions of reduced image, bitsPerPixel is bits per pixel
 	//in and out are allowed to be the same memory address
 	//(but are not the same size since in has the extra filter Bytes)
-	uint8_t* prevLine = nullptr;
+	const uint8_t* prevLine = nullptr;
 
 	//byteWidth is used for filtering, is 1 when bpp < 8, number of bytes per pixel otherwise
 	const std::size_t byteWidth = (bitsPerPixel + 7u) / 8u;
@@ -1121,8 +1121,10 @@ bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, c
 		Adam7GetPassValues(passW, passH, filterPassStart, paddedPassStart, passStart, width, height, bitsPerPixel);
 
 		for (uint32_t i = 0; i != 7; ++i)
+		{
 			if (!UnFilter(&in[paddedPassStart[i]], &in[filterPassStart[i]], passW[i], passH[i], bitsPerPixel))
 				return false;
+		}
 
 		Adam7DeInterlace(out, in, width, height, bitsPerPixel);
 	}
@@ -1138,13 +1140,13 @@ constexpr std::array<uint32_t, 7> ADAM7_DX = { 8, 8, 4, 4, 2, 2, 1 }; /*X delta 
 constexpr std::array<uint32_t, 7> ADAM7_DY = { 8, 8, 8, 4, 4, 2, 2 }; /*Y delta values*/
 
 void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW,
-	std::array<uint32_t, 7>& passH,
-	std::array<std::size_t, 8>& filterPassStart,
-	std::array<std::size_t, 8>& paddedPassStart,
-	std::array<std::size_t, 8>& passStart,
-	const uint32_t width,
-	const uint32_t height,
-	const uint32_t bitsPerPixel)
+	                                              std::array<uint32_t, 7>& passH,
+	                                              std::array<std::size_t, 8>& filterPassStart,
+	                                              std::array<std::size_t, 8>& paddedPassStart,
+	                                              std::array<std::size_t, 8>& passStart,
+	                                              const uint32_t width,
+	                                              const uint32_t height,
+	                                              const uint32_t bitsPerPixel)
 {
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
 

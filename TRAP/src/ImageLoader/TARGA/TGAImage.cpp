@@ -110,7 +110,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
 	{
-		uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
+		const uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
 		file.seekg(0, std::ios::end); //Go to the end of file
 		uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
 		file.seekg(-18, std::ios::end); //Check if there is a footer

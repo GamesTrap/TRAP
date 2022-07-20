@@ -109,7 +109,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(loopback);
 
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
+	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
 	sockaddr convertedAddress = Utils::BitCast<sockaddr_in, sockaddr>(address);
 	if (connect(sock, &convertedAddress, sizeof(address)) == -1)
 	{

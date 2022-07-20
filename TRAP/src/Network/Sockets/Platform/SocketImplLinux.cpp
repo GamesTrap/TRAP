@@ -88,9 +88,9 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(TRAP::Network::SocketHandle sock, bool block)
+void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
-	int32_t status = fcntl(sock, F_GETFL);
+	const int32_t status = fcntl(sock, F_GETFL);
 	if (block)
 	{
 		if (fcntl(sock, F_SETFL, status & ~O_NONBLOCK) == -1)

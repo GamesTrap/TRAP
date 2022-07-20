@@ -99,7 +99,6 @@ bool TRAP::Utils::Discord::RunCallbacks()
     }
 
     TRAP::Utils::Discord::SetActivity(CurrentActivity);
-
 #endif
 
     return true;
@@ -130,7 +129,6 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 
         return lastRes == discord::Result::Ok;
     }
-
 #endif
 
     return false;

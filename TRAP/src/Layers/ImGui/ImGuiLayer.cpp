@@ -106,8 +106,8 @@ void TRAP::ImGuiLayer::OnAttach()
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 
-		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-		                                                                                           1000);
+		const VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+		                                                                                                 1000);
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
@@ -194,7 +194,7 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 {
 	if (m_blockEvents)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		const ImGuiIO& io = ImGui::GetIO();
 		event.Handled |= event.IsInCategory(Events::EventCategory::Mouse) & io.WantCaptureMouse;
 		event.Handled |= event.IsInCategory(Events::EventCategory::Keyboard) & io.WantCaptureKeyboard;
 	}
@@ -321,9 +321,9 @@ void ImGui::Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampl
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
-		auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
+		const auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
+		const auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
@@ -339,8 +339,8 @@ void ImGui::Image(TRAP::Graphics::Texture* image, const ImVec2& size, const ImVe
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		const auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 		                                                      vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);

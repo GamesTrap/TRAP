@@ -286,7 +286,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 		return nullptr;
 	}
 
-	RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders, shaderStages);
+	const RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders, shaderStages);
 	if (desc.Stages == RendererAPI::ShaderStage::None)
 		return nullptr;
 
@@ -360,13 +360,13 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 											const std::vector<Macro>* userMacros)
 {
 	RendererAPI::ShaderStage currentShaderStage = RendererAPI::ShaderStage::None;
-	std::vector<std::string> lines = Utils::String::GetLines(glslSource);
+	const std::vector<std::string> lines = Utils::String::GetLines(glslSource);
 
 	//Go through every line of the shader source
 	for(std::size_t i = 0; i < lines.size(); ++i)
 	{
 		//Optimization lines converted to lower case
-		std::string lowerLine = Utils::String::ToLower(lines[i]);
+		const std::string lowerLine = Utils::String::ToLower(lines[i]);
 
 		//Search for a shader type tag
 		if(Utils::String::StartsWith(lowerLine, "#shader"))
@@ -415,7 +415,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 				{RendererAPI::ShaderStage::RayTracing, 6}
 			};
 
-			auto it = stageToIndex.find(currentShaderStage);
+			const auto it = stageToIndex.find(currentShaderStage);
 			if(it != stageToIndex.end())
 			{
 				if(currentShaderStage == RendererAPI::ShaderStage::RayTracing)

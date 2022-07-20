@@ -127,8 +127,9 @@ namespace TRAP::Graphics::API
 		void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 		                       const TRAP::Ref<RenderTarget>& depthStencil,
 							   const RendererAPI::LoadActionsDesc* loadActions,
-							   std::vector<uint32_t>* colorArraySlices,
-		                       std::vector<uint32_t>* colorMipSlices, uint32_t depthArraySlice,
+							   const std::vector<uint32_t>* colorArraySlices,
+		                       const std::vector<uint32_t>* colorMipSlices,
+							   uint32_t depthArraySlice,
 							   uint32_t depthMipSlice) override;
 
 		/// <summary>
@@ -326,7 +327,7 @@ namespace TRAP::Graphics::API
 		/// <param name="color">Color to clear the color attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(TRAP::Math::Vec4 color, uint32_t width, uint32_t height) override;
+		void Clear(TRAP::Math::Vec4 color, uint32_t width, uint32_t height) const override;
 		/// <summary>
 		/// Clear the currently used depth and stencil attachment.
 		/// </summary>
@@ -334,21 +335,21 @@ namespace TRAP::Graphics::API
 		/// <param name="stencil">Stencil value to clear the stencil attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(float depth, uint32_t stencil, uint32_t width, uint32_t height) override;
+		void Clear(float depth, uint32_t stencil, uint32_t width, uint32_t height) const override;
 		/// <summary>
 		/// Clear the currently used depth attachment.
 		/// </summary>
 		/// <param name="depth">Depth value to clear the depth attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(float depth, uint32_t width, uint32_t height) override;
+		void Clear(float depth, uint32_t width, uint32_t height) const override;
 		/// <summary>
 		/// Clear the currently used stencil attachment.
 		/// </summary>
 		/// <param name="stencil">Stencil value to clear the stencil attachment with.</param>
 		/// <param name="width">Width of the area to clear.</param>
 		/// <param name="height">Height of the area to clear.</param>
-		void Clear(uint32_t stencil, uint32_t width, uint32_t height) override;
+		void Clear(uint32_t stencil, uint32_t width, uint32_t height) const override;
 
 		/// <summary>
 		/// Resolve a multisample color texture to a non-multisample color texture.
@@ -358,7 +359,7 @@ namespace TRAP::Graphics::API
 		/// <param name="dstImage">Destination non-multisample color texture to resolve into.</param>
 		/// <param name="dstState">Destination texture state.</param>
 		void ResolveImage(API::VulkanTexture* srcImage, RendererAPI::ResourceState srcState,
-		                  API::VulkanTexture* dstImage, RendererAPI::ResourceState dstState);
+		                  API::VulkanTexture* dstImage, RendererAPI::ResourceState dstState) const;
 
 		/// <summary>
 		/// Retrieve the currently active VkRenderPass.

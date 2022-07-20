@@ -66,8 +66,8 @@ namespace TRAP::Graphics::API
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 			                                                                    const TRAP::Ref<RenderTarget>& depthStencil,
 			                                                                    const RendererAPI::LoadActionsDesc* loadActions,
-			                                                                    std::vector<uint32_t>* colorArraySlices,
-			                                                                    std::vector<uint32_t>* colorMipSlices,
+			                                                                    const std::vector<uint32_t>* colorArraySlices,
+			                                                                    const std::vector<uint32_t>* colorMipSlices,
 			                                                                    uint32_t depthArraySlice,
 			                                                                    uint32_t depthMipSlice);
 

@@ -85,7 +85,7 @@ namespace TRAP::FileSystem
 		/// Get the function to call when an file event occurred.
 		/// </summary>
 		/// <returns>EventCallbackFn.</returns>
-		EventCallbackFn GetEventCallback();
+		EventCallbackFn GetEventCallback() const;
 
         /// <summary>Adds a new folder path to the tracked paths.</summary>
         /// <param name="path">Folder path to track.</param>

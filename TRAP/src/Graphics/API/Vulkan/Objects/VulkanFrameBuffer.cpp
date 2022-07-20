@@ -58,7 +58,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	//Color
 	for(std::size_t i = 0; i < desc.RenderTargets.size(); i++)
 	{
-		VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.RenderTargets[i].get());
+		const VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.RenderTargets[i].get());
 		if(desc.ColorMipSlices.empty() && desc.ColorArraySlices.empty())
 		{
 			*iterAttachments = rTarget->GetVkImageView();
@@ -86,7 +86,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	//Depth/Stencil
 	if(desc.DepthStencil)
 	{
-		VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.DepthStencil.get());
+		const VulkanRenderTarget* rTarget = dynamic_cast<VulkanRenderTarget*>(desc.DepthStencil.get());
 		if(desc.DepthMipSlice == std::numeric_limits<uint32_t>::max() &&
 		   desc.DepthArraySlice == std::numeric_limits<uint32_t>::max())
 		{
@@ -111,8 +111,9 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		}
 	}
 
-	VkFramebufferCreateInfo info = VulkanInits::FramebufferCreateInfo(desc.RenderPass->GetVkRenderPass(),
-	                                                                  imageViews, m_width, m_height, m_arraySize);
+	const VkFramebufferCreateInfo info = VulkanInits::FramebufferCreateInfo(desc.RenderPass->GetVkRenderPass(),
+	                                                                        imageViews, m_width,
+																			m_height, m_arraySize);
 	VkCall(vkCreateFramebuffer(m_device->GetVkDevice(), &info, nullptr, &m_framebuffer));
 
 	imageViews.clear();

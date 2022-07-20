@@ -77,8 +77,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 		return Status::Error;
 
 	//Bind the socket
-	sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
-	sockaddr finalAddr = Utils::BitCast<sockaddr_in, sockaddr>(addr);
+	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
+	const sockaddr finalAddr = Utils::BitCast<sockaddr_in, sockaddr>(addr);
 	if(::bind(GetHandle(), &finalAddr, sizeof(addr)) == -1)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port");
@@ -114,7 +114,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 	}
 
 	//Build the target address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
 	const sockaddr finalAddress = Utils::BitCast<sockaddr_in, sockaddr>(address);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)

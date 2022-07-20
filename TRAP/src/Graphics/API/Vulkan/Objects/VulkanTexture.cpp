@@ -137,8 +137,8 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	RendererAPI::DescriptorType descriptors = desc.Descriptors;
 	if(static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::Storage))
 		descriptors |= RendererAPI::DescriptorType::RWTexture;
-	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) ==
-						   RendererAPI::DescriptorType::TextureCube;
+	const bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) ==
+						         RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;
 
 	const bool isPlanarFormat = TRAP::Graphics::API::ImageFormatIsPlanar(desc.Format);
@@ -248,15 +248,15 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		}
 
 		// If lazy allocation is requested check that the hardware supports it
-		bool lazyAllocation = static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::OnTile);
+		const bool lazyAllocation = static_cast<bool>(desc.Flags & RendererAPI::TextureCreationFlags::OnTile);
 		if (lazyAllocation)
 		{
 			uint32_t memoryTypeIndex = 0;
 			VmaAllocationCreateInfo lazyMemReqs = memReqs;
 			lazyMemReqs.usage = VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED;
-			VkResult result = vmaFindMemoryTypeIndex(m_vma->GetVMAAllocator(),
-													 std::numeric_limits<uint32_t>::max(),
-													 &lazyMemReqs, &memoryTypeIndex);
+			const VkResult result = vmaFindMemoryTypeIndex(m_vma->GetVMAAllocator(),
+													       std::numeric_limits<uint32_t>::max(),
+													       &lazyMemReqs, &memoryTypeIndex);
 			if (result == VK_SUCCESS)
 			{
 				memReqs = lazyMemReqs;
@@ -284,7 +284,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 			// Might help to keep DCC enabled if we ever use this as a output format
 			// DCC gets disabled when we pass mutable format bit to the create info.
 			// Passing the format list helps the driver to enable it
-			VkFormat planarFormat = ImageFormatToVkFormat(desc.Format);
+			const VkFormat planarFormat = ImageFormatToVkFormat(desc.Format);
 			VkImageFormatListCreateInfo formatList{};
 			formatList.sType = VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO;
 			formatList.pNext = nullptr;
@@ -440,7 +440,7 @@ const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage()
+VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const
 {
 	return m_vkImage;
 }

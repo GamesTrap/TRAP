@@ -1,8 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderReflection.h"
 
-bool ShaderResourceCmp(TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
-                       TRAP::Graphics::API::ShaderReflection::ShaderResource& b)
+constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
+                                 const TRAP::Graphics::API::ShaderReflection::ShaderResource& b)
 {
 	bool isSame = true;
 
@@ -15,8 +15,8 @@ bool ShaderResourceCmp(TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ShaderVariableCmp(TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
-                       TRAP::Graphics::API::ShaderReflection::ShaderVariable& b)
+constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
+                                 const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b)
 {
 	bool isSame = true;
 
@@ -71,7 +71,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	std::vector<ShaderVariable> variables;
 	std::size_t variableCount = 0;
 
-	TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
+	const TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
 
 	std::array<ShaderResource*, 512> uniqueResources{};
 	std::array<RendererAPI::ShaderStage, 512> shaderUsage{};
@@ -166,7 +166,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 		for(std::size_t i = 0; i < variableCount; ++i)
 		{
 			variables[i] = *uniqueVariable[i];
-			ShaderResource* parentResource = uniqueVariableParent[i];
+			const ShaderResource* parentResource = uniqueVariableParent[i];
 			//Look for parent
 			for(std::size_t j = 0; j < resourceCount; ++j)
 			{

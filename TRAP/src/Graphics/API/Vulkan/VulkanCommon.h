@@ -361,7 +361,8 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::API::ErrorCheck(VkResult result, const std::string_view function, const std::string_view file, int32_t line)
+constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std::string_view function,
+                                               const std::string_view file, const int32_t line)
 {
 	if(result >= 0)
 		return true;
@@ -437,7 +438,7 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(VkResult result, const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType)
+constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const RendererAPI::QueueType queueType)
 {
 	switch(queueType)
 	{
@@ -458,7 +459,7 @@ constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(RendererAPI:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount)
+constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(const RendererAPI::SampleCount sampleCount)
 {
 	switch(sampleCount)
 	{
@@ -484,7 +485,7 @@ constexpr VkSampleCountFlagBits TRAP::Graphics::API::SampleCountToVkSampleCount(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(TRAP::Graphics::API::ImageFormat imageFormat)
+constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphics::API::ImageFormat imageFormat)
 {
 	switch(imageFormat)
 	{
@@ -659,7 +660,7 @@ constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(TRAP::Graphics::AP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(VkFormat format, const bool includeStencilBit)
+constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit)
 {
 	switch(format)
 	{
@@ -692,7 +693,7 @@ constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(VkFormat f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type)
+constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(const RendererAPI::DescriptorType type)
 {
 	VkImageUsageFlags result = 0;
 
@@ -706,7 +707,7 @@ constexpr VkImageUsageFlags TRAP::Graphics::API::DescriptorTypeToVkImageUsage(Re
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(VkImageUsageFlags usage)
+constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkImageUsageFlags usage)
 {
 	VkFormatFeatureFlags result = 0;
 
@@ -724,7 +725,7 @@ constexpr VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage,
+constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage,
                                                                                 const bool typed)
 {
 	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -765,7 +766,7 @@ constexpr VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(RendererAPI::FilterType filter)
+constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter)
 {
 	switch(filter)
 	{
@@ -782,7 +783,7 @@ constexpr VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(RendererAPI::Filter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode)
+constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode)
 {
 	switch (mipMapMode)
 	{
@@ -800,7 +801,7 @@ constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(Rend
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode)
+constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode)
 {
 	switch(addressMode)
 	{
@@ -823,7 +824,7 @@ constexpr VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type)
+constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type)
 {
 	switch(type)
 	{
@@ -871,7 +872,7 @@ constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages)
+constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages)
 {
 	VkShaderStageFlags res = 0;
 
@@ -902,7 +903,7 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags)
+constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags)
 {
 	VkPipelineCacheCreateFlags ret = 0;
 
@@ -914,7 +915,7 @@ constexpr VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(RendererAPI::ResourceState state)
+constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state)
 {
 	VkAccessFlags ret = 0;
 
@@ -948,7 +949,7 @@ constexpr VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(RendererAPI::ResourceState usage)
+constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage)
 {
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource))
 		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
@@ -979,7 +980,7 @@ constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(RendererAPI::QueryType type)
+constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::QueryType type)
 {
 	switch(type)
 	{
@@ -1000,7 +1001,7 @@ constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(RendererAPI::Q
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(VkFormat format)
+constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(const VkFormat format)
 {
 	switch(format)
 	{

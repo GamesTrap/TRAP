@@ -32,6 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Window.h"
 #include "Events/KeyEvent.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
+#include <limits>
 
 TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
@@ -588,7 +589,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const I
 	}
 
 	if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) ||
-			(image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
+		 (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
 	{
 		InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
 		return;
@@ -774,7 +775,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 	{
 	case Hint::Resizable:
 		window->Resizable = value;
-
 		if (!window->Monitor)
 			PlatformSetWindowResizable(window, value);
 		break;
@@ -1464,7 +1464,7 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a keyboard key for the specified window.
-TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, Input::Key key)
+TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, const Input::Key key)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1486,7 +1486,7 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow*
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a mouse button for the specified window.
-TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, Input::MouseButton button)
+TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, const Input::MouseButton button)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -2037,7 +2037,7 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a mouse button click event
-void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button,
+void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, const Input::MouseButton button,
                                                    const Input::KeyState state)
 {
 	TRAP_ASSERT(window != nullptr);
@@ -2348,9 +2348,9 @@ void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& 
 TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor,
                                                                                                const InternalVideoMode& desired)
 {
-	uint32_t leastSizeDiff = UINT_MAX;
-	uint32_t rateDiff = 0, leastRateDiff = UINT_MAX;
-	uint32_t leastColorDiff = UINT_MAX;
+	uint32_t leastSizeDiff = std::numeric_limits<uint32_t>::max();
+	uint32_t rateDiff = 0, leastRateDiff = std::numeric_limits<uint32_t>::max();
+	uint32_t leastColorDiff = std::numeric_limits<uint32_t>::max();
 	InternalVideoMode* closest = nullptr;
 
 	if (!RefreshVideoModes(monitor))
@@ -2377,7 +2377,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 		if (desired.RefreshRate != -1)
 			rateDiff = abs(current->RefreshRate - desired.RefreshRate);
 		else
-			rateDiff = UINT_MAX - current->RefreshRate;
+			rateDiff = std::numeric_limits<uint32_t>::max() - current->RefreshRate;
 
 		if ((colorDiff < leastColorDiff) ||
 			(colorDiff == leastColorDiff && sizeDiff < leastSizeDiff) ||
@@ -2403,7 +2403,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 
 	if (connected)
 	{
-		InternalMonitor* mon = nullptr;
+		const InternalMonitor* mon = nullptr;
 
 		if (placement == 0)
 		{
@@ -2438,9 +2438,9 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a monitor disconnection
-void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t)
+void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t /*placement*/)
 {
-	Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
+	const Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
 
 	if (s_Data.Callbacks.Monitor)
 		s_Data.Callbacks.Monitor(monitor.get(), false);

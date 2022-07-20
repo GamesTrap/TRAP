@@ -181,7 +181,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max usable MSAA sample count for the GPU.
 		/// </summary>
 		/// <returns>Max usable MSAA sample count.</returns>
-		uint32_t GetMaxUsableMSAASampleCount();
+		uint32_t GetMaxUsableMSAASampleCount() const;
 
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;

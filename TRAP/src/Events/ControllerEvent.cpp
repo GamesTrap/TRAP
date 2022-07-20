@@ -24,7 +24,7 @@ TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Input::Contro
 
 std::string TRAP::Events::ControllerConnectEvent::ToString() const
 {
-	return "ControllerConnectEvent: " + std::to_string(static_cast<uint32_t>(m_controller) + 1);
+	return "ControllerConnectEvent: " + std::to_string(static_cast<uint32_t>(m_controller) + 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,7 +51,7 @@ TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::
 
 std::string TRAP::Events::ControllerDisconnectEvent::ToString() const
 {
-	return "ControllerDisconnectEvent: " + std::to_string(static_cast<uint32_t>(m_controller) + 1);
+	return "ControllerDisconnectEvent: " + std::to_string(static_cast<uint32_t>(m_controller) + 1u);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

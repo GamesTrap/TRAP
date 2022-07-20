@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 		float GetHeight() const;
 	};
 
-class OrthographicCameraController
+	class OrthographicCameraController
 	{
 	public:
 		/// <summary>
@@ -142,7 +142,7 @@ class OrthographicCameraController
 		/// </sumary>
 		/// <param name="e">Mouse scroll event.</param>
 		/// <returns>False.</returns>
-		bool OnMouseScroll(Events::MouseScrollEvent& e);
+		bool OnMouseScroll(const Events::MouseScrollEvent& e);
 		/// <summary>
 		/// Event handler for framebuffer resize event.
 		///
@@ -150,7 +150,7 @@ class OrthographicCameraController
 		/// </sumary>
 		/// <param name="e">Framebuffer resize event.</param>
 		/// <returns>False.</returns>
-		bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
+		bool OnFrameBufferResize(const Events::FrameBufferResizeEvent& e);
 
 		float m_aspectRatio;
 		float m_zoomLevel = 1.0f;

@@ -5,7 +5,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	TP_PROFILE_FUNCTION();
 
-	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
+	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	m_handle = monitors[monitor];
 }
 
@@ -130,7 +130,7 @@ uint32_t TRAP::Monitor::GetID() const
 {
 	TP_PROFILE_FUNCTION();
 
-	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
+	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	for(uint32_t i = 0; i < monitors.size(); i++)
 	{
 		if (monitors[i] == m_handle)

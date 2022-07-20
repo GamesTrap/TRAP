@@ -16,11 +16,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetVMA()),
 	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetInstance()),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
-	  m_presentQueue(),
-	  m_swapChain(),
-	  m_presentQueueFamilyIndex(),
-	  m_imageCount(),
-	  m_enableVSync()
+	  m_presentQueue(), m_swapChain(), m_presentQueueFamilyIndex(), m_imageCount(), m_enableVSync()
 {
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
@@ -52,7 +48,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	//////////////////
 	//Create Surface//
 	//////////////////
-	TRAP::Ref<VulkanSurface> surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
+	const TRAP::Ref<VulkanSurface> surface = TRAP::MakeRef<VulkanSurface>(m_instance, m_device, desc.Window);
 
 	////////////////////
 	//Create SwapChain//
@@ -123,7 +119,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	VkPresentModeKHR presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	const std::vector<VkPresentModeKHR>& modes = surface->GetVkSurfacePresentModes();
 
-	std::array<VkPresentModeKHR, 4> preferredModeList =
+	const std::array<VkPresentModeKHR, 4> preferredModeList =
 	{
 		VK_PRESENT_MODE_IMMEDIATE_KHR,
 		VK_PRESENT_MODE_MAILBOX_KHR,
@@ -156,7 +152,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	desc.Width = extent.width;
 	desc.Height = extent.height;
 
-	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	const VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
 	std::array<uint32_t, 2> queueFamilyIndices =
 	{
@@ -228,7 +224,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	else
 		preTransform = caps.currentTransform;
 
-	std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
+	const std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
 	{
 		VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
@@ -248,16 +244,16 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR);
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
-	VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
-		                                                                               desc.ImageCount,
-		                                                                               surfaceFormat,
-		                                                                               extent,
-		                                                                               sharingMode,
-		                                                                               queueFamilyIndexCount,
-		                                                                               queueFamilyIndices,
-		                                                                               preTransform,
-		                                                                               compositeAlpha,
-		                                                                               presentMode);
+	const VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
+		                                                                                     desc.ImageCount,
+		                                                                                     surfaceFormat,
+		                                                                                     extent,
+		                                                                                     sharingMode,
+		                                                                                     queueFamilyIndexCount,
+		                                                                                     queueFamilyIndices,
+		                                                                                     preTransform,
+		                                                                                     compositeAlpha,
+		                                                                                     presentMode);
 
 	VkCall(vkCreateSwapchainKHR(m_device->GetVkDevice(), &swapChainCreateInfo, nullptr, &swapChain));
 
@@ -346,7 +342,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 		//If SwapChain is out of date, let caller know by returning -1
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			VkFence vkF = fen->GetVkFence();
+			const VkFence vkF = fen->GetVkFence();
 			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &vkF));
 			fen->m_submitted = false;
 			return std::numeric_limits<uint32_t>::max();

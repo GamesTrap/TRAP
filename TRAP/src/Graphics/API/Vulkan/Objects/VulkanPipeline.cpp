@@ -73,13 +73,13 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
-	VkPipelineCache psoCache = desc.Cache ?
-	                           dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
-							   VK_NULL_HANDLE;
+	const VkPipelineCache psoCache = desc.Cache ?
+	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
+							         VK_NULL_HANDLE;
 
 	TRAP_ASSERT(computeDesc.ShaderProgram);
 	TRAP_ASSERT(computeDesc.RootSignature);
-	VulkanShader* vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
+	const VulkanShader* vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
 	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE);
 
 	m_type = RendererAPI::PipelineType::Compute;
@@ -93,7 +93,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 			 vShader->GetReflection()->StageReflections[0].EntryPoint.data()
 		);
 
-		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
+		const VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo
 		(
 			stage,
 			dynamic_cast<VulkanRootSignature*>(computeDesc.RootSignature.get())->GetVkPipelineLayout()
@@ -108,9 +108,9 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
-	VkPipelineCache psoCache = desc.Cache ?
-	                           dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
-							   VK_NULL_HANDLE;
+	const VkPipelineCache psoCache = desc.Cache ?
+	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
+							         VK_NULL_HANDLE;
 
 	TRAP_ASSERT(graphicsDesc.ShaderProgram);
 	TRAP_ASSERT(graphicsDesc.RootSignature);
@@ -128,7 +128,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	renderPassDesc.DepthStencilFormat = graphicsDesc.DepthStencilFormat;
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
-	VulkanShader* vShader = dynamic_cast<VulkanShader*>(shaderProgram);
+	const VulkanShader* vShader = dynamic_cast<VulkanShader*>(shaderProgram);
 	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflectionCount; ++i)
 	{
 		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE);
@@ -238,10 +238,10 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			}
 		}
 
-		VkPipelineVertexInputStateCreateInfo vi = VulkanInits::PipelineVertexInputStateCreateInfo(inputBindingCount,
-		                                                                                          inputBindings.data(),
-																								  inputAttributeCount,
-																								  inputAttributes.data());
+		const VkPipelineVertexInputStateCreateInfo vi = VulkanInits::PipelineVertexInputStateCreateInfo(inputBindingCount,
+		                                                                                                inputBindings.data(),
+																								        inputAttributeCount,
+																								        inputAttributes.data());
 
 		VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		switch(graphicsDesc.PrimitiveTopology)
@@ -275,8 +275,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			break;
 		}
 
-		VkPipelineInputAssemblyStateCreateInfo ia = VulkanInits::PipelineInputAssemblyStateCreateInfo(topology,
-		                                                                                              VK_FALSE);
+		const VkPipelineInputAssemblyStateCreateInfo ia = VulkanInits::PipelineInputAssemblyStateCreateInfo(topology,
+		                                                                                                    VK_FALSE);
 
 		VkPipelineTessellationStateCreateInfo ts{};
 		if (static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&
@@ -288,22 +288,22 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			);
 		}
 
-		VkPipelineViewportStateCreateInfo vs = VulkanInits::PipelineViewportStateCreateInfo();
+		const VkPipelineViewportStateCreateInfo vs = VulkanInits::PipelineViewportStateCreateInfo();
 
-		VkPipelineMultisampleStateCreateInfo ms = VulkanInits::PipelineMultisampleStateCreateInfo
+		const VkPipelineMultisampleStateCreateInfo ms = VulkanInits::PipelineMultisampleStateCreateInfo
 		(
 			SampleCountToVkSampleCount(graphicsDesc.SampleCount),
 			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? RendererAPI::GPUSettings.SampleRateShadingSupported : VK_FALSE,
 			graphicsDesc.SampleCount != RendererAPI::SampleCount::One ? 0.25f : 0.0f
 		);
 
-		VkPipelineRasterizationStateCreateInfo rs = graphicsDesc.RasterizerState ?
-		                                            UtilToRasterizerDesc(*graphicsDesc.RasterizerState) :
-													VulkanRenderer::DefaultRasterizerDesc;
+		const VkPipelineRasterizationStateCreateInfo rs = graphicsDesc.RasterizerState ?
+		                                                  UtilToRasterizerDesc(*graphicsDesc.RasterizerState) :
+													      VulkanRenderer::DefaultRasterizerDesc;
 
-		VkPipelineDepthStencilStateCreateInfo ds = graphicsDesc.DepthState ?
-		                                           UtilToDepthDesc(*graphicsDesc.DepthState) :
-												   VulkanRenderer::DefaultDepthDesc;
+		const VkPipelineDepthStencilStateCreateInfo ds = graphicsDesc.DepthState ?
+		                                                 UtilToDepthDesc(*graphicsDesc.DepthState) :
+												         VulkanRenderer::DefaultDepthDesc;
 
 		std::vector<VkPipelineColorBlendAttachmentState> cbAttachments(8);
 		VkPipelineColorBlendStateCreateInfo cb = graphicsDesc.BlendState ?
@@ -322,7 +322,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		};
 		if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps))
 			dynamicStates.emplace_back(VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR);
-		VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
+		const VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 
 		VkGraphicsPipelineCreateInfo info = VulkanInits::GraphicsPipelineCreateInfo(static_cast<uint32_t>(stageCount), stages.data(),
 																					vi, ia, vs, rs, ms, ds, cb, dy,

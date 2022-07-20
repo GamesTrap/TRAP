@@ -52,7 +52,7 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str
 
 	while (end <= std::string::npos)
 	{
-		std::string token = str.substr(start, end - start);
+		const std::string token = str.substr(start, end - start);
 
 		if (!token.empty())
 			result.push_back(token);
@@ -164,7 +164,7 @@ bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std:
 
 std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint)
 {
-	std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
+	const std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
 
 	std::tm tm{};
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -183,7 +183,7 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 
 std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint)
 {
-	std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
+	const std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
 
 	std::tm tm{};
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -197,3 +197,29 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 
 	return std::string(buffer.begin(), buffer.end());
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_LINUX
+std::string TRAP::Utils::String::GetStrError()
+{
+    std::string error(1024, '\0');
+    #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+        strerror_r(errno, error.data(), error.size());
+        //Remove trailing terminating null characters
+        error.resize(error.find('\0'));
+        return error;
+    #else
+        char* errorCStr = strerror_r(errno, error.data(), error.size());
+        return std::string(errorCStr);
+    #endif
+
+    return "";
+}
+#elif defined(TRAP_PLATFORM_WINDOWS)
+std::string TRAP::Utils::String::GetStrError()
+{
+	//TODO Use GetLastError?
+	return "";
+}
+#endif

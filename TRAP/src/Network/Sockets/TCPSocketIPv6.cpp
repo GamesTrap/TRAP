@@ -112,14 +112,14 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 	CreateIPv6();
 
 	//Create the remote address
-	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
+	const sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	if(timeout <= Utils::TimeStep(0.0f))
 	{
 		//We're not using a timeout: just try to connect
 
 		//Connect the socket
-		if (::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
+		if (::connect(GetHandle(), reinterpret_cast<const sockaddr*>(&address), sizeof(address)) == -1)
 			return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 		//Connection succeeded
@@ -136,7 +136,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 		SetBlocking(false);
 
 	//Try to connect to the remote address
-	if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
+	if(::connect(GetHandle(), reinterpret_cast<const sockaddr*>(&address), sizeof(address)) >= 0)
 	{
 		//We got instantly connected! (it may no happen a lot...)
 		SetBlocking(blocking);

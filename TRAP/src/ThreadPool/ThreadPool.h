@@ -108,8 +108,8 @@ auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::in
 	using TaskReturnType = std::invoke_result_t<F, Args...>;
 	using TaskType = std::packaged_task<TaskReturnType()>;
 
-	auto task = std::make_shared<TaskType>(std::bind(std::forward<F>(f), std::forward<Args>(args)...));
-	std::future<TaskReturnType> result = task->get_future();
+	const auto task = std::make_shared<TaskType>(std::bind(std::forward<F>(f), std::forward<Args>(args)...));
+	const std::future<TaskReturnType> result = task->get_future();
 
 	auto work = [task]()
 	{

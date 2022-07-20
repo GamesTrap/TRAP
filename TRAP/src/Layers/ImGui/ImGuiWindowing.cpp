@@ -244,7 +244,7 @@ void TRAP::INTERNAL::ImGuiWindowing::RestoreCallbacks(WindowingAPI::InternalWind
 void TRAP::INTERNAL::ImGuiWindowing::WindowFocusCallback(const WindowingAPI::InternalWindow* window,
 													     const bool focused)
 {
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiTRAPData* bd = GetBackendData();
 	if (bd->PrevUserCallbackWindowFocus != nullptr && window == bd->Window)
 		bd->PrevUserCallbackWindowFocus(window, focused);
 
@@ -303,7 +303,7 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::InternalWindow* window,
                                                          Input::MouseButton mouseButton, const Input::KeyState state)
 {
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiTRAPData* bd = GetBackendData();
 	if (bd->PrevUserCallbackMouseButton != nullptr && window == bd->Window)
 		bd->PrevUserCallbackMouseButton(window, mouseButton, state);
 
@@ -319,7 +319,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::InternalWindow* window,
                                                     const double xOffset, const double yOffset)
 {
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiTRAPData* bd = GetBackendData();
 	if (bd->PrevUserCallbackScroll != nullptr && window == bd->Window)
 		bd->PrevUserCallbackScroll(window, xOffset, yOffset);
 
@@ -347,7 +347,7 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 	key = TranslateUntranslateKey(key);
 
 	ImGuiIO& io = ImGui::GetIO();
-	ImGuiKey imguiKey = KeyToImGuiKey(key);
+	const ImGuiKey imguiKey = KeyToImGuiKey(key);
 	io.AddKeyEvent(imguiKey, (state == Input::KeyState::Pressed));
 
 	//We don't support the old API
@@ -359,7 +359,7 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWin
 void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const WindowingAPI::InternalWindow* window,
                                                   const uint32_t codePoint)
 {
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiTRAPData* bd = GetBackendData();
 	if (bd->PrevUserCallbackChar != nullptr && window == bd->Window)
 		bd->PrevUserCallbackChar(window, codePoint);
 
@@ -540,7 +540,7 @@ TRAP::Input::Key TRAP::INTERNAL::ImGuiWindowing::TranslateUntranslateKey(TRAP::I
 {
 	if(key >= TRAP::Input::Key::KP_0 && key <= TRAP::Input::Key::KP_Equal)
 		return key;
-	std::string keyName = TRAP::Input::GetKeyName(key);
+	const std::string keyName = TRAP::Input::GetKeyName(key);
 	if(!keyName.empty() && keyName[0] != 0 && keyName[1] == 0)
 	{
 		static constexpr std::array<char, 11> charNames{'`', '-', '=', '[', ']', '\\', ',', ';', '\'', '.', '/'};
@@ -550,7 +550,7 @@ TRAP::Input::Key TRAP::INTERNAL::ImGuiWindowing::TranslateUntranslateKey(TRAP::I
 																   TRAP::Input::Key::Comma, TRAP::Input::Key::Semicolon,
 																   TRAP::Input::Key::Apostrophe, TRAP::Input::Key::Period,
 																   TRAP::Input::Key::Slash};
-		auto it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
+		const auto it = std::find(charNames.cbegin(), charNames.cend(), keyName[0]);
 		if(keyName[0] >= '0' && keyName[0] <= '9')
 			key = static_cast<TRAP::Input::Key>(static_cast<int32_t>(TRAP::Input::Key::Zero) + (keyName[0] - '0'));
 		else if(keyName[0] >= 'A' && keyName[0] <= 'Z')
@@ -572,7 +572,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseData()
 
 	ImGuiTRAPData* bd = GetBackendData();
 	ImGuiIO& io = ImGui::GetIO();
-	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
+	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 
 	ImGuiID mouseViewportID = 0;
 	const ImVec2 mousePosPrev = io.MousePos;
@@ -633,15 +633,15 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiIO& io = ImGui::GetIO();
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiIO& io = ImGui::GetIO();
+	const ImGuiTRAPData* bd = GetBackendData();
 	if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) ||
 	    (WindowingAPI::GetCursorMode(bd->Window) == WindowingAPI::CursorMode::Disabled ||
 		 WindowingAPI::GetCursorMode(bd->Window) == WindowingAPI::CursorMode::Hidden))
 		return;
 
 	const ImGuiMouseCursor imguiCursor = ImGui::GetMouseCursor();
-	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
+	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	for(uint32_t n = 0; n < static_cast<uint32_t>(platformIO.Viewports.Size); n++)
 	{
 		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>
@@ -865,7 +865,7 @@ void TRAP::INTERNAL::ImGuiWindowing::DestroyWindow(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiTRAPData* bd = GetBackendData();
 	if(ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData))
 	{
 		if(vd->WindowOwned)
@@ -893,7 +893,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	if(viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
 		WindowingAPI::HideWindowFromTaskbar(static_cast<WindowingAPI::InternalWindow*>(viewport->PlatformHandle));
@@ -907,7 +907,7 @@ ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowPos(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	int32_t x = 0, y = 0;
 	WindowingAPI::GetWindowPos(vd->WindowPtr, x, y);
 
@@ -931,7 +931,7 @@ ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowSize(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	int32_t width = 0, height = 0;
 	WindowingAPI::GetWindowSize(vd->WindowPtr, width, height);
@@ -957,7 +957,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowTitle(ImGuiViewport* viewport, con
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	WindowingAPI::SetWindowTitle(vd->WindowPtr, title);
 }
@@ -968,7 +968,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowFocus(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	WindowingAPI::FocusWindow(vd->WindowPtr);
 }
@@ -979,7 +979,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowFocus(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	return WindowingAPI::GetWindowHint(vd->WindowPtr, WindowingAPI::Hint::Focused);
 }
@@ -990,7 +990,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowMinimized(ImGuiViewport* viewport)
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	return WindowingAPI::GetWindowHint(vd->WindowPtr, WindowingAPI::Hint::Minimized);
 }
@@ -1001,7 +1001,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowAlpha(ImGuiViewport* viewport, con
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	WindowingAPI::SetWindowOpacity(vd->WindowPtr, alpha);
 }
@@ -1015,8 +1015,8 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiTRAPData* bd = GetBackendData();
-	ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	const ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiViewportDataTRAP* vd = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	IM_UNUSED(bd);
 	IM_ASSERT(bd->ClientAPI == TRAP::Graphics::RenderAPI::Vulkan);
 	const VkResult err = WindowingAPI::CreateWindowSurface(Utils::BitCast<const ImU64, const VkInstance>(vkInstance),
@@ -1034,7 +1034,7 @@ void TRAP::INTERNAL::ImGuiWindowing::InitPlatformInterface()
 	TP_PROFILE_FUNCTION();
 
 	//Register platform interface (will be coupled with a renderer interface)
-	ImGuiTRAPData* bd = GetBackendData();
+	const ImGuiTRAPData* bd = GetBackendData();
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	platformIO.Platform_CreateWindow = CreateWindow;
 	platformIO.Platform_DestroyWindow = DestroyWindow;

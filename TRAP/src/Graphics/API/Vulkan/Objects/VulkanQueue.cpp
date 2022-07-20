@@ -170,7 +170,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		++signalCount;
 	}
 
-	VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitCount, waitMasks, cmds, signalSemaphores, signalCount);
+	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitCount, waitMasks,
+	                                                        cmds, signalSemaphores, signalCount);
 
 	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
 	//Many setups have just one queue family and one queue.
@@ -215,9 +216,9 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 	uint32_t presentIndex = desc.Index;
 
-	VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
-	VkSwapchainKHR sc = sChain->GetVkSwapChain();
-	VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
+	const VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
+	const VkSwapchainKHR sc = sChain->GetVkSwapChain();
+	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 	std::lock_guard<std::mutex> lock(m_submitMutex);

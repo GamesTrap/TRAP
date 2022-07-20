@@ -52,8 +52,12 @@ bool FileSystemTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::O:
-		TRAP::FileSystem::OpenFolderInFileBrowser(TRAP::FileSystem::GetCurrentFolderPath());
+	{
+		const auto currentFolder = TRAP::FileSystem::GetCurrentFolderPath();
+		if(currentFolder)
+			TRAP::FileSystem::OpenFolderInFileBrowser(*currentFolder);
 		break;
+	}
 
 	case TRAP::Input::Key::F:
 		TRAP::FileSystem::OpenFileInFileBrowser("Assets/Textures/vulkanlogo.png");

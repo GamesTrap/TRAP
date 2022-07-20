@@ -1122,7 +1122,7 @@ constexpr TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetStat
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height,
-                                                             TRAP::Window* window)
+                                                                       TRAP::Window* window)
 	: m_width(width), m_height(height), m_window(window)
 {}
 

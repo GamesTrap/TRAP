@@ -6,8 +6,8 @@
 #include "Graphics/API/SPIRVTools.h"
 #include "Utils/String/String.h"
 
-std::array<TRAP::Graphics::RendererAPI::DescriptorType,
-           static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
+constexpr std::array<TRAP::Graphics::RendererAPI::DescriptorType,
+                     static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceType::RESOURCE_TYPE_COUNT)> SPIRVToDescriptorType =
 {
 	TRAP::Graphics::RendererAPI::DescriptorType::Undefined, TRAP::Graphics::RendererAPI::DescriptorType::Undefined,
 	TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer,
@@ -23,8 +23,8 @@ std::array<TRAP::Graphics::RendererAPI::DescriptorType,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
-           static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
+constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
+                     static_cast<uint32_t>(TRAP::Graphics::API::SPIRVTools::ResourceTextureDimension::RESOURCE_TEXTURE_DIMENSION_COUNT)> SPIRVToTextureDimension =
 {
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
 	TRAP::Graphics::API::ShaderReflection::TextureDimension::TextureDimUndefined,
@@ -41,14 +41,14 @@ std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
-                    const TRAP::Graphics::RendererAPI::ShaderStage currentStage)
+constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
+                              const TRAP::Graphics::RendererAPI::ShaderStage currentStage)
 {
 	bool filter = false;
 
 	//Check for invalid PushConstant
 	filter = filter || (resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
-		resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize);
+		                resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize);
 
 	//Remove unused resources
 	filter = filter || (!resource.IsUsed);
@@ -66,7 +66,7 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
-                                                                                                      RendererAPI::ShaderStage shaderStage)
+                                                                                                      const RendererAPI::ShaderStage shaderStage)
 {
 	SPIRVTools::CrossCompiler cc(shaderCode.data(), static_cast<uint32_t>(shaderCode.size()));
 
@@ -92,7 +92,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			TP_WARN(TRAP::Log::ShaderSPIRVPrefix, "Found unused resource with name: ", resource.Name, "!");
 		}
 		if(resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
-			resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize)
+		   resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize)
 		{
 			TRAP_ASSERT(false);
 			TP_ERROR(Log::ShaderSPIRVPrefix, "Found PushConstants with invalid size: ", resource.Size,
@@ -168,7 +168,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 				resources[j].Type = SPIRVToDescriptorType[static_cast<uint32_t>(resource.Type)];
 				resources[j].Set = resource.Set;
 				resources[j].Reg = resource.Binding;
-				std::string lowerName = Utils::String::ToLower(resource.Name);
+				const std::string lowerName = Utils::String::ToLower(resource.Name);
 				if(lowerName.find("rootcbv") == std::string::npos &&
 				   lowerName.find("dynamic") == std::string::npos &&
 				   resources[j].Type != TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer)

@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// Is the semaphore signaled?
 		/// </summary>
 		/// <returns>True if the semaphore is signaled, false otherwise.</returns>
-		virtual bool IsSignaled() const;
+		bool IsSignaled() const;
 
 	protected:
 		/// <summary>

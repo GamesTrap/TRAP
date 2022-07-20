@@ -38,7 +38,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		Fence& operator=(Fence&&) = default;
 
-		virtual bool IsSubmitted() const;
+		/// <summary>
+		/// Retrieve whether the Fence was submitted or not.
+		/// </summary>
+		/// <returns>True if Fence was submitted, false otherwise.</returns>
+		bool IsSubmitted() const;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.

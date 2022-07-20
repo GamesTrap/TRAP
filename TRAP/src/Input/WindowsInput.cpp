@@ -65,7 +65,7 @@ bool TRAP::Input::InitController()
 	{
 		if (!s_xinput.Instance)
 		{
-			std::array<std::string, 5> names =
+			const std::array<std::string, 5> names =
 			{
 				"xinput1_4.dll",
 				"xinput1_3.dll",
@@ -138,7 +138,7 @@ void TRAP::Input::UpdateControllerGUID(std::string& guid)
 {
 	if (std::string_view(guid.data() + 20) == "504944564944")
 	{
-		std::string original = guid;
+		const std::string original = guid;
 
 		guid = "03000000" + std::string(original.begin(), original.begin() + 4) + "0000" +
 		       std::string(original.begin() + 4, original.begin() + 4 + 4) + "000000000000";
@@ -232,7 +232,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller controller)
+TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(const Controller controller)
 {
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 		return ControllerBatteryStatus::Wired;
@@ -260,7 +260,7 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::PollController(Controller controller, const PollMode mode)
+bool TRAP::Input::PollController(const Controller controller, const PollMode mode)
 {
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 	if (con->WinCon.Device)
@@ -312,7 +312,7 @@ bool TRAP::Input::PollController(Controller controller, const PollMode mode)
 
 			case TRAP_TYPE_DPAD:
 			{
-				const std::array<uint8_t, 9> states =
+				constexpr std::array<uint8_t, 9> states =
 				{
 					static_cast<uint8_t>(ControllerDPad::Up),
 					static_cast<uint8_t>(ControllerDPad::Right_Up),

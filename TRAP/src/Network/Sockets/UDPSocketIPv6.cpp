@@ -50,8 +50,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t 
 		return Status::Error;
 
 	//Bind the socket
-	sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
-	if(::bind(GetHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
+	const sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
+	if(::bind(GetHandle(), reinterpret_cast<const sockaddr*>(&addr), sizeof(addr)) == -1)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port");
 		return Status::Error;
@@ -72,7 +72,7 @@ void TRAP::Network::UDPSocketIPv6::Unbind()
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* data, const std::size_t size,
                                                                  const IPv6Address& remoteAddress,
-																 uint16_t remotePort)
+																 const uint16_t remotePort)
 {
 	//Create the internal socket if it doesn't exist
 	CreateIPv6();
@@ -86,11 +86,11 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* dat
 	}
 
 	//Build the target address
-	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
+	const sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
 	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0,
-	                            reinterpret_cast<sockaddr*>(&address), sizeof(address));
+	                            reinterpret_cast<const sockaddr*>(&address), sizeof(address));
 
 	//Check for errors
 	if (sent < 0)

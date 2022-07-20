@@ -58,12 +58,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	char signOne = static_cast<char>(file.get());
-	char axisOne = static_cast<char>(file.get());
+	const char signOne = static_cast<char>(file.get());
+	const char axisOne = static_cast<char>(file.get());
 	file >> m_width;
 	file.ignore();
-	char signTwo = static_cast<char>(file.get());
-	char axisTwo = static_cast<char>(file.get());
+	const char signTwo = static_cast<char>(file.get());
+	const char axisTwo = static_cast<char>(file.get());
 	file >> m_height;
 	file.ignore();
 

@@ -146,6 +146,14 @@ namespace TRAP::Utils::String
 	/// <param name="timePoint">Timestamp to convert.</param>
 	/// <returns>Timestamp as string.</returns>
 	std::string GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Retrieve the last set OS error message.
+	/// </summary>
+	/// <returns>Last OS error message.</returns>
+	std::string GetStrError();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

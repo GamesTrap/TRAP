@@ -89,7 +89,7 @@ static bool CheckSingleProcessLinux()
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
 static bool CheckSingleProcessWindows()
 {
-	HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
+	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
 	if(!hMutex) //Error creating mutex
 		return false;
 	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
@@ -294,8 +294,8 @@ TRAP::Application::Application(std::string gameName)
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
 		//Set Anti aliasing
-		Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-		Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+		const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
+		const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
 		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, sampleCount);
 
 		//Always added as a fallback shader
@@ -427,7 +427,7 @@ void TRAP::Application::Run()
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
 
-		Utils::Timer FrameTimeTimer;
+		const Utils::Timer FrameTimeTimer;
 		const float time = m_timer.Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
 		lastFrameTime = time;
@@ -862,7 +862,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	if(!fileEnding) //Ignore files without an extension
 		return false;
 
-	std::string fEnding = Utils::String::ToLower(*fileEnding);
+	const std::string fEnding = Utils::String::ToLower(*fileEnding);
 
 	//Is it a texture?
 	bool texture = false;

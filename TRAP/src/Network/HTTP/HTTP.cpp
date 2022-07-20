@@ -247,7 +247,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 
 			//Copy the actual content data
 			std::istreambuf_iterator<char> it(in);
-			std::istreambuf_iterator<char> itEnd;
+			const std::istreambuf_iterator<char> itEnd;
 			for (std::size_t i = 0; ((i < length) && (it != itEnd)); i++)
 				m_body.push_back(*it++);
 		}
@@ -364,7 +364,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	if(m_connectionIPv6.Connect(m_hostIPv6, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
-		std::string requestStr = toSend.Prepare();
+		const std::string requestStr = toSend.Prepare();
 
 		if (!requestStr.empty())
 		{
@@ -389,7 +389,7 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	else if(m_connection.Connect(m_host, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
-		std::string requestStr = toSend.Prepare();
+		const std::string requestStr = toSend.Prepare();
 
 		if(!requestStr.empty())
 		{

@@ -340,7 +340,7 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
-	uint32_t multiplier = static_cast<uint32_t>(format);
+	const uint32_t multiplier = static_cast<uint32_t>(format);
 
 	newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * multiplier);
 	stride = height * multiplier;
@@ -384,7 +384,7 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
-	uint32_t multiplier = static_cast<uint32_t>(format);
+	const uint32_t multiplier = static_cast<uint32_t>(format);
 
 	newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * multiplier);
 	stride = width * multiplier;

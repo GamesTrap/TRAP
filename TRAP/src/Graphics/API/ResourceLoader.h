@@ -272,7 +272,7 @@ namespace TRAP::Graphics::API
 		/// Wait for a copy engine resource set to complete its work.
 		/// </summary>
 		/// <param name="activeSet">Copy engine resource set to wait for.</param>
-		void WaitCopyEngineSet(std::size_t activeSet);
+		void WaitCopyEngineSet(std::size_t activeSet) const;
 		/// <summary>
 		/// Reset a copy engine resource set.
 		/// </summary>
@@ -305,13 +305,13 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="desc">Buffer description.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
+		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
 		/// <summary>
 		/// Determine the resources start state.
 		/// </summary>
 		/// <param name="uav">Is unordered access view.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
+		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
 
 		/// <summary>
 		/// Generate mip maps for a texture.
@@ -445,6 +445,48 @@ namespace TRAP::Graphics::API
 		} m_copyEngine;
 		uint32_t m_nextSet;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc)
+{
+	//Host visible (Upload Heap)
+	if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::CPUOnly ||
+	    desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::CPUToGPU)
+		return RendererAPI::ResourceState::GenericRead;
+
+	//Device Local (Default Heap)
+	if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::GPUOnly)
+	{
+		const RendererAPI::DescriptorType usage = desc.Descriptors;
+
+		//Try to limit number of states used overall to avoid sync complexities
+		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer))
+			return RendererAPI::ResourceState::UnorderedAccess;
+		if ((static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer) ||
+			 static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer)))
+			return RendererAPI::ResourceState::VertexAndConstantBuffer;
+		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer))
+			return RendererAPI::ResourceState::IndexBuffer;
+		if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer))
+			return RendererAPI::ResourceState::ShaderResource;
+
+		return RendererAPI::ResourceState::Common;
+	}
+
+	//Host Cached (Readback Heap)
+	return RendererAPI::ResourceState::CopyDestination;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav)
+{
+	if(uav)
+		return RendererAPI::ResourceState::UnorderedAccess;
+
+	return RendererAPI::ResourceState::ShaderResource;
 }
 
 #endif /*TRAP_RESOURCELOADER_H*/

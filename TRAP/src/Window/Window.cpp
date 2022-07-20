@@ -1,4 +1,5 @@
 #include "TRAPPCH.h"
+#include "Utils/String/String.h"
 #include "Window.h"
 
 #include "Core/PlatformDetection.h"
@@ -224,7 +225,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 		                   "[INDEV]" + Log::WindowVersion + Graphics::Renderer::GetTitle();
 #ifdef TRAP_PLATFORM_LINUX
-		newTitle += "[" + Utils::LinuxWindowManagerToString(Utils::GetLinuxWindowManager()) + "]";
+		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
 #endif
 	//Add additional information to the given title for non release builds
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
@@ -239,14 +240,6 @@ void TRAP::Window::SetTitle(const std::string& title)
 void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint32_t height, uint32_t refreshRate)
 {
 	TP_PROFILE_FUNCTION();
-
-	constexpr auto GetModeStr = [&](const DisplayMode displayMode)
-	{
-		if (displayMode == DisplayMode::Windowed)
-			return "Windowed";
-
-		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
-	}; //Little hack to convert enum class DisplayMode to string
 
 	if(mode == DisplayMode::Windowed) //Check if new mode will also be windowed
 	{
@@ -332,8 +325,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			if(s_fullscreenWindows[m_data.Monitor] != this)
 			{
 				TP_ERROR(Log::WindowPrefix, "\"", m_data.Title,
-						 "\" couldn't set display mode to ", GetModeStr(mode), " because monitor: ", m_data.Monitor,
-						 '(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')',
+						 "\" couldn't set display mode to ", Utils::String::ConvertToString(mode),
+						 " because monitor: ", m_data.Monitor, '(',
+						 INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')',
 						 " is already used by window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
 				return;
 			}
@@ -342,7 +336,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 			   mode == DisplayMode::Borderless)
 			{
 				TP_WARN(Log::WindowPrefix, "\"", m_data.Title, "\" already uses display mode ",
-						GetModeStr(m_data.displayMode), " on monitor: ", m_data.Monitor,
+						Utils::String::ConvertToString(m_data.displayMode), " on monitor: ", m_data.Monitor,
 						"(", INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ")!");
 				return;
 			}
@@ -439,7 +433,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 	}
 
 	TP_INFO(Log::WindowPrefix, "\"", m_data.Title, "\" changing display mode from ",
-	        GetModeStr(m_data.displayMode), " to ", GetModeStr(mode), ": ",
+	        Utils::String::ConvertToString(m_data.displayMode), " to ",
+			Utils::String::ConvertToString(mode), ": ",
 	        m_data.Width, 'x', m_data.Height, '@', m_data.RefreshRate, "Hz");
 
 	//Save new display mode
@@ -501,7 +496,7 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<INTERNAL::WindowingAPI::InternalCursor> internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
+	const Scope<INTERNAL::WindowingAPI::InternalCursor> internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
 	INTERNAL::WindowingAPI::SetCursor(m_window.get(), internalCursor.get());
 }
 
@@ -511,7 +506,7 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspo
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<INTERNAL::WindowingAPI::InternalCursor> cursor = INTERNAL::WindowingAPI::CreateCursor
+	const Scope<INTERNAL::WindowingAPI::InternalCursor> cursor = INTERNAL::WindowingAPI::CreateCursor
 		(
 			image, xHotspot, yHotspot
 		);

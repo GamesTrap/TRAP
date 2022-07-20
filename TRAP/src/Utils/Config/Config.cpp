@@ -26,14 +26,14 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 		return false;
 
 	TP_INFO(TRAP::Log::ConfigPrefix, "Loading file: \"", file.u8string(), "\"");
-	std::vector<std::string_view> lines = String::SplitStringView(*input, '\n');
+	const std::vector<std::string_view> lines = String::SplitStringView(*input, '\n');
 
 	for (const auto& line : lines)
 	{
 		if (!line.empty())
 		{
 			//Parse line
-			auto [key, value] = ParseLine(line);
+			const auto [key, value] = ParseLine(line);
 
 			if (!key.empty())
 			{

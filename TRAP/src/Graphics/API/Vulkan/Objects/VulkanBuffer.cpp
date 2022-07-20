@@ -85,10 +85,10 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 	if(info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT)
 	{
-		VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
-		                                                                    ImageFormatToVkFormat(desc.Format),
-		                                                                    desc.FirstElement * desc.StructStride,
-		                                                                    desc.ElementCount * desc.StructStride);
+		const VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
+		                                                                          ImageFormatToVkFormat(desc.Format),
+		                                                                          desc.FirstElement * desc.StructStride,
+		                                                                          desc.ElementCount * desc.StructStride);
 		VkFormatProperties formatProps{};
 		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), viewInfo.format,
 		                                    &formatProps);
@@ -100,10 +100,10 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	}
 	if(info.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)
 	{
-		VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
-		                                                                    ImageFormatToVkFormat(desc.Format),
-		                                                                    desc.FirstElement * desc.StructStride,
-		                                                                    desc.ElementCount * desc.StructStride);
+		const VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
+		                                                                          ImageFormatToVkFormat(desc.Format),
+		                                                                          desc.FirstElement * desc.StructStride,
+		                                                                          desc.ElementCount * desc.StructStride);
 		VkFormatProperties formatProps{};
 		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), viewInfo.format,
 		                                    &formatProps);
@@ -142,7 +142,8 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 		m_vkStorageTexelView = VK_NULL_HANDLE;
 	}
 
-	vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
+	if(m_allocation)
+		vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

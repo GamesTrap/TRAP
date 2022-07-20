@@ -84,7 +84,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan image handle.
 		/// </summary>
 		/// <returns>Vulkan image handle.</returns>
-		VkImage GetVkImage();
+		VkImage GetVkImage() const;
 		/// <summary>
 		/// Retrieve the VMA allocation handle used by the texture.
 		/// </summary>

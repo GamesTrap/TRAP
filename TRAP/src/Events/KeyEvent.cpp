@@ -40,7 +40,7 @@ std::string TRAP::Events::KeyPressEvent::GetName() const
 
 std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
-	std::string name = TRAP::Input::GetKeyName(m_key);
+	const std::string name = TRAP::Input::GetKeyName(m_key);
 
 	return "KeyReleaseEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ")";
 }

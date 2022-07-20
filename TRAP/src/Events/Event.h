@@ -184,7 +184,8 @@ std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
 
 MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
-constexpr TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs)
+constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCategory lhs,
+                                                 const TRAP::Events::EventCategory rhs)
 {
 	return static_cast<TRAP::Events::EventCategory>
 		(
@@ -192,14 +193,15 @@ constexpr TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs
 			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
 		);
 }
-constexpr TRAP::Events::EventCategory operator ~(TRAP::Events::EventCategory rhs)
+constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCategory rhs)
 {
 	return static_cast<TRAP::Events::EventCategory>
 		(
 			~static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
 		);
 }
-constexpr TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs)
+constexpr TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs,
+                                                   const TRAP::Events::EventCategory rhs)
 {
 	lhs = static_cast<TRAP::Events::EventCategory>
 		(

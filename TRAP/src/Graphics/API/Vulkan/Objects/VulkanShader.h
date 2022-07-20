@@ -93,7 +93,7 @@ namespace TRAP::Graphics::API
 		/// <param name="texture">Texture to use.</param>
 		/// <param name="window">Window to use the shader for.</param>
 		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
-		                Window* window) override;
+		                Window* window) const override;
 
 
 		//TODO Combined Textures
@@ -106,7 +106,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseTextures(uint32_t set, uint32_t binding,
 						 const std::vector<TRAP::Graphics::Texture*>& textures,
-						 Window* window) override;
+						 Window* window) const override;
 		/// <summary>
 		/// Use sampler with this shader on the given window.
 		/// </summary>
@@ -115,7 +115,7 @@ namespace TRAP::Graphics::API
 		/// <param name="sampler">Sampler to use.</param>
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* sampler,
-		                Window* window) override;
+		                Window* window) const override;
 		/// <summary>
 		/// Use multiple samplers with this shader on the given window.
 		/// </summary>
@@ -125,7 +125,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSamplers(uint32_t set, uint32_t binding,
 		                 const std::vector<TRAP::Graphics::Sampler*>& samplers,
-						 Window* window) override;
+						 Window* window) const override;
 		/// <summary>
 		/// Use uniform buffer object with this shader on the given window.
 		/// </summary>
@@ -136,7 +136,7 @@ namespace TRAP::Graphics::API
 		/// <param name="offset">Offset of the UBO.</param>
 		/// <param name="window">Window to use the shader for.</param>
 		void UseUBO(uint32_t set, uint32_t binding, TRAP::Graphics::UniformBuffer* uniformBuffer,
-		            uint64_t size, uint64_t offset, Window* window) override;
+		            uint64_t size, uint64_t offset, Window* window) const override;
 		/// <summary>
 		/// Use shader storage buffer object with this shader on the given window.
 		/// </summary>
@@ -146,7 +146,7 @@ namespace TRAP::Graphics::API
 		/// <param name="size">Size of the SSBO.</param>
 		/// <param name="window">Window to use the shader for.</param>
 		void UseSSBO(uint32_t set, uint32_t binding, TRAP::Graphics::StorageBuffer* storageBuffer,
-		             uint64_t size, Window* window) override;
+		             uint64_t size, Window* window) const override;
 
 		/// <summary>
 		/// Retrieve the shaders thread count per work group.
@@ -183,7 +183,7 @@ namespace TRAP::Graphics::API
 		/// <param name="offset">Offset into the buffer to start at.</param>
 		/// <param name="window">Window to use the buffer for.
 		void UseBuffer(uint32_t set, uint32_t binding, TRAP::Graphics::Buffer* buffer,
-		               uint64_t size, uint64_t offset, Window* window);
+		               uint64_t size, uint64_t offset, Window* window) const;
 
 		/// <summary>
 		///	Retrieve a descriptor's name via its set, binding, descriptor type and size.

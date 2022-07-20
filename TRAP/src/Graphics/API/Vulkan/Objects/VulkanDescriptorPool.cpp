@@ -48,8 +48,8 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	for(uint32_t i = 0; i < DescriptorTypeRangeSize; i++)
 		m_descriptorPoolSizes[i] = s_descriptorPoolSizes[i];
 
-	VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-	                                                                        m_numDescriptorSets);
+	const VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+	                                                                              m_numDescriptorSets);
 	VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &info, nullptr, &m_currentPool));
 
 	m_descriptorPools.emplace_back(m_currentPool);
@@ -141,10 +141,9 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 		TRAP_ASSERT(dynamicOffsetCount == 1);
 	}
 
-	m_descriptorSets.emplace_back(TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature, updateData,
-	                                                      			   maxSets, dynamicOffsetCount, updateFreq));
-
-	return m_descriptorSets.back().get();
+	return m_descriptorSets.emplace_back(TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature,
+																			  updateData, maxSets,
+																			  dynamicOffsetCount, updateFreq)).get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -155,7 +154,8 @@ VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorS
 	//This is fine since this will only happen during Init time
 	std::lock_guard<std::mutex> lockGuard(m_mutex);
 
-	VkDescriptorSetAllocateInfo info = VulkanInits::DescriptorSetAllocateInfo(m_currentPool, layout);
+	VkDescriptorSetAllocateInfo info = VulkanInits::DescriptorSetAllocateInfo(m_currentPool,
+	                                                                          layout);
 
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 	VkResult res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);

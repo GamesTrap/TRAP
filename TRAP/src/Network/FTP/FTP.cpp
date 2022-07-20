@@ -41,7 +41,7 @@ namespace TRAP::Network
 		DataChannel(const DataChannel&) = delete;
 		DataChannel& operator=(const DataChannel&) = delete;
 		DataChannel(DataChannel&&) = default;
-		DataChannel& operator=(DataChannel&&) = default;
+		DataChannel& operator=(DataChannel&&) = delete;
 		~DataChannel() = default;
 
 		explicit DataChannel(FTP& owner);
@@ -135,7 +135,7 @@ const std::vector<std::filesystem::path>& TRAP::Network::FTP::ListingResponse::G
 
 TRAP::Network::FTP::~FTP()
 {
-	auto response = Disconnect();
+	const auto response = Disconnect();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -174,7 +174,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Login(const std::string& name, 
 TRAP::Network::FTP::Response TRAP::Network::FTP::Disconnect()
 {
 	//Send the exit command
-	Response response = SendCommand("QUIT");
+	const Response response = SendCommand("QUIT");
 	if (response.IsOK())
 		m_commandSocket.Disconnect();
 
@@ -295,7 +295,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 				return Response(Response::Status::InvalidFile);
 
 			//Create the file and truncate it if necessary
-			std::filesystem::path filePath = path / *filename;
+			const std::filesystem::path filePath = path / *filename;
 			std::ofstream file(filePath, std::ios::binary | std::ios::trunc);
 			if (!file.is_open() || !file.good())
 			{
@@ -325,7 +325,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 
 TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::path& localFile,
                                                         const std::filesystem::path& remotePath,
-														TransferMode mode, bool append)
+														const TransferMode mode, const bool append)
 {
 	if(!FileSystem::FileOrFolderExists(localFile))
 		return Response(Response::Status::InvalidFile);

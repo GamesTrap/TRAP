@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
 
-TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(uint32_t numDescriptorSets)
+TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
 {
 	switch(RendererAPI::GetRenderAPI())
 	{

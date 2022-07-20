@@ -15,7 +15,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)
 	{
-		VkDebugUtilsObjectNameInfoEXT nameInfo = VulkanInits::DebugUtilsObjectNameInfo(type, handle, name);
+		const VkDebugUtilsObjectNameInfoEXT nameInfo = VulkanInits::DebugUtilsObjectNameInfo(type, handle, name);
 		VkCall(vkSetDebugUtilsObjectNameEXT(device, &nameInfo));
 	}
 #endif
@@ -28,7 +28,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugReportExtension)
 	{
-		VkDebugMarkerObjectNameInfoEXT nameInfo = VulkanInits::DebugMarkerObjectNameInfo(type, handle, name);
+		const VkDebugMarkerObjectNameInfoEXT nameInfo = VulkanInits::DebugMarkerObjectNameInfo(type, handle, name);
 		VkCall(vkDebugMarkerSetObjectNameEXT(device, &nameInfo));
 	}
 #endif

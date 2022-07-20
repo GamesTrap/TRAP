@@ -74,7 +74,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
 		VkFormatProperties formatSupport;
-		VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
+		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)
 			continue;
 
@@ -806,7 +806,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount()
+uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const
 {
 	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
 	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);

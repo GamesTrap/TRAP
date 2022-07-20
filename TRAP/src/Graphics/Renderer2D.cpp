@@ -190,32 +190,32 @@ void TRAP::Graphics::Renderer2D::EndScene()
 	TP_PROFILE_FUNCTION();
 
 	const uint32_t dataSize = (s_data.QuadVertexBufferPtr - s_data.QuadVertexBufferBase) * sizeof(QuadVertex);
-	if (dataSize)
+	if(!dataSize)
+		return;
+
+	//Update Vertices
+	s_data.QuadVertexBuffer->SetData(reinterpret_cast<float*>(s_data.QuadVertexBufferBase), dataSize);
+	s_data.QuadVertexBuffer->AwaitLoading();
+
+	//Use dynamic shader resources
+	for(uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
 	{
-		//Update Vertices
-		s_data.QuadVertexBuffer->SetData(reinterpret_cast<float*>(s_data.QuadVertexBufferBase), dataSize);
-		s_data.QuadVertexBuffer->AwaitLoading();
-
-		//Use dynamic shader resources
-		for(uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
-		{
-		    if(!s_data.TextureSlots[i])
-				s_data.TextureSlots[i] = s_data.WhiteTexture.get();
-		}
-		s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
-		s_data.TextureShader->UseUBO(1, 0, s_data.CameraUniformBuffer.get());
-
-		//Use Vertex & Index Buffer
-		s_data.QuadVertexBuffer->Use();
-		s_data.QuadIndexBuffer->Use();
-
-		//Use Shader
-		s_data.TextureShader->Use();
-
-		RenderCommand::DrawIndexed(s_data.QuadIndexCount);
-
-		s_data.Stats.DrawCalls++;
+		if(!s_data.TextureSlots[i])
+			s_data.TextureSlots[i] = s_data.WhiteTexture.get();
 	}
+	s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
+	s_data.TextureShader->UseUBO(1, 0, s_data.CameraUniformBuffer.get());
+
+	//Use Vertex & Index Buffer
+	s_data.QuadVertexBuffer->Use();
+	s_data.QuadIndexBuffer->Use();
+
+	//Use Shader
+	s_data.TextureShader->Use();
+
+	RenderCommand::DrawIndexed(s_data.QuadIndexCount);
+
+	s_data.Stats.DrawCalls++;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

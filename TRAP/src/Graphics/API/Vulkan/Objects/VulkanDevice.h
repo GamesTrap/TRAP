@@ -140,7 +140,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Load the variable shading rate capabilities from the physical device.
 		/// </summary>
-		void LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures);
+		void LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const;
 
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 

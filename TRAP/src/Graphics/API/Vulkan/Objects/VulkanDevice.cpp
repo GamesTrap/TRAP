@@ -10,7 +10,7 @@
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
                                                 std::vector<std::string> deviceExtensions,
-                                                bool requestAllAvailableQueues)
+                                                const bool requestAllAvailableQueues)
 	: m_physicalDevice(std::move(physicalDevice)),
       m_deviceExtensions(std::move(deviceExtensions)),
       m_graphicsQueueFamilyIndex(0),
@@ -174,8 +174,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif
 
-	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
-	                                                                    extensions);
+	const VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
+	                                                                          extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
 
@@ -478,7 +478,7 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures)
+void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const
 {
 	if(!VulkanRenderer::s_shadingRate)
 		return;

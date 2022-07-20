@@ -57,8 +57,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	m_height = header.Height;
 
 	//Determine endianness
-	bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
-	bool needSwap = isFileLittleEndian != static_cast<bool>(Utils::GetEndian());
+	const bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
+	const bool needSwap = isFileLittleEndian != static_cast<bool>(Utils::GetEndian());
 
 	file.ignore(256, '\n'); //Skip ahead to the pixel data
 

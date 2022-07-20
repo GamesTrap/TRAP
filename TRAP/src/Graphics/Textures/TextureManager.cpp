@@ -215,8 +215,10 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get(const std::string& 
 	TP_PROFILE_FUNCTION();
 
 	if(Exists(name))
+	{
 		if (Textures[name]->GetType() == textureType)
 				return Textures[name].get();
+	}
 
 	if (textureType == TextureType::Texture2D)
 		return Get("Fallback2D", TextureType::Texture2D);
