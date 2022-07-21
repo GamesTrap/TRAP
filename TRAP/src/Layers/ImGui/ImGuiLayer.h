@@ -78,7 +78,7 @@ namespace TRAP
 		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache;
 		VkDescriptorPool m_imguiDescriptorPool;
 
-		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes =
+		const std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes =
 		{
 			{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
 			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },

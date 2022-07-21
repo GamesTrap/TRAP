@@ -1,24 +1,17 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
-TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const int32_t refreshRate)
-	: Width(width), Height(height), RefreshRate(refreshRate)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	TP_PROFILE_FUNCTION();
 
-	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
+	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	m_handle = monitors[monitor];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Monitor::GetName() const
+std::string TRAP::Monitor::GetName() const
 {
 	return m_handle->Name;
 }
@@ -36,13 +29,6 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 		modes.emplace_back(i->Width, i->Height, i->RefreshRate);
 
 	return modes;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
-{
-	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height, m_handle->CurrentMode.RefreshRate };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -104,7 +90,8 @@ TRAP::Math::Vec4i TRAP::Monitor::GetWorkArea() const
 	TP_PROFILE_FUNCTION();
 
 	TRAP::Math::Vec4i workArea{};
-	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, workArea.x, workArea.y, workArea.z, workArea.w);
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, workArea.x, workArea.y,
+	                                           workArea.z, workArea.w);
 
 	return workArea;
 }
@@ -139,18 +126,11 @@ int32_t TRAP::Monitor::GetWorkAreaY() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Monitor::IsInUse() const
-{
-	return m_handle->Window;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 uint32_t TRAP::Monitor::GetID() const
 {
 	TP_PROFILE_FUNCTION();
 
-	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
+	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	for(uint32_t i = 0; i < monitors.size(); i++)
 	{
 		if (monitors[i] == m_handle)
@@ -158,13 +138,6 @@ uint32_t TRAP::Monitor::GetID() const
 	}
 
 	return 0; //Primary Monitor as fallback
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void* TRAP::Monitor::GetInternalMonitor() const
-{
-	return m_handle;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

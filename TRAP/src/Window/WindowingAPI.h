@@ -1347,7 +1347,7 @@ namespace TRAP::INTERNAL
 		/// <param name="title">UTF-8 encoded title for the new window.</param>
 		/// <param name="monitor">Optional monitor to use for the new window.</param>
 		/// <returns>On success a new internal window, or nullptr if an error occurred.</returns>
-		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, const std::string& title,
+		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, std::string title,
 		                                          InternalMonitor* monitor);
 		/// <summary>
 		/// This function sets the value of the close flag of the specified window. This can be used
@@ -1367,7 +1367,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
-		static void SetWindowTitle(const InternalWindow* window, std::string& title);
+		static void SetWindowTitle(const InternalWindow* window, const std::string& title);
 		/// <summary>
 		/// This function retrieves the content scale for the specified monitor.
 		/// The content scale is the ratio between the current DPI and the platform's default DPI.
@@ -2788,7 +2788,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
-		static void PlatformSetWindowTitle(const InternalWindow* window, std::string& title);
+		static void PlatformSetWindowTitle(const InternalWindow* window, const std::string& title);
 		/// <summary>
 		/// Creates a new custom cursor image that can be set for a window with SetCursor. The cursor can
 		/// be destroyed with DestroyCursor. Any remaining cursors are destroyed by WindowingAPI::Shutdown.
@@ -3423,13 +3423,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Index for the sorted internal video mode.</returns>
 		static int32_t CompareVideoModes(const void* fp, const void* sp);
 		/// <summary>
-		/// Searches an extension string for the specified extension.
-		/// </summary>
-		/// <param name="string">String to search in given extension.</param>
-		/// <param name="extensions">Extension to test.</param>
-		/// <returns>True if given string is inside the given extension.</returns>
-		static bool StringInExtensionString(const char* string, const char* extensions);
-		/// <summary>
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>
 		/// <param name="window">Internal window to update.</param>
@@ -3936,7 +3929,7 @@ namespace TRAP::INTERNAL
 		/// <param name="atomCount">Number of supported atoms.</param>
 		/// <param name="atomName">Atom to check.</param>
 		/// <returns>Atom on success, 0 otherwise.</returns>
-		static Atom GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, const char* atomName);
+		static Atom GetAtomIfSupported(const Atom* supportedAtoms, uint64_t atomCount, std::string_view atomName);
 		/// <summary>
 		/// Create a blank cursor for hidden and disabled cursor modes.
 		/// </summary>
@@ -4061,13 +4054,13 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="source">Latin-1 string.</param>
 		/// <returns>UTF-8 string.</returns>
-		static std::string ConvertLatin1ToUTF8(const char* source);
+		static std::string ConvertLatin1ToUTF8(std::string_view source);
 		/// <summary>
 		/// Reports the specified error, appending information about the last X error.
 		/// </summary>
 		/// <param name="error">Error code.</param>
 		/// <param name="message">Description of error.</param>
-		static void InputErrorX11(Error error, const char* message);
+		static void InputErrorX11(Error error, const std::string& message);
 		/// <summary>
 		/// Process the specified X event.
 		/// </summary>

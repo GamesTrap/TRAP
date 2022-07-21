@@ -155,7 +155,7 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="reader">BitReader to decode symbol from.</param>
 			/// <returns>Code.</returns>
-			uint32_t DecodeSymbol(BitReader& reader);
+			uint32_t DecodeSymbol(BitReader& reader) const;
 
 			//The base lengths represented by codes 257-285
 			static constexpr std::array<uint32_t, 29> LengthBase

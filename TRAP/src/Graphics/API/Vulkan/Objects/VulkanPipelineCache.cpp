@@ -5,7 +5,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc)
 	: m_cache(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
@@ -16,9 +16,8 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
 #endif
 
-	VkPipelineCacheCreateInfo psoCacheCreateInfo;
-	psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data,
-	                                                          PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
+	const VkPipelineCacheCreateInfo psoCacheCreateInfo = VulkanInits::PipelineCacheCreateInfo(desc.Data,
+	                                                     PipelineCacheFlagsToVkPipelineCacheCreateFlags(desc.Flags));
 	VkCall(vkCreatePipelineCache(m_device->GetVkDevice(), &psoCacheCreateInfo, nullptr, &m_cache));
 }
 
@@ -58,9 +57,9 @@ void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path&
 	data.resize(dataSize);
 	GetPipelineCacheData(&dataSize, data.data());
 
-	if (!TRAP::FS::WriteFile(path, data))
+	if (!TRAP::FileSystem::WriteFile(path, data))
 		TP_ERROR(Log::RendererVulkanPipelineCachePrefix, "Saving of PipelineCache to path: \"",
-		         path.generic_u8string(), "\" failed!");
+		         path.u8string(), "\" failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

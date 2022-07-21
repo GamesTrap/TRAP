@@ -26,7 +26,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -52,7 +52,11 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
 	//Set imgui.ini path
-	m_imguiIniPath = (TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() / "imgui.ini").generic_string();
+	const auto docsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
+	if(docsFolder)
+		m_imguiIniPath = (*docsFolder / "imgui.ini").u8string();
+	else //Fallback
+		m_imguiIniPath = "imgui.ini";
 	io.IniFilename = m_imguiIniPath.c_str();
 
 	const auto contentScale = Application::GetWindow()->GetContentScale();
@@ -61,12 +65,11 @@ void TRAP::ImGuiLayer::OnAttach()
 		scaleFactor = contentScale.x;
 
 	ImFontConfig fontConfig;
-	fontConfig.FontDataOwnedByAtlas = false;
-	//While looking like UB Casting const uint8_t* to void* in this instance is okay because the memory will only be copied by ImGui because of the above line
-	io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(const_cast<uint8_t*>(Embed::OpenSansBoldTTFData.data())),
+	fontConfig.FontDataOwnedByAtlas = false; //This makes the const_cast below safe.
+	io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansBoldTTFData.data()),
 	                               static_cast<int32_t>(Embed::OpenSansBoldTTFData.size()),
 								   scaleFactor * 18.0f, &fontConfig);
-	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(reinterpret_cast<void*>(const_cast<uint8_t*>(Embed::OpenSansTTFData.data())),
+	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(Embed::OpenSansTTFData.data()),
 	                                                static_cast<int32_t>(Embed::OpenSansTTFData.size()),
 													scaleFactor * 18.0f, &fontConfig);
 
@@ -103,14 +106,20 @@ void TRAP::ImGuiLayer::OnAttach()
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 
-		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-		                                                                                           1000);
+		const VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+		                                                                                                 1000);
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
-		TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
-		cacheDesc.Path = TRAP::FS::GetGameTempFolderPath() / "ImGui.cache";
-		m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
+		if(tempFolder)
+		{
+			TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
+			cacheDesc.Path = *tempFolder / "ImGui.cache";
+			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+		}
+		else //Create empty cache as fallback
+			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(TRAP::Graphics::RendererAPI::PipelineCacheDesc{});
 
 		//This initializes ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo initInfo{};
@@ -157,7 +166,9 @@ void TRAP::ImGuiLayer::OnDetach()
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
 		Graphics::RendererAPI::GetRenderer()->WaitIdle();
-		m_imguiPipelineCache->Save(TRAP::FS::GetGameTempFolderPath() / "ImGui.cache");
+		const auto tempFolder = TRAP::FileSystem::GetGameTempFolderPath();
+		if(tempFolder)
+			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
 		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
@@ -183,7 +194,7 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 {
 	if (m_blockEvents)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		const ImGuiIO& io = ImGui::GetIO();
 		event.Handled |= event.IsInCategory(Events::EventCategory::Mouse) & io.WantCaptureMouse;
 		event.Handled |= event.IsInCategory(Events::EventCategory::Keyboard) & io.WantCaptureKeyboard;
 	}
@@ -310,9 +321,9 @@ void ImGui::Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampl
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
-		auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
+		const auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
+		const auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
@@ -328,8 +339,8 @@ void ImGui::Image(TRAP::Graphics::Texture* image, const ImVec2& size, const ImVe
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
-		ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+		const auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 		                                                      vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);

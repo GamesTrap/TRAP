@@ -171,12 +171,12 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Reflect the compute shader work group size.
 		/// </summary>
 		/// <returns>Compute shader work group size.</returns>
-		std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize();
+		std::array<uint32_t, 3> ReflectComputeShaderWorkGroupSize() const;
 		/// <summary>
 		/// Reflect tessellation control shader control point count.
 		/// </summary>
 		/// <returns>Tessellation control shader control point count.</returns>
-		uint32_t ReflectTessellationControlShaderControlPoint();
+		uint32_t ReflectTessellationControlShaderControlPoint() const;
 
 		/// <summary>
 		/// Retrieve the shader resources.
@@ -194,7 +194,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Rertieve the name of the entry point.
 		/// </summary>
 		/// <returns>Name of entry point.</returns>
-		std::string GetEntryPoint();
+		std::string GetEntryPoint() const;
 
 	private:
 		//This points to the internal compiler class

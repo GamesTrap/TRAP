@@ -48,7 +48,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 	TP_DEBUG(Log::RendererVulkanCommandBufferPrefix, "Creating CommandBuffer");
 #endif
 
-	VkCommandBufferAllocateInfo info = VulkanInits::CommandBufferAllocateInfo(commandPool, secondary);
+	const VkCommandBufferAllocateInfo info = VulkanInits::CommandBufferAllocateInfo(commandPool, secondary);
 
 	VkCall(vkAllocateCommandBuffers(m_device->GetVkDevice(), &info, &m_vkCommandBuffer));
 }
@@ -205,7 +205,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipe
 	TRAP_ASSERT(pipeline);
 	TRAP_ASSERT(m_vkCommandBuffer);
 
-	VulkanPipeline* pipe = dynamic_cast<VulkanPipeline*>(pipeline.get());
+	const VulkanPipeline* pipe = dynamic_cast<VulkanPipeline*>(pipeline.get());
 	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[static_cast<uint32_t>(pipe->GetPipelineType())];
 	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, pipe->GetVkPipeline());
 }
@@ -215,9 +215,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipe
 void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 																 const TRAP::Ref<RenderTarget>& depthStencil,
 																 const RendererAPI::LoadActionsDesc* loadActions,
-																 std::vector<uint32_t>* colorArraySlices,
-																 std::vector<uint32_t>* colorMipSlices,
-																 uint32_t depthArraySlice, uint32_t depthMipSlice)
+																 const std::vector<uint32_t>* colorArraySlices,
+																 const std::vector<uint32_t>* colorMipSlices,
+																 const uint32_t depthArraySlice,
+																 const uint32_t depthMipSlice)
 {
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -251,7 +252,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		else if(loadActions)
 			colorStoreActions[i] = loadActions->StoreActionsColor[i];
 
-		std::array<uint32_t, 4> hashValues =
+		const std::array<uint32_t, 4> hashValues =
 		{
 			static_cast<uint32_t>(renderTargets[i]->GetImageFormat()),
 			static_cast<uint32_t>(renderTargets[i]->GetSampleCount()),
@@ -265,7 +266,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	}
 	if(depthStencil)
 	{
-		VulkanRenderTarget* dStencil = dynamic_cast<VulkanRenderTarget*>(depthStencil.get());
+		const VulkanRenderTarget* dStencil = dynamic_cast<VulkanRenderTarget*>(depthStencil.get());
 		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(dStencil->GetTexture());
 
 		if(vkTex->IsLazilyAllocated())
@@ -279,7 +280,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 			stencilStoreAction = loadActions->StoreActionStencil;
 		}
 
-		std::array<uint32_t, 6> hashValues =
+		const std::array<uint32_t, 6> hashValues =
 		{
 			static_cast<uint32_t>(dStencil->GetImageFormat()),
 			static_cast<uint32_t>(dStencil->GetSampleCount()),
@@ -384,7 +385,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		for(std::size_t i = 0; i < renderTargets.size(); ++i)
 		{
-			TRAP::Math::Vec4 clearColor = loadActions->ClearColorValues[i];
+			const TRAP::Math::Vec4 clearColor = loadActions->ClearColorValues[i];
 			VkClearValue val{};
 			val.color = { {clearColor.x, clearColor.y, clearColor.z, clearColor.w} };
 			clearValues.push_back(val);
@@ -398,9 +399,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		}
 	}
 
-	VkRenderPassBeginInfo beginInfo = VulkanInits::RenderPassBeginInfo(renderPass->GetVkRenderPass(),
-	                                                                   frameBuffer->GetVkFrameBuffer(), renderArea,
-																	   clearValues);
+	const VkRenderPassBeginInfo beginInfo = VulkanInits::RenderPassBeginInfo(renderPass->GetVkRenderPass(),
+	                                                                         frameBuffer->GetVkFrameBuffer(), renderArea,
+																	         clearValues);
 
 	vkCmdBeginRenderPass(m_vkCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	m_activeRenderPass = renderPass->GetVkRenderPass();
@@ -408,43 +409,43 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::Vec3& color, const char* name) const
+void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::Vec3& color, const std::string_view name) const
 {
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
 
-	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
+	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
 	vkCmdInsertDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 #else
 	if(!VulkanRenderer::s_debugReportExtension)
 		return;
 
-	VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
+	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
 	vkCmdDebugMarkerInsertEXT(m_vkCommandBuffer, &markerInfo);
 #endif
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	if(RendererAPI::s_aftermathSupport)
-		vkCmdSetCheckpointNV(m_vkCommandBuffer, name);
+		vkCmdSetCheckpointNV(m_vkCommandBuffer, name.data());
 #endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math::Vec3& color, const char* name) const
+void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math::Vec3& color, const std::string_view name) const
 {
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
 		return;
 
-	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
+	const VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(color.x, color.y, color.z, name);
 	vkCmdBeginDebugUtilsLabelEXT(m_vkCommandBuffer, &markerInfo);
 #elif !defined(USE_RENDER_DOC)
 	if(!VulkanRenderer::s_debugReportExtension)
 		return;
 
-	VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
+	const VkDebugMarkerMarkerInfoEXT markerInfo = VulkanInits::DebugMarkerMarkerInfo(color.x, color.y, color.z, name);
 	vkCmdDebugMarkerBeginEXT(m_vkCommandBuffer, &markerInfo);
 #endif
 }
@@ -472,7 +473,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Begin()
 {
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
-	VkCommandBufferBeginInfo beginInfo = VulkanInits::CommandBufferBeginInfo();
+	const VkCommandBufferBeginInfo beginInfo = VulkanInits::CommandBufferBeginInfo();
 
 	VkCall(vkBeginCommandBuffer(m_vkCommandBuffer, &beginInfo));
 
@@ -583,8 +584,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
                                                                const TRAP::Ref<Buffer>& counterBuffer,
                                                                const uint64_t counterBufferOffset) const
 {
-	VulkanBuffer* iBuffer = dynamic_cast<VulkanBuffer*>(indirectBuffer.get());
-	VulkanCommandSignature* cSig = dynamic_cast<VulkanCommandSignature*>(cmdSignature.get());
+	const VulkanBuffer* iBuffer = dynamic_cast<VulkanBuffer*>(indirectBuffer.get());
+	const VulkanCommandSignature* cSig = dynamic_cast<VulkanCommandSignature*>(cmdSignature.get());
 
 	if (cSig->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDraw)
 	{
@@ -631,8 +632,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
                                                             const TRAP::Ref<Buffer>& srcBuffer,
                                                             const uint64_t srcOffset, const uint64_t size) const
 {
-	VulkanBuffer* sBuffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get());
-	VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffer.get());
+	const VulkanBuffer* sBuffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get());
+	const VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffer.get());
 
 	TRAP_ASSERT(srcBuffer);
 	TRAP_ASSERT(sBuffer->GetVkBuffer());
@@ -655,7 +656,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(TRAP::Graphics:
                                                                  const TRAP::Ref<Buffer>& srcBuffer,
                                                                  const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
-	VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
+	const VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
 	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
@@ -735,7 +736,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<Qu
 void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryPool>& queryPool,
                                                           const RendererAPI::QueryDesc& desc) const
 {
-	VulkanQueryPool* qPool = dynamic_cast<VulkanQueryPool*>(queryPool.get());
+	const VulkanQueryPool* qPool = dynamic_cast<VulkanQueryPool*>(queryPool.get());
 
 	const VkQueryType type = qPool->GetVkQueryType();
 	switch(type)
@@ -800,7 +801,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	VkAccessFlags srcAccessFlags = 0;
 	VkAccessFlags dstAccessFlags = 0;
 
-	VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
+	const VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
 	if(bufferBarriers)
 	{
 		for (const auto& trans : *bufferBarriers)
@@ -1010,7 +1011,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 	VkAccessFlags srcAccessFlags = 0;
 	VkAccessFlags dstAccessFlags = 0;
 
-	VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
+	const VulkanQueue* queue = dynamic_cast<VulkanQueue*>(m_queue.get());
 	if(bufferBarrier)
 	{
 		const TRAP::Ref<Buffer>& buffer = bufferBarrier->Buffer;
@@ -1194,10 +1195,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::ShadingRate rate,
+void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI::ShadingRate rate,
 															  Texture* /*texture*/,
-															  RendererAPI::ShadingRateCombiner postRasterizerState,
-															  RendererAPI::ShadingRateCombiner finalRate) const
+															  const RendererAPI::ShadingRateCombiner postRasterizerState,
+															  const RendererAPI::ShadingRateCombiner finalRate) const
 {
 	//Texture would be used for https://www.khronos.org/registry/vulkan/specs/1.3-extensions/html/vkspec.html#primsrast-fragment-shading-rate-attachment
 
@@ -1207,12 +1208,12 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::Shadi
 
 	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
 	{
-		std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
+		const std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
 		{
 			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(postRasterizerState),
 			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(finalRate)
 		};
-		VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
+		const VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
 
 		vkCmdSetFragmentShadingRateKHR(m_vkCommandBuffer, &fragmentSize, combiner.data());
 	}
@@ -1221,7 +1222,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(RendererAPI::Shadi
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
-													 const uint32_t height)
+													 const uint32_t height) const
 {
 	VkClearRect rect;
 	VkRect2D r;
@@ -1244,7 +1245,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t stencil,
- 												     const uint32_t width, const uint32_t height)
+ 												     const uint32_t width, const uint32_t height) const
 {
 	VkClearRect rect;
 	VkRect2D r;
@@ -1266,7 +1267,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t width, const uint32_t height)
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t width, const uint32_t height) const
 {
 	VkClearRect rect;
 	VkRect2D r;
@@ -1289,7 +1290,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, const uint32_t width,
-                                                     const uint32_t height)
+                                                     const uint32_t height) const
 {
 	VkClearRect rect;
 	VkRect2D r;
@@ -1314,7 +1315,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(TRAP::Graphics::API::VulkanTexture* srcImage,
 															const RendererAPI::ResourceState srcState,
 															TRAP::Graphics::API::VulkanTexture* dstImage,
-															const RendererAPI::ResourceState dstState)
+															const RendererAPI::ResourceState dstState) const
 {
 	VkImageResolve imageResolve{};
 	imageResolve.srcSubresource = {srcImage->GetAspectMask(), 0, 0, 1};

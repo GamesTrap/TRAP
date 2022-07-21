@@ -285,7 +285,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 		if (key >= static_cast<uint32_t>(Input::Key::KP_0) && key <= static_cast<uint32_t>(Input::Key::KP_Add))
 		{
-			const std::array<uint32_t, 15> virtualKeys =
+			constexpr std::array<uint32_t, 15> virtualKeys =
 			{
 				VK_NUMPAD0,  VK_NUMPAD1,  VK_NUMPAD2, VK_NUMPAD3,
 				VK_NUMPAD4,  VK_NUMPAD5,  VK_NUMPAD6, VK_NUMPAD7,
@@ -677,7 +677,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	case WM_INPUT:
 	{
 		UINT size = 0;
-		HRAWINPUT ri = reinterpret_cast<HRAWINPUT>(lParam);
+		const HRAWINPUT ri = reinterpret_cast<HRAWINPUT>(lParam);
 		int32_t dx, dy;
 
 		if (s_Data.DisabledCursorWindow != windowPtr)
@@ -701,7 +701,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			break;
 		}
 
-		std::vector<RAWINPUT> data = s_Data.RawInput;
+		const std::vector<RAWINPUT> data = s_Data.RawInput;
 		if (data[0].data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)
 		{
 			dx = data[0].data.mouse.lLastX - windowPtr->LastCursorPosX;
@@ -848,7 +848,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		if(!windowPtr->Decorated)
 		{
 			MONITORINFO mi;
-			HMONITOR mh = MonitorFromWindow(windowPtr->Handle, MONITOR_DEFAULTTONEAREST);
+			const HMONITOR mh = MonitorFromWindow(windowPtr->Handle, MONITOR_DEFAULTTONEAREST);
 
 			ZeroMemory(&mi, sizeof(mi));
 			mi.cbSize = sizeof(mi);
@@ -921,7 +921,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 			if (!EqualRect(&windowArea, &monitorArea))
 			{
-				RECT* suggested = reinterpret_cast<RECT*>(lParam);
+				const RECT* suggested = reinterpret_cast<RECT*>(lParam);
 				::SetWindowPos(windowPtr->Handle, HWND_TOP, suggested->left, suggested->top,
 				               suggested->right - suggested->left, suggested->bottom - suggested->top,
 					           SWP_NOACTIVATE | SWP_NOZORDER);
@@ -945,7 +945,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	case WM_DROPFILES:
 	{
-		HDROP drop = reinterpret_cast<HDROP>(wParam);
+		const HDROP drop = reinterpret_cast<HDROP>(wParam);
 		POINT pt;
 
 		const uint32_t count = DragQueryFileW(drop, 0xFFFFFFFF, nullptr, 0);
@@ -1302,7 +1302,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 	}
 	else
 	{
-		HDC dc = GetDC(nullptr);
+		const HDC dc = GetDC(nullptr);
 		xDPI = GetDeviceCaps(dc, LOGPIXELSX);
 		yDPI = GetDeviceCaps(dc, LOGPIXELSY);
 		ReleaseDC(nullptr, dc);
@@ -1413,7 +1413,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 			              USER_DEFAULT_SCREEN_DPI);
 	}
 
-	std::wstring wideTitle = CreateWideStringFromUTF8StringWin32(WNDConfig.Title);
+	const std::wstring wideTitle = CreateWideStringFromUTF8StringWin32(WNDConfig.Title);
 	if (wideTitle.empty())
 		return false;
 
@@ -1555,13 +1555,13 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::HelperWindowProc(HWND hWnd, UINT 
 	{
 		if (wParam == DBT_DEVICEARRIVAL)
 		{
-			DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
+			const DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
 			if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
 				Input::DetectControllerConnectionWin32();
 		}
 		else if (wParam == DBT_DEVICEREMOVECOMPLETE)
 		{
-			DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
+			const DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
 			if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
 				Input::DetectControllerDisconnectionWin32();
 		}
@@ -1689,9 +1689,9 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image* const image, const i
 	bi.bV5BlueMask = 0x000000ff;
 	bi.bV5AlphaMask = 0xff000000;
 
-	HDC dc = GetDC(nullptr);
-	HBITMAP color = CreateDIBSection(dc, reinterpret_cast<BITMAPINFO*>(&bi), DIB_RGB_COLORS,
-		                             reinterpret_cast<void**>(&target), nullptr, static_cast<DWORD>(0));
+	const HDC dc = GetDC(nullptr);
+	const HBITMAP color = CreateDIBSection(dc, reinterpret_cast<BITMAPINFO*>(&bi), DIB_RGB_COLORS,
+		                                   reinterpret_cast<void**>(&target), nullptr, static_cast<DWORD>(0));
 	ReleaseDC(nullptr, dc);
 
 	if (!color)
@@ -1700,7 +1700,7 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image* const image, const i
 		return nullptr;
 	}
 
-	HBITMAP mask = CreateBitmap(image->GetWidth(), image->GetHeight(), 1, 1, nullptr);
+	const HBITMAP mask = CreateBitmap(image->GetWidth(), image->GetHeight(), 1, 1, nullptr);
 	if (!mask)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create mask bitmap");
@@ -1725,7 +1725,7 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image* const image, const i
 	ii.hbmMask = mask;
 	ii.hbmColor = color;
 
-	HICON handle = CreateIconIndirect(&ii);
+	const HICON handle = CreateIconIndirect(&ii);
 
 	DeleteObject(color);
 	DeleteObject(mask);
@@ -2097,8 +2097,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	if(IsWindows7OrGreaterWin32())
 	{
 		CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-		CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, reinterpret_cast<void**>(&s_Data.TaskbarList));
-		if(!s_Data.TaskbarList)
+		HRESULT result = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, reinterpret_cast<void**>(&s_Data.TaskbarList));
+		if(result != S_OK || !s_Data.TaskbarList)
 			CoUninitialize();
 	}
 
@@ -2232,7 +2232,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, const std::string& title)
 {
 	std::wstring wideTitle = CreateWideStringFromUTF8StringWin32(title);
 	if (wideTitle.empty())
@@ -2304,7 +2304,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 	default:
 		break;
 	}
-
 
 	cursor->Handle = static_cast<HCURSOR>(LoadImageW(nullptr, MAKEINTRESOURCEW(id), IMAGE_CURSOR, 0, 0,
 		                                             LR_DEFAULTSIZE | LR_SHARED));
@@ -2491,7 +2490,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindow* window, const bool enabled)
 {
-	HWND after = enabled ? HWND_TOPMOST : HWND_NOTOPMOST;
+	const HWND after = enabled ? HWND_TOPMOST : HWND_NOTOPMOST;
 	::SetWindowPos(window->Handle, after, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
@@ -2578,7 +2577,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow* window, float& xScale,
                                                                  float& yScale)
 {
-	HANDLE handle = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
+	const HANDLE handle = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
 	GetMonitorContentScaleWin32(static_cast<HMONITOR>(handle), xScale, yScale);
 }
 
@@ -2647,7 +2646,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 	//      by the first key release
 	//NOTE: Windows key is not reported as released by the Win+V hot-key
 	//      Other Win hot-keys are handled implicitly by InputWindowFocus because they change the input focus
-	HWND handle = GetActiveWindow();
+	const HWND handle = GetActiveWindow();
 	if (handle)
 	{
 		InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(handle, L"TRAP"));
@@ -2734,17 +2733,17 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* win
 	if(!s_Data.TaskbarList)
 		return;
 
-	uint32_t progress = TRAP::Math::Clamp(completed, 0u, 100u);
+	const uint32_t progress = TRAP::Math::Clamp(completed, 0u, 100u);
 
 	HRESULT res = s_Data.TaskbarList->SetProgressValue(window->Handle, progress, 100u);
-	if(!res == S_OK)
+	if(res != S_OK)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress value");
 		return;
 	}
 
 	res = s_Data.TaskbarList->SetProgressState(window->Handle, static_cast<TBPFLAG>(state));
-	if(!res == S_OK)
+	if(res != S_OK)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress state");
 		return;
@@ -2753,7 +2752,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(Input::Key key)
+int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key key)
 {
 	return s_Data.ScanCodes[static_cast<uint32_t>(key)];
 }
@@ -2773,7 +2772,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 	if (!characterCount)
 		return;
 
-	HANDLE object = GlobalAlloc(GMEM_MOVEABLE, characterCount * sizeof(WCHAR));
+	const HANDLE object = GlobalAlloc(GMEM_MOVEABLE, characterCount * sizeof(WCHAR));
 	if (!object)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to allocate global handle for clipboard");
@@ -2813,7 +2812,7 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 		return {};
 	}
 
-	HANDLE object = GetClipboardData(CF_UNICODETEXT);
+	const HANDLE object = GetClipboardData(CF_UNICODETEXT);
 	if (!object)
 	{
 		InputErrorWin32(Error::Format_Unavailable, "[WinAPI] Failed to convert clipboard to string");
@@ -2865,7 +2864,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 
-	VkWin32SurfaceCreateInfoKHR sci
+	const VkWin32SurfaceCreateInfoKHR sci
 	{
 		VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
 		nullptr,

@@ -3078,7 +3078,7 @@ namespace TRAP::Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr genType TRAP::Math::Min(genType x, genType y)
+constexpr genType TRAP::Math::Min(const genType x, const genType y)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer,
 	              "'Min' only accepts floating-point or integer inputs");
@@ -3089,7 +3089,7 @@ constexpr genType TRAP::Math::Min(genType x, genType y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr genType TRAP::Math::Max(genType x, genType y)
+constexpr genType TRAP::Math::Max(const genType x, const genType y)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer,
 	              "'Max' only accepts floating-point or integer inputs");
@@ -3110,7 +3110,7 @@ constexpr int32_t TRAP::Math::Abs(const int32_t x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Round(genType x)
+genType TRAP::Math::Round(const genType x)
 {
 	return std::round(x);
 }
@@ -3118,7 +3118,7 @@ genType TRAP::Math::Round(genType x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Trunc(genType x)
+genType TRAP::Math::Trunc(const genType x)
 {
 	return std::trunc(x);
 }
@@ -3126,7 +3126,7 @@ genType TRAP::Math::Trunc(genType x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genFIType>
-constexpr genFIType TRAP::Math::Abs(genFIType x)
+constexpr genFIType TRAP::Math::Abs(const genFIType x)
 {
 	if constexpr (std::numeric_limits<genFIType>::is_signed)
 	{
@@ -3151,7 +3151,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Abs(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genFIType>
-constexpr genFIType TRAP::Math::Sign(genFIType x)
+constexpr genFIType TRAP::Math::Sign(const genFIType x)
 {
 	static_assert(std::numeric_limits<genFIType>::is_iec559 ||
 	              (std::numeric_limits<genFIType>::is_signed && std::numeric_limits<genFIType>::is_integer),
@@ -3173,7 +3173,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Sign(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Floor(T x)
+T TRAP::Math::Floor(const T x)
 {
 	return std::floor(x);
 }
@@ -3218,13 +3218,13 @@ TRAP::Math::Vec<L, T> TRAP::Math::Round(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::RoundEven(genType x)
+genType TRAP::Math::RoundEven(const genType x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
-	int32_t integer = static_cast<int32_t>(x);
-	genType integerPart = static_cast<genType>(integer);
-	genType fractionalPart = Fract(x);
+	const int32_t integer = static_cast<int32_t>(x);
+	const genType integerPart = static_cast<genType>(integer);
+	const genType fractionalPart = Fract(x);
 
 	if (fractionalPart > static_cast<genType>(0.5) || fractionalPart < static_cast<genType>(0.5))
 		return std::round(x);
@@ -3250,7 +3250,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::RoundEven(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Ceil(T x)
+T TRAP::Math::Ceil(const T x)
 {
 	return std::ceil(x);
 }
@@ -3269,7 +3269,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Ceil(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Fract(genType x)
+genType TRAP::Math::Fract(const genType x)
 {
 	return x - Floor(x);
 }
@@ -3285,7 +3285,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Fract(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Mod(genType x, genType y)
+genType TRAP::Math::Mod(const genType x, const genType y)
 {
 	return x - y * Floor(x / y);
 }
@@ -3309,7 +3309,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Mod(const Vec<L, T>& x, const Vec<L, T>& y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Modf(genType x, genType& i)
+genType TRAP::Math::Modf(const genType x, genType& i)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'Modf' only accepts floating-point inputs");
 
@@ -3417,7 +3417,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L,
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr genType TRAP::Math::Clamp(genType x, genType minVal, genType maxVal)
+constexpr genType TRAP::Math::Clamp(const genType x, const genType minVal, const genType maxVal)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer,
 	              "'Clamp' only accepts floating-point or integer inputs");
@@ -3426,7 +3426,7 @@ constexpr genType TRAP::Math::Clamp(genType x, genType minVal, genType maxVal)
 }
 
 template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, T minVal, T maxVal)
+constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const T minVal, const T maxVal)
 {
 	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer,
 	              "'Clamp' only accepts floating-point or integer inputs");
@@ -3487,7 +3487,7 @@ TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genTypeT, typename genTypeU>
-constexpr genTypeT TRAP::Math::Mix(genTypeT x, genTypeT y, genTypeU a)
+constexpr genTypeT TRAP::Math::Mix(const genTypeT x, const genTypeT y, const genTypeU a)
 {
 	if constexpr (std::is_same_v<genTypeU, bool>)
 		return a ? y : x;
@@ -3535,7 +3535,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Mix(const Vec<L, T>& x, const Vec<L,
 }
 
 template<typename T>
-TRAP::Math::tQuat<T> TRAP::Math::Mix(const tQuat<T>& x, const tQuat<T>& y, T a)
+TRAP::Math::tQuat<T> TRAP::Math::Mix(const tQuat<T>& x, const tQuat<T>& y, const T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'mix' only accepts floating-point inputs");
 
@@ -3549,7 +3549,7 @@ TRAP::Math::tQuat<T> TRAP::Math::Mix(const tQuat<T>& x, const tQuat<T>& y, T a)
 		return tQuat<T>(Mix(x.w, y.w, a), Mix(x.x, y.x, a), Mix(x.y, y.y, a), Mix(x.z, y.z, a));
 	}
 
-	T angle = ACos(cosTheta);
+	const T angle = ACos(cosTheta);
 	return (Sin((static_cast<T>(1) - a)* angle)* x + Sin(a * angle) * y) / Sin(angle);
 }
 
@@ -3627,13 +3627,13 @@ constexpr bool TRAP::Math::Not(const bool v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Step(genType edge, genType x)
+genType TRAP::Math::Step(const genType edge, const genType x)
 {
 	return Mix(static_cast<genType>(1), static_cast<genType>(0), x < edge);
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, T> TRAP::Math::Step(T edge, const Vec<L, T>& x)
+TRAP::Math::Vec<L, T> TRAP::Math::Step(const T edge, const Vec<L, T>& x)
 {
 	return Mix(Vec<L, T>(1), Vec<L, T>(0), LessThan(x, Vec<L, T>(edge)));
 }
@@ -3647,7 +3647,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Step(const Vec<L, T>& edge, const Vec<L, T>& x
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::SmoothStep(genType edge0, genType edge1, genType x)
+genType TRAP::Math::SmoothStep(const genType edge0, const genType edge1, const genType x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
@@ -3657,7 +3657,7 @@ genType TRAP::Math::SmoothStep(genType edge0, genType edge1, genType x)
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(T edge0, T edge1, const Vec<L, T>& x)
+TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const T edge0, const T edge1, const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
@@ -3680,7 +3680,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::SmoothStep(const Vec<L, T>& edge0, const Vec<L
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr bool TRAP::Math::IsNaN(genType x)
+constexpr bool TRAP::Math::IsNaN(const genType x)
 {
 	return x != x;
 }
@@ -3707,7 +3707,7 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const tQuat<T>& q)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr bool TRAP::Math::IsInf(genType x)
+constexpr bool TRAP::Math::IsInf(const genType x)
 {
 	return x == std::numeric_limits<genType>::infinity() || x == -std::numeric_limits<genType>::infinity();
 }
@@ -3742,7 +3742,7 @@ genType TRAP::Math::FMA(const genType& a, const genType& b, const genType& c)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::FrExp(genType x, int32_t& exp)
+genType TRAP::Math::FrExp(const genType x, int32_t& exp)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
@@ -3784,7 +3784,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::LdExp(const Vec<L, T>& v, const Vec<L, int32_t
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-bool TRAP::Math::IsPowerOfTwo(genType value)
+bool TRAP::Math::IsPowerOfTwo(const genType value)
 {
 	static_assert(std::numeric_limits<genType>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
@@ -3806,7 +3806,7 @@ TRAP::Math::Vec<L, bool> TRAP::Math::IsPowerOfTwo(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::FMod(genType x, genType y)
+genType TRAP::Math::FMod(const genType x, const genType y)
 {
 	return std::fmod(x, y);
 }
@@ -3832,7 +3832,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::FMod(const Vec<L, T>& x, const Vec<L, T>& y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Lerp(T x, T y, T a)
+T TRAP::Math::Lerp(const T x, const T y, const T a)
 {
 	return Mix(x, y, a);
 }
@@ -3866,7 +3866,7 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Pow(T base, T exponent)
+T TRAP::Math::Pow(const T base, const T exponent)
 {
 	return std::pow(base, exponent);
 }
@@ -3881,7 +3881,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Pow(const Vec<L, T>& base, const Vec<L, T>& ex
 }
 
 template <typename T>
-TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, T y)
+TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, const T y)
 {
 	//Raising to the power of 0 should yield 1
 	//Needed to prevent a division by 0 error later on
@@ -3889,7 +3889,7 @@ TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, T y)
 		return tQuat<T>(1, 0, 0, 0);
 
 	//To deal with non-unit quaternions
-	T magnitude = Sqrt(x.x * x.x + x.y * x.y + x.z * x.z + x.w * x.w);
+	const T magnitude = Sqrt(x.x * x.x + x.y * x.y + x.z * x.z + x.w * x.w);
 
 	T angle;
 	if(Abs(x.w / magnitude) > CosOneOverTwo<T>())
@@ -3898,7 +3898,7 @@ TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, T y)
 		//Instead, we use the non-scalar components since Sin() is accurate around 0
 
 		//Prevent a division by 0 error later on
-		T vectorMagnitude = x.x * x.x + x.y * x.y + x.z * x.z;
+		const T vectorMagnitude = x.x * x.x + x.y * x.y + x.z * x.z;
 		//Despite the compiler might say, we actually want to compare vectorMagnitude ti 0.
 		//Here, we could use denorm_int() compiling a project with unsafe maths optimizations
 		//might make the comparison always false, even when vectorMagnitude is 0.
@@ -3916,16 +3916,16 @@ TRAP::Math::tQuat<T> TRAP::Math::Pow(const tQuat<T>& x, T y)
 		angle = ACos(x.w / magnitude);
 	}
 
-	T newAngle = angle * y;
-	T div = Sin(newAngle) / Sin(angle);
-	T mag = Pow(magnitude, y - static_cast<T>(1));
+	const T newAngle = angle * y;
+	const T div = Sin(newAngle) / Sin(angle);
+	const T mag = Pow(magnitude, y - static_cast<T>(1));
 	return tQuat<T>(Cos(newAngle) * magnitude * mag, x.x * div * mag, x.y * div * mag, x.z * div * mag);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Exp(T x)
+T TRAP::Math::Exp(const T x)
 {
 	return std::exp(x);
 }
@@ -3943,7 +3943,7 @@ template <typename T>
 TRAP::Math::tQuat<T> TRAP::Math::Exp(const tQuat<T>& q)
 {
 	Vec<3, T> u(q.x, q.y, q.z);
-	T const angle = Length(u);
+	const T angle = Length(u);
 	if (angle < Epsilon<T>())
 		return tQuat<T>();
 
@@ -3954,7 +3954,7 @@ TRAP::Math::tQuat<T> TRAP::Math::Exp(const tQuat<T>& q)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Log(T x)
+T TRAP::Math::Log(const T x)
 {
 	return std::log(x);
 }
@@ -3972,7 +3972,7 @@ template <typename T>
 TRAP::Math::tQuat<T> TRAP::Math::Log(const tQuat<T>& q)
 {
 	Vec<3, T> u(q.x, q.y, q.z);
-	T vec3Len = Length(u);
+	const T vec3Len = Length(u);
 
 	if(vec3Len < Epsilon<T>())
 	{
@@ -3984,15 +3984,15 @@ TRAP::Math::tQuat<T> TRAP::Math::Log(const tQuat<T>& q)
 		                      std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
 	}
 
-	T t = ATan(vec3Len, T(q.w)) / vec3Len;
-	T quatLen2 = vec3Len * vec3Len + q.w * q.w;
+	const T t = ATan(vec3Len, T(q.w)) / vec3Len;
+	const T quatLen2 = vec3Len * vec3Len + q.w * q.w;
 	return tQuat<T>(static_cast<T>(0.5)* Log(quatLen2), t* q.x, t* q.y, t* q.z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Exp2(genType x)
+genType TRAP::Math::Exp2(const genType x)
 {
 	return std::exp2(x);
 }
@@ -4009,7 +4009,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Exp2(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Log2(genType x)
+genType TRAP::Math::Log2(const genType x)
 {
 	return static_cast<genType>(std::log2(x));
 }
@@ -4026,7 +4026,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Log2(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Sqrt(T x)
+T TRAP::Math::Sqrt(const T x)
 {
 	return std::sqrt(x);
 }
@@ -4051,7 +4051,7 @@ TRAP::Math::tQuat<T> TRAP::Math::Sqrt(const tQuat<T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::InverseSqrt(genType x)
+genType TRAP::Math::InverseSqrt(const genType x)
 {
 	return static_cast<genType>(1) / Sqrt(x);
 }
@@ -4072,7 +4072,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::InverseSqrt(const Vec<L, T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::Length(genType x)
+genType TRAP::Math::Length(const genType x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'Length' accepts only floating-point inputs");
 
@@ -4112,7 +4112,7 @@ T TRAP::Math::Distance(const Vec<L, T>& p0, const Vec<L, T>& p1)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-constexpr T TRAP::Math::Dot(T x, T y)
+constexpr T TRAP::Math::Dot(const T x, const T y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
@@ -4125,7 +4125,7 @@ constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
 	T result = 0;
-	Vec<L, T> tmp(x * y);
+	const Vec<L, T> tmp(x * y);
 	for (uint32_t i = 0; i < L; i++)
 		result += tmp[i];
 	return result;
@@ -4136,7 +4136,7 @@ constexpr T TRAP::Math::Dot(const tQuat<T>& x, const tQuat<T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
-	Vec<4, T> tmp(x.w * y.w, x.x * y.x, x.y * y.y, x.z * y.z);
+	const Vec<4, T> tmp(x.w * y.w, x.x * y.x, x.y * y.y, x.z * y.z);
 
 	return (tmp.x + tmp.y) + (tmp.z + tmp.w);
 }
@@ -4183,11 +4183,11 @@ TRAP::Math::Vec<L, T> TRAP::Math::Normalize(const Vec<L, T>& x)
 template <typename T>
 TRAP::Math::tQuat<T> TRAP::Math::Normalize(const tQuat<T>& q)
 {
-	T len = Length(q);
+	const T len = Length(q);
 	if (len <= static_cast<T>(0)) //Problem
 		return tQuat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 
-	T oneOverLen = static_cast<T>(1) / len;
+	const T oneOverLen = static_cast<T>(1) / len;
 	return tQuat<T>(q.w * oneOverLen, q.x * oneOverLen, q.y * oneOverLen, q.z * oneOverLen);
 }
 
@@ -4241,8 +4241,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Refract(const Vec<L, T>& I, const Vec<L, T>& N
 
 	const T dotValue(Dot(N, I));
 	const T k(static_cast<T>(1) - eta * eta * (static_cast<T>(1) - dotValue * dotValue));
-	const Vec<L, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) :
-		Vec<L, T>(0);
+	const Vec<L, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) : Vec<L, T>(0);
 
 	return result;
 }
@@ -4398,17 +4397,17 @@ T TRAP::Math::Determinant(const Mat<4, 4, T>& m)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
 
-	T subFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-	T subFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
-	T subFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
-	T subFactor03 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
-	T subFactor04 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
-	T subFactor05 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+	const T subFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+	const T subFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+	const T subFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+	const T subFactor03 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+	const T subFactor04 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+	const T subFactor05 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
 
-	Vec<4, T> detCof(+(m[1][1] * subFactor00 - m[1][2] * subFactor01 + m[1][3] * subFactor02),
-		             -(m[1][0] * subFactor00 - m[1][2] * subFactor03 + m[1][3] * subFactor04),
-		             +(m[1][0] * subFactor01 - m[1][1] * subFactor03 + m[1][3] * subFactor05),
-		             -(m[1][0] * subFactor02 - m[1][1] * subFactor04 + m[1][2] * subFactor05));
+	const Vec<4, T> detCof(+(m[1][1] * subFactor00 - m[1][2] * subFactor01 + m[1][3] * subFactor02),
+		                   -(m[1][0] * subFactor00 - m[1][2] * subFactor03 + m[1][3] * subFactor04),
+		                   +(m[1][0] * subFactor01 - m[1][1] * subFactor03 + m[1][3] * subFactor05),
+		                   -(m[1][0] * subFactor02 - m[1][1] * subFactor04 + m[1][2] * subFactor05));
 
 	return m[0][0] * detCof[0] + m[0][1] * detCof[1] +
 		   m[0][2] * detCof[2] + m[0][3] * detCof[3];
@@ -4421,9 +4420,9 @@ TRAP::Math::Mat<3, 3, T> TRAP::Math::Inverse(const Mat<3, 3, T>& m)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
-	T oneOverDeterminant = static_cast<T>(1) / (+m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
-		- m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
-		+ m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]));
+	const T oneOverDeterminant = static_cast<T>(1) / (+m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
+		                                              - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
+		                                              + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]));
 
 	Mat<3, 3, T> inverse;
 	inverse[0][0] = +(m[1][1] * m[2][2] - m[2][1] * m[1][2]) * oneOverDeterminant;
@@ -4443,57 +4442,57 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
-	T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-	T coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
-	T coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+	const T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+	const T coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+	const T coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
 
-	T coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
-	T coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
-	T coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+	const T coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+	const T coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+	const T coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
 
-	T coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
-	T coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
-	T coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+	const T coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+	const T coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+	const T coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
 
-	T coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
-	T coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
-	T coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+	const T coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+	const T coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+	const T coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
 
-	T coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
-	T coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
-	T coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+	const T coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+	const T coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+	const T coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
 
-	T coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
-	T coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
-	T coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
+	const T coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+	const T coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+	const T coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
 
-	Vec<4, T> fac0(coef00, coef00, coef02, coef03);
-	Vec<4, T> fac1(coef04, coef04, coef06, coef07);
-	Vec<4, T> fac2(coef08, coef08, coef10, coef11);
-	Vec<4, T> fac3(coef12, coef12, coef14, coef15);
-	Vec<4, T> fac4(coef16, coef16, coef18, coef19);
-	Vec<4, T> fac5(coef20, coef20, coef22, coef23);
+	const Vec<4, T> fac0(coef00, coef00, coef02, coef03);
+	const Vec<4, T> fac1(coef04, coef04, coef06, coef07);
+	const Vec<4, T> fac2(coef08, coef08, coef10, coef11);
+	const Vec<4, T> fac3(coef12, coef12, coef14, coef15);
+	const Vec<4, T> fac4(coef16, coef16, coef18, coef19);
+	const Vec<4, T> fac5(coef20, coef20, coef22, coef23);
 
-	Vec<4, T> vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
-	Vec<4, T> vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
-	Vec<4, T> vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
-	Vec<4, T> vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
+	const Vec<4, T> vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
+	const Vec<4, T> vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
+	const Vec<4, T> vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
+	const Vec<4, T> vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
 
-	Vec<4, T> inv0(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
-	Vec<4, T> inv1(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
-	Vec<4, T> inv2(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
-	Vec<4, T> inv3(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
+	const Vec<4, T> inv0(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
+	const Vec<4, T> inv1(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
+	const Vec<4, T> inv2(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
+	const Vec<4, T> inv3(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
 
-	Vec<4, T> signA(+1, -1, +1, -1);
-	Vec<4, T> signB(-1, +1, -1, +1);
-	Mat<4, 4, T> inverse(inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB);
+	const Vec<4, T> signA(+1, -1, +1, -1);
+	const Vec<4, T> signB(-1, +1, -1, +1);
+	const Mat<4, 4, T> inverse(inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB);
 
-	Vec<4, T> row0(inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]);
+	const Vec<4, T> row0(inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]);
 
-	Vec<4, T> dot0(m[0] * row0);
-	T dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
+	const Vec<4, T> dot0(m[0] * row0);
+	const T dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
 
-	T oneOverDeterminant = static_cast<T>(1) / dot1;
+	const T oneOverDeterminant = static_cast<T>(1) / dot1;
 
 	return inverse * oneOverDeterminant;
 }
@@ -4501,7 +4500,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(T left, T right, T bottom, T top)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right, const T bottom, const T top)
 {
 	Mat<4, 4, T> result(static_cast<T>(1));
 
@@ -4515,7 +4514,8 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(T left, T right, T bottom, T t
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(T left, T right, T bottom, T top, T zNear, T zFar)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right, const T bottom, const T top,
+                                                  const T zNear, const T zFar)
 {
 	Mat<4, 4, T> result(static_cast<T>(1));
 
@@ -4532,7 +4532,8 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(T left, T right, T bottom, T t
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(T left, T right, T bottom, T top, T nearVal, T farVal)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(const T left, const T right, const T bottom, const T top,
+                                             const T nearVal, const T farVal)
 {
 	Mat<4, 4, T> result(static_cast<T>(0));
 
@@ -4550,11 +4551,11 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(T left, T right, T bottom, T top, T
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(T fovY, T aspect, T zNear, T zFar)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(const T fovY, const T aspect, const T zNear, const T zFar)
 {
 	TRAP_ASSERT(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
 
-	T const tanHalfFoVY = std::tan(fovY / static_cast<T>(2));
+	const T tanHalfFoVY = std::tan(fovY / static_cast<T>(2));
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
@@ -4570,15 +4571,16 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(T fovY, T aspect, T zNear, T zF
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(T fov, T width, T height, T zNear, T zFar)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, const T height, const T zNear,
+                                                    const T zFar)
 {
 	TRAP_ASSERT(width > static_cast<T>(0));
 	TRAP_ASSERT(height > static_cast<T>(0));
 	TRAP_ASSERT(fov > static_cast<T>(0));
 
-	T const rad = fov;
-	T const h = Cos(static_cast<T>(0.5)* rad) / Sin(static_cast<T>(0.5)* rad);
-	T const w = h * height / width;
+	const T rad = fov;
+	const T h = Cos(static_cast<T>(0.5)* rad) / Sin(static_cast<T>(0.5)* rad);
+	const T w = h * height / width;
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
@@ -4594,13 +4596,13 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(T fov, T width, T height, T 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(T fovY, T aspect, T zNear)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(const T fovY, const T aspect, const T zNear)
 {
-	T const range = std::tan(fovY / static_cast<T>(2))* zNear;
-	T const left = -range * aspect;
-	T const right = range * aspect;
-	T const bottom = -range;
-	T const top = range;
+	const T range = std::tan(fovY / static_cast<T>(2))* zNear;
+	const T left = -range * aspect;
+	const T right = range * aspect;
+	const T bottom = -range;
+	const T top = range;
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
@@ -4652,14 +4654,14 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Translate(const Vec<3, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const Mat<4, 4, T>& m, T angleInRadians, const Vec<3, T>& v)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const Mat<4, 4, T>& m, const T angleInRadians, const Vec<3, T>& v)
 {
 	const T a = angleInRadians;
 	const T c = std::cos(a);
 	const T s = std::sin(a);
 
-	Vec<3, T> axis(Normalize(v));
-	Vec<3, T> temp((T(1) - c) * axis);
+	const Vec<3, T> axis(Normalize(v));
+	const Vec<3, T> temp((T(1) - c) * axis);
 
 	Mat<4, 4, T> rotate;
 
@@ -4686,14 +4688,14 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const Mat<4, 4, T>& m, T angleInRadi
 }
 
 template<typename T>
-TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(T angleInRadians, const Vec<3, T>& v)
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const T angleInRadians, const Vec<3, T>& v)
 {
 	const T a = angleInRadians;
 	const T c = std::cos(a);
 	const T s = std::sin(a);
 
-	Vec<3, T> axis(Normalize(v));
-	Vec<3, T> temp((T(1) - c) * axis);
+	const Vec<3, T> axis(Normalize(v));
+	const Vec<3, T> temp((T(1) - c) * axis);
 
 	Mat<4, 4, T> rotate;
 
@@ -4709,7 +4711,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(T angleInRadians, const Vec<3, T>& v
 	rotate[2][1] = temp[2] * axis[1] - s * axis[0];
 	rotate[2][2] = c + temp[2] * axis[2];
 
-	Mat<4, 4, T> identity(1.0f);
+	const Mat<4, 4, T> identity(1.0f);
 	Mat<4, 4, T> result;
 
 	result[0] = identity[0] * rotate[0][0] + identity[1] * rotate[0][1] + identity[2] * rotate[0][2];
@@ -4832,7 +4834,7 @@ typename T::colType TRAP::Math::Column(const T& m, const int32_t index)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, T a)
+TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, const T a)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
 
@@ -4856,14 +4858,14 @@ TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, T a
 		return tQuat<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
 	}
 
-	T angle = ACos(cosTheta);
+	const T angle = ACos(cosTheta);
 	return (Sin((static_cast<T>(1) - a) * angle) * x + Sin(a * angle) * z) / Sin(angle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T, typename S>
-TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, T a, S k)
+TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, const T a, const S k)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
 	static_assert(std::numeric_limits<S>::is_integer, "'SLerp' only accepts integers for spin count");
@@ -4890,8 +4892,8 @@ TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, T a
 	else
 	{
 		//Graphics Gems III, page 96
-		T angle = ACos(cosTheta);
-		T phi = angle + k * PI<T>();
+		const T angle = ACos(cosTheta);
+		const T phi = angle + k * PI<T>();
 		return (Sin(angle - a * phi) * x + Sin(a * phi) * z) / Sin(angle);
 	}
 }
@@ -4962,15 +4964,15 @@ template <typename T>
 TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat3Cast(const tQuat<T>& q)
 {
 	Mat<3, 3, T> result(T(1));
-	T qxx(q.x * q.x);
-	T qyy(q.y * q.y);
-	T qzz(q.z * q.z);
-	T qxz(q.x * q.z);
-	T qxy(q.x * q.y);
-	T qyz(q.y * q.z);
-	T qwx(q.w * q.x);
-	T qwy(q.w * q.y);
-	T qwz(q.w * q.z);
+	const T qxx(q.x * q.x);
+	const T qyy(q.y * q.y);
+	const T qzz(q.z * q.z);
+	const T qxz(q.x * q.z);
+	const T qxy(q.x * q.y);
+	const T qyz(q.y * q.z);
+	const T qwx(q.w * q.x);
+	const T qwy(q.w * q.y);
+	const T qwz(q.w * q.z);
 
 	result[0][0] = T(1) - T(2) * (qyy + qzz);
 	result[0][1] = T(2) * (qxy + qwz);
@@ -4996,10 +4998,10 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat4Cast(const tQuat<T>& q)
 template <typename T>
 TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 {
-	T fourXSquaredMinus1 = m[0][0] - m[1][1] - m[2][2];
-	T fourYSquaredMinus1 = m[1][1] - m[0][0] - m[2][2];
-	T fourZSquaredMinus1 = m[2][2] - m[0][0] - m[1][1];
-	T fourWSquaredMinus1 = m[0][0] + m[1][1] + m[2][2];
+	const T fourXSquaredMinus1 = m[0][0] - m[1][1] - m[2][2];
+	const T fourYSquaredMinus1 = m[1][1] - m[0][0] - m[2][2];
+	const T fourZSquaredMinus1 = m[2][2] - m[0][0] - m[1][1];
+	const T fourWSquaredMinus1 = m[0][0] + m[1][1] + m[2][2];
 
 	int32_t biggestIndex = 0;
 	T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
@@ -5019,8 +5021,8 @@ TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 		biggestIndex = 3;
 	}
 
-	T biggestVal = Sqrt(fourBiggestSquaredMinus1 + static_cast<T>(1))* static_cast<T>(0.5);
-	T mult = static_cast<T>(0.25) / biggestVal;
+	const T biggestVal = Sqrt(fourBiggestSquaredMinus1 + static_cast<T>(1))* static_cast<T>(0.5);
+	const T mult = static_cast<T>(0.25) / biggestVal;
 
 	switch (biggestIndex)
 	{
@@ -5128,7 +5130,7 @@ TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y)
 }
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, T epsilon)
+TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
 	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
 	return LessThan(Abs(v), Vec<4, T>(epsilon));
@@ -5147,9 +5149,9 @@ TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>&
 }
 
 template <typename T>
-TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, T epsilon)
+TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuat<T>& x, const tQuat<T>& y, const T epsilon)
 {
-	Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
+	const Vec<4, T> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
 	return GreaterThanEqual(Abs(v), Vec<4, T>(epsilon));
 }
 
@@ -5197,10 +5199,10 @@ TRAP::Math::tQuat<T> TRAP::Math::Rotate(const tQuat<T>& q, const T& angle, const
 	Vec<3, T> tmp = v;
 
 	//Axis of rotation must be normalized
-	T len = Length(tmp);
+	const T len = Length(tmp);
 	if(Abs(len - static_cast<T>(1)) > static_cast<T>(0.001))
 	{
-		T oneOverLen = static_cast<T>(1) / len;
+		const T oneOverLen = static_cast<T>(1) / len;
 		tmp.x *= oneOverLen;
 		tmp.y *= oneOverLen;
 		tmp.z *= oneOverLen;
@@ -5292,7 +5294,7 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const V
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, T epsilon)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, const T epsilon)
 {
 	return Equal(x, y, Vec<L, T>(epsilon));
 }
@@ -5320,7 +5322,7 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, cons
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, T epsilon)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const T epsilon)
 {
 	return NotEqual(x, y, Vec<L, T>(epsilon));
 }
@@ -5372,7 +5374,7 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Not(const Vec<L, bool>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr genType TRAP::Math::Radians(genType degrees)
+constexpr genType TRAP::Math::Radians(const genType degrees)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'Radians' only accepts floating-point inputs");
 
@@ -5391,7 +5393,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-constexpr genType TRAP::Math::Degrees(genType radians)
+constexpr genType TRAP::Math::Degrees(const genType radians)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'Degrees' only accepts floating-point inputs");
 
@@ -5410,7 +5412,7 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Degrees(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Sin(T x)
+T TRAP::Math::Sin(const T x)
 {
 	return std::sin(x);
 }
@@ -5427,7 +5429,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Sin(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Cos(T x)
+T TRAP::Math::Cos(const T x)
 {
 	return std::cos(x);
 }
@@ -5444,7 +5446,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Cos(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Tan(T x)
+T TRAP::Math::Tan(const T x)
 {
 	return std::tan(x);
 }
@@ -5461,7 +5463,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Tan(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::ASin(T x)
+T TRAP::Math::ASin(const T x)
 {
 	return std::asin(x);
 }
@@ -5478,7 +5480,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ASin(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::ACos(T x)
+T TRAP::Math::ACos(const T x)
 {
 	return std::acos(x);
 }
@@ -5495,7 +5497,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ACos(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::ATan(genType y, genType x)
+genType TRAP::Math::ATan(const genType y, const genType x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'ATan' only accepts floating-point inputs");
 
@@ -5512,7 +5514,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& a, const Vec<L, T>& b)
 }
 
 template<typename T>
-T TRAP::Math::ATan(T x)
+T TRAP::Math::ATan(const T x)
 {
 	return std::atan(x);
 }
@@ -5529,7 +5531,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ATan(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::SinH(T x)
+T TRAP::Math::SinH(const T x)
 {
 	return std::sinh(x);
 }
@@ -5546,7 +5548,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::SinH(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::CosH(T x)
+T TRAP::Math::CosH(const T x)
 {
 	return std::cosh(x);
 }
@@ -5563,7 +5565,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::CosH(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::TanH(T x)
+T TRAP::Math::TanH(const T x)
 {
 	return std::tanh(x);
 }
@@ -5580,7 +5582,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::TanH(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::ASinH(T x)
+T TRAP::Math::ASinH(const T x)
 {
 	return std::asinh(x);
 }
@@ -5597,7 +5599,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ASinH(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::ACosH(T x)
+T TRAP::Math::ACosH(const T x)
 {
 	return std::acosh(x);
 }
@@ -5614,7 +5616,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::ACosH(const Vec<L, T>& v)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::ATanH(T x)
+T TRAP::Math::ATanH(const T x)
 {
 	return std::atanh(x);
 }
@@ -5635,19 +5637,19 @@ TRAP::Math::Vec<L, T> TRAP::Math::ATanH(const Vec<L, T>& v)
 template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::RGBColor(const Vec<3, T>& hsvColor)
 {
-	Vec<3, T> hsv = hsvColor;
+	const Vec<3, T> hsv = hsvColor;
 	Vec<3, T> rgbColor;
 
 	if(hsv.y == static_cast<T>(0))
 		rgbColor = Vec<3, T>(hsv.z); //Achromatic (grey)
 	else
 	{
-		T sector = Floor(hsv.x * (T(1) / T(60)));
-		T frac = (hsv.x * (T(1) / T(60))) - sector;
+		const T sector = Floor(hsv.x * (T(1) / T(60)));
+		const T frac = (hsv.x * (T(1) / T(60))) - sector;
 		//Fractional part of h
-		T o = hsv.z * (T(1) - hsv.y);
-		T p = hsv.z * (T(1) - hsv.y * frac);
-		T q = hsv.z * (T(1) - hsv.y * (T(1) - frac));
+		const T o = hsv.z * (T(1) - hsv.y);
+		const T p = hsv.z * (T(1) - hsv.y * frac);
+		const T q = hsv.z * (T(1) - hsv.y * (T(1) - frac));
 
 		switch(int32_t(sector))
 		{
@@ -5694,9 +5696,9 @@ template<typename T>
 constexpr TRAP::Math::Vec<3, T> TRAP::Math::HSVColor(const Vec<3, T>& rgbColor)
 {
 	Vec<3, T> hsv = rgbColor;
-	T min = Min(Min(rgbColor.r, rgbColor.g), rgbColor.b);
-	T max = Max(Max(rgbColor.r, rgbColor.g), rgbColor.b);
-	T delta = max - min;
+	const T min = Min(Min(rgbColor.r, rgbColor.g), rgbColor.b);
+	const T max = Max(Max(rgbColor.r, rgbColor.g), rgbColor.b);
+	const T delta = max - min;
 
 	hsv.z = max;
 
@@ -5732,7 +5734,7 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::HSVColor(const Vec<3, T>& rgbColor)
 template<typename T>
 constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Saturation(const T s)
 {
-	Vec<3, T> rgbw = Vec<3, T>(T(0.2126), T(0.7152), T(0.0722));
+	const Vec<3, T> rgbw = Vec<3, T>(T(0.2126), T(0.7152), T(0.0722));
 
 	const Vec<3, T> col((T(1) - s) * rgbw);
 

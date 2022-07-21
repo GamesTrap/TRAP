@@ -632,7 +632,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* data, uint64_t lengt
 	Memory::SwapBytes(crc);
 
 	std::array<uint8_t, 4> result{};
-	memcpy(result.data(), &crc, result.size());
+	std::copy_n(reinterpret_cast<const uint8_t*>(&crc), result.size(), result.data());
 
 	return result;
 }

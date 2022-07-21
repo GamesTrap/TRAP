@@ -52,7 +52,7 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str
 
 	while (end <= std::string::npos)
 	{
-		std::string token = std::string(str.substr(start, end - start));
+		const std::string token = str.substr(start, end - start);
 
 		if (!token.empty())
 			result.push_back(token);
@@ -86,31 +86,6 @@ std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std:
 std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 {
 	return SplitString(str, "\n");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const char* TRAP::Utils::String::FindToken(const char* str, const std::string_view token)
-{
-	const char* t = strstr(str, token.data());
-	while (t)
-	{
-		const bool left = str == t || isspace(t[-1]);
-		const bool right = !t[token.size()] || isspace(t[token.size()]);
-		if (left && right)
-			return t;
-
-		t += token.size();
-		t = strstr(t, token.data());
-	}
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const char* TRAP::Utils::String::FindToken(const std::string_view str, const std::string_view token)
-{
-	return FindToken(str.data(), token);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -189,7 +164,7 @@ bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std:
 
 std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint)
 {
-	std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
+	const std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
 
 	std::tm tm{};
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -198,18 +173,17 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 	localtime_r(&time, &tm);
 #endif
 
-	char buffer[9];
-	std::memset(buffer, 0, sizeof(buffer));
-	std::strftime(buffer, sizeof(buffer), "%T", &tm);
+	std::array<char, 9> buffer{};
+	strftime(buffer.data(), buffer.size(), "%T", &tm);
 
-	return buffer;
+	return std::string(buffer.begin(), buffer.end());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint)
 {
-	std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
+	const std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
 
 	std::tm tm{};
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -218,9 +192,34 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 	localtime_r(&time, &tm);
 #endif
 
-	char buffer[20];
-	std::memset(buffer, 0, sizeof(buffer));
-	std::strftime(buffer, sizeof(buffer), "%F %T", &tm);
+	std::array<char, 20> buffer{};
+	strftime(buffer.data(), buffer.size(), "%F %T", &tm);
 
-	return buffer;
+	return std::string(buffer.begin(), buffer.end());
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_LINUX
+std::string TRAP::Utils::String::GetStrError()
+{
+    std::string error(1024, '\0');
+    #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+        strerror_r(errno, error.data(), error.size());
+        //Remove trailing terminating null characters
+        error.resize(error.find('\0'));
+        return error;
+    #else
+        char* errorCStr = strerror_r(errno, error.data(), error.size());
+        return std::string(errorCStr);
+    #endif
+
+    return "";
+}
+#elif defined(TRAP_PLATFORM_WINDOWS)
+std::string TRAP::Utils::String::GetStrError()
+{
+	//TODO Use GetLastError?
+	return "";
+}
+#endif

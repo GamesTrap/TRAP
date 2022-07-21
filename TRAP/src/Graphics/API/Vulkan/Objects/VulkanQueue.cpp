@@ -170,7 +170,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		++signalCount;
 	}
 
-	VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitCount, waitMasks, cmds, signalSemaphores, signalCount);
+	const VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitCount, waitMasks,
+	                                                        cmds, signalSemaphores, signalCount);
 
 	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
 	//Many setups have just one queue family and one queue.
@@ -215,9 +216,9 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 	uint32_t presentIndex = desc.Index;
 
-	VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
-	VkSwapchainKHR sc = sChain->GetVkSwapChain();
-	VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
+	const VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
+	const VkSwapchainKHR sc = sChain->GetVkSwapChain();
+	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
 
 	//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 	std::lock_guard<std::mutex> lock(m_submitMutex);
@@ -245,8 +246,8 @@ void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name)
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkQueue, uint64_t>(m_vkQueue), VK_OBJECT_TYPE_QUEUE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkQueue, uint64_t>(m_vkQueue), VK_DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT, name);
 #endif
 }

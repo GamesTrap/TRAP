@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 #include "Application.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Objects/Queue.h"
 
@@ -14,7 +14,8 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 
 	if(name.empty())
 	{
-		TP_ERROR(Log::TexturePrefix, "Invalid name!");
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
 
@@ -31,10 +32,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FileSystem::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -96,10 +98,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FileSystem::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -141,7 +144,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 	TP_PROFILE_FUNCTION();
 
-	const std::string name = FS::GetFileName(filepath);
+	const auto name = FileSystem::GetFileName(filepath);
+	if(!name)
+	{
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
+		return nullptr;
+	}
 
 	TRAP::Scope<Texture> texture = nullptr;
 
@@ -149,17 +158,18 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FileSystem::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -202,7 +212,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 	TP_PROFILE_FUNCTION();
 
 	//Validation that images have same size and format
-	Image::ColorFormat format = imgs[0]->GetColorFormat();
+	const Image::ColorFormat format = imgs[0]->GetColorFormat();
 	if(std::none_of(imgs.cbegin(), imgs.cend(),
 	   [&](const Image* img) {return img->GetColorFormat() != format ||
 	                                 img->GetBitsPerChannel() != imgs[0]->GetBitsPerPixel() ||
@@ -250,10 +260,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FileSystem::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -340,10 +351,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				if(path.empty())
+				const auto folderPath = FileSystem::GetFolderPath(path);
+				if(!folderPath)
 					continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(path));
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
 			}
 		}
 
@@ -604,7 +616,7 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Texture::GetName() const
+std::string TRAP::Graphics::Texture::GetName() const
 {
 	return m_name;
 }
@@ -789,15 +801,16 @@ void TRAP::Graphics::Texture::Update(const void* data, const uint32_t sizeInByte
 	updateDesc.MipLevel = mipLevel;
 	updateDesc.ArrayLayer = arrayLayer;
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(updateDesc);
-	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single memcpy is enough
-		memcpy(updateDesc.MappedData, data, updateDesc.RowCount * updateDesc.SrcRowStride);
+	if(updateDesc.DstRowStride == updateDesc.SrcRowStride) //Single copy is enough
+		std::copy_n(static_cast<const uint8_t*>(data), updateDesc.RowCount * updateDesc.SrcRowStride,
+		            static_cast<uint8_t*>(updateDesc.MappedData));
 	else //Needs row by row copy
 	{
 		for(std::size_t r = 0; r < updateDesc.RowCount; ++r)
 		{
-			memcpy(updateDesc.MappedData + r * updateDesc.DstRowStride,
-				   static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
-				   updateDesc.SrcRowStride);
+			std::copy_n(static_cast<const uint8_t*>(data) + r * updateDesc.SrcRowStride,
+			            updateDesc.SrcRowStride,
+						static_cast<uint8_t*>(updateDesc.MappedData) + r * updateDesc.DstRowStride);
 		}
 	}
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(updateDesc, &m_syncToken);
@@ -890,109 +903,6 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
-	                             											                   const uint32_t bpp)
-{
-	if(colorFormat == Image::ColorFormat::GrayScale)
-	{
-		if(bpp == 8)
-			return API::ImageFormat::R8_UNORM;
-		if(bpp == 16)
-			return API::ImageFormat::R16_UNORM;
-		if(bpp == 32)
-			return API::ImageFormat::R32_SFLOAT;
-
-		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
-	{
-		if(bpp == 16)
-			return API::ImageFormat::R8G8_UNORM;
-		if(bpp == 32)
-		    return API::ImageFormat::R16G16_UNORM;
-		if(bpp == 64)
-		    return API::ImageFormat::R32G32_SFLOAT;
-
-		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::RGB)
-	{
-		TRAP_ASSERT(false, "Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
-		return API::ImageFormat::Undefined;
-	}
-	if(colorFormat == Image::ColorFormat::RGBA)
-	{
-		if(bpp == 32)
-			return API::ImageFormat::R8G8B8A8_UNORM;
-		if(bpp == 64)
-			return API::ImageFormat::R16G16B16A16_UNORM;
-		if(bpp == 128)
-			return API::ImageFormat::R32G32B32A32_SFLOAT;
-
-		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
-		return API::ImageFormat::Undefined;
-	}
-
-	TRAP_ASSERT(false, "Invalid color format provided!");
-	return API::ImageFormat::Undefined;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFormat(const API::ImageFormat imageFormat)
-{
-	switch(imageFormat)
-	{
-	case API::ImageFormat::R8_UNORM:
-	case API::ImageFormat::R16_UNORM:
-	case API::ImageFormat::R32_SFLOAT:
-		return Image::ColorFormat::GrayScale;
-
-	case API::ImageFormat::R8G8_UNORM:
-	case API::ImageFormat::R16G16_UNORM:
-	case API::ImageFormat::R32G32_SFLOAT:
-		return Image::ColorFormat::GrayScaleAlpha;
-
-	case API::ImageFormat::R8G8B8A8_UNORM:
-	case API::ImageFormat::R16G16B16A16_UNORM:
-	case API::ImageFormat::R32G32B32A32_SFLOAT:
-		return Image::ColorFormat::RGBA;
-
-	default:
-		return Image::ColorFormat::NONE;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat)
-{
-	switch(imageFormat)
-	{
-	case API::ImageFormat::R8_UNORM:
-	case API::ImageFormat::R8G8_UNORM:
-	case API::ImageFormat::R8G8B8A8_UNORM:
-		return 8;
-
-	case API::ImageFormat::R16_UNORM:
-	case API::ImageFormat::R16G16_UNORM:
-	case API::ImageFormat::R16G16B16A16_UNORM:
-		return 16;
-
-	case API::ImageFormat::R32_SFLOAT:
-	case API::ImageFormat::R32G32_SFLOAT:
-	case API::ImageFormat::R32G32B32A32_SFLOAT:
-		return 32;
-
-	default:
-		return 0;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::Image* const img)
 {
 	if(img->GetBitsPerChannel() == 32)
@@ -1061,7 +971,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
 								   static_cast<std::size_t>(img->GetColorFormat()));
-		std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+		std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
 			for(uint32_t y = 0; y < img->GetHeight(); ++y)
@@ -1087,7 +997,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 	if(img->GetBitsPerChannel() == 16)
 	{
 		std::vector<uint16_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() * static_cast<std::size_t>(img->GetColorFormat()));
-		std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+		std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 		for(uint32_t x = 0; x < img->GetWidth(); ++x)
 		{
 			for(uint32_t y = 0; y < img->GetHeight(); ++y)
@@ -1113,7 +1023,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 
 	std::vector<uint8_t> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
 								 static_cast<std::size_t>(img->GetColorFormat()));
-	std::memcpy(rotated.data(), img->GetPixelData(), img->GetPixelDataSize());
+	std::copy_n(static_cast<const uint8_t*>(img->GetPixelData()), img->GetPixelDataSize(), rotated.begin());
 	for(uint32_t x = 0; x < img->GetWidth(); ++x)
 	{
 		for(uint32_t y = 0; y < img->GetHeight(); ++y)

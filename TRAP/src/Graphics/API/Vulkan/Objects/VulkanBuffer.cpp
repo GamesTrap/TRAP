@@ -1,4 +1,5 @@
 #include "TRAPPCH.h"
+#include "Utils/Utils.h"
 #include "VulkanBuffer.h"
 
 #include "VulkanMemoryAllocator.h"
@@ -84,10 +85,10 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 	if(info.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT)
 	{
-		VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
-		                                                                    ImageFormatToVkFormat(desc.Format),
-		                                                                    desc.FirstElement * desc.StructStride,
-		                                                                    desc.ElementCount * desc.StructStride);
+		const VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
+		                                                                          ImageFormatToVkFormat(desc.Format),
+		                                                                          desc.FirstElement * desc.StructStride,
+		                                                                          desc.ElementCount * desc.StructStride);
 		VkFormatProperties formatProps{};
 		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), viewInfo.format,
 		                                    &formatProps);
@@ -99,10 +100,10 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	}
 	if(info.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)
 	{
-		VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
-		                                                                    ImageFormatToVkFormat(desc.Format),
-		                                                                    desc.FirstElement * desc.StructStride,
-		                                                                    desc.ElementCount * desc.StructStride);
+		const VkBufferViewCreateInfo viewInfo = VulkanInits::BufferViewCreateInfo(m_vkBuffer,
+		                                                                          ImageFormatToVkFormat(desc.Format),
+		                                                                          desc.FirstElement * desc.StructStride,
+		                                                                          desc.ElementCount * desc.StructStride);
 		VkFormatProperties formatProps{};
 		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), viewInfo.format,
 		                                    &formatProps);
@@ -141,7 +142,8 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 		m_vkStorageTexelView = VK_NULL_HANDLE;
 	}
 
-	vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
+	if(m_allocation)
+		vmaDestroyBuffer(m_VMA->GetVMAAllocator(), m_vkBuffer, m_allocation);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -254,8 +256,8 @@ void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view nam
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkBuffer, uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkBuffer, uint64_t>(m_vkBuffer), VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT, name);
 #endif
 }

@@ -41,7 +41,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
 	sockaddr_in addr{};
-	std::memset(&addr, 0, sizeof(addr));
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 	{
@@ -62,8 +61,7 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
                                                                 uint16_t port)
 {
 	sockaddr_in6 addr{};
-	std::memset(&addr, 0, sizeof(addr));
-	std::memcpy(addr.sin6_addr.s6_addr, address.data(), address.size());
+	std::copy(address.begin(), address.end(), addr.sin6_addr.s6_addr);
 	addr.sin6_family = AF_INET6;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
@@ -90,9 +88,9 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(TRAP::Network::SocketHandle sock, bool block)
+void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
-	int32_t status = fcntl(sock, F_GETFL);
+	const int32_t status = fcntl(sock, F_GETFL);
 	if (block)
 	{
 		if (fcntl(sock, F_SETFL, status & ~O_NONBLOCK) == -1)

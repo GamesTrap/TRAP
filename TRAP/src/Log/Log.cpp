@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 TRAP::Log TRAP::TRAPLog{};
 
@@ -9,6 +9,14 @@ TRAP::Log TRAP::TRAPLog{};
 
 TRAP::Log::Log()
 	: m_path("trap.log")
+{
+	m_buffer.reserve(256);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Log::Log(std::filesystem::path filePath)
+	: m_path(std::move(filePath))
 {
 	m_buffer.reserve(256);
 }
@@ -29,7 +37,7 @@ const std::filesystem::path& TRAP::Log::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetFilePath(std::filesystem::path filePath)
+void TRAP::Log::SetFilePath(const std::filesystem::path& filePath)
 {
 	m_path = std::move(filePath);
 }
@@ -43,22 +51,29 @@ const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::Save()
+void TRAP::Log::Save() const
 {
 	TP_PROFILE_FUNCTION();
 
-	const std::filesystem::path logFile = FS::GetFolderPath(m_path) / (FS::GetFileName(m_path) + "-" +
-		                                                               GetDateTimeStamp() +
-		                                                               FS::GetFileEnding(m_path));
+	//Build final path and filename
+	const auto folderPath = FileSystem::GetFolderPath(m_path);
+	const auto fileName = FileSystem::GetFileName(m_path);
+	const auto fileEnding = FileSystem::GetFileEnding(m_path);
+	if(!folderPath || !fileName || !fileEnding)
+	{
+		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path.generic_u8string());
+		return;
+	}
+	const std::filesystem::path logFile = *folderPath / ((*fileName) + "-" + GetDateTimeStamp() + *fileEnding);
 
-	TP_INFO(LoggerPrefix, "Saving ", m_path.generic_u8string());
+	TP_INFO(LoggerPrefix, "Saving ", logFile.generic_u8string());
 	std::string output;
 
 	for (const auto& [level, message] : m_buffer)
 		output += message + '\n';
 
-	if(!TRAP::FS::WriteTextFile(logFile, output))
-		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path.generic_u8string());
+	if(!TRAP::FileSystem::WriteTextFile(logFile, output))
+		TP_ERROR(LoggerPrefix, "Failed to save: ", logFile.generic_u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -75,7 +90,7 @@ void TRAP::Log::Clear()
 
 std::string TRAP::Log::GetTimeStamp()
 {
-	std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
+	const std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
 	return "[" + timeStamp + ']';
 }
 

@@ -42,7 +42,7 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 	{
 	case RenderAPI::Vulkan:
 	{
-		TRAP::Ref<Sampler> result = TRAP::MakeRef<API::VulkanSampler>(desc);
+		const TRAP::Ref<Sampler> result = TRAP::MakeRef<API::VulkanSampler>(desc);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 		TP_DEBUG(Log::RendererSamplerPrefix, "Caching Sampler");

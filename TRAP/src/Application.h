@@ -28,7 +28,7 @@ namespace TRAP
 		class FileChangeEvent;
 	}
 
-	namespace FS
+	namespace FileSystem
 	{
 		class FileWatcher;
 	}
@@ -173,8 +173,8 @@ namespace TRAP
 		/// <summary>
 		/// Get the hot reloading file watcher.
 		/// </summary>
-		/// <returns>TRAP::FS::FileWatcher* if file watcher is running, false otherwise.</returns>
-		static TRAP::FS::FileWatcher* GetHotReloadingFileWatcher();
+		/// <returns>TRAP::FileSystem::FileWatcher* if file watcher is running, false otherwise.</returns>
+		static TRAP::FileSystem::FileWatcher* GetHotReloadingFileWatcher();
 		/// <summary>
 		/// Get whether hot reloading is enabled or not.
 		/// </summary>
@@ -256,7 +256,7 @@ namespace TRAP
 		std::vector<std::filesystem::path> m_hotReloadingShaderPaths;
 		std::vector<std::filesystem::path> m_hotReloadingTexturePaths;
 		std::mutex m_hotReloadingMutex;
-		std::unique_ptr<FS::FileWatcher> m_hotReloadingFileWatcher;
+		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher;
 		bool m_hotReloadingEnabled;
 
 		std::unique_ptr<Window> m_window;

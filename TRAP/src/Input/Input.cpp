@@ -813,7 +813,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		std::string Name;
 		MapElement* Element = nullptr;
 	};
-	std::array<Fields, 22> fields =
+	const std::array<Fields, 22> fields =
 	{
 		{
 			{"platform", nullptr},
@@ -841,7 +841,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		}
 	};
 
-	std::vector<std::string> splittedString = Utils::String::SplitString(str, ',');
+	const std::vector<std::string> splittedString = Utils::String::SplitString(str, ',');
 
 	if(splittedString.empty())
 	{
@@ -877,7 +877,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 	for (uint8_t i = 2; i < splittedString.size();) //Start after Mapping Name
 	{
-		std::vector<std::string> splittedField = Utils::String::SplitString(splittedString[i] + ':', ':');
+		const std::vector<std::string> splittedField = Utils::String::SplitString(splittedString[i] + ':', ':');
 		if (splittedField.empty())
 		{
 			TP_ERROR(Log::InputControllerPrefix, "Field can't be empty! Mapping: ", splittedString[1]);
@@ -1065,15 +1065,17 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
 	if (!con->mapping)
 		return false;
 
 	const MapElement* e = &con->mapping->Buttons[static_cast<uint8_t>(button)];
 	if (e->Index < con->ButtonCount)
+	{
 		if (e->Type == 2) //Button
 			return con->Buttons[e->Index];
+	}
 	if (e->Type == 1) //Axis
 	{
 		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) +
@@ -1100,12 +1102,12 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
+float TRAP::Input::GetMappedControllerAxis(const Controller controller, const ControllerAxis axis)
 {
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
 	if(!con->mapping)
 		return 0.0f;
@@ -1132,12 +1134,12 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
+TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(const Controller controller, const uint32_t dpad)
 {
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
 	if (!con->mapping)
 		return ControllerDPad::Centered;

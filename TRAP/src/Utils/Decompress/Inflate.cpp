@@ -404,7 +404,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the code. The bit reader must already have been ensured at least 15bits
-uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader)
+uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
 {
 	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
 	const uint16_t l = TableLength[code];
@@ -522,7 +522,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	for(i = 0; i < NumCodes; i++)
 	{
 		const uint32_t symbol = Codes[i];
-		uint32_t l = Lengths[i];
+		const uint32_t l = Lengths[i];
 		if (l <= FirstBits)
 			continue; //Symbols that fit in first table dont increase secondary table size
 		//Get the FIRSTBITS(9u) MSBs, the MSBs of the symbol are encoded first.
@@ -683,7 +683,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 	if (bytePos + LEN > size)
 		return false; //Error: Reading outside of in buffer
 
-	std::memcpy(out.data() + pos, reader.Data + bytePos, LEN);
+	std::copy_n(reader.Data + bytePos, LEN, out.data() + pos);
 	pos += LEN;
 	bytePos += LEN;
 
@@ -784,14 +784,14 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			out.resize(pos + length);
 			if(distance < length)
 			{
-				std::memcpy(out.data() + pos, out.data() + backward, distance);
+				std::copy_n(out.data() + backward, distance, out.data() + pos);
 				pos += distance;
 				for (std::size_t forward = distance; forward < length; ++forward)
 					out[pos++] = out[backward++];
 			}
 			else
 			{
-				std::memcpy(out.data() + pos, out.data() + backward, length);
+				std::copy_n(out.data() + backward, length, out.data() + pos);
 				pos += length;
 			}
 		}
@@ -852,7 +852,7 @@ bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t s
 		}
 	}
 
-	std::memcpy(destination, result.data(), result.size());
+	std::copy(result.begin(), result.end(), destination);
 
 	return true;
 }

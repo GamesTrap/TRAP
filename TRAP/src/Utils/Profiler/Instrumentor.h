@@ -78,7 +78,7 @@ namespace TRAP::Utils::Debug
 		/// Begin a new profiling session.
 		/// </summary>
 		/// <param name="name">Name for the new session.</param>
-		/// <param name="filePath">Non-VFS file path for the new session.</param>
+		/// <param name="filePath">File path for the new session.</param>
 		void BeginSession(const std::string& name, const std::string& filePath = "results.json");
 		/// <summary>
 		/// End current profiling session.
@@ -120,7 +120,7 @@ namespace TRAP::Utils::Debug
 		/// Constructor.
 		/// </summary>
 		/// <param name="name">Name of the function to profile.</param>
-		explicit InstrumentationTimer(const char* name);
+		explicit InstrumentationTimer(const std::string name);
 
 		/// <summary>
 		/// Destructor.
@@ -150,7 +150,7 @@ namespace TRAP::Utils::Debug
 		void Stop();
 
 	private:
-		const char* m_name = nullptr;
+		std::string m_name = nullptr;
 		std::chrono::time_point<std::chrono::steady_clock> m_startTimePoint;
 		bool m_stopped;
 	};

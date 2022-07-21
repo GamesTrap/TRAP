@@ -113,8 +113,8 @@ void TRAP::Utils::Debug::Instrumentor::InternalEndSession()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Debug::InstrumentationTimer::InstrumentationTimer(const char* name)
-	: m_name(name), m_stopped(false)
+TRAP::Utils::Debug::InstrumentationTimer::InstrumentationTimer(const std::string name)
+	: m_name(std::move(name)), m_stopped(false)
 {
 	m_startTimePoint = std::chrono::steady_clock::now();
 }

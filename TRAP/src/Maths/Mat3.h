@@ -261,14 +261,14 @@ namespace std
 //Constructors
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(T scalar)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T scalar)
 	: value{ colType(scalar, 0, 0), colType(0, scalar, 0), colType(0, 0, scalar) }
 {}
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(T x0, T y0, T z0,
-	                                    T x1, T y1, T z1,
-	                                    T x2, T y2, T z2)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T x0, const T y0, const T z0,
+	                                    const T x1, const T y1, const T z1,
+	                                    const T x2, const T y2, const T z2)
 	: value{ colType(x0, y0, z0), colType(x1, y1, z1), colType(x2, y2, z2) }
 {}
 
@@ -284,9 +284,9 @@ template<typename T>
 template<typename X1, typename Y1, typename Z1,
 	     typename X2, typename Y2, typename Z2,
 	     typename X3, typename Y3, typename Z3>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(X1 x1, Y1 y1, Z1 z1,
-	                                    X2 x2, Y2 y2, Z2 z2,
-	                                    X3 x3, Y3 y3, Z3 z3)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1,
+	                                    const X2 x2, const Y2 y2, const Z2 z2,
+	                                    const X3 x3, const Y3 y3, const Z3 z3)
 	: value{ colType(x1, y1, z1), colType(x2, y2, z2), colType(x3, y3, z3) }
 {}
 
@@ -352,7 +352,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Ma
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U s)
 {
 	this->value[0] += s;
 	this->value[1] += s;
@@ -374,7 +374,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const M
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U s)
 {
 	this->value[0] -= s;
 	this->value[1] -= s;
@@ -396,7 +396,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const M
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U s)
 {
 	this->value[0] *= s;
 	this->value[1] *= s;
@@ -414,7 +414,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const M
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U s)
 {
 	this->value[0] /= s;
 	this->value[1] /= s;
@@ -509,13 +509,13 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m)
 //Binary arithmetic operators
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m, T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m, const T scalar)
 {
 	return Mat<3, 3, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const T scalar, const Mat<3, 3, T>& m)
 {
 	return Mat<3, 3, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar);
 }
@@ -527,13 +527,13 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m1,
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m, T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m, const T scalar)
 {
 	return Mat<3, 3, T>(m[0] - scalar, m[1] - scalar, m[2] - scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const T scalar, const Mat<3, 3, T>& m)
 {
 	return Mat<3, 3, T>(scalar - m[0], scalar - m[1], scalar - m[2]);
 }
@@ -545,21 +545,20 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m1,
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m, T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m, const T scalar)
 {
 	return Mat<3, 3, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const T scalar, const Mat<3, 3, T>& m)
 {
 	return Mat<3, 3, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar);
 }
 
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator*(const Mat<3, 3, T>& m,
-                                                                 const typename Mat<3, 3, T>::rowType& v
-)
+                                                                           const typename Mat<3, 3, T>::rowType& v)
 {
 	return typename Mat<3, 3, T>::colType(m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z,
 		                                  m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z,
@@ -568,7 +567,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator*(const
 
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator*(const typename Mat<3, 3, T>::colType& v,
-                                                                 const Mat<3, 3, T>& m)
+                                                                           const Mat<3, 3, T>& m)
 {
 	return typename Mat<3, 3, T>::rowType(m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z,
 		                                  m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z,
@@ -613,27 +612,27 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m1,
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m, T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m, const T scalar)
 {
 	return Mat<3, 3, T>(m[0] / scalar, m[1] / scalar, m[2] / scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const T scalar, const Mat<3, 3, T>& m)
 {
 	return Mat<3, 3, T>(scalar / m[0], scalar / m[1], scalar / m[2]);
 }
 
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator/(const Mat<3, 3, T>& m,
-                                                                 const typename Mat<3, 3, T>::rowType& v)
+                                                                           const typename Mat<3, 3, T>::rowType& v)
 {
 	return Inverse(m) * v;
 }
 
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator/(const typename Mat<3, 3, T>::colType& v,
-                                                                 const Mat<3, 3, T>& m)
+                                                                           const Mat<3, 3, T>& m)
 {
 	return v * Inverse(m);
 }

@@ -87,7 +87,7 @@ namespace TRAP::Math
 		//Conversion constructors
 
 		template<typename U>
-		constexpr explicit tQuat(const tQuat<T>& q);
+		explicit constexpr tQuat(const tQuat<T>& q);
 
 		//Explicit conversion operators
 		//explicit operator Mat<3, 3, T>() const;
@@ -102,7 +102,7 @@ namespace TRAP::Math
 		/// Build a quaternion from euler angles (pitch, yaw, roll).
 		/// </summary>
 		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
-		constexpr explicit tQuat(const Vec<3, T>& eulerAnglesInRadians);
+		explicit constexpr tQuat(const Vec<3, T>& eulerAnglesInRadians);
 		explicit tQuat(const Mat<3, 3, T>& m);
 		explicit tQuat(const Mat<4, 4, T>& m);
 
@@ -209,13 +209,13 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 //Explicit basic constructors
 template <typename T>
-constexpr TRAP::Math::tQuat<T>::tQuat(T s, const Vec<3, T>& v)
+constexpr TRAP::Math::tQuat<T>::tQuat(const T s, const Vec<3, T>& v)
 	: x(v.x), y(v.y), z(v.z), w(s)
 {
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuat<T>::tQuat(T w, T x, T y, T z)
+constexpr TRAP::Math::tQuat<T>::tQuat(const T w, const T x, const T y, const T z)
 	: x(x), y(y), z(z), w(w)
 {
 }
@@ -251,7 +251,7 @@ template <typename T>
 TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 {
 	//TODO Can't use TRAP::Math::Sqrt here
-	T normUNormV = std::sqrt(Dot(u, u) * Dot(v, v));
+	const T normUNormV = std::sqrt(Dot(u, u) * Dot(v, v));
 	T realPart = normUNormV + Dot(u, v);
 	Vec<3, T> t;
 
@@ -278,8 +278,8 @@ TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 template <typename T>
 constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 {
-	Vec<3, T> c = Cos(eulerAnglesInRadians * T(0.5));
-	Vec<3, T> s = Sin(eulerAnglesInRadians * T(0.5));
+	const Vec<3, T> c = Cos(eulerAnglesInRadians * T(0.5));
+	const Vec<3, T> s = Sin(eulerAnglesInRadians * T(0.5));
 
 	this->w = c.x * c.y * c.z + s.x * s.y * s.z;
 	this->x = s.x * c.y * c.z - c.x * s.y * s.z;
@@ -349,14 +349,14 @@ constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const tQuat<U>&
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(U s)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator*=(const U s)
 {
 	return (*this = tQuat<T>(this->w * s, this->x * s, this->y * s, this->z * s));
 }
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(U s)
+constexpr TRAP::Math::tQuat<T>& TRAP::Math::tQuat<T>::operator/=(const U s)
 {
 	return (*this = tQuat<T>(this->w / s, this->x / s, this->y / s, this->z / s));
 }
@@ -373,7 +373,7 @@ constexpr int TRAP::Math::tQuat<T>::Length()
 //Component Access
 
 template <typename T>
-constexpr T& TRAP::Math::tQuat<T>::operator[](int i)
+constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
@@ -383,7 +383,7 @@ constexpr T& TRAP::Math::tQuat<T>::operator[](int i)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr const T& TRAP::Math::tQuat<T>::operator[](int i) const
+constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 

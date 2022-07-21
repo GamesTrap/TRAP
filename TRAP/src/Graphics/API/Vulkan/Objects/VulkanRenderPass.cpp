@@ -96,7 +96,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	else
 		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
 
-	VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
+	const VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
 
 	VkCall(vkCreateRenderPass(m_device->GetVkDevice(), &info, nullptr, &m_renderPass));
 }

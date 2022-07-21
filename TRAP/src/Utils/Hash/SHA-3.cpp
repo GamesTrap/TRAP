@@ -14,7 +14,7 @@ constexpr std::array<uint64_t, 24> RC =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<class T> T Rotatel64(T x, int64_t y)
+template<class T> T Rotatel64(const T x, const int64_t y)
 {
 	static const uint32_t thisSize = sizeof(T) * 8;
 	static const uint32_t mask = thisSize - 1;
@@ -131,7 +131,6 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 	std::array<uint8_t, rate / 8> m{};
 	std::size_t pos = 0;
 	std::array<uint64_t, 25> A{};
-	memset(A.data(), 0, A.size());
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 	constexpr std::size_t r = rate / 8;
@@ -143,16 +142,16 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 		length -= bytes;
 		dataPtr += bytes;
 	}
-	memcpy(m.data() + pos, dataPtr, length);
+	std::copy_n(dataPtr, length, m.data() + pos);
 	pos += length;
 
 	m[pos++] = 0x06;
-	memset(m.data() + pos, 0, r - pos);
+	std::fill_n(m.data() + pos, r - pos, static_cast<uint8_t>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 
 	std::array<uint8_t, hs / 8> result{};
-	memcpy(result.data(), A.data(), result.size());
+	std::copy_n(reinterpret_cast<const uint8_t*>(A.data()), result.size(), result.data());
 
 	return result;
 }
@@ -173,7 +172,6 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 	std::array<uint8_t, rate / 8> m{};
 	std::size_t pos = 0;
 	std::array<uint64_t, 25> A{};
-	memset(A.data(), 0, A.size());
 
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 	constexpr std::size_t r = rate / 8;
@@ -185,16 +183,16 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 		length -= bytes;
 		dataPtr += bytes;
 	}
-	memcpy(m.data() + pos, dataPtr, length);
+	std::copy_n(dataPtr, length, m.data() + pos);
 	pos += length;
 
 	m[pos++] = 0x06;
-	memset(m.data() + pos, 0, r - pos);
+	std::fill_n(m.data() + pos, r - pos, static_cast<uint8_t>(0u));
 	m[r - 1] |= 0x80;
 	Transform(m.data(), 1, A, rate);
 
 	std::array<uint8_t, hs / 8> result{};
-	memcpy(result.data(), A.data(), result.size());
+	std::copy_n(reinterpret_cast<const uint8_t*>(A.data()), result.size(), result.data());
 
 	return result;
 }

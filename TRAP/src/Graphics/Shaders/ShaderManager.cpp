@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "ShaderManager.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -166,7 +166,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 	{
 		for (const auto& [name, shader] : Shaders)
 		{
-			if (FS::IsPathEquivalent(nameOrPath, shader->GetFilePath()))
+			if (FileSystem::IsPathEquivalent(nameOrPath, shader->GetFilePath()))
 			{
 				if(shader->Reload())
 					TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -176,7 +176,7 @@ TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Reload(const std::string&
 		}
 
 		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"",
-		        std::filesystem::path(nameOrPath).generic_u8string(), "\" to reload.");
+		        std::filesystem::path(nameOrPath).u8string(), "\" to reload.");
 	}
 
 	return nullptr;
@@ -236,7 +236,7 @@ bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path
 {
 	for(const auto& [name, shader] : Shaders)
 	{
-		if (FS::IsPathEquivalent(shader->GetFilePath(), path))
+		if (FileSystem::IsPathEquivalent(shader->GetFilePath(), path))
 			return true;
 	}
 

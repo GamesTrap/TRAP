@@ -90,7 +90,7 @@ void FTPTests::FTP()
 			//Print the current server directory
 			TRAP::Network::FTP::DirectoryResponse response = server.GetWorkingDirectory();
 			std::cout << "[Network][FTP] " << response << std::endl;
-			std::cout << "[Network][FTP] Current directory is " << response.GetDirectory().generic_u8string() << std::endl;
+			std::cout << "[Network][FTP] Current directory is " << response.GetDirectory().u8string() << std::endl;
 			break;
 		}
 
@@ -101,7 +101,7 @@ void FTPTests::FTP()
 			std::cout << "[Network][FTP] " << response << std::endl;
 			const std::vector<std::filesystem::path>& names = response.GetListing();
 			for (const std::filesystem::path& name : names)
-				std::cout << "[Network][FTP] " << name.generic_u8string() << std::endl;
+				std::cout << "[Network][FTP] " << name.u8string() << std::endl;
 			break;
 		}
 

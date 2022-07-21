@@ -46,7 +46,7 @@ void TRAP::Network::Packet::Append(const void* data, const std::size_t sizeInByt
 
 	const std::size_t start = m_data.size();
 	m_data.resize(start + sizeInBytes);
-	std::memcpy(&m_data[start], data, sizeInBytes);
+	std::copy_n(static_cast<const uint8_t*>(data), sizeInBytes, &m_data[start]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -110,7 +110,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<const int8_t*>(&m_data[m_readPos]);
+		data = static_cast<int8_t>(m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -123,7 +123,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<const uint8_t*>(&m_data[m_readPos]);
+		data = static_cast<uint8_t>(m_data[m_readPos]);
 		m_readPos += sizeof(data);
 	}
 
@@ -136,7 +136,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int16_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -153,7 +153,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint16_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -170,7 +170,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int32_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -187,7 +187,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint32_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -204,7 +204,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<int64_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -221,7 +221,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<uint64_t*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
@@ -238,7 +238,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 {
 	if(CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<float*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 		m_readPos += sizeof(data);
 	}
 
@@ -251,7 +251,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 {
 	if (CheckSize(sizeof(data)))
 	{
-		data = *reinterpret_cast<double*>(&m_data[m_readPos]);
+		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
 		m_readPos += sizeof(data);
 	}
 
@@ -270,7 +270,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* data)
 	if((length > 0) && CheckSize(length))
 	{
 		//Then extract characters
-		std::memcpy(data, &m_data[m_readPos], length);
+		std::copy_n(&m_data[m_readPos], length, data);
 		data[length] = '\0';
 
 		//Update reading position
@@ -467,20 +467,6 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const char* data)
-{
-	//First insert string length
-	const uint32_t length = static_cast<uint32_t>(std::strlen(data));
-	*this << length;
-
-	//Then insert characters
-	Append(data, length * sizeof(char));
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view data)
 {
 	//First insert string length
@@ -496,33 +482,15 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const wchar_t* data)
-{
-	//First insert string length
-	const uint32_t length = static_cast<uint32_t>(std::wcslen(data));
-	*this << length;
-
-	//Then insert characters
-	for (const wchar_t* c = data; *c != L'\0'; ++c)
-		*this << static_cast<uint32_t>(*c);
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring& data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view data)
 {
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
 	*this << length;
 
 	//Then insert characters
-	if(length > 0)
-	{
-		for(const auto& c : data)
-			*this << static_cast<uint32_t>(c);
-	}
+	if (length > 0)
+		Append(data.data(), length * sizeof(std::wstring::value_type));
 
 	return *this;
 }

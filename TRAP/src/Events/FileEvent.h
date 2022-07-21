@@ -2,7 +2,7 @@
 #define TRAP_FILEEVENT_H
 
 #include "Event.h"
-#include "FS/FileWatcher.h"
+#include "FileSystem/FileWatcher.h"
 
 namespace TRAP::Events
 {
@@ -18,7 +18,7 @@ namespace TRAP::Events
         /// <param name="status">Status of the provided file or folder.</param>
         /// <param name="path">Path to a file or folder.</param>
         /// <param name="oldName">Old name of the file or folder. Only if FileStatus::Renamed.</param>
-		FileChangeEvent(TRAP::FS::FileStatus status, std::filesystem::path path,
+		FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
                         std::filesystem::path oldName = "");
 		/// <summary>
 		/// Destructor.
@@ -45,7 +45,7 @@ namespace TRAP::Events
         /// Get the status of the file.
         /// </summary>
         /// <returns>The status of the file.</returns>
-        TRAP::FS::FileStatus GetStatus() const;
+        constexpr TRAP::FileSystem::FileStatus GetStatus() const;
         /// <summary>
         /// Get the path of the file.
         /// </summary>
@@ -68,7 +68,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -78,7 +78,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -87,16 +87,30 @@ namespace TRAP::Events
 
 	private:
 		/// <summary>
-		/// Convert TRAP::FS::FileStatus to string.
+		/// Convert TRAP::FileSystem::FileStatus to string.
 		/// </summary>
 		/// <param name="status">File status.</param>
 		/// <returns>File status as string.</returns>
-        static std::string FileStatusToString(TRAP::FS::FileStatus status);
+        static std::string FileStatusToString(TRAP::FileSystem::FileStatus status);
 
-        TRAP::FS::FileStatus m_status;
+        TRAP::FileSystem::FileStatus m_status;
         std::filesystem::path m_path;
         std::filesystem::path m_oldName;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::FileSystem::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
+{
+	return m_status;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType()
+{
+	return EventType::FileChange;
 }
 
 #endif /*TRAP_FILEEVENT_H*/

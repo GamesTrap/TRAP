@@ -2,7 +2,7 @@
 #include "PFMImage.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
 
@@ -13,15 +13,15 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
 
-	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
+	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePFMPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImagePFMPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImagePFMPrefix, "Using default image!");
 		return;
 	}
@@ -57,8 +57,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 	m_height = header.Height;
 
 	//Determine endianness
-	bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
-	bool needSwap = isFileLittleEndian != static_cast<bool>(Utils::GetEndian());
+	const bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
+	const bool needSwap = isFileLittleEndian != static_cast<bool>(Utils::GetEndian());
 
 	file.ignore(256, '\n'); //Skip ahead to the pixel data
 

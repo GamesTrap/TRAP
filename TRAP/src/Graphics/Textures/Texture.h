@@ -155,7 +155,7 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the texture.
 		/// </summary>
 		/// <returns>Name of the texture.</returns>
-		const std::string& GetName() const;
+		std::string GetName() const;
 		/// <summary>
 		/// Retrieve the texture type.
 		/// </summary>
@@ -282,7 +282,7 @@ namespace TRAP::Graphics
 		/// Set the texture name.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-        virtual void SetTextureName(const std::string& name) const = 0;
+        virtual void SetTextureName(const std::string_view name) const = 0;
 
 		/// <summary>
 		/// Retrieve whether the texture owns the image data.
@@ -334,19 +334,19 @@ namespace TRAP::Graphics
 		/// <param name="colorFormat">Color format.</param>
 		/// <param name="bpp">Bits per pixel.</param>
 		/// <returns>Image format.</returns>
-		static API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
+		static constexpr API::ImageFormat ColorFormatBitsPerPixelToImageFormat(Image::ColorFormat colorFormat, uint32_t bpp);
 		/// <summary>
 		/// Convert image format to color format.
 		/// </summary>
 		/// <param name="imageFormat">Image format.</param>
 		/// <returns>Color format.</returns>
-		static Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat);
+		static constexpr Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat);
 		/// <summary>
 		/// Retrieve bits per channel from image format.
 		/// </summary>
 		/// <param name="imageFormat">Image format.</param>
 		/// <returns>Bits per channel.</returns>
-		static uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat);
+		static constexpr uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat);
 		/// <summary>
 		/// Rotate image 90 degrees clockwise.
 		/// </summary>
@@ -399,8 +399,8 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 		cxLimit = 3;
 		cyLimit = 4;
 	}
-	uint32_t faceWidth = image->GetWidth() / cxLimit;
-	uint32_t faceHeight = image->GetHeight() / cyLimit;
+	const uint32_t faceWidth = image->GetWidth() / cxLimit;
+	const uint32_t faceHeight = image->GetHeight() / cyLimit;
 
 	std::array<std::vector<T>, 6> cubeTextureData;
 	for(auto& i : cubeTextureData)
@@ -514,5 +514,107 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 	return images;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatBitsPerPixelToImageFormat(const Image::ColorFormat colorFormat,
+	                             											                             const uint32_t bpp)
+{
+	if(colorFormat == Image::ColorFormat::GrayScale)
+	{
+		if(bpp == 8)
+			return API::ImageFormat::R8_UNORM;
+		if(bpp == 16)
+			return API::ImageFormat::R16_UNORM;
+		if(bpp == 32)
+			return API::ImageFormat::R32_SFLOAT;
+
+		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
+		return API::ImageFormat::Undefined;
+	}
+	if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
+	{
+		if(bpp == 16)
+			return API::ImageFormat::R8G8_UNORM;
+		if(bpp == 32)
+		    return API::ImageFormat::R16G16_UNORM;
+		if(bpp == 64)
+		    return API::ImageFormat::R32G32_SFLOAT;
+
+		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
+		return API::ImageFormat::Undefined;
+	}
+	if(colorFormat == Image::ColorFormat::RGB)
+	{
+		TRAP_ASSERT(false, "Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
+		return API::ImageFormat::Undefined;
+	}
+	if(colorFormat == Image::ColorFormat::RGBA)
+	{
+		if(bpp == 32)
+			return API::ImageFormat::R8G8B8A8_UNORM;
+		if(bpp == 64)
+			return API::ImageFormat::R16G16B16A16_UNORM;
+		if(bpp == 128)
+			return API::ImageFormat::R32G32B32A32_SFLOAT;
+
+		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
+		return API::ImageFormat::Undefined;
+	}
+
+	TRAP_ASSERT(false, "Invalid color format provided!");
+	return API::ImageFormat::Undefined;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFormat(const API::ImageFormat imageFormat)
+{
+	switch(imageFormat)
+	{
+	case API::ImageFormat::R8_UNORM:
+	case API::ImageFormat::R16_UNORM:
+	case API::ImageFormat::R32_SFLOAT:
+		return Image::ColorFormat::GrayScale;
+
+	case API::ImageFormat::R8G8_UNORM:
+	case API::ImageFormat::R16G16_UNORM:
+	case API::ImageFormat::R32G32_SFLOAT:
+		return Image::ColorFormat::GrayScaleAlpha;
+
+	case API::ImageFormat::R8G8B8A8_UNORM:
+	case API::ImageFormat::R16G16B16A16_UNORM:
+	case API::ImageFormat::R32G32B32A32_SFLOAT:
+		return Image::ColorFormat::RGBA;
+
+	default:
+		return Image::ColorFormat::NONE;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat)
+{
+	switch(imageFormat)
+	{
+	case API::ImageFormat::R8_UNORM:
+	case API::ImageFormat::R8G8_UNORM:
+	case API::ImageFormat::R8G8B8A8_UNORM:
+		return 8;
+
+	case API::ImageFormat::R16_UNORM:
+	case API::ImageFormat::R16G16_UNORM:
+	case API::ImageFormat::R16G16B16A16_UNORM:
+		return 16;
+
+	case API::ImageFormat::R32_SFLOAT:
+	case API::ImageFormat::R32G32_SFLOAT:
+	case API::ImageFormat::R32G32B32A32_SFLOAT:
+		return 32;
+
+	default:
+		return 0;
+	}
+}
 
 #endif /*TRAP_TEXTURE_H*/

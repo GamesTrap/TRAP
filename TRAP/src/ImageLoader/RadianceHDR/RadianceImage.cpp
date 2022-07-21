@@ -3,7 +3,7 @@
 
 #include "Application.h"
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	: eMax(-127), eMin(127)
@@ -16,15 +16,15 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	m_colorFormat = ColorFormat::RGB;
 
 	TP_DEBUG(Log::ImageRadiancePrefix, "Loading image: \"",
-	         m_filepath.generic_u8string(), "\"");
+	         m_filepath.u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImageRadiancePrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImageRadiancePrefix, "Using default image!");
 		return;
 	}
@@ -58,12 +58,12 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 		return;
 	}
 
-	char signOne = static_cast<char>(file.get());
-	char axisOne = static_cast<char>(file.get());
+	const char signOne = static_cast<char>(file.get());
+	const char axisOne = static_cast<char>(file.get());
 	file >> m_width;
 	file.ignore();
-	char signTwo = static_cast<char>(file.get());
-	char axisTwo = static_cast<char>(file.get());
+	const char signTwo = static_cast<char>(file.get());
+	const char axisTwo = static_cast<char>(file.get());
 	file >> m_height;
 	file.ignore();
 
@@ -236,7 +236,7 @@ bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 
 		{
 			for(int32_t i = scanline[0 + scanlineIndex][E] << rshift; i > 0; i--)
 			{
-				std::memcpy(&scanline[0 + scanlineIndex][0], &scanline[-1 + scanlineIndex][0], 4);
+				std::copy_n(&scanline[-1 + scanlineIndex][0], 4, &scanline[0 + scanlineIndex][0]);
 				scanlineIndex++;
 				length--;
 			}

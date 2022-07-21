@@ -36,6 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Window/WindowingAPI.h"
 #include "ControllerMappings.h"
 #include "Utils/Utils.h"
+#include "Utils/String/String.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
@@ -43,14 +44,14 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 bool TRAP::Input::InitController()
 {
-	const char* dirName = "/dev/input";
+	constexpr std::string_view dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
 	if(s_linuxController.INotify > 0)
 	{
 		//HACK: Register for IN_ATTRIB to get notified when udev is done
 		//This works well in practice but the true way is libudev
-		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName,
+		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName.data(),
 		                                            IN_CREATE | IN_ATTRIB | IN_DELETE);
 	}
 
@@ -63,10 +64,10 @@ bool TRAP::Input::InitController()
 
 	int32_t count = 0;
 
-	DIR* dir = opendir(dirName);
+	DIR* dir = opendir(dirName.data());
 	if(dir)
 	{
-		dirent* entry = nullptr;
+		const dirent* entry = nullptr;
 
 		while((entry = readdir(dir)))
 		{
@@ -75,9 +76,7 @@ bool TRAP::Input::InitController()
 			if (regexec(&s_linuxController.Regex, entry->d_name, 1, &match, 0) != 0)
 				continue;
 
-			std::string path = dirName;
-			path += '/';
-			path += entry->d_name;
+			const std::filesystem::path path = std::filesystem::path(dirName) / entry->d_name;
 
 			if (OpenControllerDeviceLinux(path))
 				count++;
@@ -117,7 +116,7 @@ void TRAP::Input::ShutdownController()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor)
+void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor, const float rightMotor)
 {
 	if(!PollController(controller, PollMode::Presence))
 		return;
@@ -178,7 +177,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller)
+TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
 {
 	return ControllerBatteryStatus::Wired;
 }
@@ -186,7 +185,7 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Attempt to open the specified controller device
-bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
+bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 {
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
@@ -197,19 +196,19 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	}
 
 	ControllerLinux LinuxCon = {};
-	LinuxCon.FD = open(path.data(), O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
+	LinuxCon.FD = open(path.c_str(), O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
 	if(LinuxCon.FD != -1)
 		LinuxCon.VibrationSupported = true;
 
 	if(errno == EACCES)
-		LinuxCon.FD = open(path.data(), O_RDONLY | O_NONBLOCK);
+		LinuxCon.FD = open(path.c_str(), O_RDONLY | O_NONBLOCK);
 
 	if (LinuxCon.FD == -1)
 		return false;
 
-	std::array<char, (EV_CNT + 7) / 8> EVBits{};
-	std::array<char, (KEY_CNT + 7) / 8> keyBits{};
-	std::array<char, (ABS_CNT + 7) / 8> ABSBits{};
+	const std::array<char, (EV_CNT + 7) / 8> EVBits{};
+	const std::array<char, (KEY_CNT + 7) / 8> keyBits{};
+	const std::array<char, (ABS_CNT + 7) / 8> ABSBits{};
 	input_id ID{};
 
 	if (ioctl(LinuxCon.FD, EVIOCGBIT(0, EVBits.size()), EVBits.data()) < 0 ||
@@ -217,7 +216,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		ioctl(LinuxCon.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGID, &ID) < 0)
 	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", Utils::GetStrError(), "!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", Utils::String::GetStrError(), "!");
 		close(LinuxCon.FD);
 		return false;
 	}
@@ -296,7 +295,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		return false;
 	}
 
-	LinuxCon.Path = path;
+	LinuxCon.Path = std::move(path);
 	con->LinuxCon = LinuxCon;
 
 	PollABSStateLinux(con);
@@ -327,7 +326,7 @@ void TRAP::Input::CloseController(Controller controller)
 
 	close(con->LinuxCon.FD);
 
-	bool connected = con->Connected;
+	const bool connected = con->Connected;
 
 	if(connected)
 	{
@@ -364,15 +363,14 @@ void TRAP::Input::DetectControllerConnectionLinux()
 	while(size > offset)
 	{
 		regmatch_t match;
-		const inotify_event* e = reinterpret_cast<const inotify_event*>(&buffer[offset]);
+		const inotify_event* e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
 
 		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
 
 		if (regexec(&s_linuxController.Regex, e->name, 1, &match, 0) != 0)
 			continue;
 
-		std::string path = "/dev/input/";
-		path += e->name;
+		const std::filesystem::path path = std::filesystem::path("/dev/input") / e->name;
 
 		if (e->mask & (IN_CREATE | IN_ATTRIB))
 			OpenControllerDeviceLinux(path);
@@ -447,7 +445,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
 		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
 
-		input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		const input_absinfo* info = &con->LinuxCon.ABSInfo[code];
 
 		if (ioctl(con->LinuxCon.FD, EVIOCGABS(code), info) < 0)
 			continue;
@@ -465,7 +463,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 
 	if (code >= ABS_HAT0X && code <= ABS_HAT3Y)
 	{
-		static const std::array<std::array<uint8_t, 3>, 3> stateMap =
+		static constexpr std::array<std::array<uint8_t, 3>, 3> stateMap =
 		{
 			{
 				{

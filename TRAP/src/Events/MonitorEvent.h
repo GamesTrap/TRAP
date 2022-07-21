@@ -97,7 +97,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -107,7 +107,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 	};
 
 	/// <summary>
@@ -152,7 +152,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static EventType GetStaticType();
+		static constexpr EventType GetStaticType();
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
@@ -162,8 +162,24 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		const char* GetName() const override;
+		std::string GetName() const override;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticType()
+{
+	return EventType::MonitorConnect;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType()
+{
+	return EventType::MonitorDisconnect;
 }
 
 #endif /*TRAP_MONITOREVENT_H*/

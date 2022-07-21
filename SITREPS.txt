@@ -2844,3 +2844,102 @@ SITREP 07/12/2022|22w28a1
     - Base Added ENABLE_SINGLE_PROCESS_ONLY macro which makes the engine only run a single instance of itself ~<5 mins
         - Added error code 0x0012 "A TRAP Application is already running"
     - Application Implemented the checks for ENABLE_SINGLE_PROCESS_ONLY ~>20 mins
+
+SITREP 07/14/2022|22w28b1
+    - Changed TRAP Engine version to 22w28b1(0.8.12)
+    - Branch STL:
+        - Base Removed unnecessary static_casts ~<5 mins
+        - Events GetName() replaced const char* with std::string ~<15 mins
+        - Events Made GetStaticType() constexpr ~<15 mins
+        - EventDispatcher Made constructor and Dispatch() constexpr ~<5 mins
+        - EventCategory Made operators constexpr ~<5 mins
+        - FileChangeEvent FileStatusToString() now throws invalid_argument if enum value isn't valid ~<5 mins
+        - Made some functions constexpr in
+            - FileChangeEvent
+            - TextureReloadEvent
+            - ShaderReloadEvent
+            - KeyEvent
+            - KeyPressEvent
+            - KeyReleaseEvent
+            - KeyTypeEvent
+            - MouseMoveEvent
+            - MouseScrollEvent
+            - MouseButtonEvent
+            - MouseButtonPressEvent
+            - MouseButtonReleaseEvent
+            - MouseEnterEvent
+            - MouseLeaveEvent
+            - WindowResizeEvent
+            - WindowMinimizeEvent
+            - WindowMaximizeEvent
+            - WindowRestoreEvent
+            - WindowCloseEvent
+            - WindowMoveEvent
+            - WindowFocusEvent
+            - WindowLostFocusEvent
+            - WindowDropEvent
+            - WindowContentScaleEvent
+            - FrameBufferResizeEvent
+        - FileSystem Made some functions constexpr ~<15 mins
+        - FileSystem Added std::optional to some functions ~<30 mins
+        - FileSystem Added GetGameLogFolderPath() function ~<5 mins
+        - FileWatcher unified WatchWindows() and WatchLinux into Watch() ~<10 mins
+        - FileWatcher Made m_run thread safe ~<5 mins
+        - FileWatcher Removed SkipNextFileChange() ~<5 mins
+        - Updated all files to support the aforementioned changes ~>45 mins
+        - VulkanRenderer replaced unordered_map inserts with try_emplace ~<10 mins
+        - ImGuiLayer Pipeline cache Added fallback path ~<5 mins
+        - Monitor::VideoMode Made constructor constexpr ~<5 mins
+        - Monitor Added rule of 5 ~<5 mins
+        - Monitor Made GetCurrentVideoMode(), IsInUse() and GetInternalMonitor() constexpr ~<5 mins
+        - AftermathTracker Replaced memcpy with std::copy_n ~<5 mins
+        - Application OnFileChange event now always returns false i.e. passes the event on to other callbacks ~<5 mins
+        - Application Added fallback paths for engine.cfg and trap.log ~<5 mins
+        - Updated Application ~<10 mins
+        - Updated ControllerTests ~<5 mins
+
+SITREP 07/15/2022|22w28b2
+    - Branch STL:
+        - Replaced reinterpret_cast with static_cast where possible ~<10 mins
+
+SITREP 07/16/2022|22w28b3
+    - Branch STL:
+        - TRAP_Assert Removed type from macros ~<5 mins
+        - TRAP_Assert Made path to file absolute ~<5 mins
+        - Utils backported C++20s std::bitcast ~<10 mins
+        - Application CheckSingleProcessLinux() now uses Utils::BitCast instead of reinterpret_cast ~<5 mins
+        - Vulkan every VkSetObjectName() call now uses Utils::BitCast instead of reinterpret_cast ~<5 mins
+        - Renderer2D EndScene() Removed reinterpret_cast from vertex data size calculation ~<5 mins
+
+SITREP 07/17/2022|22w28b4
+    - Branch STL:
+        - Replaced reinterpret_cast with Utils::BitCast in various files ~>15 mins
+        - Removed std:: from memcpy ~<5 mins
+        - Replaced memcpy with std::copy or std::copy_n ~>30 mins
+        - Removed std:: from memset ~<5 mins
+        - Removed/Replaced memset where possible ~>15 mins
+        - Replaced remaining memset calls with std::fill or std::fill_n ~<30 mins
+
+SITREP 07/18/2022|22w29a1
+    - Branch STL:
+        - Replaced TRAP::FS with TRAP::FileSystem ~<10 mins
+        - Renamed FS.h/FS.cpp to FileSystem.h/FileSystem.cpp ~<5 mins
+        - Renamed src/FS folder to src/FileSystem ~<5 mins
+        - Replaced generic_u8string() with u8string() ~<10 mins
+        - Utilize std::filesystem::file_size more ~<5 mins
+
+SITREP 07/19/2022|22w29a2
+    - Branch STL:
+        - Replaced const std::string& with const std::string_view where possible ~<15 mins
+        - Replaced const char* with const std::string_view where possible ~<20 mins
+        - Removed String::FindToken() ~<5 mins
+        - Removed WindowingAPI::StringInExtensionString() ~<5 mins
+        - Removed std:: from getenv ~<5 mins
+
+SITREP 07/20/2022|22w29a3
+    - Branch STL:
+        - Checked for const correctness ~>240 mins
+        - Memory::SwapBytes() Added safety against const and non ref values ~<5 mins
+        - Moved Utils::GetStrError() to Utils::String::GetStrError() ~<5 mins
+        - Utils::String::ConvertToString() Added Utils::LinuxWindowManager overload ~<5 mins
+        - Utils::String::ConvertToType() Added Utils::LinuxWindowManager overload ~<5 mins

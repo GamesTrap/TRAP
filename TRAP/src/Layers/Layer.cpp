@@ -22,7 +22,7 @@ void TRAP::Layer::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnUpdate(const Utils::TimeStep&)
+void TRAP::Layer::OnUpdate(const Utils::TimeStep& /*deltaTime*/)
 {
 }
 
@@ -40,13 +40,13 @@ void TRAP::Layer::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnEvent(Events::Event&)
+void TRAP::Layer::OnEvent(Events::Event& /*event*/)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Layer::GetName() const
+std::string TRAP::Layer::GetName() const
 {
 	return m_DebugName;
 }

@@ -2,7 +2,7 @@
 #include "BMPImage.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
@@ -13,15 +13,15 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImageBMPPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
+	TP_DEBUG(Log::ImageBMPPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageBMPPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImageBMPPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImageBMPPrefix, "Using default image!");
 		return;
 	}
@@ -34,7 +34,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 	//File uses little-endian
 	//Convert to machines endian
-	bool needSwap = Utils::GetEndian() != Utils::Endian::Little;
+	const bool needSwap = Utils::GetEndian() != Utils::Endian::Little;
 	if (needSwap)
 	{
 		Utils::Memory::SwapBytes(header.MagicNumber);
@@ -179,7 +179,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 	    4 - (((m_bitsPerPixel / 8) * m_width) % 4) != 4) //Padding
 	{
 		imageData.resize(static_cast<std::size_t>(m_width) * m_height * (m_bitsPerPixel / 8));
-		uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
+		const uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
 		uint32_t offset = 0;
 		for (uint32_t j = 0; j < m_height; j++)
 		{
@@ -335,10 +335,10 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			uint32_t index = 0;
 			for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 			{
-				uint32_t value = static_cast<uint32_t>(imageData[i]) +
-					            (static_cast<uint32_t>(imageData[i + 1]) << 8) +
-					            (static_cast<uint32_t>(imageData[i + 2]) << 16) +
-					            (static_cast<uint32_t>(imageData[i + 3]) << 24);
+				const uint32_t value = static_cast<uint32_t>(imageData[i]) +
+					                   (static_cast<uint32_t>(imageData[i + 1]) << 8) +
+					                   (static_cast<uint32_t>(imageData[i + 2]) << 16) +
+					                   (static_cast<uint32_t>(imageData[i + 3]) << 24);
 
 				data[index++] = Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span);
 				data[index++] = Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span);
@@ -366,8 +366,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 			uint32_t index = 0;
 			for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 			{
-				uint16_t value = static_cast<uint16_t>(imageData[i]) +
-								 static_cast<uint16_t>(imageData[i + 1] << 8);
+				const uint16_t value = static_cast<uint16_t>(imageData[i]) +
+								       static_cast<uint16_t>(imageData[i + 1] << 8);
 
 				data[index++] = Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span);
 				data[index++] = Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span);
@@ -509,7 +509,7 @@ uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bit
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageData,
-	std::vector<uint8_t>* colorTable)
+	                                      std::vector<uint8_t>* colorTable)
 {
 	int32_t x = 0, y = 0;
 	uint8_t t = 0, r = 0;

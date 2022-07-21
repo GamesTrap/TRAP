@@ -28,7 +28,7 @@ namespace TRAP::Network
 		/// network name (ex: "localhost").
 		/// </summary>
 		/// <param name="address">IPv6 address or network name.</param>
-		explicit IPv6Address(const std::string& address);
+		explicit IPv6Address(std::string address);
 
 		/// <summary>
 		/// Construct the address from a string.

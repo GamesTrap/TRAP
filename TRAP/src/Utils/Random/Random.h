@@ -138,7 +138,7 @@ namespace TRAP::Utils
         /// </summary>
         static void Reseed()
     	{
-            Seeder seeder;
+            const Seeder seeder;
             Seed(seeder());
         }
 
@@ -551,7 +551,7 @@ namespace TRAP::Utils
         /// </summary>
         static void Reseed()
         {
-            Seeder seeder;
+            const Seeder seeder;
             Seed(seeder());
         }
 
@@ -933,7 +933,7 @@ namespace TRAP::Utils
         /// </summary>
         void Reseed()
     	{
-            Seeder seeder;
+            const Seeder seeder;
             Seed(seeder());
         }
 

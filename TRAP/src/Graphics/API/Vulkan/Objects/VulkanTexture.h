@@ -84,7 +84,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan image handle.
 		/// </summary>
 		/// <returns>Vulkan image handle.</returns>
-		VkImage GetVkImage();
+		VkImage GetVkImage() const;
 		/// <summary>
 		/// Retrieve the VMA allocation handle used by the texture.
 		/// </summary>
@@ -101,7 +101,7 @@ namespace TRAP::Graphics::API
 		/// Set the name of the texture.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-		void SetTextureName(const std::string& name) const override;
+		void SetTextureName(const std::string_view name) const override;
 
 	protected:
 		/// <summary>

@@ -49,14 +49,6 @@ TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address::IPv4Address(const char* address)
-	: m_address(0), m_valid(false)
-{
-	Resolve(address);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2,
                                         const uint8_t byte3)
 	: m_address(static_cast<uint32_t>((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
@@ -117,8 +109,9 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(loopback);
 
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
-	if (connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
+	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
+	sockaddr convertedAddress = Utils::BitCast<sockaddr_in, sockaddr>(address);
+	if (connect(sock, &convertedAddress, sizeof(address)) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
 		return {};
@@ -126,7 +119,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 
 	//Get the local address of the socket connection
 	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-	if(getsockname(sock, reinterpret_cast<sockaddr*>(&address), &size) == -1)
+	if(getsockname(sock, &convertedAddress, &size) == -1)
 	{
 		INTERNAL::Network::SocketImpl::Close(sock);
 		return {};
@@ -136,7 +129,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	INTERNAL::Network::SocketImpl::Close(sock);
 
 	//Finally build the IP address
-	uint32_t addr = address.sin_addr.s_addr;
+	uint32_t addr = Utils::BitCast<sockaddr, sockaddr_in>(convertedAddress).sin_addr.s_addr;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(addr);
@@ -196,14 +189,13 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 		{
 			//Not a valid address, try to convert it as a host name
 			addrinfo hints{};
-			std::memset(&hints, 0, sizeof(hints));
 			hints.ai_family = AF_INET;
 			addrinfo* result = nullptr;
 			if(getaddrinfo(address.data(), nullptr, &hints, &result) == 0)
 			{
 				if(result)
 				{
-					ip = reinterpret_cast<sockaddr_in*>(result->ai_addr)->sin_addr.s_addr;
+					ip = Utils::BitCast<sockaddr, sockaddr_in>(*(result->ai_addr)).sin_addr.s_addr;
 					freeaddrinfo(result);
 					m_address = ip;
 					m_valid = true;

@@ -75,9 +75,9 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 	}
 #endif
 
-	VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
-		                                                              device->GetPhysicalDevice()->GetVkPhysicalDevice(),
-		                                                              instance->GetVkInstance(), vulkanFunctions);
+	const VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(device->GetVkDevice(),
+		                                                                    device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+		                                                                    instance->GetVkInstance(), vulkanFunctions);
 
 	VkCall(vmaCreateAllocator(&info, &m_allocator));
 }

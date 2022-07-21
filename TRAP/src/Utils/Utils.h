@@ -3,6 +3,7 @@
 
 #include <array>
 #include <string>
+#include <type_traits>
 
 namespace TRAP::Utils
 {
@@ -32,7 +33,7 @@ namespace TRAP::Utils
 	template<typename T, typename... Rest>
 	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest)
 	{
-		std::hash<T> hasher;
+		const std::hash<T> hasher;
 		seed ^= hasher(v) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
 		HashCombine(seed, rest...);
 	}
@@ -90,19 +91,19 @@ namespace TRAP::Utils
 	/// </returns>
 	LinuxWindowManager GetLinuxWindowManager();
 
-	/// <summary>
-	/// Get a string representation of the Linux window manager.
-	/// </summary>
-	/// <param name="lwm">LinuxWindowManager to convert to a string.</param>
-	/// <returns>String representation.</returns>
-	std::string LinuxWindowManagerToString(LinuxWindowManager lwm);
-
-#ifdef TRAP_PLATFORM_LINUX
-	/// <summary>
-	/// Retrieve the errno string in a thread safe way.
-	/// </summary>
-	/// <returns>errno string.</returns>
-	std::string GetStrError();
+#ifdef __cpp_lib_bit_cast
+	using BitCast = std::bit_cast;
+#else
+	template<typename From, typename To>
+	inline typename std::enable_if<std::integral_constant<bool, (sizeof(From) == sizeof(To)) &&
+	                                                            std::is_trivially_copyable<From>::value &&
+																std::is_trivially_copyable<To>::value>::value, To>::type
+	BitCast(const From& from) noexcept
+	{
+		union U{U(){}; char storage[sizeof(To)]; typename std::remove_const<To>::type dest;} u; //Instead of To dest; because To doesn't require DefaultConstructible.
+		memcpy(&u.dest, &from, sizeof(from));
+		return u.dest;
+	}
 #endif
 }
 

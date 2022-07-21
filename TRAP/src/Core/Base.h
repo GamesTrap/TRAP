@@ -80,7 +80,7 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 /// <returns>Major version number.</returns>
 constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) >> 22;
+	return version >> 22u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,7 +92,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 /// <returns>Minor version number.</returns>
 constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) >> 12;
+	return version >> 12u;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -104,7 +104,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 /// <returns>Patch version number.</returns>
 constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 {
-	return static_cast<uint32_t>(version) & 0xFFF;
+	return version & 0xFFFu;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -112,24 +112,24 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 12);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	static constexpr inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) \
+	static constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
 		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static constexpr inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) \
+	static constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
 									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a | b); }\
-	static constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a & b); }
+	static constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a | b); }\
+	static constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a & b); }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -160,8 +160,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK()
-		{
-		}
+		{}
 	#endif
 #else
 		/// <summary>
@@ -169,8 +168,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
 		constexpr void TRAP_DEBUG_BREAK()
-		{
-		}
+		{}
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -178,7 +176,6 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
 #define TRAP_EXPAND_MACRO(x) x
 #define TRAP_STRINGIFY_MACRO(x) #x
 
-#include "TRAP_Assert.h"
 #include "Log/Log.h"
 
 /// <summary>
@@ -190,7 +187,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 11);
 template <typename T>
 constexpr T BIT(T x)
 {
-	return 1 << x;
+	return T(1) << x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

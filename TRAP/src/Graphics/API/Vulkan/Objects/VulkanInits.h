@@ -67,7 +67,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugUtilsLabelEXT.</returns>
-	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, const char* name) noexcept;
+	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, std::string_view name) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan debug marker.
@@ -77,7 +77,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugMarkerMarkerInfoEXT.</returns>
-	VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, const char* name) noexcept;
+	VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, std::string_view name) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -413,7 +413,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Shader entry point name.</param>
 	/// <returns>VkPipelineShaderStageCreateInfo.</returns>
 	VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule module,
-	                                                              const char* name) noexcept;
+	                                                              std::string_view name) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline vertex input state create info.

@@ -66,8 +66,8 @@ namespace TRAP::Graphics::API
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 			                                                                    const TRAP::Ref<RenderTarget>& depthStencil,
 			                                                                    const RendererAPI::LoadActionsDesc* loadActions,
-			                                                                    std::vector<uint32_t>* colorArraySlices,
-			                                                                    std::vector<uint32_t>* colorMipSlices,
+			                                                                    const std::vector<uint32_t>* colorArraySlices,
+			                                                                    const std::vector<uint32_t>* colorMipSlices,
 			                                                                    uint32_t depthArraySlice,
 			                                                                    uint32_t depthMipSlice);
 
@@ -75,7 +75,7 @@ namespace TRAP::Graphics::API
 		/// Set the name of the render target.
 		/// </summary>
 		/// <param name="name">Name to use.</param>
-		void SetRenderTargetName(const std::string& name) const;
+		void SetRenderTargetName(const std::string_view name) const;
 
 		TRAP::Ref<VulkanDevice> m_device;
 

@@ -47,11 +47,11 @@ uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 		return 0; //We failed to retrieve the port
 
 	//Retrieve information about the local end of the socket
-	sockaddr_in address{};
-	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+	sockaddr address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
+	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t port = address.sin_port;
+		uint16_t port = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -77,8 +77,9 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 		return Status::Error;
 
 	//Bind the socket
-	sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
-	if(::bind(GetHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
+	const sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
+	const sockaddr finalAddr = Utils::BitCast<sockaddr_in, sockaddr>(addr);
+	if(::bind(GetHandle(), &finalAddr, sizeof(addr)) == -1)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port");
 		return Status::Error;
@@ -113,11 +114,12 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 	}
 
 	//Build the target address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	const sockaddr finalAddress = Utils::BitCast<sockaddr_in, sockaddr>(address);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
 	const int64_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0,
-	                            reinterpret_cast<sockaddr*>(&address), sizeof(address));
+	                            &finalAddress, sizeof(sockaddr_in));
 
 	//Check for errors
 	if (sent < 0)
@@ -147,11 +149,12 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 
 	//Data that will be filled with the other computer's address
 	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(INADDR_ANY, 0);
+	sockaddr convertedAddress = Utils::BitCast<sockaddr_in, sockaddr>(address);
 
 	//Receive a chunk of bytes
-	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(address);
+	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(sockaddr_in);
 	const int64_t sizeReceived = recvfrom(GetHandle(), static_cast<char*>(data), static_cast<int32_t>(size), 0,
-	                                      reinterpret_cast<sockaddr*>(&address), &addressSize);
+	                                      &convertedAddress, &addressSize);
 
 	//Check for errors
 	if (sizeReceived < 0)
@@ -160,6 +163,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 	//Fill the sender information
 	received = static_cast<std::size_t>(sizeReceived);
 
+	address = Utils::BitCast<sockaddr, sockaddr_in>(convertedAddress);
 	uint32_t addr = address.sin_addr.s_addr;
 	uint16_t port = address.sin_port;
 

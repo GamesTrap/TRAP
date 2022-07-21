@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"
 
@@ -65,9 +65,17 @@ bool TRAP::Graphics::Shader::Reload()
 	isSPIRV = CheckSPIRVMagicNumber(m_filepath);
 
 	if (!isSPIRV)
-		glslSource = FS::ReadTextFile(m_filepath);
+	{
+		const auto loadedData = FileSystem::ReadTextFile(m_filepath);
+		if(loadedData)
+			glslSource = *loadedData;
+	}
 	else
-		SPIRVSource = Convert8To32(FS::ReadFile(m_filepath));
+	{
+		const auto loadedData = FileSystem::ReadFile(m_filepath);
+		if(loadedData)
+			SPIRVSource = Convert8To32(*loadedData);
+	}
 
 	if(isSPIRV && SPIRVSource.empty())
 		TP_ERROR(Log::ShaderSPIRVPrefix, "Couldn't load shader: \"", m_name, "\"!");
@@ -114,7 +122,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::Shader::GetName() const
+std::string TRAP::Graphics::Shader::GetName() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -123,7 +131,7 @@ const std::string& TRAP::Graphics::Shader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Graphics::Shader::GetFilePath() const
+std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -193,7 +201,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
-			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(filePath));
+		{
+			const auto folderPath = FileSystem::GetFolderPath(filePath);
+			if(folderPath)
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+		}
 
 		return result;
 	}
@@ -216,19 +228,30 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	RendererAPI::BinaryShaderDesc desc{};
 	Scope<Shader> failShader = nullptr;
-	std::string name = FS::GetFileName(filePath);
-	if(!PreInit(name, filePath, userMacros, desc, failShader))
+	const auto name = FileSystem::GetFileName(filePath);
+	if(!name)
+	{
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::ShaderPrefix, "Name is empty!");
+		return nullptr;
+	}
+
+	if(!PreInit(*name, filePath, userMacros, desc, failShader))
 		return failShader;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, filePath, desc, userMacros);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(*name, filePath, desc, userMacros);
 
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
-			TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(FS::GetFolderPath(filePath));
+		{
+			const auto folderPath = FileSystem::GetFolderPath(filePath);
+			if(folderPath)
+				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+		}
 
 		return result;
 	}
@@ -263,7 +286,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 		return nullptr;
 	}
 
-	RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders, shaderStages);
+	const RendererAPI::BinaryShaderDesc desc = ConvertGLSLToSPIRV(shaders, shaderStages);
 	if (desc.Stages == RendererAPI::ShaderStage::None)
 		return nullptr;
 
@@ -286,14 +309,14 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& filePath)
 {
 	//Check SPIRV Magic Number
-	if (!FS::FileOrFolderExists(filePath))
+	if (!FileSystem::FileOrFolderExists(filePath))
 		return false;
 
 	std::ifstream file(filePath, std::ios::binary);
 
 	if(!file.is_open())
 	{
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath.generic_u8string());
+		TP_ERROR(Log::FileSystemPrefix, "Couldn't open file: ", filePath.u8string());
 		return false;
 	}
 
@@ -301,9 +324,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 	//0x07230203
 
 	uint32_t magicNumber = 0;
-	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Number of SubShaders
-	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Size of the current SubShader in uint32_ts
-	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Type of the current SubShader
+	file.seekg(sizeof(uint32_t) * 3, std::ios::cur); //Skip 3 uint32_ts
 	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //SPIRV Magic Number
 	file.close();
 
@@ -339,34 +360,34 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 											const std::vector<Macro>* userMacros)
 {
 	RendererAPI::ShaderStage currentShaderStage = RendererAPI::ShaderStage::None;
-	std::vector<std::string> lines = Utils::String::GetLines(glslSource);
+	const std::vector<std::string> lines = Utils::String::GetLines(glslSource);
 
 	//Go through every line of the shader source
 	for(std::size_t i = 0; i < lines.size(); ++i)
 	{
 		//Optimization lines converted to lower case
-		std::string lowerLine = Utils::String::ToLower(lines[i]);
+		const std::string lowerLine = Utils::String::ToLower(lines[i]);
 
 		//Search for a shader type tag
 		if(Utils::String::StartsWith(lowerLine, "#shader"))
 		{
 			//Detect shader type
-			if (Utils::String::FindToken(lowerLine, "vertex"))
+			if (lowerLine.find("vertex") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Vertex;
-			else if (Utils::String::FindToken(lowerLine, "fragment") ||
-				     Utils::String::FindToken(lowerLine, "pixel"))
+			else if (lowerLine.find("fragment") != std::string::npos ||
+				     lowerLine.find("pixel") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Fragment;
-			else if (Utils::String::FindToken(lowerLine, "geometry"))
+			else if (lowerLine.find("geometry") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Geometry;
-			else if (Utils::String::FindToken(lowerLine, "tessellation"))
+			else if (lowerLine.find("tessellation") != std::string::npos)
 			{
 				//Either Control or Evaluation
-				if (Utils::String::FindToken(lowerLine, "control"))
+				if (lowerLine.find("control") != std::string::npos)
 					currentShaderStage = RendererAPI::ShaderStage::TessellationControl;
-				else if (Utils::String::FindToken(lowerLine, "evaluation"))
+				else if (lowerLine.find("evaluation") != std::string::npos)
 					currentShaderStage = RendererAPI::ShaderStage::TessellationEvaluation;
 			}
-			else if (Utils::String::FindToken(lowerLine, "compute"))
+			else if (lowerLine.find("compute") != std::string::npos)
 				currentShaderStage = RendererAPI::ShaderStage::Compute;
 			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
 
@@ -379,7 +400,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 
 			shaderStages |= currentShaderStage;
 		}
-		else if(Utils::String::FindToken(lowerLine, "#version")) //Check for unnecessary "#version" define
+		else if(lowerLine.find("#version") != std::string::npos) //Check for unnecessary "#version" define
 			TP_WARN(Log::ShaderGLSLPrefix, "Found tag: \"", lines[i], "\" this is unnecessary! Skipping line: ", i);
 		else if(currentShaderStage != RendererAPI::ShaderStage::None) //Add shader code to detected shader stage
 		{
@@ -394,7 +415,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 				{RendererAPI::ShaderStage::RayTracing, 6}
 			};
 
-			auto it = stageToIndex.find(currentShaderStage);
+			const auto it = stageToIndex.find(currentShaderStage);
 			if(it != stageToIndex.end())
 			{
 				if(currentShaderStage == RendererAPI::ShaderStage::RayTracing)
@@ -476,7 +497,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 	glslang::TShader::ForbidIncluder includer;
-	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->preprocess(&DefaultTBuiltInResource, 460, ECoreProfile, true, true,
 		                   static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
@@ -496,7 +517,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 
 bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
 {
-	constexpr static TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
+	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->parse(&DefaultTBuiltInResource, 460, true,
 	                  static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
@@ -776,11 +797,15 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 
 bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& filePath)
 {
-	std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(filePath));
+	const auto fileEnding = FileSystem::GetFileEnding(filePath);
+	if(!fileEnding)
+		return false;
+
+	const std::string fileEndingLower = Utils::String::ToLower(*fileEnding);
 	bool supportedFormat = false;
 	for(const auto& fmt : SupportedShaderFormatSuffixes)
 	{
-		if(fEnding == fmt)
+		if(fileEndingLower == fmt)
 		{
 			supportedFormat = true;
 			break;
@@ -789,7 +814,7 @@ bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& 
 
 	if(!supportedFormat)
 	{
-		TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.generic_u8string(), "\" suffix is not supported!");
+		TP_ERROR(Log::ShaderPrefix, "File: \"", filePath.u8string(), "\" suffix is not supported!");
 		TP_WARN(Log::ShaderPrefix, "Skipping unrecognized file");
 		return false;
 	}
@@ -814,9 +839,17 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
-			glslSource = FS::ReadTextFile(filePath);
+		{
+			const auto loadedData = FileSystem::ReadTextFile(filePath);
+			if(loadedData)
+				glslSource = *loadedData;
+		}
 		else
-			SPIRVSource = Convert8To32(FS::ReadFile(filePath));
+		{
+			const auto loadedData = FileSystem::ReadFile(filePath);
+			if(loadedData)
+				SPIRVSource = Convert8To32(*loadedData);
+		}
 	}
 
 	if(isSPIRV)

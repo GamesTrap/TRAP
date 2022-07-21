@@ -1,12 +1,12 @@
 #include "TRAPPCH.h"
 #include "DynamicLoading.h"
 
-void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string& path)
+void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 {
 #ifdef TRAP_PLATFORM_WINDOWS
-    return LoadLibraryA(path.c_str());
+    return LoadLibraryA(path.data());
 #elif defined(TRAP_PLATFORM_LINUX)
-	return dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
+	return dlopen(path.data(), RTLD_LAZY | RTLD_LOCAL);
 #else
     return nullptr;
 #endif

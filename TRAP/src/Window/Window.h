@@ -88,7 +88,7 @@ namespace TRAP
 		/// Get the current title of the window.
 		/// </summary>
 		/// <returns>Title of the window.</returns>
-		const std::string& GetTitle() const noexcept;
+		std::string GetTitle() const noexcept;
 		/// <summary>
 		/// Get the current width of the window.
 		/// </summary>

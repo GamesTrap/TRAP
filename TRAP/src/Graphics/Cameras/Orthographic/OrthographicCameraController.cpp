@@ -239,7 +239,7 @@ const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCame
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseScrollEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::MouseScrollEvent& e)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -254,7 +254,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseSc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Events::FrameBufferResizeEvent& e)
 {
 	TP_PROFILE_FUNCTION();
 

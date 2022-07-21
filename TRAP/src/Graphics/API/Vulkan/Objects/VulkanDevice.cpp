@@ -10,7 +10,7 @@
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
                                                 std::vector<std::string> deviceExtensions,
-                                                bool requestAllAvailableQueues)
+                                                const bool requestAllAvailableQueues)
 	: m_physicalDevice(std::move(physicalDevice)),
       m_deviceExtensions(std::move(deviceExtensions)),
       m_graphicsQueueFamilyIndex(0),
@@ -70,20 +70,20 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&fragmentShaderInterlockFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 	if (VulkanRenderer::s_descriptorIndexingExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&descriptorIndexingFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 	if (VulkanRenderer::s_samplerYcbcrConversionExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&ycbcrFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 	base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shaderDrawParametersFeatures);
-	base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+	base = base->pNext;
 
 	VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures{};
 	bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR;
@@ -99,29 +99,29 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&bufferDeviceAddressFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 	if (VulkanRenderer::s_rayTracingExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&rayTracingPipelineFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 	if (VulkanRenderer::s_rayTracingExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&accelerationStructureFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 	if (VulkanRenderer::s_rayTracingExtension)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&rayQueryFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 
 	//Shading rate
 	if(VulkanRenderer::s_shadingRate)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shadingRateFeatures);
-		base = reinterpret_cast<VkBaseOutStructure*>(base->pNext);
+		base = base->pNext;
 	}
 
 	vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &devFeatures2);
@@ -174,8 +174,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif
 
-	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
-	                                                                    extensions);
+	const VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&devFeatures2, queueCreateInfos,
+	                                                                          extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
 
@@ -470,15 +470,15 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device, reinterpret_cast<uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
+	VkSetObjectName(m_device, Utils::BitCast<VkDevice, uint64_t>(m_device), VK_OBJECT_TYPE_DEVICE, name);
 #else
-	VkSetObjectName(m_device, reinterpret_cast<uint64_t>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
+	VkSetObjectName(m_device, Utils::BitCast<VkDevice, uint64_t>(m_device), VK_DEBUG_REPORT_OBJECT_TYPE_DEVICE_EXT, name);
 #endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures)
+void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const
 {
 	if(!VulkanRenderer::s_shadingRate)
 		return;

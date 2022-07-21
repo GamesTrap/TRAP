@@ -2,7 +2,7 @@
 #include "QOIImage.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
 #include "ImageLoader/Image.h"
@@ -17,26 +17,33 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
+	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageQOIPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImageQOIPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImageQOIPrefix, "Using default image!");
 		return;
 	}
 
-    file.seekg(0, std::ios::end);
-    const std::size_t fileSize = file.tellg();
-    file.seekg(0);
+    const auto size = FileSystem::GetFileOrFolderSize(filepath);
+    std::size_t fileSize;
+    if(size)
+        fileSize = *size;
+    else //Fallback
+    {
+        file.seekg(0, std::ios::end);
+        fileSize = file.tellg();
+        file.seekg(0);
+    }
 
     if(fileSize < sizeof(Header) + EndMarker.size())
     {
-        TP_ERROR(Log::ImageQOIPrefix, "File size is too small: ", m_filepath.generic_u8string(), "!");
+        TP_ERROR(Log::ImageQOIPrefix, "File size is too small: ", m_filepath.u8string(), "!");
         TP_WARN(Log::ImageQOIPrefix, "Using default image!");
         return;
     }
@@ -56,7 +63,7 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
     }
 
 	//Height and width uses big-endian
-	bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
+	const bool needSwap = Utils::GetEndian() != Utils::Endian::Big;
 
     //Convert to machines endian
     if(needSwap)

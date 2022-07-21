@@ -58,7 +58,7 @@ namespace TRAP::Math
 		constexpr Vec(const Vec<4, T> & v) = default;
 
 		//Explicit basic constructors
-		constexpr explicit Vec(T scalar);
+		explicit constexpr Vec(T scalar);
 		constexpr Vec(T x, T y, T z, T w);
 
 		//Explicit conversions
@@ -72,7 +72,7 @@ namespace TRAP::Math
 		constexpr Vec(const Vec<2, A> & xy, B z, C w);
 		//Explicit conversions
 		template<typename A, typename B, typename C>
-		constexpr explicit Vec(A x, const Vec<2, B> & yz, C w);
+		explicit constexpr Vec(A x, const Vec<2, B> & yz, C w);
 		//Explicit conversions
 		template<typename A, typename B, typename C>
 		constexpr Vec(A x, B y, const Vec<2, C> & zw);
@@ -88,7 +88,7 @@ namespace TRAP::Math
 
 		//Explicit conversions
 		template<typename U>
-		constexpr explicit Vec(const Vec<4, U> & v);
+		explicit constexpr Vec(const Vec<4, U> & v);
 
 		constexpr Vec(Vec&&) = default;
 		~Vec() = default;
@@ -299,7 +299,7 @@ namespace std
 
 //Explicit basic constructors
 template<typename T>
-constexpr TRAP::Math::Vec<4, T>::Vec(T scalar)
+constexpr TRAP::Math::Vec<4, T>::Vec(const T scalar)
 	: x(scalar), y(scalar), z(scalar), w(scalar)
 {}
 
@@ -313,7 +313,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(T x, T y, T z, T w)
 
 template<typename T>
 template<typename X, typename Y, typename Z, typename W>
-constexpr TRAP::Math::Vec<4, T>::Vec(X x, Y y, Z z, W w)
+constexpr TRAP::Math::Vec<4, T>::Vec(const X x, const Y y, const Z z, const W w)
 	: x(static_cast<T>(x)),
 	  y(static_cast<T>(y)),
 	  z(static_cast<T>(z)),
@@ -325,7 +325,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(X x, Y y, Z z, W w)
 
 template<typename T>
 template<typename A, typename B, typename C>
-constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<2, A>& xy, B z, C w)
+constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<2, A>& xy, const B z, const C w)
 	: x(static_cast<T>(xy.x)),
 	  y(static_cast<T>(xy.y)),
 	  z(static_cast<T>(z)),
@@ -334,7 +334,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<2, A>& xy, B z, C w)
 
 template<typename T>
 template<typename A, typename B, typename C>
-constexpr TRAP::Math::Vec<4, T>::Vec(A x, const Vec<2, B>& yz, C w)
+constexpr TRAP::Math::Vec<4, T>::Vec(const A x, const Vec<2, B>& yz, const C w)
 	: x(static_cast<T>(x)),
 	  y(static_cast<T>(yz.x)),
 	  z(static_cast<T>(yz.y)),
@@ -343,7 +343,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(A x, const Vec<2, B>& yz, C w)
 
 template<typename T>
 template<typename A, typename B, typename C>
-constexpr TRAP::Math::Vec<4, T>::Vec(A x, B y, const Vec<2, C>& zw)
+constexpr TRAP::Math::Vec<4, T>::Vec(const A x, const B y, const Vec<2, C>& zw)
 	: x(static_cast<T>(x)),
 	  y(static_cast<T>(y)),
 	  z(static_cast<T>(zw.x)),
@@ -352,7 +352,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(A x, B y, const Vec<2, C>& zw)
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<3, A>& xyz, B w)
+constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<3, A>& xyz, const B w)
 	: x(static_cast<T>(xyz.x)),
 	  y(static_cast<T>(xyz.y)),
 	  z(static_cast<T>(xyz.z)),
@@ -361,7 +361,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<3, A>& xyz, B w)
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<4, T>::Vec(A x, const Vec<3, B>& yzw)
+constexpr TRAP::Math::Vec<4, T>::Vec(const A x, const Vec<3, B>& yzw)
 	: x(static_cast<T>(x)),
 	  y(static_cast<T>(yzw.x)),
 	  z(static_cast<T>(yzw.y)),
@@ -397,7 +397,7 @@ constexpr int TRAP::Math::Vec<4, T>::Length()
 //-------------------------------------------------------------------------------------------------------------------//
 //Component accesses
 template<typename T>
-constexpr T& TRAP::Math::Vec<4, T>::operator[](int i)
+constexpr T& TRAP::Math::Vec<4, T>::operator[](const int i)
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
@@ -419,7 +419,7 @@ constexpr T& TRAP::Math::Vec<4, T>::operator[](int i)
 }
 
 template<typename T>
-constexpr const T& TRAP::Math::Vec<4, T>::operator[](int i) const
+constexpr const T& TRAP::Math::Vec<4, T>::operator[](const int i) const
 {
 	TRAP_ASSERT(i >= 0 && i < this->Length());
 
@@ -457,7 +457,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator=(const Vec<4, U
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x + scalar, this->y + scalar, this->z + scalar, this->w + scalar));
 }
@@ -471,7 +471,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x - scalar, this->y - scalar, this->z - scalar, this->w - scalar));
 }
@@ -485,7 +485,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x * scalar, this->y * scalar, this->z * scalar, this->w * scalar));
 }
@@ -499,7 +499,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x / scalar, this->y / scalar, this->z / scalar, this->w / scalar));
 }
@@ -537,7 +537,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator--()
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(int)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const int)
 {
 	Vec<4, T> Result(*this);
 	++*this;
@@ -546,7 +546,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(int)
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(int)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(const int)
 {
 	Vec<4, T> Result(*this);
 	--*this;
@@ -559,7 +559,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(int)
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x % scalar, this->y % scalar, this->z % scalar, this->w % scalar));
 }
@@ -573,7 +573,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x & scalar, this->y & scalar, this->z & scalar, this->w & scalar));
 }
@@ -587,7 +587,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x | scalar, this->y | scalar, this->z | scalar, this->w | scalar));
 }
@@ -601,7 +601,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x ^ scalar, this->y ^ scalar, this->z ^ scalar, this->w ^ scalar));
 }
@@ -615,7 +615,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const Vec<4, 
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x << scalar, this->y << scalar, this->z << scalar, this->w << scalar));
 }
@@ -629,7 +629,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const Vec<4,
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const U scalar)
 {
 	return (*this = Vec<4, T>(this->x >> scalar, this->y >> scalar, this->z >> scalar, this->w >> scalar));
 }
@@ -707,7 +707,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v, const 
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(v) += scalar;
 }
@@ -725,7 +725,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v, const 
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) -= v;
 }
@@ -743,7 +743,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const 
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(v) *= scalar;
 }
@@ -761,7 +761,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v, const 
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) /= v;
 }
@@ -777,13 +777,13 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v1, const
 //Binary bit operators
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v, T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v, const T scalar)
 {
 	return Vec<4, T>(v) %= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) %= v;
 }
@@ -795,13 +795,13 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v1, const
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v, T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v, const T scalar)
 {
 	return Vec<4, T>(v) &= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) &= v;
 }
@@ -813,13 +813,13 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v1, const
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v, T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v, const T scalar)
 {
 	return Vec<4, T>(v) |= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) |= v;
 }
@@ -831,13 +831,13 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v1, const
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v, T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v, const T scalar)
 {
 	return Vec<4, T>(v) ^= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) ^= v;
 }
@@ -849,13 +849,13 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v1, const
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v, T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v, const T scalar)
 {
 	return Vec<4, T>(v) <<= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) <<= v;
 }
@@ -867,13 +867,13 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v1, cons
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v, T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v, const T scalar)
 {
 	return Vec<4, T>(v) >>= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const T scalar, const Vec<4, T>& v)
 {
 	return Vec<4, T>(scalar) >>= v;
 }

@@ -97,7 +97,7 @@ namespace TRAP::Events
 		/// Retrieve the name of the event.
 		/// </summary>
 		/// <returns>Name.</returns>
-		virtual const char* GetName() const = 0;
+		virtual std::string GetName() const = 0;
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
@@ -122,7 +122,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="event">Event to dispatch.</param>
-		explicit EventDispatcher(Event& event);
+		explicit constexpr EventDispatcher(Event& event);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -152,31 +152,64 @@ namespace TRAP::Events
 		/// <param name="func">Function to call.</param>
 		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
 		template<typename T, typename F>
-		bool Dispatch(const F& func);
+		constexpr bool Dispatch(const F& func);
 
 	private:
 		Event& m_event;
 	};
-
-	template <typename T, typename F>
-	bool EventDispatcher::Dispatch(const F& func)
-	{
-		if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
-			return false;
-
-		m_event.Handled = func(static_cast<T&>(m_event));
-
-		return true;
-	}
-
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event)
+	: m_event(event)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T, typename F>
+constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func)
+{
+	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
+		return false;
+
+	m_event.Handled = func(static_cast<T&>(m_event));
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
 
 MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
-TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
-TRAP::Events::EventCategory operator ~(TRAP::Events::EventCategory rhs);
-TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
+constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCategory lhs,
+                                                 const TRAP::Events::EventCategory rhs)
+{
+	return static_cast<TRAP::Events::EventCategory>
+		(
+			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) ^
+			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
+		);
+}
+constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCategory rhs)
+{
+	return static_cast<TRAP::Events::EventCategory>
+		(
+			~static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
+		);
+}
+constexpr TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs,
+                                                   const TRAP::Events::EventCategory rhs)
+{
+	lhs = static_cast<TRAP::Events::EventCategory>
+		(
+			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) ^
+			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
+		);
+
+	return lhs;
+}
 
 #endif /*TRAP_EVENT_H*/

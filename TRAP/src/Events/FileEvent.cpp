@@ -1,20 +1,13 @@
 #include "TRAPPCH.h"
 #include "FileEvent.h"
 
-#include "FS/FileWatcher.h"
+#include "FileSystem/FileWatcher.h"
+#include <stdexcept>
 
-TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FS::FileStatus status, std::filesystem::path path,
+TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
                                                std::filesystem::path oldName)
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::FS::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
-{
-    return m_status;
-}
+{}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -34,15 +27,8 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
 
 std::string TRAP::Events::FileChangeEvent::ToString() const
 {
-    return "FileChangeEvent: Path: " + m_path.generic_u8string() + " Status: " +
-           FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.generic_u8string());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType()
-{
-	return EventType::FileChange;
+    return "FileChangeEvent: Path: " + m_path.u8string() + " Status: " +
+           FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,7 +40,7 @@ TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::Events::FileChangeEvent::GetName() const
+std::string TRAP::Events::FileChangeEvent::GetName() const
 {
 	return "FileChange";
 }
@@ -68,23 +54,23 @@ TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::FileChangeEvent::FileStatusToString(TRAP::FS::FileStatus status)
+std::string TRAP::Events::FileChangeEvent::FileStatusToString(const TRAP::FileSystem::FileStatus status)
 {
     switch(status)
     {
-    case TRAP::FS::FileStatus::Created:
+    case TRAP::FileSystem::FileStatus::Created:
         return "Created";
 
-    case TRAP::FS::FileStatus::Renamed:
+    case TRAP::FileSystem::FileStatus::Renamed:
         return "Renamed";
 
-    case TRAP::FS::FileStatus::Modified:
+    case TRAP::FileSystem::FileStatus::Modified:
         return "Modified";
 
-    case TRAP::FS::FileStatus::Erased:
+    case TRAP::FileSystem::FileStatus::Erased:
         return "Erased";
 
     default:
-        return "";
+        throw std::invalid_argument("Unimplemented enum->string value for TRAP::FileSystem::FileStatus");
     }
 }

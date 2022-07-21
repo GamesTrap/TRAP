@@ -2,8 +2,8 @@
 #include "Application.h"
 
 #include "Core/Base.h"
-#include "FS/FS.h"
-#include "FS/FileWatcher.h"
+#include "FileSystem/FileSystem.h"
+#include "FileSystem/FileWatcher.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
@@ -54,7 +54,7 @@ static bool CheckSingleProcessLinux()
 {
 	static int32_t socketFD = -1;
 	static int32_t rc = 1;
-	constexpr static uint16_t port = 49420; //Just a free (hopefully) random port
+	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
 
 	if(socketFD == -1 || rc)
 	{
@@ -76,7 +76,8 @@ static bool CheckSingleProcessLinux()
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(name.sin_addr.s_addr);
 
-		rc = bind(socketFD, reinterpret_cast<sockaddr*>(&name), sizeof(name));
+		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
+		rc = bind(socketFD, &convertedSock, sizeof(name));
 	}
 
 	return (socketFD != -1 && rc == 0);
@@ -88,7 +89,7 @@ static bool CheckSingleProcessLinux()
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
 static bool CheckSingleProcessWindows()
 {
-	HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
+	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
 	if(!hMutex) //Error creating mutex
 		return false;
 	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
@@ -148,14 +149,6 @@ TRAP::Application::Application(std::string gameName)
 	s_Instance = this;
 	m_mainThreadID = std::this_thread::get_id();
 
-	//Set main log file path
-	std::filesystem::path logFilePath = "logs/trap.log";
-#ifndef TRAP_HEADLESS_MODE
-	logFilePath = FS::GetGameDocumentsFolderPath() / "logs/trap.log";
-#endif
-	TRAP::FS::CreateFolder(TRAP::FS::GetFolderPath(logFilePath));
-	TRAP::TRAPLog.SetFilePath(logFilePath);
-
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
 	//TODO Future remove when Wayland Windows are implemented
@@ -171,11 +164,20 @@ TRAP::Application::Application(std::string gameName)
 		exit(-1);
 	}
 
-	FS::Init();
+	FileSystem::Init();
+
+	//Set main log file path
+	const auto logFolder = FileSystem::GetGameLogFolderPath();
+	if(logFolder)
+		TRAP::TRAPLog.SetFilePath(*logFolder / "trap.log");
+	else //Fallback to current directory
+		TRAP::TRAPLog.SetFilePath("trap.log");
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
-	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
+	const auto docsFolder = FileSystem::GetGameDocumentsFolderPath();
+	if(docsFolder)
+		cfgPath = *docsFolder / "engine.cfg";
 #endif
 	if (!m_config.LoadFromFile(cfgPath))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
@@ -292,13 +294,13 @@ TRAP::Application::Application(std::string gameName)
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
 		//Set Anti aliasing
-		Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-		Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+		const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
+		const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
 		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, sampleCount);
 
 		//Always added as a fallback shader
-		Graphics::ShaderManager::LoadSource("FallbackGraphics", Embed::FallbackGraphicsShader)->Use();
-		Graphics::ShaderManager::LoadSource("FallbackCompute", Embed::FallbackComputeShader)->Use();
+		Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader))->Use();
+		Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader))->Use();
 
 		//Always added as a fallback texture
 		Graphics::TextureManager::Add(Graphics::Texture::CreateFallback2D());
@@ -380,7 +382,9 @@ TRAP::Application::~Application()
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
-	cfgPath = FS::GetGameDocumentsFolderPath() / "engine.cfg";
+	const auto docsFolder = FileSystem::GetGameDocumentsFolderPath();
+	if(docsFolder)
+		cfgPath = *docsFolder / "engine.cfg";
 #endif
 	m_config.SaveToFile(cfgPath);
 	m_window.reset();
@@ -397,7 +401,7 @@ TRAP::Application::~Application()
 		Graphics::RendererAPI::Shutdown();
 	}
 
-	FS::Shutdown();
+	FileSystem::Shutdown();
 
 	s_Instance = nullptr;
 
@@ -423,7 +427,7 @@ void TRAP::Application::Run()
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
 
-		Utils::Timer FrameTimeTimer;
+		const Utils::Timer FrameTimeTimer;
 		const float time = m_timer.Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
 		lastFrameTime = time;
@@ -676,7 +680,7 @@ std::string TRAP::Application::GetGameName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FS::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
+TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 {
 	if(s_Instance->m_hotReloadingFileWatcher)
 		return s_Instance->m_hotReloadingFileWatcher.get();
@@ -699,7 +703,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FS::FileWatcher>("", false);
+		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
@@ -851,10 +855,14 @@ void TRAP::Application::UpdateHotReloading()
 
 bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
-	if(event.GetStatus() != FS::FileStatus::Modified)
-		return true; //Only handle modified files
+	if(event.GetStatus() != FileSystem::FileStatus::Modified)
+		return false; //Only handle modified files
 
-	std::string fEnding = Utils::String::ToLower(FS::GetFileEnding(event.GetPath()));
+	const auto fileEnding = FileSystem::GetFileEnding(event.GetPath());
+	if(!fileEnding) //Ignore files without an extension
+		return false;
+
+	const std::string fEnding = Utils::String::ToLower(*fileEnding);
 
 	//Is it a texture?
 	bool texture = false;
@@ -881,7 +889,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	}
 
 	if(!texture && !shader)
-		return true; //Not a texture or shader
+		return false; //Not a texture or shader
 
 	if(texture)
 	{
@@ -890,8 +898,8 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingTexturePaths)
 		{
-			if(FS::IsPathEquivalent(p, event.GetPath()))
-				return true;
+			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
+				return false;
 		}
 
 		m_hotReloadingTexturePaths.push_back(event.GetPath());
@@ -903,12 +911,12 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingShaderPaths)
 		{
-			if(FS::IsPathEquivalent(p, event.GetPath()))
-				return true;
+			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
+				return false;
 		}
 
 		m_hotReloadingShaderPaths.push_back(event.GetPath());
 	}
 
-	return true; //Don't send this event to other listeners
+	return false;
 }

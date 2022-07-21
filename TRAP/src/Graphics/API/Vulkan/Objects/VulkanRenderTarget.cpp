@@ -43,7 +43,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	TRAP_ASSERT(!((isDepth) && static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture)),
 	            "Cannot use depth stencil as UAV");
 
-	uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
+	const uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
 	uint32_t numRTVs = m_mipLevels;
 	if(static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetArraySlices) ||
 	   static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RenderTargetDepthSlices))
@@ -96,15 +96,15 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	if(isDepth)
 	{
 		//Make sure depth/stencil format is supported - fall back to VK_FORMAT_D16_UNORM if not
-		VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(desc.Format);
+		const VkFormat vkDepthStencilFormat = ImageFormatToVkFormat(desc.Format);
 		if(VK_FORMAT_UNDEFINED != vkDepthStencilFormat)
 		{
 			VkImageFormatProperties props{};
-			VkResult res = vkGetPhysicalDeviceImageFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
-				                                                    vkDepthStencilFormat,
-																	VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL,
-				                                                    VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-																	0, &props);
+			const VkResult res = vkGetPhysicalDeviceImageFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+				                                                          vkDepthStencilFormat,
+																	      VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL,
+				                                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+																	      0, &props);
 			//Fall back to something that's guaranteed to work
 			if(res != VK_SUCCESS)
 			{
@@ -220,7 +220,7 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string& name) const
+void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
 {
 	m_texture->SetTextureName(name);
 }

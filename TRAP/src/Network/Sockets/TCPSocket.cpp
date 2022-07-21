@@ -65,11 +65,11 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 		return 0; //We failed to retrieve the port
 
 	//Retrieve information about the local end of the socket
-	sockaddr_in address{};
-	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-	if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+	sockaddr address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
+	if (getsockname(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t port = address.sin_port;
+		uint16_t port = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -89,11 +89,11 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 		return IPv4Address::None; //We failed to retrieve the address
 
 	//Retrieve information about the remote end of the socket
-	sockaddr_in address{};
-	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+	sockaddr address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
+	if (getpeername(GetHandle(), &address, &size) != -1)
 	{
-		uint32_t addr = address.sin_addr.s_addr;
+		uint32_t addr = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_addr.s_addr;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(addr);
@@ -112,11 +112,11 @@ uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 		return 0; //We failed to retrieve the port
 
 	//Retrieve information about the remote end of the socket
-	sockaddr_in address{};
-	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
-	if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
+	sockaddr address{};
+	INTERNAL::Network::SocketImpl::AddressLength size = sizeof(sockaddr_in);
+	if (getpeername(GetHandle(), &address, &size) != -1)
 	{
-		uint16_t port = address.sin_port;
+		uint16_t port = Utils::BitCast<sockaddr, sockaddr_in>(address).sin_port;
 
 		if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 			TRAP::Utils::Memory::SwapBytes(port);
@@ -139,14 +139,15 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 	CreateIPv4();
 
 	//Create the remote address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	const sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	const sockaddr convertedAddr = Utils::BitCast<sockaddr_in, sockaddr>(address);
 
 	if(timeout <= Utils::TimeStep(0.0f))
 	{
 		//We're not using a timeout: just try to connect
 
 		//Connect the socket
-		if (::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
+		if (::connect(GetHandle(), &convertedAddr, sizeof(sockaddr_in)) == -1)
 			return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 		//Connection succeeded
@@ -163,7 +164,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 		SetBlocking(false);
 
 	//Try to connect to the remote address
-	if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
+	if(::connect(GetHandle(), &convertedAddr, sizeof(sockaddr_in)) >= 0)
 	{
 		//We got instantly connected! (it may no happen a lot...)
 		SetBlocking(blocking);
@@ -325,9 +326,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 	std::vector<char> blockToSend(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
-	std::memcpy(&blockToSend[0], &packetSize, sizeof(packetSize));
+	std::copy_n(reinterpret_cast<const uint8_t*>(&packetSize), sizeof(packetSize), blockToSend.data());
 	if (size > 0)
-		std::memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
+		std::copy_n(static_cast<const uint8_t*>(data), size, blockToSend.data() + sizeof(packetSize));
 
 	//Send the data block
 	std::size_t sent = 0;
@@ -355,7 +356,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 	if(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 	{
 		//Loop until we've received the entire size of the packet
-		//(event a 4 byte variable may be received in more than one call)
+		//(even a 4 byte variable may be received in more than one call)
 		while(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 		{
 			char* data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
@@ -396,7 +397,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
 			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
-			std::memcpy(begin, buffer.data(), received);
+			std::copy_n(buffer.data(), received, begin);
 		}
 	}
 

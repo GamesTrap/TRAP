@@ -47,7 +47,7 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 		return {};
 
 	std::array<uint8_t, 16> result{};
-	for (uint8_t i : uuid)
+	for (const uint8_t i : uuid)
 	{
 		if (i == '-')
 			continue;
@@ -96,9 +96,9 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
 	//Check if machine is using little-endian or big-endian
-	int32_t intVal = 1;
-	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
-#if __cplusplus > 201703L
+	const int32_t intVal = 1;
+	const uint8_t* uVal = reinterpret_cast<const uint8_t*>(&intVal);
+#if __cpp_lib_endian
 	static Endian endian = static_cast<Endian>(std::endian::native == std::endian::little);
 #else
 	static Endian endian = static_cast<Endian>(uVal[0] == 1);
@@ -116,27 +116,26 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	if(!cpu.Model.empty())
 		return cpu;
 
-	auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)->std::array <uint32_t, 4>
+	static constexpr auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)
 	{
-		std::array<uint32_t, 4> regs{};
+		std::array<int32_t, 4> regs{};
 	#ifdef TRAP_PLATFORM_WINDOWS
-		__cpuidex(reinterpret_cast<int32_t*>(regs.data()), static_cast<int32_t>(funcID),
-		          static_cast<int32_t>(subFuncID));
+		__cpuidex(regs.data(), static_cast<int32_t>(funcID), static_cast<int32_t>(subFuncID));
 	#else
 		asm volatile
 			("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
 				: "a" (funcID), "c" (subFuncID));
 	#endif
 
-		return regs;
+		return Utils::BitCast<std::array<int32_t, 4>, std::array<uint32_t, 4>>(regs);
 	};
 
 	std::array<uint32_t, 4> regs = CPUID(0, 0);
 	const uint32_t HFS = regs[0];
 	//Get Vendor
-	const std::string vendorID = std::string(reinterpret_cast<const char*>(&regs[1]), 4) +
-		                         std::string(reinterpret_cast<const char*>(&regs[3]), 4) +
-		                         std::string(reinterpret_cast<const char*>(&regs[2]), 4);
+	const std::string vendorID = std::string(reinterpret_cast<char*>(&regs[1]), sizeof(uint32_t)) +
+		                         std::string(reinterpret_cast<char*>(&regs[3]), sizeof(uint32_t)) +
+		                         std::string(reinterpret_cast<char*>(&regs[2]), sizeof(uint32_t));
 	regs = CPUID(1, 0);
 	cpu.HyperThreaded = regs[3] & 0x10000000; //Get Hyper-threading
 
@@ -152,7 +151,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 			int32_t numSMT = 0;
 			for (int32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
 			{
-				std::array<uint32_t, 4> regs1 = CPUID(0x0B, lvl);
+				const std::array<uint32_t, 4> regs1 = CPUID(0x0B, lvl);
 				const uint32_t currentLevel = (LVL_TYPE & regs1[2]) >> 8;
 				switch (currentLevel)
 				{
@@ -177,7 +176,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 				cpu.LogicalCores = (regs[1] >> 16) & 0xFF;
 				if (HFS >= 4)
 				{
-					std::array<uint32_t, 4> regs1 = CPUID(4, 0);
+					const std::array<uint32_t, 4> regs1 = CPUID(4, 0);
 					cpu.Cores = (1 + (regs1[0] >> 26)) & 0x3F;
 				}
 			}
@@ -241,18 +240,18 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	for (uint32_t i = 0x80000002; i < 0x80000005; ++i)
 	{
 		std::array<uint32_t, 4> regs1 = CPUID(i, 0);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[0]), 4);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[1]), 4);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[2]), 4);
-		cpu.Model += std::string(reinterpret_cast<const char*>(&regs1[3]), 4);
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[0]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[1]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[2]), sizeof(uint32_t));
+		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[3]), sizeof(uint32_t));
 	}
 
-	uint32_t lastAlphaChar = 0;
+	int32_t lastAlphaChar = 0;
 	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
 	{
 		if (isalnum(*it))
 		{
-			lastAlphaChar = static_cast<uint32_t>(it - cpu.Model.rbegin());
+			lastAlphaChar = it - cpu.Model.rbegin();
 			break;
 		}
 	}
@@ -271,14 +270,14 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 	if(windowManager != LinuxWindowManager::Unknown)
 		return windowManager;
 
-	std::string wl = "wayland";
-	std::string x = "x11";
+	const std::string wl = "wayland";
+	const std::string x = "x11";
 	std::string session;
-	if(std::getenv("XDG_SESSION_TYPE"))
-		session = std::getenv("XDG_SESSION_TYPE");
-	if (std::getenv("WAYLAND_DISPLAY") || session == wl)
+	if(getenv("XDG_SESSION_TYPE"))
+		session = getenv("XDG_SESSION_TYPE");
+	if (getenv("WAYLAND_DISPLAY") || session == wl)
 		windowManager = LinuxWindowManager::Wayland;
-	else if (std::getenv("DISPLAY") || session == x)
+	else if (getenv("DISPLAY") || session == x)
 		windowManager = LinuxWindowManager::X11;
 	else
 	{
@@ -300,40 +299,3 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 
 	return windowManager;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Utils::LinuxWindowManagerToString(const TRAP::Utils::LinuxWindowManager lwm)
-{
-	switch(lwm)
-	{
-	case LinuxWindowManager::X11:
-		return "X11";
-
-	case LinuxWindowManager::Wayland:
-		return "Wayland";
-
-	default:
-		return "Unknown";
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef TRAP_PLATFORM_LINUX
-std::string TRAP::Utils::GetStrError()
-{
-    std::string error(1024, '\0');
-    #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-        strerror_r(errno, error.data(), error.size());
-        //Remove trailing terminating null characters
-        error.resize(error.find('\0'));
-        return error;
-    #else
-        char* errorCStr = strerror_r(errno, error.data(), error.size());
-        return std::string(errorCStr);
-    #endif
-
-    return "";
-}
-#endif

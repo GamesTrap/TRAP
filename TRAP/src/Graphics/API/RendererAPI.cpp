@@ -369,8 +369,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		for (uint32_t i = 0; i < instanceExtensions.size(); i++)
 			extensions[i] = instanceExtensions[i].c_str();
 		const VkApplicationInfo appInfo = API::VulkanInits::ApplicationInfo("Vulkan Capability Tester");
-		VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
-		VkResult res = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
+		const VkInstanceCreateInfo instanceCreateInfo = API::VulkanInits::InstanceCreateInfo(appInfo, {}, extensions);
+		const VkResult res = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 		if (res == VK_SUCCESS && instance)
 		{
 			VkLoadInstance(instance);
@@ -435,28 +435,6 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 		ComputeCommandBuffers[i] = nullptr;
 		ComputeCommandPools[i].reset();
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const
-{
-	//Deep equality
-	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
-		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
-		   this->MipLodBias == s.MipLodBias && this->MaxAnisotropy == s.MaxAnisotropy &&
-		   this->CompareFunc == s.CompareFunc && this->SamplerConversionDesc == s.SamplerConversionDesc;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const
-{
-	//Deep equality
-	return this->Format == s.Format && this->Model == s.Model && this->Range == s.Range &&
-	       this->ChromaOffsetX == s.ChromaOffsetX && this->ChromaOffsetY == s.ChromaOffsetY &&
-		   this->ChromaFilter == s.ChromaFilter &&
-		   this->ForceExplicitReconstruction == s.ForceExplicitReconstruction;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

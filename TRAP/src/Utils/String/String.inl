@@ -233,7 +233,7 @@ inline TRAP::Window::DisplayMode TRAP::Utils::String::ConvertToType<TRAP::Window
 {
 	if (Utils::String::CompareAnyCase("Windowed", input))
 		return Window::DisplayMode::Windowed;
-	if (Utils::String::CompareAnyCase("Borderless", input))
+	if (Utils::String::CompareAnyCase("Fullscreen (Borderless)", input))
 		return Window::DisplayMode::Borderless;
 	if (Utils::String::CompareAnyCase("Fullscreen", input))
 		return Window::DisplayMode::Fullscreen;
@@ -294,6 +294,20 @@ inline TRAP::Graphics::RendererAPI::SampleCount TRAP::Utils::String::ConvertToTy
 
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::RendererAPI::SampleCount!");
 	return Graphics::RendererAPI::SampleCount::One;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline TRAP::Utils::LinuxWindowManager TRAP::Utils::String::ConvertToType<TRAP::Utils::LinuxWindowManager>(const std::string& input)
+{
+	if(Utils::String::CompareAnyCase("X11", input))
+		return Utils::LinuxWindowManager::X11;
+
+	if(Utils::String::CompareAnyCase("Wayland", input))
+		return Utils::LinuxWindowManager::Wayland;
+
+	return Utils::LinuxWindowManager::Unknown;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -422,7 +436,7 @@ inline std::string TRAP::Utils::String::ConvertToString<TRAP::Window::DisplayMod
 		return "Windowed";
 
 	case Window::DisplayMode::Borderless:
-		return "Borderless";
+		return "Fullscreen (Borderless)";
 
 	case Window::DisplayMode::Fullscreen:
 		return "Fullscreen";
@@ -492,6 +506,24 @@ inline std::string TRAP::Utils::String::ConvertToString<TRAP::Graphics::Renderer
 
 	default:
 		return "";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline std::string TRAP::Utils::String::ConvertToString<TRAP::Utils::LinuxWindowManager>(const Utils::LinuxWindowManager value)
+{
+	switch(value)
+	{
+	case LinuxWindowManager::X11:
+		return "X11";
+
+	case LinuxWindowManager::Wayland:
+		return "Wayland";
+
+	default:
+		return "Unknown";
 	}
 }
 

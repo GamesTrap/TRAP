@@ -18,16 +18,16 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(VulkanRenderer::s_debugUtilsExtension)
 	{
-		VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugUtilsCallback);
-		VkResult res = vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugUtils);
+		const VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugUtilsCallback);
+		const VkResult res = vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugUtils);
 		if(res != VK_SUCCESS)
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Utils Messenger!");
 	}
 #else
 	if(VulkanRenderer::s_debugReportExtension)
 	{
-		VkDebugReportCallbackCreateInfoEXT info = VulkanInits::DebugReportCallbackCreateInfo(VulkanDebugReportCallback);
-		VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);
+		const VkDebugReportCallbackCreateInfoEXT info = VulkanInits::DebugReportCallbackCreateInfo(VulkanDebugReportCallback);
+		const VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);
 		if(res != VK_SUCCESS)
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Report Messenger!");
 	}
@@ -83,18 +83,18 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 																	 const uint64_t /*object*/,
 																	 const size_t /*location*/,
 																	 const int32_t messageCode,
-																	 const char* layerPrefix,
-																	 const char* message, void* /*userData*/)
+																	 const std::string_view layerPrefix,
+																	 const std::string_view message, void* /*userData*/)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
 	if(flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-		TP_INFO(str, '[', layerPrefix ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_INFO(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 	if(flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-		TP_WARN(str, '[', layerPrefix ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_WARN(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 	if(flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-		TP_ERROR(str, '[', layerPrefix ? layerPrefix : "", "] ", message, " (", messageCode, ')');
+		TP_ERROR(str, '[', !layerPrefix.empty() ? layerPrefix : "", "] ", message, " (", messageCode, ')');
 
 	return VK_FALSE;
 }

@@ -2,7 +2,7 @@
 #include "PGMImage.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
 
@@ -13,15 +13,15 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::GrayScale;
 
-	TP_DEBUG(Log::ImagePGMPrefix, "Loading image: \"", m_filepath.generic_u8string(), "\"");
+	TP_DEBUG(Log::ImagePGMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImagePGMPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImagePGMPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImagePGMPrefix, "Using default image!");
 		return;
 	}

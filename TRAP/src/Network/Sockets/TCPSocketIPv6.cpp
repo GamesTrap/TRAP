@@ -66,9 +66,9 @@ TRAP::Network::IPv6Address TRAP::Network::TCPSocketIPv6::GetRemoteAddress() cons
 	{
 		std::array<uint8_t, 16> addr{};
 #ifdef TRAP_PLATFORM_WINDOWS
-		std::memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+		std::copy_n(address.sin6_addr.u.Byte, addr.size(), addr.data());
 #else
-		std::memcpy(addr.data(), address.sin6_addr.s6_addr, addr.size());
+		std::copy_n(address.sin6_addr.s6_addr, addr.size(), addr.data());
 #endif
 		return IPv6Address(addr);
 	}
@@ -112,14 +112,14 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 	CreateIPv6();
 
 	//Create the remote address
-	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
+	const sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	if(timeout <= Utils::TimeStep(0.0f))
 	{
 		//We're not using a timeout: just try to connect
 
 		//Connect the socket
-		if (::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
+		if (::connect(GetHandle(), reinterpret_cast<const sockaddr*>(&address), sizeof(address)) == -1)
 			return INTERNAL::Network::SocketImpl::GetErrorStatus();
 
 		//Connection succeeded
@@ -136,7 +136,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 		SetBlocking(false);
 
 	//Try to connect to the remote address
-	if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
+	if(::connect(GetHandle(), reinterpret_cast<const sockaddr*>(&address), sizeof(address)) >= 0)
 	{
 		//We got instantly connected! (it may no happen a lot...)
 		SetBlocking(blocking);
@@ -298,9 +298,9 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 	std::vector<char> blockToSend(sizeof(packetSize) + size);
 
 	//Copy the packet size and data into the block to send
-	std::memcpy(&blockToSend[0], &packetSize, sizeof(packetSize));
+	std::copy_n(reinterpret_cast<const uint8_t*>(&packetSize), sizeof(packetSize), blockToSend.data());
 	if (size > 0)
-		std::memcpy(&blockToSend[0] + sizeof(packetSize), data, size);
+		std::copy_n(static_cast<const uint8_t*>(data), size, blockToSend.data() + sizeof(packetSize));
 
 	//Send the data block
 	std::size_t sent = 0;
@@ -369,7 +369,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
 			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
-			std::memcpy(begin, buffer.data(), received);
+			std::copy_n(buffer.data(), received, begin);
 		}
 	}
 

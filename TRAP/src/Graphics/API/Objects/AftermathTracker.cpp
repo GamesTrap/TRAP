@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "AftermathTracker.h"
 
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
@@ -33,18 +33,21 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
                  void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
+    const auto docsFolder = TRAP::FileSystem::GetDocumentsFolderPath();
+    if(!docsFolder)
+        return;
+
     std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
     std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
 
-    std::filesystem::path folderPath = TRAP::FS::GetDocumentsFolderPath() / "TRAP" / TRAP::Application::GetGameName() /
-                                       "crash-dumps";
-    std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
+    const std::filesystem::path folderPath = *docsFolder / "TRAP" / TRAP::Application::GetGameName() / "crash-dumps";
+    const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
     std::lock_guard lock(mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
-    std::memcpy(buffer.data(), gpuCrashDump, gpuCrashDumpSize);
-    if(!TRAP::FS::FileOrFolderExists(folderPath))
-        TRAP::FS::CreateFolder(folderPath);
-    TRAP::FS::WriteFile(filePath, buffer);
+    std::copy_n(static_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
+    if(!TRAP::FileSystem::FileOrFolderExists(folderPath))
+        TRAP::FileSystem::CreateFolder(folderPath);
+    TRAP::FileSystem::WriteFile(filePath, buffer);
 #endif
 }
 
@@ -188,12 +191,12 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string& name)
+void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
     /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
     {
-        AftermathCall(setEventMarker(aftermathHandle, name.c_str(), name.size()));
+        AftermathCall(setEventMarker(aftermathHandle, name.data(), name.size()));
     }*/
 #endif
 }

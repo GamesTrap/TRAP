@@ -57,7 +57,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		return;
 	}
 
-	auto& conversionDesc = m_samplerDesc.SamplerConversionDesc;
+	const auto& conversionDesc = m_samplerDesc.SamplerConversionDesc;
 	const VkFormat format = ImageFormatToVkFormat(conversionDesc.Format);
 
 	//Check format props

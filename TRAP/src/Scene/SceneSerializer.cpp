@@ -11,7 +11,7 @@
 
 #include "Components.h"
 #include "Entity.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 
 namespace YAML
 {
@@ -178,8 +178,8 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 	out << YAML::EndSeq;
 	out << YAML::EndMap;
 
-	if(!FS::WriteTextFile(filepath, out.c_str()))
-		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: \"", filepath.generic_u8string(), "\" failed!");
+	if(!FileSystem::WriteTextFile(filepath, out.c_str()))
+		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: \"", filepath.u8string(), "\" failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -193,20 +193,20 @@ void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 
 bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
-	if (!FS::FileOrFolderExists(filepath))
+	if (!FileSystem::FileOrFolderExists(filepath))
 	{
-		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.generic_u8string(), "\" doesn't exists!");
+		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.u8string(), "\" doesn't exists!");
 		return false;
 	}
 
 	YAML::Node data;
 	try
 	{
-		data = YAML::LoadFile(filepath.generic_u8string());
+		data = YAML::LoadFile(filepath.u8string());
 	}
 	catch(const YAML::ParserException& ex)
 	{
-		TP_ERROR(Log::SceneSerializerPrefix, "Failed to load scene file: \"", filepath.generic_u8string(), "\" ", ex.what());
+		TP_ERROR(Log::SceneSerializerPrefix, "Failed to load scene file: \"", filepath.u8string(), "\" ", ex.what());
 	}
 
 	if (!data["Scene"])

@@ -52,15 +52,19 @@ bool FileSystemTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		break;
 
 	case TRAP::Input::Key::O:
-		TRAP::FS::OpenFolderInFileBrowser(TRAP::FS::GetCurrentFolderPath());
+	{
+		const auto currentFolder = TRAP::FileSystem::GetCurrentFolderPath();
+		if(currentFolder)
+			TRAP::FileSystem::OpenFolderInFileBrowser(*currentFolder);
 		break;
+	}
 
 	case TRAP::Input::Key::F:
-		TRAP::FS::OpenFileInFileBrowser("Assets/Textures/vulkanlogo.png");
+		TRAP::FileSystem::OpenFileInFileBrowser("Assets/Textures/vulkanlogo.png");
 		break;
 
 	case TRAP::Input::Key::E:
-		TRAP::FS::OpenExternally("Assets/Textures/vulkanlogo.png");
+		TRAP::FileSystem::OpenExternally("Assets/Textures/vulkanlogo.png");
 		break;
 
 	default:

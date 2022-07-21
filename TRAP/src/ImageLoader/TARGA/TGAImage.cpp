@@ -2,7 +2,7 @@
 #include "TGAImage.h"
 
 #include "Utils/String/String.h"
-#include "FS/FS.h"
+#include "FileSystem/FileSystem.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Utils.h"
 
@@ -12,15 +12,15 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 	m_filepath = std::move(filepath);
 	TP_DEBUG(Log::ImageTGAPrefix, "Loading image: \"",
-	         m_filepath.generic_u8string(), "\"");
+	         m_filepath.u8string(), "\"");
 
-	if (!FS::FileOrFolderExists(m_filepath))
+	if (!FileSystem::FileOrFolderExists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);
 	if (!file.is_open())
 	{
-		TP_ERROR(Log::ImageTGAPrefix, "Couldn't open file path: ", m_filepath.generic_u8string(), "!");
+		TP_ERROR(Log::ImageTGAPrefix, "Couldn't open file path: ", m_filepath.u8string(), "!");
 		TP_WARN(Log::ImageTGAPrefix, "Using default image!");
 		return;
 	}
@@ -31,13 +31,13 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	header.IDLength = static_cast<uint8_t>(file.get());
 	header.ColorMapType = static_cast<uint8_t>(file.get());
 	header.ImageType = static_cast<uint8_t>(file.get());
-	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), 2);
-	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), 2);
+	file.read(reinterpret_cast<char*>(&header.ColorMapOffset), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.NumOfColorMaps), sizeof(uint16_t));
 	header.ColorMapDepth = static_cast<uint8_t>(file.get());
-	file.read(reinterpret_cast<char*>(&header.XOffset), 2);
-	file.read(reinterpret_cast<char*>(&header.YOffset), 2);
-	file.read(reinterpret_cast<char*>(&header.Width), 2);
-	file.read(reinterpret_cast<char*>(&header.Height), 2);
+	file.read(reinterpret_cast<char*>(&header.XOffset), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.YOffset), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.Width), sizeof(uint16_t));
+	file.read(reinterpret_cast<char*>(&header.Height), sizeof(uint16_t));
 	header.BitsPerPixel = static_cast<uint8_t>(file.get());
 	header.ImageDescriptor = static_cast<uint8_t>(file.get());
 
@@ -110,7 +110,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 	}
 	if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
 	{
-		uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
+		const uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
 		file.seekg(0, std::ios::end); //Go to the end of file
 		uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
 		file.seekg(-18, std::ios::end); //Check if there is a footer

@@ -128,7 +128,7 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
-                                                   TRAP::Graphics::Texture* const texture, Window* window)
+                                                   TRAP::Graphics::Texture* const texture, Window* window) const
 {
 	TRAP_ASSERT(texture, "Texture is nullptr!");
 
@@ -170,7 +170,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 
 void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
 													const std::vector<TRAP::Graphics::Texture*>& textures,
-													Window* window)
+													Window* window) const
 {
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
 
@@ -213,7 +213,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
-	                                               TRAP::Graphics::Sampler* const sampler, Window* window)
+	                                               TRAP::Graphics::Sampler* const sampler, Window* window) const
 {
 	TRAP_ASSERT(sampler, "Sampler is nullptr!");
 
@@ -248,7 +248,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
-													Window* window)
+													Window* window) const
 {
 	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
 
@@ -285,7 +285,7 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
                                                TRAP::Graphics::UniformBuffer* uniformBuffer,
-											   const uint64_t size,  const uint64_t offset, Window* window)
+											   const uint64_t size,  const uint64_t offset, Window* window) const
 {
 	TRAP_ASSERT(uniformBuffer, "UniformBuffer is nullptr!");
 
@@ -305,7 +305,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
                                                 TRAP::Graphics::StorageBuffer* storageBuffer,
-											    const uint64_t size, Window* window)
+											    const uint64_t size, Window* window) const
 {
 	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
 
@@ -353,7 +353,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 			const RendererAPI::BinaryShaderStageDesc* stageDesc = nullptr;
 
-			std::string stageName = m_name + "_";
+			const std::string stageName = m_name + "_";
 			switch(stageMask)
 			{
 				case RendererAPI::ShaderStage::Vertex:
@@ -544,9 +544,9 @@ void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_vie
 		return;
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkShaderModule, uint64_t>(stage), VK_OBJECT_TYPE_SHADER_MODULE, name);
 #else
-	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
+	VkSetObjectName(m_device->GetVkDevice(), Utils::BitCast<VkShaderModule, uint64_t>(stage), VK_DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT, name);
 #endif
 }
 
@@ -554,7 +554,7 @@ void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_vie
 
 void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
 												  TRAP::Graphics::Buffer* buffer, uint64_t size, uint64_t offset,
-												  Window* window)
+												  Window* window) const
 {
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding,

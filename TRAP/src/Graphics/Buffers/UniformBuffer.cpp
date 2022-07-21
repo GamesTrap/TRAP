@@ -76,7 +76,7 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* data, const uint64_t siz
 		desc.Buffer = m_uniformBuffers[i];
 		desc.DstOffset = offset;
 		RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-		std::memcpy(desc.MappedData, data, size);
+		std::copy_n(static_cast<const uint8_t*>(data), size, static_cast<uint8_t*>(desc.MappedData));
 		RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[i]);
 	}
 	AwaitLoading();

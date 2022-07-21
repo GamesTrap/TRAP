@@ -58,18 +58,6 @@ namespace TRAP::Network
 		explicit IPv4Address(std::string_view address);
 
 		/// <summary>
-		/// Construct the address from a string.
-		///
-		/// Here address can either be a decimal address (ex: "192.168.1.180") or a
-		/// network name (ex: "localhost").
-		/// This is equivalent to the constructor taking a std::string_view
-		/// parameter, it is defined for convenience so that the
-		/// implicit conversion from literal strings to IPv4Address work.
-		/// </summary>
-		/// <param name="address">IPv4 address or network name.</param>
-		explicit IPv4Address(const char* address);
-
-		/// <summary>
 		/// Construct the address from 4 bytes.
 		///
 		/// Calling IPv4Address(a, b, c, d) is equivalent to calling

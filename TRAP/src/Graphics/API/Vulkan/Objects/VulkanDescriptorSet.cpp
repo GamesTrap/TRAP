@@ -92,17 +92,17 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
+void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
                                                       const std::vector<RendererAPI::DescriptorData>& params)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
-#define VALIDATE_DESCRIPTOR(descriptor, ...)                                            \
-	if(!(descriptor))                                                                   \
-	{                                                                                   \
-		std::string msg = __FUNCTION__ + std::string(" : ") + std::string(__VA_ARGS__); \
-		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, msg);                          \
-		TRAP_ASSERT(false, msg);                                                        \
-		continue;                                                                       \
+#define VALIDATE_DESCRIPTOR(descriptor, ...)                                                  \
+	if(!(descriptor))                                                                         \
+	{                                                                                         \
+		const std::string msg = __FUNCTION__ + std::string(" : ") + std::string(__VA_ARGS__); \
+		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, msg);                                \
+		TRAP_ASSERT(false, msg);                                                              \
+		continue;                                                                             \
 	}
 #else
 #define VALIDATE_DESCRIPTOR(descriptor, ...)
@@ -117,7 +117,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 	std::vector<VkWriteDescriptorSet> rayTracingWrites;
 	std::vector<VkWriteDescriptorSetAccelerationStructureKHR> rayTracingWritesKHR;
-	uint32_t rayTracingWriteCount = 0;
+	const uint32_t rayTracingWriteCount = 0; //TODO Use
 
 	if(rootSignature->GetVkRayTracingDescriptorCounts()[m_set])
 	{
@@ -127,21 +127,21 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 
 	for (const auto& param : params)
 	{
-		uint32_t paramIndex = param.Index;
+		const uint32_t paramIndex = param.Index;
 
-		VALIDATE_DESCRIPTOR(param.Name || (paramIndex != std::numeric_limits<uint32_t>::max()),
+		VALIDATE_DESCRIPTOR(!param.Name.empty() || (paramIndex != std::numeric_limits<uint32_t>::max()),
 		                    "DescriptorData has nullptr name and invalid index");
 
 		const RendererAPI::DescriptorInfo* desc = (paramIndex != std::numeric_limits<uint32_t>::max()) ?
 		                                          (&rootSignature->GetDescriptors()[paramIndex]) :
-												  rootSignature->GetDescriptor(param.Name);
+												  rootSignature->GetDescriptor(param.Name.c_str());
 		if(paramIndex != std::numeric_limits<uint32_t>::max())
 		{
 			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param index ", paramIndex);
 		}
 		else
 		{
-			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param name ", param.Name);
+			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param name ", param.Name.c_str());
 		}
 
 		const RendererAPI::DescriptorType type = desc->Type;
@@ -184,7 +184,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 			const std::vector<TRAP::Graphics::Texture*>& textures = std::get<std::vector<TRAP::Graphics::Texture*>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + desc->Name + ")");
 
-			std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap().find(desc->Name);
+			const std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap().find(desc->Name);
 			if(it == m_rootSignature->GetDescriptorNameToIndexMap().end())
 			{
 				TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "No Static Sampler called (", desc->Name, ")");
@@ -322,7 +322,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 									std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange)));
 
 				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? static_cast<uint32_t>(off.Offsets[0]) : 0;
-				VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
+				const VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
 				updateData[desc->HandleIndex + static_cast<std::size_t>(0)].BufferInfo =
 				{
 					buf->GetVkBuffer(),
@@ -353,7 +353,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index,
 				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Buffer (") + desc->Name +
 				                    std::string(" [") + std::to_string(arr) + "])");
 
-				VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
+				const VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo =
 				{
 					buf->GetVkBuffer(),
