@@ -56,6 +56,12 @@ namespace TRAP::INTERNAL
 		/// Starts a new ImGui frame.
 		/// </summary>
 		static void NewFrame();
+		/// <summary>
+		/// Set a custom cursor for ImGui.
+		/// Note: This will make ImGui the owner of the cursor!
+		/// </summary>
+		/// <param name="cursor">Custom cursor to use.</param>
+		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
 
 		/// <summary>
 		/// Install ImGui callbacks.
@@ -85,6 +91,7 @@ namespace TRAP::INTERNAL
 			std::vector<const WindowingAPI::InternalWindow*> KeyOwnerWindows;
 			bool InstalledCallbacks;
 			bool WantUpdateMonitors;
+ 			Scope<WindowingAPI::InternalCursor> CustomCursor;
 
 			//Chain WindowingAPI callbacks; our callbacks will call the user's previously installed callbacks, if any.
 			WindowingAPI::WindowFocusFunc PrevUserCallbackWindowFocus;

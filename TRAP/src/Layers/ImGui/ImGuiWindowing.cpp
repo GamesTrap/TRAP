@@ -175,6 +175,14 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::ImGuiWindowing::SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor)
+{
+	ImGuiTRAPData* bd = GetBackendData();
+	bd->CustomCursor = std::move(cursor);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::ImGuiWindowing::InstallCallbacks(WindowingAPI::InternalWindow* window)
 {
 	TP_PROFILE_FUNCTION();
@@ -656,11 +664,21 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 		}
 		else
 		{
-			//Show OS mouse cursor
-			WindowingAPI::SetCursor(windowPtr, bd->MouseCursors[imguiCursor] ?
-				                               bd->MouseCursors[imguiCursor].get() :
-											   bd->MouseCursors[ImGuiMouseCursor_Arrow].get());
-			WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);
+			if(imguiCursor != ImGuiMouseCursor_Arrow)
+			{
+				//Show OS mouse cursor
+				WindowingAPI::SetCursor(windowPtr, bd->MouseCursors[imguiCursor] ?
+												           bd->MouseCursors[imguiCursor].get() :
+												           bd->MouseCursors[ImGuiMouseCursor_Arrow].get());
+				WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);
+			}
+			else
+			{
+				if(bd->CustomCursor)
+					WindowingAPI::SetCursor(windowPtr, bd->CustomCursor.get());
+				else
+					WindowingAPI::SetCursor(windowPtr, bd->MouseCursors[ImGuiMouseCursor_Arrow].get());
+			}
 		}
 	}
 }
