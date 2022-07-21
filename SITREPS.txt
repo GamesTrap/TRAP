@@ -2943,3 +2943,7 @@ SITREP 07/20/2022|22w29a3
         - Moved Utils::GetStrError() to Utils::String::GetStrError() ~<5 mins
         - Utils::String::ConvertToString() Added Utils::LinuxWindowManager overload ~<5 mins
         - Utils::String::ConvertToType() Added Utils::LinuxWindowManager overload ~<5 mins
+
+SITREP 07/21/2022|22w29b1
+    - Changed TRAP Engine version to 22w29b1(0.8.13)
+    - GitHub Actions reduced compile time for Linux ~<5 mins

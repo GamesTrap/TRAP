@@ -48,7 +48,7 @@ jobs:
        ./GenerateProjectMake.sh
        cd ..
     - name: Compile code using g++-10
-      run: make all
+      run: make all -j2
   build-windows:
     name: Build Windows MSVC 2022
     runs-on: windows-latest
