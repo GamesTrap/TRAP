@@ -2948,3 +2948,6 @@ SITREP 07/21/2022|22w29b1
     - Changed TRAP Engine version to 22w29b1(0.8.13)
     - GitHub Actions reduced compile time for Linux ~<5 mins
     - Fixed bugs in CursorTests which where introduced by 725ccfa54eb0faa32e499fe1595d03858f29947f (0.8.5) ~<20 mins
+    - Fixed MultiWindowTests crash when closing the child window ~<5 mins
+    - FTP Fixed casting which resulted in wrong port usage ~<10 mins
+    - WindowFeaturesTests Fixed unable to disable max window size constraint ~<5 mins

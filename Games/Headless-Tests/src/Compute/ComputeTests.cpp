@@ -82,7 +82,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         return;
 
     static uint32_t frames = 0;
-    if(frames == 2)
+    if(frames == 3)
     {
         TRAP::Graphics::RendererAPI::GetGraphicsQueue()->WaitQueueIdle();
         TRAP::Graphics::RendererAPI::GetComputeQueue()->WaitQueueIdle();

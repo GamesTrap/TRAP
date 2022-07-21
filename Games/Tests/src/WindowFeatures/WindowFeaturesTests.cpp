@@ -125,7 +125,7 @@ void WindowFeaturesTests::OnImGuiRender()
 			if(m_limitMaxSize)
 				TRAP::Application::GetWindow()->SetMaximumSize(m_maxWindowSize.x, m_maxWindowSize.y);
 			else
-				TRAP::Application::GetWindow()->SetMinimumSize(0, 0);
+				TRAP::Application::GetWindow()->SetMaximumSize(0, 0);
 		}
 	}
 

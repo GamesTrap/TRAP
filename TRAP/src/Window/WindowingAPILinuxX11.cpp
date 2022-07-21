@@ -3519,8 +3519,6 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		keyCode = static_cast<int32_t>(event.xkey.keycode);
 
 	filtered = s_Data.XLIB.FilterEvent(&event, 0);
-	if(filtered)
-		return;
 
 	if(s_Data.RandR.Available)
 	{
