@@ -2951,3 +2951,9 @@ SITREP 07/21/2022|22w29b1
     - Fixed MultiWindowTests crash when closing the child window ~<5 mins
     - FTP Fixed casting which resulted in wrong port usage ~<10 mins
     - WindowFeaturesTests Fixed unable to disable max window size constraint ~<5 mins
+
+SITREP 07/22/2022|22w29b2
+    - Changed TRAP Engine version to 22w29b2(0.8.14)
+    - Made the anti aliasing settings now apply to the whole renderer (before was per window) ~<15 mins
+    - Application now sets anti aliasing on RendererAPI init instead of afterwards ~<5 mins
+    - FrameBufferTests Worked on adding support for anti aliasing ~<15 mins

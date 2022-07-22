@@ -171,18 +171,16 @@ void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAliasing, const SampleCount sampleCount,
-                                                    Window* window)
+void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAliasing, const SampleCount sampleCount)
 {
-	RendererAPI::GetRenderer()->SetAntiAliasing(antiAliasing, sampleCount, window);
+	RendererAPI::SetAntiAliasing(antiAliasing, sampleCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount,
-                                                    Window* window)
+void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount)
 {
-	RendererAPI::GetRenderer()->GetAntiAliasing(outAntiAliasing, outSampleCount, window);
+	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

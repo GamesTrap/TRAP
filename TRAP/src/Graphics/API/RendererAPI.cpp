@@ -29,6 +29,11 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = n
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_transferQueue = nullptr;
 
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_currentSampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
+TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_currentAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_newSampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
+TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_newAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
+
 #ifdef ENABLE_NSIGHT_AFTERMATH
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
 bool TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport = false;
@@ -37,7 +42,8 @@ bool TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const RenderAPI renderAPI)
+void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const RenderAPI renderAPI,
+                                       const AntiAliasing antiAliasing , SampleCount antiAliasingSamples)
 {
 	if(s_Renderer)
 		return;
@@ -74,6 +80,22 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	//Create Transfer Queue
 	queueDesc.Type = QueueType::Transfer;
 	s_transferQueue = Queue::Create(queueDesc);
+
+	//Anti aliasing setup
+
+	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= antiAliasingSamples, "Sample count is higher than max supported by GPU");
+
+	if(antiAliasing == AntiAliasing::MSAA && antiAliasingSamples > GPUSettings.MaxMSAASampleCount)
+		antiAliasingSamples = GPUSettings.MaxMSAASampleCount;
+	else if(antiAliasing != AntiAliasing::Off && antiAliasingSamples == SampleCount::One)
+	{
+		TRAP_ASSERT(false, "Sample count must be greater than one when anti aliasing is enabled");
+	}
+	else if(antiAliasing == AntiAliasing::Off)
+		antiAliasingSamples = SampleCount::One;
+
+	s_newAntiAliasing = s_currentAntiAliasing = antiAliasing;
+	s_newSampleCount = s_currentSampleCount = antiAliasingSamples;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -217,7 +239,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 #ifndef TRAP_HEADLESS_MODE
 	//Get correct RenderTarget
-	if(winData->AntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
+	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
 		renderTarget = winData->SwapChain->GetRenderTargetsMSAA()[winData->ImageIndex];
 	else //No MSAA
 		renderTarget = winData->SwapChain->GetRenderTargets()[winData->ImageIndex];
@@ -225,7 +247,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 #else
-	if(winData->AntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
+	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
 		renderTarget = winData->RenderTargetsMSAA[winData->ImageIndex];
 	else //No MSAA
 		renderTarget = winData->RenderTargets[winData->ImageIndex];
@@ -294,6 +316,33 @@ void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
 	//Cleanup
 	cmdPool->FreeCommandBuffer(cmd);
 	cmdPool.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount)
+{
+	outAntiAliasing = s_currentAntiAliasing;
+	outSampleCount = s_currentSampleCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasing, SampleCount sampleCount)
+{
+	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= sampleCount, "Sample count is higher than max supported by GPU");
+
+	if(antiAliasing == AntiAliasing::MSAA && sampleCount > GPUSettings.MaxMSAASampleCount)
+		sampleCount = GPUSettings.MaxMSAASampleCount;
+	else if(antiAliasing != AntiAliasing::Off && sampleCount == SampleCount::One)
+	{
+		TRAP_ASSERT(false, "Sample count must be greater than one when anti aliasing is enabled");
+	}
+	else if(antiAliasing == AntiAliasing::Off)
+		sampleCount = SampleCount::One;
+
+	s_newAntiAliasing = antiAliasing;
+	s_newSampleCount = sampleCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

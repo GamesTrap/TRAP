@@ -237,9 +237,19 @@ TRAP::Application::Application(std::string gameName)
 	//Initialize Renderer
 #ifdef TRAP_HEADLESS_MODE
 	if(renderAPI != Graphics::RenderAPI::NONE)
-		Graphics::RendererAPI::Init(m_gameName, renderAPI);
+	{
+		//Get Anti aliasing from engine.cfg
+		const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
+		const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+
+		Graphics::RendererAPI::Init(m_gameName, renderAPI, antiAliasing, sampleCount);
+	}
 #else
-	Graphics::RendererAPI::Init(m_gameName, renderAPI);
+	//Get Anti aliasing from engine.cfg
+	const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
+	const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+
+	Graphics::RendererAPI::Init(m_gameName, renderAPI, antiAliasing, sampleCount);
 #endif
 
 	//Window creation stuff
@@ -293,11 +303,6 @@ TRAP::Application::Application(std::string gameName)
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
-		//Set Anti aliasing
-		const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-		const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
-		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, sampleCount);
-
 		//Always added as a fallback shader
 		Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader))->Use();
 		Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader))->Use();

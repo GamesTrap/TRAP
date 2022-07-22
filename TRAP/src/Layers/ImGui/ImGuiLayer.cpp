@@ -121,6 +121,10 @@ void TRAP::ImGuiLayer::OnAttach()
 		else //Create empty cache as fallback
 			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(TRAP::Graphics::RendererAPI::PipelineCacheDesc{});
 
+		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
+		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
+
 		//This initializes ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo initInfo{};
 		initInfo.Instance = renderer->GetInstance()->GetVkInstance();
@@ -139,7 +143,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.Subpass = 0;
 		initInfo.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount;
 		initInfo.ImageCount = TRAP::Graphics::RendererAPI::ImageCount;
-		initInfo.MSAASamples = static_cast<VkSampleCountFlagBits>(winData.SampleCount);
+		initInfo.MSAASamples = aaMethod == TRAP::Graphics::AntiAliasing::MSAA ? static_cast<VkSampleCountFlagBits>(aaSamples) : VK_SAMPLE_COUNT_1_BIT;
 		initInfo.Allocator = nullptr;
 		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
 
@@ -224,7 +228,11 @@ void TRAP::ImGuiLayer::Begin()
 		);
 		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
 		{
-			if(winData.AntiAliasing == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
+			TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
+			TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+			TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
+
+			if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
 				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargetsMSAA()[winData.ImageIndex]);
 			else //No MSAA
 				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);

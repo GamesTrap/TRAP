@@ -1,11 +1,14 @@
 #include "FrameBufferTests.h"
+#include "Graphics/RenderCommand.h"
 
 FrameBufferTests::FrameBufferTests()
     : Layer("FrameBuffer"),
       m_vertexBuffer(nullptr),
       m_indexBuffer(nullptr),
 	  m_shader(nullptr),
-      m_texture(nullptr)
+      m_texture(nullptr),
+      m_renderTarget(nullptr),
+      m_resolveTarget(nullptr)
 {
 }
 
@@ -58,6 +61,13 @@ void FrameBufferTests::OnAttach()
     //Use static shader resources
     m_shader->UseSampler(0, 1, m_textureSampler.get());
 
+    TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
+    TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+    TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
+    m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
+
+    TRAP_ASSERT(aaMethod == TRAP::Graphics::AntiAliasing::Off, "MSAA is currently not supported by this test");
+
     TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
     desc.Width = m_texture->GetWidth() / 2;
     desc.Height = m_texture->GetHeight() / 2;
@@ -67,10 +77,13 @@ void FrameBufferTests::OnAttach()
     desc.ClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
     desc.Format = TRAP::Graphics::API::ImageFormat::B8G8R8A8_UNORM;
     desc.StartState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
-    desc.SampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
+    desc.SampleCount = m_MSAAEnabled ? aaSamples : TRAP::Graphics::SampleCount::One;
     desc.SampleQuality = 0;
     desc.Name = "Test Framebuffer";
     m_renderTarget = TRAP::Graphics::RenderTarget::Create(desc);
+
+    desc.SampleCount = TRAP::Graphics::SampleCount::One;
+    m_resolveTarget = TRAP::Graphics::RenderTarget::Create(desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -78,6 +91,7 @@ void FrameBufferTests::OnAttach()
 void FrameBufferTests::OnDetach()
 {
     //Maybe needs GPU idle
+    m_resolveTarget.reset();
     m_renderTarget.reset();
 
     m_textureSampler.reset();
@@ -121,6 +135,8 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
 
+    //TODO Make TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(rT, rT) a public function which does the heavy lifting.
+
     //Update FPS & FrameTime history
     if (m_titleTimer.Elapsed() >= 0.025f)
     {
@@ -157,8 +173,16 @@ void FrameBufferTests::OnImGuiRender()
     ImGui::Begin("COLOR_B8G8R8A8_UNORM_Framebuffer", nullptr, ImGuiWindowFlags_AlwaysAutoResize |
                                                                 ImGuiWindowFlags_NoCollapse |
                                                                 ImGuiWindowFlags_NoResize);
-    ImGui::Image(m_renderTarget->GetTexture(), ImVec2(static_cast<float>(m_renderTarget->GetWidth()),
-                 static_cast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+    if(m_MSAAEnabled)
+    {
+        ImGui::Image(m_resolveTarget->GetTexture(), ImVec2(static_cast<float>(m_resolveTarget->GetWidth()),
+                     static_cast<float>(m_resolveTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+    }
+    else
+    {
+        ImGui::Image(m_renderTarget->GetTexture(), ImVec2(static_cast<float>(m_renderTarget->GetWidth()),
+                     static_cast<float>(m_renderTarget->GetHeight())), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+    }
     ImGui::Text("Vulkan and the Vulkan logo are registered trademarks of the Khronos Group Inc.");
     ImGui::End();
 }
@@ -168,7 +192,7 @@ void FrameBufferTests::OnImGuiRender()
 void FrameBufferTests::OnEvent(TRAP::Events::Event& event)
 {
     TRAP::Events::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
+    dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([](TRAP::Events::KeyPressEvent& e){return OnKeyPress(e);});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

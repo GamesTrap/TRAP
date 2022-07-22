@@ -115,7 +115,14 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
 		/// <param name="renderAPI">Render API to use.</param>
-		static void Init(const std::string_view gameName, RenderAPI renderAPI);
+		/// <param name="antiAliasing">Optional anti aliasing method to use.</param>
+		/// <param name="antiAliasingSamples">
+		/// Optional number of samples to use by anti aliasing if enabled.
+		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.
+		/// </param>
+		static void Init(std::string_view gameName, RenderAPI renderAPI,
+		                 AntiAliasing antiAliasing = AntiAliasing::Off,
+						 SampleCount antiAliasingSamples = SampleCount::One);
 		/// <summary>
 		/// Shutdown the Renderer.
 		/// </summary>
@@ -343,21 +350,6 @@ namespace TRAP::Graphics
 						            TRAP::Graphics::Texture* texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, Window* window = nullptr) const = 0;
-		/// <summary>
-		/// Set the anti aliasing method and the sample count for the window.
-		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
-		/// </summary>
-		/// <param name="antiAliasing">Anti aliasing method to use.</param>
-		/// <param name="sampleCount">Sample count to use.</param>
-		/// <param name="window">Window to set anti aliasing for. Default: Main Window.</param>
-		virtual void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount, Window* window = nullptr) const = 0;
-		/// <summary>
-		/// Retrieve the anti aliasing method and the sample count of the window.
-		/// </summary>
-		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
-		/// <param name="outSampleCount">Output: Used sample count.</param>
-		/// <param name="window">Window to get anti aliasing from. Default: Main Window.</param>
-		virtual void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount, Window* window = nullptr) const = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -653,6 +645,24 @@ namespace TRAP::Graphics
 							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
 							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
+
+		/// <summary>
+		/// Retrieve the currently used anti aliasing method and the sample count.
+		/// </summary>
+		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
+		/// <param name="outSampleCount">Output: Used sample count.</param>
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount);
+
+		/// <summary>
+		/// Set the anti aliasing method and the sample count.
+		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
+		///
+		/// Note: This won't affect the currently recorded frame.
+		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.
+		/// </summary>
+		/// <param name="antiAliasing">Anti aliasing method to use.</param>
+		/// <param name="sampleCount">Sample count to use.</param>
+		static void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount);
 
 	//protected:
 		/// <summary>
@@ -1005,6 +1015,7 @@ namespace TRAP::Graphics
 			Static = 0,
 			Dynamic
 		};
+
 		/// <summary>
 		/// The maximum amount of descriptor sets that can be used.
 		/// </summary>
@@ -2389,6 +2400,11 @@ namespace TRAP::Graphics
 		static TRAP::Ref<Queue> s_computeQueue;
 		static TRAP::Ref<Queue> s_transferQueue;
 
+		static RendererAPI::SampleCount s_currentSampleCount;
+		static RendererAPI::AntiAliasing s_currentAntiAliasing;
+		static RendererAPI::SampleCount s_newSampleCount;
+		static RendererAPI::AntiAliasing s_newAntiAliasing;
+
 	public:
 		/// <summary>
 		/// Per window data used for rendering.
@@ -2412,10 +2428,6 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
-			RendererAPI::SampleCount SampleCount = RendererAPI::SampleCount::One;
-			RendererAPI::AntiAliasing AntiAliasing = RendererAPI::AntiAliasing::Off;
-			RendererAPI::SampleCount NewSampleCount = RendererAPI::SampleCount::One;
-			RendererAPI::AntiAliasing NewAntiAliasing = RendererAPI::AntiAliasing::Off;
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
