@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Template Function TRAP::Math::operator*(const Vec&lt;2, T&gt;&amp;, T)" href="function_Vec2_8h_1adced016fabca2c24e2ee7a0d90895d21.html" /><link rel="prev" title="Template Function TRAP::Math::operator*(const tQuat&lt;T&gt;&amp;, const T&amp;)" href="function_Quaternion_8h_1a1262eb5f0f9cc61dcab5b961c432c5a4.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Template Function TRAP::Math::operator*(const T&amp;, const tQuat&lt;T&gt;&amp;) - TRAP 0.8.9 documentation</title>
+        <title>Template Function TRAP::Math::operator*(const T&amp;, const tQuat&lt;T&gt;&amp;) - TRAP 0.8.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.9 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.14 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,7 +192,7 @@
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP.html">Namespace TRAP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Embed.html">Namespace TRAP::Embed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Events.html">Namespace TRAP::Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__FS.html">Namespace TRAP::FS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__FileSystem.html">Namespace TRAP::FileSystem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics.html">Namespace TRAP::Graphics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__AftermathTracker.html">Namespace TRAP::Graphics::AftermathTracker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__API.html">Namespace TRAP::Graphics::API</a></li>
@@ -406,7 +406,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1WindowMoveEvent.html">Class WindowMoveEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1WindowResizeEvent.html">Class WindowResizeEvent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Events_1_1WindowRestoreEvent.html">Class WindowRestoreEvent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1FS_1_1FileWatcher.html">Class FileWatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1FileSystem_1_1FileWatcher.html">Class FileWatcher</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1API_1_1ResourceLoader.html">Class ResourceLoader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1API_1_1SPIRVTools_1_1CrossCompiler.html">Class CrossCompiler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1API_1_1VulkanBuffer.html">Class VulkanBuffer</a></li>
@@ -519,8 +519,8 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Window.html">Class Window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_Event_8h_1a6e576a87cab897cd5c494c8703df6ff8.html">Enum EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_Event_8h_1a568987029413a7169cd9584f08371eca.html">Enum EventType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="enum_FileWatcher_8h_1aef72543738801c0a325b7045433b1e72.html">Enum FileStatus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="enum_FS_8h_1a99218ec02f6f9638f8b02242a6785138.html">Enum WriteMode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum_FileWatcher_8h_1a888e9b3d3f304708290050834e16b94d.html">Enum FileStatus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum_FileSystem_8h_1a3fdd5028cc7b6b158b0c1a0abe696369.html">Enum WriteMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_ImageFormat_8h_1af5e8a156ed45c00c553bf8ecb6474df4.html">Enum ImageFormat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_ShaderReflection_8h_1a82fc0d9633c81fdbb300eec1373cbf8e.html">Enum TextureDimension</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_SPIRVTools_8h_1aab462b970af5c68ab16f860e7bb9579c.html">Enum ResourceTextureDimension</a></li>
@@ -571,9 +571,9 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8inl_1a6ef47234baa497325171138a033ac15c.html">Template Function operator&lt;&lt;(OStream&amp;, const TRAP::Math::Vec&lt;L, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8inl_1a816e5662eb1c444adf80dd54fd17605b.html">Template Function operator&lt;&lt;(OStream&amp;, const TRAP::Math::Mat&lt;L, L, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8inl_1aa380825402812945ba2005c4933c64fc.html">Template Function operator&lt;&lt;(OStream&amp;, const TRAP::Math::tQuat&lt;T&gt;&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Event_8h_1ae9aefbdefab683470ffc2c6ff30a37d0.html">Function operator^</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Event_8h_1a0f2442bc97d1c143454761760a6097ac.html">Function operator^=</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Event_8h_1a3902104eab6b48f30f10d21136b664db.html">Function operator~</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Event_8h_1ae77ac6e372e73bf36dad7e00189da91e.html">Function operator^</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Event_8h_1a0b750015215a08b1b82eff525797b756.html">Function operator^=</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Event_8h_1a891d7082da93f0f7aa29777bd38903b1.html">Function operator~</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8h_1a13c5926bd005eb5f9dd7ab286be818de.html">Template Function TP_CRITICAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8h_1a0268ac8107aaf900cbe5e7774fa009a5.html">Template Function TP_DEBUG</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8h_1a60ddf5da24ef6a079f54c22fa6fb0a64.html">Template Function TP_ERROR</a></li>
@@ -585,42 +585,43 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8h_1a2cd6e7fb4884a5843fa73fae7a741d03.html">Template Function TP_TRACE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Log_8h_1a2cf28a635dceaf6847555f259189c196.html">Template Function TP_WARN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Application_8h_1ac9ea22f5d850162b267509291efa4336.html">Function TRAP::CreateApplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1af298e67566987a60727f4c6a37a3d2da.html">Function TRAP::FS::CreateFolder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a344a3d7d592a041c3a32e385b5776a34.html">Function TRAP::FS::DeleteFileOrFolder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a56b0d3f2c3a8690b1f52ed8e627846a2.html">Function TRAP::FS::FileOrFolderExists</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a1f1b1cbee60a9ec207fe3ad1fe790a07.html">Function TRAP::FS::GetCurrentFolderPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a12d117979386222730f25eac06ef6381.html">Function TRAP::FS::GetDocumentsFolderPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a448cce770c840e6b0782d41be7b9b672.html">Function TRAP::FS::GetFileEnding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ae40b82b83be6eed5140489104a837048.html">Function TRAP::FS::GetFileName</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a5bc2dc11a6a428896af83d9149b3e603.html">Function TRAP::FS::GetFileNameWithEnding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ac42d5520355cc79dd62501302732fe36.html">Function TRAP::FS::GetFileOrFolderSize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ae68e899a3473d2dd3bcf799ab0b9179f.html">Function TRAP::FS::GetFolderPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a1fd47481d800e60c22b35d4ac2ddcaf3.html">Function TRAP::FS::GetGameDocumentsFolderPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ab4a9c2e49bb5ea4b070b2ebfd611c1f8.html">Function TRAP::FS::GetGameTempFolderPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a4f9e31d82b840cb89997c820687b140a.html">Function TRAP::FS::GetLastWriteTime</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a75ef4f606d9d863e59a261c0a5be171a.html">Function TRAP::FS::GetTempFolderPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ac0d1ef1e85f4bfbda67881118679538f.html">Function TRAP::FS::Init</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ad3bdaa80131ab55aa36f47afad20b41f.html">Function TRAP::FS::IsFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1af7b22ef3531f45d738295e43f6922066.html">Function TRAP::FS::IsFolder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a3677ef47d6d3732b51376231ab8222ad.html">Function TRAP::FS::IsPathAbsolute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1af82e5e145ab933bfae243cb7a3063cd3.html">Function TRAP::FS::IsPathEquivalent</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1afd28626f203a8325b07a674c7ae8674c.html">Function TRAP::FS::IsPathRelative</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a8edefe6de06a71193568bc8aa4e66105.html">Function TRAP::FS::MoveFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1aa5e9703c8c7054fc04aec697a7adaa69.html">Function TRAP::FS::MoveFolder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a69ad75c3e88acc9ea625f69faeddd390.html">Function TRAP::FS::OpenExternally</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1adc639554348f3f3b772141d42e4bfad3.html">Function TRAP::FS::OpenFileInFileBrowser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1aa3036662e7335ada8185447e66aebc55.html">Function TRAP::FS::OpenFolderInFileBrowser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ad8e4a9314dfc78bff4c3e3e693cc277b.html">Function TRAP::FS::ReadFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a83556d2f0699d903fd748f35e89e753f.html">Function TRAP::FS::ReadTextFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1ad10532d5e0701b849853b34723e0f2a4.html">Function TRAP::FS::RenameFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a68050d29310ab4b30eba77841009bc6b.html">Function TRAP::FS::RenameFolder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1afadde746db4ba6722aca4e5196855613.html">Function TRAP::FS::Shutdown</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a9c94638455fe845bbb0ddab8de889539.html">Function TRAP::FS::ToAbsolutePath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a6acb8d5fc9d6b4c43b2087495f0bfc51.html">Function TRAP::FS::ToRelativePath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a4a290802059327d06668abf984c9eb24.html">Function TRAP::FS::WriteFile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_FS_8h_1a43311d4b75d6ab720af8cc54b395d4c9.html">Function TRAP::FS::WriteTextFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1ac008485a510ba51eace479abc7ad6363.html">Function TRAP::FileSystem::CreateFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1af0bd5f62ff0d86c28f8e849fe1d08cd3.html">Function TRAP::FileSystem::DeleteFileOrFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a7ec3be1c76b7383d2ec8dc931b430a4f.html">Function TRAP::FileSystem::FileOrFolderExists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1aa1558e50350680aa19b0b3582f1ba627.html">Function TRAP::FileSystem::GetCurrentFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a28a1e302b71baa520572728d1a7587ab.html">Function TRAP::FileSystem::GetDocumentsFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a38d94f6769d377cb09ba6bca8499650e.html">Function TRAP::FileSystem::GetFileEnding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a6f287b940ad947937a3d823be52e6124.html">Function TRAP::FileSystem::GetFileName</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a100be023ebdf383063b14fd62b03aae8.html">Function TRAP::FileSystem::GetFileNameWithEnding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a02c259471593b04720032ce2446e0a2a.html">Function TRAP::FileSystem::GetFileOrFolderSize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a953d19dad2175fe1ed48e1d5986d7bb9.html">Function TRAP::FileSystem::GetFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1aa6c8358ab878b6df5582db141e22b75e.html">Function TRAP::FileSystem::GetGameDocumentsFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1aeb8ada7e95a1bcef185f731b9db0cbe8.html">Function TRAP::FileSystem::GetGameLogFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a9931459e7d0d2f4e08c0b1563d0fc02f.html">Function TRAP::FileSystem::GetGameTempFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1aa20b3661e4c61b42ddb16276fd9daf2f.html">Function TRAP::FileSystem::GetLastWriteTime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1ae312a889c182c47e3da9ba5c9c9d9127.html">Function TRAP::FileSystem::GetTempFolderPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a3001a5edfdbe4f593fe03838adfa850b.html">Function TRAP::FileSystem::Init</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a227661e521c3d2fdfeaff5a2489cf64d.html">Function TRAP::FileSystem::IsFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1adc523c346d77a997af7250b4edd06ff6.html">Function TRAP::FileSystem::IsFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a64c8c58f465a61460df6cc0c11088bc2.html">Function TRAP::FileSystem::IsPathAbsolute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a98800d87814d23a0b5857065a52b4c6e.html">Function TRAP::FileSystem::IsPathEquivalent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1abf5835387ee146ade97a63ddede3df89.html">Function TRAP::FileSystem::IsPathRelative</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a4cfc47009c421d02d3052c5c2a7e94a7.html">Function TRAP::FileSystem::MoveFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1ab7229669aa139d369058556135c4001a.html">Function TRAP::FileSystem::MoveFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a54a21d621ad8a7d973b3e6b9dc76e41f.html">Function TRAP::FileSystem::OpenExternally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a2e75cfd2af1ac613a9cbd7d36fa471d9.html">Function TRAP::FileSystem::OpenFileInFileBrowser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a8f0ca701806387beea1e9d0998d9e663.html">Function TRAP::FileSystem::OpenFolderInFileBrowser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a1a0daccb5a8150185b1d52dc4c31b577.html">Function TRAP::FileSystem::ReadFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a4812d3a291645e747abd2934d9af77d5.html">Function TRAP::FileSystem::ReadTextFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a6553de26c10a1a9ef21be5e040527f68.html">Function TRAP::FileSystem::RenameFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1aa386930c4597c7c08ae69ebf915edbf7.html">Function TRAP::FileSystem::RenameFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a7e6d752b4ad2d102d9c054aca932dec0.html">Function TRAP::FileSystem::Shutdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a840bed346f3e3257edc9ad97d3af00e7.html">Function TRAP::FileSystem::ToAbsolutePath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1ae3be86bf82fb2cd2efc10da9baeb78d1.html">Function TRAP::FileSystem::ToRelativePath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a8dc6da62e7ae7291addd33b10733a3f4.html">Function TRAP::FileSystem::WriteFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_FileSystem_8h_1a72ca33e01382623ac00444814362b80a.html">Function TRAP::FileSystem::WriteTextFile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_AftermathTracker_8h_1ab9029cae6f12a795f3f6e77b85ab1bd7.html">Function TRAP::Graphics::AftermathTracker::Initialize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_AftermathTracker_8h_1a61a09e6cc1d11ad06fcf37d227adc057.html">Function TRAP::Graphics::AftermathTracker::SetAftermathMarker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_AftermathTracker_8h_1a495f91fcaf2b815a95d24d3f2cbf003c.html">Function TRAP::Graphics::AftermathTracker::SetAftermathMarker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_AftermathTracker_8h_1a0c167eb3bc591d3540e16837b55f2834.html">Function TRAP::Graphics::AftermathTracker::Shutdown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a82b968be78b686631d6cd6e282bc146f.html">Function TRAP::Graphics::API::AddressModeToVkAddressMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1add3fa034e601782868d4bbf950eaddad.html">Function TRAP::Graphics::API::DescriptorTypeToVkBufferUsage</a></li>
@@ -628,7 +629,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a8fd4c23ad2c7ee1879829185ed6eac76.html">Function TRAP::Graphics::API::DescriptorTypeToVkImageUsage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1ad90b5c4fd6718770ab74adf391e5bf5c.html">Function TRAP::Graphics::API::DetermineAspectMask</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a36695e6aabcf72d0cd1e9b2465078ebc.html">Function TRAP::Graphics::API::DetermineVkPipelineStageFlags</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a0b4ca7878df1386f75077d6107309c73.html">Function TRAP::Graphics::API::ErrorCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1afbfa774feaee1e4d814422e8ccc732d0.html">Function TRAP::Graphics::API::ErrorCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a7925195fd191831c335618503dcb4764.html">Function TRAP::Graphics::API::FilterTypeToVkFilter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a4b32d8f5a7a5b2bf2c2cd231ed227edf.html">Function TRAP::Graphics::API::ImageFormatBitSizeOfBlock</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a1ae89d0ced9fb14c9bde0fe37b3e0ec9.html">Function TRAP::Graphics::API::ImageFormatChannelCount</a></li>
@@ -676,10 +677,10 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a08f1afcd4cdb638ea275b87bd1c566d1.html">Function TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a3cd2a2a3f2f76f2482c3d1ca93ec40e2.html">Function TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a0308c9383478025eef9e2231f3fa1728.html">Function TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a5ca671f8fcfc9ba84cfb4387ae58c137.html">Function TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a27e7222e641ec39ff1e7eb778ca4b11d.html">Function TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a6b30f8b3ff00c3e1c48e30b37a656e9b.html">Function TRAP::Graphics::API::VulkanInits::DebugMarkerObjectNameInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a97b08a4f4b5fa0ede5c9bbfb53f8acb0.html">Function TRAP::Graphics::API::VulkanInits::DebugReportCallbackCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a7cd30542b2fe73102a2a0334b376acca.html">Function TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a94175cce47c9559327d7e5dc8538ae07.html">Function TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a0a65ef52fdd96c9f935c60790ecc28eb.html">Function TRAP::Graphics::API::VulkanInits::DebugUtilsMessengerCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1aaa8610b5f194fa4aebc0340be1d52185.html">Function TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1aa8a8c04d6fd44e389187207a36955a23.html">Function TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo</a></li>
@@ -702,7 +703,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ab155bff60cde47bfe47f22b6d2a46858.html">Function TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a94e515d381f417cf440c68fdb1d8f75e.html">Function TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ab8ad476ae38d4c882081d985db8c9e28.html">Function TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1af215d70c779b39218a42320d676a6d8b.html">Function TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a5ce28dc1c9871d3a94363239d121ca19.html">Function TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4394d5c661f8f0f0ef9083a91a6f822e.html">Function TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1abf9996d4be4b50c02b29c62955c4b788.html">Function TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a68df1429ecc5dd17fd399bfb3e1c15c3.html">Function TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo</a></li>
@@ -718,7 +719,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a2e3147762a18adee33f44271b8ba02bf.html">Function TRAP::Graphics::API::VulkanInits::SubPassDescription(VkPipelineBindPoint, const std::vector&lt;VkAttachmentReference&gt;&amp;, const std::vector&lt;VkAttachmentReference&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a6c97af55aec32a607eac5f91527166ef.html">Function TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a8e5610463213ee3ee33a23783bb5965c.html">Function TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VertexBufferLayout_8h_1aef74ecc7840b9db9c27e0ddfddc51029.html">Function TRAP::Graphics::ShaderDataTypeSize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VertexBufferLayout_8h_1aefe2e51c27ac34a9d778bdb91ef8753a.html">Function TRAP::Graphics::ShaderDataTypeSize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a47d687121f50d1f26bf42a3acaee18dd.html">Function TRAP::Graphics::ShaderManager::Add</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a8cde01878cee8ec42969b28b0b1c5669.html">Function TRAP::Graphics::ShaderManager::Clean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1aaf747cd089ce80095220d19fe83fb1dd.html">Function TRAP::Graphics::ShaderManager::Exists</a></li>
@@ -1202,6 +1203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_IPv6Address_8h_1a78458f6092d16acef0013d01e6053a6a.html">Function TRAP::Network::operator&gt;=(const IPv6Address&amp;, const IPv6Address&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_IPv4Address_8h_1a4a41e0989cc87605ec42bac142563ea9.html">Function TRAP::Network::operator&gt;&gt;(std::istream&amp;, IPv4Address&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_IPv6Address_8h_1a2cbcc3405fb88171761dd54dd4c6d406.html">Function TRAP::Network::operator&gt;&gt;(std::istream&amp;, IPv6Address&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1af6b2f12486d34f2532d388db874356bd.html">Template Function TRAP::Utils::BitCast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Instrumentor_8h_1a76a1880e824a66a744a562a824fb8831.html">Template Function TRAP::Utils::Debug::InstrumentorUtils::CleanupOutputString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Inflate_8h_1a5cef53af4d8624da9e9d14d6c8d09a94.html">Function TRAP::Utils::Decompress::Inflate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Inflate_8h_1aeb42b60333795fa70898ec69b4e8f598.html">Function TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock</a></li>
@@ -1220,8 +1222,8 @@
 <li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1aac924cb397b1fc4a559f6f594e7fb35e.html">Function TRAP::Utils::Discord::RunCallbacks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1afd98b14564a5594b4780fd100bfd95a5.html">Function TRAP::Utils::Discord::SetActivity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_DynamicLoading_8h_1aa70efc2d6d6bdba25a6b161fbb6ac5d8.html">Function TRAP::Utils::DynamicLoading::FreeLibrary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_DynamicLoading_8h_1ac3aa67aa11d848062e6340b3704eab0d.html">Template Function TRAP::Utils::DynamicLoading::GetLibrarySymbol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_DynamicLoading_8h_1a6cdee42659b99e2758478e3a8d94bb67.html">Function TRAP::Utils::DynamicLoading::LoadLibrary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_DynamicLoading_8h_1a760b0f8e85dc9fbd0c86dca375d986c7.html">Template Function TRAP::Utils::DynamicLoading::GetLibrarySymbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_DynamicLoading_8h_1a0efb14a186ad78275ce827ea3ee654d6.html">Function TRAP::Utils::DynamicLoading::LoadLibrary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1abe78b714fb9ecf4280255930feffb772.html">Function TRAP::Utils::GetCPUInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a5e2f28e7b17c2577e9c796e3b0cf143b.html">Function TRAP::Utils::GetEndian</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a68afcc809fae5e6bb7603bc58fa90947.html">Function TRAP::Utils::GetLinuxWindowManager</a></li>
@@ -1240,14 +1242,14 @@
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1aa38b429b8835cadf9a77d89aa5e27647.html">Function TRAP::Utils::Hash::SHA3_512(std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a9bddfcc075acce9ded27ea93bf93565d.html">Function TRAP::Utils::HashCombine(std::size_t&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a0a327acd1ae49f7b5e2b702824c0debb.html">Template Function TRAP::Utils::HashCombine(std::size_t&amp;, const T&amp;, Rest…)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a6d56f34792651cbfc5f2d2788100c46b.html">Function TRAP::Utils::LinuxWindowManagerToString</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ByteSwap_8h_1a845628728a43196fc895237a8bf00fd5.html">Template Function TRAP::Utils::Memory::SwapBytes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ByteSwap_8h_1a28f7cc9ab4ced74f8addddb9d0dd7c34.html">Template Function TRAP::Utils::Memory::SwapBytes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a44c3eceb58b71f563e93f4ada596856d.html">Function TRAP::Utils::String::CompareAnyCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a25e610212b914f8e9b8b851c18d93d9d.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; std::string &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a58b85ff206fe18030d29f0f46abeeed1.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RenderAPI &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1aa7009e1dd24b7ec5511c40ad9cde0711.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RendererAPI::AntiAliasing &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a0755c7c68dbcad1e565f609c0ab9f273.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Graphics::RendererAPI::SampleCount &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a7f804ca7a6e2d056671a18a71e12465a.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Utils::LinuxWindowManager &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1abea3d8f1d31430861a620b938ff9b039.html">Specialized Template Function TRAP::Utils::String::ConvertToString&lt; TRAP::Window::DisplayMode &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a31ea953f94f3e1f8b1be81c81503e870.html">Template Function TRAP::Utils::String::ConvertToType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1accf39631f866bf20cf55950cc6d7d22d.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; std::string &gt;</a></li>
@@ -1255,13 +1257,13 @@
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a7bec15a8021590eed8d62d4be2828600.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RenderAPI &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a34e022a43684ef1802378243e7cf6116.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RendererAPI::AntiAliasing &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a3ac4b8850cde7766011299bdf9ee9078.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Graphics::RendererAPI::SampleCount &gt;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a02f71d33109e0d960e12068a9abbdc34.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Utils::LinuxWindowManager &gt;</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8inl_1a94bf9ed3351bd40d408c73e361d42530.html">Specialized Template Function TRAP::Utils::String::ConvertToType&lt; TRAP::Window::DisplayMode &gt;</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a964e031e6fce0fe72fa6ad1d9d2f2d80.html">Function TRAP::Utils::String::FindToken(const char *, std::string_view)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a3ea2b9f0da81bc7956fc15ac50c0cb74.html">Function TRAP::Utils::String::FindToken(std::string_view, std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a6d737aeeec3970038bfefa55bab557d7.html">Function TRAP::Utils::String::GetCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1aad362c3287b139bc647f5054f10dce75.html">Function TRAP::Utils::String::GetDateTimeStamp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1add9b3798cea553ca62e8e8f6ac36f78c.html">Function TRAP::Utils::String::GetLines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a1628d290e00adc7db474612ec950e12b.html">Function TRAP::Utils::String::GetLinesStringView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a0193eecd278a1d337cfce0d87f398cc8.html">Function TRAP::Utils::String::GetStrError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1af306df46060fae6c728dbb188be160fd.html">Function TRAP::Utils::String::GetSuffix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a392f06e2a748eadf063f778b7e0d767d.html">Function TRAP::Utils::String::GetSuffixStringView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a03034d35dc86a731552ed9b9f0b2386f.html">Function TRAP::Utils::String::GetTimeStamp</a></li>
@@ -1281,12 +1283,6 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Base_8h_1a902051830b6c0db197c2e85d45a7071d.html">Function TRAP_VERSION_MINOR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Base_8h_1ac7c31b086906690a02fc259efd359e9b.html">Function TRAP_VERSION_PATCH</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a851d1dee446d62a7a94deaf5ca987eb8.html">Function VkCall</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1a709d8dd72547a3baf58a611ca207b829.html">Function VkGenLoadDevice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1a206a39889956bba9b210307156e2c7f3.html">Function VkGenLoadDeviceTable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1aea1953eda0636cabbe29915ea477e795.html">Function VkGenLoadInstance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1af6574232b47c0c976086f82951c885ce.html">Function VkGenLoadLoader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1a6b89e26d0bf4357c4280f839d399f3ad.html">Function vkGetDeviceProcAddrStub</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1a5c2f3ac9831878008e94f939dc1c8dde.html">Function vkGetInstanceProcAddrStub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1af1198dd38bbb3dbdab5af438a466cdb4.html">Function VkGetInstanceVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1a66b5dc21771a7d49484a87c9af4a27c7.html">Function VkGetLoadedDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1af85cf2fcd2f8ad1e0c4c26b7dea39279.html">Function VkGetLoadedInstance</a></li>
@@ -1296,15 +1292,13 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1afb8539d773ff5eb8d953def440f202c8.html">Function VkLoadDeviceTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1ae935486eabb820f5469d8842d339843b.html">Function VkLoadInstance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanLoader_8h_1a8f5b44c2640cfecb03baff3a61b0f31f.html">Function VkLoadInstanceOnly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_VulkanLoader_8h_1ac7d1b39f67272b3f86680925015adedb.html">Variable loadedDevice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_VulkanLoader_8h_1a6c1e6d2394fdb04621ad761caf726cac.html">Variable loadedInstance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_ControllerMappings_8h_1a69862487c03a1302e0a07d8611d157a0.html">Variable TRAP::Embed::ControllerMappings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a7fb5c316ed926d55c92af626c8a46a65.html">Variable TRAP::Embed::DefaultImageData</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a83aa80fd4a837df5bd2448385034ebc5.html">Variable TRAP::Embed::FallbackComputeShader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a3f8f934fbf45550291d23acfe5d82b1a.html">Variable TRAP::Embed::FallbackGraphicsShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a584ef1c4dbeb670e1449f8e63db5fd6a.html">Variable TRAP::Embed::FallbackComputeShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a9a9bc7497975674bb2d1849266ca7667.html">Variable TRAP::Embed::FallbackGraphicsShader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1ae74a85c273b4cd31b0664bb25d37d4c5.html">Variable TRAP::Embed::OpenSansBoldTTFData</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a615126107c41226627deb8a49050ffab.html">Variable TRAP::Embed::OpenSansTTFData</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1ae7a8a61e3f816c7b1882989c5c608c3e.html">Variable TRAP::Embed::Renderer2DShader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a57262ff7a8e2235a4fbf00ce8c218096.html">Variable TRAP::Embed::Renderer2DShader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Embed_8h_1a3751986ae7a32325549b31ed58977736.html">Variable TRAP::Embed::TRAPLogo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_ShaderReflection_8h_1a7a2e517595e8be5a86e2f328b039ab5f.html">Variable TRAP::Graphics::API::ShaderReflection::MaxShaderStageCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_VulkanCommon_8h_1a8c1ff26990a15e0b7c3c161065a5be73.html">Variable TRAP::Graphics::API::VkAttachmentLoadOpTranslator</a></li>
@@ -1324,6 +1318,8 @@
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1ac50762666aa00bd3a4308158510f1748.html">Define _WIN32_WINNT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a5464d3c7dccb650c7900dd408f6c96b3.html">Define _WIN32_WINNT_WIN8</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a40cc721e8dd42feab7e40baef74b2315.html">Define _WIN32_WINNT_WINBLUE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1ab151a531d322638c706d3cb0d5af55cf.html">Define DIDFT_OPTIONAL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a1d7ab29fdefabdb4e7e7cd27ac4c9934.html">Define DIRECTINPUT_VERSION</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1acfc9af5fc06a9d2336c4d876213a96f4.html">Define DISPLAY_DEVICE_ACTIVE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1ae4a3f2aeae276c46f44d9d5c08452c12.html">Define EDS_ROTATEDMODE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1aa566dc24d4ca89efb0f714c7db67bc9c.html">Define GET_XBUTTON_WPARAM</a></li>
