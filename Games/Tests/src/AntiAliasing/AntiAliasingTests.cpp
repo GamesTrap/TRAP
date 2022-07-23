@@ -1,9 +1,10 @@
 #include "AntiAliasingTests.h"
+#include "Graphics/RenderCommand.h"
 
 #include <ImageLoader/PortableMaps/PPMImage.h>
 
 AntiAliasingTests::AntiAliasingTests()
-	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(TRAP::Graphics::SampleCount::Two),
+	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(),
 	  m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
 	             static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 	           static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
@@ -19,6 +20,8 @@ void AntiAliasingTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("AntiAliasing");
 
 	TRAP::Graphics::RenderCommand::GetAntiAliasing(m_antiAliasing, m_sampleCount);
+	if(m_sampleCount == TRAP::Graphics::SampleCount::One)
+		m_sampleCount = TRAP::Graphics::SampleCount::Two;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

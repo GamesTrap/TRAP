@@ -2957,3 +2957,9 @@ SITREP 07/22/2022|22w29b2
     - Made the anti aliasing settings now apply to the whole renderer (before was per window) ~<15 mins
     - Application now sets anti aliasing on RendererAPI init instead of afterwards ~<5 mins
     - FrameBufferTests Worked on adding support for anti aliasing ~<15 mins
+
+SITREP 07/23/2022|22w29b3
+    - Changed TRAP Engine version to 22w29b3(0.8.15)
+    - Fixed a crash in AntiAliasingTests (usage of MSAA and SampleCount 1 loaded from engine.cfg) ~<5 mins
+    - Moved MSAAResolvePass ResourceState::Present layout transitions to StartGraphicRecording/EndGraphicRecording ~<10 mins
+    - FrameBufferTests Added support for anti aliasing ~<10 mins

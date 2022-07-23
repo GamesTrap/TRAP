@@ -66,8 +66,6 @@ void FrameBufferTests::OnAttach()
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
     m_MSAAEnabled = aaMethod == TRAP::Graphics::AntiAliasing::MSAA;
 
-    TRAP_ASSERT(aaMethod == TRAP::Graphics::AntiAliasing::Off, "MSAA is currently not supported by this test");
-
     TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
     desc.Width = m_texture->GetWidth() / 2;
     desc.Height = m_texture->GetHeight() / 2;
@@ -111,6 +109,11 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+    if(m_MSAAEnabled)
+    {
+        barrier.RenderTarget = m_resolveTarget;
+        TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+    }
 
     //Bind render target/framebuffer for draw
     TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget);
@@ -126,6 +129,9 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     //Render Quad
     TRAP::Graphics::RenderCommand::DrawIndexed(m_indexBuffer->GetCount());
 
+    if(m_MSAAEnabled)
+        TRAP::Graphics::RenderCommand::MSAAResolvePass(m_renderTarget, m_resolveTarget);
+
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 
@@ -134,8 +140,11 @@ void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
     barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::RenderTarget;
     barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::PixelShaderResource;
     TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
-
-    //TODO Make TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(rT, rT) a public function which does the heavy lifting.
+    if(m_MSAAEnabled)
+    {
+        barrier.RenderTarget = m_resolveTarget;
+        TRAP::Graphics::RenderCommand::RenderTargetBarrier(barrier);
+    }
 
     //Update FPS & FrameTime history
     if (m_titleTimer.Elapsed() >= 0.025f)

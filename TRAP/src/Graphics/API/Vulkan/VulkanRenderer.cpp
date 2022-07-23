@@ -182,8 +182,15 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	p->GraphicCommandBuffers[p->ImageIndex]->Begin();
 
 #ifndef TRAP_HEADLESS_MODE
-	const RenderTargetBarrier barrier{renderTarget, ResourceState::Present, ResourceState::RenderTarget};
+	RenderTargetBarrier barrier{renderTarget, ResourceState::Present, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+
+	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //Also transition the non-MSAA render target
+	{
+		const TRAP::Ref<RenderTarget> nonMSAARenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+		RenderTargetBarrier barrier{nonMSAARenderTarget, ResourceState::Present, ResourceState::RenderTarget};
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	}
 #endif
 
 	LoadActionsDesc loadActions{};
@@ -221,7 +228,17 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		return;
 
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //Inject MSAA resolve pass
-		MSAAResolvePass(p);
+	{
+#ifndef TRAP_HEADLESS_MODE
+		const TRAP::Ref<RenderTarget> presentRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+		const TRAP::Ref<RenderTarget> MSAARenderTarget = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
+#else
+		const TRAP::Ref<RenderTarget> presentRenderTarget = p->RenderTargets[p->CurrentSwapChainImageIndex];
+		const TRAP::Ref<RenderTarget> MSAARenderTarget = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
+#endif
+
+		Graphics::RendererAPI::GetRenderer()->MSAAResolvePass(MSAARenderTarget, presentRenderTarget, p->Window);
+	}
 
 #ifndef TRAP_HEADLESS_MODE
 	//Transition RenderTarget to Present
@@ -229,8 +246,15 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 																std::numeric_limits<uint32_t>::max(),
 																std::numeric_limits<uint32_t>::max());
 	const TRAP::Ref<RenderTarget> presentRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
-	const RenderTargetBarrier barrier{presentRenderTarget, ResourceState::RenderTarget, ResourceState::Present};
+	RenderTargetBarrier barrier{presentRenderTarget, ResourceState::RenderTarget, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+
+	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //Also transition the MSAA render target
+	{
+		const TRAP::Ref<RenderTarget> MSAARenderTarget = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
+		barrier = {MSAARenderTarget, ResourceState::RenderTarget, ResourceState::Present};
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	}
 #endif
 
 	//End Recording
@@ -395,56 +419,6 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* con
 	s_computeQueue->Submit(submitDesc);
 
 	p->RecordingCompute = false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(PerWindowData* const p)
-{
-#ifndef TRAP_HEADLESS_MODE
-	const TRAP::Ref<Graphics::RenderTarget> presentRT = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
-	const TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->SwapChain->GetRenderTargetsMSAA()[p->CurrentSwapChainImageIndex];
-#else
-	const TRAP::Ref<Graphics::RenderTarget> presentRT = p->RenderTargets[p->CurrentSwapChainImageIndex];
-	const TRAP::Ref<Graphics::RenderTarget> MSAAResolveRT = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
-#endif
-
-	VulkanTexture* presentTex = dynamic_cast<VulkanTexture*>(presentRT->GetTexture());
-	VulkanTexture* MSAAResolveTex = dynamic_cast<VulkanTexture*>(MSAAResolveRT->GetTexture());
-
-	//Stop running render pass
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-															   std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
-
-	//Transition MSAAResolveRT from RenderTarget to CopySource
-	RenderTargetBarrier barrier = {MSAAResolveRT, ResourceState::RenderTarget, ResourceState::CopySource};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#ifndef TRAP_HEADLESS_MODE
-	//Transition presentRT from Present to CopyDestination
-	barrier = {presentRT, ResourceState::Present, ResourceState::CopyDestination};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#else
-	//Transition presentRT from RenderTarget to CopyDestination
-	barrier = {presentRT, ResourceState::RenderTarget, ResourceState::CopyDestination};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#endif
-
-	const VulkanCommandBuffer* vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
-	vkCmdBuf->ResolveImage(MSAAResolveTex, ResourceState::CopySource, presentTex, ResourceState::CopyDestination);
-
-	//Transition presentRT from CopyDestination to RenderTarget
-	barrier = {presentRT, ResourceState::CopyDestination, ResourceState::RenderTarget};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#ifndef TRAP_HEADLESS_MODE
-	//Transition MSAAResolveRT from CopySource to Present
-	barrier = {MSAAResolveRT, ResourceState::CopySource, ResourceState::Present};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#else
-	//Transition MSAAResolveRT from CopySource to RenderTarget
-	barrier = {MSAAResolveRT, ResourceState::CopySource, ResourceState::RenderTarget};
-	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1672,6 +1646,45 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 
 	//U8 Image
 	return TRAP::Image::LoadFromMemory(rT->GetWidth(), rT->GetHeight(), static_cast<TRAP::Image::ColorFormat>(channelCount), pixelDatau8);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<RenderTarget> source,
+                                                          const TRAP::Ref<RenderTarget> destination,
+														  Window* window) const
+{
+	TRAP_ASSERT(s_currentAntiAliasing == AntiAliasing::MSAA, "Renderer is not using MSAA");
+
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	const PerWindowData* p = s_perWindowDataMap[window].get();
+
+	VulkanTexture* dstTex = dynamic_cast<VulkanTexture*>(destination->GetTexture());
+	VulkanTexture* MSAATex = dynamic_cast<VulkanTexture*>(source->GetTexture());
+
+	//Stop running render pass
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+															   std::numeric_limits<uint32_t>::max(),
+															   std::numeric_limits<uint32_t>::max());
+
+	//Transition source from RenderTarget to CopySource
+	RenderTargetBarrier barrier = {source, ResourceState::RenderTarget, ResourceState::CopySource};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	//Transition destination from RenderTarget to CopyDestination
+	barrier = {destination, ResourceState::RenderTarget, ResourceState::CopyDestination};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+
+	const VulkanCommandBuffer* vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
+	vkCmdBuf->ResolveImage(MSAATex, ResourceState::CopySource, dstTex, ResourceState::CopyDestination);
+
+	//Transition destination from CopyDestination to RenderTarget
+	barrier = {destination, ResourceState::CopyDestination, ResourceState::RenderTarget};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+	//Transition source from CopySource to RenderTarget
+	barrier = {source, ResourceState::CopySource, ResourceState::RenderTarget};
+	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

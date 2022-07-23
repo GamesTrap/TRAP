@@ -497,6 +497,18 @@ namespace TRAP::Graphics
 		static void Transition(Texture* texture, RendererAPI::ResourceState oldLayout,
 		                       RendererAPI::ResourceState newLayout,
 		                       QueueType queueType = QueueType::Graphics);
+
+		/// <summary>
+		/// Resolve an MSAA render target to a non MSAA render target.
+		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source MSAA render target to resolve.</param>
+		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
+		/// <param name="window">Window to do the resolve pass on.</param>
+		static void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
+		                            Window* window = nullptr);
 	};
 }
 

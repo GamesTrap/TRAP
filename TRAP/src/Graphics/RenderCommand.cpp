@@ -407,3 +407,11 @@ void TRAP::Graphics::RenderCommand::Transition(Texture* texture, const RendererA
 {
 	RendererAPI::Transition(texture, oldLayout, newLayout, queueType);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> source,
+                                                    TRAP::Ref<RenderTarget> destination, Window* window)
+{
+	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, window);
+}

@@ -488,6 +488,18 @@ namespace TRAP::Graphics::API
 		TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window) const override;
 
 		/// <summary>
+		/// Resolve a MSAA render target to a non MSAA render target.
+		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source MSAA render target to resolve.</param>
+		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
+		/// <param name="window">Window to do the resolve pass on.</param>
+		void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
+		                     Window* window = nullptr) const override;
+
+		/// <summary>
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
@@ -751,13 +763,6 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndComputeRecording(PerWindowData* const p);
-
-		/// <summary>
-		/// Resolve the MSAA pass.
-		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
-		/// </summary>
-		/// <param name="p">Per window data used for recording.</param>
-		static void MSAAResolvePass(PerWindowData* const p);
 
 		std::string m_rendererTitle;
 

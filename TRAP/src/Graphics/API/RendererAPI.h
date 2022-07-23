@@ -594,6 +594,18 @@ namespace TRAP::Graphics
 		virtual TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window = nullptr) const = 0;
 
 		/// <summary>
+		/// Resolve a MSAA render target to a non MSAA render target.
+		/// Needed to transfer MSAA rendered image data to a presentable non-MSAA target.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source MSAA render target to resolve.</param>
+		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
+		/// <param name="window">Window to do the resolve pass on.</param>
+		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
+		                             Window* window = nullptr) const = 0;
+
+		/// <summary>
 		/// Retrieve the used descriptor pool.
 		/// </summary>
 		/// <returns>Descriptor pool.</returns>
