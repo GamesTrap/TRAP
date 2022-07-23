@@ -653,8 +653,6 @@ namespace TRAP::INTERNAL
 			int32_t RawInputSize = 0;
 			UINT MouseTrailSize = 0;
 
-			ITaskbarList3* TaskbarList = nullptr;
-
 			struct
 			{
 				HINSTANCE Instance = nullptr;
@@ -1130,6 +1128,9 @@ namespace TRAP::INTERNAL
 
 			//The last received high surrogate when decoding pairs of UTF-16 messages
 			WCHAR HighSurrogate{};
+
+			ITaskbarList3* TaskbarList = nullptr;
+			UINT TaskbarListMsgID = 0;
 #elif defined(TRAP_PLATFORM_LINUX)
 			//X11
 			Colormap colormap = 0;

@@ -236,7 +236,7 @@ namespace TRAP
 		/// <summary>
 		/// Retrieves information about the specified console screen buffer.
 		/// </summary>
-		static void GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &m_csbi); }
+		static void GetInfo();
 		/// <summary>
 		/// Set the new color for the following console output.
 		/// </summary>
@@ -245,7 +245,7 @@ namespace TRAP
 		/// <summary>
 		/// Reset the console color to the default for the following output.
 		/// </summary>
-		static void ResetColor() { SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); }
+		static void ResetColor();
 
 		static HANDLE m_handleConsole;
 		static CONSOLE_SCREEN_BUFFER_INFO m_csbi;

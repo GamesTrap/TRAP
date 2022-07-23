@@ -232,9 +232,18 @@ std::string TRAP::Utils::String::GetStrError()
 
 	std::string errorStr = CreateUTF8StringFromWideStringWin32(lpMsgBuf);
 
+	if (errorStr.empty())
+		return "";
+
+	errorStr.pop_back();
+	errorStr.pop_back();
+	errorStr.pop_back();
+
 	LocalFree(lpMsgBuf);
 
-	return errorStr;
+	SetLastError(0); //Clear
+
+	return errorStr + " (" + std::to_string(error) + ")";
 }
 #endif
 
@@ -248,14 +257,14 @@ std::string TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(const std::
 	const int32_t size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
 	if (!size)
 	{
-		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string to UTF-8");
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string to UTF-8");
 		return {};
 	}
 
 	result.resize(size);
 	if (!WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, result.data(), size, nullptr, nullptr))
 	{
-		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string to UTF-8");
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string to UTF-8");
 		return {};
 	}
 
@@ -273,7 +282,7 @@ std::wstring TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(const std:
 	const int32_t count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
 	if (!count)
 	{
-		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string from UTF-8");
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string from UTF-8");
 		return {};
 	}
 
@@ -281,7 +290,7 @@ std::wstring TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(const std:
 
 	if (!MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, result.data(), count))
 	{
-		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string from UTF-8");
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "Failed to convert string from UTF-8");
 		return {};
 	}
 

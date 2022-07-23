@@ -292,7 +292,6 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                                           const LPARAM lParam)
 {
-	static const UINT WM_TBC = RegisterWindowMessageW(L"TaskbarCreated");
 	InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(hWnd, L"TRAP"));
 
 	if (!windowPtr)
@@ -863,21 +862,14 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		const float xScale = HIWORD(wParam) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 		const float yScale = LOWORD(wParam) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
-		//Only apply the suggested size if the OS is new enough to have
-		//sent a WM_GETDPISCALEDSIZE before this
-		if (IsWindows10Version1703OrGreaterWin32())
+		//Resize windowed mode windows that either permit rescaling or that
+		//need it to compensate for non-client area scaling
+		if (!windowPtr->Monitor && IsWindows10Version1703OrGreaterWin32())
 		{
-			RECT windowArea, monitorArea;
-			GetWindowRect(windowPtr->Handle, &windowArea);
-			GetWindowRect(GetDesktopWindow(), &monitorArea);
-
-			if (!EqualRect(&windowArea, &monitorArea))
-			{
-				const RECT* suggested = reinterpret_cast<RECT*>(lParam);
-				::SetWindowPos(windowPtr->Handle, HWND_TOP, suggested->left, suggested->top,
-				               suggested->right - suggested->left, suggested->bottom - suggested->top,
-					           SWP_NOACTIVATE | SWP_NOZORDER);
-			}
+			const RECT* suggested = reinterpret_cast<RECT*>(lParam);
+			::SetWindowPos(windowPtr->Handle, HWND_TOP, suggested->left, suggested->top,
+				           suggested->right - suggested->left, suggested->bottom - suggested->top,
+					       SWP_NOACTIVATE | SWP_NOZORDER);
 		}
 
 		InputWindowContentScale(windowPtr, xScale, yScale);
@@ -925,6 +917,14 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	default:
 		break;
+	}
+
+	if(uMsg == windowPtr->TaskbarListMsgID)
+	{
+		HRESULT res = CoInitializeEx(nullptr, 0);
+		res = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3,
+			                   reinterpret_cast<LPVOID*>(&windowPtr->TaskbarList));
+		CoUninitialize();
 	}
 
 	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
@@ -977,17 +977,12 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 		monitor->ModesPruned = true;
 
 	monitor->AdapterName = adapter->DeviceName;
-	monitor->PublicAdapterName.resize(32);
-	WideCharToMultiByte(CP_UTF8, 0, adapter->DeviceName, -1, monitor->PublicAdapterName.data(),
-		                static_cast<int32_t>(monitor->PublicAdapterName.size()), nullptr, nullptr);
+	monitor->PublicAdapterName = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(adapter->DeviceName);
 
 	if (display)
 	{
 		monitor->DisplayName = display->DeviceName;
-		monitor->PublicDisplayName.resize(32);
-		WideCharToMultiByte(CP_UTF8, 0, display->DeviceName, -1, monitor->PublicDisplayName.data(),
-			                static_cast<int32_t>(monitor->PublicDisplayName.size()),
-			                nullptr, nullptr);
+		monitor->PublicDisplayName = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(display->DeviceName);
 	}
 
 	rect.left = dm.dmPosition.x;
@@ -1143,8 +1138,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* wind
 
 		//HACK: When mouse trails are enabled the cursor becomes invisible when
 		//      the OpenGL ICD switches to page flipping
-		SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
-		SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
+		SystemParametersInfoW(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
+		SystemParametersInfoW(SPI_SETMOUSETRAILS, 0, nullptr, 0);
 	}
 
 	if (!window->Monitor->Window)
@@ -1389,6 +1384,11 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 			WM_COPYDATA, MSGFLT_ALLOW, nullptr);
 		s_Data.User32.ChangeWindowMessageFilterEx(window->Handle,
 			WM_COPYGLOBALDATA, MSGFLT_ALLOW, nullptr);
+
+		//TaskbarList stuff
+		window->TaskbarListMsgID = RegisterWindowMessageW(L"TaskbarButtonCreated");
+		if(window->TaskbarListMsgID)
+			s_Data.User32.ChangeWindowMessageFilterEx(window->Handle, window->TaskbarListMsgID, MSGFLT_ALLOW, nullptr);
 	}
 
 	if (!window->Monitor)
@@ -1945,7 +1945,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 	AcquireMonitorBorderless(window);
 
-	GetMonitorInfo(window->Monitor->Handle, &mi);
+	GetMonitorInfoW(window->Monitor->Handle, &mi);
 	::SetWindowPos(window->Handle, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
 	               mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, flags);
 }
@@ -2046,14 +2046,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	if (!CreateHelperWindow())
 		return false;
 
-	if(IsWindows7OrGreaterWin32())
-	{
-		CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-		HRESULT result = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, reinterpret_cast<void**>(&s_Data.TaskbarList));
-		if(result != S_OK || !s_Data.TaskbarList)
-			CoUninitialize();
-	}
-
 	PollMonitorsWin32();
 
 	return true;
@@ -2071,6 +2063,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 
 	if (s_Data.CapturedCursorWindow == window)
 		ReleaseCursor();
+
+	if (window->TaskbarList)
+		window->TaskbarList->Release();
 
 	if (window->Handle)
 	{
@@ -2090,13 +2085,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
-	if(s_Data.TaskbarList)
-	{
-		s_Data.TaskbarList->Release();
-		s_Data.TaskbarList = nullptr;
-		CoUninitialize();
-	}
-
 	if (s_Data.DeviceNotificationHandle)
 		UnregisterDeviceNotification(s_Data.DeviceNotificationHandle);
 
@@ -2621,7 +2609,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 				const Input::Key key = static_cast<Input::Key>(keys[i][1]);
 				const int32_t scanCode = s_Data.ScanCodes[static_cast<int32_t>(key)];
 
-				if ((GetAsyncKeyState(vk) & 0x8000))
+				if ((GetKeyState(vk) & 0x8000))
 					continue;
 				if (windowPtr->Keys[static_cast<int32_t>(key)] != Input::KeyState::Pressed)
 					continue;
@@ -2682,19 +2670,19 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* window, const ProgressState state,
 													   const uint32_t completed)
 {
-	if(!s_Data.TaskbarList)
+	if(!window->TaskbarList)
 		return;
 
 	const uint32_t progress = TRAP::Math::Clamp(completed, 0u, 100u);
 
-	HRESULT res = s_Data.TaskbarList->SetProgressValue(window->Handle, progress, 100u);
+	HRESULT res = window->TaskbarList->SetProgressValue(window->Handle, progress, 100u);
 	if(res != S_OK)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress value");
 		return;
 	}
 
-	res = s_Data.TaskbarList->SetProgressState(window->Handle, static_cast<TBPFLAG>(state));
+	res = window->TaskbarList->SetProgressState(window->Handle, static_cast<TBPFLAG>(state));
 	if(res != S_OK)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress state");
@@ -3072,10 +3060,10 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow* window)
 {
-	LONG exStyle = static_cast<LONG>(::GetWindowLongPtr(window->Handle, GWL_EXSTYLE));
+	LONG exStyle = static_cast<LONG>(::GetWindowLongPtrW(window->Handle, GWL_EXSTYLE));
 	exStyle &= ~WS_EX_APPWINDOW;
 	exStyle |= WS_EX_TOOLWINDOW;
-	::SetWindowLongPtr(window->Handle, GWL_EXSTYLE, exStyle);
+	::SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, exStyle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

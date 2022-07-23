@@ -507,7 +507,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
     if(SHGetKnownFolderPath(FOLDERID_Documents, 0, nullptr, &path) != S_OK)
         return std::nullopt;
 
-    std::string folderPath =TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(path);
+    std::string folderPath = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(path);
     if(folderPath == "")
         return std::nullopt;
 

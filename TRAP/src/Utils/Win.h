@@ -152,5 +152,8 @@
 #ifdef EndUpdateResource
 	#undef EndUpdateResource
 #endif
+#ifdef LoadLibrary
+	#undef LoadLibrary
+#endif
 
 #endif /*TRAP_WIN_H*/

@@ -2968,3 +2968,4 @@ SITREP 07/23/2022|22w29b3
     - Moved CreateUTF8StringFromWideStringWin32() & CreateWideStringFromUTF8StringWin32() from WindowingAPI to TRAP::Utils::String ~<10 mins
     - String GetStrError() Added support for WinAPI errors ~<10 mins
     - Fixed Windows unresponsive windows ~<5 mins
+    - WindowingAPI TaskbarList3 is now properly implemented ~<10 mins
