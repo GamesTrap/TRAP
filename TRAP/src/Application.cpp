@@ -253,8 +253,10 @@ TRAP::Application::Application(std::string gameName)
 #endif
 
 	//Window creation stuff
+#ifdef TRAP_PLATFORM_LINUX
 	if(linuxWM != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
+#endif
 		WindowProps::AdvancedProps advWinProps{};
 		advWinProps.Maximized = maximized;
 		advWinProps.Visible = visible;
@@ -274,14 +276,9 @@ TRAP::Application::Application(std::string gameName)
 		m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 		//Update Window Title (Debug/RelWithDebInfo)
-#ifdef TRAP_HEADLESS_MODE
 		if(renderAPI != Graphics::RenderAPI::NONE)
-		{
-#endif
-		m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
-#ifdef TRAP_HEADLESS_MODE
-		}
-#endif
+			m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+#ifdef TRAP_PLATFORM_LINUX
 	}
 #ifdef TRAP_HEADLESS_MODE
 	else //Headless without X11 or Wayland
@@ -289,6 +286,7 @@ TRAP::Application::Application(std::string gameName)
 		if(TRAP::Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 			TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(nullptr);
 	}
+#endif
 #endif
 
 #ifndef TRAP_HEADLESS_MODE

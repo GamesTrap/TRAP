@@ -2946,6 +2946,7 @@ SITREP 07/20/2022|22w29a3
 
 SITREP 07/21/2022|22w29b1
     - Changed TRAP Engine version to 22w29b1(0.8.13)
+    - Merged STL branch
     - GitHub Actions reduced compile time for Linux ~<5 mins
     - Fixed bugs in CursorTests which where introduced by 725ccfa54eb0faa32e499fe1595d03858f29947f (0.8.5) ~<20 mins
     - Fixed MultiWindowTests crash when closing the child window ~<5 mins
@@ -2963,3 +2964,4 @@ SITREP 07/23/2022|22w29b3
     - Fixed a crash in AntiAliasingTests (usage of MSAA and SampleCount 1 loaded from engine.cfg) ~<5 mins
     - Moved MSAAResolvePass ResourceState::Present layout transitions to StartGraphicRecording/EndGraphicRecording ~<10 mins
     - FrameBufferTests Added support for anti aliasing ~<10 mins
+    - Fixed Windows not creating main window ~<5 mins
