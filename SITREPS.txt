@@ -2969,3 +2969,7 @@ SITREP 07/23/2022|22w29b3
     - String GetStrError() Added support for WinAPI errors ~<10 mins
     - Fixed Windows unresponsive windows ~<5 mins
     - WindowingAPI TaskbarList3 is now properly implemented ~<10 mins
+
+SITREP 07/30/2022|22w30a1
+    - Changed TRAP Engine version to 22w30a1(0.8.16)
+    - Replaced some asserts & TRAP_ASSERTs with static_assert ~<5 mins

@@ -321,12 +321,9 @@ template <typename T>
 std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format,
                                   const T* data)
 {
-	if constexpr (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
-	                std::is_same<T, float>::value))
-	{
-		TRAP_ASSERT(false, "Invalid type!");
-		return std::vector<T>();
-	}
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Invalid color format!");
@@ -365,12 +362,9 @@ template <typename T>
 std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format,
                                   const T* data)
 {
-	if constexpr (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
-	                std::is_same<T, float>::value))
-	{
-		TRAP_ASSERT(false, "Invalid type!");
-		return std::vector<T>();
-	}
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Invalid color format!");
@@ -409,12 +403,9 @@ template <typename T>
 std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_t height, const ColorFormat format,
 									         const T* data)
 {
-	if constexpr(!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
-	               std::is_same<T, float>::value))
-	{
-		TRAP_ASSERT(false, "Invalid type!");
-		return std::vector<T>();
-	}
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
 	if(format != ColorFormat::RGB)
 	{
 		TRAP_ASSERT(false, "Invalid color format!");
@@ -453,12 +444,9 @@ template <typename T>
 std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_t height, const ColorFormat format,
 									         const T* data)
 {
-	if constexpr(!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
-	               std::is_same<T, float>::value))
-	{
-		TRAP_ASSERT(false, "Invalid type!");
-		return std::vector<T>();
-	}
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
 	if(format != ColorFormat::RGBA)
 	{
 		TRAP_ASSERT(false, "Invalid color format!");

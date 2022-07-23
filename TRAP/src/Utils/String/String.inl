@@ -4,11 +4,8 @@
 template<typename T>
 T TRAP::Utils::String::ConvertToType(const std::string&)
 {
-	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, "
-	                   "or define the handle case in Config.h");
-	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, "
-	                                  "or define the handle case in Config.h");
-	return T();
+	static_assert(sizeof(T) == 0, "Unconvertable type encountered, please use a different type, "
+	                              "or define the handle case in Config.h");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

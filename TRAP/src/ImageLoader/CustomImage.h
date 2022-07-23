@@ -67,12 +67,9 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 {
 	TP_PROFILE_FUNCTION();
 
-	if constexpr (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
-	                std::is_same<T, float>::value))
-	{
-		TRAP_ASSERT(false, "Invalid type!");
-		return;
-	}
+	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
+	              std::is_same<T, float>::value, "Invalid type!");
+
 	if (format == ColorFormat::NONE)
 	{
 		TRAP_ASSERT(false, "Invalid color format!");

@@ -2,7 +2,6 @@
 #define TRAP_TRAPPCH_H
 
 #include "Core/PlatformDetection.h"
-#include "TRAP_Assert.h"
 
 //C++ STL
 #include <iostream>

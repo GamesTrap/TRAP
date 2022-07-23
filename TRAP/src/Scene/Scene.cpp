@@ -123,11 +123,7 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 template<typename T>
 void TRAP::Scene::OnComponentAdded(Entity, T&)
 {
-#ifndef __GNUC__
-	static_assert(false);
-#else
-	assert(false);
-#endif
+	static_assert(sizeof(T) == 0, "ComponentAdded is not implemented for this type!");
 }
 
 template<>
@@ -138,7 +134,7 @@ template<>
 void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity, CameraComponent& component)
 {
 	component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
-} 
+}
 
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::SpriteRendererComponent>(Entity, SpriteRendererComponent&)

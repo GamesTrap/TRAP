@@ -3450,7 +3450,7 @@ template<typename genType>
 int32_t TRAP::Math::IRound(const genType& x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
-	assert(static_cast<genType>(0.0) <= x);
+	TRAP_ASSERT(static_cast<genType>(0.0) <= x);
 
 	return static_cast<int32_t>(x + static_cast<genType>(0.5));
 }
@@ -3459,7 +3459,7 @@ template<uint32_t L, typename T>
 TRAP::Math::Vec<L, uint32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
-	assert(All(LessThanEqual(Vec<L, T>(0), x)));
+	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)));
 
 	return Vec<L, int32_t>(x + static_cast<T>(0.5));
 }
@@ -3470,7 +3470,7 @@ template<typename genType>
 uint32_t TRAP::Math::URound(const genType& x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
-	assert(static_cast<genType>(0.0) <= x);
+	TRAP_ASSERT(static_cast<genType>(0.0) <= x);
 
 	return static_cast<uint32_t>(x + static_cast<genType>(0.5));
 }
@@ -3479,7 +3479,7 @@ template<uint32_t L, typename T>
 TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
-	assert(All(LessThanEqual(Vec<L, T>(0), x)));
+	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)));
 
 	return Vec<L, uint32_t>(x + static_cast<T>(0.5));
 }

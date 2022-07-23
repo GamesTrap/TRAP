@@ -20,7 +20,7 @@ namespace TRAP::Utils::Memory
 	{
 		static_assert(std::is_reference_v<T>, "T must be a reference type");
 		static_assert(!std::is_const_v<std::remove_reference_t<T>>, "T must not be a const reference");
-		TRAP_ASSERT(false, "Invalid template type used for byte swapping!");
+		static_assert(sizeof(T) == 0, "T must be a primitive type");
 	}
 }
 
