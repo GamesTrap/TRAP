@@ -110,54 +110,6 @@ BOOL TRAP::INTERNAL::WindowingAPI::IsWindows7OrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Returns an UTF-8 string version of the specified wide string
-std::string TRAP::INTERNAL::WindowingAPI::CreateUTF8StringFromWideStringWin32(const std::wstring& wStr)
-{
-	std::string result{};
-
-	const int32_t size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
-	if (!size)
-	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string to UTF-8");
-		return {};
-	}
-
-	result.resize(size);
-	if (!WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, result.data(), size, nullptr, nullptr))
-	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string to UTF-8");
-		return {};
-	}
-
-	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::wstring TRAP::INTERNAL::WindowingAPI::CreateWideStringFromUTF8StringWin32(const std::string& str)
-{
-	std::wstring result{};
-
-	const int32_t count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
-	if (!count)
-	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string from UTF-8");
-		return {};
-	}
-
-	result.resize(count);
-
-	if (!MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, result.data(), count))
-	{
-		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string from UTF-8");
-		return {};
-	}
-
-	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Load necessary libraries (DLLs)
 bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 {
@@ -962,7 +914,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			buffer.resize(length + 1);
 
 			DragQueryFileW(drop, i, buffer.data(), static_cast<UINT>(buffer.size()));
-			paths[i] = CreateUTF8StringFromWideStringWin32(buffer);
+			paths[i] = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(buffer);
 		}
 
 		InputDrop(windowPtr, paths);
@@ -1008,9 +960,9 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 	RECT rect;
 
 	if (display)
-		name = CreateUTF8StringFromWideStringWin32(display->DeviceString);
+		name = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(display->DeviceString);
 	else
-		name = CreateUTF8StringFromWideStringWin32(adapter->DeviceString);
+		name = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(adapter->DeviceString);
 	if (name.empty())
 		return nullptr;
 
@@ -1413,7 +1365,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 			              USER_DEFAULT_SCREEN_DPI);
 	}
 
-	const std::wstring wideTitle = CreateWideStringFromUTF8StringWin32(WNDConfig.Title);
+	const std::wstring wideTitle = TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(WNDConfig.Title);
 	if (wideTitle.empty())
 		return false;
 
@@ -2234,7 +2186,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window, 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, const std::string& title)
 {
-	std::wstring wideTitle = CreateWideStringFromUTF8StringWin32(title);
+	std::wstring wideTitle = TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(title);
 	if (wideTitle.empty())
 		return;
 
@@ -2828,7 +2780,7 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 		return {};
 	}
 
-	s_Data.ClipboardString = CreateUTF8StringFromWideStringWin32(buffer);
+	s_Data.ClipboardString = TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(buffer);
 
 	GlobalUnlock(object);
 	CloseClipboard();

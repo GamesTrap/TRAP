@@ -3628,18 +3628,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Whether Windows 7 version or newer.</returns>
 		static BOOL IsWindows7OrGreaterWin32();
 		/// <summary>
-		/// Returns an UTF-8 string version of the specified wide string.
-		/// </summary>
-		/// <param name="wStr">Wide string representation.</param>
-		/// <returns>UTF-8 string representation of the given wide string.</returns>
-		static std::string CreateUTF8StringFromWideStringWin32(const std::wstring& wStr);
-		/// <summary>
-		/// Returns a wide string string version of the specified UTF-8 string.
-		/// </summary>
-		/// <param name="str">UTF-8 representation.</param>
-		/// <returns>Wide string representation of the given UTF-8 string.</returns>
-		static std::wstring CreateWideStringFromUTF8StringWin32(const std::string& str);
-		/// <summary>
 		/// Load necessary libraries (DLLs).
 		/// </summary>
 		/// <returns>True if loading of libraries was successful, false otherwise.</returns>

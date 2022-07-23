@@ -27,7 +27,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "Core/PlatformDetection.h"
+
 #include "Input/Input.h"
+#include "Utils/String/String.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
@@ -810,24 +812,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 		return "";
 	}
 
-	//WString to UTF8 string
-	std::string result{};
-
-	const int32_t sizeUTF8 = WideCharToMultiByte(CP_UTF8, 0, language.data(), -1, nullptr, 0, nullptr, nullptr);
-	if (!sizeUTF8)
-	{
-		TP_ERROR(Log::InputWinAPIPrefix, "Failed to convert string to UTF-8");
-		return "";
-	}
-
-	result.resize(sizeUTF8);
-	if (!WideCharToMultiByte(CP_UTF8, 0, language.data(), -1, result.data(), sizeUTF8, nullptr, nullptr))
-	{
-		TP_ERROR(Log::InputWinAPIPrefix, "Failed to convert string to UTF-8");
-		return "";
-	}
-
-	return result;
+	return TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(language);
 }
 
 #endif

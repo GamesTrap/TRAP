@@ -507,14 +507,9 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
     if(SHGetKnownFolderPath(FOLDERID_Documents, 0, nullptr, &path) != S_OK)
         return std::nullopt;
 
-    const int32_t count = WideCharToMultiByte(CP_UTF8, 0, path, -1, nullptr, 0, nullptr, nullptr);
-	if (!count)
-		return std::nullopt;
-
-    std::string folderPath(count, '\0');
-
-	if (!WideCharToMultiByte(CP_UTF8, 0, path, -1, folderPath.data(), static_cast<int32_t>(folderPath.size()), nullptr, nullptr))
-		return std::nullopt;
+    std::string folderPath =TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(path);
+    if(folderPath == "")
+        return std::nullopt;
 
 	CoTaskMemFree(path);
     folderPath.pop_back(); //Remove the extra null byte

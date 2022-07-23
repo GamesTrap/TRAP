@@ -219,7 +219,72 @@ std::string TRAP::Utils::String::GetStrError()
 #elif defined(TRAP_PLATFORM_WINDOWS)
 std::string TRAP::Utils::String::GetStrError()
 {
-	//TODO Use GetLastError?
-	return "";
+	DWORD error = GetLastError();
+	if(!error)
+		return "";
+
+	LPWSTR lpMsgBuf = nullptr;
+	DWORD bufLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+	                             FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error,
+								 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPWSTR>(&lpMsgBuf), 0, nullptr);
+	if(!bufLen)
+		return "";
+
+	std::string errorStr = CreateUTF8StringFromWideStringWin32(lpMsgBuf);
+
+	LocalFree(lpMsgBuf);
+
+	return errorStr;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+std::string TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(const std::wstring_view wStr)
+{
+	std::string result{};
+
+	const int32_t size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
+	if (!size)
+	{
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string to UTF-8");
+		return {};
+	}
+
+	result.resize(size);
+	if (!WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, result.data(), size, nullptr, nullptr))
+	{
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string to UTF-8");
+		return {};
+	}
+
+	return result;
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+std::wstring TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(const std::string_view str)
+{
+	std::wstring result{};
+
+	const int32_t count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
+	if (!count)
+	{
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string from UTF-8");
+		return {};
+	}
+
+	result.resize(count);
+
+	if (!MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, result.data(), count))
+	{
+		TP_ERROR(TRAP::Log::EngineWindowsPrefix, "[WinAPI] Failed to convert string from UTF-8");
+		return {};
+	}
+
+	return result;
 }
 #endif

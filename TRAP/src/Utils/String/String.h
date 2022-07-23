@@ -154,6 +154,23 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <returns>Last OS error message.</returns>
 	std::string GetStrError();
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	/// <summary>
+	/// Returns an UTF-8 string version of the specified wide string.
+	/// </summary>
+	/// <param name="wStr">Wide string representation.</param>
+	/// <returns>UTF-8 string representation of the given wide string.</returns>
+	std::string CreateUTF8StringFromWideStringWin32(std::wstring_view wStr);
+	/// <summary>
+	/// Returns a wide string string version of the specified UTF-8 string.
+	/// </summary>
+	/// <param name="str">UTF-8 representation.</param>
+	/// <returns>Wide string representation of the given UTF-8 string.</returns>
+	std::wstring CreateWideStringFromUTF8StringWin32(std::string_view str);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
