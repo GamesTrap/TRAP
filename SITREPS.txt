@@ -2967,3 +2967,4 @@ SITREP 07/23/2022|22w29b3
     - Fixed Windows not creating main window ~<5 mins
     - Moved CreateUTF8StringFromWideStringWin32() & CreateWideStringFromUTF8StringWin32() from WindowingAPI to TRAP::Utils::String ~<10 mins
     - String GetStrError() Added support for WinAPI errors ~<10 mins
+    - Fixed Windows unresponsive windows ~<5 mins

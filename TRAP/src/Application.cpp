@@ -470,8 +470,12 @@ void TRAP::Application::Run()
 				Graphics::RenderCommand::Present(m_window.get());
 		}
 
+#ifdef TRAP_PLATFORM_LINUX
 		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 			TRAP::Window::OnUpdate();
+#else
+		TRAP::Window::OnUpdate();
+#endif
 
 		UpdateHotReloading();
 
