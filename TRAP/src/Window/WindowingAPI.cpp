@@ -27,12 +27,15 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
+#include <limits>
+#include <thread>
+
 #include "Core/PlatformDetection.h"
 #include "WindowingAPI.h"
 #include "Window.h"
 #include "Events/KeyEvent.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
-#include <limits>
+#include "Application.h"
 
 TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
@@ -40,6 +43,9 @@ TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
 bool TRAP::INTERNAL::WindowingAPI::Init()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::Init() must only be called from main thread");
+
 	if (s_Data.Initialized)
 		return true;
 
@@ -61,6 +67,9 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 
 void TRAP::INTERNAL::WindowingAPI::Shutdown()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::Shutdown() must only be called from main thread");
+
 	if (!s_Data.Initialized)
 		return;
 
@@ -85,6 +94,9 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::DestroyWindow() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
@@ -109,6 +121,9 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 
 void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::DefaultWindowHints() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
@@ -129,6 +144,9 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 
 void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::WindowHint() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
@@ -180,6 +198,9 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* monitor)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetMonitorName() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -193,6 +214,9 @@ std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* 
 
 TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::GetPrimaryMonitor()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetPrimaryMonitor() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -206,6 +230,8 @@ TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::Get
 
 std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::WindowingAPI::GetMonitors()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetMonitors() must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -224,6 +250,9 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetVideoMode() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -238,6 +267,9 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Ge
 
 std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetVideoModes() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -259,6 +291,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	                                                                                                 const std::string title,
 	                                                                                                 InternalMonitor* monitor)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::CreateWindow() must only be called from main thread");
 	TRAP_ASSERT(!title.empty(), "[Window] Empty title provided!");
 	TRAP_ASSERT(width > 0, "[Window] Invalid width provided!");
 	TRAP_ASSERT(height > 0, "[Window] Invalid height provided!");
@@ -321,6 +355,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, const bool value)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowShouldClose() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -336,6 +372,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, 
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, const std::string& title)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowTitle() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -352,6 +390,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, 
 void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor* monitor, float& xScale,
                                                           float& yScale)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetMonitorContentScale() must only be called from main thread");
 	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -412,6 +452,8 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 
 void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::DestroyCursor() must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -443,6 +485,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 	                                                                                                 const int32_t xHotspot,
 	                                                                                                 const int32_t yHotspot)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::CreateCursor() must only be called from main thread");
 	Scope<InternalCursor> cursor;
 
 	if(!image)
@@ -516,6 +560,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::CreateStandardCursor() must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -539,6 +585,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCursor* cursor)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursor() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -556,6 +604,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCur
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const Image* const image)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowIcon() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -609,6 +659,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const I
 
 void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, const int32_t xPos, const int32_t yPos)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowPos() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -628,6 +680,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, co
 //Retrieves the position of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetWindowPos() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	xPos = 0;
@@ -647,6 +701,8 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, in
 //Sets the size of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const int32_t width, const int32_t height)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowSize() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 	TRAP_ASSERT(width > 0, "[Window] Width is smaller than or equal to 0!");
 	TRAP_ASSERT(height > 0, "[Window] Height is smaller than or equal to 0!");
@@ -668,6 +724,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const i
 //Retrieves the size of the content area of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetWindowSize() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	width = 0;
@@ -687,6 +745,8 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, i
 //Retrieves the size of the framebuffer of the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetFrameBufferSize() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	width = 0;
@@ -706,6 +766,8 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* wind
 //Sets the opacity of the whole window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window, const float opacity)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowOpacity() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -728,6 +790,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window
 //Returns the opacity of the whole window.
 float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetWindowOpacity() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -744,6 +808,8 @@ float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* windo
 //Retrieves the content scale for the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetWindowContentScale() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	xScale = 0.0f;
@@ -763,6 +829,8 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 //Sets an attribute for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const Hint hint, const bool value)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowHint() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -816,6 +884,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 //Returns an attribute of the specified window.
 bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, const Hint hint)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetWindowHint() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -872,6 +942,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
                                                     const int32_t height,
                                                     const int32_t refreshRate)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowMonitor() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 	TRAP_ASSERT(width > 0, "[Window] Width is smaller than or equal to 0!");
 	TRAP_ASSERT(height > 0, "[Window] Height is smaller than or equal to 0!");
@@ -956,6 +1028,9 @@ void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* w
 
 void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetMonitorCallback() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -970,6 +1045,8 @@ void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback
 //Sets the position callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, const WindowPositionFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowPosCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -986,6 +1063,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, 
 //Sets the size callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window, const WindowSizeFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowSizeCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1003,6 +1082,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window,
 void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* window,
                                                              const WindowMinimizeFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowMinimizeCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1020,6 +1101,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* win
 void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* window,
                                                              const WindowMaximizeFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowMaximizeCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1036,6 +1119,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* win
 //Sets the close callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window, const WindowCloseFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowCloseCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1052,6 +1137,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window
 //Sets the focus callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* window, const WindowFocusFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowFocusCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1069,6 +1156,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* window
 void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* window,
                                                               const FrameBufferSizeFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetFrameBufferSizeCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1102,6 +1191,8 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* windo
 //Sets the key callback.
 void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const KeyFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetKeyCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1118,6 +1209,8 @@ void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const 
 //Sets the Unicode character callback.
 void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const CharFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCharCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1134,6 +1227,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const
 //Sets the mouse button callback.
 void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window, const MouseButtonFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetMouseButtonCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1150,6 +1245,8 @@ void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window
 //Sets the cursor position callback.
 void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, const CursorPositionFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursorPosCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1166,6 +1263,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, 
 //Sets the cursor enter callback.
 void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window, const CursorEnterFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursorEnterCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1182,6 +1281,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window
 //Sets the scroll callback.
 void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, const ScrollFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetScrollCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1198,6 +1299,8 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, con
 //Sets the path drop callback.
 void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* window, const DropFunc callback)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetDropCallback() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1351,6 +1454,9 @@ TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCall
 //Processes all pending events.
 void TRAP::INTERNAL::WindowingAPI::PollEvents()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::PollEvents() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
@@ -1365,6 +1471,8 @@ void TRAP::INTERNAL::WindowingAPI::PollEvents()
 //Sets the cursor mode for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const CursorMode mode)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursorMode() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if (window->cursorMode == mode)
@@ -1378,9 +1486,11 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const C
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Retrrieves the cursor mode for the specified window.
+//Retrieves the cursor mode for the specified window.
 TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetCursorMode() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	return window->cursorMode;
@@ -1391,6 +1501,9 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 //Returns whether raw mouse motion is supported.
 bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursorMode() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -1404,6 +1517,9 @@ bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 
 void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* window, const bool enabled)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetRawMouseMotionMode() must only be called from main thread");
+
 	if (!PlatformRawMouseMotionSupported())
 	{
 		InputError(Error::Platform_Error, "[Window] Raw mouse motion is not supported on this system");
@@ -1422,6 +1538,8 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* window,
 //Retrvieves the raw mouse motion mode for the specified window.
 bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursorMode() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	return window->RawMouseMotion;
@@ -1433,6 +1551,8 @@ void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* window, con
 											   const uint32_t progress)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetProgress() must only be called from main thread");
 
 	PlatformSetProgress(window, state, progress);
 }
@@ -1442,6 +1562,9 @@ void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* window, con
 //Returns the layout-specific name of the specified printable key.
 const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetKeyName() must only be called from main thread");
+
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -1466,6 +1589,8 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 //Returns the last reported state of a keyboard key for the specified window.
 TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, const Input::Key key)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetKey() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1488,6 +1613,8 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow*
 //Returns the last reported state of a mouse button for the specified window.
 TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, const Input::MouseButton button)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetMouseButton() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1504,6 +1631,8 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const Interna
 //Sets the position of the cursor, relative to the content area of the window
 void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const double xPos, const double yPos)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetCursorPos() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1539,6 +1668,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const do
 //Retrieves the position of the cursor relative to the content area of the window.
 void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, double& xPos, double& yPos)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetCursorPos() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	xPos = 0.0;
@@ -1564,6 +1695,8 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, do
 //Returns the position of the monitor's viewport on the virtual screen.
 void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetMonitorPos() must only be called from main thread");
 	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
 
 	xPos = 0;
@@ -1583,6 +1716,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor,
 void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
                                                       int32_t& width, int32_t& height)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetMonitorWorkArea() must only be called from main thread");
 	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
 
 	xPos = 0;
@@ -1604,6 +1739,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* mon
 //Makes the specified window visible.
 void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::ShowWindow() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1626,6 +1763,8 @@ void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 //Brings the specified window to front and sets input focus.
 void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::FocusWindow() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1642,6 +1781,8 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 //Maximizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::MaximizeWindow() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1661,6 +1802,8 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 //Minimizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::MinimizeWindow() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1677,6 +1820,8 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 //Requests user attention to the specified window.
 void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::RequestWindowAttention() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1693,6 +1838,8 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 //Hides the specified window.
 void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::HideWindow() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1711,6 +1858,8 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* window)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::RestoreWindow() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1730,6 +1879,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
                                                        const int32_t maxWidth,
                                                        const int32_t maxHeight)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowSizeLimits() must only be called from main thread");
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
 	if(!s_Data.Initialized)
@@ -1767,6 +1918,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
 //Sets the clipboard to the specified string.
 void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetClipboardString() must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -1781,6 +1934,8 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 //Returns the contents of the clipboard as a string.
 std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 {
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::GetClipboardString() must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");

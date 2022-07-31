@@ -2975,3 +2975,7 @@ SITREP 07/30/2022|22w30a1
     - Replaced some asserts & TRAP_ASSERTs with static_assert ~<5 mins
     - Replaced some template specializations with constexpr if ~<30 mins
     - ByteSwap replaced "bit magic" (potential UB) with casting and reverse copy ~<10 mins
+
+SITREP 07/31/2022|22w30a2
+    - Changed TRAP Engine version to 22w30a2(0.8.17)
+    - WindowingAPI Added asserts for using wrong thread in main thread only functions ~<15 mins
