@@ -2973,3 +2973,5 @@ SITREP 07/23/2022|22w29b3
 SITREP 07/30/2022|22w30a1
     - Changed TRAP Engine version to 22w30a1(0.8.16)
     - Replaced some asserts & TRAP_ASSERTs with static_assert ~<5 mins
+    - Replaced some template specializations with constexpr if ~<30 mins
+    - ByteSwap replaced "bit magic" (potential UB) with casting and reverse copy ~<10 mins

@@ -230,6 +230,7 @@ namespace TRAP
 		inline static constexpr auto SceneSerializerPrefix =                "[SceneSerializer] ";
 		inline static constexpr auto DiscordGameSDKPrefix =                 "[Discord] ";
 		inline static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
+		inline static constexpr auto UtilsStringPrefix =                          "[Utils][String] ";
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:

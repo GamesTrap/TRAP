@@ -351,14 +351,6 @@ namespace TRAP::Math
 
 	/// <summary>
 	/// Retrieve the absolute value of x.
-	/// <param name="x">Specify the value of which to return the absolute.</param>
-	/// </summary>
-	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
-	template<>
-	constexpr int32_t Abs(int32_t x);
-
-	/// <summary>
-	/// Retrieve the absolute value of x.
 	/// </summary>
 	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
 	/// <param name="x">Specify the value of which to return the absolute.</param>
@@ -3099,16 +3091,6 @@ constexpr genType TRAP::Math::Max(const genType x, const genType y)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template<>
-constexpr int32_t TRAP::Math::Abs(const int32_t x)
-{
-	const int32_t y = x >> (sizeof(int32_t) * 8 - 1);
-
-	return (x ^ y) - y;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 template<typename genType>
 genType TRAP::Math::Round(const genType x)
 {
@@ -3133,7 +3115,15 @@ constexpr genFIType TRAP::Math::Abs(const genFIType x)
 		static_assert(std::numeric_limits<genFIType>::is_iec559 || std::numeric_limits<genFIType>::is_signed,
 		              "'Abs' only accepts floating-point and integer scalar or vector inputs");
 
-		return x >= genFIType(0) ? x : -x;
+		if constexpr (std::is_same_v<int32_t, genFIType>)
+		{
+			const int32_t y = x >> (sizeof(int32_t) * 8 - 1);
+			return (x ^ y) - y;
+		}
+		else
+		{
+			return x >= genFIType(0) ? x : -x;
+		}
 	}
 	else
 		return x;
