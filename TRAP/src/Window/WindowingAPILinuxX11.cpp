@@ -266,6 +266,10 @@ void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(InternalWindow* window, con
 {
 	XSizeHints* hints = s_Data.XLIB.AllocSizeHints();
 
+	long supplied;
+	s_Data.XLIB.GetWMNormalHints(s_Data.display, window->Handle, hints, &supplied);
+	hints->flags &= ~(PMinSize | PMaxSize | PAspect);
+
 	if(!window->Monitor)
 	{
 		if(window->Resizable)
@@ -291,9 +295,6 @@ void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(InternalWindow* window, con
 			hints->min_height = hints->max_height = height;
 		}
 	}
-
-	hints->flags |= PWinGravity;
-	hints->win_gravity = StaticGravity;
 
 	s_Data.XLIB.SetWMNormalHints(s_Data.display, window->Handle, hints);
 	s_Data.XLIB.Free(hints);
@@ -1343,7 +1344,28 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, Wi
 		s_Data.XLIB.Free(hints);
 	}
 
-	UpdateNormalHints(window, width, height);
+	//Set ICCCM WM_NORMAL_HINTS property
+	{
+		XSizeHints* hints = s_Data.XLIB.AllocSizeHints();
+		if(!hints)
+		{
+			InputError(Error::Out_Of_Memory, "[X11] Failed to allocate size hints!");
+			return false;
+		}
+
+		if(!WNDConfig.Resizable)
+		{
+			hints->flags |= (PMinSize | PMaxSize);
+			hints->min_width = hints->max_width = width;
+			hints->min_height = hints->max_height = height;
+		}
+
+		hints->flags |= PWinGravity;
+		hints->win_gravity = StaticGravity;
+
+		s_Data.XLIB.SetWMNormalHints(s_Data.display, window->Handle, hints);
+		s_Data.XLIB.Free(hints);
+	}
 
 	//Set ICCCM WM_CLASS property
 	{

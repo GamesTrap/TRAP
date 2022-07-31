@@ -222,7 +222,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	}
 
 	//Ensure this device supports the events expected of a controller
-	if(!(EVBits[EV_KEY / 8] & (1 << (EV_KEY % 8))) || !(EVBits[EV_ABS / 8] & (1 << (EV_ABS % 8))))
+	if(!(EVBits[EV_ABS / 8] & (1 << (EV_ABS % 8))))
 	{
 		close(LinuxCon.FD);
 		return false;
