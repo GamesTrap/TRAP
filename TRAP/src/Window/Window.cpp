@@ -1261,7 +1261,7 @@ void TRAP::Window::SetupEventCallbacks()
 			data.Width = w;
 			data.Height = h;
 
-			if (!data.EventCallback)
+			if (!data.EventCallback || w == 0 || h == 0)
 				return;
 
 			Events::FrameBufferResizeEvent event(w, h, data.Win);

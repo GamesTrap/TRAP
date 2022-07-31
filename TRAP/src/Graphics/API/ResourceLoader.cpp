@@ -1033,9 +1033,10 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				{
 					//Convert to RGBA if necessary
 					const uint8_t* pixelData = nullptr;
+					TRAP::Scope<TRAP::Image> RGBAImage = nullptr;
 					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Convert RGB to RGBA
 					{
-						const TRAP::Scope<TRAP::Image> RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer].get());
+						RGBAImage = TRAP::Image::ConvertRGBToRGBA((*images)[layer].get());
 						pixelData = static_cast<const uint8_t*>(RGBAImage->GetPixelData());
 					}
 					else

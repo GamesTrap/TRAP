@@ -2980,3 +2980,5 @@ SITREP 07/31/2022|22w30a2
     - Changed TRAP Engine version to 22w30a2(0.8.17)
     - WindowingAPI Added asserts for using wrong thread in main thread only functions ~<15 mins
     - WindowingAPI X11 WM_NORMAL_HINTS now doesn't update the whole property when updating size-related parts ~<5 mins
+    - Window now doesnt send a FrameBufferResizeEvent when width or height is 0 ~<5 mins
+    - ResourceLoader Fixed usage of a destroyed TRAP::Scope when converting RGB to RGBA ~<5 mins
