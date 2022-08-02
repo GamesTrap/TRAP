@@ -52,7 +52,6 @@ group "Games"
 	include "Games/Headless-Tests"
 	include "Games/Tests3D"
 	include "Games/TestsNetwork"
-	include "Games/UnitTests"
 	include "Games/TRAP-Editor"
 
 group "Utility"
