@@ -115,13 +115,10 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     }
 
 	//Use shader
-    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
-	//TODO Currently shader needs to be in Use in orderd to set push constants
-	//TODO PushConstant binding should use a shader as input or better Shader should have a function for
+    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use(); //Always bind shader before settings push constants
 
     //Use Push Constants
     //Upload mip level index
-    //TODO Use Shaders RootSignature internally instead of GraphicsPipelineDescs RootSignature
     TRAP::Graphics::RenderCommand::SetPushConstants("SamplerRootConstant", &m_currentMipLevel);
 
     //Render Quad

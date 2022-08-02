@@ -309,17 +309,6 @@ namespace TypeVec2
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-    int32_t TestSwizzle()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
     void TestConstexpr()
     {
         static_assert(TRAP::Math::Vec2::Length() == 2, "MathTests: Failed constexpr");
@@ -339,7 +328,6 @@ int32_t RunTypeVec2Tests()
     error += TypeVec2::TestConstructor();
     error += TypeVec2::TestOperators();
     error += TypeVec2::TestOperatorIncrement();
-    error += TypeVec2::TestSwizzle();
     TypeVec2::TestConstexpr();
 
     return error;

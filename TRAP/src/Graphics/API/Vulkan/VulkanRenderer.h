@@ -232,6 +232,7 @@ namespace TRAP::Graphics::API
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
 							  Window* window) const override;
+		//TODO EXPERIMENTAL
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>

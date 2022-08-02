@@ -338,28 +338,6 @@ namespace TypeVec4
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-    int32_t TestSwizzle()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestSwizzlePartial()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
     int32_t TestOperatorIncrement()
     {
         int32_t error = 0;
@@ -409,8 +387,6 @@ int32_t RunTypeVec4Tests()
     error += TypeVec4::TestSize();
     error += TypeVec4::TestOperators();
     error += TypeVec4::TestEqual();
-    error += TypeVec4::TestSwizzle();
-    error += TypeVec4::TestSwizzlePartial();
     error += TypeVec4::TestOperatorIncrement();
     TypeVec4::TestConstexpr();
 

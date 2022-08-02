@@ -169,12 +169,14 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			{
 				if(descInfo.Size == 1)
 				{
-					TP_INFO("Descriptor (", descInfo.Name,
-					        "): User specified VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC");
+					// TP_INFO("Descriptor (", descInfo.Name,
+					//         "): User specified VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC");
 					binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 				}
 				else
 				{
+					TRAP_ASSERT(false, "Descriptor (" + descInfo.Name +
+					            "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
 					TP_WARN("Descriptor (", descInfo.Name,
 					        "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
 				}
@@ -195,7 +197,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			const bool hasStaticSampler = it != staticSamplerMap.end();
 			if (hasStaticSampler)
 			{
-				TP_INFO("Descriptor (", descInfo.Name, "): User specified Static Sampler");
+				// TP_INFO("Descriptor (", descInfo.Name, "): User specified Static Sampler");
 				const VkSampler sampler = it->second->GetVkSampler();
 				binding.pImmutableSamplers = &sampler;
 			}
@@ -213,7 +215,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		}
 		else //If descriptor is a push/root constant, add it to the push constant array
 		{
-			TP_INFO("Descriptor (", descInfo.Name, "): User specified Push Constant");
+			// TP_INFO("Descriptor (", descInfo.Name, "): User specified Push Constant");
 
 			descInfo.VkStages = ShaderStageToVkShaderStageFlags(res.UsedStages);
 			setIndex = 0;

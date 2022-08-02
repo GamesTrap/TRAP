@@ -228,6 +228,7 @@ namespace TRAP::Graphics
 		/// <param name="face">Front face.</param>
 		/// <param name="window">Window to set front face for. Default: Main Window.</param>
 		static void SetFrontFace(FrontFace face, Window* window = nullptr);
+		//TODO EXPERIMENTAL
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
@@ -383,6 +384,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to set push constant for. Default: Main Window.</param>
 		static void SetPushConstants(const char* name, const void* data,
 		                             QueueType queueType = QueueType::Graphics, Window* window = nullptr);
+
 		// static void BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		//                              const TRAP::Ref<Graphics::RenderTarget>& depthStencil = nullptr,
 		// 							 const RendererAPI::LoadActionsDesc* loadActions = nullptr,

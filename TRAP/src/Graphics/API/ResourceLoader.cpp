@@ -745,7 +745,8 @@ void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory()
 
 void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 {
-	//TODO Change after Mipmapping uses compute shaders (and equirectangular images)
+	//TODO Use Transfer Queue if texture already has mip maps inside it (they don't need to be generated)
+	//     Graphics Queue is required in order to use vkCmdBlitImage
 	/*const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Transfer, RendererAPI::QueueFlag::None,
 	                                     RendererAPI::QueuePriority::Normal };*/
 	const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Graphics, RendererAPI::QueueFlag::None,
@@ -1063,9 +1064,10 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		}
 	}
 
-	//TODO Make API independent (Compute Shader approach)
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan && texture->GetMipLevels() > 1)
 		VulkanGenerateMipMaps(texture, cmd); //Mipmapping via vkCmdBlitImage
+	//D3D12/DirectX 12 would need a compute shader to generate mip maps (as there is no vkCmdBlitImage equivalent)
+	//https://github.com/GPUOpen-Effects/FidelityFX-SPD/blob/master/sample/src/VK/CSDownsampler.glsl
 
 	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 	{
@@ -1125,8 +1127,6 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
 
-	//TODO Mipmapping via Compute Shader
-	//https://github.com/GPUOpen-Effects/FidelityFX-SPD/blob/master/sample/src/VK/CSDownsampler.glsl
 	if(!textureLoadDesc.Filepaths[0].empty() && supported)
 	{
 		const auto fileName = FileSystem::GetFileNameWithEnding(textureLoadDesc.Filepaths[0]);

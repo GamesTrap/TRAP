@@ -295,72 +295,6 @@ namespace TypeVec3
         static_assert(TRAP::Math::Vec3(1.0f, -1.0f, -1.0f).x > 0.0f, "MathTests: Failed constexpr");
         static_assert(TRAP::Math::Vec3(1.0f, -1.0f, -1.0f).y < 0.0f, "MathTests: Failed constexpr");
     }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestSwizzle()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestVec3Swizzle3_2()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestVec3Swizzle3_3()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestVec3SwizzlePartial()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestVec3SwizzleOperators()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-    int32_t TestVec3SwizzleFunctions()
-    {
-        int32_t error = 0;
-
-        //TODO
-
-        return error;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -375,13 +309,6 @@ int32_t RunTypeVec3Tests()
     error += TypeVec3::TestVec3Size();
     error += TypeVec3::TestOperatorIncrement();
     TypeVec3::TestConstexpr();
-
-    error += TypeVec3::TestSwizzle();
-    error += TypeVec3::TestVec3Swizzle3_2();
-    error += TypeVec3::TestVec3Swizzle3_3();
-    error += TypeVec3::TestVec3SwizzlePartial();
-    error += TypeVec3::TestVec3SwizzleOperators();
-    error += TypeVec3::TestVec3SwizzleFunctions();
 
     return error;
 }
