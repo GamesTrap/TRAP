@@ -2983,8 +2983,10 @@ SITREP 07/31/2022|22w30a2
     - Window now doesnt send a FrameBufferResizeEvent when width or height is 0 ~<5 mins
     - ResourceLoader Fixed usage of a destroyed TRAP::Scope when converting RGB to RGBA ~<5 mins
     - MathTests Removed the empty swizzle functions ~<5 mins
+
 SITREP 08/03/2022|22w31a1
     - Changed TRAP Engine version to 22w31a1(0.8.18)
     - HeadlessTests Added IPAddressTests program ~>15 mins
     - HTTP Fixed use of IPv6 when address is not valid ~<5 mins
     - IPv4Address & IPv6Address Removed redundant null terminators from ToString() ~<5 mins
+    - Utils::HashCombine replaced recursion with fold expression ~<5 mins

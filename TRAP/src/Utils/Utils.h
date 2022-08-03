@@ -20,8 +20,7 @@ namespace TRAP::Utils
 	/// <returns>16 byte long UUID.</returns>
 	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
 
-	inline constexpr void HashCombine(std::size_t&)
-	{}
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
 	/// Called repeatedly to incrementally create a hash value from several variables.
@@ -33,10 +32,11 @@ namespace TRAP::Utils
 	template<typename T, typename... Rest>
 	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest)
 	{
-		const std::hash<T> hasher;
-		seed ^= hasher(v) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
-		HashCombine(seed, rest...);
+		seed ^= std::hash<T>()(v) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
+    	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9 + (seed << 6) + (seed >> 2)), ...);
 	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
 	/// Enum used to describe endianness.
@@ -52,6 +52,8 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
 	Endian GetEndian();
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
 	/// CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP.
@@ -69,6 +71,8 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
 	const CPUInfo& GetCPUInfo();
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
 	/// Enum used to indicate which window manager is used by Linux based systems.
@@ -91,6 +95,8 @@ namespace TRAP::Utils
 	/// </returns>
 	LinuxWindowManager GetLinuxWindowManager();
 
+	//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef __cpp_lib_bit_cast
 	using BitCast = std::bit_cast;
 #else
@@ -105,6 +111,10 @@ namespace TRAP::Utils
 		return u.dest;
 	}
 #endif
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+
 }
 
 #endif /*TRAP_UTILS_H*/
