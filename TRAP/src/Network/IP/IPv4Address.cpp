@@ -73,8 +73,9 @@ std::string TRAP::Network::IPv4Address::ToString() const
 	in_addr address{};
 	address.s_addr = m_address;
 
-	std::string str(16, 0);
+	std::string str(16, '\0');
 	inet_ntop(AF_INET, &address, str.data(), str.size());
+	str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
 	return str;
 }
 

@@ -361,7 +361,8 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	Response received;
 
 	//Connect the socket to the host
-	if(m_connectionIPv6.Connect(m_hostIPv6, m_port, timeout) == Socket::Status::Done)
+	if(m_hostIPv6 != IPv6Address::None &&
+	   m_connectionIPv6.Connect(m_hostIPv6, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
 		const std::string requestStr = toSend.Prepare();
@@ -386,7 +387,8 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 		//Close the connection
 		m_connectionIPv6.Disconnect();
 	}
-	else if(m_connection.Connect(m_host, m_port, timeout) == Socket::Status::Done)
+	else if(m_host != IPv4Address::None &&
+	        m_connection.Connect(m_host, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
 		const std::string requestStr = toSend.Prepare();
