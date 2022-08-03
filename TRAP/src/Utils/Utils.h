@@ -138,6 +138,12 @@ namespace TRAP::Utils
 	/// <returns>Whether Windows 10 version is given build or newer.</returns>
 	BOOL IsWindows10BuildOrGreaterWin32(const WORD build);
 	/// <summary>
+	/// Checks whether we are on at least the specified build of Windows 11.
+	/// </summary>
+	/// <param name="build">Build number.</param>
+	/// <returns>Whether Windows 11 version is given build or newer.</returns>
+	BOOL IsWindows11BuildOrGreaterWin32(const WORD build);
+	/// <summary>
 	/// Checks whether we are on at least Windows 10 Anniversary Update.
 	/// </summary>
 	/// <returns>Whether Windows 10 Anniversary version or newer.</returns>

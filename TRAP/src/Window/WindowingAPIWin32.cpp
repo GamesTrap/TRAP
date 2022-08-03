@@ -74,6 +74,8 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 		s_Data.DWMAPI_.Flush = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DwmFlush>(s_Data.DWMAPI_.Instance, "DwmFlush");
 		s_Data.DWMAPI_.EnableBlurBehindWindow = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DwmEnableBlurBehindWindow>(s_Data.DWMAPI_.Instance,
 																															 "DwmEnableBlurBehindWindow");
+		s_Data.DWMAPI_.SetWindowAttribute = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_DwmSetWindowAttribute>(s_Data.DWMAPI_.Instance,
+																													 "DwmSetWindowAttribute");
 	}
 
 	s_Data.SHCore.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("shcore.dll"));
@@ -1304,6 +1306,20 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 		window->TaskbarListMsgID = RegisterWindowMessageW(L"TaskbarButtonCreated");
 		if(window->TaskbarListMsgID)
 			s_Data.User32.ChangeWindowMessageFilterEx(window->Handle, window->TaskbarListMsgID, MSGFLT_ALLOW, nullptr);
+	}
+
+	if (Utils::IsWindows10BuildOrGreaterWin32(10240)) //First Windows 10 version
+	{
+		//Enable Immersive dark mode (using pre-official method)
+		static constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL = 19;
+		static constexpr BOOL useDarkMode = true;
+		s_Data.DWMAPI_.SetWindowAttribute(window->Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_UNOFFICIAL, &useDarkMode, sizeof(useDarkMode));
+	}
+	else if (Utils::IsWindows11BuildOrGreaterWin32(22000)) //First Windows 11 version
+	{
+		//Enable Immersive dark mode (using official method)
+		static constexpr BOOL useDarkMode = true;
+		s_Data.DWMAPI_.SetWindowAttribute(window->Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, &useDarkMode, sizeof(useDarkMode));
 	}
 
 	if (!window->Monitor)

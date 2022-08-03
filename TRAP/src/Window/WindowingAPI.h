@@ -249,6 +249,7 @@ namespace TRAP::INTERNAL
 		using PFN_DwmIsCompositionEnabled = HRESULT(WINAPI*)(BOOL*);
 		using PFN_DwmFlush = HRESULT(WINAPI*)();
 		using PFN_DwmEnableBlurBehindWindow = HRESULT(WINAPI*)(HWND, const DWM_BLURBEHIND*);
+		using PFN_DwmSetWindowAttribute = HRESULT(WINAPI*)(HWND, DWORD, LPCVOID, DWORD);
 
 		//shcore.dll function pointer typedefs
 		using PFN_SetProcessDPIAwareness = HRESULT(WINAPI*)(Process_DPI_Awareness);
@@ -668,6 +669,7 @@ namespace TRAP::INTERNAL
 				PFN_DwmIsCompositionEnabled IsCompositionEnabled = nullptr;
 				PFN_DwmFlush Flush = nullptr;
 				PFN_DwmEnableBlurBehindWindow EnableBlurBehindWindow = nullptr;
+				PFN_DwmSetWindowAttribute SetWindowAttribute = nullptr;
 			} DWMAPI_;
 
 			struct

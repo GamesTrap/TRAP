@@ -361,6 +361,13 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
+{
+	return IsWindows10BuildOrGreaterWin32(build); //Windows 11 shares 10.0.XXXXX format with Windows 10
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
 	return IsWindows10BuildOrGreaterWin32(14393);
