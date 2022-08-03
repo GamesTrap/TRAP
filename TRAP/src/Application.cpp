@@ -583,6 +583,23 @@ uint32_t TRAP::Application::GetFPS()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Application::SetFPSLimit(const uint32_t fps)
+{
+	if(fps == 0)
+		s_Instance->m_fpsLimit = 0;
+	else
+		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, 25u, 500u);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Application::GetFPSLimit()
+{
+	return s_Instance->m_fpsLimit;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 float TRAP::Application::GetFrameTime()
 {
 	return s_Instance->m_FrameTime;

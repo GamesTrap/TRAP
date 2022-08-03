@@ -2993,3 +2993,4 @@ SITREP 08/03/2022|22w31a1
     - Moved Windows version checks from WindowingAPI to Utils ~<15 mins
     - Utils Added IsWindows11BuildOrGreaterWin32() ~<5 mins
     - Windows WindowingAPI now honors dark/light mode for window decorations on Windows 10/11 ~<10 mins
+    - Application Added setter and getter for FPS limiter ~<5 mins

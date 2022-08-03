@@ -96,6 +96,18 @@ namespace TRAP
 		/// <returns>Current frames per second.</returns>
 		static uint32_t GetFPS();
 		/// <summary>
+		/// Set a FPS limit.
+		/// Note: Valid FPS range is 25 - 500. 0 sets unlimited FPS.
+		/// </summary>
+		/// <param name="fps">FPS to limit to.</param>
+		static void SetFPSLimit(uint32_t fps);
+		/// <summary>
+		/// Retrieve the current FPS limit.
+		/// Note: 0 means unlimited FPS.
+		/// </summary>
+		/// <returns>Current FPS limit.</returns>
+		static uint32_t GetFPSLimit();
+		/// <summary>
 		/// Get the current frame time.
 		/// </summary>
 		/// <returns>Current frame time.</returns>
