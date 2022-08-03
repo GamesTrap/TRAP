@@ -114,6 +114,55 @@ namespace TRAP::Utils
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef TRAP_PLATFORM_WINDOWS
+	using PFN_RtlVerifyVersionInfo = LONG(WINAPI*)(OSVERSIONINFOEXW*, ULONG, ULONGLONG);
+	struct NTDLL
+	{
+		HINSTANCE Instance = nullptr;
+		PFN_RtlVerifyVersionInfo RtlVerifyVersionInfo = nullptr;
+	};
+
+	/// <summary>
+	/// Replacement for IsWindowsVersionOrGreater, as we cannot rely on the application
+	/// having a correct embedded manifest.
+	/// </summary>
+	/// <param name="major">Major Windows version.</param>
+	/// <param name="minor">Minor Windows version.</param>
+	/// <param name="sp">Service pack.</param>
+	/// <returns>Whether Windows version is given version or newer.</returns>
+	BOOL IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp);
+	/// <summary>
+	/// Checks whether we are on at least the specified build of Windows 10.
+	/// </summary>
+	/// <param name="build">Build number.</param>
+	/// <returns>Whether Windows 10 version is given build or newer.</returns>
+	BOOL IsWindows10BuildOrGreaterWin32(const WORD build);
+	/// <summary>
+	/// Checks whether we are on at least Windows 10 Anniversary Update.
+	/// </summary>
+	/// <returns>Whether Windows 10 Anniversary version or newer.</returns>
+	BOOL IsWindows10Version1607OrGreaterWin32();
+	/// <summary>
+	/// Checks whether we are on at least Windows 10 Creators Update.
+	/// </summary>
+	/// <returns>Whether Window 10 Creators version or newer.</returns>
+	BOOL IsWindows10Version1703OrGreaterWin32();
+	/// <summary>
+	/// Checks whether we are on at least Windows 8.1.
+	/// </summary>
+	/// <returns>Whether Windows 8.1 version or newer.</returns>
+	BOOL IsWindows8Point1OrGreaterWin32();
+	/// <summary>
+	/// Checks whether we are on at least Windows 8.
+	/// </summary>
+	/// <returns>Whether Windows 8 version or newer.</returns>
+	BOOL IsWindows8OrGreaterWin32();
+	/// <summary>
+	/// Checks whether we are on at least Windows 7.
+	/// </summary>
+	/// <returns>Whether Windows 7 version or newer.</returns>
+	BOOL IsWindows7OrGreaterWin32();
+#endif
 
 }
 

@@ -35,81 +35,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-//Replacement for IsWindowsVersionOrGreater as MinGW lacks versionhelpers.h
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
-{
-	OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, {0}, sp };
-	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
-	ULONGLONG cond = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
-	cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
-	cond = VerSetConditionMask(cond, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
-	//      latter lies unless the user knew to embed a non-default manifest
-	//      announcing support for Windows 10 via supportedOS GUID
-	return s_Data.NTDLL.RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether we are on at least the specified build of Windows 10
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10BuildOrGreaterWin32(const WORD build)
-{
-	OSVERSIONINFOEXW osvi = { sizeof(osvi), 10, 0, build };
-	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER;
-	ULONGLONG cond = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
-	cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
-	cond = VerSetConditionMask(cond, VER_BUILDNUMBER, VER_GREATER_EQUAL);
-	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
-	//      latter lies unless the user knew to embed a non-default manifest
-	//      announcing support for Windows 10 via supportedOS GUID
-	return s_Data.NTDLL.RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether we are on at least Windows 10 Anniversary Update
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10Version1607OrGreaterWin32()
-{
-	return IsWindows10BuildOrGreaterWin32(14393);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether we are on at least Windows 10 Creators Update
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows10Version1703OrGreaterWin32()
-{
-	return IsWindows10BuildOrGreaterWin32(15063);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether we are on at least Windows 8.1
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows8Point1OrGreaterWin32()
-{
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINBLUE),
-		                                  LOBYTE(_WIN32_WINNT_WINBLUE), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether we are on at least Windows 8
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows8OrGreaterWin32()
-{
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN8),
-		                                  LOBYTE(_WIN32_WINNT_WIN8), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Checks whether we are on at least Windows 7
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindows7OrGreaterWin32()
-{
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN7),
-		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Load necessary libraries (DLLs)
 bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 {
@@ -160,14 +85,7 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 																											 "GetDpiForMonitor");
 	}
 
-	s_Data.NTDLL.Instance = static_cast<HINSTANCE>(TRAP::Utils::DynamicLoading::LoadLibrary("ntdll.dll"));
-	if (s_Data.NTDLL.Instance)
-	{
-		s_Data.NTDLL.RtlVerifyVersionInfo = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_Data.NTDLL.Instance,
-																													"RtlVerifyVersionInfo");
-	}
-
-	if (IsWindows7OrGreaterWin32())
+	if (Utils::IsWindows7OrGreaterWin32())
 		return true;
 
 	Utils::Dialogs::ShowMsgBox("Unsupported Windows version", "Unsupported Windows version!\n"
@@ -191,9 +109,6 @@ void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 
 	if (s_Data.SHCore.Instance)
 		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.SHCore.Instance);
-
-	if (s_Data.NTDLL.Instance)
-		TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.NTDLL.Instance);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -298,7 +213,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	{
 		if(uMsg == WM_NCCREATE)
 		{
-			if(IsWindows10Version1607OrGreaterWin32())
+			if(Utils::IsWindows10Version1607OrGreaterWin32())
 				s_Data.User32.EnableNonClientDPIScaling(hWnd);
 		}
 
@@ -779,7 +694,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		if (windowPtr->Monitor)
 			break;
 
-		if (IsWindows10Version1607OrGreaterWin32())
+		if (Utils::IsWindows10Version1607OrGreaterWin32())
 			DPI = s_Data.User32.GetDPIForWindow(windowPtr->Handle);
 
 		GetFullWindowSize(GetWindowStyle(windowPtr), GetWindowExStyle(windowPtr), 0, 0, xOffset, yOffset, DPI);
@@ -837,7 +752,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	case WM_GETDPISCALEDSIZE:
 	{
 		//Adjust the window size to keep the content area size constant
-		if (IsWindows10Version1703OrGreaterWin32())
+		if (Utils::IsWindows10Version1703OrGreaterWin32())
 		{
 			RECT source = { 0 }, target = { 0 };
 			SIZE* size = reinterpret_cast<SIZE*>(lParam);
@@ -864,7 +779,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 		//Resize windowed mode windows that either permit rescaling or that
 		//need it to compensate for non-client area scaling
-		if (!windowPtr->Monitor && IsWindows10Version1703OrGreaterWin32())
+		if (!windowPtr->Monitor && Utils::IsWindows10Version1703OrGreaterWin32())
 		{
 			const RECT* suggested = reinterpret_cast<RECT*>(lParam);
 			::SetWindowPos(windowPtr->Handle, HWND_TOP, suggested->left, suggested->top,
@@ -1239,7 +1154,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, 
 {
 	UINT xDPI = 0, yDPI = 0;
 
-	if (IsWindows8Point1OrGreaterWin32())
+	if (Utils::IsWindows8Point1OrGreaterWin32())
 	{
 		if(s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI) != S_OK)
 		{
@@ -1376,7 +1291,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 
 	SetPropW(window->Handle, L"TRAP", static_cast<void*>(window));
 
-	if (IsWindows7OrGreaterWin32())
+	if (Utils::IsWindows7OrGreaterWin32())
 	{
 		s_Data.User32.ChangeWindowMessageFilterEx(window->Handle,
 			WM_DROPFILES, MSGFLT_ALLOW, nullptr);
@@ -1402,7 +1317,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 		//This cannot be done until we know what monitor the window was placed on.
 		//Only update the restored window rect as the window may be maximized
 
-		if (IsWindows10Version1607OrGreaterWin32())
+		if (Utils::IsWindows10Version1607OrGreaterWin32())
 		{
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle,
 				s_Data.User32.GetDPIForWindow(window->Handle));
@@ -1466,7 +1381,7 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindowManually(const InternalWindow* 
 	{
 		const DWORD exStyle = GetWindowLongW(window->Handle, GWL_EXSTYLE);
 
-		if(IsWindows10Version1607OrGreaterWin32())
+		if(Utils::IsWindows10Version1607OrGreaterWin32())
 		{
 			const UINT dpi = s_Data.User32.GetDPIForWindow(window->Handle);
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle, dpi);
@@ -1588,7 +1503,7 @@ void TRAP::INTERNAL::WindowingAPI::GetFullWindowSize(const DWORD style, const DW
 {
 	RECT rect = { 0, 0, contentWidth, contentHeight };
 
-	if (IsWindows10Version1607OrGreaterWin32())
+	if (Utils::IsWindows10Version1607OrGreaterWin32())
 		s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle, dpi);
 	else
 		AdjustWindowRectEx(&rect, style, FALSE, exStyle);
@@ -1749,7 +1664,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* wind
 
 	GetClientRect(window->Handle, &rect);
 
-	if (IsWindows10Version1607OrGreaterWin32())
+	if (Utils::IsWindows10Version1607OrGreaterWin32())
 		s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, GetWindowExStyle(window), s_Data.User32.GetDPIForWindow(window->Handle));
 	else
 		AdjustWindowRectEx(&rect, style, FALSE, GetWindowExStyle(window));
@@ -1813,7 +1728,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* wi
 {
 	RECT rect = { xPos, yPos, xPos, yPos };
 
-	if (IsWindows10Version1607OrGreaterWin32())
+	if (Utils::IsWindows10Version1607OrGreaterWin32())
 	{
 		s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
 			                                   s_Data.User32.GetDPIForWindow(window->Handle));
@@ -1844,7 +1759,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		{
 			RECT rect = { xPos, yPos, xPos + width, yPos + height };
 
-			if (IsWindows10Version1607OrGreaterWin32())
+			if (Utils::IsWindows10Version1607OrGreaterWin32())
 			{
 				s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE,
 				                                       GetWindowExStyle(window),
@@ -1908,7 +1823,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		else
 			after = HWND_NOTOPMOST;
 
-		if (IsWindows10Version1607OrGreaterWin32())
+		if (Utils::IsWindows10Version1607OrGreaterWin32())
 		{
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
 				                                   s_Data.User32.GetDPIForWindow(window->Handle));
@@ -2036,9 +1951,9 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	CreateKeyTables();
 	UpdateKeyNamesWin32();
 
-	if (IsWindows10Version1703OrGreaterWin32())
+	if (Utils::IsWindows10Version1703OrGreaterWin32())
 		s_Data.User32.SetProcessDPIAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-	else if (IsWindows8Point1OrGreaterWin32())
+	else if (Utils::IsWindows8Point1OrGreaterWin32())
 		s_Data.SHCore.SetProcessDPIAwareness(Process_DPI_Awareness::Process_Per_Monitor_DPI_Aware); //Process per monitor DPI aware
 
 	s_Data.User32.SetProcessDPIAware();
@@ -2399,7 +2314,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 	{
 		RECT rect = { 0, 0, width, height };
 
-		if (IsWindows10Version1607OrGreaterWin32())
+		if (Utils::IsWindows10Version1607OrGreaterWin32())
 		{
 			s_Data.User32.AdjustWindowRectExForDPI(&rect, GetWindowStyle(window), FALSE, GetWindowExStyle(window),
 				                                   s_Data.User32.GetDPIForWindow(window->Handle));

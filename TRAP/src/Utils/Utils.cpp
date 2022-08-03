@@ -5,6 +5,7 @@
 #include "Utils/String/String.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include "Application.h"
+#include "Utils/DynamicLoading/DynamicLoading.h"
 
 std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
@@ -299,3 +300,101 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 
 	return windowManager;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+
+static TRAP::Utils::NTDLL s_ntdll;
+
+BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
+{
+	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
+	{
+		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
+		if (s_ntdll.Instance)
+		{
+			s_ntdll.RtlVerifyVersionInfo = DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
+																									  "RtlVerifyVersionInfo");
+		}
+
+		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "[Utils][Win32] Failed to load ntdll.dll");
+	}
+
+	OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, {0}, sp };
+	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
+	ULONGLONG cond = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
+	cond = VerSetConditionMask(cond, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
+	//      latter lies unless the user knew to embed a non-default manifest
+	//      announcing support for Windows 10 via supportedOS GUID
+	return s_ntdll.RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
+{
+	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
+	{
+		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
+		if (s_ntdll.Instance)
+		{
+			s_ntdll.RtlVerifyVersionInfo = DynamicLoading::GetLibrarySymbol<PFN_RtlVerifyVersionInfo>(s_ntdll.Instance,
+																									  "RtlVerifyVersionInfo");
+		}
+
+		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "[Utils][Win32] Failed to load ntdll.dll");
+	}
+
+	OSVERSIONINFOEXW osvi = { sizeof(osvi), 10, 0, build };
+	const DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER;
+	ULONGLONG cond = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
+	cond = VerSetConditionMask(cond, VER_BUILDNUMBER, VER_GREATER_EQUAL);
+	//HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
+	//      latter lies unless the user knew to embed a non-default manifest
+	//      announcing support for Windows 10 via supportedOS GUID
+	return s_ntdll.RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
+{
+	return IsWindows10BuildOrGreaterWin32(14393);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
+{
+	return IsWindows10BuildOrGreaterWin32(15063);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
+{
+	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINBLUE),
+		                                  LOBYTE(_WIN32_WINNT_WINBLUE), 0);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
+{
+	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN8),
+		                                  LOBYTE(_WIN32_WINNT_WIN8), 0);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
+{
+	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN7),
+		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);
+}
+
+#endif

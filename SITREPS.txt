@@ -2990,3 +2990,4 @@ SITREP 08/03/2022|22w31a1
     - HTTP Fixed use of IPv6 when address is not valid ~<5 mins
     - IPv4Address & IPv6Address Removed redundant null terminators from ToString() ~<5 mins
     - Utils::HashCombine replaced recursion with fold expression ~<5 mins
+    - Moved Windows version checks from WindowingAPI to Utils ~<15 mins
