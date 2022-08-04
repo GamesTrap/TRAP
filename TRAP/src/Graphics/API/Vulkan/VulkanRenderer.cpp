@@ -282,36 +282,23 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
 
 #ifndef TRAP_HEADLESS_MODE
-	if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
+	if (presentStatus == PresentStatus::OutOfDate || p->ResizeSwapChain)
 	{
-		if(presentStatus == PresentStatus::DeviceReset)
-			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Device was reset while presenting!\n"
-											 "Error code: 0x000D",
-			                                 TRAP::Utils::Dialogs::Style::Error,
-											 TRAP::Utils::Dialogs::Buttons::Quit);
-		else if(presentStatus == PresentStatus::Failed)
-		{
-			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Presenting failed!\n"
-											 "Error code: 0x000F",
-			                                 TRAP::Utils::Dialogs::Style::Error,
-											 TRAP::Utils::Dialogs::Buttons::Quit);
-		}
+		p->ResizeSwapChain = false;
 
-		TRAP::Application::Shutdown();
-	}
-	else if (presentStatus == PresentStatus::OutOfDate)
-	{
 		//Recreation needed
 		//Clear SwapChain reference
 		presentDesc = {};
 
 		p->SwapChain.reset();
 
+		const auto fbSize = p->Window->GetFrameBufferSize();
+
 		SwapChainDesc swapChainDesc{};
 		swapChainDesc.Window = p->Window;
 		swapChainDesc.PresentQueues = { s_graphicQueue };
-		swapChainDesc.Width = p->Window->GetWidth();
-		swapChainDesc.Height = p->Window->GetHeight();
+		swapChainDesc.Width = fbSize.x;
+		swapChainDesc.Height = fbSize.y;
 		swapChainDesc.ImageCount = RendererAPI::ImageCount;
 		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
 		swapChainDesc.ClearColor = p->ClearColor;
@@ -335,6 +322,23 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 											 TRAP::Utils::Dialogs::Buttons::Quit);
 			TRAP::Application::Shutdown();
 		}
+	}
+	else if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
+	{
+		if (presentStatus == PresentStatus::DeviceReset)
+			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Device was reset while presenting!\n"
+				"Error code: 0x000D",
+				TRAP::Utils::Dialogs::Style::Error,
+				TRAP::Utils::Dialogs::Buttons::Quit);
+		else if (presentStatus == PresentStatus::Failed)
+		{
+			TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Presenting failed!\n"
+				"Error code: 0x000F",
+				TRAP::Utils::Dialogs::Style::Error,
+				TRAP::Utils::Dialogs::Buttons::Quit);
+		}
+
+		TRAP::Application::Shutdown();
 	}
 #else /*TRAP_HEADLESS_MODE*/
 	if(p->Resize)

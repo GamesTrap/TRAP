@@ -750,7 +750,8 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
 	TP_PROFILE_FUNCTION();
 
-	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
+	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
 
 	return false;
 }

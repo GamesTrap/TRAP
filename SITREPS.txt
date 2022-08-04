@@ -2994,3 +2994,7 @@ SITREP 08/03/2022|22w31a1
     - Utils Added IsWindows11BuildOrGreaterWin32() ~<5 mins
     - Windows WindowingAPI now honors dark/light mode for window decorations on Windows 10/11 ~<10 mins
     - Application Added setter and getter for FPS limiter ~<5 mins
+
+SITREP 08/05/2022|22w31b1
+    - Changed TRAP Engine version to 22w31b1(0.8.19)
+    - Fixed presentation failures when a swapchain resize was needed ~<10 mins

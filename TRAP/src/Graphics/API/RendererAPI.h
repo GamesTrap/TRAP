@@ -676,6 +676,13 @@ namespace TRAP::Graphics
 		/// <param name="sampleCount">Sample count to use.</param>
 		static void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount);
 
+		/// <summary>
+		/// Notify the RendererAPI that the SwapChain needs to be resized.
+		/// This function should be called inside FrameBufferResizeEvent callbacks.
+		/// </summary>
+		/// <param name="window">Window that needs an updated SwapChain.</param>
+		static void ResizeSwapChain(Window* window = nullptr);
+
 	//protected:
 		/// <summary>
 		/// Retrieve the main windows internal rendering data.
@@ -2443,6 +2450,7 @@ namespace TRAP::Graphics
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
+			bool ResizeSwapChain = false;
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;

@@ -347,6 +347,16 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RendererAPI::ResizeSwapChain(Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow();
+
+	s_perWindowDataMap[window]->ResizeSwapChain = true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
 	if(!s_isVulkanCapableFirstTest)
