@@ -107,13 +107,6 @@ namespace TRAP::Graphics
 		/// </summary>
 		static void ResetStats();
 
-		/// <summary>
-		/// Clear used textures.
-		/// Currently only used when a texture got reloaded
-		/// via the HotTextureReloading.
-		/// </summary>
-		static void ClearTextures();
-
 	private:
 		/// <summary>
 		/// Reset pointers and current texture slot for a new draw call.

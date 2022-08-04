@@ -3007,3 +3007,4 @@ SITREP 08/05/2022|22w31b1
     - Renderer2D Added ExtendBuffers() function which allocates buffers for another draw call ~<10 mins
     - Renderer2D now allows up to 100000 quads with up to 32 different textures per draw call ~<10 mins
     - Renderer2D now starts a new draw call when exceeding the current draw calls quad or texture limit ~<5 mins
+    - Renderer2D Removed ClearTextures() as it isn't needed anymore ~<5 mins

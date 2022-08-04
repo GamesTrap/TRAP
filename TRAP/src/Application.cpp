@@ -866,7 +866,6 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			Graphics::Renderer2D::ClearTextures();
 			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(p.string());
 
 			//Send event

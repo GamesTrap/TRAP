@@ -373,18 +373,6 @@ void TRAP::Graphics::Renderer2D::ResetStats()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::ClearTextures()
-{
-	s_data.TextureSlotIndex = 1;
-	for(auto& buffer : s_data.DataBuffers)
-	{
-		std::fill(buffer.TextureSlots.begin(),
-	              buffer.TextureSlots.end(), s_data.WhiteTexture.get());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::Renderer2D::Reset()
 {
 	s_data.QuadVertexBufferPtr = s_data.DataBuffers[s_data.DataBufferIndex].QuadVertices.data();
