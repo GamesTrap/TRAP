@@ -25,10 +25,6 @@ namespace TRAP::Graphics::API
 		                    std::vector<std::vector<VulkanRenderer::DescriptorUpdateData>> updateData,
 		                    uint32_t maxSets, uint8_t dynamicOffsetCount,
 							uint32_t set);
-		/// <summary>
-		/// Destructor.
-		/// </summary>
-		~VulkanDescriptorSet() override;
 
 		/// <summary>
 		/// Copy constructor.

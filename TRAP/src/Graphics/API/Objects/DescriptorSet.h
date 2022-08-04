@@ -11,7 +11,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		virtual ~DescriptorSet();
+		virtual ~DescriptorSet() = default;
 
 		/// <summary>
 		/// Copy constructor.
@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		DescriptorSet();
+		DescriptorSet() = default;
 	};
 }
 

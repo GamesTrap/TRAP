@@ -161,7 +161,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignatur
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<TRAP::Graphics::DescriptorSet*,
+const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
                  TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const
 {
 	return m_descriptorSets;

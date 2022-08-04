@@ -2998,3 +2998,12 @@ SITREP 08/03/2022|22w31a1
 SITREP 08/05/2022|22w31b1
     - Changed TRAP Engine version to 22w31b1(0.8.19)
     - Fixed presentation failures when a swapchain resize was needed ~<10 mins
+    - DescriptorPool RetrieveDescriptorSet() now returns TRAP::Scope instead of raw pointer ~<5 mins
+    - Removed DescriptorSet.cpp ~<5 mins
+    - VulkanDescriptorPool now doesn't save it's allocated DescriptorSets anymore ~<5 mins
+    - VulkanShader now sets DescriptorSets as dirty when bound (they will be reused in RendererAPI::ImageCount frames) ~>20 mins
+    - Renderer2D reduced max number of textures per draw call from 4096 to 32 ~<5 mins
+    - Renderer2D renamed FlushAndReset() to Reset() ~<5 mins
+    - Renderer2D Added ExtendBuffers() function which allocates buffers for another draw call ~<10 mins
+    - Renderer2D now allows up to 100000 quads with up to 32 different textures per draw call ~<10 mins
+    - Renderer2D now starts a new draw call when exceeding the current draw calls quad or texture limit ~<5 mins

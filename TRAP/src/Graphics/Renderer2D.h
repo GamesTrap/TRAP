@@ -116,15 +116,20 @@ namespace TRAP::Graphics
 
 	private:
 		/// <summary>
-		/// TBD
+		/// Reset pointers and current texture slot for a new draw call.
 		/// </summary>
-		static void FlushAndReset();
+		static void Reset();
 		/// <summary>
 		/// Utility to retrieve the index for the given texture.
 		/// </summary>
 		/// <param name="texture">Texture to find index for.</param>
 		/// <returns>Index to the texture.</returns>
 		static float GetTextureIndex(Texture* texture);
+		/// <summary>
+		/// Allocated new buffers for a new draw call.
+		/// Note: If the buffers are already allocated, this function will do nothing.
+		/// </summary>
+		static void ExtendBuffers();
 
 		static Renderer2DData s_data;
 	};

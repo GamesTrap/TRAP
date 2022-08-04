@@ -54,7 +54,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Descriptor set description.</param>
 		/// <returns>New descriptor set.</returns>
-		virtual DescriptorSet* RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
+		virtual TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
 
 	protected:
 		/// <summary>

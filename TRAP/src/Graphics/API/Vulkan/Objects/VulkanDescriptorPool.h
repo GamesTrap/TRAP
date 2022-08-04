@@ -70,7 +70,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="desc">Descriptor set description.</param>
 		/// <returns>New descriptor set.</returns>
-		DescriptorSet* RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
+		TRAP::Scope<DescriptorSet> RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) override;
 
 		inline static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
@@ -88,8 +88,6 @@ namespace TRAP::Graphics::API
 		std::mutex m_mutex;
 
 		TRAP::Ref<VulkanDevice> m_device;
-
-		std::vector<TRAP::Scope<VulkanDescriptorSet>> m_descriptorSets;
 
 		static std::array<VkDescriptorPoolSize, DESCRIPTOR_TYPE_RANGE_SIZE> s_descriptorPoolSizes;
 

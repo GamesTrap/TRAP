@@ -98,7 +98,7 @@ namespace TRAP::Embed
 		layout(location = 3) in flat float vTexIndex;
 
 		layout(UpdateFreqStatic, binding = 1) uniform sampler Sampler;
-		layout(UpdateFreqDynamic, binding = 1) uniform texture2D Textures[4096];
+		layout(UpdateFreqDynamic, binding = 1) uniform texture2D Textures[32];
 
 		void main()
 		{

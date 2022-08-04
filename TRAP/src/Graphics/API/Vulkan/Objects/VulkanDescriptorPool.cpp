@@ -100,7 +100,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
+TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
 	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>
 		(
@@ -141,9 +141,8 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 		TRAP_ASSERT(dynamicOffsetCount == 1);
 	}
 
-	return m_descriptorSets.emplace_back(TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature,
-																			  updateData, maxSets,
-																			  dynamicOffsetCount, updateFreq)).get();
+	return TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature, updateData, maxSets,
+	                                            dynamicOffsetCount, updateFreq);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

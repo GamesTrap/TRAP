@@ -9,15 +9,6 @@
 #include "VulkanTexture.h"
 #include "Graphics/Textures/Texture.h"
 
-TRAP::Graphics::API::VulkanDescriptorSet::~VulkanDescriptorSet()
-{
-#ifdef VERBOSE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanDescriptorSetPrefix, "Destroying DescriptorSet");
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDevice> device,
 	                                                          std::vector<VkDescriptorSet> vkDescriptorSetHandles,
 	                                                          TRAP::Ref<VulkanRootSignature> rootSignature,
@@ -34,10 +25,6 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 	      m_device(std::move(device))
 {
 	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
-
-#ifdef VERBOSE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanDescriptorSetPrefix, "Creating DescriptorSet");
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

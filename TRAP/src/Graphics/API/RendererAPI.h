@@ -1717,7 +1717,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		struct QueueSubmitDesc
 		{
-			///Command buffers to submit
+			//Command buffers to submit
 			std::vector<CommandBuffer*> Cmds{};
 			//Fence to signal
 			TRAP::Ref<Fence> SignalFence{};

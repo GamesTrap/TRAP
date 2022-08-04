@@ -25,6 +25,7 @@ void TRAP::Graphics::Renderer::Init()
 {
 	TP_PROFILE_FUNCTION();
 
+	//BUG This doesn't work on AMD Vega 10 iGPU
 	s_maxDrawCalls = RendererAPI::GPUSettings.MaxUniformBufferRange /
 	                 static_cast<uint32_t>(UniformBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 

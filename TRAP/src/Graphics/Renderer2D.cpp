@@ -25,24 +25,30 @@ namespace TRAP::Graphics
 
 	struct Renderer2DData
 	{
-		static constexpr uint32_t MaxQuads = 1000000;
+		static constexpr uint32_t MaxQuads = 100000;
 		static constexpr uint32_t MaxVertices = MaxQuads * 4;
 		static constexpr uint32_t MaxIndices = MaxQuads * 6;
-		static constexpr uint32_t MaxTextureSlots = 4096;
+		static constexpr uint32_t MaxTextureSlots = 32;
 
-		Scope<VertexBuffer> QuadVertexBuffer;
-		Scope<IndexBuffer> QuadIndexBuffer;
+		struct Buffers
+		{
+			Scope<VertexBuffer> QuadVertexBuffer = nullptr;
+			Scope<IndexBuffer> QuadIndexBuffer = nullptr;
+			std::vector<QuadVertex> QuadVertices = std::vector<QuadVertex>(MaxVertices);
+			std::vector<Texture*> TextureSlots = std::vector<Texture*>(MaxTextureSlots);
+			uint32_t QuadCount = 0;
+		};
+		std::vector<Buffers> DataBuffers = std::vector<Buffers>(1); //Allocate first set of buffers
+		uint32_t DataBufferIndex = 0;
+
+		Scope<std::array<uint32_t, Renderer2DData::MaxIndices>> QuadIndicesData = nullptr; //Used by ExtendBuffers()
+
 		Scope<Shader> TextureShader;
 		Ref<Sampler> TextureSampler;
 		Scope<Texture> WhiteTexture;
 
-		Scope<std::array<QuadVertex, MaxVertices>> QuadVertices = MakeScope<std::array<QuadVertex, MaxVertices>>();
-
-		uint32_t QuadIndexCount = 0;
-		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
 
-		std::vector<Texture*> TextureSlots = std::vector<Texture*>(MaxTextureSlots);
 		uint32_t TextureSlotIndex = 1; //0 = White texture
 
 		std::array<Math::Vec4, 4> QuadVertexPositions{};
@@ -72,9 +78,9 @@ void TRAP::Graphics::Renderer2D::Init()
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
 #endif
 
-	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex),
-	                                               UpdateFrequency::Dynamic);
-	s_data.QuadVertexBuffer->SetLayout
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex),
+	                                                                                   UpdateFrequency::Dynamic);
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadVertexBuffer->SetLayout
 	({
 		{ ShaderDataType::Float3, "Position" },
 		{ ShaderDataType::Float4, "Color" },
@@ -82,27 +88,24 @@ void TRAP::Graphics::Renderer2D::Init()
 		{ ShaderDataType::Float, "TexIndex" }
 	});
 
-	s_data.QuadVertexBufferBase = (*s_data.QuadVertices).data();
-
-	Scope<std::array<uint32_t, Renderer2DData::MaxIndices>> quadIndices = MakeScope<std::array<uint32_t, Renderer2DData::MaxIndices>>();
+	s_data.QuadIndicesData = MakeScope<std::array<uint32_t, Renderer2DData::MaxIndices>>();
 	for(uint32_t offset = 0, i = 0; i < Renderer2DData::MaxIndices; i += 6)
 	{
-		(*quadIndices)[i + 0] = offset + 0;
-		(*quadIndices)[i + 1] = offset + 1;
-		(*quadIndices)[i + 2] = offset + 2;
+		(*s_data.QuadIndicesData)[i + 0] = offset + 0;
+		(*s_data.QuadIndicesData)[i + 1] = offset + 1;
+		(*s_data.QuadIndicesData)[i + 2] = offset + 2;
 
-		(*quadIndices)[i + 3] = offset + 2;
-		(*quadIndices)[i + 4] = offset + 3;
-		(*quadIndices)[i + 5] = offset + 0;
+		(*s_data.QuadIndicesData)[i + 3] = offset + 2;
+		(*s_data.QuadIndicesData)[i + 4] = offset + 3;
+		(*s_data.QuadIndicesData)[i + 5] = offset + 0;
 
 		offset += 4;
 	}
 
-	s_data.QuadIndexBuffer = IndexBuffer::Create((*quadIndices).data(),
-		                                         Renderer2DData::MaxIndices * sizeof(uint32_t),
-		                                         UpdateFrequency::Dynamic);
-	s_data.QuadIndexBuffer->AwaitLoading();
-	quadIndices.reset();
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadIndexBuffer = IndexBuffer::Create((*s_data.QuadIndicesData).data(),
+		                                                        Renderer2DData::MaxIndices * sizeof(uint32_t),
+		                                                        UpdateFrequency::Dynamic);
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadIndexBuffer->AwaitLoading();
 
 	s_data.CameraUniformBuffer = UniformBuffer::Create(&s_data.UniformCamera,
 	                                                   sizeof(Renderer2DData::UniformCamera),
@@ -115,7 +118,8 @@ void TRAP::Graphics::Renderer2D::Init()
 																		       255, 255, 255, 255,
 																			   255, 255, 255, 255 });
 	s_data.WhiteTexture = Texture::CreateFromImage("Renderer2DWhite", whiteImage.get(), TextureType::Texture2D);
-	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
+	std::fill(s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.begin(),
+	          s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.end(), s_data.WhiteTexture.get());
 
 	const SamplerDesc samplerDesc{};
 	s_data.TextureSampler = Sampler::Create(samplerDesc);
@@ -124,9 +128,6 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
 	s_data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
 	s_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
-
-	//Use static shader resources
-	s_data.TextureShader->UseSampler(0, 1, s_data.TextureSampler.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -139,12 +140,12 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
 #endif
 
+	s_data.QuadIndicesData.reset();
 	s_data.CameraUniformBuffer.reset();
 	s_data.TextureSampler.reset();
 	s_data.TextureShader.reset();
 	s_data.WhiteTexture.reset();
-	s_data.QuadIndexBuffer.reset();
-	s_data.QuadVertexBuffer.reset();
+	s_data.DataBuffers.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -161,8 +162,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 	s_data.CameraUniformBuffer->AwaitLoading();
 
 	//Reset Vertices & Indices
-	s_data.QuadIndexCount = 0;
-	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
+	s_data.QuadVertexBufferPtr = s_data.DataBuffers[s_data.DataBufferIndex].QuadVertices.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -179,8 +179,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	s_data.CameraUniformBuffer->AwaitLoading();
 
 	//Reset Vertices & Indices
-	s_data.QuadIndexCount = 0;
-	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
+	s_data.QuadVertexBufferPtr = s_data.DataBuffers[s_data.DataBufferIndex].QuadVertices.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -189,33 +188,38 @@ void TRAP::Graphics::Renderer2D::EndScene()
 {
 	TP_PROFILE_FUNCTION();
 
-	const uint32_t dataSize = (s_data.QuadVertexBufferPtr - s_data.QuadVertexBufferBase) * sizeof(QuadVertex);
-	if(!dataSize)
-		return;
-
-	//Update Vertices
-	s_data.QuadVertexBuffer->SetData(reinterpret_cast<float*>(s_data.QuadVertexBufferBase), dataSize);
-	s_data.QuadVertexBuffer->AwaitLoading();
-
-	//Use dynamic shader resources
-	for(uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; ++i)
+	for(uint32_t i = 0; i < s_data.DataBuffers.size(); ++i)
 	{
-		if(!s_data.TextureSlots[i])
-			s_data.TextureSlots[i] = s_data.WhiteTexture.get();
+		if(s_data.DataBuffers[i].QuadCount == 0)
+			continue;
+
+		const uint32_t verticesSize = s_data.DataBuffers[i].QuadCount * sizeof(QuadVertex) * sizeof(float);
+		const uint32_t indicesCount = s_data.DataBuffers[i].QuadCount * 6;
+
+		//Update Vertices
+		s_data.DataBuffers[i].QuadVertexBuffer->SetData(reinterpret_cast<float*>(s_data.DataBuffers[i].QuadVertices.data()), verticesSize);
+		s_data.DataBuffers[i].QuadVertexBuffer->AwaitLoading();
+
+		//Use dynamic shader resources
+		s_data.TextureShader->UseTextures(1, 1, s_data.DataBuffers[i].TextureSlots);
+		s_data.TextureShader->UseUBO(1, 0, s_data.CameraUniformBuffer.get());
+		s_data.TextureShader->UseSampler(0, 1, s_data.TextureSampler.get());
+
+		//Use Vertex & Index Buffer
+		s_data.DataBuffers[i].QuadVertexBuffer->Use();
+		s_data.DataBuffers[i].QuadIndexBuffer->Use();
+
+		//Use Shader
+		s_data.TextureShader->Use();
+
+		RenderCommand::DrawIndexed(indicesCount);
+
+		s_data.DataBuffers[i].QuadCount = 0;
+
+		s_data.Stats.DrawCalls++;
 	}
-	s_data.TextureShader->UseTextures(1, 1, s_data.TextureSlots);
-	s_data.TextureShader->UseUBO(1, 0, s_data.CameraUniformBuffer.get());
 
-	//Use Vertex & Index Buffer
-	s_data.QuadVertexBuffer->Use();
-	s_data.QuadIndexBuffer->Use();
-
-	//Use Shader
-	s_data.TextureShader->Use();
-
-	RenderCommand::DrawIndexed(s_data.QuadIndexCount);
-
-	s_data.Stats.DrawCalls++;
+	s_data.DataBufferIndex = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -266,8 +270,12 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	if(texture && texture->GetType() != TextureType::Texture2D)
 		return;
 
-	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
-		FlushAndReset();
+	if (s_data.DataBuffers[s_data.DataBufferIndex].QuadCount * 6 >= Renderer2DData::MaxIndices ||
+	    s_data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+	{
+		ExtendBuffers();
+		Reset();
+	}
 
 	Texture* const tex = texture ? texture : s_data.WhiteTexture.get();
 	const float textureIndex = GetTextureIndex(tex);
@@ -281,7 +289,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 		s_data.QuadVertexBufferPtr++;
 	}
 
-	s_data.QuadIndexCount += 6;
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadCount++;
 
 	s_data.Stats.QuadCount++;
 }
@@ -293,25 +301,46 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(Texture* const texture)
 	TRAP_ASSERT(texture, "Texture is nullptr!");
 	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a Texture2D!");
 
-	float textureIndex = -1.0f;
+	const auto res = std::find(s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.begin(),
+	                           s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.end(), texture);
 
-	for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++)
+	if(res == s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.end())
 	{
-		if (s_data.TextureSlots[i] == texture)
-		{
-			textureIndex = static_cast<float>(i);
-			break;
-		}
+		s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots[s_data.TextureSlotIndex++] = texture;
+		return s_data.TextureSlotIndex - 1;
 	}
 
-	if (textureIndex < 0.0f)
-	{
-		textureIndex = static_cast<float>(s_data.TextureSlotIndex);
-		s_data.TextureSlots[s_data.TextureSlotIndex] = texture;
-		s_data.TextureSlotIndex++;
-	}
+	return std::distance(s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.begin(), res);
+}
 
-	return textureIndex;
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::ExtendBuffers()
+{
+	s_data.DataBufferIndex++;
+
+	if(s_data.DataBufferIndex < s_data.DataBuffers.size()) //Already allocated
+		return;
+
+	s_data.DataBuffers.emplace_back();
+
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex),
+	                                                                                   UpdateFrequency::Dynamic);
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadVertexBuffer->SetLayout
+	({
+		{ ShaderDataType::Float3, "Position" },
+		{ ShaderDataType::Float4, "Color" },
+		{ ShaderDataType::Float2, "TexCoord" },
+		{ ShaderDataType::Float, "TexIndex" }
+	});
+
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadIndexBuffer = IndexBuffer::Create((*s_data.QuadIndicesData).data(),
+		                                                        Renderer2DData::MaxIndices * sizeof(uint32_t),
+		                                                        UpdateFrequency::Dynamic);
+	s_data.DataBuffers[s_data.DataBufferIndex].QuadIndexBuffer->AwaitLoading();
+
+	std::fill(s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.begin(),
+	          s_data.DataBuffers[s_data.DataBufferIndex].TextureSlots.end(), s_data.WhiteTexture.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -347,16 +376,18 @@ void TRAP::Graphics::Renderer2D::ResetStats()
 void TRAP::Graphics::Renderer2D::ClearTextures()
 {
 	s_data.TextureSlotIndex = 1;
-	s_data.TextureSlots = std::vector<Texture*>(Renderer2DData::MaxTextureSlots);
-	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
+	for(auto& buffer : s_data.DataBuffers)
+	{
+		std::fill(buffer.TextureSlots.begin(),
+	              buffer.TextureSlots.end(), s_data.WhiteTexture.get());
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::FlushAndReset()
+void TRAP::Graphics::Renderer2D::Reset()
 {
-	s_data.QuadIndexCount = 0;
-	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
+	s_data.QuadVertexBufferPtr = s_data.DataBuffers[s_data.DataBufferIndex].QuadVertices.data();
 
 	s_data.TextureSlotIndex = 1;
 }

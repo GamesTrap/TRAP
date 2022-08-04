@@ -78,9 +78,10 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	{
-		for(float y = -5.0; y < 5.0; y += 0.5f)
+		float size = 5.0f;
+		for(float y = -size; y < size; y += 0.5f)
 		{
-			for(float x = -5.0; x < 5.0; x += 0.5f)
+			for(float x = -size; x < size; x += 0.5f)
 			{
 				TRAP::Math::Vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
 				TRAP::Graphics::Renderer2D::DrawQuad({{x, y, 0.0f}, {}, {0.45f, 0.45f, 1.0f}}, color);

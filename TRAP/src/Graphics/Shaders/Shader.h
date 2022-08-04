@@ -17,6 +17,7 @@
 #include "Graphics/Buffers/UniformBuffer.h"
 #include "Graphics/Buffers/StorageBuffer.h"
 #include "Graphics/Textures/Texture.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 
 namespace TRAP::Graphics
 {
@@ -30,14 +31,6 @@ namespace TRAP::Graphics
 		{
 			std::string Definition{};
 			std::string Value{};
-		};
-
-		struct DescriptorSets
-		{
-			DescriptorSet* StaticDescriptors;
-			DescriptorSet* PerFrameDescriptors;
-			DescriptorSet* PerBatchDescriptors;
-			DescriptorSet* PerDrawDescriptors;
 		};
 
 	protected:
@@ -106,8 +99,7 @@ namespace TRAP::Graphics
 		/// Retrieve the descriptor sets of the shader.
 		/// </summary>
 		/// <returns>Descriptor sets of the shader.</returns>
-		const std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const;
-
+		const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const;
 
 		/// <summary>
 		/// Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
@@ -231,7 +223,7 @@ namespace TRAP::Graphics
 		std::filesystem::path m_filepath;
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
-		std::array<DescriptorSet*, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
+		std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets> m_descriptorSets{};
 		std::vector<Macro> m_macros;
 		bool m_valid;
 
