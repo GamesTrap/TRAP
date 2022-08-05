@@ -3009,3 +3009,4 @@ SITREP 08/05/2022|22w31b1
     - Renderer2D now starts a new draw call when exceeding the current draw calls quad or texture limit ~<5 mins
     - Renderer2D Removed ClearTextures() as it isn't needed anymore ~<5 mins
     - Fixed wrong descriptorCount usage in VkDescriptorSetLayoutBinding ~<30 mins
+    - Renderer2D Fixed artifacting because of non dynamically uniform array index value usage ~<10 mins

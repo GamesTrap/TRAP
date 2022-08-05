@@ -333,6 +333,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//TODO Move this to utils as std::vector<T> ConvertByte<T>(std::vector<uint8_t>);
 std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<uint8_t>& source)
 {
 	//BUG Depends on Endianness ?!
