@@ -11,7 +11,7 @@
   
 <meta property="og:site_name" content="TRAP Documentation" />
   
-<meta property="og:description" content="Defined in File Shader.h. Nested Relationships: Nested Types: Struct Shader::DescriptorSets, Struct Shader::Macro. Inheritance Relationships: Derived Type: public TRAP::Graphics::API::VulkanShader(..." />
+<meta property="og:description" content="Defined in File Shader.h. Nested Relationships: Nested Types: Struct Shader::Macro. Inheritance Relationships: Derived Type: public TRAP::Graphics::API::VulkanShader( Class VulkanShader). Class Doc..." />
   
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
   
@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class StorageBuffer" href="classTRAP_1_1Graphics_1_1StorageBuffer.html" /><link rel="prev" title="Class Semaphore" href="classTRAP_1_1Graphics_1_1Semaphore.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Class Shader - TRAP 0.8.17 documentation</title>
+        <title>Class Shader - TRAP 0.8.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.17 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.19 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -302,7 +302,6 @@
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureUpdateDesc.html">Struct RendererAPI::TextureUpdateDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1VertexAttribute.html">Struct RendererAPI::VertexAttribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1VertexLayout.html">Struct RendererAPI::VertexLayout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets.html">Struct Shader::DescriptorSets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1Shader_1_1Macro.html">Struct Shader::Macro</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1VertexBufferElement.html">Struct VertexBufferElement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Input_1_1ControllerInternal.html">Struct Input::ControllerInternal</a></li>
@@ -1239,8 +1238,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1a94869ab5cce9fd1dea26ad1f42bedde6.html">Function TRAP::Utils::Hash::SHA3_256(std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1ab203167fb922144016d90be3bdb0a8a1.html">Function TRAP::Utils::Hash::SHA3_512(const void *, uint64_t)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1aa38b429b8835cadf9a77d89aa5e27647.html">Function TRAP::Utils::Hash::SHA3_512(std::string_view)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a9bddfcc075acce9ded27ea93bf93565d.html">Function TRAP::Utils::HashCombine(std::size_t&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a0a327acd1ae49f7b5e2b702824c0debb.html">Template Function TRAP::Utils::HashCombine(std::size_t&amp;, const T&amp;, Rest…)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a0a327acd1ae49f7b5e2b702824c0debb.html">Template Function TRAP::Utils::HashCombine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ByteSwap_8h_1a8b5c09ee36087e7450107dd4bb0bc506.html">Template Function TRAP::Utils::Memory::SwapBytes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a44c3eceb58b71f563e93f4ada596856d.html">Function TRAP::Utils::String::CompareAnyCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
@@ -1462,7 +1460,6 @@
 <div class="section" id="nested-types">
 <h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
-<li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets.html#exhale-struct-structtrap-1-1graphics-1-1shader-1-1descriptorsets"><span class="std std-ref">Struct Shader::DescriptorSets</span></a></p></li>
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1Shader_1_1Macro.html#exhale-struct-structtrap-1-1graphics-1-1shader-1-1macro"><span class="std std-ref">Struct Shader::Macro</span></a></p></li>
 </ul>
 </div>
@@ -1582,7 +1579,7 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK4TRAP8Graphics6Shader17GetDescriptorSetsEv">
-<span id="_CPPv3NK4TRAP8Graphics6Shader17GetDescriptorSetsEv"></span><span id="_CPPv2NK4TRAP8Graphics6Shader17GetDescriptorSetsEv"></span><span id="TRAP::Graphics::Shader::GetDescriptorSetsC"></span><span class="target" id="classTRAP_1_1Graphics_1_1Shader_1a664cdeb318b28db5b3e1bc12e3dd5a1a"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPIE" title="TRAP::Graphics::RendererAPI"><span class="n"><span class="pre">RendererAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPI17MaxDescriptorSetsE" title="TRAP::Graphics::RendererAPI::MaxDescriptorSets"><span class="n"><span class="pre">MaxDescriptorSets</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">GetDescriptorSets</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4TRAP8Graphics6Shader17GetDescriptorSetsEv" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3NK4TRAP8Graphics6Shader17GetDescriptorSetsEv"></span><span id="_CPPv2NK4TRAP8Graphics6Shader17GetDescriptorSetsEv"></span><span id="TRAP::Graphics::Shader::GetDescriptorSetsC"></span><span class="target" id="classTRAP_1_1Graphics_1_1Shader_1a4976be4ebd20299a07bd1dcbefb8e6f1"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Base_8h_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope"><span class="n"><span class="pre">Scope</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPIE" title="TRAP::Graphics::RendererAPI"><span class="n"><span class="pre">RendererAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPI17MaxDescriptorSetsE" title="TRAP::Graphics::RendererAPI::MaxDescriptorSets"><span class="n"><span class="pre">MaxDescriptorSets</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">GetDescriptorSets</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4TRAP8Graphics6Shader17GetDescriptorSetsEv" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Retrieve the descriptor sets of the shader. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1838,7 +1835,7 @@
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader16m_descriptorSetsE">
-<span id="_CPPv3N4TRAP8Graphics6Shader16m_descriptorSetsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader16m_descriptorSetsE"></span><span id="TRAP::Graphics::Shader::m_descriptorSets__std::array:DescriptorSetP.RendererAPI::MaxDescriptorSets:"></span><span class="target" id="classTRAP_1_1Graphics_1_1Shader_1a8a0d22a13c8c8d66f7d0926ac293aaab"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPIE" title="TRAP::Graphics::RendererAPI"><span class="n"><span class="pre">RendererAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPI17MaxDescriptorSetsE" title="TRAP::Graphics::RendererAPI::MaxDescriptorSets"><span class="n"><span class="pre">MaxDescriptorSets</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_descriptorSets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader16m_descriptorSetsE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics6Shader16m_descriptorSetsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader16m_descriptorSetsE"></span><span id="TRAP::Graphics::Shader::m_descriptorSets__std::array:TRAP::Scope:DescriptorSet:.RendererAPI::MaxDescriptorSets:"></span><span class="target" id="classTRAP_1_1Graphics_1_1Shader_1ae8b9ee5478f7249e1c1b32162e6abadf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Base_8h_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope"><span class="n"><span class="pre">Scope</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPIE" title="TRAP::Graphics::RendererAPI"><span class="n"><span class="pre">RendererAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1RendererAPI.html#_CPPv4N4TRAP8Graphics11RendererAPI17MaxDescriptorSetsE" title="TRAP::Graphics::RendererAPI::MaxDescriptorSets"><span class="n"><span class="pre">MaxDescriptorSets</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m_descriptorSets</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader16m_descriptorSetsE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
@@ -1852,34 +1849,6 @@
 <dd></dd></dl>
 
 </div>
-<dl class="cpp struct">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader14DescriptorSetsE">
-<span id="_CPPv3N4TRAP8Graphics6Shader14DescriptorSetsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader14DescriptorSetsE"></span><span id="TRAP::Graphics::Shader::DescriptorSets"></span><span class="target" id="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DescriptorSets</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader14DescriptorSetsE" title="Permalink to this definition">#</a><br /></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader14DescriptorSets17StaticDescriptorsE">
-<span id="_CPPv3N4TRAP8Graphics6Shader14DescriptorSets17StaticDescriptorsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader14DescriptorSets17StaticDescriptorsE"></span><span id="TRAP::Graphics::Shader::DescriptorSets::StaticDescriptors__DescriptorSetP"></span><span class="target" id="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets_1aa433f8f3f5f725723aea36f06eb7410a"></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">StaticDescriptors</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader14DescriptorSets17StaticDescriptorsE" title="Permalink to this definition">#</a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader14DescriptorSets19PerFrameDescriptorsE">
-<span id="_CPPv3N4TRAP8Graphics6Shader14DescriptorSets19PerFrameDescriptorsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader14DescriptorSets19PerFrameDescriptorsE"></span><span id="TRAP::Graphics::Shader::DescriptorSets::PerFrameDescriptors__DescriptorSetP"></span><span class="target" id="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets_1a68b93893fbff419db3cd92b8839d43eb"></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PerFrameDescriptors</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader14DescriptorSets19PerFrameDescriptorsE" title="Permalink to this definition">#</a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader14DescriptorSets19PerBatchDescriptorsE">
-<span id="_CPPv3N4TRAP8Graphics6Shader14DescriptorSets19PerBatchDescriptorsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader14DescriptorSets19PerBatchDescriptorsE"></span><span id="TRAP::Graphics::Shader::DescriptorSets::PerBatchDescriptors__DescriptorSetP"></span><span class="target" id="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets_1a0ff80392447bb186c61e4b08460827b2"></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PerBatchDescriptors</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader14DescriptorSets19PerBatchDescriptorsE" title="Permalink to this definition">#</a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader14DescriptorSets18PerDrawDescriptorsE">
-<span id="_CPPv3N4TRAP8Graphics6Shader14DescriptorSets18PerDrawDescriptorsE"></span><span id="_CPPv2N4TRAP8Graphics6Shader14DescriptorSets18PerDrawDescriptorsE"></span><span id="TRAP::Graphics::Shader::DescriptorSets::PerDrawDescriptors__DescriptorSetP"></span><span class="target" id="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets_1abf409edbe2ad985781dfadc33775e5cd"></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html#_CPPv4N4TRAP8Graphics13DescriptorSetE" title="TRAP::Graphics::DescriptorSet"><span class="n"><span class="pre">DescriptorSet</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PerDrawDescriptors</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader14DescriptorSets18PerDrawDescriptorsE" title="Permalink to this definition">#</a><br /></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics6Shader5MacroE">
 <span id="_CPPv3N4TRAP8Graphics6Shader5MacroE"></span><span id="_CPPv2N4TRAP8Graphics6Shader5MacroE"></span><span id="TRAP::Graphics::Shader::Macro"></span><span class="target" id="structTRAP_1_1Graphics_1_1Shader_1_1Macro"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Macro</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics6Shader5MacroE" title="Permalink to this definition">#</a><br /></dt>

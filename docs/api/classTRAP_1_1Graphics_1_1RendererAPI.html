@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class RenderTarget" href="classTRAP_1_1Graphics_1_1RenderTarget.html" /><link rel="prev" title="Class Renderer2D" href="classTRAP_1_1Graphics_1_1Renderer2D.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Class RendererAPI - TRAP 0.8.17 documentation</title>
+        <title>Class RendererAPI - TRAP 0.8.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.17 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.19 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -302,7 +302,6 @@
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureUpdateDesc.html">Struct RendererAPI::TextureUpdateDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1VertexAttribute.html">Struct RendererAPI::VertexAttribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1VertexLayout.html">Struct RendererAPI::VertexLayout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1Shader_1_1DescriptorSets.html">Struct Shader::DescriptorSets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1Shader_1_1Macro.html">Struct Shader::Macro</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1VertexBufferElement.html">Struct VertexBufferElement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Input_1_1ControllerInternal.html">Struct Input::ControllerInternal</a></li>
@@ -1239,8 +1238,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1a94869ab5cce9fd1dea26ad1f42bedde6.html">Function TRAP::Utils::Hash::SHA3_256(std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1ab203167fb922144016d90be3bdb0a8a1.html">Function TRAP::Utils::Hash::SHA3_512(const void *, uint64_t)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1aa38b429b8835cadf9a77d89aa5e27647.html">Function TRAP::Utils::Hash::SHA3_512(std::string_view)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a9bddfcc075acce9ded27ea93bf93565d.html">Function TRAP::Utils::HashCombine(std::size_t&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a0a327acd1ae49f7b5e2b702824c0debb.html">Template Function TRAP::Utils::HashCombine(std::size_t&amp;, const T&amp;, Rest…)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a0a327acd1ae49f7b5e2b702824c0debb.html">Template Function TRAP::Utils::HashCombine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ByteSwap_8h_1a8b5c09ee36087e7450107dd4bb0bc506.html">Template Function TRAP::Utils::Memory::SwapBytes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a44c3eceb58b71f563e93f4ada596856d.html">Function TRAP::Utils::String::CompareAnyCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
@@ -4223,6 +4221,17 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15ResizeSwapChainEP6Window">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15ResizeSwapChainEP6Window"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15ResizeSwapChainEP6Window"></span><span id="TRAP::Graphics::RendererAPI::ResizeSwapChain__WindowP"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a2479c6d392e9717924094bba186674ac"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ResizeSwapChain</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classTRAP_1_1Window.html#_CPPv4N4TRAP6WindowE" title="TRAP::Window"><span class="n"><span class="pre">Window</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">window</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15ResizeSwapChainEP6Window" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Notify the <a class="reference internal" href="#classTRAP_1_1Graphics_1_1RendererAPI"><span class="std std-ref">RendererAPI</span></a> that the <a class="reference internal" href="classTRAP_1_1Graphics_1_1SwapChain.html#classTRAP_1_1Graphics_1_1SwapChain"><span class="std std-ref">SwapChain</span></a> needs to be resized. This function should be called inside FrameBufferResizeEvent callbacks. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>window</strong> – <a class="reference internal" href="classTRAP_1_1Window.html#classTRAP_1_1Window"><span class="std std-ref">Window</span></a> that needs an updated <a class="reference internal" href="classTRAP_1_1Graphics_1_1SwapChain.html#classTRAP_1_1Graphics_1_1SwapChain"><span class="std std-ref">SwapChain</span></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI17GetMainWindowDataEv">
 <span id="_CPPv3N4TRAP8Graphics11RendererAPI17GetMainWindowDataEv"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI17GetMainWindowDataEv"></span><span id="TRAP::Graphics::RendererAPI::GetMainWindowData"></span><span class="target" id="classTRAP_1_1Graphics_1_1RendererAPI_1a37e6b03ecbb091fefa94761223f1bf53"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N4TRAP8Graphics11RendererAPI13PerWindowDataE" title="TRAP::Graphics::RendererAPI::PerWindowData"><span class="n"><span class="pre">PerWindowData</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">GetMainWindowData</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI17GetMainWindowDataEv" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Retrieve the main windows internal rendering data. </p>
@@ -5511,6 +5520,11 @@
 <dd></dd></dl>
 
 <dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI13PerWindowData15ResizeSwapChainE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI13PerWindowData15ResizeSwapChainE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI13PerWindowData15ResizeSwapChainE"></span><span id="TRAP::Graphics::RendererAPI::PerWindowData::ResizeSwapChain__b"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1PerWindowData_1add00e7757282327ffdbc0017b6ea799a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ResizeSwapChain</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI13PerWindowData15ResizeSwapChainE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI13PerWindowData26CurrentSwapChainImageIndexE">
 <span id="_CPPv3N4TRAP8Graphics11RendererAPI13PerWindowData26CurrentSwapChainImageIndexE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI13PerWindowData26CurrentSwapChainImageIndexE"></span><span id="TRAP::Graphics::RendererAPI::PerWindowData::CurrentSwapChainImageIndex__uint32_t"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1PerWindowData_1a32fe3e43e8d9effc0572e690b538880c"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CurrentSwapChainImageIndex</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI13PerWindowData26CurrentSwapChainImageIndexE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
@@ -5750,8 +5764,7 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15QueueSubmitDesc4CmdsE">
 <span id="_CPPv3N4TRAP8Graphics11RendererAPI15QueueSubmitDesc4CmdsE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15QueueSubmitDesc4CmdsE"></span><span id="TRAP::Graphics::RendererAPI::QueueSubmitDesc::Cmds__std::vector:CommandBufferP:"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1QueueSubmitDesc_1a7492c98609dd61087cdfc7b974f09515"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1CommandBuffer.html#_CPPv4N4TRAP8Graphics13CommandBufferE" title="TRAP::Graphics::CommandBuffer"><span class="n"><span class="pre">CommandBuffer</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Cmds</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15QueueSubmitDesc4CmdsE" title="Permalink to this definition">#</a><br /></dt>
-<dd><p>Command buffers to submit. </p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15QueueSubmitDesc11SignalFenceE">
