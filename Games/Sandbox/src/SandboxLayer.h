@@ -132,8 +132,6 @@ public:
 		//Use Shader & Resources
 		m_indexedVertexBuffer->Use();
 		m_indexBuffer->Use();
-		m_shader->UseTexture(0, 0, m_texture);
-		m_shader->UseSampler(0, 1, m_sampler.get());
 		m_shader->Use();
 	}
 
@@ -167,6 +165,8 @@ public:
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			float time = TRAP::Application::GetTime();
+			m_shader->UseTexture(0, 0, m_texture);
+			m_shader->UseSampler(0, 1, m_sampler.get());
 			if (m_indexedDrawing)
 			{
 				TRAP::Graphics::RenderCommand::SetPushConstants("TimeRootConstant", &time);

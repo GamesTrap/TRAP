@@ -354,7 +354,7 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 	const uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                          0 : RendererAPI::GetCurrentImageIndex(window);
 
-	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size, offset, window);
+	UseBuffer(set, binding, uniformBuffer->GetUBOs()[UBOIndex].get(), size ? size : uniformBuffer->GetSize(), offset, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -374,7 +374,7 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 	const uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                           0 : RendererAPI::GetCurrentImageIndex(window);
 
-	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size, 0, window);
+	UseBuffer(set, binding, storageBuffer->GetSSBOs()[SSBOIndex].get(), size ? size : storageBuffer->GetSize(), 0, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

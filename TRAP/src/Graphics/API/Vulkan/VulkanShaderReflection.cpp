@@ -168,15 +168,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 				resources[j].Type = SPIRVToDescriptorType[static_cast<uint32_t>(resource.Type)];
 				resources[j].Set = resource.Set;
 				resources[j].Reg = resource.Binding;
-				const std::string lowerName = Utils::String::ToLower(resource.Name);
-				if(lowerName.find("rootcbv") == std::string::npos &&
-				   lowerName.find("dynamic") == std::string::npos &&
-				   resources[j].Type != TRAP::Graphics::RendererAPI::DescriptorType::RWBuffer)
-				{
-					resources[j].Size = resource.Size;
-				}
-				else
-					resources[j].Size = 1;
+				resources[j].Size = resource.Size;
 				resources[j].UsedStages = shaderStage;
 
 				resources[j].Name = resource.Name;

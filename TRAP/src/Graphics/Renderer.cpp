@@ -174,13 +174,13 @@ void TRAP::Graphics::Renderer::Submit(Shader* shader, VertexBuffer* vertexBuffer
 	s_modelStorageBuffer->AwaitLoading();
 
 	vertexBuffer->Use();
+	indexBuffer->Use();
 	if(shader)
 	{
 		shader->UseSSBO(1, 1, s_modelStorageBuffer.get(), s_maxDrawCalls * sizeof(Math::Mat4));
 		shader->UseUBO(1, 0, s_uniformBuffer.get());
 		shader->Use();
 	}
-	indexBuffer->Use();
 
 	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
