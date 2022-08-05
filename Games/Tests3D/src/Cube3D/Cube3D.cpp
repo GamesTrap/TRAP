@@ -205,12 +205,6 @@ void Cube3D::OnAttach()
     //Wait for all pending resources (just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-    //Use Textures
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid"));
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
-    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox"));
-    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
-
     TRAP::Graphics::RenderCommand::SetDepthTesting(true);
     TRAP::Graphics::RenderCommand::SetDepthWriting(true);
 }
@@ -337,6 +331,12 @@ void Cube3D::OnImGuiRender()
 
 void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
+    //Use Textures
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid"));
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
+    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseTexture(0, 0, TRAP::Graphics::TextureManager::GetCube("SkyBox"));
+    TRAP::Graphics::ShaderManager::Get("SkyBox")->UseSampler(0, 1, m_textureSampler.get());
+
     if(m_wireFrame)
     {
         TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line);

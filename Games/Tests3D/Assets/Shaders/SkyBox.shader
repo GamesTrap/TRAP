@@ -3,10 +3,10 @@ layout(location = 0) in vec3 Position;
 
 layout(location = 1) out vec3 TexCoords;
 
-layout(std140, UpdateFreqDynamic, binding = 0) uniform MatrixBuffer
+layout(std140, UpdateFreqDynamic, binding = 0) readonly buffer MatrixBuffer
 {
-	uniform mat4 sys_ProjectionMatrix;
-	uniform mat4 sys_ViewMatrix;
+	buffer mat4 sys_ProjectionMatrix;
+	buffer mat4 sys_ViewMatrix;
 } Matrices;
 
 void main()

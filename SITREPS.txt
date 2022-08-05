@@ -3010,3 +3010,4 @@ SITREP 08/05/2022|22w31b1
     - Renderer2D Removed ClearTextures() as it isn't needed anymore ~<5 mins
     - Fixed wrong descriptorCount usage in VkDescriptorSetLayoutBinding ~<30 mins
     - Renderer2D Fixed artifacting because of non dynamically uniform array index value usage ~<10 mins
+    - Renderer Replaced UBO with SSBO for SceneData (+ updated all affected shaders) ~<10 mins

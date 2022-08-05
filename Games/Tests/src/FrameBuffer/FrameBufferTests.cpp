@@ -58,9 +58,6 @@ void FrameBufferTests::OnAttach()
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-    //Use static shader resources
-    m_shader->UseSampler(0, 1, m_textureSampler.get());
-
     TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
     TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
     TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
@@ -101,6 +98,8 @@ void FrameBufferTests::OnDetach()
 
 void FrameBufferTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
+    m_shader->UseSampler(0, 1, m_textureSampler.get());
+
     //Stop RenderPass (necessary for transition)
     TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
 

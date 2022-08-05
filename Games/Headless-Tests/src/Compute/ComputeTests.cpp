@@ -61,8 +61,6 @@ void ComputeTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -80,6 +78,8 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 {
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::NONE)
         return;
+
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 
     static uint32_t frames = 0;
     if(frames == 3)

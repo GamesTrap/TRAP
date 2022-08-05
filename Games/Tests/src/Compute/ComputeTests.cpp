@@ -63,8 +63,6 @@ void ComputeTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-
-    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -80,6 +78,8 @@ void ComputeTests::OnDetach()
 
 void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 {
+    TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());
+
     //-------------------------------------------------------------------------------------------------------------------//
     //Async compute Stuff------------------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------------------------------------//

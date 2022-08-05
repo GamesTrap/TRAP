@@ -4,10 +4,10 @@ layout(location = 1) in vec3 Color;
 
 layout(location = 0) out vec3 vColor;
 
-layout(std140, UpdateFreqDynamic, binding = 0) uniform MatrixBuffer
+layout(std140, UpdateFreqDynamic, binding = 0) readonly buffer MatrixBuffer
 {
-	uniform mat4 sys_ProjectionMatrix;
-	uniform mat4 sys_ViewMatrix;
+	buffer mat4 sys_ProjectionMatrix;
+	buffer mat4 sys_ViewMatrix;
 } Matrices;
 
 layout(std140, UpdateFreqDynamic, binding = 1) readonly buffer ModelBuffer

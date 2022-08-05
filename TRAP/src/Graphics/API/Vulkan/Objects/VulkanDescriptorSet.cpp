@@ -355,11 +355,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 					                    ") - Sizes must be provided with Offsets");
 					VALIDATE_DESCRIPTOR(off.Sizes[arr] > 0, std::string("Descriptor (") + desc->Name +
 					                    std::string(") - Sizes[") + std::to_string(arr) + "] is zero");
-					VALIDATE_DESCRIPTOR(off.Sizes[arr] <= RendererAPI::GPUSettings.MaxUniformBufferRange,
+					VALIDATE_DESCRIPTOR(off.Sizes[arr] <= RendererAPI::GPUSettings.MaxStorageBufferRange,
 						                std::string("Descriptor (") + desc->Name +
 										std::string(") - Sizes[") + std::to_string(arr) + std::string("] is ") +
 						                std::to_string(off.Sizes[arr]) + std::string(" which exceeds max size ") +
-						                std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange));
+						                std::to_string(RendererAPI::GPUSettings.MaxStorageBufferRange));
 
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo.offset = off.Offsets[arr];
 					updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo.range = off.Sizes[arr];

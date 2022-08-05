@@ -64,14 +64,6 @@ void VulkanTextureTests::OnAttach()
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-
-    //Use static shader resources
-    m_shader->UseTexture(0, 0, m_texture);
-    m_shader->UseSampler(0, 1, m_textureSampler.get());
-
-    //Use buffers
-    m_vertexBuffer->Use();
-    m_indexBuffer->Use();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -87,6 +79,9 @@ void VulkanTextureTests::OnDetach()
 
 void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
+    m_shader->UseTexture(0, 0, m_texture);
+    m_shader->UseSampler(0, 1, m_textureSampler.get());
+
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
 

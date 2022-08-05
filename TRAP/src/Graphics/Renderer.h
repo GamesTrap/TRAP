@@ -107,7 +107,7 @@ namespace TRAP::Graphics
 		};
 
 		static Scope<SceneData> s_sceneData;
-		static Scope<UniformBuffer> s_uniformBuffer;
+		static Scope<StorageBuffer> s_sceneStorageBuffer;
 		static Scope<StorageBuffer> s_modelStorageBuffer;
 
 		static uint32_t s_maxDrawCalls;
