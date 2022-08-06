@@ -62,6 +62,11 @@ project "Headless-Tests"
 			"SPIRV-Cross-HLSL"
 		}
 
+		sysincludedirs
+		{
+			"%{IncludeDir.WAYLAND}"
+		}
+
 	filter "system:windows"
 		links
 		{

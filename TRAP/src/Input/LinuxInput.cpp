@@ -535,7 +535,7 @@ void TRAP::Input::UpdateControllerGUID(std::string&)
 
 std::string TRAP::Input::GetKeyboardLayoutName()
 {
-	return TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName();
+	return TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutName();
 }
 
 #endif

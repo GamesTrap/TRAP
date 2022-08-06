@@ -85,6 +85,7 @@ namespace TRAP::INTERNAL
 		enum class Error;
 	private:
 		struct VkWin32SurfaceCreateInfoKHR;
+		struct VkWaylandSurfaceCreateInfoKHR;
 		struct VkXlibSurfaceCreateInfoKHR;
 		struct VkXcbSurfaceCreateInfoKHR;
 		//---------//
@@ -97,6 +98,10 @@ namespace TRAP::INTERNAL
 		struct xcb_connection_t;
 		using xcb_window_t = XID;
 		using xcb_visualid_t = XID;
+		struct wl_shm;
+		struct wl_cursor_theme;
+		struct wl_cursor_image;
+		struct wl_cursor;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Typedefs-----------------------------------------------------------------------------------------------------------//
@@ -231,6 +236,10 @@ namespace TRAP::INTERNAL
 		                                              const VkAllocationCallbacks*, VkSurfaceKHR*);
 		using PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
 		                                                                     xcb_connection_t*, xcb_visualid_t);
+		using PFN_vkCreateWaylandSurfaceKHR = VkResult(*)(VkInstance, const VkWaylandSurfaceCreateInfoKHR*,
+		                                              const VkAllocationCallbacks*, VkSurfaceKHR*);
+		using PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR = VkBool32(*)(VkPhysicalDevice, uint32_t,
+		                                                                         wl_display*);
 #endif
 		//-------//
 		//Windows//
@@ -302,6 +311,7 @@ namespace TRAP::INTERNAL
 		//Vulkan
 		using VkXlibSurfaceCreateFlagsKHR = VkFlags;
 		using VkXcbSurfaceCreateFlagsKHR = VkFlags;
+		using VkWaylandSurfaceCreateFlagsKHR = VkFlags;
 
 		//XShape
 		using PFN_XShapeQueryExtension = int32_t(*)(Display*, int32_t*, int32_t*);
@@ -421,6 +431,62 @@ namespace TRAP::INTERNAL
 		using PFN_XrmInitialize = void(*)();
 		using PFN_XrmUniqueQuark = XrmQuark(*)();
 		using PFN_XUnregisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
+
+		//--------------//
+		//Linux(Wayland)//
+		//--------------//
+
+		//Display
+		using PFN_wl_display_flush = int(*)(wl_display*);
+		using PFN_wl_display_cancel_read = void(*)(wl_display*);
+		using PFN_wl_display_dispatch_pending = int(*)(wl_display*);
+		using PFN_wl_display_read_events = int(*)(wl_display*);
+		using PFN_wl_display_connect = wl_display*(*)(const char*);
+		using PFN_wl_display_disconnect = void(*)(wl_display*);
+		using PFN_wl_display_roundtrip = int(*)(wl_display*);
+		using PFN_wl_display_get_fd = int(*)(wl_display*);
+		using PFN_wl_display_prepare_read = int(*)(wl_display*);
+
+		//Proxy
+		using PFN_wl_proxy_marshal = void(*)(wl_proxy*, uint32_t, ...);
+		using PFN_wl_proxy_add_listener = int(*)(wl_proxy*, void(**)(void), void*);
+		using PFN_wl_proxy_destroy = void(*)(wl_proxy*);
+		using PFN_wl_proxy_marshal_constructor = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, ...);
+		using PFN_wl_proxy_marshal_constructor_versioned = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, ...);
+		using PFN_wl_proxy_get_user_data = void*(*)(wl_proxy*);
+		using PFN_wl_proxy_set_user_data = void*(*)(wl_proxy*, void*);
+		using PFN_wl_proxy_get_version = uint32_t(*)(wl_proxy*);
+		using PFN_wl_proxy_marshal_flags = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, uint32_t, ...);
+
+		//Cursor
+		using PFN_wl_cursor_theme_load = wl_cursor_theme(*)(const char*, int, wl_shm*);
+		using PFN_wl_cursor_theme_destroy = void(*)(wl_cursor_theme*);
+		using PFN_wl_cursor_theme_get_cursor = wl_cursor*(*)(wl_cursor_theme*, const char*);
+		using PFN_wl_cursor_image_get_buffer = wl_buffer*(*)(wl_cursor_image*);
+
+		//XKB
+		using PFN_xkb_context_new = xkb_context*(*)(xkb_context_flags);
+		using PFN_xkb_context_unref = void(*)(xkb_context*);
+		using PFN_xkb_keymap_new_from_string = xkb_keymap*(*)(xkb_context*, const char*, xkb_keymap_format, xkb_keymap_compile_flags);
+		using PFN_xkb_keymap_unref = void(*)(xkb_keymap*);
+		using PFN_xkb_keymap_mod_get_index = xkb_mod_index_t(*)(xkb_keymap*, const char*);
+		using PFN_xkb_keymap_key_repeats = int(*)(xkb_keymap*, xkb_keycode_t);
+		using PFN_xkb_keymap_key_get_syms_by_level = int(*)(xkb_keymap*, xkb_keycode_t, xkb_layout_index_t, xkb_level_index_t, const xkb_keysym_t**);
+		using PFN_xkb_state_new = xkb_state*(*)(xkb_keymap*);
+		using PFN_xkb_state_unref = void(*)(xkb_state*);
+		using PFN_xkb_state_key_get_syms = int(*)(xkb_state*, xkb_keycode_t, const xkb_keysym_t**);
+		using PFN_xkb_state_update_mask = xkb_state_component(*)(xkb_state*, xkb_mod_mask_t, xkb_mod_mask_t, xkb_mod_mask_t, xkb_layout_index_t, xkb_layout_index_t, xkb_layout_index_t);
+		using PFN_xkb_state_key_get_layout = xkb_layout_index_t(*)(xkb_state*, xkb_keycode_t);
+		using PFN_xkb_state_mod_index_is_active = int(*)(xkb_state*, xkb_mod_index_t, xkb_state_component);
+
+		//XKB Compose
+		using PFN_xkb_compose_table_new_from_locale = xkb_compose_table*(*)(xkb_context*, const char*, xkb_compose_compile_flags);
+		using PFN_xkb_compose_table_unref = void(*)(xkb_compose_table*);
+		using PFN_xkb_compose_state_new = xkb_compose_state*(*)(xkb_compose_table*, xkb_compose_state_flags);
+		using PFN_xkb_compose_state_unref = void(*)(xkb_compose_state*);
+		using PFN_xkb_compose_state_feed = xkb_compose_feed_result(*)(xkb_compose_state*, xkb_keysym_t);
+		using PFN_xkb_compose_state_get_status = xkb_compose_status(*)(xkb_compose_state*);
+		using PFN_xkb_compose_state_get_one_sym = xkb_keysym_t(*)(xkb_compose_state*);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//
@@ -570,6 +636,54 @@ namespace TRAP::INTERNAL
 			VkXcbSurfaceCreateFlagsKHR flags;
 			xcb_connection_t* connection;
 			xcb_window_t window;
+		};
+
+		struct VkWaylandSurfaceCreateInfoKHR
+		{
+			VkStructureType sType;
+			const void* pNext;
+			VkWaylandSurfaceCreateFlagsKHR flags;
+			wl_display* display;
+			wl_surface* surface;
+		};
+
+		struct wl_cursor_image
+		{
+			uint32_t width;
+			uint32_t height;
+			uint32_t hotspot_x;
+			uint32_t hotspot_y;
+			uint32_t delay;
+		};
+
+		struct wl_cursor
+		{
+			unsigned int image_count;
+			wl_cursor_image** images;
+			char* name;
+		};
+
+		enum class TRAPDecorationSideWayland
+		{
+			MainWindow,
+			TopDecoration,
+			LeftDecoration,
+			RightDecoration,
+			BottomDecoration
+		};
+
+		struct TRAPDecorationWayland
+		{
+			wl_surface* surface;
+			wl_subsurface* subsurface;
+			wp_viewport* viewport;
+		};
+
+		struct TRAPOfferWayland
+		{
+			wl_data_offer* offer;
+			bool text_plain_utf8;
+			bool text_uri_list;
 		};
 #endif
 
@@ -990,6 +1104,124 @@ namespace TRAP::INTERNAL
 				PFN_XrmInitialize Initialize{};
 				PFN_XrmUniqueQuark UniqueQuark{};
 			} XRM{};
+
+			//Wayland
+			wl_display* DisplayWL;
+			wl_registry* Registry;
+			wl_compositor* Compositor;
+			wl_subcompositor* SubCompositor;
+			wl_shm* Shm;
+			wl_seat* Seat;
+			wl_pointer* Pointer;
+			wl_keyboard* Keyboard;
+			wl_data_device_manager* DataDeviceManager;
+			wl_data_device* DataDevice;
+			xdg_wm_base* WMBase;
+			zxdg_decoration_manager_v1* DecorationManager;
+			wp_viewporter* Viewporter;
+			zwp_relative_pointer_manager_v1* RelativePointerManager;
+			zwp_pointer_constraints_v1* PointerConstraints;
+			zwp_idle_inhibit_manager_v1* IdleInhibitManager;
+
+			std::vector<TRAPOfferWayland> Offers;
+
+			wl_data_offer* SelectionOffer;
+			wl_data_source* SelectionSource;
+
+			wl_data_offer* DragOffer;
+			InternalWindow* DragFocus;
+			uint32_t DragSerial;
+
+			int32_t CompositorVersion;
+			int32_t SeatVersion;
+
+			wl_cursor_theme* CursorTheme;
+			wl_cursor_theme* CursorThemeHiDPI;
+			wl_surface* CursorSurface;
+			const char* CursorPreviousName;
+			int32_t CursorTimerFD;
+			uint32_t Serial;
+			uint32_t PointerEnterSerial;
+
+			int32_t KeyRepeatTimerFD;
+			int32_t KeyRepeatRate;
+			int32_t KeyRepeatDelay;
+			int32_t KeyRepeatScancode;
+
+			struct
+			{
+				void* Handle;
+				xkb_context* Context;
+				xkb_keymap* KeyMap;
+				xkb_state* State;
+
+				xkb_compose_state* ComposeState;
+
+				xkb_mod_index_t ControlIndex;
+				xkb_mod_index_t AltIndex;
+				xkb_mod_index_t ShiftIndex;
+				xkb_mod_index_t SuperIndex;
+				xkb_mod_index_t CapsLockIndex;
+				xkb_mod_index_t NumLockIndex;
+				uint32_t Modifiers;
+
+				PFN_xkb_context_new ContextNew;
+				PFN_xkb_context_unref ContextUnref;
+				PFN_xkb_keymap_new_from_string KeyMapNewFromString;
+				PFN_xkb_keymap_unref KeyMapUnref;
+				PFN_xkb_keymap_mod_get_index KeyMapModGetIndex;
+				PFN_xkb_keymap_key_repeats KeyMapKeyRepeats;
+				PFN_xkb_keymap_key_get_syms_by_level KeyMapKeyGetSymsByLevel;
+				PFN_xkb_state_new StateNew;
+				PFN_xkb_state_unref StateUnref;
+				PFN_xkb_state_key_get_syms StateKeyGetSyms;
+				PFN_xkb_state_update_mask StateUpdateMask;
+				PFN_xkb_state_key_get_layout StateKeyGetLayout;
+				PFN_xkb_state_mod_index_is_active StateModIndexIsActive;
+
+				PFN_xkb_compose_table_new_from_locale ComposeTableNewFromLocale;
+				PFN_xkb_compose_table_unref ComposeTableUnref;
+				PFN_xkb_compose_state_new ComposeStateNew;
+				PFN_xkb_compose_state_unref ComposeStateUnref;
+				PFN_xkb_compose_state_feed ComposeStateFeed;
+				PFN_xkb_compose_state_get_status ComposeStateGetStatus;
+				PFN_xkb_compose_state_get_one_sym ComposeStateGetOneSym;
+			} WaylandXKB;
+
+			InternalWindow* PointerFocus;
+			InternalWindow* KeyboardFocus;
+
+			struct
+			{
+				void* Handle;
+				PFN_wl_display_flush DisplayFlush;
+				PFN_wl_display_cancel_read DisplayCancelRead;
+				PFN_wl_display_dispatch_pending DisplayDispatchPending;
+				PFN_wl_display_read_events DisplayReadEvents;
+				PFN_wl_display_disconnect DisplayDisconnect;
+				PFN_wl_display_roundtrip DisplayRoundtrip;
+				PFN_wl_display_get_fd DisplayGetFD;
+				PFN_wl_display_prepare_read DisplayPrepareRead;
+
+				PFN_wl_proxy_marshal ProxyMarshal;
+				PFN_wl_proxy_add_listener ProxyAddListener;
+				PFN_wl_proxy_destroy ProxyDestroy;
+				PFN_wl_proxy_marshal_constructor ProxyMarshalConstructor;
+				PFN_wl_proxy_marshal_constructor_versioned ProxyMarshalConstructorVersioned;
+				PFN_wl_proxy_get_user_data ProxyGetUserData;
+				PFN_wl_proxy_set_user_data ProxySetUserData;
+				PFN_wl_proxy_get_version ProxyGetVersion;
+				PFN_wl_proxy_marshal_flags ProxyMarshalFlags;
+			} WaylandClient;
+
+			struct
+			{
+				void* Handle;
+				PFN_wl_cursor_theme_load ThemeLoad;
+				PFN_wl_cursor_theme_destroy ThemeDestroy;
+				PFN_wl_cursor_theme_get_cursor ThemeGetCursor;
+				PFN_wl_cursor_image_get_buffer ImageGetBuffer;
+			} WaylandCursor;
 #endif
 		};
 	public:
@@ -1040,6 +1272,8 @@ namespace TRAP::INTERNAL
 
 			//Index of corresponding Xinerama screen, for EWMH full screen window placement
 			int32_t Index = 0;
+
+			wl_output* OutputWL;;
 #endif
 		};
 
@@ -1052,6 +1286,13 @@ namespace TRAP::INTERNAL
 			HCURSOR Handle = nullptr;
 #elif defined(TRAP_PLATFORM_LINUX)
 			Cursor Handle = 0;
+
+			wl_cursor* CursorWL;
+			wl_cursor* CursorHiDPI;
+			wl_buffer* Buffer;
+			int32_t Width, Height;
+			int32_t XHotspot, YHotspot;
+			int32_t CurrentImage;
 #endif
 		};
 
@@ -1141,6 +1382,52 @@ namespace TRAP::INTERNAL
 			//The time of the last KeyPress event per keycode, for discarding
 			//duplicate key events generated from some keys by ibus
 			std::array<Time, 256> KeyPressTimes;
+
+			//Wayland
+			bool Visible;
+			bool Activated;
+			bool Fullscreen;
+			bool Hovered;
+			wl_surface* Surface;
+			wl_callback* Callback;
+
+			struct
+			{
+				int32_t Width, Height;
+				bool Maximized;
+				bool Minimized;
+				bool Activated;
+				bool Fullscreen;
+			} Pending;
+
+			struct
+			{
+				xdg_surface* Surface;
+				xdg_toplevel* TopLevel;
+				zxdg_toplevel_decoration_v1* Decoration;
+				uint32_t Decorationmode;
+			} XDG;
+
+			char* Title;
+			char* AppID;
+
+			int32_t Scale;
+			std::vector<InternalMonitor*> Monitors;
+			int32_t MonitorsCount;
+			int32_t MonitorsSize;
+
+			zwp_relative_pointer_v1* RelativePointer;
+			zwp_locked_pointer_v1* LockedPointer;
+			zwp_confined_pointer_v1* ConfinedPointer;
+
+			zwp_idle_inhibitor_v1* IdleInhibitor;
+
+			struct
+			{
+				wl_buffer* Buffer;
+				TRAPDecorationWayland Top, Left, Right, Bottom;
+				TRAPDecorationSideWayland Focus;
+			} Decorations;
 #endif
 		};
 	private:
@@ -2516,6 +2803,8 @@ namespace TRAP::INTERNAL
 		/// Current video mode of the specified monitor, or an empty one if an error occurred.
 		/// </returns>
 		static InternalVideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
+		static InternalVideoMode PlatformGetVideoModeX11(const InternalMonitor* monitor);
+		static InternalVideoMode PlatformGetVideoModeWayland(const InternalMonitor* monitor);
 		/// <summary>
 		/// This function retrieves the size, in screen coordinates, of the content area of
 		/// the specified window. If you wish to retrieve the size of the framebuffer of the window
@@ -2530,6 +2819,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Output variable for the internal windows current width.</param>
 		/// <param name="height">Output variable for the internal windows current height.</param>
 		static void PlatformGetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowSizeX11(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowSizeWayland(const InternalWindow* window, int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specifed windowed mode window. If the window is a full screen window,
@@ -2548,6 +2839,8 @@ namespace TRAP::INTERNAL
 		/// <param name="xPos">X position to be set.</param>
 		/// <param name="yPos">Y position to be set.</param>
 		static void PlatformSetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		static void PlatformSetWindowPosX11(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		static void PlatformSetWindowPosWayland(const InternalWindow* window, int32_t xPos, int32_t yPos);
 		/// <summary>
 		/// This function sets the monitor that the window uses for full screen mode or,
 		/// if the monitor is nullptr, makes it windowed mode.
@@ -2579,6 +2872,12 @@ namespace TRAP::INTERNAL
 		static void PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
 											 int32_t refreshRate);
+		static void PlatformSetWindowMonitorX11(InternalWindow* window, InternalMonitor* monitor,
+			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
+											 int32_t refreshRate);
+		static void PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
+			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
+											 int32_t refreshRate);
 		/// <summary>
 		/// This function sets the monitor that the window uses for borderless full screen mode.
 		///
@@ -2588,6 +2887,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the monitor for.</param>
 		/// <param name="monitor">Internal monitor to use.</param>
 		static void PlatformSetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
+		static void PlatformSetWindowMonitorBorderlessX11(InternalWindow* window, InternalMonitor* monitor);
+		static void PlatformSetWindowMonitorBorderlessWayland(InternalWindow* window, InternalMonitor* monitor);
 		/// <summary>
 		/// This function returns a vector of all video modes supported by the specified monitor.
 		/// The returned vector is sorted in ascending order, first by color bit depth
@@ -2603,6 +2904,8 @@ namespace TRAP::INTERNAL
 		/// if an error occurred.
 		/// </returns>
 		static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
+		static std::vector<InternalVideoMode> PlatformGetVideoModesX11(const InternalMonitor* monitor);
+		static std::vector<InternalVideoMode> PlatformGetVideoModesWayland(const InternalMonitor* monitor);
 		/// <summary>
 		/// Initializes the windowing API.
 		/// Before most WindowingAPI functions can be used, the WindowingAPI must be initialized, and before the engine
@@ -2623,6 +2926,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <returns>True if windowing API was successfully initialized, false otherwise.</returns>
 		static bool PlatformInit();
+		static bool PlatformInitX11();
+		static bool PlatformInitWayland();
 		/// <summary>
 		/// This function destroys the specified window. On calling this function, no
 		/// further callbacks will be called for that window.
@@ -2633,6 +2938,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to destroy.</param>
 		static void PlatformDestroyWindow(InternalWindow* window);
+		static void PlatformDestroyWindowX11(InternalWindow* window);
+		static void PlatformDestroyWindowWayland(InternalWindow* window);
 		/// <summary>
 		/// This function destroys all remaining windows and cursor, and frees any other allocated resources.
 		/// Once this function is called, you must again call WindowingAPI::Init successfully before you
@@ -2651,6 +2958,8 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		static void PlatformShutdown();
+		static void PlatformShutdownX11();
+		static void PlatformShutdownWayland();
 		/// <summary>
 		/// This function retrieves the content scale for the specified monitor.
 		/// The content scale is the ratio between the current DPI and the platform's default DPI.
@@ -2670,6 +2979,8 @@ namespace TRAP::INTERNAL
 		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
 		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
 		static void PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorContentScaleX11(const InternalMonitor* monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorContentScaleWayland(const InternalMonitor* monitor, float& xScale, float& yScale);
 		/// <summary>
 		/// Returns the position of the monitor's viewport on the virtual screen.
 		/// This function returns the position, in screen coordinates, of the upper-left corner
@@ -2684,6 +2995,8 @@ namespace TRAP::INTERNAL
 		/// <param name="xPos">Output variable for the x position of the monitor.</param>
 		/// <param name="yPos">Output variable for the y position of the monitor.</param>
 		static void PlatformGetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetMonitorPosX11(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetMonitorPosWayland(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
 		/// <summary>
 		/// This function makes the specified window visible if it was previously
 		/// hidden. If the window is already visible or is in full screen mode,
@@ -2698,6 +3011,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to display.</param>
 		static void PlatformShowWindow(InternalWindow* window);
+		static void PlatformShowWindowX11(InternalWindow* window);
+		static void PlatformShowWindowWayland(InternalWindow* window);
 		/// <summary>
 		/// This function brings the specified window to front and sets input focus.
 		/// The window should already be visible and not minimized/iconified.
@@ -2722,6 +3037,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to focus.</param>
 		static void PlatformFocusWindow(const InternalWindow* window);
+		static void PlatformFocusWindowX11(const InternalWindow* window);
+		static void PlatformFocusWindowWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function creates a window.
 		/// Most of the options controlling how the window should be created are specified with window hints.
@@ -2774,6 +3091,10 @@ namespace TRAP::INTERNAL
 		/// <returns>True if the window was created successfully.</returns>
 		static bool PlatformCreateWindow(InternalWindow* window,
 			                             WindowConfig& WNDConfig);
+		static bool PlatformCreateWindowX11(InternalWindow* window,
+			                             WindowConfig& WNDConfig);
+		static bool PlatformCreateWindowWayland(InternalWindow* window,
+			                             WindowConfig& WNDConfig);
 		/// <summary>
 		/// This function sets the window title, encoded as UTF-8, of the specified window.
 		///
@@ -2783,6 +3104,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
 		static void PlatformSetWindowTitle(const InternalWindow* window, const std::string& title);
+		static void PlatformSetWindowTitleX11(const InternalWindow* window, const std::string& title);
+		static void PlatformSetWindowTitleWayland(const InternalWindow* window, const std::string& title);
 		/// <summary>
 		/// Creates a new custom cursor image that can be set for a window with SetCursor. The cursor can
 		/// be destroyed with DestroyCursor. Any remaining cursors are destroyed by WindowingAPI::Shutdown.
@@ -2801,6 +3124,10 @@ namespace TRAP::INTERNAL
 		/// <returns>True if the cursor was created successfully.</returns>
 		static bool PlatformCreateCursor(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
 		                                 int32_t yHotspot);
+		static bool PlatformCreateCursorX11(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
+		                                 int32_t yHotspot);
+		static bool PlatformCreateCursorWayland(InternalCursor* cursor, const Image* const image, int32_t xHotspot,
+		                                 int32_t yHotspot);
 		/// <summary>
 		/// Creates a cursor with a standard shape.
 		///
@@ -2811,6 +3138,8 @@ namespace TRAP::INTERNAL
 		/// <param name="type">Cursor type to get.</param>
 		/// <returns>True if the cursor was created successfully.</returns>
 		static bool PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& type);
+		static bool PlatformCreateStandardCursorX11(InternalCursor* cursor, const CursorType& type);
+		static bool PlatformCreateStandardCursorWayland(InternalCursor* cursor, const CursorType& type);
 		/// <summary>
 		/// This function destroys a cursor previously created with CreateCursor. Any remaining cursors
 		/// will be destroyed by WindowingAPI::Shutdown.
@@ -2824,6 +3153,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="cursor">Internal cursor to be destroyed.</param>
 		static void PlatformDestroyCursor(InternalCursor* cursor);
+		static void PlatformDestroyCursorX11(InternalCursor* cursor);
+		static void PlatformDestroyCursorWayland(InternalCursor* cursor);
 		/// <summary>
 		/// This function sets the cursor image to be used when the cursor is over the content are of the
 		/// specified window. The set cursor will only be visible when the CursorMode of the window is
@@ -2839,6 +3170,8 @@ namespace TRAP::INTERNAL
 		/// Internal cursor to set, or nullptr to switch back to the default arrow cursor.
 		/// </param>
 		static void PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor);
+		static void PlatformSetCursorX11(const InternalWindow* window, const InternalCursor* cursor);
+		static void PlatformSetCursorWayland(const InternalWindow* window, const InternalCursor* cursor);
 		/// <summary>
 		/// This function sets a cursor mode for the specified window.
 		///
@@ -2854,6 +3187,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the cursor mode for.</param>
 		/// <param name="mode">Cursor mode to be set.</param>
 		static void PlatformSetCursorMode(InternalWindow* window, CursorMode mode);
+		static void PlatformSetCursorModeX11(InternalWindow* window, CursorMode mode);
+		static void PlatformSetCursorModeWayland(InternalWindow* window, CursorMode mode);
 		/// <summary>
 		/// This function sets the position, in screen coordinates, of the cursor relative to the
 		/// upper-left corner of the content area of the specified window. The window must have
@@ -2874,6 +3209,8 @@ namespace TRAP::INTERNAL
 		/// <param name="xPos">New x position, relative to the left edge of the content area, for the cursor.</param>
 		/// <param name="yPos">New y position, relative to the top edge of the content area, for the cursor.</param>
 		static void PlatformSetCursorPos(InternalWindow* window, double xPos, double yPos);
+		static void PlatformSetCursorPosX11(InternalWindow* window, double xPos, double yPos);
+		static void PlatformSetCursorPosWayland(InternalWindow* window, double xPos, double yPos);
 		/// <summary>
 		/// This function returns the position of the cursor, in screen coordinates, relative
 		/// to the upper-left corner of the content area of the specified window.
@@ -2897,6 +3234,8 @@ namespace TRAP::INTERNAL
 		/// Output variable for the current y position, relative to the top edge of the content area, of the cursor.
 		/// </param>
 		static void PlatformGetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
+		static void PlatformGetCursorPosX11(const InternalWindow* window, double& xPos, double& yPos);
+		static void PlatformGetCursorPosWayland(const InternalWindow* window, double& xPos, double& yPos);
 		/// <summary>
 		/// This function sets the icon of the specified window. If no image is specified, the window
 		/// reverts to its default icon.
@@ -2914,6 +3253,8 @@ namespace TRAP::INTERNAL
 		/// Image to be set as window icon or nullptr to revert back to the default icon.
 		/// </param>
 		static void PlatformSetWindowIcon(InternalWindow* window, const Image* const image);
+		static void PlatformSetWindowIconX11(InternalWindow* window, const Image* const image);
+		static void PlatformSetWindowIconWayland(InternalWindow* window, const Image* const image);
 		/// <summary>
 		/// This function retrieves the position, in screen coordinates, of the upper-left corner of the
 		/// content area of the specified window.
@@ -2927,6 +3268,8 @@ namespace TRAP::INTERNAL
 		/// <param name="xPos">Output variable for the current x position of the internal window.</param>
 		/// <param name="yPos">Output variable for the current y position of the internal window.</param>
 		static void PlatformGetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetWindowPosX11(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
+		static void PlatformGetWindowPosWayland(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
 		/// <summary>
 		/// This function sets the size, in screen coordinates, of the content area of the specified window.
 		///
@@ -2946,6 +3289,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">New width for the internal window.</param>
 		/// <param name="height">New height for the internal window.</param>
 		static void PlatformSetWindowSize(InternalWindow* window, int32_t width, int32_t height);
+		static void PlatformSetWindowSizeX11(InternalWindow* window, int32_t width, int32_t height);
+		static void PlatformSetWindowSizeWayland(InternalWindow* window, int32_t width, int32_t height);
 		/// <summary>
 		/// This function toggles the resizeability of the specified window.
 		///
@@ -2955,6 +3300,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable resizing for the internal window.</param>
 		static void PlatformSetWindowResizable(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowResizableX11(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowResizableWayland(InternalWindow* window, bool enabled);
 		/// <summary>
 		/// This function toggles the decorations of the specified window.
 		///
@@ -2964,6 +3311,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable decorations for the internal window.</param>
 		static void PlatformSetWindowDecorated(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecoratedX11(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecoratedWayland(const InternalWindow* window, bool enabled);
 		/// <summary>
 		/// This function toggles whether the specified window is floating.
 		///
@@ -2973,6 +3322,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable floating mode for the internal window.</param>
 		static void PlatformSetWindowFloating(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowFloatingX11(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowFloatingWayland(const InternalWindow* window, bool enabled);
 		/// <summary>
 		/// This function sets the opacity of the window, including any decorations.
 		///
@@ -2987,6 +3338,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set opacity for.</param>
 		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
 		static void PlatformSetWindowOpacity(const InternalWindow* window, float opacity);
+		static void PlatformSetWindowOpacityX11(const InternalWindow* window, float opacity);
+		static void PlatformSetWindowOpacityWayland(const InternalWindow* window, float opacity);
 		/// <summary>
 		/// This function toggles mouse passthrough for the specified window.
 		///
@@ -2996,11 +3349,15 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable mouse passthrough for the internal window.</param>
 		static void PlatformSetWindowMousePassthrough(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowMousePassthroughX11(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowMousePassthroughWayland(InternalWindow* window, bool enabled);
 		/// <summary>
 		/// Hides the specified window from the taskbar.
 		/// </summary>
 		/// <param name="window">Internal window to hide from the taskbar.</param>
 		static void PlatformHideWindowFromTaskbar(InternalWindow* window);
+		static void PlatformHideWindowFromTaskbarX11(InternalWindow* window);
+		static void PlatformHideWindowFromTaskbarWayland(InternalWindow* window);
 		/// <summary>
 		/// This function returns the opacity of the window, including any decorations.
 		///
@@ -3016,6 +3373,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get the opacity from.</param>
 		/// <returns>Opacity of the given internal window.</returns>
 		static float PlatformGetWindowOpacity(const InternalWindow* window);
+		static float PlatformGetWindowOpacityX11(const InternalWindow* window);
+		static float PlatformGetWindowOpacityWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function retrieves the size, in pixels, of the framebuffer of the specified window.
 		/// If you wish to retrieve the size of the window in screen coordinates, see
@@ -3030,6 +3389,8 @@ namespace TRAP::INTERNAL
 		/// <param name="width">Output variable for the internal windows current framebuffer width.</param>
 		/// <param name="height">Output variable for the internal windows current framebuffer height.</param>
 		static void PlatformGetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetFrameBufferSizeX11(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetFrameBufferSizeWayland(const InternalWindow* window, int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function retrieves the content scale for the specified window.
 		/// The content scale is the reatio between the current DPI and the platform's
@@ -3050,6 +3411,8 @@ namespace TRAP::INTERNAL
 		/// <param name="xScale">Output variable for the internal windows content scale x.</param>
 		/// <param name="yScale">Output variable for the internal windows content scale y.</param>
 		static void PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
+		static void PlatformGetWindowContentScaleX11(const InternalWindow* window, float& xScale, float& yScale);
+		static void PlatformGetWindowContentScaleWayland(const InternalWindow* window, float& xScale, float& yScale);
 		/// <summary>
 		/// This function returns the position, in screen coordinates, of the upper-left corner
 		/// of the work area of the specified monitor along with the work area size in screen
@@ -3069,6 +3432,10 @@ namespace TRAP::INTERNAL
 		/// <param name="height">Output variable for the height of the monitor.</param>
 		static void PlatformGetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
 		                                       int32_t& width, int32_t& height);
+		static void PlatformGetMonitorWorkAreaX11(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+		                                       int32_t& width, int32_t& height);
+		static void PlatformGetMonitorWorkAreaWayland(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+		                                       int32_t& width, int32_t& height);
 		/// <summary>
 		/// This function returns whether the window is visible or not.
 		///
@@ -3078,6 +3445,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get visibility state from.</param>
 		/// <returns>True if the window is visible, false otherwise.</returns>
 		static bool PlatformWindowVisible(const InternalWindow* window);
+		static bool PlatformWindowVisibleX11(const InternalWindow* window);
+		static bool PlatformWindowVisibleWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function returns whether the window is maximized or not.
 		///
@@ -3087,6 +3456,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get maximization state from.</param>
 		/// <returns>True if the window is maximized, false otherwise.</returns>
 		static bool PlatformWindowMaximized(const InternalWindow* window);
+		static bool PlatformWindowMaximizedX11(const InternalWindow* window);
+		static bool PlatformWindowMaximizedWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function returns whether the window is minimized or not.
 		///
@@ -3096,6 +3467,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get minimization state from.</param>
 		/// <returns>True if the window is minimized, false otherwise.</returns>
 		static bool PlatformWindowMinimized(const InternalWindow* window);
+		static bool PlatformWindowMinimizedX11(const InternalWindow* window);
+		static bool PlatformWindowMinimizedWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function processes only those events that are already in the event queue and then
 		/// returns immediately. Processing events will cause the window and input callbacks
@@ -3115,6 +3488,8 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		static void PlatformPollEvents();
+		static void PlatformPollEventsX11();
+		static void PlatformPollEventsWayland();
 		/// <summary>
 		/// This function returns whether the window is focused or not.
 		///
@@ -3124,6 +3499,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get focused state from.</param>
 		/// <returns>True if the window is focused, false otherwise.</returns>
 		static bool PlatformWindowFocused(const InternalWindow* window);
+		static bool PlatformWindowFocusedX11(const InternalWindow* window);
+		static bool PlatformWindowFocusedWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function returns whether the window is hovered or not.
 		///
@@ -3133,6 +3510,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to get hovered state from.</param>
 		/// <returns>True if the window is hovered, false otherwise.</returns>
 		static bool PlatformWindowHovered(const InternalWindow* window);
+		static bool PlatformWindowHoveredX11(const InternalWindow* window);
+		static bool PlatformWindowHoveredWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function returns whether raw mouse motion is supported on the current system.
 		/// This status does not change after the WindowingAPI has been initialized so you
@@ -3149,6 +3528,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <returns>True if raw mouse input is supported, false otherwise.</returns>
 		static bool PlatformRawMouseMotionSupported();
+		static bool PlatformRawMouseMotionSupportedX11();
+		static bool PlatformRawMouseMotionSupportedWayland();
 		/// <summary>
 		/// Sets the raw mouse motion mode for the specified window.
 		///
@@ -3162,6 +3543,8 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to set raw mouse input for.</param>
 		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
 		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
+		static void PlatformSetRawMouseMotionX11(const InternalWindow* window, bool enabled);
+		static void PlatformSetRawMouseMotionWayland(const InternalWindow* window, bool enabled);
 		/// <summary>
 		/// Sets the progress value and state on the taskbar for the specified window.
 		///
@@ -3172,6 +3555,8 @@ namespace TRAP::INTERNAL
 		/// <param name="state">State of progress.</param>
 		/// <param name="completed">How much has been completed. Valid values: 0 - 100.</param>
 		static void PlatformSetProgress(const InternalWindow* window, ProgressState state, uint32_t completed);
+		static void PlatformSetProgressX11(const InternalWindow* window, ProgressState state, uint32_t completed);
+		static void PlatformSetProgressWayland(const InternalWindow* window, ProgressState state, uint32_t completed);
 		/// <summary>
 		/// This function returns the platform-specific scancode of the specified key.
 		///
@@ -3184,6 +3569,8 @@ namespace TRAP::INTERNAL
 		/// <param name="key">Key to get scancode for.</param>
 		/// <returns>The platform-specific scancode of the specified key or -1 if an error occured.</returns>
 		static int32_t PlatformGetKeyScanCode(Input::Key key);
+		static int32_t PlatformGetKeyScanCodeX11(Input::Key key);
+		static int32_t PlatformGetKeyScanCodeWayland(Input::Key key);
 		/// <summary>
 		/// This function returns a string representation for the platform-specific scancode.
 		///
@@ -3193,6 +3580,8 @@ namespace TRAP::INTERNAL
 		/// <param name="scanCode">Scancode to get string representation for.</param>
 		/// <returns>String representation of scancode or nullptr if an error occured.</returns>
 		static const char* PlatformGetScanCodeName(int32_t scanCode);
+		static const char* PlatformGetScanCodeNameX11(int32_t scanCode);
+		static const char* PlatformGetScanCodeNameWayland(int32_t scanCode);
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///
@@ -3202,6 +3591,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="string">UTF-8 encoded string to be set for the clipboard.</param>
 		static void PlatformSetClipboardString(const std::string& string);
+		static void PlatformSetClipboardStringX11(const std::string& string);
+		static void PlatformSetClipboardStringWayland(const std::string& string);
 		/// <summary>
 		/// This function returns the contents of the system clipboard, if it contains or
 		/// is convertible to a UTF-8 encoded string. If the clipboard is empty or if its
@@ -3215,6 +3606,8 @@ namespace TRAP::INTERNAL
 		/// UTF-8 encoded string containing clipboard contents, or empty string if an error occurred.
 		/// </returns>
 		static std::string PlatformGetClipboardString();
+		static std::string PlatformGetClipboardStringX11();
+		static std::string PlatformGetClipboardStringWayland();
 		/// <summary>
 		/// This function returns an array of names of Vulkan instance extensions required
 		/// by the WindowingAPI for creating Vulkan surface for WindowingAPI windows.
@@ -3240,6 +3633,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="extensions">output array for the required instance extensions.</param>
 		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions);
+		static void PlatformGetRequiredInstanceExtensionsX11(std::array<std::string, 2>& extensions);
+		static void PlatformGetRequiredInstanceExtensionsWayland(std::array<std::string, 2>& extensions);
 		/// <summary>
 		/// Creates a Vulkan surface for the specified window.
 		/// This function create a Vulkan surface for the specified window.
@@ -3274,6 +3669,10 @@ namespace TRAP::INTERNAL
 		/// <returns>VK_SUCCESS if successful, or a Vulkan error code if an error occurred.</returns>
 		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow* window,
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
+		static VkResult PlatformCreateWindowSurfaceX11(VkInstance instance, const InternalWindow* window,
+			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
+		static VkResult PlatformCreateWindowSurfaceWayland(VkInstance instance, const InternalWindow* window,
+			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 		/// <summary>
 		/// This function maximizes the specified window if it was previously not
 		/// maximized. If the window is already maximized, this function does nothing.
@@ -3285,6 +3684,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to maximize.</param>
 		static void PlatformMaximizeWindow(const InternalWindow* window);
+		static void PlatformMaximizeWindowX11(const InternalWindow* window);
+		static void PlatformMaximizeWindowWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function minimizes (iconifies) the specified window if it was previously
 		/// restored. If the window is already minimized (iconified), this function does
@@ -3298,6 +3699,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to minimize/iconify.</param>
 		static void PlatformMinimizeWindow(const InternalWindow* window);
+		static void PlatformMinimizeWindowX11(const InternalWindow* window);
+		static void PlatformMinimizeWindowWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function requests user attention to the specified window.
 		/// On platforms where this is not supported, attention is requested
@@ -3311,6 +3714,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to request user attention for.</param>
 		static void PlatformRequestWindowAttention(const InternalWindow* window);
+		static void PlatformRequestWindowAttentionX11(const InternalWindow* window);
+		static void PlatformRequestWindowAttentionWayland(const InternalWindow* window);
 		/// <summary>
 		/// This function hides the specified window if it was previously visible. If
 		/// the window is already hidden or is in full screen mode, this function
@@ -3321,6 +3726,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to hide.</param>
 		static void PlatformHideWindow(const InternalWindow* window);
+		static void PlatformHideWindowX11(const InternalWindow* window);
+		static void PlatformHideWindowWayland(const InternalWindow* window);
 		/// <summary>
 		/// Restores the specified window.
 		/// This function restores the specified window if it was previously
@@ -3335,6 +3742,8 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to be restored.</param>
 		static void PlatformRestoreWindow(InternalWindow* window);
+		static void PlatformRestoreWindowX11(InternalWindow* window);
+		static void PlatformRestoreWindowWayland(InternalWindow* window);
 		/// <summary>
 		/// Sets the size limits of the specified window.
 		///
@@ -3362,12 +3771,18 @@ namespace TRAP::INTERNAL
 		/// <param name="maxHeight">New maximum window height.</param>
 		static void PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight,
 		                                        int32_t maxWidth, int32_t maxHeight);
+		static void PlatformSetWindowSizeLimitsX11(InternalWindow* window, int32_t minWidth, int32_t minHeight,
+		                                        int32_t maxWidth, int32_t maxHeight);
+		static void PlatformSetWindowSizeLimitsWayland(InternalWindow* window, int32_t minWidth, int32_t minHeight,
+		                                        int32_t maxWidth, int32_t maxHeight);
 		/// <summary>
 		/// Enable/Disable drag and drop feature for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window for which to set drag and drop.</param>
 		/// <param name="value">Whether to enable or disable drag and drop.</param>
 		static void PlatformSetDragAndDrop(InternalWindow* window, bool value);
+		static void PlatformSetDragAndDropX11(InternalWindow* window, bool value);
+		static void PlatformSetDragAndDropWayland(InternalWindow* window, bool value);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -4069,7 +4484,9 @@ namespace TRAP::INTERNAL
 		/// Retrieve the current keyboard layout name.
 		/// </summary>
 		/// <returns>Current keyboard layout name.</returns>
-		static std::string GetX11KeyboardLayoutName();
+		static std::string GetLinuxKeyboardLayoutName();
+		static std::string GetLinuxKeyboardLayoutNameX11();
+		static std::string GetLinuxKeyboardLayoutNameWayland();
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

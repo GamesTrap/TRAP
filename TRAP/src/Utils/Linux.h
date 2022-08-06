@@ -13,6 +13,27 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <dlfcn.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <pwd.h>
+#include <poll.h>
+#include <netinet/tcp.h>
+#include <netdb.h>
+
+//Wayland
+#include <wayland-client-core.h>
+#include "wayland-client-protocol.h"
+#include "wayland-xdg-shell-client-protocol.h"
+#include "wayland-xdg-decoration-client-protocol.h"
+#include "wayland-viewporter-client-protocol.h"
+#include "wayland-relative-pointer-unstable-v1-client-protocol.h"
+#include "wayland-pointer-constraints-unstable-v1-client-protocol.h"
+#include "wayland-idle-inhibit-unstable-v1-client-protocol.h"
+#include <xkbcommon/xkbcommon.h>
+#include <xkbcommon/xkbcommon-compose.h>
+
+//X11
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <X11/Xutil.h>
@@ -26,13 +47,6 @@
 #include <X11/Xresource.h>
 #include <X11/cursorfont.h>
 #include <X11/Xmd.h>
-#include <dlfcn.h>
-#include <arpa/inet.h>
-#include <signal.h>
-#include <pwd.h>
-#include <poll.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
 
 #ifdef None
 	#undef None

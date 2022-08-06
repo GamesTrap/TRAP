@@ -198,3 +198,4 @@ compile_commands.json
 .modules/generatedocs/api/**
 .modules/generatedocs/doxygen_docs/**
 .cache/**
+Dependencies/Wayland/**.h

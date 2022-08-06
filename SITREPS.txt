@@ -3016,3 +3016,11 @@ SITREP 08/06/2022|22w31c1
     - Changed TRAP Engine version to 22w31c1(0.8.20)
     - Branch wayland:
         - Application Removed Wayland check ~<5 mins
+
+SITREP 08/07/2022|22w31c1
+    - Changed TRAP Engine version to 22w31c1(0.8.20)
+    - Branch wayland:
+        - WindowingAPI Added support for Wayland functionality ~<40 mins
+        - Added Dependencies/Wayland folder ~<5 mins
+        - Premake Added Wayland protocol to C++ generation function ~<40 mins
+        - Updated all premake scripts ~<5 mins

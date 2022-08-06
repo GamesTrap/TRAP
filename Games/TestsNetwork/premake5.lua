@@ -69,6 +69,11 @@ project "TestsNetwork"
 			"$ORIGIN"
 		}
 
+		sysincludedirs
+		{
+			"%{IncludeDir.WAYLAND}"
+		}
+
 		-- Discord Game SDK stuff
 		if (os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.so") or
 		    os.isfile("../../Dependencies/DiscordGameSDK/lib/x86_64/libdiscord_game_sdk.so")) and
