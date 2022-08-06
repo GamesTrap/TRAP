@@ -151,19 +151,6 @@ TRAP::Application::Application(std::string gameName)
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
-	//TODO Future remove when Wayland Windows are implemented
-	TRAP::Utils::LinuxWindowManager linuxWM = TRAP::Utils::GetLinuxWindowManager();
-	if (linuxWM == TRAP::Utils::LinuxWindowManager::Wayland)
-	{
-        TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!",
-		                                 "Wayland is currently not supported by TRAP™! Please use X11 instead\n"
-										 "Error code: 0x0001",
-                                         TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
-		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP!\n"
-					"Please use X11 instead");
-		exit(-1);
-	}
-
 	FileSystem::Init();
 
 	//Set main log file path
@@ -254,7 +241,7 @@ TRAP::Application::Application(std::string gameName)
 
 	//Window creation stuff
 #ifdef TRAP_PLATFORM_LINUX
-	if(linuxWM != TRAP::Utils::LinuxWindowManager::Unknown)
+	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
 #endif
 		WindowProps::AdvancedProps advWinProps{};
@@ -314,7 +301,7 @@ TRAP::Application::Application(std::string gameName)
 	}
 
 	//Initialize Input for Joysticks
-	if(linuxWM != TRAP::Utils::LinuxWindowManager::Unknown)
+	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
 		Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 		Input::Init();
