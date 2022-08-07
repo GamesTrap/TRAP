@@ -1116,4 +1116,16 @@ std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text, 
 	return paths;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Translates an X11 or Wayland key code to a TRAP key token
+TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCode)
+{
+	//Use the pre-filled LUT (see CreateKeyTables())
+	if(scanCode < 0 || scanCode >= static_cast<int32_t>(s_Data.KeyCodes.size()))
+		return Input::Key::Unknown;
+
+	return s_Data.KeyCodes[scanCode];
+}
+
 #endif

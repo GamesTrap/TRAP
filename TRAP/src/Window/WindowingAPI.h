@@ -4631,6 +4631,8 @@ namespace TRAP::INTERNAL
 		static bool FlushDisplay();
 		static void SetCursorWayland(InternalWindow* window, const std::string& name);
 		static InternalWindow* FindWindowFromDecorationSurface(wl_surface* surface, TRAPDecorationSideWayland& which);
+		static void InputTextWayland(InternalWindow* window, uint32_t scanCode);
+		static xkb_keysym_t ComposeSymbol(xkb_keysym_t sym);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

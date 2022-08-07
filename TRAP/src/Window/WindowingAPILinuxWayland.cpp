@@ -29,7 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 
 #include "Core/PlatformDetection.h"
-#include <wayland-client-protocol.h>
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -261,52 +260,181 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* userData, wl_ou
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format,
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t format,
                                                         int32_t fd, uint32_t size)
 {
-    //TODO
+    if(format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1)
+    {
+        close(fd);
+        return;
+    }
+
+    char* mapStr = static_cast<char*>(mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0));
+    if(mapStr == MAP_FAILED)
+    {
+        close(fd);
+        return;
+    }
+
+    xkb_keymap* keymap = s_Data.Wayland.WaylandXKB.KeyMapNewFromString(s_Data.Wayland.WaylandXKB.Context, mapStr, XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS);
+    munmap(mapStr, size);
+    close(fd);
+
+    if(!keymap)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to compile keymap");
+        return;
+    }
+
+    xkb_state* state = s_Data.Wayland.WaylandXKB.StateNew(keymap);
+    if(!state)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create XKB state");
+        s_Data.Wayland.WaylandXKB.KeyMapUnref(keymap);
+        return;
+    }
+
+    //Look up the preferred locale, falling back to "C" as default.
+    const char* locale = getenv("LC_ALL");
+    if(!locale)
+        locale = getenv("LC_CTYPE");
+    if(!locale)
+        locale = getenv("LANG");
+    if(!locale)
+        locale = "C";
+
+    xkb_compose_table* composeTable = s_Data.Wayland.WaylandXKB.ComposeTableNewFromLocale(s_Data.Wayland.WaylandXKB.Context, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
+
+    if(composeTable)
+    {
+        xkb_compose_state* composeState = s_Data.Wayland.WaylandXKB.ComposeStateNew(composeTable, XKB_COMPOSE_STATE_NO_FLAGS);
+        s_Data.Wayland.WaylandXKB.ComposeTableUnref(composeTable);
+        if(composeState)
+            s_Data.Wayland.WaylandXKB.ComposeState = composeState;
+        else
+            InputError(Error::Platform_Error, "[Wayland] Failed to create XKB compose state");
+    }
+    else
+        InputError(Error::Platform_Error, "[Wayland] Failed to create XKB compose table");
+
+    s_Data.Wayland.WaylandXKB.KeyMapUnref(s_Data.Wayland.WaylandXKB.KeyMap);
+    s_Data.Wayland.WaylandXKB.StateUnref(s_Data.Wayland.WaylandXKB.State);
+    s_Data.Wayland.WaylandXKB.KeyMap = keymap;
+    s_Data.Wayland.WaylandXKB.State = state;
+
+    s_Data.Wayland.WaylandXKB.ControlIndex = s_Data.Wayland.WaylandXKB.KeyMapModGetIndex(s_Data.Wayland.WaylandXKB.KeyMap, "Control");
+    s_Data.Wayland.WaylandXKB.AltIndex = s_Data.Wayland.WaylandXKB.KeyMapModGetIndex(s_Data.Wayland.WaylandXKB.KeyMap, "Mod1");
+    s_Data.Wayland.WaylandXKB.ShiftIndex = s_Data.Wayland.WaylandXKB.KeyMapModGetIndex(s_Data.Wayland.WaylandXKB.KeyMap, "Shift");
+    s_Data.Wayland.WaylandXKB.SuperIndex = s_Data.Wayland.WaylandXKB.KeyMapModGetIndex(s_Data.Wayland.WaylandXKB.KeyMap, "Mod4");
+    s_Data.Wayland.WaylandXKB.CapsLockIndex = s_Data.Wayland.WaylandXKB.KeyMapModGetIndex(s_Data.Wayland.WaylandXKB.KeyMap, "Lock");
+    s_Data.Wayland.WaylandXKB.NumLockIndex = s_Data.Wayland.WaylandXKB.KeyMapModGetIndex(s_Data.Wayland.WaylandXKB.KeyMap, "Mod2");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial,
-                                                       wl_surface* surface, wl_array* keys)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t serial,
+                                                       wl_surface* surface, wl_array* /*keys*/)
 {
-    //TODO
+    //Happens in the case we just destroyed the surface.
+    if(!surface)
+        return;
+
+    InternalWindow* window = static_cast<InternalWindow*>(wl_surface_get_user_data(surface));
+    if(!window)
+    {
+        TRAPDecorationSideWayland unused;
+        window = FindWindowFromDecorationSurface(surface, unused);
+        if(!window)
+            return;
+    }
+
+    s_Data.Wayland.Serial = serial;
+    s_Data.Wayland.KeyboardFocus = window;
+    InputWindowFocus(window, true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial,
-                                                       wl_surface* surface)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t serial,
+                                                       wl_surface* /*surface*/)
 {
-    //TODO
+    InternalWindow* window = s_Data.Wayland.KeyboardFocus;
+
+    if(!window)
+        return;
+
+    itimerspec timer{};
+    timerfd_settime(s_Data.Wayland.KeyRepeatTimerFD, 0, &timer, nullptr);
+
+    s_Data.Wayland.Serial = serial;
+    s_Data.Wayland.KeyboardFocus = nullptr;
+    InputWindowFocus(window, false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial,
-                                                     uint32_t time, uint32_t scanCode, uint32_t state)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* /*userData*/, wl_keyboard* /*keyboard*/, uint32_t serial,
+                                                     uint32_t /*time*/, uint32_t scanCode, uint32_t state)
 {
-    //TODO
+    InternalWindow* window = s_Data.Wayland.KeyboardFocus;
+    if(!window)
+        return;
+
+    const Input::Key key = TranslateKey(scanCode);
+    const Input::KeyState action = state == WL_KEYBOARD_KEY_STATE_PRESSED ? Input::KeyState::Pressed :
+                                                                            Input::KeyState::Released;
+
+    s_Data.Wayland.Serial = serial;
+
+    itimerspec timer{};
+
+    if(action == Input::KeyState::Pressed)
+    {
+        const xkb_keycode_t keycode = scanCode + 8;
+
+        if(s_Data.Wayland.WaylandXKB.KeyMapKeyRepeats(s_Data.Wayland.WaylandXKB.KeyMap, keycode) &&
+           s_Data.Wayland.KeyRepeatScancode > 0)
+        {
+            s_Data.Wayland.KeyRepeatScancode = scanCode;
+            if(s_Data.Wayland.KeyRepeatRate > 1)
+                timer.it_interval.tv_nsec = 1000000000 / s_Data.Wayland.KeyRepeatRate;
+            else
+                timer.it_interval.tv_sec = 1;
+
+            timer.it_value.tv_sec = s_Data.Wayland.KeyRepeatDelay / 1000;
+            timer.it_value.tv_nsec = (s_Data.Wayland.KeyRepeatDelay % 1000) * 1000000;
+        }
+    }
+
+    timerfd_settime(s_Data.Wayland.KeyRepeatTimerFD, 0, &timer, nullptr);
+
+    InputKey(window, key, scanCode, action);
+
+    if(action == Input::KeyState::Pressed)
+        InputTextWayland(window, scanCode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial,
-                                                           uint32_t modsDepressed, uint32_t modsLatched,
-                                                           uint32_t modsLocked, uint32_t group)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* /*userData*/, wl_keyboard* /*keyboard*/,
+                                                           uint32_t /*serial*/, uint32_t /*modsDepressed*/,
+                                                           uint32_t /*modsLatched*/, uint32_t /*modsLocked*/,
+                                                           uint32_t /*group*/)
 {
-    //TODO
+    //TODO Only used for setting modifier bits which we dont use anyway
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate,
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* /*userData*/, wl_keyboard* keyboard, int32_t rate,
                                                             int32_t delay)
 {
-    //TODO
+    if(keyboard != s_Data.Wayland.Keyboard)
+        return;
+
+    s_Data.Wayland.KeyRepeatRate = rate;
+    s_Data.Wayland.KeyRepeatDelay = delay;
 }
 #endif
 
@@ -958,6 +1086,46 @@ TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::WindowingAPI::Find
     }
 
     return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::InputTextWayland(InternalWindow* window, uint32_t scanCode)
+{
+    const xkb_keysym_t* keysyms;
+    const xkb_keycode_t keycode = scanCode + 8;
+
+    if(s_Data.Wayland.WaylandXKB.StateKeyGetSyms(s_Data.Wayland.WaylandXKB.State, keycode, &keysyms) == 1)
+    {
+        const xkb_keysym_t keysym = ComposeSymbol(keysyms[0]);
+        const uint32_t codePoint = KeySymToUnicode(keysym);
+        if(codePoint != 0xFFFFFFFFu)
+            InputChar(window, codePoint);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+xkb_keysym_t TRAP::INTERNAL::WindowingAPI::ComposeSymbol(xkb_keysym_t sym)
+{
+    if(sym == XKB_KEY_NoSymbol || !s_Data.Wayland.WaylandXKB.ComposeState)
+        return sym;
+    if(s_Data.Wayland.WaylandXKB.ComposeStateFeed(s_Data.Wayland.WaylandXKB.ComposeState, sym) != XKB_COMPOSE_FEED_ACCEPTED)
+        return sym;
+
+    switch(s_Data.Wayland.WaylandXKB.ComposeStateGetStatus(s_Data.Wayland.WaylandXKB.ComposeState))
+    {
+    case XKB_COMPOSE_COMPOSED:
+        return s_Data.Wayland.WaylandXKB.ComposeStateGetOneSym(s_Data.Wayland.WaylandXKB.ComposeState);
+
+    case XKB_COMPOSE_COMPOSING:
+    case XKB_COMPOSE_CANCELLED:
+        return XKB_KEY_NoSymbol;
+
+    case XKB_COMPOSE_NOTHING:
+    default:
+        return sym;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

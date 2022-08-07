@@ -3860,18 +3860,6 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Translates an X11 key code to a TRAP key token
-TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCode)
-{
-	//Use the pre-filled LUT (see CreateKeyTables())
-	if(scanCode < 0 || scanCode > 255)
-		return Input::Key::Unknown;
-
-	return s_Data.KeyCodes[scanCode];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Decode a Unicode code point from a UTF-8 stream
 uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** s)
 {
