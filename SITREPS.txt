@@ -3030,3 +3030,8 @@ SITREP 08/07/2022|22w31c1
         - WindowingAPI Wayland Implemented PlatformInitWayland ~>45 mins
         - Updated all premake scripts to link against wayland-client, wayland-cursor and xkbcommon ~<5 mins
         - WindowingAPI Wayland Implemented DataOfferListener & DataDeviceListener functions ~<20 mins
+
+SITREP 08/08/2022|22w32a1
+    - Changed TRAP Engine version to 22w32a1(0.8.21)
+    - Branch wayland:
+        - WindowingAPI Wayland Implemented PointerListener functions ~<20 mins

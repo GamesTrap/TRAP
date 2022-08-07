@@ -1143,7 +1143,7 @@ namespace TRAP::INTERNAL
 				wl_cursor_theme* CursorTheme;
 				wl_cursor_theme* CursorThemeHiDPI;
 				wl_surface* CursorSurface;
-				const char* CursorPreviousName;
+				std::string CursorPreviousName;
 				int32_t CursorTimerFD;
 				uint32_t Serial;
 				uint32_t PointerEnterSerial;
@@ -1418,6 +1418,8 @@ namespace TRAP::INTERNAL
 				bool Hovered;
 				wl_surface* Surface;
 				wl_callback* Callback;
+
+				double CursorPosX, CursorPosY;
 
 				struct
 				{
@@ -4627,6 +4629,8 @@ namespace TRAP::INTERNAL
 		static bool LoadCursorThemeWayland();
 		static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
 		static bool FlushDisplay();
+		static void SetCursorWayland(InternalWindow* window, const std::string& name);
+		static InternalWindow* FindWindowFromDecorationSurface(wl_surface* surface, TRAPDecorationSideWayland& which);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

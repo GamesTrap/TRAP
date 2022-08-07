@@ -25,9 +25,11 @@ freely, subject to the following restrictions:
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
+#include "Input/Input.h"
 #include "TRAPPCH.h"
 
 #include "Core/PlatformDetection.h"
+#include <wayland-client-protocol.h>
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -69,6 +71,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #undef types
 
 using namespace std::string_view_literals;
+
+static constexpr int32_t TRAP_BORDER_SIZE = 4;
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -308,42 +312,217 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* userData, wl_k
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial,
-                                                      wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t serial,
+                                                      wl_surface* surface, wl_fixed_t /*sX*/, wl_fixed_t /*sY*/)
 {
-    //TODO
+    //Happens in the case we just destroyed the surface.
+    if(!surface)
+        return;
+
+    TRAPDecorationSideWayland focus = TRAPDecorationSideWayland::MainWindow;
+    InternalWindow* window = static_cast<InternalWindow*>(wl_surface_get_user_data(surface));
+    if(!window)
+    {
+        window = FindWindowFromDecorationSurface(surface, focus);
+        if(!window)
+            return;
+    }
+
+    window->Wayland.Decorations.Focus = focus;
+    s_Data.Wayland.Serial = serial;
+    s_Data.Wayland.PointerEnterSerial = serial;
+    s_Data.Wayland.PointerFocus = window;
+
+    window->Wayland.Hovered = true;
+
+    PlatformSetCursor(window, window->Cursor);
+    InputCursorEnter(window, true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial,
-                                                      wl_surface* surface)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t serial,
+                                                      wl_surface* /*surface*/)
 {
-    //TODO
+    InternalWindow* window = s_Data.Wayland.PointerFocus;
+
+    if(!window)
+        return;
+
+    window->Wayland.Hovered = false;
+
+    s_Data.Wayland.Serial = serial;
+    s_Data.Wayland.PointerFocus = nullptr;
+    s_Data.Wayland.CursorPreviousName = "";
+
+    InputCursorEnter(window, false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time,
+void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t /*time*/,
                                                        wl_fixed_t sX, wl_fixed_t sY)
 {
-    //TODO
+    InternalWindow* window = s_Data.Wayland.PointerFocus;
+    std::string cursorName = nullptr;
+
+    if(!window)
+        return;
+
+    if(window->cursorMode == CursorMode::Disabled)
+        return;
+
+    const double x = wl_fixed_to_double(sX);
+    const double y = wl_fixed_to_double(sY);
+    window->Wayland.CursorPosX = x;
+    window->Wayland.CursorPosY = y;
+
+    switch(window->Wayland.Decorations.Focus)
+    {
+    case TRAPDecorationSideWayland::MainWindow:
+        s_Data.Wayland.CursorPreviousName = nullptr;
+        InputCursorPos(window, x, y);
+        break;
+
+    case TRAPDecorationSideWayland::TopDecoration:
+        if(y < TRAP_BORDER_SIZE)
+            cursorName = "n-resize";
+        else
+            cursorName = "left_ptr";
+        break;
+
+    case TRAPDecorationSideWayland::LeftDecoration:
+        if(y < TRAP_BORDER_SIZE)
+            cursorName = "nw-resize";
+        else
+            cursorName = "w-resize";
+        break;
+
+    case TRAPDecorationSideWayland::RightDecoration:
+        if(y < TRAP_BORDER_SIZE)
+            cursorName = "ne-resize";
+        else
+            cursorName = "e-resize";
+        break;
+
+    case TRAPDecorationSideWayland::BottomDecoration:
+        if(x < TRAP_BORDER_SIZE)
+            cursorName = "sw-resize";
+        else if(x > window->Width + TRAP_BORDER_SIZE)
+            cursorName = "se-resize";
+        else
+            cursorName = "s-resize";
+        break;
+
+    default:
+        TRAP_ASSERT(false);
+    }
+
+    if(s_Data.Wayland.CursorPreviousName != cursorName)
+        SetCursorWayland(window, cursorName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial,
-                                                       uint32_t time, uint32_t button, uint32_t state)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t serial,
+                                                       uint32_t /*time*/, uint32_t button, uint32_t state)
 {
-    //TODO
+    InternalWindow* window = s_Data.Wayland.PointerFocus;
+    uint32_t edges = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
+
+    if(!window)
+        return;
+    if(button == BTN_LEFT)
+    {
+        switch(window->Wayland.Decorations.Focus)
+        {
+        case TRAPDecorationSideWayland::MainWindow:
+            break;
+        case TRAPDecorationSideWayland::TopDecoration:
+            if(window->Wayland.CursorPosY < TRAP_BORDER_SIZE)
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_TOP;
+            else
+                xdg_toplevel_move(window->Wayland.XDG.TopLevel, s_Data.Wayland.Seat, serial);
+            break;
+        case TRAPDecorationSideWayland::LeftDecoration:
+            if(window->Wayland.CursorPosY < TRAP_BORDER_SIZE)
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_TOP_LEFT;
+            else
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_LEFT;
+            break;
+        case TRAPDecorationSideWayland::RightDecoration:
+            if(window->Wayland.CursorPosY < TRAP_BORDER_SIZE)
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_TOP_RIGHT;
+            else
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_RIGHT;
+            break;
+        case TRAPDecorationSideWayland::BottomDecoration:
+            if(window->Wayland.CursorPosX < TRAP_BORDER_SIZE)
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM_LEFT;
+            else if(window->Wayland.CursorPosX > window->Width + TRAP_BORDER_SIZE)
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM_RIGHT;
+            else
+                edges = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
+            break;
+
+        default:
+            TRAP_ASSERT(false);
+        }
+
+        if(edges != XDG_TOPLEVEL_RESIZE_EDGE_NONE)
+        {
+            xdg_toplevel_resize(window->Wayland.XDG.TopLevel, s_Data.Wayland.Seat, serial, edges);
+            return;
+        }
+    }
+    else if(button == BTN_RIGHT)
+    {
+        if(window->Wayland.Decorations.Focus != TRAPDecorationSideWayland::MainWindow &&
+           window->Wayland.XDG.TopLevel)
+        {
+            xdg_toplevel_show_window_menu(window->Wayland.XDG.TopLevel, s_Data.Wayland.Seat,
+                                          serial, window->Wayland.CursorPosX, window->Wayland.CursorPosY);
+            return;
+        }
+    }
+
+    //Don't pass the button to the user if it was related to a decoration
+    if(window->Wayland.Decorations.Focus != TRAPDecorationSideWayland::MainWindow)
+        return;
+
+    s_Data.Wayland.Serial = serial;
+
+    //Makes left, right and middle 0, 1 and 2. Overall order follows evdev codes
+    TRAP::Input::MouseButton btn = static_cast<Input::MouseButton>(button - BTN_LEFT);
+
+    InputMouseClick(window, btn, state == WL_POINTER_BUTTON_STATE_PRESSED ? Input::KeyState::Pressed :
+                                                                                          Input::KeyState::Released);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time,
+void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* /*userData*/, wl_pointer* /*pointer*/, uint32_t /*time*/,
                                                      uint32_t axis, wl_fixed_t value)
 {
-    //TODO
+    InternalWindow* window = s_Data.Wayland.PointerFocus;
+    double x = 0.0, y = 0.0;
+
+    //Wayland scroll events are in pointer motion coordinate space
+    //(think two finger scroll).
+    //The factor 10 is commonly used to convert to "scroll step" means 1.0
+    constexpr double scrollFactor = 1.0 / 10.0;
+
+    if(!window)
+        return;
+
+    TRAP_ASSERT(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL || axis == WL_POINTER_AXIS_VERTICAL_SCROLL);
+
+    if(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL)
+        x = -wl_fixed_to_double(value) * scrollFactor;
+    else if(axis == WL_POINTER_AXIS_VERTICAL_SCROLL)
+        y = -wl_fixed_to_double(value) * scrollFactor;
+
+    InputScroll(window, x, y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -706,6 +885,79 @@ bool TRAP::INTERNAL::WindowingAPI::FlushDisplay()
     }
 
     return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SetCursorWayland(InternalWindow* window, const std::string& name)
+{
+    wl_surface* surface = s_Data.Wayland.CursorSurface;
+    wl_cursor_theme* theme = s_Data.Wayland.CursorTheme;
+    int32_t scale = 1;
+
+    if(window->Wayland.Scale > 1 && s_Data.Wayland.CursorThemeHiDPI)
+    {
+        //We only support up to scale=2 for now, since libwayland-cursor
+        //requires us to load a different theme for each size.
+        scale = 2;
+        theme = s_Data.Wayland.CursorThemeHiDPI;
+    }
+
+    wl_cursor* cursor = s_Data.Wayland.WaylandCursor.ThemeGetCursor(theme, name.c_str());
+    if(!cursor)
+    {
+        InputError(Error::Cursor_Unavailable, "[Wayland] Standard cursor shape unavailable");
+        return;
+    }
+
+    wl_cursor_image* image = cursor->images[0];
+
+    if(!image)
+        return;
+
+    wl_buffer* buffer = s_Data.Wayland.WaylandCursor.ImageGetBuffer(image);
+    if(!buffer)
+        return;
+
+    wl_pointer_set_cursor(s_Data.Wayland.Pointer, s_Data.Wayland.PointerEnterSerial,
+                          surface, image->hotspot_x / scale, image->hotspot_y / scale);
+    wl_surface_set_buffer_scale(surface, scale);
+    wl_surface_attach(surface, buffer, 0, 0);
+    wl_surface_damage(surface, 0, 0, image->width, image->height);
+    wl_surface_commit(surface);
+
+    s_Data.Wayland.CursorPreviousName = name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::WindowingAPI::FindWindowFromDecorationSurface(wl_surface* surface, TRAPDecorationSideWayland& which)
+{
+    for(InternalWindow* window : s_Data.WindowList)
+    {
+        if(surface == window->Wayland.Decorations.Top.surface)
+        {
+            which = TRAPDecorationSideWayland::TopDecoration;
+            return window;
+        }
+        if(surface == window->Wayland.Decorations.Left.surface)
+        {
+            which = TRAPDecorationSideWayland::LeftDecoration;
+            return window;
+        }
+        if(surface == window->Wayland.Decorations.Right.surface)
+        {
+            which = TRAPDecorationSideWayland::RightDecoration;
+            return window;
+        }
+        if(surface == window->Wayland.Decorations.Bottom.surface)
+        {
+            which = TRAPDecorationSideWayland::BottomDecoration;
+            return window;
+        }
+    }
+
+    return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
