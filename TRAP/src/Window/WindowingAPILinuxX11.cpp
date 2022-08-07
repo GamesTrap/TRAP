@@ -3896,58 +3896,6 @@ uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** s)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Splits and translates a text/uri-list into separate file paths
-std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text, int32_t& count)
-{
-	const std::string prefix = "file://";
-	std::vector<std::string> paths{};
-	const char* line = nullptr;
-
-	count = 0;
-
-	while((line = std::strtok(text, "\r\n")))
-	{
-		text = nullptr;
-
-		if(line[0] == '#')
-			continue;
-
-		if(std::strncmp(line, prefix.data(), prefix.size()) == 0)
-		{
-			line += prefix.size();
-			while(*line != '/')
-				line++;
-		}
-
-		count++;
-
-		std::string path;
-		path.resize(std::strlen(line) + 1);
-		paths.resize(count);
-		paths[count - 1] = path;
-		char* pathPtr = paths[count - 1].data();
-
-		while(*line)
-		{
-			if(line[0] == '%' && line[1] && line[2])
-			{
-				const std::array<char, 3> digits = { line[1], line[2], '\0'};
-				*pathPtr = static_cast<char>(strtol(digits.data(), nullptr, 16));
-				line += 2;
-			}
-			else
-				*pathPtr = *line;
-
-			pathPtr++;
-			line++;
-		}
-	}
-
-	return paths;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Make the specified window and its video mode active on its monitor
 void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 {

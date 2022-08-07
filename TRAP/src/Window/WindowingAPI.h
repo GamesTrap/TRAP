@@ -4616,7 +4616,17 @@ namespace TRAP::INTERNAL
 			DataDeviceHandleSelection
 		};
 
+		static void DataOfferHandleOffer(void* userData, wl_data_offer* offer, const char* mimeType);
+		inline static constexpr wl_data_offer_listener DataOfferListener
+		{
+			DataOfferHandleOffer,
+			nullptr,
+			nullptr
+		};
+
 		static bool LoadCursorThemeWayland();
+		static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
+		static bool FlushDisplay();
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

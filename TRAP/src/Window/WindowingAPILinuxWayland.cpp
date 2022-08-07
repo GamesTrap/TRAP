@@ -68,60 +68,156 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "wayland-idle-inhibit-unstable-v1-client-protocol-code.h"
 #undef types
 
+using namespace std::string_view_literals;
+
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer(void* userData, wl_data_device* device, wl_data_offer* offer)
+void TRAP::INTERNAL::WindowingAPI::DataOfferHandleOffer(void* /*userData*/, wl_data_offer* offer, const char* mimeType)
+{
+    for(uint32_t i = 0; i < s_Data.Wayland.Offers.size(); ++i)
+    {
+        if(s_Data.Wayland.Offers[i].offer == offer)
+        {
+            if(mimeType == "text/plain;charset=utf-8"sv)
+                s_Data.Wayland.Offers[i].text_plain_utf8 = true;
+            else if(mimeType == "text/uri-list"sv)
+                s_Data.Wayland.Offers[i].text_uri_list = true;
+
+            break;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer(void* /*userData*/, wl_data_device* /*device*/,
+                                                             wl_data_offer* offer)
+{
+    s_Data.Wayland.Offers.push_back(TRAPOfferWayland{offer, false, false});
+    wl_data_offer_add_listener(offer, &DataOfferListener, nullptr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter(void* /*userData*/, wl_data_device* /*device*/,
+                                                         uint32_t serial, wl_surface* surface, wl_fixed_t /*x*/,
+                                                         wl_fixed_t /*y*/, wl_data_offer* offer)
+{
+    if(s_Data.Wayland.DragOffer)
+    {
+        wl_data_offer_destroy(s_Data.Wayland.DragOffer);
+        s_Data.Wayland.DragOffer = nullptr;
+        s_Data.Wayland.DragFocus = nullptr;
+    }
+
+    for(uint32_t i = 0; i < s_Data.Wayland.Offers.size(); ++i)
+    {
+        if(s_Data.Wayland.Offers[i].offer == offer)
+        {
+            InternalWindow* window = nullptr;
+
+            if(surface)
+                window = static_cast<InternalWindow*>(wl_surface_get_user_data(surface));
+
+            if(window && s_Data.Wayland.Offers[i].text_uri_list)
+            {
+                s_Data.Wayland.DragOffer = offer;
+                s_Data.Wayland.DragFocus = window;
+                s_Data.Wayland.DragSerial = serial;
+            }
+
+            s_Data.Wayland.Offers.erase(s_Data.Wayland.Offers.begin() + i);
+            break;
+        }
+    }
+
+    if(s_Data.Wayland.DragOffer)
+        wl_data_offer_accept(offer, serial, "text/uri-list");
+    else
+    {
+        wl_data_offer_accept(offer, serial, nullptr);
+        wl_data_offer_destroy(offer);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave(void* /*userData*/, wl_data_device* /*device*/)
+{
+    if(s_Data.Wayland.DragOffer)
+    {
+        wl_data_offer_destroy(s_Data.Wayland.DragOffer);
+        s_Data.Wayland.DragOffer = nullptr;
+        s_Data.Wayland.DragFocus = nullptr;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion(void* /*userData*/, wl_data_device* /*device*/,
+                                                          uint32_t /*time*/, wl_fixed_t /*x*/, wl_fixed_t /*y*/)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop(void* /*userData*/, wl_data_device* /*device*/)
+{
+    if(!s_Data.Wayland.DragOffer)
+        return;
+
+    std::string string = ReadDataOfferAsString(s_Data.Wayland.DragOffer, "text/uri-list");
+    if(!string.empty())
+    {
+        int32_t count = 0;
+        const std::vector<std::string> paths = ParseUriList(string.data(), count);
+        if(!paths.empty())
+            InputDrop(s_Data.Wayland.DragFocus, paths);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection(void* /*userData*/, wl_data_device* /*device*/,
+                                                             wl_data_offer* offer)
+{
+    if(s_Data.Wayland.SelectionOffer)
+    {
+        wl_data_offer_destroy(s_Data.Wayland.SelectionOffer);
+        s_Data.Wayland.SelectionOffer = nullptr;
+    }
+
+    for(uint32_t i = 0; i < s_Data.Wayland.Offers.size(); ++i)
+    {
+        if(s_Data.Wayland.Offers[i].offer == offer)
+        {
+            if(s_Data.Wayland.Offers[i].text_plain_utf8)
+                s_Data.Wayland.SelectionOffer = offer;
+            else
+                wl_data_offer_destroy(offer);
+
+            s_Data.Wayland.Offers.erase(s_Data.Wayland.Offers.begin() + i);
+            break;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y,
+                                                        int32_t physicalWidth, int32_t physicalHeight,
+                                                        int32_t subpixel, const char* make, const char* model,
+                                                        int32_t transform)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y, wl_data_offer* offer)
-{
-    //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave(void* userData, wl_data_device* device)
-{
-    //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t x, wl_fixed_t y)
-{
-    //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop(void* userData, wl_data_device* device)
-{
-    //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection(void* userData, wl_data_device* device, wl_data_offer* offer)
-{
-    //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform)
-{
-    //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* output, uint32_t flags, int32_t width, int32_t height, int32_t refresh)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* output, uint32_t flags,
+                                                    int32_t width, int32_t height, int32_t refresh)
 {
     //TODO
 }
@@ -152,7 +248,8 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, wl_output* o
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* userData, wl_output* output, const char* description)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* userData, wl_output* output,
+                                                           const char* description)
 {
     //TODO
 }
@@ -160,35 +257,41 @@ void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* userData, wl_ou
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format, int32_t fd, uint32_t size)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format,
+                                                        int32_t fd, uint32_t size)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface, wl_array* keys)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial,
+                                                       wl_surface* surface, wl_array* keys)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial,
+                                                       wl_surface* surface)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t time, uint32_t scanCode, uint32_t state)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial,
+                                                     uint32_t time, uint32_t scanCode, uint32_t state)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t modsDepressed, uint32_t modsLatched, uint32_t modsLocked, uint32_t group)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial,
+                                                           uint32_t modsDepressed, uint32_t modsLatched,
+                                                           uint32_t modsLocked, uint32_t group)
 {
     //TODO
 }
@@ -196,7 +299,8 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* userData, wl_ke
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate, int32_t delay)
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate,
+                                                            int32_t delay)
 {
     //TODO
 }
@@ -204,35 +308,40 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* userData, wl_k
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial,
+                                                      wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial,
+                                                      wl_surface* surface)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sX, wl_fixed_t sY)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time,
+                                                       wl_fixed_t sX, wl_fixed_t sY)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial,
+                                                       uint32_t time, uint32_t button, uint32_t state)
 {
     //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time, uint32_t axis, wl_fixed_t value)
+void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time,
+                                                     uint32_t axis, wl_fixed_t value)
 {
     //TODO
 }
@@ -278,8 +387,6 @@ void TRAP::INTERNAL::WindowingAPI::WMBaseHandlePing(void* /*userData*/, xdg_wm_b
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-using namespace std::string_view_literals;
 
 void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_registry* registry, uint32_t name,
                                                         const char* interface, uint32_t version)
@@ -350,7 +457,7 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_r
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobalRemove(void* userData, wl_registry* registry, uint32_t name)
+void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobalRemove(void* /*userData*/, wl_registry* /*registry*/, uint32_t name)
 {
     for(uint32_t i = 0; i < s_Data.Monitors.size(); ++i)
     {
@@ -528,6 +635,80 @@ bool TRAP::INTERNAL::WindowingAPI::LoadCursorThemeWayland()
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::INTERNAL::WindowingAPI::ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType)
+{
+    std::array<int32_t, 2> fds{};
+
+    if(pipe2(fds.data(), O_CLOEXEC) == -1)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create pipe for data offer: " + Utils::String::GetStrError());
+        return {};
+    }
+
+    wl_data_offer_receive(offer, mimeType, fds[1]);
+    FlushDisplay();
+    close(fds[1]);
+
+    std::string str = nullptr;
+    std::size_t size = 0;
+    std::size_t length = 0;
+
+    while(true)
+    {
+        const std::size_t readSize = 4096;
+        const std::size_t requiredSize = length + readSize;
+        if(requiredSize > size)
+        {
+            str.resize(requiredSize);
+            size = requiredSize;
+        }
+
+        const ssize_t result = read(fds[0], str.data() + length, readSize);
+        if(result == 0)
+            break;
+        else if(result == -1)
+        {
+            if(errno == EINTR)
+                continue;
+
+            InputError(Error::Platform_Error, "[Wayland] Failed to read data offer pipe: " + Utils::String::GetStrError());
+            close(fds[0]);
+            return nullptr;
+        }
+
+        length += result;
+    }
+
+    close(fds[0]);
+
+    str.resize(length);
+
+    return str;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::FlushDisplay()
+{
+    while(s_Data.Wayland.WaylandClient.DisplayFlush(s_Data.Wayland.DisplayWL) == -1)
+    {
+        if(errno != EAGAIN)
+            return false;
+
+        pollfd fd = {s_Data.Wayland.WaylandClient.DisplayGetFD(s_Data.Wayland.DisplayWL), POLLOUT, 0};
+
+        while(poll(&fd, 1, -1) == -1)
+        {
+            if(errno != EINTR && errno != EAGAIN)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -553,8 +734,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWin
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
-														           const int32_t xPos, const int32_t yPos, const int32_t width,
-															       const int32_t height, const int32_t refreshRate)
+														           const int32_t xPos, const int32_t yPos,
+                                                                   const int32_t width, const int32_t height,
+                                                                   const int32_t refreshRate)
 {
 }
 
