@@ -28,6 +28,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 
 #include "Core/PlatformDetection.h"
+#include <wayland-xdg-shell-client-protocol.h>
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -35,6 +36,49 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Application.h"
 #include "Utils/Utils.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
+
+//Note: Versions of wayland-scanner prior to 1.17.91 named every global array of
+//      wl_interface pointers "types", making it impossible to combine several unmodified
+//      private-code files into a single compilation unit
+//HACK: We override this name with a macro for each file, allowing them to coexist
+#define types _TRAP_wayland_types
+#include "wayland-client-protocol-code.h"
+#undef types
+
+#define types _TRAP_xdg_shell_types
+#include "wayland-xdg-shell-client-protocol-code.h"
+#undef types
+
+#define types _TRAP_xdg_decoration_types
+#include "wayland-xdg-decoration-client-protocol-code.h"
+#undef types
+
+#define types _TRAP_viewporter_types
+#include "wayland-viewporter-client-protocol-code.h"
+#undef types
+
+#define types _TRAP_relative_pointer_types
+#include "wayland-relative-pointer-unstable-v1-client-protocol-code.h"
+#undef types
+
+#define types _TRAP_pointer_constraints_types
+#include "wayland-pointer-constraints-unstable-v1-client-protocol-code.h"
+#undef types
+
+#define types _TRAP_idle_inhibit_types
+#include "wayland-idle-inhibit-unstable-v1-client-protocol-code.h"
+#undef types
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 
 TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModeWayland(const InternalMonitor* monitor)
 {

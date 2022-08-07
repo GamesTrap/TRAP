@@ -794,434 +794,441 @@ namespace TRAP::INTERNAL
 			} SHCore;
 #elif defined(TRAP_PLATFORM_LINUX)
 			std::array<Input::Key, 256> KeyCodes{};
-			Display* display = nullptr;
-			int32_t Screen = 0;
-			::Window Root{};
 
-			//System content scale
-			float ContentScaleX = 0, ContentScaleY = 0;
-			//Helper window for IPC
-			::Window HelperWindowHandle{};
-			//Invisible cursor for hidden cursor mode
-			Cursor HiddenCursorHandle{};
-			//Context for mapping window XIDs to InternalWindow pointers
-			XContext Context{};
-			//XIM input method
-			XIM IM{};
-			//The previous X error handler, to be restored later
-			XErrorHandler PrevErrorHandler{};
-			//Most recent error code received by X error handler
-			int32_t ErrorCode = 0;
-			//Primary selection string (while the primary selection is owned)
-			std::string PrimarySelectionString{};
-
-			//Window manager atoms
-			Atom NET_SUPPORTED{};
-			Atom NET_SUPPORTING_WM_CHECK{};
-			Atom WM_PROTOCOLS{};
-			Atom WM_STATE{};
-			Atom WM_DELETE_WINDOW{};
-			Atom NET_WM_NAME{};
-			Atom NET_WM_ICON_NAME{};
-			Atom NET_WM_ICON{};
-			Atom NET_WM_PID{};
-			Atom NET_WM_PING{};
-			Atom NET_WM_WINDOW_TYPE{};
-			Atom NET_WM_WINDOW_TYPE_NORMAL{};
-			Atom NET_WM_STATE{};
-			Atom NET_WM_STATE_ABOVE{};
-			Atom NET_WM_STATE_FULLSCREEN{};
-			Atom NET_WM_STATE_MAXIMIZED_VERT{};
-			Atom NET_WM_STATE_MAXIMIZED_HORZ{};
-			Atom NET_WM_STATE_DEMANDS_ATTENTION{};
-			Atom NET_WM_BYPASS_COMPOSITOR{};
-			Atom NET_WM_FULLSCREEN_MONITORS{};
-			Atom NET_WM_WINDOW_OPACITY{};
-			Atom NET_WM_CM_Sx{};
-			Atom NET_WORKAREA{};
-			Atom NET_CURRENT_DESKTOP{};
-			Atom NET_ACTIVE_WINDOW{};
-			Atom NET_FRAME_EXTENTS{};
-			Atom NET_REQUEST_FRAME_EXTENTS{};
-			Atom MOTIF_WM_HINTS{};
-
-			//Xdnd (drag and drop) atoms
-			Atom XDNDAware{};
-			Atom XDNDEnter{};
-			Atom XDNDPosition{};
-			Atom XDNDStatus{};
-			Atom XDNDActionCopy{};
-			Atom XDNDDrop{};
-			Atom XDNDFinished{};
-			Atom XDNDSelection{};
-			Atom XDNDTypeList{};
-			Atom text_uri_list{};
-
-			//Selection (clipboard) atoms
-			Atom TARGETS{};
-			Atom MULTIPLE{};
-			Atom INCR{};
-			Atom CLIPBOARD{};
-			Atom PRIMARY{};
-			Atom CLIPBOARD_MANAGER{};
-			Atom SAVE_TARGETS{};
-			Atom NULL_{};
-			Atom UTF8_STRING{};
-			Atom COMPOUND_STRING{};
-			Atom ATOM_PAIR{};
-			Atom TRAP_SELECTION{};
-
-			struct XSHAPE
+			struct x11
 			{
-				bool Available = false;
-				void* Handle = nullptr;
-				int32_t Major = 0;
-				int32_t Minor = 0;
-				int32_t EventBase = 0;
-				int32_t ErrorBase = 0;
-				PFN_XShapeQueryExtension QueryExtension;
-				PFN_XShapeCombineRegion CombineRegion;
-				PFN_XShapeCombineMask CombineMask;
-				PFN_XShapeQueryVersion QueryVersion;
-			} XShape{};
+				Display* display = nullptr;
+				int32_t Screen = 0;
+				::Window Root{};
 
-			struct RANDR
+				//System content scale
+				float ContentScaleX = 0, ContentScaleY = 0;
+				//Helper window for IPC
+				::Window HelperWindowHandle{};
+				//Invisible cursor for hidden cursor mode
+				Cursor HiddenCursorHandle{};
+				//Context for mapping window XIDs to InternalWindow pointers
+				XContext Context{};
+				//XIM input method
+				XIM IM{};
+				//The previous X error handler, to be restored later
+				XErrorHandler PrevErrorHandler{};
+				//Most recent error code received by X error handler
+				int32_t ErrorCode = 0;
+				//Primary selection string (while the primary selection is owned)
+				std::string PrimarySelectionString{};
+
+				//Window manager atoms
+				Atom NET_SUPPORTED{};
+				Atom NET_SUPPORTING_WM_CHECK{};
+				Atom WM_PROTOCOLS{};
+				Atom WM_STATE{};
+				Atom WM_DELETE_WINDOW{};
+				Atom NET_WM_NAME{};
+				Atom NET_WM_ICON_NAME{};
+				Atom NET_WM_ICON{};
+				Atom NET_WM_PID{};
+				Atom NET_WM_PING{};
+				Atom NET_WM_WINDOW_TYPE{};
+				Atom NET_WM_WINDOW_TYPE_NORMAL{};
+				Atom NET_WM_STATE{};
+				Atom NET_WM_STATE_ABOVE{};
+				Atom NET_WM_STATE_FULLSCREEN{};
+				Atom NET_WM_STATE_MAXIMIZED_VERT{};
+				Atom NET_WM_STATE_MAXIMIZED_HORZ{};
+				Atom NET_WM_STATE_DEMANDS_ATTENTION{};
+				Atom NET_WM_BYPASS_COMPOSITOR{};
+				Atom NET_WM_FULLSCREEN_MONITORS{};
+				Atom NET_WM_WINDOW_OPACITY{};
+				Atom NET_WM_CM_Sx{};
+				Atom NET_WORKAREA{};
+				Atom NET_CURRENT_DESKTOP{};
+				Atom NET_ACTIVE_WINDOW{};
+				Atom NET_FRAME_EXTENTS{};
+				Atom NET_REQUEST_FRAME_EXTENTS{};
+				Atom MOTIF_WM_HINTS{};
+
+				//Xdnd (drag and drop) atoms
+				Atom XDNDAware{};
+				Atom XDNDEnter{};
+				Atom XDNDPosition{};
+				Atom XDNDStatus{};
+				Atom XDNDActionCopy{};
+				Atom XDNDDrop{};
+				Atom XDNDFinished{};
+				Atom XDNDSelection{};
+				Atom XDNDTypeList{};
+				Atom text_uri_list{};
+
+				//Selection (clipboard) atoms
+				Atom TARGETS{};
+				Atom MULTIPLE{};
+				Atom INCR{};
+				Atom CLIPBOARD{};
+				Atom PRIMARY{};
+				Atom CLIPBOARD_MANAGER{};
+				Atom SAVE_TARGETS{};
+				Atom NULL_{};
+				Atom UTF8_STRING{};
+				Atom COMPOUND_STRING{};
+				Atom ATOM_PAIR{};
+				Atom TRAP_SELECTION{};
+
+				struct XSHAPE
+				{
+					bool Available = false;
+					void* Handle = nullptr;
+					int32_t Major = 0;
+					int32_t Minor = 0;
+					int32_t EventBase = 0;
+					int32_t ErrorBase = 0;
+					PFN_XShapeQueryExtension QueryExtension;
+					PFN_XShapeCombineRegion CombineRegion;
+					PFN_XShapeCombineMask CombineMask;
+					PFN_XShapeQueryVersion QueryVersion;
+				} XShape{};
+
+				struct RANDR
+				{
+					bool Available = false;
+					void* Handle = nullptr;
+					bool MonitorBroken = false;
+					int32_t EventBase = 0;
+					int32_t ErrorBase = 0;
+					int32_t Major = 0;
+					int32_t Minor = 0;
+					PFN_XRRFreeCrtcInfo FreeCrtcInfo{};
+					PFN_XRRFreeOutputInfo FreeOutputInfo{};
+					PFN_XRRFreeScreenResources FreeScreenResources{};
+					PFN_XRRGetCrtcInfo GetCrtcInfo{};
+					PFN_XRRGetOutputInfo GetOutputInfo{};
+					PFN_XRRGetOutputPrimary GetOutputPrimary{};
+					PFN_XRRGetScreenResourcesCurrent GetScreenResourcesCurrent{};
+					PFN_XRRQueryExtension QueryExtension{};
+					PFN_XRRQueryVersion QueryVersion{};
+					PFN_XRRSelectInput SelectInput{};
+					PFN_XRRSetCrtcConfig SetCrtcConfig{};
+					PFN_XRRUpdateConfiguration UpdateConfiguration{};
+				} RandR{};
+
+				struct xkb
+				{
+					bool Available = false;
+					bool Detectable = false;
+					int32_t MajorOPCode = 0;
+					int32_t EventBase = 0;
+					int32_t ErrorBase = 0;
+					int32_t Major = 0;
+					int32_t Minor = 0;
+					uint32_t Group = 0;
+					PFN_XkbAllocKeyboard AllocKeyboard{};
+					PFN_XkbFreeKeyboard FreeKeyboard{};
+					PFN_XkbFreeNames FreeNames{};
+					PFN_XkbGetMap GetMap{};
+					PFN_XkbGetNames GetNames{};
+					PFN_XkbGetState GetState{};
+					PFN_XkbKeycodeToKeysym KeycodeToKeysym{};
+					PFN_XkbQueryExtension QueryExtension{};
+					PFN_XkbSelectEventDetails SelectEventDetails{};
+					PFN_XkbSetDetectableAutoRepeat SetDetectableAutoRepeat{};
+				} XKB{};
+
+				struct SAVER
+				{
+					int32_t Count = 0;
+					int32_t Timeout = 0;
+					int32_t Interval = 0;
+					int32_t Blanking = 0;
+					int32_t Exposure = 0;
+				} Saver{};
+
+				struct xdnd
+				{
+					int32_t Version = 0;
+					::Window Source{};
+					Atom Format{};
+				} XDND{};
+
+				struct XCURSOR
+				{
+					void* Handle = nullptr;
+					PFN_XcursorImageCreate ImageCreate{};
+					PFN_XcursorImageDestroy ImageDestroy{};
+					PFN_XcursorImageLoadCursor ImageLoadCursor{};
+					PFN_XcursorGetTheme GetTheme{};
+					PFN_XcursorGetDefaultSize GetDefaultSize{};
+					PFN_XcursorLibraryLoadImage LibraryLoadImage{};
+				} XCursor{};
+
+				struct XINERAMA
+				{
+					bool Available = false;
+					void* Handle = nullptr;
+					int32_t Major = 0;
+					int32_t Minor = 0;
+					PFN_XineramaIsActive IsActive{};
+					PFN_XineramaQueryExtension QueryExtension{};
+					PFN_XineramaQueryScreens QueryScreens{};
+				} Xinerama{};
+
+				struct xcb
+				{
+					void* Handle = nullptr;
+					PFN_XGetXCBConnection GetXCBConnection{};
+				} XCB{};
+
+				struct xi
+				{
+					bool Available = false;
+					void* Handle = nullptr;
+					int32_t MajorOPCode = 0;
+					int32_t EventBase = 0;
+					int32_t ErrorBase = 0;
+					int32_t Major = 0;
+					int32_t Minor = 0;
+					PFN_XIQueryVersion QueryVersion{};
+					PFN_XISelectEvents SelectEvents{};
+				} XI{};
+
+				struct XRENDER
+				{
+					bool Available = false;
+					void* Handle = nullptr;
+					int32_t Major = 0;
+					int32_t Minor = 0;
+					int32_t EventBase = 0;
+					int32_t ErrorBase = 0;
+					PFN_XRenderQueryExtension QueryExtension{};
+					PFN_XRenderQueryVersion QueryVersion{};
+					PFN_XRenderFindVisualFormat FindVisualFormat{};
+				} XRender{};
+
+				struct xlib
+				{
+					void* Handle = nullptr;
+					PFN_XAllocClassHint AllocClassHint{};
+					PFN_XAllocSizeHints AllocSizeHints{};
+					PFN_XAllocWMHints AllocWMHints{};
+					PFN_XChangeProperty ChangeProperty{};
+					PFN_XChangeWindowAttributes ChangeWindowAttributes{};
+					PFN_XCheckIfEvent CheckIfEvent{};
+					PFN_XCheckTypedWindowEvent CheckTypedWindowEvent;
+					PFN_XCloseDisplay CloseDisplay{};
+					PFN_XCloseIM CloseIM{};
+					PFN_XConvertSelection ConvertSelection{};
+					PFN_XCreateColormap CreateColormap{};
+					PFN_XCreateFontCursor CreateFontCursor{};
+					PFN_XCreateIC CreateIC{};
+					PFN_XCreateWindow CreateWindow{};
+					PFN_XDefineCursor DefineCursor{};
+					PFN_XDeleteContext DeleteContext{};
+					PFN_XDeleteProperty DeleteProperty{};
+					PFN_XDestroyIC DestroyIC{};
+					PFN_XDestroyWindow DestroyWindow{};
+					PFN_XDisplayKeycodes DisplayKeycodes{};
+					PFN_XEventsQueued EventsQueued{};
+					PFN_XFilterEvent FilterEvent{};
+					PFN_XFindContext FindContext{};
+					PFN_XFlush Flush{};
+					PFN_XFree Free{};
+					PFN_XFreeColormap FreeColormap{};
+					PFN_XFreeCursor FreeCursor{};
+					PFN_XFreeEventData FreeEventData{};
+					PFN_XGetAtomName GetAtomName{};
+					PFN_XGetErrorText GetErrorText{};
+					PFN_XGetEventData GetEventData{};
+					PFN_XGetICValues GetICValues{};
+					PFN_XGetIMValues GetIMValues{};
+					PFN_XGetInputFocus GetInputFocus{};
+					PFN_XGetKeyboardMapping GetKeyboardMapping{};
+					PFN_XGetScreenSaver GetScreenSaver{};
+					PFN_XGetSelectionOwner GetSelectionOwner{};
+					PFN_XGetVisualInfo GetVisualInfo{};
+					PFN_XGetWMNormalHints GetWMNormalHints{};
+					PFN_XGetWindowAttributes GetWindowAttributes{};
+					PFN_XGetWindowProperty GetWindowProperty{};
+					PFN_XGrabPointer GrabPointer{};
+					PFN_XIconifyWindow IconifyWindow{};
+					PFN_XInitThreads InitThreads{};
+					PFN_XInternAtom InternAtom{};
+					PFN_XLookupString LookupString{};
+					PFN_XMapRaised MapRaised{};
+					PFN_XMapWindow MapWindow{};
+					PFN_XMoveResizeWindow MoveResizeWindow{};
+					PFN_XMoveWindow MoveWindow{};
+					PFN_XNextEvent NextEvent{};
+					PFN_XOpenDisplay OpenDisplay{};
+					PFN_XOpenIM OpenIM{};
+					PFN_XPeekEvent PeekEvent{};
+					PFN_XPending Pending{};
+					PFN_XQueryExtension QueryExtension{};
+					PFN_XQueryPointer QueryPointer{};
+					PFN_XRaiseWindow RaiseWindow{};
+					PFN_XRegisterIMInstantiateCallback RegisterIMInstantiateCallback{};
+					PFN_XResizeWindow ResizeWindow{};
+					PFN_XResourceManagerString ResourceManagerString{};
+					PFN_XSaveContext SaveContext{};
+					PFN_XSelectInput SelectInput{};
+					PFN_XSendEvent SendEvent{};
+					PFN_XSetClassHint SetClassHint{};
+					PFN_XSetErrorHandler SetErrorHandler{};
+					PFN_XSetICFocus SetICFocus{};
+					PFN_XSetIMValues SetIMValues{};
+					PFN_XSetInputFocus SetInputFocus{};
+					PFN_XSetLocaleModifiers SetLocaleModifiers{};
+					PFN_XSetScreenSaver SetScreenSaver{};
+					PFN_XSetSelectionOwner SetSelectionOwner{};
+					PFN_XSetWMHints SetWMHints{};
+					PFN_XSetWMNormalHints SetWMNormalHints{};
+					PFN_XSetWMProtocols SetWMProtocols{};
+					PFN_XSupportsLocale SupportsLocale{};
+					PFN_XSync Sync{};
+					PFN_XTranslateCoordinates TranslateCoordinates{};
+					PFN_XUndefineCursor UndefineCursor{};
+					PFN_XUngrabPointer UngrabPointer{};
+					PFN_XUnmapWindow UnmapWindow{};
+					PFN_XUnsetICFocus UnsetICFocus{};
+					PFN_XVisualIDFromVisual VisualIDFromVisual{};
+					PFN_XWarpPointer WarpPointer{};
+					PFN_XUnregisterIMInstantiateCallback UnregisterIMInstantiateCallback{};
+					PFN_Xutf8LookupString UTF8LookupString{};
+					PFN_Xutf8SetWMProperties UTF8SetWMProperties{};
+					PFN_XCreateRegion CreateRegion{};
+					PFN_XDestroyRegion DestroyRegion{};
+
+					bool UTF8 = false;
+				} XLIB{};
+
+				struct xrm
+				{
+					PFN_XrmDestroyDatabase DestroyDatabase{};
+					PFN_XrmGetResource GetResource{};
+					PFN_XrmGetStringDatabase GetStringDatabase{};
+					PFN_XrmInitialize Initialize{};
+					PFN_XrmUniqueQuark UniqueQuark{};
+				} XRM{};
+			} X11{};
+
+			struct wayland
 			{
-				bool Available = false;
-				void* Handle = nullptr;
-				bool MonitorBroken = false;
-				int32_t EventBase = 0;
-				int32_t ErrorBase = 0;
-				int32_t Major = 0;
-				int32_t Minor = 0;
-				PFN_XRRFreeCrtcInfo FreeCrtcInfo{};
-				PFN_XRRFreeOutputInfo FreeOutputInfo{};
-				PFN_XRRFreeScreenResources FreeScreenResources{};
-				PFN_XRRGetCrtcInfo GetCrtcInfo{};
-				PFN_XRRGetOutputInfo GetOutputInfo{};
-				PFN_XRRGetOutputPrimary GetOutputPrimary{};
-				PFN_XRRGetScreenResourcesCurrent GetScreenResourcesCurrent{};
-				PFN_XRRQueryExtension QueryExtension{};
-				PFN_XRRQueryVersion QueryVersion{};
-				PFN_XRRSelectInput SelectInput{};
-				PFN_XRRSetCrtcConfig SetCrtcConfig{};
-				PFN_XRRUpdateConfiguration UpdateConfiguration{};
-			} RandR{};
+				//Wayland
+				wl_display* DisplayWL;
+				wl_registry* Registry;
+				wl_compositor* Compositor;
+				wl_subcompositor* SubCompositor;
+				wl_shm* Shm;
+				wl_seat* Seat;
+				wl_pointer* Pointer;
+				wl_keyboard* Keyboard;
+				wl_data_device_manager* DataDeviceManager;
+				wl_data_device* DataDevice;
+				xdg_wm_base* WMBase;
+				zxdg_decoration_manager_v1* DecorationManager;
+				wp_viewporter* Viewporter;
+				zwp_relative_pointer_manager_v1* RelativePointerManager;
+				zwp_pointer_constraints_v1* PointerConstraints;
+				zwp_idle_inhibit_manager_v1* IdleInhibitManager;
 
-			struct xkb
-			{
-				bool Available = false;
-				bool Detectable = false;
-				int32_t MajorOPCode = 0;
-				int32_t EventBase = 0;
-				int32_t ErrorBase = 0;
-				int32_t Major = 0;
-				int32_t Minor = 0;
-				uint32_t Group = 0;
-				PFN_XkbAllocKeyboard AllocKeyboard{};
-				PFN_XkbFreeKeyboard FreeKeyboard{};
-				PFN_XkbFreeNames FreeNames{};
-				PFN_XkbGetMap GetMap{};
-				PFN_XkbGetNames GetNames{};
-				PFN_XkbGetState GetState{};
-				PFN_XkbKeycodeToKeysym KeycodeToKeysym{};
-				PFN_XkbQueryExtension QueryExtension{};
-				PFN_XkbSelectEventDetails SelectEventDetails{};
-				PFN_XkbSetDetectableAutoRepeat SetDetectableAutoRepeat{};
-			} XKB{};
+				std::vector<TRAPOfferWayland> Offers;
 
-			struct SAVER
-			{
-				int32_t Count = 0;
-				int32_t Timeout = 0;
-				int32_t Interval = 0;
-				int32_t Blanking = 0;
-				int32_t Exposure = 0;
-			} Saver{};
+				wl_data_offer* SelectionOffer;
+				wl_data_source* SelectionSource;
 
-			struct xdnd
-			{
-				int32_t Version = 0;
-				::Window Source{};
-				Atom Format{};
-			} XDND{};
+				wl_data_offer* DragOffer;
+				InternalWindow* DragFocus;
+				uint32_t DragSerial;
 
-			struct XCURSOR
-			{
-				void* Handle = nullptr;
-				PFN_XcursorImageCreate ImageCreate{};
-				PFN_XcursorImageDestroy ImageDestroy{};
-				PFN_XcursorImageLoadCursor ImageLoadCursor{};
-				PFN_XcursorGetTheme GetTheme{};
-				PFN_XcursorGetDefaultSize GetDefaultSize{};
-				PFN_XcursorLibraryLoadImage LibraryLoadImage{};
-			} XCursor{};
+				int32_t CompositorVersion;
+				int32_t SeatVersion;
 
-			struct XINERAMA
-			{
-				bool Available = false;
-				void* Handle = nullptr;
-				int32_t Major = 0;
-				int32_t Minor = 0;
-				PFN_XineramaIsActive IsActive{};
-				PFN_XineramaQueryExtension QueryExtension{};
-				PFN_XineramaQueryScreens QueryScreens{};
-			} Xinerama{};
+				wl_cursor_theme* CursorTheme;
+				wl_cursor_theme* CursorThemeHiDPI;
+				wl_surface* CursorSurface;
+				const char* CursorPreviousName;
+				int32_t CursorTimerFD;
+				uint32_t Serial;
+				uint32_t PointerEnterSerial;
 
-			struct xcb
-			{
-				void* Handle = nullptr;
-				PFN_XGetXCBConnection GetXCBConnection{};
-			} XCB{};
+				int32_t KeyRepeatTimerFD;
+				int32_t KeyRepeatRate;
+				int32_t KeyRepeatDelay;
+				int32_t KeyRepeatScancode;
 
-			struct xi
-			{
-				bool Available = false;
-				void* Handle = nullptr;
-				int32_t MajorOPCode = 0;
-				int32_t EventBase = 0;
-				int32_t ErrorBase = 0;
-				int32_t Major = 0;
-				int32_t Minor = 0;
-				PFN_XIQueryVersion QueryVersion{};
-				PFN_XISelectEvents SelectEvents{};
-			} XI{};
+				struct
+				{
+					void* Handle;
+					xkb_context* Context;
+					xkb_keymap* KeyMap;
+					xkb_state* State;
 
-			struct XRENDER
-			{
-				bool Available = false;
-				void* Handle = nullptr;
-				int32_t Major = 0;
-				int32_t Minor = 0;
-				int32_t EventBase = 0;
-				int32_t ErrorBase = 0;
-				PFN_XRenderQueryExtension QueryExtension{};
-				PFN_XRenderQueryVersion QueryVersion{};
-				PFN_XRenderFindVisualFormat FindVisualFormat{};
-			} XRender{};
+					xkb_compose_state* ComposeState;
 
-			struct xlib
-			{
-				void* Handle = nullptr;
-				PFN_XAllocClassHint AllocClassHint{};
-				PFN_XAllocSizeHints AllocSizeHints{};
-				PFN_XAllocWMHints AllocWMHints{};
-				PFN_XChangeProperty ChangeProperty{};
-				PFN_XChangeWindowAttributes ChangeWindowAttributes{};
-				PFN_XCheckIfEvent CheckIfEvent{};
-				PFN_XCheckTypedWindowEvent CheckTypedWindowEvent;
-				PFN_XCloseDisplay CloseDisplay{};
-				PFN_XCloseIM CloseIM{};
-				PFN_XConvertSelection ConvertSelection{};
-				PFN_XCreateColormap CreateColormap{};
-				PFN_XCreateFontCursor CreateFontCursor{};
-				PFN_XCreateIC CreateIC{};
-				PFN_XCreateWindow CreateWindow{};
-				PFN_XDefineCursor DefineCursor{};
-				PFN_XDeleteContext DeleteContext{};
-				PFN_XDeleteProperty DeleteProperty{};
-				PFN_XDestroyIC DestroyIC{};
-				PFN_XDestroyWindow DestroyWindow{};
-				PFN_XDisplayKeycodes DisplayKeycodes{};
-				PFN_XEventsQueued EventsQueued{};
-				PFN_XFilterEvent FilterEvent{};
-				PFN_XFindContext FindContext{};
-				PFN_XFlush Flush{};
-				PFN_XFree Free{};
-				PFN_XFreeColormap FreeColormap{};
-				PFN_XFreeCursor FreeCursor{};
-				PFN_XFreeEventData FreeEventData{};
-				PFN_XGetAtomName GetAtomName{};
-				PFN_XGetErrorText GetErrorText{};
-				PFN_XGetEventData GetEventData{};
-				PFN_XGetICValues GetICValues{};
-				PFN_XGetIMValues GetIMValues{};
-				PFN_XGetInputFocus GetInputFocus{};
-				PFN_XGetKeyboardMapping GetKeyboardMapping{};
-				PFN_XGetScreenSaver GetScreenSaver{};
-				PFN_XGetSelectionOwner GetSelectionOwner{};
-				PFN_XGetVisualInfo GetVisualInfo{};
-				PFN_XGetWMNormalHints GetWMNormalHints{};
-				PFN_XGetWindowAttributes GetWindowAttributes{};
-				PFN_XGetWindowProperty GetWindowProperty{};
-				PFN_XGrabPointer GrabPointer{};
-				PFN_XIconifyWindow IconifyWindow{};
-				PFN_XInitThreads InitThreads{};
-				PFN_XInternAtom InternAtom{};
-				PFN_XLookupString LookupString{};
-				PFN_XMapRaised MapRaised{};
-				PFN_XMapWindow MapWindow{};
-				PFN_XMoveResizeWindow MoveResizeWindow{};
-				PFN_XMoveWindow MoveWindow{};
-				PFN_XNextEvent NextEvent{};
-				PFN_XOpenDisplay OpenDisplay{};
-				PFN_XOpenIM OpenIM{};
-				PFN_XPeekEvent PeekEvent{};
-				PFN_XPending Pending{};
-				PFN_XQueryExtension QueryExtension{};
-				PFN_XQueryPointer QueryPointer{};
-				PFN_XRaiseWindow RaiseWindow{};
-				PFN_XRegisterIMInstantiateCallback RegisterIMInstantiateCallback{};
-				PFN_XResizeWindow ResizeWindow{};
-				PFN_XResourceManagerString ResourceManagerString{};
-				PFN_XSaveContext SaveContext{};
-				PFN_XSelectInput SelectInput{};
-				PFN_XSendEvent SendEvent{};
-				PFN_XSetClassHint SetClassHint{};
-				PFN_XSetErrorHandler SetErrorHandler{};
-				PFN_XSetICFocus SetICFocus{};
-				PFN_XSetIMValues SetIMValues{};
-				PFN_XSetInputFocus SetInputFocus{};
-				PFN_XSetLocaleModifiers SetLocaleModifiers{};
-				PFN_XSetScreenSaver SetScreenSaver{};
-				PFN_XSetSelectionOwner SetSelectionOwner{};
-				PFN_XSetWMHints SetWMHints{};
-				PFN_XSetWMNormalHints SetWMNormalHints{};
-				PFN_XSetWMProtocols SetWMProtocols{};
-				PFN_XSupportsLocale SupportsLocale{};
-				PFN_XSync Sync{};
-				PFN_XTranslateCoordinates TranslateCoordinates{};
-				PFN_XUndefineCursor UndefineCursor{};
-				PFN_XUngrabPointer UngrabPointer{};
-				PFN_XUnmapWindow UnmapWindow{};
-				PFN_XUnsetICFocus UnsetICFocus{};
-				PFN_XVisualIDFromVisual VisualIDFromVisual{};
-				PFN_XWarpPointer WarpPointer{};
-				PFN_XUnregisterIMInstantiateCallback UnregisterIMInstantiateCallback{};
-				PFN_Xutf8LookupString UTF8LookupString{};
-				PFN_Xutf8SetWMProperties UTF8SetWMProperties{};
-				PFN_XCreateRegion CreateRegion{};
-				PFN_XDestroyRegion DestroyRegion{};
+					xkb_mod_index_t ControlIndex;
+					xkb_mod_index_t AltIndex;
+					xkb_mod_index_t ShiftIndex;
+					xkb_mod_index_t SuperIndex;
+					xkb_mod_index_t CapsLockIndex;
+					xkb_mod_index_t NumLockIndex;
+					uint32_t Modifiers;
 
-				bool UTF8 = false;
-			} XLIB{};
+					PFN_xkb_context_new ContextNew;
+					PFN_xkb_context_unref ContextUnref;
+					PFN_xkb_keymap_new_from_string KeyMapNewFromString;
+					PFN_xkb_keymap_unref KeyMapUnref;
+					PFN_xkb_keymap_mod_get_index KeyMapModGetIndex;
+					PFN_xkb_keymap_key_repeats KeyMapKeyRepeats;
+					PFN_xkb_keymap_key_get_syms_by_level KeyMapKeyGetSymsByLevel;
+					PFN_xkb_state_new StateNew;
+					PFN_xkb_state_unref StateUnref;
+					PFN_xkb_state_key_get_syms StateKeyGetSyms;
+					PFN_xkb_state_update_mask StateUpdateMask;
+					PFN_xkb_state_key_get_layout StateKeyGetLayout;
+					PFN_xkb_state_mod_index_is_active StateModIndexIsActive;
 
-			struct xrm
-			{
-				PFN_XrmDestroyDatabase DestroyDatabase{};
-				PFN_XrmGetResource GetResource{};
-				PFN_XrmGetStringDatabase GetStringDatabase{};
-				PFN_XrmInitialize Initialize{};
-				PFN_XrmUniqueQuark UniqueQuark{};
-			} XRM{};
+					PFN_xkb_compose_table_new_from_locale ComposeTableNewFromLocale;
+					PFN_xkb_compose_table_unref ComposeTableUnref;
+					PFN_xkb_compose_state_new ComposeStateNew;
+					PFN_xkb_compose_state_unref ComposeStateUnref;
+					PFN_xkb_compose_state_feed ComposeStateFeed;
+					PFN_xkb_compose_state_get_status ComposeStateGetStatus;
+					PFN_xkb_compose_state_get_one_sym ComposeStateGetOneSym;
+				} WaylandXKB;
 
-			//Wayland
-			wl_display* DisplayWL;
-			wl_registry* Registry;
-			wl_compositor* Compositor;
-			wl_subcompositor* SubCompositor;
-			wl_shm* Shm;
-			wl_seat* Seat;
-			wl_pointer* Pointer;
-			wl_keyboard* Keyboard;
-			wl_data_device_manager* DataDeviceManager;
-			wl_data_device* DataDevice;
-			xdg_wm_base* WMBase;
-			zxdg_decoration_manager_v1* DecorationManager;
-			wp_viewporter* Viewporter;
-			zwp_relative_pointer_manager_v1* RelativePointerManager;
-			zwp_pointer_constraints_v1* PointerConstraints;
-			zwp_idle_inhibit_manager_v1* IdleInhibitManager;
+				InternalWindow* PointerFocus;
+				InternalWindow* KeyboardFocus;
 
-			std::vector<TRAPOfferWayland> Offers;
+				struct
+				{
+					void* Handle;
+					PFN_wl_display_flush DisplayFlush;
+					PFN_wl_display_cancel_read DisplayCancelRead;
+					PFN_wl_display_dispatch_pending DisplayDispatchPending;
+					PFN_wl_display_read_events DisplayReadEvents;
+					PFN_wl_display_disconnect DisplayDisconnect;
+					PFN_wl_display_roundtrip DisplayRoundtrip;
+					PFN_wl_display_get_fd DisplayGetFD;
+					PFN_wl_display_prepare_read DisplayPrepareRead;
 
-			wl_data_offer* SelectionOffer;
-			wl_data_source* SelectionSource;
+					PFN_wl_proxy_marshal ProxyMarshal;
+					PFN_wl_proxy_add_listener ProxyAddListener;
+					PFN_wl_proxy_destroy ProxyDestroy;
+					PFN_wl_proxy_marshal_constructor ProxyMarshalConstructor;
+					PFN_wl_proxy_marshal_constructor_versioned ProxyMarshalConstructorVersioned;
+					PFN_wl_proxy_get_user_data ProxyGetUserData;
+					PFN_wl_proxy_set_user_data ProxySetUserData;
+					PFN_wl_proxy_get_version ProxyGetVersion;
+					PFN_wl_proxy_marshal_flags ProxyMarshalFlags;
+				} WaylandClient;
 
-			wl_data_offer* DragOffer;
-			InternalWindow* DragFocus;
-			uint32_t DragSerial;
-
-			int32_t CompositorVersion;
-			int32_t SeatVersion;
-
-			wl_cursor_theme* CursorTheme;
-			wl_cursor_theme* CursorThemeHiDPI;
-			wl_surface* CursorSurface;
-			const char* CursorPreviousName;
-			int32_t CursorTimerFD;
-			uint32_t Serial;
-			uint32_t PointerEnterSerial;
-
-			int32_t KeyRepeatTimerFD;
-			int32_t KeyRepeatRate;
-			int32_t KeyRepeatDelay;
-			int32_t KeyRepeatScancode;
-
-			struct
-			{
-				void* Handle;
-				xkb_context* Context;
-				xkb_keymap* KeyMap;
-				xkb_state* State;
-
-				xkb_compose_state* ComposeState;
-
-				xkb_mod_index_t ControlIndex;
-				xkb_mod_index_t AltIndex;
-				xkb_mod_index_t ShiftIndex;
-				xkb_mod_index_t SuperIndex;
-				xkb_mod_index_t CapsLockIndex;
-				xkb_mod_index_t NumLockIndex;
-				uint32_t Modifiers;
-
-				PFN_xkb_context_new ContextNew;
-				PFN_xkb_context_unref ContextUnref;
-				PFN_xkb_keymap_new_from_string KeyMapNewFromString;
-				PFN_xkb_keymap_unref KeyMapUnref;
-				PFN_xkb_keymap_mod_get_index KeyMapModGetIndex;
-				PFN_xkb_keymap_key_repeats KeyMapKeyRepeats;
-				PFN_xkb_keymap_key_get_syms_by_level KeyMapKeyGetSymsByLevel;
-				PFN_xkb_state_new StateNew;
-				PFN_xkb_state_unref StateUnref;
-				PFN_xkb_state_key_get_syms StateKeyGetSyms;
-				PFN_xkb_state_update_mask StateUpdateMask;
-				PFN_xkb_state_key_get_layout StateKeyGetLayout;
-				PFN_xkb_state_mod_index_is_active StateModIndexIsActive;
-
-				PFN_xkb_compose_table_new_from_locale ComposeTableNewFromLocale;
-				PFN_xkb_compose_table_unref ComposeTableUnref;
-				PFN_xkb_compose_state_new ComposeStateNew;
-				PFN_xkb_compose_state_unref ComposeStateUnref;
-				PFN_xkb_compose_state_feed ComposeStateFeed;
-				PFN_xkb_compose_state_get_status ComposeStateGetStatus;
-				PFN_xkb_compose_state_get_one_sym ComposeStateGetOneSym;
-			} WaylandXKB;
-
-			InternalWindow* PointerFocus;
-			InternalWindow* KeyboardFocus;
-
-			struct
-			{
-				void* Handle;
-				PFN_wl_display_flush DisplayFlush;
-				PFN_wl_display_cancel_read DisplayCancelRead;
-				PFN_wl_display_dispatch_pending DisplayDispatchPending;
-				PFN_wl_display_read_events DisplayReadEvents;
-				PFN_wl_display_disconnect DisplayDisconnect;
-				PFN_wl_display_roundtrip DisplayRoundtrip;
-				PFN_wl_display_get_fd DisplayGetFD;
-				PFN_wl_display_prepare_read DisplayPrepareRead;
-
-				PFN_wl_proxy_marshal ProxyMarshal;
-				PFN_wl_proxy_add_listener ProxyAddListener;
-				PFN_wl_proxy_destroy ProxyDestroy;
-				PFN_wl_proxy_marshal_constructor ProxyMarshalConstructor;
-				PFN_wl_proxy_marshal_constructor_versioned ProxyMarshalConstructorVersioned;
-				PFN_wl_proxy_get_user_data ProxyGetUserData;
-				PFN_wl_proxy_set_user_data ProxySetUserData;
-				PFN_wl_proxy_get_version ProxyGetVersion;
-				PFN_wl_proxy_marshal_flags ProxyMarshalFlags;
-			} WaylandClient;
-
-			struct
-			{
-				void* Handle;
-				PFN_wl_cursor_theme_load ThemeLoad;
-				PFN_wl_cursor_theme_destroy ThemeDestroy;
-				PFN_wl_cursor_theme_get_cursor ThemeGetCursor;
-				PFN_wl_cursor_image_get_buffer ImageGetBuffer;
-			} WaylandCursor;
+				struct
+				{
+					void* Handle;
+					PFN_wl_cursor_theme_load ThemeLoad;
+					PFN_wl_cursor_theme_destroy ThemeDestroy;
+					PFN_wl_cursor_theme_get_cursor ThemeGetCursor;
+					PFN_wl_cursor_image_get_buffer ImageGetBuffer;
+				} WaylandCursor;
+			} Wayland{};
 #endif
 		};
 	public:
