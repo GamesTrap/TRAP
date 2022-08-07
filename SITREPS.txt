@@ -3024,3 +3024,4 @@ SITREP 08/07/2022|22w31c1
         - Added Dependencies/Wayland folder ~<5 mins
         - Premake Added Wayland protocol to C++ generation function ~<40 mins
         - Updated all premake scripts ~<5 mins
+        - WindowingAPI Linux Moved KeySymToUnicode() from X11 to the shared header ~<5 mins
