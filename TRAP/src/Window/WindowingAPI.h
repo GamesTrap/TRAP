@@ -1204,6 +1204,7 @@ namespace TRAP::INTERNAL
 					PFN_wl_display_cancel_read DisplayCancelRead;
 					PFN_wl_display_dispatch_pending DisplayDispatchPending;
 					PFN_wl_display_read_events DisplayReadEvents;
+					PFN_wl_display_connect DisplayConnect;
 					PFN_wl_display_disconnect DisplayDisconnect;
 					PFN_wl_display_roundtrip DisplayRoundtrip;
 					PFN_wl_display_get_fd DisplayGetFD;
@@ -1273,14 +1274,24 @@ namespace TRAP::INTERNAL
 			bool ModesPruned = false;
 			bool ModeChanged = false;
 #elif defined(TRAP_PLATFORM_LINUX)
-			RROutput Output = 0;
-			RRCrtc CRTC = 0;
-			RRMode OldMode = 0;
+			struct x11
+			{
+				RROutput Output = 0;
+				RRCrtc CRTC = 0;
+				RRMode OldMode = 0;
 
-			//Index of corresponding Xinerama screen, for EWMH full screen window placement
-			int32_t Index = 0;
+				//Index of corresponding Xinerama screen, for EWMH full screen window placement
+				int32_t Index = 0;
+			} X11;
 
-			wl_output* OutputWL;;
+			struct wayland
+			{
+				wl_output* Output;
+				uint32_t Name;
+				int32_t X;
+				int32_t Y;
+				int32_t Scale;
+			} Wayland;
 #endif
 		};
 
@@ -1292,14 +1303,20 @@ namespace TRAP::INTERNAL
 #ifdef TRAP_PLATFORM_WINDOWS
 			HCURSOR Handle = nullptr;
 #elif defined(TRAP_PLATFORM_LINUX)
-			Cursor Handle = 0;
+			struct x11
+			{
+				Cursor Handle = 0;
+			} X11;
 
-			wl_cursor* CursorWL;
-			wl_cursor* CursorHiDPI;
-			wl_buffer* Buffer;
-			int32_t Width, Height;
-			int32_t XHotspot, YHotspot;
-			int32_t CurrentImage;
+			struct wayland
+			{
+				wl_cursor* CursorWL;
+				wl_cursor* CursorHiDPI;
+				wl_buffer* Buffer;
+				int32_t Width, Height;
+				int32_t XHotspot, YHotspot;
+				int32_t CurrentImage;
+			};
 #endif
 		};
 
@@ -1373,68 +1390,74 @@ namespace TRAP::INTERNAL
 			ITaskbarList3* TaskbarList = nullptr;
 			UINT TaskbarListMsgID = 0;
 #elif defined(TRAP_PLATFORM_LINUX)
-			//X11
-			Colormap colormap = 0;
-			::Window Handle = 0;
-			::Window Parent = 0;
-			XIC IC = nullptr;
-			bool OverrideRedirect = false;
-			//Whether the visual supports framebuffer transparency
-			bool Transparent = false;
-			//Cached position and size used to filter out duplicate events
-			int32_t XPos = 0, YPos = 0;
-			//The last position the cursor was warped to by TRAP
-			int32_t WarpCursorPosX = 0, WarpCursorPosY = 0;
-
-			//The time of the last KeyPress event per keycode, for discarding
-			//duplicate key events generated from some keys by ibus
-			std::array<Time, 256> KeyPressTimes;
-
-			//Wayland
-			bool Visible;
-			bool Activated;
-			bool Fullscreen;
-			bool Hovered;
-			wl_surface* Surface;
-			wl_callback* Callback;
-
-			struct
+			struct x11
 			{
-				int32_t Width, Height;
-				bool Maximized;
-				bool Minimized;
+				//X11
+				Colormap colormap = 0;
+				::Window Handle = 0;
+				::Window Parent = 0;
+				XIC IC = nullptr;
+				bool OverrideRedirect = false;
+				//Whether the visual supports framebuffer transparency
+				bool Transparent = false;
+				//Cached position and size used to filter out duplicate events
+				int32_t XPos = 0, YPos = 0;
+				//The last position the cursor was warped to by TRAP
+				int32_t WarpCursorPosX = 0, WarpCursorPosY = 0;
+
+				//The time of the last KeyPress event per keycode, for discarding
+				//duplicate key events generated from some keys by ibus
+				std::array<Time, 256> KeyPressTimes;
+			} X11;
+
+			struct wayland
+			{
+				//Wayland
+				bool Visible;
 				bool Activated;
 				bool Fullscreen;
-			} Pending;
+				bool Hovered;
+				wl_surface* Surface;
+				wl_callback* Callback;
 
-			struct
-			{
-				xdg_surface* Surface;
-				xdg_toplevel* TopLevel;
-				zxdg_toplevel_decoration_v1* Decoration;
-				uint32_t Decorationmode;
-			} XDG;
+				struct
+				{
+					int32_t Width, Height;
+					bool Maximized;
+					bool Minimized;
+					bool Activated;
+					bool Fullscreen;
+				} Pending;
 
-			char* Title;
-			char* AppID;
+				struct
+				{
+					xdg_surface* Surface;
+					xdg_toplevel* TopLevel;
+					zxdg_toplevel_decoration_v1* Decoration;
+					uint32_t Decorationmode;
+				} XDG;
 
-			int32_t Scale;
-			std::vector<InternalMonitor*> Monitors;
-			int32_t MonitorsCount;
-			int32_t MonitorsSize;
+				char* Title;
+				char* AppID;
 
-			zwp_relative_pointer_v1* RelativePointer;
-			zwp_locked_pointer_v1* LockedPointer;
-			zwp_confined_pointer_v1* ConfinedPointer;
+				int32_t Scale;
+				std::vector<InternalMonitor*> Monitors;
+				int32_t MonitorsCount;
+				int32_t MonitorsSize;
 
-			zwp_idle_inhibitor_v1* IdleInhibitor;
+				zwp_relative_pointer_v1* RelativePointer;
+				zwp_locked_pointer_v1* LockedPointer;
+				zwp_confined_pointer_v1* ConfinedPointer;
 
-			struct
-			{
-				wl_buffer* Buffer;
-				TRAPDecorationWayland Top, Left, Right, Bottom;
-				TRAPDecorationSideWayland Focus;
-			} Decorations;
+				zwp_idle_inhibitor_v1* IdleInhibitor;
+
+				struct
+				{
+					wl_buffer* Buffer;
+					TRAPDecorationWayland Top, Left, Right, Bottom;
+					TRAPDecorationSideWayland Focus;
+				} Decorations;
+			} Wayland;
 #endif
 		};
 	private:
@@ -2796,7 +2819,9 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Create key code translation tables.
 		/// </summary>
-		static void CreateKeyTables();
+		static void CreateKeyTablesWin32();
+		static void CreateKeyTablesX11();
+		static void CreateKeyTablesWayland();
 		/// <summary>
 		/// This function returns the current video mode of the specified monitor.
 		/// If you have create a full screen window for that monitor, the return

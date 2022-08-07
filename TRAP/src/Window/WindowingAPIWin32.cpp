@@ -1964,7 +1964,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	if (!LoadLibraries())
 		return false;
 
-	CreateKeyTables();
+	CreateKeyTablesWin32();
 	UpdateKeyNamesWin32();
 
 	if (Utils::IsWindows10Version1703OrGreaterWin32())
@@ -2853,7 +2853,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Create key code translation tables
-void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
+void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWin32()
 {
 	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
 	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), static_cast<int16_t>(-1));
