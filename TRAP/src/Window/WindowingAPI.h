@@ -98,7 +98,6 @@ namespace TRAP::INTERNAL
 		struct xcb_connection_t;
 		using xcb_window_t = XID;
 		using xcb_visualid_t = XID;
-		struct wl_shm;
 		struct wl_cursor_theme;
 		struct wl_cursor_image;
 		struct wl_cursor;
@@ -459,7 +458,7 @@ namespace TRAP::INTERNAL
 		using PFN_wl_proxy_marshal_flags = wl_proxy*(*)(wl_proxy*, uint32_t, const wl_interface*, uint32_t, uint32_t, ...);
 
 		//Cursor
-		using PFN_wl_cursor_theme_load = wl_cursor_theme(*)(const char*, int, wl_shm*);
+		using PFN_wl_cursor_theme_load = wl_cursor_theme*(*)(const char*, int, wl_shm*);
 		using PFN_wl_cursor_theme_destroy = void(*)(wl_cursor_theme*);
 		using PFN_wl_cursor_theme_get_cursor = wl_cursor*(*)(wl_cursor_theme*, const char*);
 		using PFN_wl_cursor_image_get_buffer = wl_buffer*(*)(wl_cursor_image*);
@@ -658,7 +657,7 @@ namespace TRAP::INTERNAL
 
 		struct wl_cursor
 		{
-			unsigned int image_count;
+			uint32_t image_count;
 			wl_cursor_image** images;
 			char* name;
 		};
@@ -4519,6 +4518,105 @@ namespace TRAP::INTERNAL
 		static std::string GetLinuxKeyboardLayoutName();
 		static std::string GetLinuxKeyboardLayoutNameX11();
 		static std::string GetLinuxKeyboardLayoutNameWayland();
+
+		static void RegistryHandleGlobalRemove(void* userData, wl_registry* registry, uint32_t name);
+		static void RegistryHandleGlobal(void* userData, wl_registry* registry, uint32_t name, const char* interface, uint32_t version);
+		inline static constexpr wl_registry_listener RegistryListener
+		{
+			RegistryHandleGlobal,
+			RegistryHandleGlobalRemove
+		};
+
+		static void WMBaseHandlePing(void* userData, xdg_wm_base* wmBase, uint32_t serial);
+		inline static constexpr xdg_wm_base_listener WMBaseListener
+		{
+			WMBaseHandlePing
+		};
+
+		static void SeatHandleCapabilities(void* userData, wl_seat* seat, uint32_t caps);
+		static void SeatHandleName(void* userData, wl_seat* seat, const char* name);
+		inline static constexpr wl_seat_listener SeatListener
+		{
+			SeatHandleCapabilities,
+			SeatHandleName
+		};
+
+		static void PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY);
+		static void PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface);
+		static void PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sX, wl_fixed_t sY);
+		static void PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
+		static void PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time, uint32_t axis, wl_fixed_t value);
+		inline static constexpr wl_pointer_listener PointerListener
+		{
+			PointerHandleEnter,
+			PointerHandleLeave,
+			PointerHandleMotion,
+			PointerHandleButton,
+			PointerHandleAxis,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr,
+			nullptr
+		};
+
+		static void KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format, int32_t fd, uint32_t size);
+		static void KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface, wl_array* keys);
+		static void KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface);
+		static void KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t time, uint32_t scanCode, uint32_t state);
+		static void KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t modsDepressed, uint32_t modsLatched, uint32_t modsLocked, uint32_t group);
+#ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
+		static void KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate, int32_t delay);
+#endif
+		inline static constexpr wl_keyboard_listener KeyboardListener
+		{
+			KeyboardHandleKeymap,
+			KeyboardHandleEnter,
+			KeyboardHandleLeave,
+			KeyboardHandleKey,
+			KeyboardHandleModifiers,
+#ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
+			KeyboardHandleRepeatInfo
+#endif
+		};
+
+		static void OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform);
+		static void OutputHandleMode(void* userData, wl_output* output, uint32_t flags, int32_t width, int32_t height, int32_t refresh);
+		static void OutputHandleDone(void* userData, wl_output* output);
+		static void OutputHandleScale(void* userData, wl_output* output, int32_t factor);
+#ifdef WL_OUTPUT_NAME_SINCE_VERSION
+		static void OutputHandleName(void* userData, wl_output* output, const char* name);
+		static void OutputHandleDescription(void* userData, wl_output* output, const char* description);
+#endif
+		inline static constexpr wl_output_listener OutputListener
+		{
+			OutputHandleGeometry,
+			OutputHandleMode,
+			OutputHandleDone,
+			OutputHandleScale,
+#ifdef WL_OUTPUT_NAME_SINCE_VERSION
+			OutputHandleName,
+			OutputHandleDescription
+#endif
+		};
+
+		static void DataDeviceHandleDataOffer(void* userData, wl_data_device* device, wl_data_offer* offer);
+		static void DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y, wl_data_offer* offer);
+		static void DataDeviceHandleLeave(void* userData, wl_data_device* device);
+		static void DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t x, wl_fixed_t y);
+		static void DataDeviceHandleDrop(void* userData, wl_data_device* device);
+		static void DataDeviceHandleSelection(void* userData, wl_data_device* device, wl_data_offer* offer);
+		inline static constexpr wl_data_device_listener DataDeviceListener
+		{
+			DataDeviceHandleDataOffer,
+			DataDeviceHandleEnter,
+			DataDeviceHandleLeave,
+			DataDeviceHandleMotion,
+			DataDeviceHandleDrop,
+			DataDeviceHandleSelection
+		};
+
+		static bool LoadCursorThemeWayland();
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

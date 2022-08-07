@@ -3027,3 +3027,5 @@ SITREP 08/07/2022|22w31c1
         - WindowingAPI Linux Moved KeySymToUnicode() from X11 to the shared header ~<5 mins
         - WindowingAPI Data put X11 and Wayland stuff into their own structs ~<20 mins
         - WindowingAPI InternalWindow/Cursor/Monitor put X11 and Wayland stuff into their own structs ~<20 mins
+        - WindowingAPI Wayland Implemented PlatformInitWayland ~>45 mins
+        - Updated all premake scripts to link against wayland-client, wayland-cursor and xkbcommon ~<5 mins

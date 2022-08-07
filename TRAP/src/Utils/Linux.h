@@ -10,6 +10,7 @@
 #include <sys/select.h>
 #include <sys/utsname.h>
 #include <sys/eventfd.h>
+#include <sys/timerfd.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>

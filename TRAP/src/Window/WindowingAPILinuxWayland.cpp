@@ -28,7 +28,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 
 #include "Core/PlatformDetection.h"
-#include <wayland-xdg-shell-client-protocol.h>
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -73,58 +72,294 @@ Modified by: Jan "GamesTrap" Schuerkamp
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModeWayland(const InternalMonitor* monitor)
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDataOffer(void* userData, wl_data_device* device, wl_data_offer* offer)
 {
-    return {};
+    //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow* window, int32_t& width,
-                                                         int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleEnter(void* userData, wl_data_device* device, uint32_t serial, wl_surface* surface, wl_fixed_t x, wl_fixed_t y, wl_data_offer* offer)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleLeave(void* userData, wl_data_device* device)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleMotion(void* userData, wl_data_device* device, uint32_t time, wl_fixed_t x, wl_fixed_t y)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleDrop(void* userData, wl_data_device* device)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection(void* userData, wl_data_device* device, wl_data_offer* offer)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y, int32_t physicalWidth, int32_t physicalHeight, int32_t subpixel, const char* make, const char* model, int32_t transform)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* output, uint32_t flags, int32_t width, int32_t height, int32_t refresh)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* userData, wl_output* output)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, wl_output* output, int32_t factor)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef WL_OUTPUT_NAME_SINCE_VERSION
+void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, wl_output* output, const char* name)
+{
+    //TODO
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef WL_OUTPUT_NAME_SINCE_VERSION
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* userData, wl_output* output, const char* description)
+{
+    //TODO
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKeymap(void* userData, wl_keyboard* keyboard, uint32_t format, int32_t fd, uint32_t size)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleEnter(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface, wl_array* keys)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleLeave(void* userData, wl_keyboard* keyboard, uint32_t serial, wl_surface* surface)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t time, uint32_t scanCode, uint32_t state)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* userData, wl_keyboard* keyboard, uint32_t serial, uint32_t modsDepressed, uint32_t modsLatched, uint32_t modsLocked, uint32_t group)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
+void TRAP::INTERNAL::WindowingAPI::KeyboardHandleRepeatInfo(void* userData, wl_keyboard* keyboard, int32_t rate, int32_t delay)
+{
+    //TODO
+}
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PointerHandleEnter(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface, wl_fixed_t sX, wl_fixed_t sY)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PointerHandleLeave(void* userData, wl_pointer* pointer, uint32_t serial, wl_surface* surface)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* userData, wl_pointer* pointer, uint32_t time, wl_fixed_t sX, wl_fixed_t sY)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PointerHandleButton(void* userData, wl_pointer* pointer, uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PointerHandleAxis(void* userData, wl_pointer* pointer, uint32_t time, uint32_t axis, wl_fixed_t value)
+{
+    //TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SeatHandleCapabilities(void* /*userData*/, wl_seat* seat, const uint32_t caps)
+{
+    if((caps & WL_SEAT_CAPABILITY_POINTER) && !s_Data.Wayland.Pointer)
+    {
+        s_Data.Wayland.Pointer = wl_seat_get_pointer(seat);
+        wl_pointer_add_listener(s_Data.Wayland.Pointer, &PointerListener, nullptr);
+    }
+    else if(!(caps & WL_SEAT_CAPABILITY_POINTER) && s_Data.Wayland.Pointer)
+    {
+        wl_pointer_destroy(s_Data.Wayland.Pointer);
+        s_Data.Wayland.Pointer = nullptr;
+    }
+
+    if((caps & WL_SEAT_CAPABILITY_KEYBOARD) && !s_Data.Wayland.Keyboard)
+    {
+        s_Data.Wayland.Keyboard = wl_seat_get_keyboard(seat);
+        wl_keyboard_add_listener(s_Data.Wayland.Keyboard, &KeyboardListener, nullptr);
+    }
+    else if(!(caps & WL_SEAT_CAPABILITY_KEYBOARD) && s_Data.Wayland.Keyboard)
+    {
+        wl_keyboard_destroy(s_Data.Wayland.Keyboard);
+        s_Data.Wayland.Keyboard = nullptr;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SeatHandleName(void* /*userData*/, wl_seat* /*seat*/, const char* /*name*/)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWindow* window, const int32_t xPos, const int32_t yPos)
+void TRAP::INTERNAL::WindowingAPI::WMBaseHandlePing(void* /*userData*/, xdg_wm_base* wmBase, uint32_t serial)
 {
+    xdg_wm_base_pong(wmBase, serial);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
-														    const int32_t xPos, const int32_t yPos, const int32_t width,
-															const int32_t height, const int32_t refreshRate)
+using namespace std::string_view_literals;
+
+void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_registry* registry, uint32_t name,
+                                                        const char* interface, uint32_t version)
 {
+    if(interface == "wl_compositor"sv)
+    {
+        s_Data.Wayland.CompositorVersion = TRAP::Math::Min(3u, version);
+        s_Data.Wayland.Compositor = static_cast<wl_compositor*>(wl_registry_bind(registry, name, &wl_compositor_interface, s_Data.Wayland.CompositorVersion));
+    }
+    else if(interface == "wl_subcompositor"sv)
+        s_Data.Wayland.SubCompositor = static_cast<wl_subcompositor*>(wl_registry_bind(registry, name, &wl_subcompositor_interface, 1));
+    else if(interface == "wl_shm"sv)
+        s_Data.Wayland.Shm = static_cast<wl_shm*>(wl_registry_bind(registry, name, &wl_shm_interface, 1));
+    else if(interface == "wl_output"sv)
+    {
+        if(version < 2)
+        {
+            InputError(Error::Platform_Error, "[Wayland] Unsupported output interface version");
+            return;
+        }
+
+#ifdef WL_OUTPUT_NAME_SINCE_VERSION
+        version = TRAP::Math::Min(static_cast<int32_t>(version), WL_OUTPUT_NAME_SINCE_VERSION);
+#else
+        version = 2;
+#endif
+
+        wl_output* output = static_cast<wl_output*>(wl_registry_bind(s_Data.Wayland.Registry, name, &wl_output_interface, version));
+        if(!output)
+            return;
+
+        //BUG Does this work or do we have a dangling pointer after this scope?!
+        Scope<InternalMonitor> monitor = std::make_unique<InternalMonitor>();
+
+        //The actual name of this output will be set in the geometry handler
+        wl_output_add_listener(output, &OutputListener, &monitor);
+    }
+    else if(interface == "wl_seat"sv)
+    {
+        if(!s_Data.Wayland.Seat)
+        {
+            s_Data.Wayland.SeatVersion = TRAP::Math::Min(4u, version);
+            s_Data.Wayland.Seat = static_cast<wl_seat*>(wl_registry_bind(registry, name, &wl_seat_interface, s_Data.Wayland.SeatVersion));
+            wl_seat_add_listener(s_Data.Wayland.Seat, &SeatListener, nullptr);
+        }
+    }
+    else if(interface == "wl_data_device_manager"sv)
+    {
+        if(!s_Data.Wayland.DataDeviceManager)
+            s_Data.Wayland.DataDeviceManager = static_cast<wl_data_device_manager*>(wl_registry_bind(registry, name, &wl_data_device_manager_interface, 1));
+    }
+    else if(interface == "xdg_wm_base"sv)
+    {
+        s_Data.Wayland.WMBase = static_cast<xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
+        xdg_wm_base_add_listener(s_Data.Wayland.WMBase, &WMBaseListener, nullptr);
+    }
+    else if(interface == "zxdg_decoration_manager_v1"sv)
+        s_Data.Wayland.DecorationManager = static_cast<zxdg_decoration_manager_v1*>(wl_registry_bind(registry, name, &zxdg_decoration_manager_v1_interface, 1));
+    else if(interface == "wp_viewporter"sv)
+        s_Data.Wayland.Viewporter = static_cast<wp_viewporter*>(wl_registry_bind(registry, name, &wp_viewporter_interface, 1));
+    else if(interface == "zwp_relative_pointer_manager_v1"sv)
+        s_Data.Wayland.RelativePointerManager = static_cast<zwp_relative_pointer_manager_v1*>(wl_registry_bind(registry, name, &zwp_relative_pointer_manager_v1_interface, 1));
+    else if(interface == "zwp_pointer_constraints_v1"sv)
+        s_Data.Wayland.PointerConstraints = static_cast<zwp_pointer_constraints_v1*>(wl_registry_bind(registry, name, &zwp_pointer_constraints_v1_interface, 1));
+    else if(interface == "zwp_idle_inhibit_manager_v1"sv)
+        s_Data.Wayland.IdleInhibitManager = static_cast<zwp_idle_inhibit_manager_v1*>(wl_registry_bind(registry, name, &zwp_idle_inhibit_manager_v1_interface, 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* window,
-                                                                      InternalMonitor* monitor)
+void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobalRemove(void* userData, wl_registry* registry, uint32_t name)
 {
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor* monitor)
-{
-    return {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
-{
-    return {};
+    for(uint32_t i = 0; i < s_Data.Monitors.size(); ++i)
+    {
+        if(s_Data.Monitors[i]->Wayland.Name == name)
+        {
+            InputMonitorDisconnect(i, 0);
+            return;
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -262,6 +497,245 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTablesWayland()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::INTERNAL::WindowingAPI::LoadCursorThemeWayland()
+{
+    int32_t cursorSize = 32;
+
+    const char* sizeString = getenv("XCURSOR_SIZE");
+    if(sizeString)
+    {
+        errno = 0;
+        const long cursorSizeLong = std::stol(sizeString);
+        if(errno == 0 && cursorSizeLong > 0 && cursorSizeLong < std::numeric_limits<int32_t>::max())
+            cursorSize = static_cast<int32_t>(cursorSizeLong);
+    }
+
+    const char* themeName = getenv("XCURSOR_THEME");
+
+    s_Data.Wayland.CursorTheme = s_Data.Wayland.WaylandCursor.ThemeLoad(themeName, cursorSize, s_Data.Wayland.Shm);
+    if(!s_Data.Wayland.CursorTheme)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to load default cursor theme");
+        return false;
+    }
+
+    //If this happens to be nullptr, we just fallback to the scale=1 version.
+    s_Data.Wayland.CursorThemeHiDPI = s_Data.Wayland.WaylandCursor.ThemeLoad(themeName, cursorSize * 2, s_Data.Wayland.Shm);
+
+    s_Data.Wayland.CursorSurface = wl_compositor_create_surface(s_Data.Wayland.Compositor);
+    s_Data.Wayland.CursorTimerFD = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModeWayland(const InternalMonitor* monitor)
+{
+    return {};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow* window, int32_t& width,
+                                                                int32_t& height)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWindow* window, const int32_t xPos, const int32_t yPos)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
+														           const int32_t xPos, const int32_t yPos, const int32_t width,
+															       const int32_t height, const int32_t refreshRate)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* window,
+                                                                             InternalMonitor* monitor)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor* monitor)
+{
+    return {};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
+{
+    //These must be set before any failure checks
+    s_Data.Wayland.KeyRepeatTimerFD = -1;
+    s_Data.Wayland.CursorTimerFD = -1;
+
+    {
+        s_Data.Wayland.WaylandClient.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libwayland-client.so.0");
+        if(!s_Data.Wayland.WaylandClient.Handle)
+        {
+            InputError(Error::Platform_Error, "[Wayland] Failed to load libwayland-client");
+            return false;
+        }
+
+        s_Data.Wayland.WaylandClient.DisplayFlush = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_flush>(s_Data.Wayland.WaylandClient.Handle, "wl_display_flush");
+        s_Data.Wayland.WaylandClient.DisplayCancelRead = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_cancel_read>(s_Data.Wayland.WaylandClient.Handle, "wl_display_cancel_read");
+        s_Data.Wayland.WaylandClient.DisplayDispatchPending = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_dispatch_pending>(s_Data.Wayland.WaylandClient.Handle, "wl_display_dispatch_pending");
+        s_Data.Wayland.WaylandClient.DisplayReadEvents = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_read_events>(s_Data.Wayland.WaylandClient.Handle, "wl_display_read_events");
+        s_Data.Wayland.WaylandClient.DisplayConnect = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_connect>(s_Data.Wayland.WaylandClient.Handle, "wl_display_connect");
+        s_Data.Wayland.WaylandClient.DisplayDisconnect = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_disconnect>(s_Data.Wayland.WaylandClient.Handle, "wl_display_disconnect");
+        s_Data.Wayland.WaylandClient.DisplayRoundtrip = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_roundtrip>(s_Data.Wayland.WaylandClient.Handle, "wl_display_roundtrip");
+        s_Data.Wayland.WaylandClient.DisplayGetFD = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_get_fd>(s_Data.Wayland.WaylandClient.Handle, "wl_display_get_fd");
+        s_Data.Wayland.WaylandClient.DisplayPrepareRead = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_display_prepare_read>(s_Data.Wayland.WaylandClient.Handle, "wl_display_prepare_read");
+
+        s_Data.Wayland.WaylandClient.ProxyMarshal = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_marshal>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_marshal");
+        s_Data.Wayland.WaylandClient.ProxyAddListener = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_add_listener>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_add_listener");
+        s_Data.Wayland.WaylandClient.ProxyDestroy = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_destroy>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_destroy");
+        s_Data.Wayland.WaylandClient.ProxyMarshalConstructor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_marshal_constructor>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_marshal_constructor");
+        s_Data.Wayland.WaylandClient.ProxyMarshalConstructorVersioned = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_marshal_constructor_versioned>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_marshal_constructor_versioned");
+        s_Data.Wayland.WaylandClient.ProxyGetUserData = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_get_user_data>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_get_user_data");
+        s_Data.Wayland.WaylandClient.ProxySetUserData = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_set_user_data>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_set_user_data");
+        s_Data.Wayland.WaylandClient.ProxyGetVersion = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_get_version>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_get_version");
+        s_Data.Wayland.WaylandClient.ProxyMarshalFlags = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_proxy_marshal_flags>(s_Data.Wayland.WaylandClient.Handle, "wl_proxy_marshal_flags");
+
+        if(!s_Data.Wayland.WaylandClient.DisplayFlush ||
+        !s_Data.Wayland.WaylandClient.DisplayCancelRead ||
+        !s_Data.Wayland.WaylandClient.DisplayDispatchPending ||
+        !s_Data.Wayland.WaylandClient.DisplayReadEvents ||
+        !s_Data.Wayland.WaylandClient.DisplayConnect ||
+        !s_Data.Wayland.WaylandClient.DisplayDisconnect ||
+        !s_Data.Wayland.WaylandClient.DisplayRoundtrip ||
+        !s_Data.Wayland.WaylandClient.DisplayGetFD ||
+        !s_Data.Wayland.WaylandClient.DisplayPrepareRead ||
+        !s_Data.Wayland.WaylandClient.ProxyMarshal ||
+        !s_Data.Wayland.WaylandClient.ProxyAddListener ||
+        !s_Data.Wayland.WaylandClient.ProxyDestroy ||
+        !s_Data.Wayland.WaylandClient.ProxyMarshalConstructor ||
+        !s_Data.Wayland.WaylandClient.ProxyMarshalConstructorVersioned ||
+        !s_Data.Wayland.WaylandClient.ProxyGetUserData ||
+        !s_Data.Wayland.WaylandClient.ProxySetUserData /*||
+        !s_Data.Wayland.WaylandClient.ProxyGetVersion ||
+        !s_Data.Wayland.WaylandClient.ProxyMarshalFlags*/)
+        {
+            TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.Wayland.WaylandClient.Handle);
+            InputError(Error::Platform_Error, "[Wayland] Failed to load libwayland-client entry point");
+            return false;
+        }
+
+        s_Data.Wayland.DisplayWL = s_Data.Wayland.WaylandClient.DisplayConnect(nullptr);
+        if(!s_Data.Wayland.DisplayWL)
+        {
+            TRAP::Utils::DynamicLoading::FreeLibrary(s_Data.Wayland.WaylandClient.Handle);
+            InputError(Error::Platform_Error, "[Wayland] Failed to connect to display");
+            return false;
+        }
+    }
+
+    {
+        s_Data.Wayland.WaylandCursor.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libwayland-cursor.so.0");
+        if(!s_Data.Wayland.WaylandCursor.Handle)
+        {
+            InputError(Error::Platform_Error, "[Wayland] Failed to load libwayland-cursor");
+            return false;
+        }
+
+        s_Data.Wayland.WaylandCursor.ThemeLoad = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_cursor_theme_load>(s_Data.Wayland.WaylandCursor.Handle, "wl_cursor_theme_load");
+        s_Data.Wayland.WaylandCursor.ThemeDestroy = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_cursor_theme_destroy>(s_Data.Wayland.WaylandCursor.Handle, "wl_cursor_theme_destroy");
+        s_Data.Wayland.WaylandCursor.ThemeGetCursor = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_cursor_theme_get_cursor>(s_Data.Wayland.WaylandCursor.Handle, "wl_cursor_theme_get_cursor");
+        s_Data.Wayland.WaylandCursor.ImageGetBuffer = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_wl_cursor_image_get_buffer>(s_Data.Wayland.WaylandCursor.Handle, "wl_cursor_image_get_buffer");
+    }
+
+    {
+        s_Data.Wayland.WaylandXKB.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libxkbcommon.so.0");
+        if(!s_Data.Wayland.WaylandXKB.Handle)
+        {
+            InputError(Error::Platform_Error, "[Wayland] Failed to load libxkbcommon");
+            return false;
+        }
+
+        s_Data.Wayland.WaylandXKB.ContextNew = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_context_new>(s_Data.Wayland.WaylandXKB.Handle, "xkb_context_new");
+        s_Data.Wayland.WaylandXKB.ContextUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_context_unref>(s_Data.Wayland.WaylandXKB.Handle, "xkb_context_unref");
+        s_Data.Wayland.WaylandXKB.KeyMapNewFromString = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_keymap_new_from_string>(s_Data.Wayland.WaylandXKB.Handle, "xkb_keymap_new_from_string");
+        s_Data.Wayland.WaylandXKB.KeyMapUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_keymap_unref>(s_Data.Wayland.WaylandXKB.Handle, "xkb_keymap_unref");
+        s_Data.Wayland.WaylandXKB.KeyMapModGetIndex = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_keymap_mod_get_index>(s_Data.Wayland.WaylandXKB.Handle, "xkb_keymap_mod_get_index");
+        s_Data.Wayland.WaylandXKB.KeyMapKeyRepeats = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_keymap_key_repeats>(s_Data.Wayland.WaylandXKB.Handle, "xkb_keymap_key_repeats");
+        s_Data.Wayland.WaylandXKB.KeyMapKeyGetSymsByLevel = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_keymap_key_get_syms_by_level>(s_Data.Wayland.WaylandXKB.Handle, "xkb_keymap_key_get_syms_by_level");
+        s_Data.Wayland.WaylandXKB.StateNew = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_new>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_new");
+        s_Data.Wayland.WaylandXKB.StateUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_unref>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_unref");
+        s_Data.Wayland.WaylandXKB.StateKeyGetSyms = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_key_get_syms>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_key_get_syms");
+        s_Data.Wayland.WaylandXKB.StateUpdateMask = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_update_mask>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_update_mask");
+        s_Data.Wayland.WaylandXKB.StateKeyGetLayout = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_key_get_layout>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_key_get_layout");
+        s_Data.Wayland.WaylandXKB.StateModIndexIsActive = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_mod_index_is_active>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_mod_index_is_active");
+        s_Data.Wayland.WaylandXKB.ComposeTableNewFromLocale = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_table_new_from_locale>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_table_new_from_locale");
+        s_Data.Wayland.WaylandXKB.ComposeTableUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_table_unref>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_table_unref");
+        s_Data.Wayland.WaylandXKB.ComposeStateNew = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_state_new>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_state_new");
+        s_Data.Wayland.WaylandXKB.ComposeStateUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_state_unref>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_state_unref");
+        s_Data.Wayland.WaylandXKB.ComposeStateFeed = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_state_feed>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_state_feed");
+        s_Data.Wayland.WaylandXKB.ComposeStateGetStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_state_get_status>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_state_get_status");
+        s_Data.Wayland.WaylandXKB.ComposeStateGetOneSym = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_state_get_one_sym>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_state_get_one_sym");
+
+        s_Data.Wayland.Registry = wl_display_get_registry(s_Data.Wayland.DisplayWL);
+        wl_registry_add_listener(s_Data.Wayland.Registry, &RegistryListener, nullptr);
+
+        CreateKeyTablesWayland();
+
+        s_Data.Wayland.WaylandXKB.Context = s_Data.Wayland.WaylandXKB.ContextNew(XKB_CONTEXT_NO_FLAGS);
+        if(!s_Data.Wayland.WaylandXKB.Context)
+        {
+            InputError(Error::Platform_Error, "[Wayland] Failed to initialize xkb context");
+            return false;
+        }
+    }
+
+    //Sync so we got all registry objects
+    s_Data.Wayland.WaylandClient.DisplayRoundtrip(s_Data.Wayland.DisplayWL);
+
+    //Sync so we got all initial output events
+    s_Data.Wayland.WaylandClient.DisplayRoundtrip(s_Data.Wayland.DisplayWL);
+
+#ifdef WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION
+    if(s_Data.Wayland.SeatVersion >= WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION)
+    {
+        s_Data.Wayland.KeyRepeatTimerFD = timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC | TFD_NONBLOCK);
+    }
+#endif
+
+    if(!s_Data.Wayland.WMBase)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to find xdg-shell in your compositor");
+        return false;
+    }
+
+    if(!s_Data.Wayland.Shm)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to find wl_shm in your compositor");
+        return false;
+    }
+
+    if(!LoadCursorThemeWayland())
+        return false;
+
+    if(s_Data.Wayland.Seat && s_Data.Wayland.DataDeviceManager)
+    {
+        s_Data.Wayland.DataDevice = wl_data_device_manager_get_data_device(s_Data.Wayland.DataDeviceManager, s_Data.Wayland.Seat);
+        wl_data_device_add_listener(s_Data.Wayland.DataDevice, &DataDeviceListener, nullptr);
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow* window)
 {
 }
@@ -275,14 +749,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor* monitor, float& xScale,
-                                                                  float& yScale)
+                                                                         float& yScale)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosWayland(const InternalMonitor* monitor, int32_t& xPos,
-                                                         int32_t& yPos)
+                                                                int32_t& yPos)
 {
 }
 
@@ -301,7 +775,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland(const InternalWind
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow* window,
-			                                            WindowConfig& WNDConfig)
+			                                                   WindowConfig& WNDConfig)
 {
     return {};
 }
@@ -315,7 +789,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(const InternalW
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorWayland(InternalCursor* cursor, const Image* const image,
-                                                        const int32_t xHotspot, const int32_t yHotspot)
+                                                               const int32_t xHotspot, const int32_t yHotspot)
 {
     return {};
 }
@@ -421,21 +895,21 @@ float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland(const Intern
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const InternalWindow* window, int32_t& width,
-                                                              int32_t& height)
+                                                                     int32_t& height)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow* window, float& xScale,
-                                                                 float& yScale)
+                                                                        float& yScale)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaWayland(const InternalMonitor* monitor, int32_t& xPos,
-                                                              int32_t& yPos, int32_t& width, int32_t& height)
+                                                                     int32_t& yPos, int32_t& width, int32_t& height)
 {
 }
 
@@ -496,7 +970,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland(const Intern
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetProgressWayland(const InternalWindow* window, const ProgressState state,
-													   const uint32_t completed)
+													          const uint32_t completed)
 {
 }
 
@@ -536,8 +1010,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsWayland(
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInstance instance, const InternalWindow* window,
-																   const VkAllocationCallbacks* allocator,
-																   VkSurfaceKHR& surface)
+																          const VkAllocationCallbacks* allocator,
+																          VkSurfaceKHR& surface)
 {
     return {};
 }
@@ -575,8 +1049,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowWayland(InternalWindow* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWindow* window, int32_t minWidth,
-                                                               int32_t minHeight, int32_t maxWidth,
-                                                               int32_t maxHeight)
+                                                                      int32_t minHeight, int32_t maxWidth,
+                                                                      int32_t maxHeight)
 {
 }
 
