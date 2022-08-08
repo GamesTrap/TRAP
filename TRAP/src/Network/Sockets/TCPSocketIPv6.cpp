@@ -6,7 +6,7 @@
 #include "Network/IP/IPv6Address.h"
 #include "SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 #define far

@@ -4,6 +4,7 @@
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"
+#include "Utils/Memory.h"
 
 static const std::unordered_map<TRAP::Graphics::RendererAPI::ShaderStage, std::string> StageToStr
 {
@@ -74,7 +75,11 @@ bool TRAP::Graphics::Shader::Reload()
 	{
 		const auto loadedData = FileSystem::ReadFile(m_filepath);
 		if(loadedData)
-			SPIRVSource = Convert8To32(*loadedData);
+		{
+			SPIRVSource.resize((*loadedData).size() / sizeof(uint32_t));
+			Utils::Memory::ConvertBytes((*loadedData).begin(), (*loadedData).end(), SPIRVSource.begin());
+			// SPIRVSource = Convert8To32(*loadedData);
+		}
 	}
 
 	if(isSPIRV && SPIRVSource.empty())
@@ -329,28 +334,6 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 	file.close();
 
 	return magicNumber == 0x07230203;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//TODO Move this to utils as std::vector<T> ConvertByte<T>(std::vector<uint8_t>);
-std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<uint8_t>& source)
-{
-	//BUG Depends on Endianness ?!
-	std::vector<uint32_t> data{};
-	data.resize(source.size() / 4);
-
-	std::size_t j = 0;
-	for(std::size_t i = 0; i < source.size(); i += 4)
-	{
-		const uint32_t val = source[i] |
-			                 (source[i + 1] << 8) |
-			                 (source[i + 2] << 16) |
-			                 (source[i + 3] << 24);
-		data[j++] = val;
-	}
-
-	return data;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -849,7 +832,11 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 		{
 			const auto loadedData = FileSystem::ReadFile(filePath);
 			if(loadedData)
-				SPIRVSource = Convert8To32(*loadedData);
+			{
+				SPIRVSource.resize((*loadedData).size() / sizeof(uint32_t));
+				Utils::Memory::ConvertBytes((*loadedData).begin(), (*loadedData).end(), SPIRVSource.begin());
+				//SPIRVSource = Convert8To32(*loadedData);
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 #include "Utils/Hash/CRC32.h"
 #include "Utils/Decompress/Inflate.h"

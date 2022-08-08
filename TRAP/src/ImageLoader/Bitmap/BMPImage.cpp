@@ -4,7 +4,7 @@
 #include "Utils/String/String.h"
 #include "FileSystem/FileSystem.h"
 #include "Maths/Math.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)

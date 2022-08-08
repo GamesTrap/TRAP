@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Adler32.h"
 
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t length)
 {

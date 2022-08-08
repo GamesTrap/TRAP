@@ -30,7 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Packet.h"
 
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 TRAP::Network::Packet::Packet()
 	: m_readPos(0), m_sendPos(0), m_isValid(true)

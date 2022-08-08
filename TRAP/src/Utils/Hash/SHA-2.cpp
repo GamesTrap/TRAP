@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "SHA-2.h"
 
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 constexpr std::array<uint32_t, 64> SHA256_K =
 {

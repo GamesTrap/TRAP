@@ -234,12 +234,6 @@ namespace TRAP::Graphics
 		/// <param name="filePath">File path of the shader.</param>
 		/// <returns>True if file has SPIRV magic number, false otherwise.</returns>
 		static bool CheckSPIRVMagicNumber(const std::filesystem::path& filePath);
-		/// <summary>
-		/// Convert byte data to uint32_t vector.
-		/// </summary>
-		/// <param name="source">Byte data to convert.</param>
-		/// <returns>Converted data.</returns>
-		static std::vector<uint32_t> Convert8To32(const std::vector<uint8_t>& source);
 
 		/// <summary>
 		/// Pre process GLSL source code.

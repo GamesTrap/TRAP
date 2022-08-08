@@ -3016,3 +3016,11 @@ SITREP 08/08/2022|22w32a1
     - Changed TRAP Engine version to 22w32a1(0.8.20)
     - Linux Enabled Xwayland support ~<5 mins
     - Added macro to enable native Wayland support (disables use of Xwayland) ~<5 mins
+
+SITREP 08/09/2022|22w32a2
+    - Changed TRAP Engine version to 22w32a2(0.8.21)
+    - Docs Linux Added required wayland packages ~<5 mins
+    - Utils Renamed ByteSwap.h to Memory.h ~<5 mins
+    - Shader Removed Convert8To32() ~<5 mins
+    - Utils Memory Added SwapBytes function for iterators ~<5 mins
+    - Utils Memory Added ConvertByte function and ConvertBytes for iterators ~<20 mins

@@ -32,7 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Network/HTTP/HTTP.h"
 #include "Network/Sockets/SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::None{};
 const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Any(0, 0, 0, 0);

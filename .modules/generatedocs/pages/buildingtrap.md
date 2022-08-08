@@ -14,18 +14,20 @@ If you want to be able to build the documentation and to update the Vulkan loade
 :::{tab} Linux
 Please install the [VulkanSDK](https://vulkan.lunarg.com/sdk/home/) and make sure that the `VULKAN_SDK` environment variable is set properly.
 
-TRAP™ also depends on some X11 development packages.  
+TRAP™ also depends on some X11 and Wayland development packages.  
 To install those run the following command in a terminal:
 
 ```sh
-sudo apt install xorg-dev
+sudo apt install xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
 ```
 
 or to only install the required packages
 
 ```sh
-sudo apt install libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev
+sudo apt install libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libwayland-dev libxkbcommon-dev wayland-protocols
 ```
+
+Make sure that the Wayland Scanner can be used from Terminal via `wayland-scanner` command.
 
 If you want to be able to build the documentation and to update the Vulkan loader you need to install [Python 3](https://www.python.org/downloads/) and [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html).
 Make sure Python 3 and Sphinx can be used from Terminal via the `python` and `sphinx-build` commands.

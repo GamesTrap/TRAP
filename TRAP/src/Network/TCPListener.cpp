@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/TCPSocket.h"
 #include "Sockets/SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 TRAP::Network::TCPListener::TCPListener()
 	: Socket(Type::TCP)

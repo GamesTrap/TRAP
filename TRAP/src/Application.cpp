@@ -22,7 +22,7 @@
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
 #include "Utils/Discord/DiscordGameSDK.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 

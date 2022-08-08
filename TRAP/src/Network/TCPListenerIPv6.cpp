@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Sockets/TCPSocketIPv6.h"
 #include "Sockets/SocketImpl.h"
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
 	: Socket(Type::TCP)

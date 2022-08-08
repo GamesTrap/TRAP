@@ -2,7 +2,7 @@
 #include "CRC32.h"
 
 #include "Utils/Utils.h"
-#include "Utils/ByteSwap.h"
+#include "Utils/Memory.h"
 
 constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 {
