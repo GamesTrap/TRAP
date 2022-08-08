@@ -3011,3 +3011,8 @@ SITREP 08/05/2022|22w31b1
     - Fixed wrong descriptorCount usage in VkDescriptorSetLayoutBinding ~<30 mins
     - Renderer2D Fixed artifacting because of non dynamically uniform array index value usage ~<10 mins
     - Renderer Replaced UBO with SSBO for SceneData (+ updated all affected shaders) ~<10 mins
+
+SITREP 08/08/2022|22w32a1
+    - Changed TRAP Engine version to 22w32a1(0.8.20)
+    - Linux Enabled Xwayland support ~<5 mins
+    - Added macro to enable native Wayland support (disables use of Xwayland) ~<5 mins

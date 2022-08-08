@@ -296,6 +296,18 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		return LinuxWindowManager::Unknown;
 #endif
 	}
+
+#ifndef ENABLE_WAYLAND_SUPPORT
+	//Replace Wayland with X11
+	using namespace std::string_view_literals;
+	if(windowManager == LinuxWindowManager::Wayland)
+	{
+		if(getenv("DISPLAY") || getenv("XDG_SESSION_TYPE") == "x11"sv)
+			windowManager = LinuxWindowManager::X11;
+		else
+			windowManager = LinuxWindowManager::Unknown;
+	}
+#endif
 #endif
 
 	return windowManager;
