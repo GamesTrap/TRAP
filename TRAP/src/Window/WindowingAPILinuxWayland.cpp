@@ -78,6 +78,270 @@ static constexpr int32_t TRAP_CAPTION_HEIGHT = 24;
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::DataSourceHandleTarget(void* /*userData*/, wl_data_source* source, const char* /*mimeType*/)
+{
+    if(s_Data.Wayland.SelectionSource != source)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Unknown clipboard data source");
+        return;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataSourceHandleSend(void* /*userData*/, wl_data_source* source, const char* mimeType, int32_t fd)
+{
+    //Ignore it if this is an outdated or invalid request
+    if(s_Data.Wayland.SelectionSource != source ||
+       mimeType != "text/plain;charset=utf-8"sv)
+    {
+        close(fd);
+        return;
+    }
+
+    const char* string = s_Data.ClipboardString.c_str();
+    std::size_t length = s_Data.ClipboardString.size();
+
+    while(length > 0)
+    {
+        const ssize_t result = write(fd, string, length);
+        if(result == -1)
+        {
+            if(errno == EINTR)
+                continue;
+
+            InputError(Error::Platform_Error, "[Wayland] Error while writing the clipboard: " + Utils::String::GetStrError());
+            break;
+        }
+
+        length -= result;
+        string += result;
+    }
+
+    close(fd);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DataSourceHandleCancelled(void* /*userData*/, wl_data_source* source)
+{
+    wl_data_source_destroy(source);
+
+    if(s_Data.Wayland.SelectionSource != source)
+        return;
+
+    s_Data.Wayland.SelectionSource = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleLocked(void* /*userData*/, zwp_locked_pointer_v1* /*lockedPointer*/)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::LockedPointerHandleUnlocked(void* /*userData*/, zwp_locked_pointer_v1* /*lockedPointer*/)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::RelativePointerHandleRelativeMotion(void* userData,
+                                                                       zwp_relative_pointer_v1* /*pointer*/,
+                                                                       uint32_t /*timeHi*/, uint32_t /*timeLo*/,
+                                                                       wl_fixed_t dx, wl_fixed_t dy,
+                                                                       wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+    double xPos = window->VirtualCursorPosX;
+    double yPos = window->VirtualCursorPosY;
+
+    if(window->cursorMode != CursorMode::Disabled)
+        return;
+
+    if(window->RawMouseMotion)
+    {
+        xPos += wl_fixed_to_double(dxUnaccel);
+        yPos += wl_fixed_to_double(dyUnaccel);
+    }
+    else
+    {
+        xPos += wl_fixed_to_double(dx);
+        yPos += wl_fixed_to_double(dy);
+    }
+
+    InputCursorPos(window, xPos, yPos);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleConfined(void* /*userData*/,
+                                                                 zwp_confined_pointer_v1* /*confinedPointer*/)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::ConfinedPointerHandleUnconfined(void* /*userData*/,
+                                                                   zwp_confined_pointer_v1* /*confinedPointer*/)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SurfaceHandleEnter(void* userData, wl_surface* /*surface*/, wl_output* output)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(wl_output_get_user_data(output));
+
+    window->Wayland.Monitors.push_back(monitor);
+
+    UpdateContentScaleWayland(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SurfaceHandleLeave(void* userData, wl_surface* /*surface*/, wl_output* output)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(wl_output_get_user_data(output));
+    bool found = false;
+
+    for(uint32_t i = 0; i < window->Wayland.Monitors.size() - 1; ++i)
+    {
+        if(monitor == window->Wayland.Monitors[i])
+            found = true;
+        if(found)
+            window->Wayland.Monitors[i] = window->Wayland.Monitors[i + 1];
+    }
+    if(found)
+        window->Wayland.Monitors.pop_back();
+
+    UpdateContentScaleWayland(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::XDGDecorationHandleConfigure(void* userData,
+                                                                zxdg_toplevel_decoration_v1* /*decoration*/,
+                                                                uint32_t mode)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+
+    window->Wayland.XDG.DecorationMode = mode;
+
+    if(mode == ZXDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE)
+    {
+        if(window->Decorated && !window->Monitor)
+            CreateFallbackDecorationsWayland(window);
+    }
+    else
+        DestroyFallbackDecorationsWayland(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleConfigure(void* userData, xdg_toplevel* /*topLevel*/, int32_t width,
+                                                              int32_t height, wl_array* states)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+
+    window->Wayland.Pending.Activated = false;
+    window->Wayland.Pending.Maximized = false;
+    window->Wayland.Pending.Fullscreen = false;
+
+    uint32_t* state;
+    for (state = static_cast<uint32_t*>((states)->data); reinterpret_cast<const char*>(state) < (static_cast<const char *>((states)->data) + (states)->size); (state)++)
+    {
+        switch(*state)
+        {
+        case XDG_TOPLEVEL_STATE_MAXIMIZED:
+            window->Wayland.Pending.Maximized = true;
+            break;
+        case XDG_TOPLEVEL_STATE_FULLSCREEN:
+            window->Wayland.Pending.Fullscreen = true;
+            break;
+        case XDG_TOPLEVEL_STATE_RESIZING:
+            break;
+        case XDG_TOPLEVEL_STATE_ACTIVATED:
+            window->Wayland.Pending.Activated = true;
+            break;
+        }
+    }
+
+    if(width && height)
+    {
+        if(window->Wayland.Decorations.Top.surface)
+        {
+            window->Wayland.Pending.Width = TRAP::Math::Max(0, width - TRAP_BORDER_SIZE * 2);
+            window->Wayland.Pending.Height = TRAP::Math::Max(0, height - TRAP_BORDER_SIZE - TRAP_CAPTION_HEIGHT);
+        }
+        else
+        {
+            window->Wayland.Pending.Width = width;
+            window->Wayland.Pending.Height = height;
+        }
+    }
+    else
+    {
+        window->Wayland.Pending.Width = window->Width;
+        window->Wayland.Pending.Height = window->Height;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::XDGTopLevelHandleClose(void* userData, xdg_toplevel* /*topLevel*/)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+    InputWindowCloseRequest(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::XDGSurfaceHandleConfigure(void* userData, xdg_surface* surface, uint32_t serial)
+{
+    InternalWindow* window = static_cast<InternalWindow*>(userData);
+
+    xdg_surface_ack_configure(surface, serial);
+
+    if(window->Wayland.Activated != window->Wayland.Pending.Activated)
+        window->Wayland.Activated = window->Wayland.Pending.Activated;
+
+    if(window->Maximized != window->Wayland.Pending.Maximized)
+    {
+        window->Maximized = window->Wayland.Pending.Maximized;
+        InputWindowMaximize(window, window->Maximized);
+    }
+
+    window->Wayland.Fullscreen = window->Wayland.Pending.Fullscreen;
+
+    int32_t width = window->Wayland.Pending.Width;
+    int32_t height = window->Wayland.Pending.Height;
+
+    if(width != window->Width || height != window->Height)
+    {
+        window->Width = width;
+        window->Height = height;
+        ResizeWindowWayland(window);
+
+        InputWindowSize(window, width, height);
+    }
+
+    if(!window->Wayland.Visible)
+    {
+        //Allow the window to be mapped only if it either has no XDG
+        //decorations or they have already received a configure vent
+        if(!window->Wayland.XDG.Decoration || window->Wayland.XDG.DecorationMode)
+        {
+            window->Wayland.Visible = true;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::DataOfferHandleOffer(void* /*userData*/, wl_data_offer* offer, const char* mimeType)
 {
     for(uint32_t i = 0; i < s_Data.Wayland.Offers.size(); ++i)
@@ -463,9 +727,15 @@ void TRAP::INTERNAL::WindowingAPI::KeyboardHandleKey(void* /*userData*/, wl_keyb
 void TRAP::INTERNAL::WindowingAPI::KeyboardHandleModifiers(void* /*userData*/, wl_keyboard* /*keyboard*/,
                                                            uint32_t /*serial*/, uint32_t /*modsDepressed*/,
                                                            uint32_t /*modsLatched*/, uint32_t /*modsLocked*/,
-                                                           uint32_t /*group*/)
+                                                           uint32_t group)
 {
     //TODO Only used for setting modifier bits which we dont use anyway
+
+    if(s_Data.Wayland.WaylandXKB.Group != group)
+    {
+        s_Data.Wayland.WaylandXKB.Group = group;
+        InputKeyboardLayout();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -536,7 +806,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* /*userData*/, wl_po
                                                        wl_fixed_t sX, wl_fixed_t sY)
 {
     InternalWindow* window = s_Data.Wayland.PointerFocus;
-    std::string cursorName = nullptr;
+    std::string cursorName{};
 
     if(!window)
         return;
@@ -552,7 +822,7 @@ void TRAP::INTERNAL::WindowingAPI::PointerHandleMotion(void* /*userData*/, wl_po
     switch(window->Wayland.Decorations.Focus)
     {
     case TRAPDecorationSideWayland::MainWindow:
-        s_Data.Wayland.CursorPreviousName = nullptr;
+        s_Data.Wayland.CursorPreviousName = "";
         InputCursorPos(window, x, y);
         break;
 
@@ -1250,7 +1520,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitorWayland(InternalWindow* window)
 
     SetIdleInhibitorWayland(window, false);
 
-    if(window->Wayland.XDG.Decorationmode != ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE)
+    if(window->Wayland.XDG.DecorationMode != ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE)
     {
         if(window->Decorated)
             CreateFallbackDecorationsWayland(window);
@@ -1467,6 +1737,344 @@ void TRAP::INTERNAL::WindowingAPI::DestroyFallbackDecorationWayland(TRAPDecorati
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DestroyShellObjectsWayland(InternalWindow* window)
+{
+    DestroyFallbackDecorationsWayland(window);
+
+    if(window->Wayland.XDG.Decoration)
+        zxdg_toplevel_decoration_v1_destroy(window->Wayland.XDG.Decoration);
+
+    if(window->Wayland.XDG.TopLevel)
+        xdg_toplevel_destroy(window->Wayland.XDG.TopLevel);
+
+    if(window->Wayland.XDG.Surface)
+        xdg_surface_destroy(window->Wayland.XDG.Surface);
+
+    window->Wayland.XDG.Decoration = nullptr;
+    window->Wayland.XDG.DecorationMode = 0;
+    window->Wayland.XDG.TopLevel = nullptr;
+    window->Wayland.XDG.Surface = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::CreateShellObjectsWayland(InternalWindow* window)
+{
+    window->Wayland.XDG.Surface = xdg_wm_base_get_xdg_surface(s_Data.Wayland.WMBase, window->Wayland.Surface);
+    if(!window->Wayland.XDG.Surface)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create xdg-surface for window");
+        return false;
+    }
+
+    xdg_surface_add_listener(window->Wayland.XDG.Surface, &XDGSurfaceListener, window);
+
+    window->Wayland.XDG.TopLevel = xdg_surface_get_toplevel(window->Wayland.XDG.Surface);
+    if(!window->Wayland.XDG.TopLevel)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create xdg-toplevel for window");
+        return false;
+    }
+
+    xdg_toplevel_add_listener(window->Wayland.XDG.TopLevel, &XDGTopLevelListener, window);
+
+    if(!window->Wayland.AppID.empty())
+        xdg_toplevel_set_app_id(window->Wayland.XDG.TopLevel, window->Wayland.AppID.c_str());
+
+    if(!window->Wayland.Title.empty())
+        xdg_toplevel_set_title(window->Wayland.XDG.TopLevel, window->Wayland.Title.c_str());
+
+    if(window->Monitor)
+    {
+        xdg_toplevel_set_fullscreen(window->Wayland.XDG.TopLevel, window->Monitor->Wayland.Output);
+        SetIdleInhibitorWayland(window, true);
+    }
+    else
+    {
+        if(window->Maximized)
+            xdg_toplevel_set_maximized(window->Wayland.XDG.TopLevel);
+
+        SetIdleInhibitorWayland(window, false);
+
+        if(s_Data.Wayland.DecorationManager)
+        {
+            window->Wayland.XDG.Decoration = zxdg_decoration_manager_v1_get_toplevel_decoration(s_Data.Wayland.DecorationManager, window->Wayland.XDG.TopLevel);
+            zxdg_toplevel_decoration_v1_add_listener(window->Wayland.XDG.Decoration, &XDGDecorationListener, window);
+
+            uint32_t mode;
+
+            if(window->Decorated)
+                mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE;
+            else
+                mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE;
+
+            zxdg_toplevel_decoration_v1_set_mode(window->Wayland.XDG.Decoration, mode);
+        }
+        else
+        {
+            if(window->Decorated)
+                CreateFallbackDecorationsWayland(window);
+        }
+    }
+
+    if(window->MinWidth != -1 && window->MinHeight != -1)
+    {
+        int32_t minWidth = window->MinWidth;
+        int32_t minHeight = window->MinHeight;
+
+        if(window->Wayland.Decorations.Top.surface)
+        {
+            minWidth += TRAP_BORDER_SIZE * 2;
+            minHeight += TRAP_CAPTION_HEIGHT + TRAP_BORDER_SIZE;
+        }
+
+        xdg_toplevel_set_min_size(window->Wayland.XDG.TopLevel, minWidth, minHeight);
+    }
+
+    if(window->MaxWidth != -1 && window->MaxHeight != -1)
+    {
+        int32_t maxWidth = window->MaxWidth;
+        int32_t maxHeight = window->MaxHeight;
+
+        if(window->Wayland.Decorations.Top.surface)
+        {
+            maxWidth += TRAP_BORDER_SIZE * 2;
+            maxHeight += TRAP_CAPTION_HEIGHT + TRAP_BORDER_SIZE;
+        }
+
+        xdg_toplevel_set_max_size(window->Wayland.XDG.TopLevel, maxWidth, maxHeight);
+    }
+
+    wl_surface_commit(window->Wayland.Surface);
+    s_Data.Wayland.WaylandClient.DisplayRoundtrip(s_Data.Wayland.DisplayWL);
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::CreateNativeSurfaceWayland(InternalWindow* window, WindowConfig& WNDConfig)
+{
+    window->Wayland.Surface = wl_compositor_create_surface(s_Data.Wayland.Compositor);
+    if(!window->Wayland.Surface)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create window surface");
+        return false;
+    }
+
+    wl_surface_add_listener(window->Wayland.Surface, &SurfaceListener, window);
+
+    wl_surface_set_user_data(window->Wayland.Surface, window);
+
+    window->Width = WNDConfig.Width;
+    window->Height = WNDConfig.Height;
+    window->Wayland.Scale = 1;
+    window->Wayland.Title = WNDConfig.Title;
+    window->Wayland.AppID = WNDConfig.Wayland.AppID;
+
+    window->Maximized = WNDConfig.Maximized;
+
+    window->Transparent = false;
+    if(!window->Transparent)
+        SetContentAreaOpaqueWayland(window);
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::ConfinePointerWayland(InternalWindow* window)
+{
+    window->Wayland.ConfinedPointer = zwp_pointer_constraints_v1_confine_pointer(s_Data.Wayland.PointerConstraints, window->Wayland.Surface, s_Data.Wayland.Pointer, nullptr, ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
+
+    zwp_confined_pointer_v1_add_listener(window->Wayland.ConfinedPointer, &ConfinedPointerListener, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::UnconfinePointerWayland(InternalWindow* window)
+{
+    zwp_confined_pointer_v1_destroy(window->Wayland.ConfinedPointer);
+    window->Wayland.ConfinedPointer = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::LockPointerWayland(InternalWindow* window)
+{
+    if(!s_Data.Wayland.RelativePointerManager)
+    {
+        InputError(Error::Feature_Unavailable, "[Wayland] The compositor does not support pointer locking");
+        return;
+    }
+
+    window->Wayland.RelativePointer = zwp_relative_pointer_manager_v1_get_relative_pointer(s_Data.Wayland.RelativePointerManager,
+                                                                                           s_Data.Wayland.Pointer);
+    zwp_relative_pointer_v1_add_listener(window->Wayland.RelativePointer,
+                                         &RelativePointerListener, window);
+
+    window->Wayland.LockedPointer = zwp_pointer_constraints_v1_lock_pointer(s_Data.Wayland.PointerConstraints,
+                                                                            window->Wayland.Surface,
+                                                                            s_Data.Wayland.Pointer,
+                                                                            nullptr,
+                                                                            ZWP_POINTER_CONSTRAINTS_V1_LIFETIME_PERSISTENT);
+    zwp_locked_pointer_v1_add_listener(window->Wayland.LockedPointer, &LockedPointerListener, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::UnlockPointerWayland(InternalWindow* window)
+{
+    zwp_relative_pointer_v1_destroy(window->Wayland.RelativePointer);
+    window->Wayland.RelativePointer = nullptr;
+
+    zwp_locked_pointer_v1_destroy(window->Wayland.LockedPointer);
+    window->Wayland.LockedPointer = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SetCursorImageWayland(InternalWindow* window, InternalCursor::wayland& cursorWayland)
+{
+    wl_cursor* wlCursor = cursorWayland.CursorWL;
+    wl_buffer* buffer;
+    int32_t scale = 1;
+
+    if(!wlCursor)
+        buffer = cursorWayland.Buffer;
+    else
+    {
+        if(window->Wayland.Scale > 1 && cursorWayland.CursorHiDPI)
+        {
+            wlCursor = cursorWayland.CursorHiDPI;
+            scale = 2;
+        }
+
+        wl_cursor_image* image = wlCursor->images[cursorWayland.CurrentImage];
+        buffer = s_Data.Wayland.WaylandCursor.ImageGetBuffer(image);
+        if(!buffer)
+            return;
+
+        itimerspec timer{};
+        timer.it_value.tv_sec = image->delay / 1000;
+        timer.it_value.tv_nsec = (image->delay % 1000) * 1000000;
+        timerfd_settime(s_Data.Wayland.CursorTimerFD, 0, &timer, nullptr);
+
+        cursorWayland.Width = image->width;
+        cursorWayland.Height = image->height;
+        cursorWayland.XHotspot = image->hotspot_x;
+        cursorWayland.YHotspot = image->hotspot_y;
+    }
+
+    wl_surface* surface = s_Data.Wayland.CursorSurface;
+    wl_pointer_set_cursor(s_Data.Wayland.Pointer, s_Data.Wayland.PointerEnterSerial,
+                          surface, cursorWayland.XHotspot / scale,
+                          cursorWayland.YHotspot / scale);
+    wl_surface_set_buffer_scale(surface, scale);
+    wl_surface_attach(surface, buffer, 0, 0);
+    wl_surface_damage(surface, 0, 0, cursorWayland.Width, cursorWayland.Height);
+    wl_surface_commit(surface);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::HandleEventsWayland(double* timeout)
+{
+    bool event = false;
+
+    std::array<pollfd, 3> fds
+    {
+        {
+            {s_Data.Wayland.WaylandClient.DisplayGetFD(s_Data.Wayland.DisplayWL), POLLIN, 0},
+            {s_Data.Wayland.KeyRepeatTimerFD, POLLIN, 0},
+            {s_Data.Wayland.CursorTimerFD, POLLIN, 0}
+        }
+    };
+
+    while(!event)
+    {
+        while(s_Data.Wayland.WaylandClient.DisplayPrepareRead(s_Data.Wayland.DisplayWL) != 0)
+            s_Data.Wayland.WaylandClient.DisplayDispatchPending(s_Data.Wayland.DisplayWL);
+
+        //If an error other than EAGAIN happens, we have likely been disconnected
+        //from the Wayland session; try to handle that the best we can.
+        if(!FlushDisplay())
+        {
+            s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
+
+            for(InternalWindow* window : s_Data.WindowList)
+                InputWindowCloseRequest(window);
+
+            return;
+        }
+
+        if(!PollPOSIX(fds.data(), 3, timeout))
+        {
+            s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
+            return;
+        }
+
+        if(fds[0].revents & POLLIN)
+        {
+            s_Data.Wayland.WaylandClient.DisplayReadEvents(s_Data.Wayland.DisplayWL);
+            if(s_Data.Wayland.WaylandClient.DisplayDispatchPending(s_Data.Wayland.DisplayWL) > 0)
+                event = true;
+        }
+        else
+            s_Data.Wayland.WaylandClient.DisplayCancelRead(s_Data.Wayland.DisplayWL);
+
+        if(fds[1].revents & POLLIN)
+        {
+            uint64_t repeats;
+
+            if(read(s_Data.Wayland.KeyRepeatTimerFD, &repeats, sizeof(repeats)) == sizeof(repeats))
+            {
+                for(uint64_t i = 0; i < repeats; ++i)
+                {
+                    InputKey(s_Data.Wayland.KeyboardFocus,
+                             TranslateKey(s_Data.Wayland.KeyRepeatScancode),
+                             s_Data.Wayland.KeyRepeatScancode, Input::KeyState::Pressed);
+
+                    InputTextWayland(s_Data.Wayland.KeyboardFocus, s_Data.Wayland.KeyRepeatScancode);
+                }
+
+                event = true;
+            }
+        }
+
+        if(fds[2].revents & POLLIN)
+        {
+            uint64_t repeats;
+
+            if(read(s_Data.Wayland.CursorTimerFD, &repeats, sizeof(repeats)) == sizeof(repeats))
+            {
+                IncrementCursorImageWayland(s_Data.Wayland.PointerFocus);
+                event = true;
+            }
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::IncrementCursorImageWayland(InternalWindow* window)
+{
+    InternalCursor* cursor;
+
+    if(!window || window->Wayland.Decorations.Focus != TRAPDecorationSideWayland::MainWindow)
+        return;
+
+    cursor = window->Cursor;
+    if(cursor && cursor->Wayland.CursorWL)
+    {
+        cursor->Wayland.CurrentImage++;
+        cursor->Wayland.CurrentImage %= cursor->Wayland.CursorWL->image_count;
+        SetCursorImageWayland(window, cursor->Wayland);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -1523,8 +2131,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* window,
-                                                                             InternalMonitor* monitor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* /*window*/,
+                                                                             InternalMonitor* /*monitor*/)
 {
     //TODO
 }
@@ -1533,7 +2141,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(Int
 
 std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModesWayland(const InternalMonitor* monitor)
 {
-    return {};
+    return monitor->Modes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1638,6 +2246,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
         s_Data.Wayland.WaylandXKB.StateUnref = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_unref>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_unref");
         s_Data.Wayland.WaylandXKB.StateKeyGetSyms = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_key_get_syms>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_key_get_syms");
         s_Data.Wayland.WaylandXKB.StateUpdateMask = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_update_mask>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_update_mask");
+        s_Data.Wayland.WaylandXKB.KeyMapLayoutGetName = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_keymap_layout_get_name>(s_Data.Wayland.WaylandXKB.Handle, "xkb_keymap_layout_get_name");
         s_Data.Wayland.WaylandXKB.StateKeyGetLayout = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_key_get_layout>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_key_get_layout");
         s_Data.Wayland.WaylandXKB.StateModIndexIsActive = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_state_mod_index_is_active>(s_Data.Wayland.WaylandXKB.Handle, "xkb_state_mod_index_is_active");
         s_Data.Wayland.WaylandXKB.ComposeTableNewFromLocale = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_xkb_compose_table_new_from_locale>(s_Data.Wayland.WaylandXKB.Handle, "xkb_compose_table_new_from_locale");
@@ -1702,12 +2311,118 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInitWayland()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindowWayland(InternalWindow* window)
 {
+    if(window == s_Data.Wayland.PointerFocus)
+        s_Data.Wayland.PointerFocus = nullptr;
+
+    if(window == s_Data.Wayland.KeyboardFocus)
+        s_Data.Wayland.KeyboardFocus = nullptr;
+
+    if(window->Wayland.IdleInhibitor)
+        zwp_idle_inhibitor_v1_destroy(window->Wayland.IdleInhibitor);
+
+    if(window->Wayland.RelativePointer)
+        zwp_relative_pointer_v1_destroy(window->Wayland.RelativePointer);
+
+    if(window->Wayland.LockedPointer)
+        zwp_locked_pointer_v1_destroy(window->Wayland.LockedPointer);
+
+    if(window->Wayland.ConfinedPointer)
+        zwp_confined_pointer_v1_destroy(window->Wayland.ConfinedPointer);
+
+    DestroyShellObjectsWayland(window);
+
+    if(window->Wayland.Decorations.Buffer)
+        wl_buffer_destroy(window->Wayland.Decorations.Buffer);
+
+    if(window->Wayland.Surface)
+        wl_surface_destroy(window->Wayland.Surface);
+
+    window->Wayland.Title = "";
+    window->Wayland.AppID = "";
+    window->Wayland.Monitors = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
 {
+    if(s_Data.Wayland.WaylandXKB.ComposeState)
+        s_Data.Wayland.WaylandXKB.ComposeStateUnref(s_Data.Wayland.WaylandXKB.ComposeState);
+    if(s_Data.Wayland.WaylandXKB.KeyMap)
+        s_Data.Wayland.WaylandXKB.KeyMapUnref(s_Data.Wayland.WaylandXKB.KeyMap);
+    if(s_Data.Wayland.WaylandXKB.State)
+        s_Data.Wayland.WaylandXKB.StateUnref(s_Data.Wayland.WaylandXKB.State);
+    if(s_Data.Wayland.WaylandXKB.Context)
+        s_Data.Wayland.WaylandXKB.ContextUnref(s_Data.Wayland.WaylandXKB.Context);
+    if(s_Data.Wayland.WaylandXKB.Handle)
+    {
+        Utils::DynamicLoading::FreeLibrary(s_Data.Wayland.WaylandXKB.Handle);
+        s_Data.Wayland.WaylandXKB.Handle = nullptr;
+    }
+
+    if(s_Data.Wayland.CursorTheme)
+        s_Data.Wayland.WaylandCursor.ThemeDestroy(s_Data.Wayland.CursorTheme);
+    if(s_Data.Wayland.CursorThemeHiDPI)
+        s_Data.Wayland.WaylandCursor.ThemeDestroy(s_Data.Wayland.CursorThemeHiDPI);
+    if(s_Data.Wayland.WaylandCursor.Handle)
+    {
+        Utils::DynamicLoading::FreeLibrary(s_Data.Wayland.WaylandCursor.Handle);
+        s_Data.Wayland.WaylandCursor.Handle = nullptr;
+    }
+
+    for(TRAPOfferWayland& offer : s_Data.Wayland.Offers)
+        wl_data_offer_destroy(offer.offer);
+
+    s_Data.Wayland.Offers.clear();
+
+    if(s_Data.Wayland.CursorSurface)
+        wl_surface_destroy(s_Data.Wayland.CursorSurface);
+    if(s_Data.Wayland.SubCompositor)
+        wl_subcompositor_destroy(s_Data.Wayland.SubCompositor);
+    if(s_Data.Wayland.Compositor)
+        wl_compositor_destroy(s_Data.Wayland.Compositor);
+    if(s_Data.Wayland.Shm)
+        wl_shm_destroy(s_Data.Wayland.Shm);
+    if(s_Data.Wayland.Viewporter)
+        wp_viewporter_destroy(s_Data.Wayland.Viewporter);
+    if(s_Data.Wayland.DecorationManager)
+        zxdg_decoration_manager_v1_destroy(s_Data.Wayland.DecorationManager);
+    if(s_Data.Wayland.WMBase)
+        xdg_wm_base_destroy(s_Data.Wayland.WMBase);
+    if(s_Data.Wayland.SelectionOffer)
+        wl_data_offer_destroy(s_Data.Wayland.SelectionOffer);
+    if(s_Data.Wayland.DragOffer)
+        wl_data_offer_destroy(s_Data.Wayland.DragOffer);
+    if(s_Data.Wayland.SelectionSource)
+        wl_data_source_destroy(s_Data.Wayland.SelectionSource);
+    if(s_Data.Wayland.DataDevice)
+        wl_data_device_destroy(s_Data.Wayland.DataDevice);
+    if(s_Data.Wayland.DataDeviceManager)
+        wl_data_device_manager_destroy(s_Data.Wayland.DataDeviceManager);
+    if(s_Data.Wayland.Pointer)
+        wl_pointer_destroy(s_Data.Wayland.Pointer);
+    if(s_Data.Wayland.Keyboard)
+        wl_keyboard_destroy(s_Data.Wayland.Keyboard);
+    if(s_Data.Wayland.Seat)
+        wl_seat_destroy(s_Data.Wayland.Seat);
+    if(s_Data.Wayland.RelativePointerManager)
+        zwp_relative_pointer_manager_v1_destroy(s_Data.Wayland.RelativePointerManager);
+    if(s_Data.Wayland.PointerConstraints)
+        zwp_pointer_constraints_v1_destroy(s_Data.Wayland.PointerConstraints);
+    if(s_Data.Wayland.IdleInhibitManager)
+        zwp_idle_inhibit_manager_v1_destroy(s_Data.Wayland.IdleInhibitManager);
+    if(s_Data.Wayland.Registry)
+        wl_registry_destroy(s_Data.Wayland.Registry);
+    if(s_Data.Wayland.DisplayWL)
+    {
+        s_Data.Wayland.WaylandClient.DisplayFlush(s_Data.Wayland.DisplayWL);
+        s_Data.Wayland.WaylandClient.DisplayDisconnect(s_Data.Wayland.DisplayWL);
+    }
+
+    if(s_Data.Wayland.KeyRepeatTimerFD >= 0)
+        close(s_Data.Wayland.KeyRepeatTimerFD);
+    if(s_Data.Wayland.CursorTimerFD >= 0)
+        close(s_Data.Wayland.CursorTimerFD);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1715,6 +2430,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdownWayland()
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const InternalMonitor* monitor, float& xScale,
                                                                          float& yScale)
 {
+    xScale = static_cast<float>(monitor->Wayland.Scale);
+    yScale = static_cast<float>(monitor->Wayland.Scale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1722,18 +2439,27 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScaleWayland(const I
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPosWayland(const InternalMonitor* monitor, int32_t& xPos,
                                                                 int32_t& yPos)
 {
+    xPos = monitor->Wayland.X;
+    yPos = monitor->Wayland.Y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShowWindowWayland(InternalWindow* window)
 {
+    if(!window->Wayland.XDG.TopLevel)
+    {
+        //Note: The XDG surface and role are created here so command-line applications
+        //      with off-screen windows do not appear in for example the Unity dock
+        CreateShellObjectsWayland(window);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland(const InternalWindow* /*window*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform doesn not support setting the input focus");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1741,13 +2467,29 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindowWayland(const InternalWind
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowWayland(InternalWindow* window,
 			                                                   WindowConfig& WNDConfig)
 {
-    return {};
+    if(!CreateNativeSurfaceWayland(window, WNDConfig))
+        return false;
+
+    if(WNDConfig.MousePassthrough)
+        PlatformSetWindowMousePassthroughWayland(window, true);
+
+    if(window->Monitor || WNDConfig.Visible)
+    {
+        if(!CreateShellObjectsWayland(window))
+            return false;
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(InternalWindow* window, const std::string& title)
 {
+    window->Wayland.Title = title;
+
+    if(window->Wayland.XDG.TopLevel)
+        xdg_toplevel_set_title(window->Wayland.XDG.TopLevel, title.c_str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1755,105 +2497,332 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleWayland(const InternalW
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursorWayland(InternalCursor* cursor, const Image* const image,
                                                                const int32_t xHotspot, const int32_t yHotspot)
 {
-    return {};
+    cursor->Wayland.Buffer = CreateShmBufferWayland(image);
+    if(!cursor->Wayland.Buffer)
+        return false;
+
+    cursor->Wayland.Width = image->GetWidth();
+    cursor->Wayland.Height = image->GetHeight();
+    cursor->Wayland.XHotspot = xHotspot;
+    cursor->Wayland.YHotspot = yHotspot;
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursorWayland(InternalCursor* cursor, const CursorType& type)
 {
-    return {};
+    std::string name{};
+
+    switch(type)
+    {
+    case CursorType::Arrow:
+        name = "default";
+        break;
+    case CursorType::Input:
+        name = "text";
+        break;
+    case CursorType::Crosshair:
+        name = "crosshair";
+        break;
+    case CursorType::PointingHand:
+        name = "pointer";
+        break;
+    case CursorType::ResizeHorizontal:
+        name = "ew-resize";
+        break;
+    case CursorType::ResizeVertical:
+        name = "ns-resize";
+        break;
+    case CursorType::ResizeDiagonalTopLeftBottomRight:
+        name = "nwse-resize";
+        break;
+    case CursorType::ResizeDiagonalTopRightBottomLeft:
+        name = "nesw-resize";
+        break;
+    case CursorType::ResizeAll:
+        name = "all-scroll";
+        break;
+    case CursorType::NotAllowed:
+        name = "not-allowed";
+        break;
+    }
+
+    cursor->Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
+
+    if(s_Data.Wayland.CursorThemeHiDPI)
+        cursor->Wayland.CursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, name.c_str());
+
+    if(!cursor->Wayland.CursorWL)
+    {
+        //Fall back to the core X11 names
+        switch(type)
+        {
+        case CursorType::Arrow:
+            name = "left-ptr";
+            break;
+        case CursorType::Input:
+            name = "xterm";
+            break;
+        case CursorType::Crosshair:
+            name = "crosshair";
+            break;
+        case CursorType::PointingHand:
+            name = "hand2";
+            break;
+        case CursorType::ResizeHorizontal:
+            name = "sb_h_double_arrow";
+            break;
+        case CursorType::ResizeVertical:
+            name = "sb_v_double_arrow";
+            break;
+        case CursorType::ResizeAll:
+            name = "fleur";
+            break;
+
+        default:
+            InputError(Error::Cursor_Unavailable, "[Wayland] Standard cursor shape unavailable");
+            return false;
+        }
+
+        cursor->Wayland.CursorWL = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, name.c_str());
+        if(!cursor->Wayland.CursorWL)
+        {
+            InputError(Error::Cursor_Unavailable, "[Wayland] Failed to create standard cursor \"" + name + "\"");
+            return false;
+        }
+
+        if(s_Data.Wayland.CursorThemeHiDPI)
+        {
+            if(!cursor->Wayland.CursorHiDPI)
+            {
+                cursor->Wayland.CursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, name.c_str());
+            }
+        }
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorWayland(InternalCursor* cursor)
 {
+    //If it's a standard cursor we don't need to do anything here
+    if(cursor->Wayland.CursorWL)
+        return;
+
+    if(cursor->Wayland.Buffer)
+        wl_buffer_destroy(cursor->Wayland.Buffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(const InternalWindow* window, const InternalCursor* cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorWayland(InternalWindow* window, InternalCursor* cursor)
 {
+    if(!s_Data.Wayland.Pointer)
+        return;
+
+    window->Cursor = cursor;
+
+    //If we're not in the correct window just save the cursor
+    //the next time the pointer enters the window the cursor will change
+    if(window != s_Data.Wayland.PointerFocus || window->Wayland.Decorations.Focus != TRAPDecorationSideWayland::MainWindow)
+        return;
+
+    //Update pointer lock to match cursor mode
+    if(window->cursorMode == CursorMode::Disabled)
+    {
+        if(window->Wayland.ConfinedPointer)
+            UnconfinePointerWayland(window);
+        if(!window->Wayland.LockedPointer)
+            LockPointerWayland(window);
+    }
+    else if(window->cursorMode == CursorMode::Captured)
+    {
+        if(window->Wayland.LockedPointer)
+            UnlockPointerWayland(window);
+        if(!window->Wayland.ConfinedPointer)
+            ConfinePointerWayland(window);
+    }
+    else if(window->cursorMode == CursorMode::Normal ||
+            window->cursorMode == CursorMode::Hidden)
+    {
+        if(window->Wayland.LockedPointer)
+            UnlockPointerWayland(window);
+        else if(window->Wayland.ConfinedPointer)
+            UnconfinePointerWayland(window);
+    }
+
+    if(window->cursorMode == CursorMode::Normal ||
+       window->cursorMode == CursorMode::Captured)
+    {
+        if(cursor)
+            SetCursorImageWayland(window, cursor->Wayland);
+        else
+        {
+            wl_cursor* defaultCursor = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorTheme, "left_ptr");
+            if(!defaultCursor)
+            {
+                InputError(Error::Platform_Error, "[Wayland] Standard cursor not found");
+                return;
+            }
+
+            wl_cursor* defaultCursorHiDPI = nullptr;
+            if(s_Data.Wayland.CursorThemeHiDPI)
+            {
+                defaultCursorHiDPI = s_Data.Wayland.WaylandCursor.ThemeGetCursor(s_Data.Wayland.CursorThemeHiDPI, "left_ptr");
+            }
+
+            InternalCursor::wayland cursorWayland =
+            {
+                defaultCursor,
+                defaultCursorHiDPI,
+                nullptr,
+                0, 0,
+                0, 0,
+                0
+            };
+
+            SetCursorImageWayland(window, cursorWayland);
+        }
+    }
+    else if(window->cursorMode == CursorMode::Hidden ||
+            window->cursorMode == CursorMode::Disabled)
+    {
+        wl_pointer_set_cursor(s_Data.Wayland.Pointer, s_Data.Wayland.PointerEnterSerial, nullptr, 0, 0);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow* window, const CursorMode mode)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorModeWayland(InternalWindow* window, const CursorMode /*mode*/)
 {
+    PlatformSetCursorWayland(window, window->Cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland(InternalWindow* window, const double xPos, const double yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPosWayland(InternalWindow* /*window*/, const double /*xPos*/,
+                                                               const double /*yPos*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the cursor position");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPosWayland(const InternalWindow* window, double& xPos, double& yPos)
 {
+    xPos = window->Wayland.CursorPosX;
+    yPos = window->Wayland.CursorPosY;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland(InternalWindow* window, const Image* const image)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIconWayland(InternalWindow* /*window*/, const Image* const /*image*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not support setting the window icon");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland(const InternalWindow* window, int32_t& xPos, int32_t& yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPosWayland(const InternalWindow* /*window*/, int32_t& /*xPos*/,
+                                                               int32_t& /*yPos*/)
 {
+    //A Wayland client is not aware of its position, so just warn and leave it as (0, 0)
+
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform does not provide the window position");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeWayland(InternalWindow* window, const int32_t width, const int32_t height)
 {
+    if(window->Monitor)
+    {
+        //Video mode settings is not available on Wayland
+    }
+    else
+    {
+        window->Width = width;
+        window->Height = height;
+        ResizeWindowWayland(window);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableWayland(InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableWayland(InternalWindow* /*window*/, const bool /*enabled*/)
 {
+    //TODO
+    InputError(Error::Feature_Unimplemented, "[Wayland] Window attribute settings not implemented yet");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedWayland(InternalWindow* window, const bool enabled)
 {
+    if(window->Wayland.XDG.Decoration)
+    {
+        uint32_t mode;
+
+        if(enabled)
+            mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE;
+        else
+            mode = ZXDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE;
+
+        zxdg_toplevel_decoration_v1_set_mode(window->Wayland.XDG.Decoration, mode);
+    }
+    else
+    {
+        if(enabled)
+            CreateFallbackDecorationsWayland(window);
+        else
+            DestroyFallbackDecorationsWayland(window);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloatingWayland(const InternalWindow* /*window*/, const bool /*enabled*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support making a window floating");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland(const InternalWindow* window, const float opacity)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacityWayland(const InternalWindow* /*window*/, const float /*opacity*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support setting the window opacity");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthroughWayland(InternalWindow* window, const bool enabled)
 {
+    if(enabled)
+    {
+        wl_region* region = wl_compositor_create_region(s_Data.Wayland.Compositor);
+        wl_surface_set_input_region(window->Wayland.Surface, region);
+        wl_region_destroy(region);
+    }
+    else
+        wl_surface_set_input_region(window->Wayland.Surface, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbarWayland(InternalWindow* /*window*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support hiding windows from the taskbar");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland(const InternalWindow* window)
+float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland(const InternalWindow* /*window*/)
 {
-    return {};
+    return 1.0f;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1861,6 +2830,9 @@ float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacityWayland(const Intern
 void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const InternalWindow* window, int32_t& width,
                                                                      int32_t& height)
 {
+    PlatformGetWindowSizeWayland(window, width, height);
+    width *= window->Wayland.Scale;
+    height *= window->Wayland.Scale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1868,6 +2840,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSizeWayland(const Inter
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const InternalWindow* window, float& xScale,
                                                                         float& yScale)
 {
+    xScale = static_cast<float>(window->Wayland.Scale);
+    yScale = static_cast<float>(window->Wayland.Scale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1875,100 +2849,179 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScaleWayland(const In
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkAreaWayland(const InternalMonitor* monitor, int32_t& xPos,
                                                                      int32_t& yPos, int32_t& width, int32_t& height)
 {
+    xPos = monitor->Wayland.X;
+    yPos = monitor->Wayland.Y;
+    width = monitor->CurrentMode.Width;
+    height = monitor->CurrentMode.Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisibleWayland(const InternalWindow* window)
 {
-    return {};
+    return window->Wayland.Visible;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximizedWayland(const InternalWindow* window)
 {
-    return {};
+    return window->Maximized;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimizedWayland(const InternalWindow* window)
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimizedWayland(const InternalWindow* /*window*/)
 {
-    return {};
+    //xdg-shell doesn't give any way to request whether a surface is iconified/minimized.
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformPollEventsWayland()
 {
+    double timeout = 0.0;
+    HandleEventsWayland(&timeout);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocusedWayland(const InternalWindow* window)
 {
-    return {};
+    return s_Data.Wayland.KeyboardFocus == window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHoveredWayland(const InternalWindow* window)
 {
-    return {};
+    return window->Wayland.Hovered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformRawMouseMotionSupportedWayland()
 {
-    return {};
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotionWayland(const InternalWindow* /*window*/, const bool /*enabled*/)
 {
+    //This is handled in RelativePointerHandleRelativeMotion
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetProgressWayland(const InternalWindow* window, const ProgressState state,
-													          const uint32_t completed)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetProgressWayland(const InternalWindow* /*window*/, const ProgressState /*state*/,
+													          const uint32_t /*completed*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support taskbar progress indicator");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCodeWayland(const Input::Key key)
 {
-    return {};
+    return s_Data.ScanCodes[static_cast<uint32_t>(key)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeNameWayland(const int32_t scanCode)
 {
-    return {};
+    if(scanCode < 0 || scanCode > 255 || s_Data.KeyCodes[scanCode] == Input::Key::Unknown)
+    {
+        InputError(Error::Invalid_Value, "[Wayland] Invalid scancode " + std::to_string(scanCode));
+        return nullptr;
+    }
+
+    const Input::Key key = s_Data.KeyCodes[scanCode];
+    const xkb_keycode_t keycode = scanCode + 8;
+    const xkb_layout_index_t layout = s_Data.Wayland.WaylandXKB.StateKeyGetLayout(s_Data.Wayland.WaylandXKB.State, keycode);
+    if(layout == XKB_LAYOUT_INVALID)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to retrieve layout for the key name");
+        return nullptr;
+    }
+
+    const xkb_keysym_t* keysyms = nullptr;
+    s_Data.Wayland.WaylandXKB.KeyMapKeyGetSymsByLevel(s_Data.Wayland.WaylandXKB.KeyMap, keycode, layout, 0, &keysyms);
+    if(keysyms == nullptr)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to retrieve keysym for key name");
+        return nullptr;
+    }
+
+    const uint32_t codePoint = KeySymToUnicode(keysyms[0]);
+    if(codePoint == 0xFFFFFFFFu)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to retrieve codepoint for key name");
+        return nullptr;
+    }
+
+    const std::size_t count = EncodeUTF8(s_Data.KeyNames[static_cast<uint32_t>(key)].data(), codePoint);
+    if(count == 0)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to encode codepoint for key name");
+        return nullptr;
+    }
+
+    s_Data.KeyNames[static_cast<uint32_t>(key)][count] = '\0';
+    return s_Data.KeyNames[static_cast<uint32_t>(key)].data();;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardStringWayland(const std::string& string)
 {
+    if(s_Data.Wayland.SelectionSource)
+    {
+        wl_data_source_destroy(s_Data.Wayland.SelectionSource);
+        s_Data.Wayland.SelectionSource = nullptr;
+    }
+
+    s_Data.ClipboardString = string;
+
+    s_Data.Wayland.SelectionSource = wl_data_device_manager_create_data_source(s_Data.Wayland.DataDeviceManager);
+    if(!s_Data.Wayland.SelectionSource)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create clipboard data source");
+        return;
+    }
+    wl_data_source_add_listener(s_Data.Wayland.SelectionSource, &DataSourceListener, nullptr);
+    wl_data_source_offer(s_Data.Wayland.SelectionSource, "text/plain;charset=utf-8");
+    wl_data_device_set_selection(s_Data.Wayland.DataDevice, s_Data.Wayland.SelectionSource, s_Data.Wayland.Serial);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardStringWayland()
 {
-    return {};
+    if(!s_Data.Wayland.SelectionOffer)
+    {
+        InputError(Error::Format_Unavailable, "[Wayland] No clipboard data available");
+        return nullptr;
+    }
+
+    if(s_Data.Wayland.SelectionSource)
+        return s_Data.ClipboardString;
+
+    s_Data.ClipboardString = ReadDataOfferAsString(s_Data.Wayland.SelectionOffer, "text/plain;charset=utf-8");
+    return s_Data.ClipboardString;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsWayland(std::array<std::string, 2>& extensions)
 {
+    if(!s_Data.VK.KHR_Surface || !s_Data.VK.KHR_Wayland_Surface)
+        return;
+
+    extensions[0] = "VK_KHR_surface";
+    extensions[1] = "VK_KHR_wayland_surface";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1977,37 +3030,86 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceWayland(VkInst
 																          const VkAllocationCallbacks* allocator,
 																          VkSurfaceKHR& surface)
 {
-    return {};
+    const PFN_vkCreateWaylandSurfaceKHR vkCreateWaylandSurfaceKHR = reinterpret_cast<PFN_vkCreateWaylandSurfaceKHR>(vkGetInstanceProcAddr(instance, "vkCreateWaylandSurfaceKHR"));
+    if(!vkCreateWaylandSurfaceKHR)
+    {
+        InputError(Error::API_Unavailable, "[Wayland] Vulkan instance missing VK_KHR_wayland_surface extension");
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+
+    VkWaylandSurfaceCreateInfoKHR sci{};
+    sci.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR;
+    sci.display = s_Data.Wayland.DisplayWL;
+    sci.surface = window->Wayland.Surface;
+
+    VkResult err = vkCreateWaylandSurfaceKHR(instance, &sci, allocator, &surface);
+    if(err)
+        InputError(Error::Platform_Error, "[Wayland] Failed to create Vulkan surface: " + GetVulkanResultString(err));
+
+    return err;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowWayland(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowWayland(InternalWindow* window)
 {
+    if(window->Wayland.XDG.TopLevel)
+        xdg_toplevel_set_maximized(window->Wayland.XDG.TopLevel);
+    else
+        window->Maximized = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindowWayland(const InternalWindow* window)
 {
+    if(window->Wayland.XDG.TopLevel)
+        xdg_toplevel_set_minimized(window->Wayland.XDG.TopLevel);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionWayland(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionWayland(const InternalWindow* /*window*/)
 {
+    //TODO
+    InputError(Error::Feature_Unimplemented, "[Wayland] Window attention request not implemented yet");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowWayland(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowWayland(InternalWindow* window)
 {
+    if(window->Wayland.Visible)
+    {
+        window->Wayland.Visible = false;
+        DestroyShellObjectsWayland(window);
+
+        wl_surface_attach(window->Wayland.Surface, nullptr, 0, 0);
+        wl_surface_commit(window->Wayland.Surface);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindowWayland(InternalWindow* window)
 {
+    if(window->Monitor)
+    {
+        //There is no way to unset minimized, or even to know if we are minimized,
+        //so there is nothng to do in this case
+    }
+    else
+    {
+        //We assume we are not minimized and act only on maximization
+
+        if(window->Maximized)
+        {
+            if(window->Wayland.XDG.TopLevel)
+                xdg_toplevel_unset_maximized(window->Wayland.XDG.TopLevel);
+            else
+                window->Maximized = false;
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2016,19 +3118,63 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimitsWayland(InternalWi
                                                                       int32_t minHeight, int32_t maxWidth,
                                                                       int32_t maxHeight)
 {
+    if(window->Wayland.XDG.TopLevel)
+    {
+        if(minWidth == -1 || minHeight == -1)
+            minWidth = minHeight = 0;
+        else
+        {
+            if(window->Wayland.Decorations.Top.surface)
+            {
+                minWidth += TRAP_BORDER_SIZE * 2;
+                minHeight += TRAP_CAPTION_HEIGHT + TRAP_BORDER_SIZE;
+            }
+        }
+
+        if(maxWidth == -1 || maxHeight == -1)
+            maxWidth = maxHeight = 0;
+        else
+        {
+            if(window->Wayland.Decorations.Top.surface)
+            {
+                maxWidth += TRAP_BORDER_SIZE * 2;
+                maxHeight += TRAP_CAPTION_HEIGHT + TRAP_BORDER_SIZE;
+            }
+        }
+
+        xdg_toplevel_set_min_size(window->Wayland.XDG.TopLevel, minWidth, minHeight);
+        xdg_toplevel_set_max_size(window->Wayland.XDG.TopLevel, maxWidth, maxHeight);
+        wl_surface_commit(window->Wayland.Surface);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::INTERNAL::WindowingAPI::GetLinuxKeyboardLayoutNameWayland()
 {
-    return {};
+    if(!s_Data.Wayland.WaylandXKB.KeyMap)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Key map missing");
+        return nullptr;
+    }
+
+    std::string name = s_Data.Wayland.WaylandXKB.KeyMapLayoutGetName(s_Data.Wayland.WaylandXKB.KeyMap,
+                                                                     s_Data.Wayland.WaylandXKB.Group);
+
+    if(name.empty())
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to query keyboard layout name");
+        return nullptr;
+    }
+
+    return s_Data.Wayland.WaylandXKB.KeyboardLayoutName;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland(InternalWindow* window, const bool value)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDropWayland(InternalWindow* /*window*/, const bool /*value*/)
 {
+    InputError(Error::Feature_Unavailable, "[Wayland] Platform does not support toggling drag and drop. Drag and drop is enabled by default.");
 }
 
 #endif

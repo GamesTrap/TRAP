@@ -267,7 +267,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
 	static LinuxWindowManager windowManager{};
 
-	#ifdef TRAP_PLATFORM_LINUX
+#ifdef TRAP_PLATFORM_LINUX
 	if(windowManager != LinuxWindowManager::Unknown)
 		return windowManager;
 
@@ -284,7 +284,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 	{
 #ifndef TRAP_HEADLESS_MODE
 		Utils::Dialogs::ShowMsgBox("Unsupported window manager", "Window manager is unsupported!\n"
-									"TRAP™ currently only supports X11\n"
+									"TRAP™ currently only supports X11/Xwayland\n"
 									//"TRAP™ uses X11 or Wayland\n"
 									"Make sure the appropriate environment variable(s) is/are set!\n"
 									"Error code: 0x0008",
@@ -296,6 +296,19 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 		return LinuxWindowManager::Unknown;
 #endif
 	}
+
+#ifndef ENABLE_WAYLAND_SUPPORT
+	//Replace Wayland with X11
+	using namespace std::string_view_literals;
+	if(windowManager == LinuxWindowManager::Wayland)
+	{
+		if(getenv("DISPLAY") || getenv("XDG_SESSION_TYPE") == "x11"sv)
+			windowManager = LinuxWindowManager::X11;
+		else
+			windowManager = LinuxWindowManager::Unknown;
+	}
+#endif
+
 #endif
 
 	return windowManager;

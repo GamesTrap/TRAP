@@ -370,7 +370,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(InternalWindow* window, const std::string& title)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowTitle() must only be called from main thread");
@@ -1779,7 +1779,7 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Maximizes the specified window.
-void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(InternalWindow* window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::MaximizeWindow() must only be called from main thread");
@@ -1836,7 +1836,7 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Hides the specified window.
-void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::HideWindow(InternalWindow* window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::HideWindow() must only be called from main thread");

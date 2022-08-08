@@ -132,59 +132,13 @@ bool TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(Display*, XEvent* event, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Wait for data to arrive on any of the specified file descriptors
-bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* fds, const nfds_t count, double* timeout)
-{
-	while(true)
-	{
-		if(timeout)
-		{
-			const uint64_t base = static_cast<uint64_t>(TRAP::Application::GetTime());
-
-#if defined(__linux__) || defined(__FreeBDS__) || defined(__OpenBSD__) || defined(__CYGWIN__)
-			const time_t seconds = static_cast<time_t>(*timeout);
-			const int64_t nanoseconds = static_cast<int64_t>((*timeout - static_cast<double>(seconds)) * 1e9);
-			const timespec ts = {seconds, nanoseconds};
-			const int32_t result = ppoll(fds, count, &ts, nullptr);
-#elif defined(__NetBSD__)
-			const time_t seconds = static_cast<time_t>(*timeout);
-			const long nanoseconds = static_cast<long>((*timeout - seconds) * 1e9);
-			const timespec ts = {seconds, nanoseconds};
-			const int32_t result = pollts(fds, count, &ts, nullptr);
-#else
-			const int milliseconds = static_cast<int>(*timeout * 1e3);
-			const int32_t result = poll(fds, count, milliseconds);
-#endif
-
-			const int32_t error = errno;
-
-			*timeout -= (TRAP::Application::GetTime() - static_cast<float>(base)) / 60.0;
-
-			if(result > 0)
-				return true;
-			if((result == -1 && error != EINTR && error != EAGAIN) || *timeout <= 0.0)
-				return false;
-		}
-		else
-		{
-			const int result = poll(fds, count, -1);
-			if(result > 0)
-				return true;
-			if(result == -1 && errno != EINTR && errno != EAGAIN)
-				return false;
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* timeout)
 {
 	pollfd fd = {ConnectionNumber(s_Data.X11.display), POLLIN, 0};
 
 	while(!s_Data.X11.XLIB.Pending(s_Data.X11.display))
 	{
-		if(!WaitForData(&fd, 1, timeout))
+		if(!PollPOSIX(&fd, 1, timeout))
 			return false;
 	}
 
@@ -2254,7 +2208,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowX11(InternalWindow* windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitleX11(InternalWindow* window, const std::string& title)
 {
 	if (s_Data.X11.XLIB.UTF8)
 	{
@@ -2393,7 +2347,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursorX11(InternalCursor* curs
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorX11(const InternalWindow* window, const InternalCursor* /*cursor*/)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorX11(InternalWindow* window, InternalCursor* /*cursor*/)
 {
 	if(window->cursorMode != CursorMode::Normal)
 		return;
@@ -2556,7 +2510,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizableX11(InternalWindow*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedX11(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecoratedX11(InternalWindow* window, const bool enabled)
 {
 	struct Hints
 	{
@@ -3006,8 +2960,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensionsX11(std:
 
 	extensions[0] = "VK_KHR_surface";
 
-	//TODO Wayland support should prefer wayland if available & on wayland session
-
 	//NOTE: VK_KHR_xcb_surface is preferred due to some early ICDs exposing but not correctly implementing
 	//      VK_KHR_xlib_surface
 	if(s_Data.VK.KHR_XCB_Surface && s_Data.X11.XCB.Handle)
@@ -3079,7 +3031,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurfaceX11(VkInstance
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowX11(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindowX11(InternalWindow* window)
 {
 	if(!s_Data.X11.NET_WM_STATE || !s_Data.X11.NET_WM_STATE_MAXIMIZED_VERT || !s_Data.X11.NET_WM_STATE_MAXIMIZED_HORZ)
 	   return;
@@ -3160,7 +3112,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttentionX11(const Inter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowX11(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowX11(InternalWindow* window)
 {
 	s_Data.X11.XLIB.UnmapWindow(s_Data.X11.display, window->X11.Handle);
 	s_Data.X11.XLIB.Flush(s_Data.X11.display);

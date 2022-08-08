@@ -219,7 +219,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow* window, const std::string& title)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -272,7 +272,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* cursor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(InternalWindow* window, InternalCursor* cursor)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -368,7 +368,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(InternalWindow* window, const bool enabled)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -684,7 +684,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(InternalWindow* window)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -720,7 +720,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(const Internal
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(InternalWindow* window)
 {
     TRAP_ASSERT(Utils::GetLinuxWindowManager() != Utils::LinuxWindowManager::Unknown, "Unsupported window manager");
 
@@ -1126,6 +1126,52 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCo
 		return Input::Key::Unknown;
 
 	return s_Data.KeyCodes[scanCode];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Wait for data to arrive on any of the specified file descriptors
+bool TRAP::INTERNAL::WindowingAPI::PollPOSIX(pollfd* fds, const nfds_t count, double* timeout)
+{
+	while(true)
+	{
+		if(timeout)
+		{
+			const uint64_t base = static_cast<uint64_t>(TRAP::Application::GetTime());
+
+#if defined(__linux__) || defined(__FreeBDS__) || defined(__OpenBSD__) || defined(__CYGWIN__)
+			const time_t seconds = static_cast<time_t>(*timeout);
+			const int64_t nanoseconds = static_cast<int64_t>((*timeout - static_cast<double>(seconds)) * 1e9);
+			const timespec ts = {seconds, nanoseconds};
+			const int32_t result = ppoll(fds, count, &ts, nullptr);
+#elif defined(__NetBSD__)
+			const time_t seconds = static_cast<time_t>(*timeout);
+			const long nanoseconds = static_cast<long>((*timeout - seconds) * 1e9);
+			const timespec ts = {seconds, nanoseconds};
+			const int32_t result = pollts(fds, count, &ts, nullptr);
+#else
+			const int milliseconds = static_cast<int>(*timeout * 1e3);
+			const int32_t result = poll(fds, count, milliseconds);
+#endif
+
+			const int32_t error = errno;
+
+			*timeout -= (TRAP::Application::GetTime() - static_cast<float>(base)) / 60.0;
+
+			if(result > 0)
+				return true;
+			if((result == -1 && error != EINTR && error != EAGAIN) || *timeout <= 0.0)
+				return false;
+		}
+		else
+		{
+			const int result = poll(fds, count, -1);
+			if(result > 0)
+				return true;
+			if(result == -1 && errno != EINTR && errno != EAGAIN)
+				return false;
+		}
+	}
 }
 
 #endif

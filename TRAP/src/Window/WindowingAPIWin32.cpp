@@ -2086,7 +2086,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(InternalWindow* window, const std::string& title)
 {
 	std::wstring wideTitle = TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(title);
 	if (wideTitle.empty())
@@ -2180,7 +2180,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* cursor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* window, const InternalCursor*)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(InternalWindow* window, InternalCursor*)
 {
 	if (CursorInContentArea(window))
 		UpdateCursorImage(window);
@@ -2335,7 +2335,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWindow* window, const bool)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(InternalWindow* window, const bool)
 {
 	UpdateWindowStyles(window);
 }

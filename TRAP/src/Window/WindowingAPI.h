@@ -475,6 +475,7 @@ namespace TRAP::INTERNAL
 		using PFN_xkb_state_unref = void(*)(xkb_state*);
 		using PFN_xkb_state_key_get_syms = int(*)(xkb_state*, xkb_keycode_t, const xkb_keysym_t**);
 		using PFN_xkb_state_update_mask = xkb_state_component(*)(xkb_state*, xkb_mod_mask_t, xkb_mod_mask_t, xkb_mod_mask_t, xkb_layout_index_t, xkb_layout_index_t, xkb_layout_index_t);
+		using PFN_xkb_keymap_layout_get_name = const char*(*)(xkb_keymap*, xkb_layout_index_t);
 		using PFN_xkb_state_key_get_layout = xkb_layout_index_t(*)(xkb_state*, xkb_keycode_t);
 		using PFN_xkb_state_mod_index_is_active = int(*)(xkb_state*, xkb_mod_index_t, xkb_state_component);
 
@@ -702,6 +703,11 @@ namespace TRAP::INTERNAL
 			bool Floating = false;
 			bool FocusOnShow = true;
 			bool MousePassthrough = false;
+
+			struct wayland
+			{
+				std::string AppID;
+			} Wayland;
 		};
 
 		/// <summary>
@@ -1169,6 +1175,7 @@ namespace TRAP::INTERNAL
 					xkb_mod_index_t CapsLockIndex;
 					xkb_mod_index_t NumLockIndex;
 					uint32_t Modifiers;
+					xkb_layout_index_t Group;
 
 					PFN_xkb_context_new ContextNew;
 					PFN_xkb_context_unref ContextUnref;
@@ -1182,6 +1189,7 @@ namespace TRAP::INTERNAL
 					PFN_xkb_state_key_get_syms StateKeyGetSyms;
 					PFN_xkb_state_update_mask StateUpdateMask;
 					PFN_xkb_state_key_get_layout StateKeyGetLayout;
+					PFN_xkb_keymap_layout_get_name KeyMapLayoutGetName;
 					PFN_xkb_state_mod_index_is_active StateModIndexIsActive;
 
 					PFN_xkb_compose_table_new_from_locale ComposeTableNewFromLocale;
@@ -1191,6 +1199,8 @@ namespace TRAP::INTERNAL
 					PFN_xkb_compose_state_feed ComposeStateFeed;
 					PFN_xkb_compose_state_get_status ComposeStateGetStatus;
 					PFN_xkb_compose_state_get_one_sym ComposeStateGetOneSym;
+
+					std::string KeyboardLayoutName{};
 				} WaylandXKB;
 
 				InternalWindow* PointerFocus;
@@ -1315,7 +1325,7 @@ namespace TRAP::INTERNAL
 				int32_t Width, Height;
 				int32_t XHotspot, YHotspot;
 				int32_t CurrentImage;
-			};
+			} Wayland;
 #endif
 		};
 
@@ -1437,16 +1447,14 @@ namespace TRAP::INTERNAL
 					xdg_surface* Surface;
 					xdg_toplevel* TopLevel;
 					zxdg_toplevel_decoration_v1* Decoration;
-					uint32_t Decorationmode;
+					uint32_t DecorationMode;
 				} XDG;
 
-				char* Title;
-				char* AppID;
+				std::string Title;
+				std::string AppID;
 
 				int32_t Scale;
 				std::vector<InternalMonitor*> Monitors;
-				int32_t MonitorsCount;
-				int32_t MonitorsSize;
 
 				zwp_relative_pointer_v1* RelativePointer;
 				zwp_locked_pointer_v1* LockedPointer;
@@ -1681,7 +1689,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
-		static void SetWindowTitle(const InternalWindow* window, const std::string& title);
+		static void SetWindowTitle(InternalWindow* window, const std::string& title);
 		/// <summary>
 		/// This function retrieves the content scale for the specified monitor.
 		/// The content scale is the ratio between the current DPI and the platform's default DPI.
@@ -2603,7 +2611,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function may only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to maximize.</param>
-		static void MaximizeWindow(const InternalWindow* window);
+		static void MaximizeWindow(InternalWindow* window);
 		/// <summary>
 		/// This function minimizes (iconifies) the specified window if it was previously
 		/// restored. If the window is already minimized (iconified), this function does
@@ -2639,7 +2647,7 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to hide.</param>
-		static void HideWindow(const InternalWindow* window);
+		static void HideWindow(InternalWindow* window);
 		/// <summary>
 		/// Restores the specified window.
 		/// This function restores the specified window if it was previously
@@ -3138,9 +3146,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window whose title to change.</param>
 		/// <param name="title">New UTF-8 encoded title for the window.</param>
-		static void PlatformSetWindowTitle(const InternalWindow* window, const std::string& title);
-		static void PlatformSetWindowTitleX11(const InternalWindow* window, const std::string& title);
-		static void PlatformSetWindowTitleWayland(const InternalWindow* window, const std::string& title);
+		static void PlatformSetWindowTitle(InternalWindow* window, const std::string& title);
+		static void PlatformSetWindowTitleX11(InternalWindow* window, const std::string& title);
+		static void PlatformSetWindowTitleWayland(InternalWindow* window, const std::string& title);
 		/// <summary>
 		/// Creates a new custom cursor image that can be set for a window with SetCursor. The cursor can
 		/// be destroyed with DestroyCursor. Any remaining cursors are destroyed by WindowingAPI::Shutdown.
@@ -3204,9 +3212,9 @@ namespace TRAP::INTERNAL
 		/// <param name="cursor">
 		/// Internal cursor to set, or nullptr to switch back to the default arrow cursor.
 		/// </param>
-		static void PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor);
-		static void PlatformSetCursorX11(const InternalWindow* window, const InternalCursor* cursor);
-		static void PlatformSetCursorWayland(const InternalWindow* window, const InternalCursor* cursor);
+		static void PlatformSetCursor(InternalWindow* window, InternalCursor* cursor);
+		static void PlatformSetCursorX11(InternalWindow* window, InternalCursor* cursor);
+		static void PlatformSetCursorWayland(InternalWindow* window, InternalCursor* cursor);
 		/// <summary>
 		/// This function sets a cursor mode for the specified window.
 		///
@@ -3345,9 +3353,9 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window to set the size for.</param>
 		/// <param name="enabled">Enable or disable decorations for the internal window.</param>
-		static void PlatformSetWindowDecorated(const InternalWindow* window, bool enabled);
-		static void PlatformSetWindowDecoratedX11(const InternalWindow* window, bool enabled);
-		static void PlatformSetWindowDecoratedWayland(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecorated(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecoratedX11(InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecoratedWayland(InternalWindow* window, bool enabled);
 		/// <summary>
 		/// This function toggles whether the specified window is floating.
 		///
@@ -3718,9 +3726,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function may only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to maximize.</param>
-		static void PlatformMaximizeWindow(const InternalWindow* window);
-		static void PlatformMaximizeWindowX11(const InternalWindow* window);
-		static void PlatformMaximizeWindowWayland(const InternalWindow* window);
+		static void PlatformMaximizeWindow(InternalWindow* window);
+		static void PlatformMaximizeWindowX11(InternalWindow* window);
+		static void PlatformMaximizeWindowWayland(InternalWindow* window);
 		/// <summary>
 		/// This function minimizes (iconifies) the specified window if it was previously
 		/// restored. If the window is already minimized (iconified), this function does
@@ -3760,9 +3768,9 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to hide.</param>
-		static void PlatformHideWindow(const InternalWindow* window);
-		static void PlatformHideWindowX11(const InternalWindow* window);
-		static void PlatformHideWindowWayland(const InternalWindow* window);
+		static void PlatformHideWindow(InternalWindow* window);
+		static void PlatformHideWindowX11(InternalWindow* window);
+		static void PlatformHideWindowWayland(InternalWindow* window);
 		/// <summary>
 		/// Restores the specified window.
 		/// This function restores the specified window if it was previously
@@ -4229,7 +4237,7 @@ namespace TRAP::INTERNAL
 		/// <param name="count">Number of file descriptors to wait for.</param>
 		/// <param name="timeout">Time out in seconds.</param>
 		/// <returns>Number of file descriptors with data.</returns>
-		static bool WaitForData(pollfd* fds, nfds_t count, double* timeout);
+		static bool PollPOSIX(pollfd* fds, nfds_t count, double* timeout);
 		/// <summary>
 		/// Wait for event data to arrive on the X11 display socket.
 		/// This avoids blocking other threads via the per-display Xlib lock.
@@ -4628,6 +4636,72 @@ namespace TRAP::INTERNAL
 			nullptr
 		};
 
+		static void XDGSurfaceHandleConfigure(void* userData, xdg_surface* surface, uint32_t serial);
+		inline static constexpr xdg_surface_listener XDGSurfaceListener
+		{
+			XDGSurfaceHandleConfigure
+		};
+
+		static void XDGTopLevelHandleConfigure(void* userData, xdg_toplevel* topLevel, int32_t width, int32_t height, wl_array* states);
+		static void XDGTopLevelHandleClose(void* userData, xdg_toplevel* topLevel);
+		inline static constexpr xdg_toplevel_listener XDGTopLevelListener
+		{
+			XDGTopLevelHandleConfigure,
+			XDGTopLevelHandleClose,
+			nullptr,
+			nullptr
+		};
+
+		static void XDGDecorationHandleConfigure(void* userData, zxdg_toplevel_decoration_v1* decoration, uint32_t mode);
+		inline static constexpr zxdg_toplevel_decoration_v1_listener XDGDecorationListener
+		{
+			XDGDecorationHandleConfigure
+		};
+
+		static void SurfaceHandleEnter(void* userData, wl_surface* surface, wl_output* output);
+		static void SurfaceHandleLeave(void* userData, wl_surface* surface, wl_output* output);
+		inline static constexpr wl_surface_listener SurfaceListener
+		{
+			SurfaceHandleEnter,
+			SurfaceHandleLeave
+		};
+
+		static void ConfinedPointerHandleConfined(void* userData, zwp_confined_pointer_v1* confinedPointer);
+		static void ConfinedPointerHandleUnconfined(void* userData, zwp_confined_pointer_v1* confinedPointer);
+		inline static constexpr zwp_confined_pointer_v1_listener ConfinedPointerListener
+		{
+			ConfinedPointerHandleConfined,
+			ConfinedPointerHandleUnconfined
+		};
+
+		static void RelativePointerHandleRelativeMotion(void* userData, zwp_relative_pointer_v1* pointer, uint32_t timeHi,
+		                                                uint32_t timeLo, wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t dxUnaccel, wl_fixed_t dyUnaccel);
+		inline static constexpr zwp_relative_pointer_v1_listener RelativePointerListener
+		{
+			RelativePointerHandleRelativeMotion
+		};
+
+		static void LockedPointerHandleLocked(void* userData, zwp_locked_pointer_v1* lockedPointer);
+		static void LockedPointerHandleUnlocked(void* userData, zwp_locked_pointer_v1* lockedPointer);
+		inline static constexpr zwp_locked_pointer_v1_listener LockedPointerListener
+		{
+			LockedPointerHandleLocked,
+			LockedPointerHandleUnlocked
+		};
+
+		static void DataSourceHandleTarget(void* userData, wl_data_source* source, const char* mimeType);
+		static void DataSourceHandleSend(void* userData, wl_data_source* source, const char* mimeType, int32_t fd);
+		static void DataSourceHandleCancelled(void* userData, wl_data_source* source);
+		inline static constexpr wl_data_source_listener DataSourceListener
+		{
+			DataSourceHandleTarget,
+			DataSourceHandleSend,
+			DataSourceHandleCancelled,
+			nullptr,
+			nullptr,
+			nullptr
+		};
+
 		static bool LoadCursorThemeWayland();
 		static std::string ReadDataOfferAsString(wl_data_offer* offer, const char* mimeType);
 		static bool FlushDisplay();
@@ -4648,6 +4722,16 @@ namespace TRAP::INTERNAL
 		static void AcquireMonitorWayland(InternalWindow* window);
 		static void DestroyFallbackDecorationsWayland(InternalWindow* window);
 		static void DestroyFallbackDecorationWayland(TRAPDecorationWayland& decoration);
+		static void DestroyShellObjectsWayland(InternalWindow* window);
+		static bool CreateShellObjectsWayland(InternalWindow* window);
+		static bool CreateNativeSurfaceWayland(InternalWindow* window, WindowConfig& WNDConfig);
+		static void ConfinePointerWayland(InternalWindow* window);
+		static void UnconfinePointerWayland(InternalWindow* window);
+		static void LockPointerWayland(InternalWindow* window);
+		static void UnlockPointerWayland(InternalWindow* window);
+		static void SetCursorImageWayland(InternalWindow* window, InternalCursor::wayland& cursorWayland);
+		static void HandleEventsWayland(double* timeout);
+		static void IncrementCursorImageWayland(InternalWindow* window);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

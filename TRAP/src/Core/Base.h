@@ -59,6 +59,15 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Enable Wayland support on Linuxe
+//NOTE: Wayland support is still experimental and not fully implemented.
+//Currently X11/Xwayland is preferred over native Wayland.
+#ifdef TRAP_PLATFORM_LINUX
+	// #define ENABLE_WAYLAND_SUPPORT
+#endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 /// <summary>
 /// Construct a version number.
 /// </summary>
