@@ -2627,3 +2627,20 @@ void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* window, const 
 
 	PlatformSetDragAndDrop(window, value);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window content scale has changed
+//The scale is specified as the ratio between the current and default DPI
+void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow* window, const float xScale,
+                                                           const float yScale)
+{
+	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(xScale > 0.0f);
+	TRAP_ASSERT(xScale < std::numeric_limits<float>::max());
+	TRAP_ASSERT(yScale > 0.0f);
+	TRAP_ASSERT(yScale < std::numeric_limits<float>::max());
+
+	if (window->Callbacks.Scale)
+		window->Callbacks.Scale(window, xScale, yScale);
+}

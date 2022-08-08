@@ -188,23 +188,6 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code that a window content scale has changed
-//The scale is specified as the ratio between the current and default DPI
-void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow* window, const float xScale,
-                                                           const float yScale)
-{
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xScale > 0.0f);
-	TRAP_ASSERT(xScale < std::numeric_limits<float>::max());
-	TRAP_ASSERT(yScale > 0.0f);
-	TRAP_ASSERT(yScale < std::numeric_limits<float>::max());
-
-	if (window->Callbacks.Scale)
-		window->Callbacks.Scale(window, xScale, yScale);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Window procedure for user-created windows
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                                           const LPARAM lParam)

@@ -1389,6 +1389,9 @@ namespace TRAP::INTERNAL
 			ITaskbarList3* TaskbarList = nullptr;
 			UINT TaskbarListMsgID = 0;
 #elif defined(TRAP_PLATFORM_LINUX)
+			//Whether the visual supports framebuffer transparency
+			bool Transparent = false;
+
 			struct x11
 			{
 				//X11
@@ -1397,8 +1400,7 @@ namespace TRAP::INTERNAL
 				::Window Parent = 0;
 				XIC IC = nullptr;
 				bool OverrideRedirect = false;
-				//Whether the visual supports framebuffer transparency
-				bool Transparent = false;
+
 				//Cached position and size used to filter out duplicate events
 				int32_t XPos = 0, YPos = 0;
 				//The last position the cursor was warped to by TRAP
@@ -4024,6 +4026,14 @@ namespace TRAP::INTERNAL
 		/// Disables clip cursor
 		/// </summary>
 		static void ReleaseCursor();
+		/// <summary>
+		/// Notifies shared code that a window content scale has changed.
+		/// The scale is specified as the ratio between the current and default DPI.
+		/// </summary>
+		/// <param name="window">Internal window which is meant.</param>
+		/// <param name="xScale">New x content scale.</param>
+		/// <param name="yScale">New y content scale.</param>
+		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
 
 		//-------//
 		//Windows//
@@ -4044,14 +4054,6 @@ namespace TRAP::INTERNAL
 		/// <param name="error">Error that occurred.</param>
 		/// <param name="description">Description of the error.</param>
 		static void InputErrorWin32(Error error, const std::string& description);
-		/// <summary>
-		/// Notifies shared code that a window content scale has changed.
-		/// The scale is specified as the ratio between the current and default DPI.
-		/// </summary>
-		/// <param name="window">Internal window which is meant.</param>
-		/// <param name="xScale">New x content scale.</param>
-		/// <param name="yScale">New y content scale.</param>
-		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
 		/// <summary>
 		/// Updates key names according to the current keyboard layout.
 		/// </summary>
@@ -4633,6 +4635,9 @@ namespace TRAP::INTERNAL
 		static InternalWindow* FindWindowFromDecorationSurface(wl_surface* surface, TRAPDecorationSideWayland& which);
 		static void InputTextWayland(InternalWindow* window, uint32_t scanCode);
 		static xkb_keysym_t ComposeSymbol(xkb_keysym_t sym);
+		static void UpdateContentScaleWayland(InternalWindow* window);
+		static void ResizeWindowWayland(InternalWindow* window);
+		static void SetContentAreaOpaqueWayland(InternalWindow* window);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif

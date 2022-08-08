@@ -363,7 +363,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 		}
 
 		//Enable compositor bypass
-		if(!window->X11.Transparent)
+		if(!window->Transparent)
 		{
 			const uint64_t value = 1;
 
@@ -399,7 +399,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 		}
 
 		//Disable compositor bypass
-		if(!window->X11.Transparent)
+		if(!window->Transparent)
 			s_Data.X11.XLIB.DeleteProperty(s_Data.X11.display, window->X11.Handle, s_Data.X11.NET_WM_BYPASS_COMPOSITOR);
 	}
 }
@@ -1247,7 +1247,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, Wi
 	//Create a colormap based on the visual used by the current context
 	window->X11.colormap = s_Data.X11.XLIB.CreateColormap(s_Data.X11.display, s_Data.X11.Root, visual, AllocNone);
 
-	window->X11.Transparent = IsVisualTransparentX11(visual);
+	window->Transparent = IsVisualTransparentX11(visual);
 
 	XSetWindowAttributes wa = {};
 	wa.colormap = window->X11.colormap;

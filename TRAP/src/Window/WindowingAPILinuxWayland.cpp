@@ -72,6 +72,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 using namespace std::string_view_literals;
 
 static constexpr int32_t TRAP_BORDER_SIZE = 4;
+static constexpr int32_t TRAP_CAPTION_HEIGHT = 24;
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -209,52 +210,95 @@ void TRAP::INTERNAL::WindowingAPI::DataDeviceHandleSelection(void* /*userData*/,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_output* output, int32_t x, int32_t y,
-                                                        int32_t physicalWidth, int32_t physicalHeight,
-                                                        int32_t subpixel, const char* make, const char* model,
-                                                        int32_t transform)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleGeometry(void* userData, wl_output* /*output*/, int32_t x, int32_t y,
+                                                        int32_t /*physicalWidth*/, int32_t /*physicalHeight*/,
+                                                        int32_t /*subpixel*/, const char* make, const char* model,
+                                                        int32_t /*transform*/)
 {
-    //TODO
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
+
+    monitor->Wayland.X = x;
+    monitor->Wayland.Y = y;
+
+    const std::string name = std::string(make) + " " + std::string(model);
+    if(monitor->Name.empty())
+        monitor->Name = name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* output, uint32_t flags,
+void TRAP::INTERNAL::WindowingAPI::OutputHandleMode(void* userData, wl_output* /*output*/, uint32_t flags,
                                                     int32_t width, int32_t height, int32_t refresh)
 {
-    //TODO
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
+
+    InternalVideoMode mode{};
+    mode.Width = width;
+    mode.Height = height;
+    mode.RedBits = 8;
+    mode.GreenBits = 8;
+    mode.BlueBits = 8;
+    mode.RefreshRate = static_cast<int32_t>(TRAP::Math::Round(refresh / 1000.0));
+
+    monitor->Modes.push_back(mode);
+
+    if(flags & WL_OUTPUT_MODE_CURRENT)
+        monitor->CurrentMode = monitor->Modes.back();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* userData, wl_output* output)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDone(void* userData, wl_output* /*output*/)
 {
-    //TODO
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
+
+    for(const Scope<InternalMonitor>& mon : s_Data.Monitors)
+    {
+        if(mon.get() == monitor)
+            return;
+    }
+
+    InputMonitor( TRAP::Scope<InternalMonitor>(monitor), true, 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, wl_output* output, int32_t factor)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleScale(void* userData, wl_output* /*output*/, int32_t factor)
 {
-    //TODO
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
+
+    monitor->Wayland.Scale = factor;
+
+    uint32_t index = 0;
+    for(InternalWindow* window : s_Data.WindowList)
+    {
+        if(window->Wayland.Monitors[index] == monitor)
+        {
+            UpdateContentScaleWayland(window);
+            break;
+        }
+
+        index++;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, wl_output* output, const char* name)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleName(void* userData, wl_output* /*output*/, const char* name)
 {
-    //TODO
+    InternalMonitor* monitor = static_cast<InternalMonitor*>(userData);
+
+    monitor->Name = name;
 }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef WL_OUTPUT_NAME_SINCE_VERSION
-void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* userData, wl_output* output,
-                                                           const char* description)
+void TRAP::INTERNAL::WindowingAPI::OutputHandleDescription(void* /*userData*/, wl_output* /*output*/,
+                                                           const char* /*description*/)
 {
-    //TODO
 }
 #endif
 
@@ -725,11 +769,15 @@ void TRAP::INTERNAL::WindowingAPI::RegistryHandleGlobal(void* /*userData*/, wl_r
         if(!output)
             return;
 
-        //BUG Does this work or do we have a dangling pointer after this scope?!
-        Scope<InternalMonitor> monitor = std::make_unique<InternalMonitor>();
+        //Note this pointer will be acquired by a TRAP::Scope in OutputHandleDone()
+        InternalMonitor* monitor = new InternalMonitor;
+        std::memset(monitor, 0, sizeof(InternalMonitor));
+        monitor->Wayland.Scale = 1;
+        monitor->Wayland.Output = output;
+        monitor->Wayland.Name = name;
 
         //The actual name of this output will be set in the geometry handler
-        wl_output_add_listener(output, &OutputListener, &monitor);
+        wl_output_add_listener(output, &OutputListener, monitor);
     }
     else if(interface == "wl_seat"sv)
     {
@@ -1126,6 +1174,71 @@ xkb_keysym_t TRAP::INTERNAL::WindowingAPI::ComposeSymbol(xkb_keysym_t sym)
     default:
         return sym;
     }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::UpdateContentScaleWayland(InternalWindow* window)
+{
+    if(s_Data.Wayland.CompositorVersion < WL_SURFACE_SET_BUFFER_SCALE_SINCE_VERSION)
+        return;
+
+    //Get the scale factor from the highest scale monitor.
+    int32_t maxScale = 1;
+    for(const auto& monitor : window->Wayland.Monitors)
+        maxScale = TRAP::Math::Max(monitor->Wayland.Scale, maxScale);
+
+    //Only change the framebuffer size if the scale changed.
+    if(window->Wayland.Scale != maxScale)
+    {
+        window->Wayland.Scale = maxScale;
+        wl_surface_set_buffer_scale(window->Wayland.Surface, maxScale);
+        InputWindowContentScale(window, maxScale, maxScale);
+        ResizeWindowWayland(window);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::ResizeWindowWayland(InternalWindow* window)
+{
+    int32_t scale = window->Wayland.Scale;
+    int32_t scaledWidth = window->Width * scale;
+    int32_t scaledHeight = window->Height * scale;
+
+    if(!window->Transparent)
+        SetContentAreaOpaqueWayland(window);
+    InputFrameBufferSize(window, scaledWidth, scaledHeight);
+
+    if(!window->Wayland.Decorations.Top.surface)
+        return;
+
+    wp_viewport_set_destination(window->Wayland.Decorations.Top.viewport, window->Width, TRAP_CAPTION_HEIGHT);
+    wl_surface_commit(window->Wayland.Decorations.Top.surface);
+
+    wp_viewport_set_destination(window->Wayland.Decorations.Left.viewport, TRAP_BORDER_SIZE, window->Height + TRAP_CAPTION_HEIGHT);
+    wl_surface_commit(window->Wayland.Decorations.Left.surface);
+
+    wl_subsurface_set_position(window->Wayland.Decorations.Right.subsurface, window->Width, -TRAP_CAPTION_HEIGHT);
+    wp_viewport_set_destination(window->Wayland.Decorations.Right.viewport, TRAP_BORDER_SIZE, window->Height + TRAP_CAPTION_HEIGHT);
+    wl_surface_commit(window->Wayland.Decorations.Right.surface);
+
+    wl_subsurface_set_position(window->Wayland.Decorations.Bottom.subsurface, -TRAP_BORDER_SIZE, window->Height);
+    wp_viewport_set_destination(window->Wayland.Decorations.Bottom.viewport, window->Width + TRAP_BORDER_SIZE * 2, TRAP_BORDER_SIZE);
+    wl_surface_commit(window->Wayland.Decorations.Bottom.surface);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SetContentAreaOpaqueWayland(InternalWindow* window)
+{
+    wl_region* region = wl_compositor_create_region(s_Data.Wayland.Compositor);
+    if(!region)
+        return;
+
+    wl_region_add(region, 0, 0, window->Width, window->Height);
+    wl_surface_set_opaque_region(window->Wayland.Surface, region);
+    wl_region_destroy(region);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
