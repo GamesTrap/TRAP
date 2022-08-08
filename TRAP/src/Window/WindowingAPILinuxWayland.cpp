@@ -1242,13 +1242,238 @@ void TRAP::INTERNAL::WindowingAPI::SetContentAreaOpaqueWayland(InternalWindow* w
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::ReleaseMonitorWayland(InternalWindow* window)
+{
+    if(window->Wayland.XDG.TopLevel)
+        xdg_toplevel_unset_fullscreen(window->Wayland.XDG.TopLevel);
+
+    SetIdleInhibitorWayland(window, false);
+
+    if(window->Wayland.XDG.Decorationmode != ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE)
+    {
+        if(window->Decorated)
+            CreateFallbackDecorationsWayland(window);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SetIdleInhibitorWayland(InternalWindow* window, const bool enable)
+{
+    if(enable && !window->Wayland.IdleInhibitor && s_Data.Wayland.IdleInhibitManager)
+    {
+        window->Wayland.IdleInhibitor = zwp_idle_inhibit_manager_v1_create_inhibitor(s_Data.Wayland.IdleInhibitManager, window->Wayland.Surface);
+        if(!window->Wayland.IdleInhibitor)
+            InputError(Error::Platform_Error, "[Wayland] Failed to create idle inhibitor");
+    }
+    else if(!enable && window->Wayland.IdleInhibitor)
+    {
+        zwp_idle_inhibitor_v1_destroy(window->Wayland.IdleInhibitor);
+        window->Wayland.IdleInhibitor = nullptr;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::CreateFallbackDecorationsWayland(InternalWindow* window)
+{
+    std::vector<uint8_t> data{224, 244, 244, 255};
+    Scope<Image> img = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA, data);
+
+    if(!s_Data.Wayland.Viewporter)
+        return;
+
+    if(!window->Wayland.Decorations.Buffer)
+        window->Wayland.Decorations.Buffer = CreateShmBufferWayland(img.get());
+    if(!window->Wayland.Decorations.Buffer)
+        return;
+
+    CreateFallbackDecorationWayland(window->Wayland.Decorations.Top, window->Wayland.Surface, window->Wayland.Decorations.Buffer, 0, -TRAP_CAPTION_HEIGHT, window->Width, TRAP_CAPTION_HEIGHT);
+    CreateFallbackDecorationWayland(window->Wayland.Decorations.Left, window->Wayland.Surface, window->Wayland.Decorations.Buffer, -TRAP_BORDER_SIZE, -TRAP_CAPTION_HEIGHT, TRAP_BORDER_SIZE, window->Height + TRAP_CAPTION_HEIGHT);
+    CreateFallbackDecorationWayland(window->Wayland.Decorations.Right, window->Wayland.Surface, window->Wayland.Decorations.Buffer, window->Width, -TRAP_CAPTION_HEIGHT, TRAP_BORDER_SIZE, window->Height + TRAP_CAPTION_HEIGHT);
+    CreateFallbackDecorationWayland(window->Wayland.Decorations.Bottom, window->Wayland.Surface, window->Wayland.Decorations.Buffer, -TRAP_BORDER_SIZE, window->Height, window->Width + TRAP_BORDER_SIZE * 2, TRAP_BORDER_SIZE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+wl_buffer* TRAP::INTERNAL::WindowingAPI::CreateShmBufferWayland(const Image* image)
+{
+    const int32_t stride = image->GetWidth() * 4;
+    const int32_t length = image->GetWidth() * image->GetHeight() * 4;
+
+    const int32_t fd = CreateAnonymousFileWayland(length);
+    if(fd < 0)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to create buffer file of size " +
+                   std::to_string(length) + ": " + Utils::String::GetStrError());
+        return nullptr;
+    }
+
+    void* data = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if(data == MAP_FAILED)
+    {
+        InputError(Error::Platform_Error, "[Wayland] Failed to map file: " + Utils::String::GetStrError());
+        close(fd);
+        return nullptr;
+    }
+
+    wl_shm_pool* pool = wl_shm_create_pool(s_Data.Wayland.Shm, fd, length);
+
+    close(fd);
+
+    const uint8_t* source = static_cast<const uint8_t*>(image->GetPixelData());
+    uint8_t* target = static_cast<uint8_t*>(data);
+    for(uint32_t i = 0; i < image->GetWidth() * image->GetHeight(); ++i, source += 4)
+    {
+        uint32_t alpha = source[3];
+
+        *target++ = static_cast<uint8_t>((source[2] * alpha) / 255);
+        *target++ = static_cast<uint8_t>((source[1] * alpha) / 255);
+        *target++ = static_cast<uint8_t>((source[0] * alpha) / 255);
+        *target++ = static_cast<uint8_t>(alpha);
+    }
+
+    wl_buffer* buffer = wl_shm_pool_create_buffer(pool, 0, image->GetWidth(), image->GetHeight(), stride, WL_SHM_FORMAT_ARGB8888);
+    munmap(data, length);
+    wl_shm_pool_destroy(pool);
+
+    return buffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::INTERNAL::WindowingAPI::CreateAnonymousFileWayland(off_t size)
+{
+    static const char temp[] = "/trap-shared-XXXXXX";
+    int32_t fd;
+    int32_t ret;
+
+#ifdef _GNU_SOURCE
+    fd = memfd_create("trap-shared", MFD_CLOEXEC | MFD_ALLOW_SEALING);
+    if(fd >= 0)
+    {
+        //We can add this seal before calling posix_fallocate(), as the file
+        //is currently zero-sized anyway.
+
+        //There is also no need to check for the return value, we couldn't do
+        //anyting with it anyway.
+        fcntl(fd, F_ADD_SEALS, F_SEAL_SHRINK | F_SEAL_SEAL);
+    }
+    else
+#elif defined(SHM_ANON)
+    fd = shm_open(SHM_ANON, O_RDWR | O_CLOEXEC, 0600);
+    if(fd < 0)
+#endif
+    {
+        const char* path = getenv("XDG_RUNTIME_DIR");
+        if(!path)
+        {
+            errno = ENOENT;
+            return -1;
+        }
+
+        std::string name = path;
+        name += temp;
+
+        fd = CreateTmpFileCloexec(name.data());
+        if(fd < 0)
+            return -1;
+    }
+
+#ifdef SHM_ANON
+    //posix fallocate does not work on SHM descriptors
+    ret = ftruncate(fd, size);
+#else
+    ret = posix_fallocate(fd, 0, size);
+#endif
+    if(ret != 0)
+    {
+        close(fd);
+        errno = ret;
+        return -1;
+    }
+
+    return fd;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::INTERNAL::WindowingAPI::CreateTmpFileCloexec(char* tmpName)
+{
+    int32_t fd = mkostemp(tmpName, O_CLOEXEC);
+    if(fd >= 0)
+        unlink(tmpName);
+
+    return fd;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::CreateFallbackDecorationWayland(TRAPDecorationWayland& decoration,
+                                                                   wl_surface* parent, wl_buffer* buffer,
+                                                                   int32_t x, int32_t y, int32_t width, int32_t height)
+{
+    decoration.surface = wl_compositor_create_surface(s_Data.Wayland.Compositor);
+    decoration.subsurface = wl_subcompositor_get_subsurface(s_Data.Wayland.SubCompositor, decoration.surface, parent);
+    wl_subsurface_set_position(decoration.subsurface, x, y);
+    decoration.viewport = wp_viewporter_get_viewport(s_Data.Wayland.Viewporter, decoration.surface);
+    wp_viewport_set_destination(decoration.viewport, width, height);
+    wl_surface_attach(decoration.surface, buffer, 0, 0);
+
+    wl_region* region = wl_compositor_create_region(s_Data.Wayland.Compositor);
+    wl_region_add(region, 0, 0, width, height);
+    wl_surface_set_opaque_region(decoration.surface, region);
+    wl_surface_commit(decoration.surface);
+    wl_region_destroy(region);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::AcquireMonitorWayland(InternalWindow* window)
+{
+    if(window->Wayland.XDG.TopLevel)
+        xdg_toplevel_set_fullscreen(window->Wayland.XDG.TopLevel, window->Monitor->Wayland.Output);
+
+    SetIdleInhibitorWayland(window, true);
+
+    if(window->Wayland.Decorations.Top.surface)
+        DestroyFallbackDecorationsWayland(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DestroyFallbackDecorationsWayland(InternalWindow* window)
+{
+    DestroyFallbackDecorationWayland(window->Wayland.Decorations.Top);
+    DestroyFallbackDecorationWayland(window->Wayland.Decorations.Left);
+    DestroyFallbackDecorationWayland(window->Wayland.Decorations.Right);
+    DestroyFallbackDecorationWayland(window->Wayland.Decorations.Bottom);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::DestroyFallbackDecorationWayland(TRAPDecorationWayland& decoration)
+{
+    if(decoration.subsurface)
+        wl_subsurface_destroy(decoration.subsurface);
+    if(decoration.surface)
+        wl_surface_destroy(decoration.surface);
+    if(decoration.viewport)
+        wp_viewport_destroy(decoration.viewport);
+    decoration.surface = nullptr;
+    decoration.subsurface = nullptr;
+    decoration.viewport = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
 
 TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModeWayland(const InternalMonitor* monitor)
 {
-    return {};
+    return monitor->CurrentMode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1256,21 +1481,44 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Pl
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSizeWayland(const InternalWindow* window, int32_t& width,
                                                                 int32_t& height)
 {
+    width = window->Width;
+    height = window->Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWindow* window, const int32_t xPos, const int32_t yPos)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPosWayland(const InternalWindow* /*window*/, const int32_t /*xPos*/,
+                                                               const int32_t /*yPos*/)
 {
+    //A Wayland client can't set its position, so just warn
+
+    InputError(Error::Feature_Unavailable, "[Wayland] The platform doesn't support setting the window position");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindow* window, InternalMonitor* monitor,
-														           const int32_t xPos, const int32_t yPos,
+														           const int32_t /*xPos*/, const int32_t /*yPos*/,
                                                                    const int32_t width, const int32_t height,
-                                                                   const int32_t refreshRate)
+                                                                   const int32_t /*refreshRate*/)
 {
+    if(window->Monitor == monitor)
+    {
+        if(!monitor)
+            PlatformSetWindowSizeWayland(window, width, height);
+
+        return;
+    }
+
+    if(window->Monitor)
+        ReleaseMonitorWayland(window);
+
+    window->Monitor = monitor;
+
+    if(window->Monitor)
+        AcquireMonitorWayland(window);
+    else
+        PlatformSetWindowSizeWayland(window, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1278,6 +1526,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorWayland(InternalWindo
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderlessWayland(InternalWindow* window,
                                                                              InternalMonitor* monitor)
 {
+    //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

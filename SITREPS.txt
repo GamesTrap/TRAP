@@ -3037,3 +3037,4 @@ SITREP 08/08/2022|22w32a1
         - WindowingAPI Wayland Implemented PointerListener functions ~<20 mins
         - WindowingAPI Wayland Implemented KeyboardListener functions ~<20 mins
         - WindowingAPI Wayland Implemented OutputListener functions ~<20 mins
+        - WindowingAPI Wayland Implemented PlatformSetWindowMonitorWayland ~<20 mins

@@ -4638,6 +4638,16 @@ namespace TRAP::INTERNAL
 		static void UpdateContentScaleWayland(InternalWindow* window);
 		static void ResizeWindowWayland(InternalWindow* window);
 		static void SetContentAreaOpaqueWayland(InternalWindow* window);
+		static void ReleaseMonitorWayland(InternalWindow* window);
+		static void SetIdleInhibitorWayland(InternalWindow* window, bool enable);
+		static void CreateFallbackDecorationsWayland(InternalWindow* window);
+		static wl_buffer* CreateShmBufferWayland(const Image* image);
+		static int32_t CreateAnonymousFileWayland(off_t size);
+		static int32_t CreateTmpFileCloexec(char* tmpName);
+		static void CreateFallbackDecorationWayland(TRAPDecorationWayland& decoration, wl_surface* parent, wl_buffer* buffer, int32_t x, int32_t y, int32_t width, int32_t height);
+		static void AcquireMonitorWayland(InternalWindow* window);
+		static void DestroyFallbackDecorationsWayland(InternalWindow* window);
+		static void DestroyFallbackDecorationWayland(TRAPDecorationWayland& decoration);
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
 #endif
