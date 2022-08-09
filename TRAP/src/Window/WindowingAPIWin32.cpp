@@ -445,7 +445,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 			InputKey(windowPtr, key, scanCode, Input::KeyState::Pressed);
 			InputKey(windowPtr, key, scanCode, Input::KeyState::Released);
 		}
-		else
+		else if(wParam != 0x07) //Fixes Xbox controller Xbox button presses (Windows 11)
 			InputKey(windowPtr, key, scanCode, state);
 
 		break;

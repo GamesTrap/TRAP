@@ -301,11 +301,15 @@ TRAP::Application::Application(std::string gameName)
 	}
 
 	//Initialize Input for Joysticks
+#ifdef TRAP_PLATFORM_LINUX
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 	{
+#endif
 		Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 		Input::Init();
+#ifdef TRAP_PLATFORM_LINUX
 	}
+#endif
 
 #ifndef TRAP_HEADLESS_MODE
 	if(Graphics::RendererAPI::GPUSettings.SurfaceSupported &&
