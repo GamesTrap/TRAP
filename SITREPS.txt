@@ -3024,3 +3024,8 @@ SITREP 08/09/2022|22w32a2
     - Shader Removed Convert8To32() ~<5 mins
     - Utils Memory Added SwapBytes function for iterators ~<5 mins
     - Utils Memory Added ConvertByte function and ConvertBytes for iterators ~<20 mins
+
+SITREP 08/10/2022|22w32b1
+    - Changed TRAP Engine version to 22w32b1(0.8.22)
+    - Renderer2D Added RendererAPI::ImageCount buffering ~<10 mins
+    - Renderer2D Fixed batch switching on texture slot exhaust ~<5 mins
