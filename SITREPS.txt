@@ -3027,5 +3027,7 @@ SITREP 08/09/2022|22w32a2
 
 SITREP 08/10/2022|22w32b1
     - Changed TRAP Engine version to 22w32b1(0.8.22)
+    - Input Windows Fixed Xbox button press results hitting InputKey assert ~<5 mins
+    - Application Windows Fixed not calling Input::Init() ~<5 mins
     - Renderer2D Added RendererAPI::ImageCount buffering ~<10 mins
     - Renderer2D Fixed batch switching on texture slot exhaust ~<5 mins
