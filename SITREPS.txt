@@ -3031,3 +3031,9 @@ SITREP 08/10/2022|22w32b1
     - Application Windows Fixed not calling Input::Init() ~<5 mins
     - Renderer2D Added RendererAPI::ImageCount buffering ~<10 mins
     - Renderer2D Fixed batch switching on texture slot exhaust ~<5 mins
+
+SITREP 08/11/2022|22w32c1
+    - ConvertToSPIRV Moved utilities into own file ~<10 mins
+    - ConvertToSPIRV Moved shader stuff into own file ~<10 mins
+    - ConvertToSPIRV Added support for custom output file names ~<10 mins
+    - ConvertToSPIRV Added support for custom macros ~<10 mins
