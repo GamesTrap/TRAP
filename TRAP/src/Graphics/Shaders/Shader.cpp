@@ -105,7 +105,6 @@ bool TRAP::Graphics::Shader::Reload()
 		}
 
 		desc = ConvertGLSLToSPIRV(shaders, m_shaderStages);
-
 	}
 	else
 		desc = LoadSPIRV(SPIRVSource);
@@ -333,7 +332,14 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 	file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //SPIRV Magic Number
 	file.close();
 
-	return magicNumber == 0x07230203;
+	bool isMagic = magicNumber == 0x07230203;
+	if (!isMagic) //Test again with swapped endianness
+	{
+		Utils::Memory::SwapBytes(magicNumber);
+		isMagic = magicNumber == 0x07230203;
+	}
+
+	return isMagic;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -714,11 +720,18 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(const std::vector<uint32_t>& SPIRV)
+TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint32_t>& SPIRV)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
 #endif
+
+	//Check endianness of byte strea
+	bool needsEndianSwap = false;
+	if (SPIRV[3] != 0x07230203)
+		needsEndianSwap = true;
+	if (needsEndianSwap) //Convert endianness if needed
+		Utils::Memory::SwapBytes(SPIRV.begin(), SPIRV.end());
 
 	RendererAPI::BinaryShaderDesc desc{};
 	uint32_t index = 0;

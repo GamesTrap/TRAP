@@ -3037,3 +3037,9 @@ SITREP 08/11/2022|22w32c1
     - ConvertToSPIRV Moved shader stuff into own file ~<10 mins
     - ConvertToSPIRV Added support for custom output file names ~<10 mins
     - ConvertToSPIRV Added support for custom macros ~<10 mins
+
+
+SITREP 08/11/2022|22w32c2
+    - Changed TRAP Engine version to 22w32c2(0.8.23)
+    - Shader now automatically detects correct endianess for SPIRV files ~<5 mins
+    - Tests Added SPIRVTest (to test if ConverToSPIRV utility works correctly) ~<20 mins

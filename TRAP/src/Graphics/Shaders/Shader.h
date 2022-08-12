@@ -309,7 +309,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="SPIRV">SPIRV binary data.</param>
 		/// <returns>RendererAPI::BinaryShaderDesc containing loaded SPIRV binary data.</returns>
-		static RendererAPI::BinaryShaderDesc LoadSPIRV(const std::vector<uint32_t>& SPIRV);
+		static RendererAPI::BinaryShaderDesc LoadSPIRV(std::vector<uint32_t>& SPIRV);
 		/// <summary>
 		/// Check if the ending of the given path is a supported shader file ending.
 		/// </summary>
