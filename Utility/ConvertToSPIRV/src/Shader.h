@@ -564,7 +564,7 @@ inline bool LoadShader(const std::filesystem::path& filePath, Shader& outShader)
 		return false;
 	}
 
-	if (ToLower(GetSuffix(filePath)) == "shader")
+	if (ToLower(GetSuffix(filePath.u8string())) == "shader")
 	{
 		std::optional<std::string> source = ReadTextFile(filePath);
 		if (source)
