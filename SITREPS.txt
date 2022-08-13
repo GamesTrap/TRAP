@@ -3038,9 +3038,13 @@ SITREP 08/11/2022|22w32c1
     - ConvertToSPIRV Added support for custom output file names ~<10 mins
     - ConvertToSPIRV Added support for custom macros ~<10 mins
 
-
 SITREP 08/11/2022|22w32c2
     - Changed TRAP Engine version to 22w32c2(0.8.23)
     - Shader now automatically detects correct endianess for SPIRV files ~<5 mins
     - Tests Added SPIRVTest (to test if ConverToSPIRV utility works correctly) ~<20 mins
     - ConvertToSPIRV Fixed MSVC compiler error ~<5 mins
+
+SITREP 08/13/2022|22w32c2
+    - Changed TRAP Engine version to 22w32c2(0.8.23)
+    - SHA2 Made some functions constexpr ~<5 mins
+    - HeadlessTests Added HashTests ~>20 mins
