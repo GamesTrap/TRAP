@@ -203,7 +203,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
-																			   const std::array<Image*, 6>& imgs,
+																			   const std::array<const Image*, 6>& imgs,
 																			   const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
@@ -211,49 +211,24 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 
 	TP_PROFILE_FUNCTION();
 
-	//Validation that images have same size and format
-	const Image::ColorFormat format = imgs[0]->GetColorFormat();
-	if(std::none_of(imgs.cbegin(), imgs.cend(),
-	   [&](const Image* img) {return img->GetColorFormat() != format ||
-	                                 img->GetBitsPerChannel() != imgs[0]->GetBitsPerPixel() ||
-									 img->GetWidth() != imgs[0]->GetWidth() ||
-									 img->GetHeight() != imgs[0]->GetHeight(); }))
+	if(name.empty())
 	{
-		TP_ERROR(Log::TexturePrefix, "An image has mismatching color format, bits per channel, width and/or height!");
+		TRAP_ASSERT(false, "Name is empty!");
+		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
-
-	//Convert to RGBA if necessary
-	std::array<Scope<Image>, 6> imgsRGBA{};
-	std::array<Image*, 6> imgsRGBAPtr{};
-	if(format == Image::ColorFormat::RGB)
-	{
-		for(uint32_t i = 0; i < imgs.size(); ++i)
-		{
-			imgsRGBA[i] = TRAP::Image::ConvertRGBToRGBA(imgs[i]);
-			imgsRGBAPtr[i] = imgsRGBA[i].get();
-		}
-	}
-
-	const std::array<Image*, 6>& useImgs = (format == Image::ColorFormat::RGB ? imgsRGBAPtr : imgs);
 
 	TRAP::Scope<Texture> texture = nullptr;
 
-	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImgs[0]->GetColorFormat(),
-																			  useImgs[0]->GetBitsPerPixel());
+	std::array<std::filesystem::path, 6> filePaths{};
+	for(uint32_t i = 0; i < filePaths.size(); ++i)
+		filePaths[i] = imgs[i]->GetFilePath();
 
-	if(imageFormat == API::ImageFormat::Undefined)
-		return nullptr;
-
-	std::array<std::filesystem::path, 6> filepaths{};
-	for(uint32_t i = 0; i < useImgs.size(); ++i)
-		filepaths[i] = useImgs[i]->GetFilePath();
-
-	switch(RendererAPI::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), filepaths);
+		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filePaths));
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -281,33 +256,15 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 
 	if(texture)
 	{
-		//Create empty Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
-		loadDesc.Texture = texture.get();
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Images = imgs;
+		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
+		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
 
-		RendererAPI::TextureDesc texDesc{};
-		texDesc.Width = useImgs[0]->GetWidth();
-		texDesc.Height = useImgs[0]->GetHeight();
-		texDesc.ArraySize = 6;
-		texDesc.MipLevels = CalculateMipLevels(useImgs[0]->GetWidth(), useImgs[0]->GetHeight());
-		texDesc.Format = imageFormat;
-		texDesc.StartState = RendererAPI::ResourceState::Common;
-		texDesc.Descriptors = RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube;
-		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
-			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
-
-		loadDesc.Desc = &texDesc;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Wait for texture to be ready
-		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
-
-		//Fill empty Texture with images pixel data
-		for(uint32_t i = 0; i < useImgs.size(); ++i)
-			texture->Update(useImgs[i]->GetPixelData(), static_cast<uint32_t>(useImgs[i]->GetPixelDataSize()), 0, i);
-
-		//TODO Mipmaps
-		//TODO Make use of the ResourceLoader to do all this stuff
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
 
 	return texture;
@@ -322,23 +279,18 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 																			  const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Provided cube format is invalid");
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<Image> imgRGBA = nullptr;
-	if(img->GetColorFormat() == Image::ColorFormat::RGB)
-		imgRGBA = TRAP::Image::ConvertRGBToRGBA(img);
-
-	const Image* const useImg = imgRGBA ? imgRGBA.get() : img;
+	if(name.empty() && !img->GetFilePath().empty())
+	{
+		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
+		name = img->GetFilePath().filename().u8string();
+	}
 
 	TRAP::Scope<Texture> texture = nullptr;
-
-	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(useImg->GetColorFormat(), useImg->GetBitsPerPixel());
-
-	if(imageFormat == API::ImageFormat::Undefined)
-		return nullptr;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -372,57 +324,16 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 
 	if(texture)
 	{
-		//Create empty Texture
-		TRAP::Graphics::RendererAPI::TextureLoadDesc loadDesc{};
-		loadDesc.Texture = texture.get();
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Filepaths = texture->m_filepaths;
+		desc.Images = {img};
+		desc.IsCubemap = texture->m_textureType == TextureType::TextureCube;
+		desc.Type = texture->m_textureCubeFormat;
+		desc.CreationFlag = flags;
+		desc.Texture = texture.get();
 
-		RendererAPI::TextureDesc texDesc{};
-		texDesc.Format = imageFormat;
-		texDesc.StartState = RendererAPI::ResourceState::Common;
-		texDesc.Descriptors = texture->m_textureType == TextureType::TextureCube ? (RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::TextureCube) :
-																				   RendererAPI::DescriptorType::Texture;
-		if(static_cast<bool>(flags & TextureCreationFlags::Storage))
-			texDesc.Descriptors |= RendererAPI::DescriptorType::RWTexture;
-
-		std::array<TRAP::Scope<Image>, 6> faces{};
-		if(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::Cross)
-		{
-			if(useImg->GetBytesPerChannel() == 1)
-				faces = SplitImageFromCross<uint8_t>(imgRGBA ? imgRGBA.get() : img);
-			else if(useImg->GetBytesPerChannel() == 2)
-				faces = SplitImageFromCross<uint16_t>(imgRGBA ? imgRGBA.get() : img);
-			else if(useImg->GetBytesPerChannel() == 4)
-				faces = SplitImageFromCross<float>(imgRGBA ? imgRGBA.get() : img);
-
-			texDesc.MipLevels = CalculateMipLevels(faces[0]->GetWidth(), faces[0]->GetHeight());
-			texDesc.Width = faces[0]->GetWidth();
-			texDesc.Height = faces[0]->GetWidth();
-			texDesc.ArraySize = 6;
-		}
-		else if(type == TextureType::Texture2D)
-		{
-			texDesc.Width = useImg->GetWidth();
-			texDesc.Height = useImg->GetHeight();
-			texDesc.MipLevels = CalculateMipLevels(useImg->GetWidth(), useImg->GetHeight());
-		}
-
-		loadDesc.Desc = &texDesc;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, &texture->m_syncToken);
-
-		//Wait for texture to be ready
-		RendererAPI::GetResourceLoader()->WaitForToken(&texture->m_syncToken);
-
-		//Upload image data
-		if(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::Cross)
-		{
-			for(uint32_t i = 0; i < faces.size(); ++i)
-				texture->Update(faces[i]->GetPixelData(), static_cast<uint32_t>(faces[i]->GetPixelDataSize()), 0, i);
-		}
-		else if(type == TextureType::Texture2D)
-			texture->Update(useImg->GetPixelData(), static_cast<uint32_t>(useImg->GetPixelDataSize()));
-
-		//TODO Mipmaps
-		//TODO Make use of the ResourceLoader to do all this stuff
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
 	}
 
 	return texture;
@@ -535,8 +446,9 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const
 
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 {
+	const auto fallbackImg = TRAP::Image::LoadFallback();
 	TRAP::Scope<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
-																		 TRAP::Image::LoadFallback().get(),
+																		 fallbackImg.get(),
 																		 TextureType::Texture2D,
 	                       												 TextureCubeFormat::NONE, TextureCreationFlags::Storage);
 
@@ -554,7 +466,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 {
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
-	std::array<TRAP::Image*, 6> imgPtrs{};
+	std::array<const TRAP::Image*, 6> imgPtrs{};
 	for(uint32_t i = 0; i < imgs.size(); ++i)
 	{
 		imgs[i] = TRAP::Image::LoadFallback();

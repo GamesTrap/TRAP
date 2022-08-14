@@ -1479,6 +1479,8 @@ namespace TRAP::Graphics
 			TextureDesc* Desc;
 			//Filepath with extension.
 			std::array<std::filesystem::path, 6> Filepaths;
+			//Loaded images (used to load in memory images, if set Filepaths are ignored)
+			std::array<const Image*, 6> Images;
 			//Following is ignored if Desc != nullptr.
 			//Desc->Flags will be considered instead.
 			TextureCreationFlags CreationFlag;

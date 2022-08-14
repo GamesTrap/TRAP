@@ -3048,3 +3048,8 @@ SITREP 08/13/2022|22w32c2
     - Changed TRAP Engine version to 22w32c2(0.8.23)
     - SHA2 Made some functions constexpr ~<5 mins
     - HeadlessTests Added HashTests ~>20 mins
+
+SITREP 08/14/2022|22w32c3
+    - Changed TRAP Engine version to 22w32c3(0.8.24)
+    - ResourceLoader LoadTexture() Added support for already loaded images ~<20 mins
+    - Texture CreateFromImage() & CreateFromImages() now leverage the ResourceLoader ~<20 mins

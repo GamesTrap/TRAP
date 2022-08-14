@@ -70,16 +70,20 @@ namespace TRAP::Graphics
 		/// <param name="imgs">
 		/// Images to create the texture from.
 		/// Order: +X, -X, +Y, -Y, +Z, -Z
+		/// Note: The images must be valid till IsLoaded() returns true.
 		/// </param>
 		/// <param name="flags">Additional flags. Default: None.</param>
 		/// <returns>Loaded texture on success, Fallback texture otherwise.</returns>
-		static Scope<Texture> CreateFromImages(std::string name, const std::array<Image*, 6>& imgs,
+		static Scope<Texture> CreateFromImages(std::string name, const std::array<const Image*, 6>& imgs,
 											   TextureCreationFlags flags = TextureCreationFlags::None);
 		/// <summary>
 		/// Create a texture from TRAP::Image.
 		/// </summary>
 		/// <param name="name">Name for the texture.</param>
-		/// <param name="img">Image to create the texture from.</param>
+		/// <param name="img">
+		/// Image to create the texture from.
+		/// Note: The image must be valid till IsLoaded() returns true.
+		/// </param>
 		/// <param name="type">Type of Texture.</param>
 		/// <param name="cubeFormat">Format of the cube texture. Ignored when using TextureType::Texture2D.</param>
 		/// <param name="flags">Additional flags. Default: None.</param>
