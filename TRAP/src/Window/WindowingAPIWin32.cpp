@@ -2564,6 +2564,25 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const double timeout)
+{
+	if(timeout == 0.0)
+		WaitMeesage();
+	else
+		MsgWaitForMultipleObjects(0, nullptr, FALSE, static_cast<DWORD>(timeout * 1000.0), QS_ALLEVENTS);
+
+	PlatformPollEvents();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
+{
+	PostMessageW(s_Data.HelperWindowHandle, WM_NULL, 0, 0);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* window)
 {
 	return window->Handle == GetForegroundWindow();

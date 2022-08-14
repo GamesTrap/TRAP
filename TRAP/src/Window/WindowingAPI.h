@@ -2010,6 +2010,43 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static void PollEvents();
 		/// <summary>
+		/// This function puts the calling thread to sleep until at least one event is available
+		/// in the event queue, or until the specified timeout is reached.
+		/// Once one or more events are available, it behaves exactly like
+		/// PollEvents, i.e. the events in the queue are processed and the function then returns
+		/// immediately. Processing events will cause the window and input callbacks
+		/// associated with those events to be called.
+		///
+		/// Since not all events are associated with callbacks, this function may return
+		/// without a callback having been called even if you are monitoring all callbacks.
+		///
+		/// On some platforms, a window move, resize or menu operation will cause event
+		/// processing to block. This is due to how event processing is designed on
+		/// those platforms.
+		///
+		/// Do not assume that callbacks you set will only be called in response to event
+		/// processing functions like this one. While it is neccessary to poll for events,
+		/// window systems that require the WindowingAPI to register callbacks of its own
+		/// can pass events to the WindowingAPI in response to many window system function
+		/// calls. The WindowingAPI will pass those events on to the application callbacks
+		/// before returning.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value
+		///         and Error::Platform_Error.
+		/// Reentrancy: This function must not be called from a callback.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="timeout">Optional: Maximum amount of time, in seconds, to wait.</param>
+		static void WaitEvents(double timeout = 0.0); //TODO
+		/// <summary>
+		/// This function posts an empty event from the current thread to the event queue,
+		/// causing WaitEvents to return.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Thread safety: This function may be called from any thread.
+		/// </summary>
+		static void PostEmptyEvent(); //TODO
+		/// <summary>
 		/// This function sets a cursor mode for the specified window.
 		///
 		/// The mode must be one of the following CursorModes:
@@ -3116,6 +3153,43 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static void PlatformPollEvents();
 		/// <summary>
+		/// This function puts the calling thread to sleep until at least one event is available
+		/// in the event queue, or until the specified timeout is reached.
+		/// Once one or more events are available, it behaves exactly like
+		/// PollEvents, i.e. the events in the queue are processed and the function then returns
+		/// immediately. Processing events will cause the window and input callbacks
+		/// associated with those events to be called.
+		///
+		/// Since not all events are associated with callbacks, this function may return
+		/// without a callback having been called even if you are monitoring all callbacks.
+		///
+		/// On some platforms, a window move, resize or menu operation will cause event
+		/// processing to block. This is due to how event processing is designed on
+		/// those platforms.
+		///
+		/// Do not assume that callbacks you set will only be called in response to event
+		/// processing functions like this one. While it is neccessary to poll for events,
+		/// window systems that require the WindowingAPI to register callbacks of its own
+		/// can pass events to the WindowingAPI in response to many window system function
+		/// calls. The WindowingAPI will pass those events on to the application callbacks
+		/// before returning.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value
+		///         and Error::Platform_Error.
+		/// Reentrancy: This function must not be called from a callback.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="timeout">Maximum amount of time, in seconds, to wait.</param>
+		static void PlatformWaitEvents(double timeout);
+		/// <summary>
+		/// This function posts an empty event from the current thread to the event queue,
+		/// causing WaitEvents to return.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized and Error::Platform_Error.
+		/// Thread safety: This function may be called from any thread.
+		/// </summary>
+		static void PlatformPostEmptyEvent();
+		/// <summary>
 		/// This function returns whether the window is focused or not.
 		///
 		/// Errors: Possible errors include Error::Platform_Error.
@@ -3787,6 +3861,14 @@ namespace TRAP::INTERNAL
 		/// <param name="timeout">Time out in seconds.</param>
 		/// <returns>True if data was received, false otherwise.</returns>
 		static bool WaitForX11Event(double* timeout);
+		/// <summary>
+		/// Wait for event data to arrive on any event file descriptor
+		/// This avoids blocking other threads via the per-display Xlib lock
+		/// that also covers GLX functions.
+		/// </summary>
+		/// <param name="timeout">Optional: Max time in seconds to wait for.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		static bool WaitForAnyEvent(double* timeout);
 		/// <summary>
 		/// Writes a byte to the empty event pipe
 		/// </summary>

@@ -95,8 +95,6 @@ namespace TRAP::Graphics::API
 		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
 		                Window* window) const override;
 
-
-		//TODO Combined Textures
 		/// <summary>
 		/// Use multiple textures with this shader on the given window.
 		/// </summary>

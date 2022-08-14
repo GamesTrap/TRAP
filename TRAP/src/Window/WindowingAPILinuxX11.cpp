@@ -192,6 +192,34 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* timeout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* timeout)
+{
+	std::array<pollfd, 3> fds
+	{
+		{
+			{ConnectionNumber(s_Data.display), POLLIN, 0},
+			{s_Data.EmptyEventPipe[0], POLLIN, 0},
+			{TRAP::Input::s_linuxController.INotify, POLLIN, 0}
+		}
+	};
+
+	while(!s_Data.XLIB.Pending(s_Data.display))
+	{
+		if(!WaitForData(fds.data(), fds.size(), timeout))
+			return false;
+
+		for(uint32_t i = 1; i < fds.size(); ++i)
+		{
+			if(fds[i].revents & POLLIN)
+				return true;
+		}
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
 {
 	while(true)
@@ -3140,6 +3168,25 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(double timeout)
+{
+	if(timeout == 0.0)
+		WaitForAnyEvent(nullptr);
+	else
+		WaitForAnyEvent(&timeout);
+
+	PlatformPollEvents();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
+{
+	WriteEmptyEvent();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* window)
 {
 	::Window focused = 0;
@@ -3281,8 +3328,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 	}
 
 	extensions[0] = "VK_KHR_surface";
-
-	//TODO Wayland support should prefer wayland if available & on wayland session
 
 	//NOTE: VK_KHR_xcb_surface is preferred due to some early ICDs exposing but not correctly implementing
 	//      VK_KHR_xlib_surface

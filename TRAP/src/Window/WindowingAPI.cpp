@@ -1468,6 +1468,41 @@ void TRAP::INTERNAL::WindowingAPI::PollEvents()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::WaitEvents(const double timeout)
+{
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
+	TRAP_ASSERT(timeout >= 0.0, "[Window] Timeout must be positive");
+	TRAP_ASSERT(timeout <= std::numeric_limits<double>::max());
+
+	if(timeout < 0.0 || timeout > std::numeric_limits<double>::max())
+	{
+		InputError(Error::Invalid_Value, "[Window] Timeout must be positive");
+		return;
+	}
+
+	PlatformWaitEvents(timeout);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PostEmptyEvent()
+{
+	if(!s_Data.Initialized)
+	{
+		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized");
+		return;
+	}
+
+	PlatformPostEmptyEvent();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Sets the cursor mode for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const CursorMode mode)
 {
