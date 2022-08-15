@@ -1206,17 +1206,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI:
 	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
 		return;
 
-	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
+	const std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
 	{
-		const std::array<VkFragmentShadingRateCombinerOpKHR, 2> combiner
-		{
-			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(postRasterizerState),
-			ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(finalRate)
-		};
-		const VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
+		ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(postRasterizerState),
+		ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(finalRate)
+	};
 
-		vkCmdSetFragmentShadingRateKHR(m_vkCommandBuffer, &fragmentSize, combiner.data());
-	}
+	const VkExtent2D fragmentSize = ShadingRateToVkExtent2D(rate);
+
+	vkCmdSetFragmentShadingRateKHR(m_vkCommandBuffer, &fragmentSize, combiner.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

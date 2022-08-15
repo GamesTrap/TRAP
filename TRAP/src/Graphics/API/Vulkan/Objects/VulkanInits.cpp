@@ -840,6 +840,22 @@ VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineM
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkPipelineFragmentShadingRateStateCreateInfoKHR TRAP::Graphics::API::VulkanInits::PipelineFragmentShadingRateStateCreateInfo(const VkExtent2D fragmentSize,
+	                                                                                                                         const std::array<VkFragmentShadingRateCombinerOpKHR, 2>& rateCombiners)
+{
+	VkPipelineFragmentShadingRateStateCreateInfoKHR info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR;
+	info.pNext = nullptr;
+	info.fragmentSize = fragmentSize;
+	info.combinerOps[0] = rateCombiners[0];
+	info.combinerOps[1] = rateCombiners[1];
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates) noexcept
 {
 	VkPipelineDynamicStateCreateInfo info;

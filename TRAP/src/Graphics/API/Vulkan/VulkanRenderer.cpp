@@ -901,15 +901,53 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
 						            					 TRAP::Graphics::Texture* texture,
-		                            					 const ShadingRateCombiner postRasterizerRate,
-							        					 const ShadingRateCombiner finalRate, Window* window) const
+		                            					 ShadingRateCombiner postRasterizerRate,
+							        					 ShadingRateCombiner finalRate, Window* window) const
 {
+	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const PerWindowData* const p = s_perWindowDataMap[window].get();
+	PerWindowData* const p = s_perWindowDataMap[window].get();
 
-	p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(shadingRate, texture, postRasterizerRate, finalRate);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+
+	if(gpd.DepthState->DepthWrite)
+	{
+		TRAP_ASSERT(false, "Depth write is enabled, shading rate cannot be set");
+		TP_ERROR(Log::RendererVulkanPrefix, "Depth write is enabled, shading rate cannot be set");
+		return;
+	}
+
+	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
+		return;
+
+	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
+	{
+		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCombiner & postRasterizerRate))
+		{
+			TP_ERROR(Log::RendererVulkanCommandBufferPrefix, "Shading rate combiner is not supported!");
+			return;
+		}
+		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCombiner & finalRate))
+		{
+			TP_ERROR(Log::RendererVulkanCommandBufferPrefix, "Shading rate combiner is not supported!");
+			return;
+		}
+
+		//VUID-vkCmdSetFragmentShadingRateKHR-primitiveFragmentShadingRate-04510
+		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerPrimitive))
+			postRasterizerRate = ShadingRateCombiner::Passthrough;
+		//VUID-vkCmdSetFragmentShadingRateKHR-attachmentFragmentShadingRate-04511
+		if(!static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile))
+			finalRate = ShadingRateCombiner::Passthrough;
+
+		gpd.ShadingRate = shadingRate;
+		gpd.ShadingRateCombiners = {postRasterizerRate, finalRate};
+
+		p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(shadingRate, texture, postRasterizerRate, finalRate);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1797,6 +1835,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 	gpd.ColorFormats = { rT[0]->GetImageFormat(), rT[1]->GetImageFormat(), rT[2]->GetImageFormat() };
 	gpd.SampleCount = rT[0]->GetSampleCount();
 	gpd.SampleQuality = rT[0]->GetSampleQuality();
+	gpd.ShadingRate = RendererAPI::ShadingRate::Full;
+	gpd.ShadingRateCombiners = {};
 
 	gpd.DepthState = TRAP::MakeRef<DepthStateDesc>();
 	gpd.DepthState->DepthTest = false;

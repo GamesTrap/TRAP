@@ -45,7 +45,10 @@ namespace std
 					g.SampleCount,
 					g.SampleQuality,
 					g.DepthStencilFormat,
-					g.PrimitiveTopology
+					g.PrimitiveTopology,
+                    g.ShadingRate,
+                    g.ShadingRateCombiners[0],
+                    g.ShadingRateCombiners[1]
                 );
 
 				if (g.VertexLayout)

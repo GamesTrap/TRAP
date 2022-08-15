@@ -1369,7 +1369,10 @@ namespace TRAP::Graphics
 		{
 			NotSupported = 0x0,
 			PerDraw = BIT(0),
-			PerTile = BIT(1)
+			PerTile = BIT(1),
+
+			//Vulkan only
+			PerPrimitive = BIT(2)
 		};
 
 		/// <summary>
@@ -1899,6 +1902,10 @@ namespace TRAP::Graphics
 			TRAP::Graphics::API::ImageFormat DepthStencilFormat{};
 			//Primitive topology to use
 			TRAP::Graphics::RendererAPI::PrimitiveTopology PrimitiveTopology{};
+			//Shading rate to use (only if supported)
+			TRAP::Graphics::RendererAPI::ShadingRate ShadingRate{};
+			//Shading rate combiners to use (only if supported)
+			std::array<TRAP::Graphics::RendererAPI::ShadingRateCombiner, 2> ShadingRateCombiners{};
 		};
 
 		/// <summary>

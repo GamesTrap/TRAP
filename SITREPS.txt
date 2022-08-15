@@ -3054,3 +3054,11 @@ SITREP 08/14/2022|22w32c3
     - ResourceLoader LoadTexture() Added support for already loaded images ~<20 mins
     - Texture CreateFromImage() & CreateFromImages() now leverage the ResourceLoader ~<20 mins
     - WindowingAPI Added WaitEvents() and PostEmptyEvent() functions ~<10 mins
+
+SITREP 08/15/2022|22w33a1
+    - Changed TRAP Engine version to 22w33a1(0.8.25)
+    - RendererAPI/VulkanRenderer now saves shading rate state in GraphicsPipelineDesc ~<10 mins
+    - VulkanInits Added PipelineFragmentShadingRateStateCreateInfo() ~<5 mins
+    - VulkanPipeline Now uses shading rate state from GraphicsPipelineDesc ~<10 mins
+    - VulkanRenderer SetShadingRate() Added additional safety checks ~<10 mins
+    - Tests Added VRSTests ~<15 mins

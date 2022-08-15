@@ -21,6 +21,7 @@
 #include "Screenshot/ScreenshotTests.h"
 #include "SPIRV/SPIRVTests.h"
 #include "Title/TitleTests.h"
+#include "VariableRateShading/VRSTests.h"
 #include "Vulkan/VulkanTextureTests.h"
 #include "WindowState/WindowStateTests.h"
 #include "WindowFeatures/WindowFeaturesTests.h"
@@ -50,8 +51,9 @@ public:
 		// PushLayer(std::make_unique<RendererAPIInfo>());
 		// PushLayer(std::make_unique<RendererAPITests>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
-		 PushLayer(std::make_unique<SPIRVTests>());
+		//  PushLayer(std::make_unique<SPIRVTests>());
 		// PushLayer(std::make_unique<TitleTests>());
+		PushLayer(std::make_unique<VRSTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
 		// PushLayer(std::make_unique<WindowStateTests>());
 		// PushLayer(std::make_unique<WindowFeaturesTests>());

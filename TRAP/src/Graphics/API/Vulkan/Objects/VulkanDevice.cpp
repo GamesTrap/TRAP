@@ -485,6 +485,8 @@ void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDevi
 
 	if(shadingRateFeatures.pipelineFragmentShadingRate)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerDraw;
+	if(shadingRateFeatures.primitiveFragmentShadingRate)
+		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerPrimitive;
 	if(shadingRateFeatures.attachmentFragmentShadingRate)
 		RendererAPI::GPUSettings.ShadingRateCaps |= RendererAPI::ShadingRateCaps::PerTile;
 

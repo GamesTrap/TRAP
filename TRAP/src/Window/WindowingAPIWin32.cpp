@@ -2567,7 +2567,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(const double timeout)
 {
 	if(timeout == 0.0)
-		WaitMeesage();
+		WaitMessage();
 	else
 		MsgWaitForMultipleObjects(0, nullptr, FALSE, static_cast<DWORD>(timeout * 1000.0), QS_ALLEVENTS);
 

@@ -311,6 +311,18 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 												 VulkanRenderer::DefaultBlendDesc;
 		cb.attachmentCount = graphicsDesc.RenderTargetCount;
 
+		VkPipelineFragmentShadingRateStateCreateInfoKHR fsr{};
+		if(VulkanRenderer::s_shadingRate)
+		{
+			const std::array<VkFragmentShadingRateCombinerOpKHR, 2> rateCombiners
+			{
+				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(graphicsDesc.ShadingRateCombiners[0]),
+				ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(graphicsDesc.ShadingRateCombiners[1])
+			};
+			const VkExtent2D shadingRate = ShadingRateToVkExtent2D(graphicsDesc.ShadingRate);
+			fsr = VulkanInits::PipelineFragmentShadingRateStateCreateInfo(shadingRate, rateCombiners);
+		}
+
 		std::vector<VkDynamicState> dynamicStates =
 		{
 			VK_DYNAMIC_STATE_VIEWPORT,
@@ -332,6 +344,9 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		if (static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&
 			static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation))
 			info.pTessellationState = &ts;
+
+		if(VulkanRenderer::s_shadingRate) //Only use shading rate extension if supported
+			info.pNext = &fsr; //Add shading rate extension
 
 		VkCall(vkCreateGraphicsPipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
 

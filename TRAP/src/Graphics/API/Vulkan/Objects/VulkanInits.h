@@ -462,6 +462,15 @@ namespace TRAP::Graphics::API::VulkanInits
 																			float sampleShadingRate) noexcept;
 
 	/// <summary>
+	/// Create a Vulkan fragment shading rate state create info.
+	/// </summary>
+	/// <param name="fragmentSize">Shading rate/Fragment size to use.</param>
+	/// <param name="rateCombiners">Shading rate combiners.</param>
+	/// <returns>VkPipelineFragmentShadingRateStateCreateInfoKHR</returns>
+	VkPipelineFragmentShadingRateStateCreateInfoKHR PipelineFragmentShadingRateStateCreateInfo(VkExtent2D fragmentSize,
+	                                                                                           const std::array<VkFragmentShadingRateCombinerOpKHR, 2>& rateCombiners);
+
+	/// <summary>
 	/// Create a Vulkan pipeline dynamic state create info.
 	/// </summary>
 	/// <param name="dynamicStates">Vulkan dynamic state to use.</param>
