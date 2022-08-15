@@ -12,6 +12,7 @@ public:
 		: Layer("ParticleSystem2D"),
 		  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 		  m_particle(),
+		  m_maxParticles(1000),
 		  m_frameTimeHistory()
 	{
 	}
@@ -89,6 +90,8 @@ public:
 		ImGui::ColorEdit4("Spawn Color", &m_particle.ColorBegin[0]);
 		ImGui::ColorEdit4("Decay Color", &m_particle.ColorEnd[0]);
 		ImGui::DragFloat("Life Time", &m_particle.LifeTime, 0.1f, 0.0f, 1000.0f);
+		if(ImGui::SliderInt("Max Particles", &m_maxParticles, 1, 100000))
+			m_particleSystem.SetMaxParticles(m_maxParticles);
 		ImGui::End();
 
 		ImGui::SetNextWindowBgAlpha(0.3f);
@@ -106,6 +109,7 @@ private:
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 	ParticleProps m_particle;
 	ParticleSystem2D m_particleSystem;
+	int32_t m_maxParticles;
 
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_updateFPSTimer;

@@ -1,6 +1,7 @@
 #include "ParticleSystem2D.h"
 
 ParticleSystem2D::ParticleSystem2D()
+	: m_poolIndex(999), m_maxParticles(1000)
 {
 	m_particlePool.resize(1000);
 }
@@ -69,5 +70,16 @@ void ParticleSystem2D::Emit(const ParticleProps& particleProps)
 	particle.SizeBegin = particleProps.SizeBegin + particleProps.SizeVariation * (TRAP::Utils::Random::Get<float>(0.0f, 1.0f) - 0.5f);
 	particle.SizeEnd = particleProps.SizeEnd;
 
-	m_poolIndex = (m_poolIndex - 1) % m_particlePool.size();
+	m_poolIndex = (m_poolIndex - 1) % m_maxParticles;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void ParticleSystem2D::SetMaxParticles(int32_t maxParticles)
+{
+	if(m_particlePool.size() < static_cast<uint32_t>(maxParticles))
+		m_particlePool.resize(maxParticles);
+
+	m_maxParticles = maxParticles;
+	m_poolIndex = m_maxParticles - 1;
 }

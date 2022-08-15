@@ -3062,3 +3062,7 @@ SITREP 08/15/2022|22w33a1
     - VulkanPipeline Now uses shading rate state from GraphicsPipelineDesc ~<10 mins
     - VulkanRenderer SetShadingRate() Added additional safety checks ~<10 mins
     - Tests Added VRSTests ~<15 mins
+
+SITREP 08/16/2022|22w33a2
+    - Changed TRAP Engine version to 22w33a2(0.8.25)
+    - ParticleSystem2D Added dynamic particle limit ~<15 mins
