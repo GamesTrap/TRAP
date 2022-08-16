@@ -174,6 +174,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 
 	for(auto& buffers : s_data.DataBuffers[imageIndex])
 		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture.get());
+	s_data.TextureSlotIndex = 1;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,8 +195,10 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	//Reset Vertices & Indices
 	s_data.QuadVertexBufferPtr = s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].QuadVertices.data();
 
+	//Reset textures
 	for(auto& buffers : s_data.DataBuffers[imageIndex])
 		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture.get());
+	s_data.TextureSlotIndex = 1;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -274,13 +277,43 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 
-	DrawQuad(transformation, color, texture);
+	DrawQuad(transformation, color, texture, nullptr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D> texture)
+{
+	if(texture->GetTexture()->GetType() != TextureType::Texture2D)
+		return;
+
+	DrawQuad(transform, Math::Vec4(1.0f), texture);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
+                                          const TRAP::Ref<SubTexture2D> texture)
+{
+	TP_PROFILE_FUNCTION();
+
+	if(texture->GetTexture()->GetType() != TextureType::Texture2D)
+		return;
+
+	Math::Mat4 transformation;
+	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
+		transformation = Math::Translate(transform.Position) *
+		                 Mat4Cast(Math::Quat(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
+	else
+		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
+
+	DrawQuad(transformation, color, texture->GetTexture(), &texture->GetTexCoords());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
-                                          Texture* const texture)
+                                          Texture* const texture, const std::array<Math::Vec2, 4>* texCoords)
 {
 	constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
@@ -304,7 +337,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	{
 		s_data.QuadVertexBufferPtr->Position = Math::Vec3(transform * s_data.QuadVertexPositions[i]);
 		s_data.QuadVertexBufferPtr->Color = color;
-		s_data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+		s_data.QuadVertexBufferPtr->TexCoord = texCoords ? (*texCoords)[i] : textureCoords[i];
 		s_data.QuadVertexBufferPtr->TexIndex = textureIndex;
 		s_data.QuadVertexBufferPtr++;
 	}

@@ -1,4 +1,5 @@
 #include "Sandbox2D.h"
+#include "Graphics/Textures/SubTexture2D.h"
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
@@ -52,8 +53,15 @@ void Sandbox2D::OnAttach()
 
 	//Load Textures
 	TRAP::Graphics::TextureManager::Load("TRAP", "./Assets/Textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
+	m_spriteSheet = TRAP::Graphics::TextureManager::Load("Controls", "./Assets/Textures/tilemap_packed.png");
+	m_spriteSheet->AwaitLoading();
+
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
+
+	m_aButtonTexture = TRAP::Graphics::SubTexture2D::CreateFromCoords(m_spriteSheet, {4.0f, 0.0f}, {16.0f, 16.0f});
+	m_bButtonTexture = TRAP::Graphics::SubTexture2D::CreateFromCoords(m_spriteSheet, {5.0f, 0.0f}, {16.0f, 16.0f});
+	m_enterKeyTexture = TRAP::Graphics::SubTexture2D::CreateFromCoords(m_spriteSheet, {16.0f, 5.0f}, {32.0f, 32.0f});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,6 +100,10 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, -0.1f}, {}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
 		TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, -0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
 			                                 { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
+
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-3.0f, 0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_enterKeyTexture);
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.5f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_aButtonTexture);
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_bButtonTexture);
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 

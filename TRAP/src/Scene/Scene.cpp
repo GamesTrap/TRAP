@@ -72,7 +72,7 @@ void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr);
+			Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
 		}
 
 		Graphics::Renderer2D::EndScene();

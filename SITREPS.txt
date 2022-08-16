@@ -3066,3 +3066,8 @@ SITREP 08/15/2022|22w33a1
 SITREP 08/16/2022|22w33a2
     - Changed TRAP Engine version to 22w33a2(0.8.25)
     - ParticleSystem2D Added dynamic particle limit ~<15 mins
+    - Renderer2D Fixed TextureSlotIndex not being reset on BeginScene() ~<5 mins
+    - Added SubTexture2D to make sprite sheets usable ~<25 mins
+    - Renderer2D Added ability to use SubTexture2D ~<15 mins
+    - Sandbox2D Added a test sprite sheet ~<5 mins
+    - Sandbox2D now uses sprite sheets ~<5 mins

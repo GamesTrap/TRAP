@@ -3,6 +3,7 @@
 
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Textures/Texture.h"
+#include "Textures/SubTexture2D.h"
 
 namespace TRAP::Graphics
 {
@@ -71,14 +72,29 @@ namespace TRAP::Graphics
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
 		                     Texture* const texture);
 		/// <summary>
+		/// Draw a textured quad.
+		/// </summary>
+		/// <param name="transform">Transform of the quad.</param>
+		/// <param name="texture">Texture for the quad.</param>
+		static void DrawQuad(const Transform& transform, TRAP::Ref<SubTexture2D> texture);
+		/// <summary>
+		/// Draw a colored and textured quad.
+		/// </summary>
+		/// <param name="transform">Transform of the quad.</param>
+		/// <param name="color">Color for the quad.</param>
+		/// <param name="texture">Texture for the quad.</param>
+		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
+		                     TRAP::Ref<SubTexture2D> texture);
+		/// <summary>
 		/// Draw a colored and textured quad.
 		/// This is the base function for all the other DrawQuad functions.
 		/// </summary>
 		/// <param name="transform">Transform matrix for the quad.</param>
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
+		/// <param name="texCoords">Optional: Texture coordinates for the quad.</param>
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
-		                     Texture* const texture);
+		                     Texture* const texture, const std::array<Math::Vec2, 4>* texCoords);
 
 		//Stats
 		struct Statistics
