@@ -101,8 +101,10 @@
 
 //----TEXTURES-----------
 #include "../src/Graphics/Textures/TextureManager.h"
+#include "../src/Graphics/Textures/SpriteManager.h"
 #include "../src/ImageLoader/Image.h"
 #include "../src/Graphics/Textures/Texture.h"
+#include "../src/Graphics/Textures/SubTexture2D.h"
 #include "../src/Graphics/API/Objects/Sampler.h"
 //-----------------------
 

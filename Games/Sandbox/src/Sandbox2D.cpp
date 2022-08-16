@@ -1,5 +1,4 @@
 #include "Sandbox2D.h"
-#include "Graphics/Textures/SubTexture2D.h"
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
@@ -59,10 +58,10 @@ void Sandbox2D::OnAttach()
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
-	m_aButtonTexture = TRAP::Graphics::SubTexture2D::CreateFromCoords(m_spriteSheet, {4.0f, 0.0f}, {16.0f, 16.0f});
-	m_bButtonTexture = TRAP::Graphics::SubTexture2D::CreateFromCoords(m_spriteSheet, {5.0f, 0.0f}, {16.0f, 16.0f});
-	m_enterKeyTexture = TRAP::Graphics::SubTexture2D::CreateFromCoords(m_spriteSheet, {32.0f, 10.0f}, {16.0f, 16.0f}, {2, 2});
-	m_circleTexture = TRAP::Graphics::SubTexture2D::CreateFromPixels(m_spriteSheet, {432.0f, 304.0f}, {16.0f, 16.0f});
+	TRAP::Graphics::SpriteManager::CreateFromCoords("AButton", m_spriteSheet, {4.0f, 0.0f}, {16.0f, 16.0f});
+	TRAP::Graphics::SpriteManager::CreateFromCoords("BButton", m_spriteSheet, {5.0f, 0.0f}, {16.0f, 16.0f});
+	TRAP::Graphics::SpriteManager::CreateFromCoords("EnterKey", m_spriteSheet, {32.0f, 10.0f}, {16.0f, 16.0f}, {2, 2});
+	TRAP::Graphics::SpriteManager::CreateFromPixels("Circle", m_spriteSheet, {432.0f, 304.0f}, {16.0f, 16.0f});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -102,10 +101,10 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, -0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
 			                                 { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-3.0f, 0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_enterKeyTexture);
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.5f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_aButtonTexture);
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_bButtonTexture);
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, -0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, m_circleTexture);
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-3.0f, 0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("EnterKey"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.5f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("AButton"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("BButton"));
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, -0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("Circle"));
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 

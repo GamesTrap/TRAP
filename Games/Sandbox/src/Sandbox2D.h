@@ -1,7 +1,6 @@
 #ifndef GAMESTRAP_SANDBOX2D_H
 #define GAMESTRAP_SANDBOX2D_H
 
-#include "Graphics/Textures/SubTexture2D.h"
 #include <TRAP.h>
 
 class Sandbox2D final : public TRAP::Layer
@@ -23,10 +22,6 @@ private:
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
 	TRAP::Graphics::Texture* m_spriteSheet;
-	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_aButtonTexture;
-	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_bButtonTexture;
-	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_enterKeyTexture;
-	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_circleTexture;
 
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_updateFPSTimer;

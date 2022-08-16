@@ -10,6 +10,7 @@
 #include "Graphics/Renderer2D.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
+#include "Graphics/Textures/SpriteManager.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/Renderer.h"
 #include "Utils/String/String.h"
@@ -387,6 +388,8 @@ TRAP::Application::~Application()
 	{
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down Renderer");
 		Graphics::Renderer::Shutdown();
+		TP_TRACE(Log::ApplicationPrefix, "Shutting down SpriteManager");
+		Graphics::SpriteManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
 		Graphics::TextureManager::Shutdown();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");

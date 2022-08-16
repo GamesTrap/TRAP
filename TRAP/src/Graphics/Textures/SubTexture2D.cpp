@@ -1,13 +1,15 @@
 #include "TRAPPCH.h"
 #include "SubTexture2D.h"
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromCoords(TRAP::Graphics::Texture* texture,
+TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromCoords(std::string name,
+                                                                                       TRAP::Graphics::Texture* texture,
                                                                                        const TRAP::Math::Vec2& coords,
                                                                                        const TRAP::Math::Vec2& cellSize,
                                                                                        const TRAP::Math::Vec2& spriteSize)
 {
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
+    TRAP_ASSERT(!name.empty(), "Name is empty!");
 
     const TRAP::Math::Vec2 min
     {
@@ -20,18 +22,20 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
         ((coords.y + spriteSize.y) * cellSize.y) / texture->GetHeight()
     };
 
-    return MakeRef<SubTexture2D>(texture, min, max);
+    return MakeRef<SubTexture2D>(std::move(name), texture, min, max);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromPixels(TRAP::Graphics::Texture* texture,
+TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromPixels(std::string name,
+                                                                                       TRAP::Graphics::Texture* texture,
                                                                                        const TRAP::Math::Vec2& pixelPos,
                                                                                        const TRAP::Math::Vec2& pixelSize,
                                                                                        const TRAP::Math::Vec2& spriteSize)
 {
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
+    TRAP_ASSERT(!name.empty(), "Name is empty!");
 
     const TRAP::Math::Vec2 min
     {
@@ -44,14 +48,14 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
         (pixelPos.y + spriteSize.y * pixelSize.y) / texture->GetHeight()
     };
 
-    return MakeRef<SubTexture2D>(texture, min, max);
+    return MakeRef<SubTexture2D>(std::move(name), texture, min, max);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::SubTexture2D::SubTexture2D(TRAP::Graphics::Texture* texture, const TRAP::Math::Vec2& min,
-                                           const TRAP::Math::Vec2& max)
-    : m_texture(texture)
+TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, TRAP::Graphics::Texture* texture,
+                                           const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max)
+    : m_texture(texture), m_name(std::move(name))
 {
     m_texCoords[0] = { min.x, max.y };
     m_texCoords[1] = max;
@@ -71,4 +75,18 @@ TRAP::Graphics::Texture* TRAP::Graphics::SubTexture2D::GetTexture() const
 const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoords() const
 {
     return m_texCoords;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::SubTexture2D::GetName()
+{
+    return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::SubTexture2D::GetName() const
+{
+    return m_name;
 }

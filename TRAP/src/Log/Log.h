@@ -146,6 +146,7 @@ namespace TRAP
 		inline static constexpr auto TextureManagerTexture2DPrefix =        "[TextureManager][Texture2D] ";
 		inline static constexpr auto TextureManagerTextureCubePrefix =      "[TextureManager][TextureCube] ";
 		inline static constexpr auto TexturePrefix =                        "[Texture] ";
+		inline static constexpr auto SpriteManagerPrefix =                  "[SpriteManager] ";
 		inline static constexpr auto EngineLinuxPrefix =                    "[Engine][Linux] ";
 		inline static constexpr auto EngineLinuxX11Prefix =                 "[Engine][Linux][X11] ";
 		inline static constexpr auto EngineLinuxWaylandPrefix =             "[Engine][Linux][Wayland] ";

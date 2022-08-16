@@ -14,12 +14,14 @@ namespace TRAP::Graphics
         /// <summary>
         /// Create a 2D sub texture from a texture and the given coordinates and sprite size.
         /// </summary>
+        /// <param name="name">Name for the sprite.</param>
         /// <param name="texture">Sprite sheet texture.</param>
         /// <param name="coords">The coordinates for the sub texture.</param>
         /// <param name="cellSize">Size the sprite in pixels (16x16 for example).</param>
         /// <param name="spriteSize">Optional: Multiplier for the cell size (allows to use multi cell sprites as a single sprite).</param>
         /// <returns>Created 2D sub texture.</returns>
-        static TRAP::Ref<SubTexture2D> CreateFromCoords(TRAP::Graphics::Texture* texture,
+        static TRAP::Ref<SubTexture2D> CreateFromCoords(std::string name,
+                                                        TRAP::Graphics::Texture* texture,
                                                         const TRAP::Math::Vec2& coords,
                                                         const TRAP::Math::Vec2& cellSize,
                                                         const TRAP::Math::Vec2& spriteSize = {1.0f, 1.0f});
@@ -27,12 +29,14 @@ namespace TRAP::Graphics
         /// <summary>
         /// Create a 2D sub texture from a texture and the given pixel coordinates and size.
         /// </summary>
+        /// <param name="name">Name for the sprite.</param>
         /// <param name="texture">Sprite sheet texture.</param>
         /// <param name="pixelPos">Position of the top-left corner of the sprite.</param>
         /// <param name="pixelSize">Size of the sprite in pixels</param>
         /// <param name="spriteSize">Optional: Multiplied for the pixel size (allows to use multi cell sprites as a single sprite).</param>
         /// <returns>Created 2D sub texture.</returns>
-        static TRAP::Ref<SubTexture2D> CreateFromPixels(TRAP::Graphics::Texture* texture,
+        static TRAP::Ref<SubTexture2D> CreateFromPixels(std::string name,
+                                                        TRAP::Graphics::Texture* texture,
                                                         const TRAP::Math::Vec2& pixelPos,
                                                         const TRAP::Math::Vec2& pixelSize,
                                                         const TRAP::Math::Vec2& spriteSize = {1.0f, 1.0f});
@@ -40,10 +44,11 @@ namespace TRAP::Graphics
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="name">Name for the sprite.</param>
         /// <param name="texture">Sprite sheet to use.</param>
         /// <param name="min">Min texture coordinates to use.</param>
         /// <param name="max">Max texture coordinates to use.</param>
-        SubTexture2D(TRAP::Graphics::Texture* texture, const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max);
+        SubTexture2D(std::string name, TRAP::Graphics::Texture* texture, const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max);
 
 		/// <summary>
 		/// Copy constructor.
@@ -78,9 +83,21 @@ namespace TRAP::Graphics
         /// <returns>Texture coordinates.</returns>
         const std::array<TRAP::Math::Vec2, 4>& GetTexCoords() const;
 
+        /// <summary>
+        /// Retrieve the name of the sprite.
+        /// </summary>
+        /// <returns>Name of the sprite.</returns>
+        std::string GetName();
+        /// <summary>
+        /// Retrieve the name of the sprite.
+        /// </summary>
+        /// <returns>Name of the sprite.</returns>
+        const std::string& GetName() const;
+
     private:
         TRAP::Graphics::Texture* m_texture;
         std::array<TRAP::Math::Vec2, 4> m_texCoords;
+        std::string m_name;
     };
 }
 
