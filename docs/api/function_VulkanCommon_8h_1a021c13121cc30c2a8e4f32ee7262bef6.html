@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Function TRAP::Graphics::API::ImageFormatWidthOfBlock" href="function_ImageFormat_8h_1ab92628840d392d5092255a5cba8afaf9.html" /><link rel="prev" title="Function TRAP::Graphics::API::ImageFormatPlaneWidth" href="function_ImageFormat_8h_1ac47869e7ed492bbe579626291d144021.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Function TRAP::Graphics::API::ImageFormatToVkFormat - TRAP 0.8.19 documentation</title>
+        <title>Function TRAP::Graphics::API::ImageFormatToVkFormat - TRAP 0.8.26 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.19 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.26 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -200,6 +200,7 @@
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__API__SPIRVTools.html">Namespace TRAP::Graphics::API::SPIRVTools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__API__VulkanInits.html">Namespace TRAP::Graphics::API::VulkanInits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__ShaderManager.html">Namespace TRAP::Graphics::ShaderManager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__SpriteManager.html">Namespace TRAP::Graphics::SpriteManager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Graphics__TextureManager.html">Namespace TRAP::Graphics::TextureManager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__INTERNAL.html">Namespace TRAP::INTERNAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Math.html">Namespace TRAP::Math</a></li>
@@ -460,6 +461,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1Semaphore.html">Class Semaphore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1Shader.html">Class Shader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1StorageBuffer.html">Class StorageBuffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1SubTexture2D.html">Class SubTexture2D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1SwapChain.html">Class SwapChain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1Texture.html">Class Texture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1UniformBuffer.html">Class UniformBuffer</a></li>
@@ -533,8 +535,8 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Base_8h_1a9ab1f816a713a1875bc915a9b4dde3ee.html">Template Function BIT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ab672aa0550ddef0e10e0dedbe1ba64a6.html">Function ImGui::AddFontFromFileTTF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ab4da531813502b07fdf35ad2d2d4d32f.html">Function ImGui::AddFontFromMemoryTTF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1af7de5a0024795144bfc39f188c759571.html">Function ImGui::Image(TRAP::Graphics::Texture *, TRAP::Graphics::Sampler *, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1adc83d66f37ad0162dab3bf00f8cb31ec.html">Function ImGui::Image(TRAP::Graphics::Texture *, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a99210dee1e3742fc38d914b235fbf5cb.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, TRAP::Graphics::Sampler *, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a65578dcccea1ddf1f754e0d867b90d11.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a59d10f31b5e6e31d6518e5a711a2469b.html">Function ImGui_ImplVulkan_AddTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ac0aecfa3957f71f5ca6477f983ccb270.html">Function ImGui_ImplVulkan_ClearCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
@@ -699,6 +701,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a3dc446a15d0d382762f6289fc3dbc0d3.html">Function TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector&lt;VkPipelineColorBlendAttachmentState&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1aec6e45e259aaef697501e63aeaaae3d4.html">Function TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(VkLogicOp, const std::vector&lt;VkPipelineColorBlendAttachmentState&gt;&amp;, float, float, float, float)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ae63078366bc69d912b1cd40b75e73193.html">Function TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a185fd3180723728de26efe70a15ac3ec.html">Function TRAP::Graphics::API::VulkanInits::PipelineFragmentShadingRateStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ab155bff60cde47bfe47f22b6d2a46858.html">Function TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a94e515d381f417cf440c68fdb1d8f75e.html">Function TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ab8ad476ae38d4c882081d985db8c9e28.html">Function TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo</a></li>
@@ -719,42 +722,53 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a6c97af55aec32a607eac5f91527166ef.html">Function TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a8e5610463213ee3ee33a23783bb5965c.html">Function TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VertexBufferLayout_8h_1aefe2e51c27ac34a9d778bdb91ef8753a.html">Function TRAP::Graphics::ShaderDataTypeSize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a47d687121f50d1f26bf42a3acaee18dd.html">Function TRAP::Graphics::ShaderManager::Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a549bc49c92e68d660c4d87ff5f042381.html">Function TRAP::Graphics::ShaderManager::Add</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a8cde01878cee8ec42969b28b0b1c5669.html">Function TRAP::Graphics::ShaderManager::Clean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1aaf747cd089ce80095220d19fe83fb1dd.html">Function TRAP::Graphics::ShaderManager::Exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1aab9978538bec8e93adf103fe619384ff.html">Function TRAP::Graphics::ShaderManager::ExistsPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ab87ea51b385ddaaf842dbafcc33756e9.html">Function TRAP::Graphics::ShaderManager::Get</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ab4cd629692de8bb74310cfe4bf022630.html">Function TRAP::Graphics::ShaderManager::GetShaders</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a5f61e9c8dd09e8aa44bd1f6c32f31489.html">Function TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path&amp;, const std::vector&lt;Shader::Macro&gt; *)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a0f1c106ec6027cff9a0862801ddd31cc.html">Function TRAP::Graphics::ShaderManager::LoadFile(const std::string&amp;, const std::filesystem::path&amp;, const std::vector&lt;Shader::Macro&gt; *)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1af61e31979397882322a0207b145bf4f6.html">Function TRAP::Graphics::ShaderManager::LoadSource</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1aa685c582fd380ad24bc0a63d0aecd769.html">Function TRAP::Graphics::ShaderManager::Reload(const std::string&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ab3618262bbf5267138b2dba962aad207.html">Function TRAP::Graphics::ShaderManager::Reload(Shader *const)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a82c945a788d6589f2bfd2517539edebd.html">Function TRAP::Graphics::ShaderManager::Get</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ac35806458fa2e26a4c7aa38ed0bdf2a6.html">Function TRAP::Graphics::ShaderManager::GetShaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a6ca6cf8f982c7f615470351113f4514d.html">Function TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path&amp;, const std::vector&lt;Shader::Macro&gt; *)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a8edb590e942bae585e36b24e0def8849.html">Function TRAP::Graphics::ShaderManager::LoadFile(const std::string&amp;, const std::filesystem::path&amp;, const std::vector&lt;Shader::Macro&gt; *)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ac9daca8f3ac9fa939448a92af1a53456.html">Function TRAP::Graphics::ShaderManager::LoadSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1aa76a1e09bf31bbaee5f4c60daa7bfa97.html">Function TRAP::Graphics::ShaderManager::Reload(const std::string&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a679fd1174d11be70d47f19cb4559923a.html">Function TRAP::Graphics::ShaderManager::Reload(Ref&lt;Shader&gt;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ae6a3b032eb29f784afb5f70adfd143d0.html">Function TRAP::Graphics::ShaderManager::ReloadAll</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a5af46f8cce94af033c3ecc6296ebfb1b.html">Function TRAP::Graphics::ShaderManager::Remove(const Shader *const)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a0a396255f174dbaa31c986ff7b0a8455.html">Function TRAP::Graphics::ShaderManager::Remove(const std::string&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1a59c3a9283d458778074dbd5fc003b27b.html">Function TRAP::Graphics::ShaderManager::Shutdown</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a398dd8e8ad050f434ca95c5af09a4c8d.html">Function TRAP::Graphics::TextureManager::Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1af37252f98cd9250028e57cdbcfc5f1c7.html">Function TRAP::Graphics::ShaderManager::Remove(Ref&lt;Shader&gt;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ShaderManager_8h_1ad59708fcabc24bb311a65f581a08b224.html">Function TRAP::Graphics::ShaderManager::Remove(const std::string&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1afa3e87f07a178bb8037cff745767de63.html">Function TRAP::Graphics::SpriteManager::Add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1af4db6bd5761a1110cd150a89e8e09077.html">Function TRAP::Graphics::SpriteManager::Clean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1ac81b047192073d8dcfc9ff3f5b4d219b.html">Function TRAP::Graphics::SpriteManager::CreateFromCoords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a80fbca11b70fdce44ef6a2a5f46de322.html">Function TRAP::Graphics::SpriteManager::CreateFromPixels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1af1eb4cc7d7b4d7ccc3e7ea138a92974f.html">Function TRAP::Graphics::SpriteManager::Exists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a916f7c066930098fd619f7268b631ed3.html">Function TRAP::Graphics::SpriteManager::ExistsPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a3eaf3ef5d5d6fa4cfef2fc70af40c2ce.html">Function TRAP::Graphics::SpriteManager::Get</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a662f2b10ad3936c42353e259192c075e.html">Function TRAP::Graphics::SpriteManager::GetSprites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a036544218bd5c1f998c511bbcbc37267.html">Function TRAP::Graphics::SpriteManager::Reload(const std::string&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a2f357e9a453a9ca1589b2bec9fd84e08.html">Function TRAP::Graphics::SpriteManager::Reload(Ref&lt;SubTexture2D&gt;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1ad4dcfcfa56bd7543635de01b17bb955a.html">Function TRAP::Graphics::SpriteManager::ReloadAll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1aa60b2fd50974ebd4d251ec47222eb053.html">Function TRAP::Graphics::SpriteManager::Remove(Ref&lt;SubTexture2D&gt;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SpriteManager_8h_1a8a1ebbf667a25d876399fea85660ad64.html">Function TRAP::Graphics::SpriteManager::Remove(const std::string&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a9cb9139838bc1f69b82856e5a22a2ee4.html">Function TRAP::Graphics::TextureManager::Add</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1aca39c0412b747d2ebfdc952ca1904b6a.html">Function TRAP::Graphics::TextureManager::Clean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a0a53a302cca64c5d8bf9354b054c582c.html">Function TRAP::Graphics::TextureManager::Exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a18a4cf6dcc6f4723d32950889473b907.html">Function TRAP::Graphics::TextureManager::ExistsPath</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1ac1ff7b579058380aad2adac5ae3892d9.html">Function TRAP::Graphics::TextureManager::Get</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1aea9ae30ac2c85d8a48d1a619e4d9913f.html">Function TRAP::Graphics::TextureManager::Get2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a13cfd36113ccc4bf6b51d89b75f54724.html">Function TRAP::Graphics::TextureManager::GetCube</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a1d5628152a7b63cef3158654f1a0b32f.html">Function TRAP::Graphics::TextureManager::GetTextures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a8f024bb3e4a362a1f785db8fdd2e8327.html">Function TRAP::Graphics::TextureManager::Load(const std::filesystem::path&amp;, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1af0709643b76346b841a79c441320e660.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const std::filesystem::path&amp;, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a401c5d9e3acb2a17bb0a88a672fce4b7.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const Image *const, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a966940a412056c2c690d4423a806fca1.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const std::filesystem::path&amp;, TextureCubeFormat, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a1e2f8de1a33e3b20d0634e4697e1accb.html">Function TRAP::Graphics::TextureManager::Load(const std::filesystem::path&amp;, TextureCubeFormat, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a3added5739e232642b541ce1859fe9a1.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const std::array&lt;std::filesystem::path, 6&gt;&amp;, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a93864fbda90499eb815137cc55795c2a.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const Image *const, TextureCubeFormat, TextureCreationFlags)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1aa6b9d3188fa6781a03d47dfb4cfcd560.html">Function TRAP::Graphics::TextureManager::Reload(const std::string&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a76acaf0b5ff406d8084bdd6075637034.html">Function TRAP::Graphics::TextureManager::Reload(Texture *const)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a3c2447697e567eabf5091d924e5e3883.html">Function TRAP::Graphics::TextureManager::Get</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a4af7f5f13da6f1b0abcc61d320a2b7d7.html">Function TRAP::Graphics::TextureManager::Get2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a6ed7cf81ae32ebaff5304ad70a92015f.html">Function TRAP::Graphics::TextureManager::GetCube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a0b4c328aac10d43cbf9bab3b80aef602.html">Function TRAP::Graphics::TextureManager::GetTextures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a75091c873e8f904c526630e4d09c1153.html">Function TRAP::Graphics::TextureManager::Load(const std::filesystem::path&amp;, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1afb3078a09d396c219459942b67703a44.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const std::filesystem::path&amp;, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1aed14d3a1d938115110d03079f90da83d.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const Image *const, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a2bef210c66018821d5a9603dd39f51fc.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const std::filesystem::path&amp;, TextureCubeFormat, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a5ce990eeec329167d893b74479bf91eb.html">Function TRAP::Graphics::TextureManager::Load(const std::filesystem::path&amp;, TextureCubeFormat, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a044f49fdae2372f3589a6b2d4c7ad41c.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const std::array&lt;std::filesystem::path, 6&gt;&amp;, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1ace74ddbc703486fd63e594fd44aa9677.html">Function TRAP::Graphics::TextureManager::Load(const std::string&amp;, const Image *const, TextureCubeFormat, TextureCreationFlags)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a722364110d66cadc77aef6fff223d3d4.html">Function TRAP::Graphics::TextureManager::Reload(const std::string&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1ac34a2749705dff66e5a17e659b72983e.html">Function TRAP::Graphics::TextureManager::Reload(Ref&lt;Texture&gt;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1ae9ac58ddbded58ad36444f1defe6c221.html">Function TRAP::Graphics::TextureManager::ReloadAll</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a4d56b020eff9829679f16b81f373a9dc.html">Function TRAP::Graphics::TextureManager::Remove(const Texture *const)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a06031879cbb412037707a79afc744921.html">Function TRAP::Graphics::TextureManager::Remove(const std::string&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a05077248edb18c374032ff46306fa5a7.html">Function TRAP::Graphics::TextureManager::Shutdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1a0760ccec0dfe73e452b2549db1e00543.html">Function TRAP::Graphics::TextureManager::Remove(Ref&lt;Texture&gt;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_TextureManager_8h_1aa50e2258c2f39ada0be44abcae059d6a.html">Function TRAP::Graphics::TextureManager::Remove(const std::string&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Base_8h_1a5c8414c3c59e470c09aaad9966727d8b.html">Template Function TRAP::MakeRef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Base_8h_1a86a8bd08e2a16582a2a18a77a855ad0b.html">Template Function TRAP::MakeScope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1aca4eaa7de538568c42bbc0cdf3a06694.html">Template Function TRAP::Math::Abs(genFIType)</a></li>
@@ -1239,7 +1253,10 @@
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1ab203167fb922144016d90be3bdb0a8a1.html">Function TRAP::Utils::Hash::SHA3_512(const void *, uint64_t)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_SHA-3_8h_1aa38b429b8835cadf9a77d89aa5e27647.html">Function TRAP::Utils::Hash::SHA3_512(std::string_view)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Utils_8h_1a0a327acd1ae49f7b5e2b702824c0debb.html">Template Function TRAP::Utils::HashCombine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ByteSwap_8h_1a8b5c09ee36087e7450107dd4bb0bc506.html">Template Function TRAP::Utils::Memory::SwapBytes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a2379d922e40aba0cfb1645f75a153239.html">Template Function TRAP::Utils::Memory::ConvertByte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a89650d67421caae7ab6104c5b06a22cc.html">Template Function TRAP::Utils::Memory::ConvertBytes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a845628728a43196fc895237a8bf00fd5.html">Template Function TRAP::Utils::Memory::SwapBytes(T&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1aa0c14efcf0fc3f4d3f90ed2de4bedcf6.html">Template Function TRAP::Utils::Memory::SwapBytes(Iter, Iter)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a44c3eceb58b71f563e93f4ada596856d.html">Function TRAP::Utils::String::CompareAnyCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a31ea953f94f3e1f8b1be81c81503e870.html">Template Function TRAP::Utils::String::ConvertToType</a></li>
