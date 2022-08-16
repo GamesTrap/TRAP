@@ -9,6 +9,7 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include <memory>
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 	: m_vkPipeline(VK_NULL_HANDLE),

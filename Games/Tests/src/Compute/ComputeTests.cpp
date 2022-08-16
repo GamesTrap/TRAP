@@ -88,7 +88,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     {
         m_reset = false;
 
-        TRAP::Graphics::Shader* shader = nullptr;
+        TRAP::Ref<TRAP::Graphics::Shader> shader = nullptr;
         if(m_sharpen)
             shader = TRAP::Graphics::ShaderManager::Get("ComputeSharpen");
         else if(m_emboss)
@@ -136,7 +136,7 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     m_indexBuffer->Use();
 
     //Use shader
-    auto* texShader = TRAP::Graphics::ShaderManager::Get("Texture");
+    const auto texShader = TRAP::Graphics::ShaderManager::Get("Texture");
     if(m_disabled)
         texShader->UseTexture(1, 0, m_colTex, TRAP::Application::GetWindow());
     else

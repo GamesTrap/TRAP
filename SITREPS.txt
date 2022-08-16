@@ -3075,3 +3075,4 @@ SITREP 08/16/2022|22w33a2
     - SubTexture2D Added name to class ~<5 mins
     - Added SpriteManager to manage SubTexture2D objects ~<20 mins
     - Sandbox2D now uses SpriteManager ~<5 mins
+    - ShaderManager and Shader now use TRAP::Ref (updated all programs) ~>20 mins

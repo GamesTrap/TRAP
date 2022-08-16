@@ -35,7 +35,7 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    TRAP::Graphics::Shader* m_shader;
+    TRAP::Ref<TRAP::Graphics::Shader> m_shader;
     TRAP::Graphics::Texture* m_texture;
 
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;

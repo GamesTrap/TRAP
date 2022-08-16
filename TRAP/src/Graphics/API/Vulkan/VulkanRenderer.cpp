@@ -581,7 +581,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 	if(!p->CurrentComputePipeline)
 	{
 		//Bind fallback shader
-		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute"), p->Window);
+		this->BindShader(TRAP::Graphics::ShaderManager::Get("FallbackCompute").get(), p->Window);
 	}
 
 	//Calculate used work group sizes
@@ -1110,7 +1110,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		if(!shader->IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			shader = TRAP::Graphics::ShaderManager::Get("FallbackCompute");
+			shader = TRAP::Graphics::ShaderManager::Get("FallbackCompute").get();
 
 			cpd.ShaderProgram = shader;
 			cpd.RootSignature = shader->GetRootSignature();
@@ -1145,7 +1145,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		if(!shader->IsShaderValid())
 		{
 			//Overwrite invalid shader with fallback
-			shader = TRAP::Graphics::ShaderManager::Get("FallbackGraphics");
+			shader = TRAP::Graphics::ShaderManager::Get("FallbackGraphics").get();
 
 			gpd.ShaderProgram = shader;
 			gpd.RootSignature = shader->GetRootSignature();

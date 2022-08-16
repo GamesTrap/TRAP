@@ -89,8 +89,8 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="shader">Pointer to the affected shader.</param>
-		constexpr ShaderReloadEvent(TRAP::Graphics::Shader* shader);
+		/// <param name="shader">Affected shader.</param>
+		ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Shader> shader);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -113,10 +113,10 @@ namespace TRAP::Events
 		ShaderReloadEvent& operator=(ShaderReloadEvent&&) = default;
 
 		/// <summary>
-		/// Retrieve a pointer to the affected shader.
+		/// Retrieve the affected shader.
 		/// </summary>
-		/// <returns>Shader pointer.</returns>
-		constexpr TRAP::Graphics::Shader* GetShader() const;
+		/// <returns>Shader.</returns>
+		TRAP::Ref<TRAP::Graphics::Shader> GetShader() const;
 
 		/// <summary>
 		/// Get a string representation of the ShaderReloadEvent.
@@ -146,7 +146,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-        TRAP::Graphics::Shader* m_shader;
+        TRAP::Ref<TRAP::Graphics::Shader> m_shader;
 	};
 }
 
@@ -172,19 +172,6 @@ constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticTyp
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Events::ShaderReloadEvent::ShaderReloadEvent(TRAP::Graphics::Shader* shader)
-    : m_shader(shader)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::Shader* TRAP::Events::ShaderReloadEvent::GetShader() const
-{
-    return m_shader;
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetStaticType()

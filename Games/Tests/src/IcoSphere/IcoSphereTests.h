@@ -84,7 +84,7 @@ private:
 	TRAP::SceneCamera m_camera;
 	TRAP::TransformComponent m_cameraTransform;
 
-	TRAP::Graphics::Shader* m_shader;
+	TRAP::Ref<TRAP::Graphics::Shader> m_shader;
 };
 
 #endif /*GAMESTRAP_ICOSPHERETESTS_H*/

@@ -52,7 +52,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//Collect all unique shader resources in the given shaders
 	//Resources are parsed by name (two resources name "XYZ" in two shader will
 	//be considered the same resource)
-	for(auto* sh : desc.Shaders)
+	for(auto sh : desc.Shaders)
 	{
 		const TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>
 		(

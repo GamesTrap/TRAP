@@ -393,7 +393,7 @@ TRAP::Application::~Application()
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
 		Graphics::TextureManager::Shutdown();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");
-		Graphics::ShaderManager::Shutdown();
+		Graphics::ShaderManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down RendererAPI");
 		Graphics::RendererAPI::Shutdown();
 	}
@@ -838,7 +838,7 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::HotReloadingPrefix, "Shader modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Graphics::Shader* shader = Graphics::ShaderManager::Reload(p.string());
+			Ref<TRAP::Graphics::Shader> shader = Graphics::ShaderManager::Reload(p.string());
 
 			//By binding the fallback shader, we can make sure that the
 			//new shader will trigger a pipeline rebuild.

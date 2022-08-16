@@ -34,6 +34,19 @@ TRAP::Events::EventCategory TRAP::Events::TextureReloadEvent::GetCategoryFlags()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Events::ShaderReloadEvent::ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Shader> shader)
+    : m_shader(shader)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Events::ShaderReloadEvent::GetShader() const
+{
+    return m_shader;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::ShaderReloadEvent::ToString() const
 {
     return "ShaderReloadEvent: " + m_shader->GetName();

@@ -2170,7 +2170,7 @@ namespace TRAP::Graphics
 			{
 				//Index of the descriptor set to extract
 				uint32_t DescriptorSetBufferIndex{};
-				Shader* DescriptorSetShader{};
+				Ref<Shader> DescriptorSetShader{};
 				ShaderStage DescriptorSetShaderStage{};
 			};
 

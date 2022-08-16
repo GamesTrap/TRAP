@@ -180,9 +180,9 @@ bool TRAP::Graphics::Shader::IsShaderValid() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
-                                                                           const std::filesystem::path& filePath,
-																		   const std::vector<Macro>* userMacros)
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
+                                                                         const std::filesystem::path& filePath,
+																		 const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -193,7 +193,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	}
 
 	RendererAPI::BinaryShaderDesc desc{};
-	Scope<Shader> failShader = nullptr;
+	Ref<Shader> failShader = nullptr;
 	if(!PreInit(name, filePath, userMacros, desc, failShader))
 		return failShader;
 
@@ -201,7 +201,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, filePath, desc, userMacros);
+		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(name, filePath, desc, userMacros);
 
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -225,13 +225,13 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
-                                                                           const std::vector<Macro>* userMacros)
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
+                                                                         const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
 	RendererAPI::BinaryShaderDesc desc{};
-	Scope<Shader> failShader = nullptr;
+	Ref<Shader> failShader = nullptr;
 	const auto name = FileSystem::GetFileName(filePath);
 	if(!name)
 	{
@@ -247,7 +247,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(*name, filePath, desc, userMacros);
+		Ref<API::VulkanShader> result = MakeRef<API::VulkanShader>(*name, filePath, desc, userMacros);
 
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -271,9 +271,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
-                                                                             const std::string& glslSource,
-																			 const std::vector<Macro>* userMacros)
+TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
+                                                                           const std::string& glslSource,
+																		   const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -297,7 +297,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanShader>(name, desc, userMacros);
+		return MakeRef<API::VulkanShader>(name, desc, userMacros);
 
 	case RenderAPI::NONE:
 		return nullptr;
@@ -823,7 +823,7 @@ bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& 
 
 bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesystem::path& filePath,
                                      const std::vector<Macro>* userMacros,
-									 RendererAPI::BinaryShaderDesc& outShaderDesc, Scope<Shader>& outFailShader)
+									 RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader)
 {
 	std::string glslSource;
 	bool isSPIRV = false;
@@ -878,7 +878,7 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
 			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
-				outFailShader = TRAP::MakeScope<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
+				outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
 
 			return false;
 		}
@@ -886,7 +886,7 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback shader");
 			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
-				outFailShader = TRAP::MakeScope<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
+				outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros);
 
 			return false;
 		}
@@ -899,7 +899,7 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
 	if (outShaderDesc.Stages == RendererAPI::ShaderStage::None)
 	{
 		if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
-			outFailShader = TRAP::MakeScope<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros, shaderStages);
+			outFailShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(name, filePath, userMacros, shaderStages);
 
 		return false;
 	}

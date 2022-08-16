@@ -43,7 +43,7 @@ namespace TRAP::Graphics
 
 		Scope<std::array<uint32_t, Renderer2DData::MaxIndices>> QuadIndicesData = nullptr; //Used by ExtendBuffers()
 
-		Scope<Shader> TextureShader;
+		Ref<Shader> TextureShader;
 		Ref<Sampler> TextureSampler;
 		Scope<Texture> WhiteTexture;
 

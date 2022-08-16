@@ -185,8 +185,8 @@ namespace TRAP::Graphics
 		/// <param name="filePath">File path of the shader.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Scope<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
-		                                    const std::vector<Macro>* userMacros = nullptr);
+		static Ref<Shader> CreateFromFile(const std::string& name, const std::filesystem::path& filePath,
+		                                  const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Create a shader from file.
 		/// File name will be used as the shader name.
@@ -194,8 +194,8 @@ namespace TRAP::Graphics
 		/// <param name="filePath">File path of the shader.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Scope<Shader> CreateFromFile(const std::filesystem::path& filePath,
-		                                    const std::vector<Macro>* userMacros = nullptr);
+		static Ref<Shader> CreateFromFile(const std::filesystem::path& filePath,
+		                                  const std::vector<Macro>* userMacros = nullptr);
 		/// <summary>
 		/// Create a shader from GLSL source.
 		/// </summary>
@@ -203,8 +203,8 @@ namespace TRAP::Graphics
 		/// <param name="glslSource">GLSL Source code.</param>
 		/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 		/// <returns>Loaded Shader on success, Fallback Shader otherwise.</returns>
-		static Scope<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
-		                                      const std::vector<Macro>* userMacros = nullptr);
+		static Ref<Shader> CreateFromSource(const std::string& name, const std::string& glslSource,
+		                                    const std::vector<Macro>* userMacros = nullptr);
 
 		static std::array<std::string, 2> SupportedShaderFormatSuffixes;
 
@@ -333,7 +333,7 @@ namespace TRAP::Graphics
 		/// True on successful pre initialization, false otherwise.
 		/// If false outFailShader may be filled with a fail shader.
 		/// </returns>
-		static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Scope<Shader>& outFailShader);
+		static bool PreInit(const std::string& name, const std::filesystem::path& filePath, const std::vector<Macro>* userMacros, RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader);
 
 		static bool s_glslangInitialized;
 

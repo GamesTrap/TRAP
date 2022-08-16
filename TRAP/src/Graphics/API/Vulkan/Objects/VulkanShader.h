@@ -4,6 +4,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/Shaders/Shader.h"
+#include <memory>
 
 namespace TRAP::Graphics::API
 {

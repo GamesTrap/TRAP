@@ -12,8 +12,8 @@ namespace TRAP::Graphics::ShaderManager
 	/// <param name="filepath">File path of shader to load.</param>
 	/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 	/// <returns>Loaded shader.</returns>
-	Shader* LoadFile(const std::filesystem::path& filepath,
-					 const std::vector<Shader::Macro>* userMacros = nullptr);
+	Ref<Shader> LoadFile(const std::filesystem::path& filepath,
+					     const std::vector<Shader::Macro>* userMacros = nullptr);
 	/// <summary>
 	/// Load a shader from file.
 	/// </summary>
@@ -21,8 +21,8 @@ namespace TRAP::Graphics::ShaderManager
 	/// <param name="filepath">File path of shader to load.</param>
 	/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 	/// <returns>Loaded shader.</returns>
-	Shader* LoadFile(const std::string& name, const std::filesystem::path& filepath,
-					 const std::vector<Shader::Macro>* userMacros = nullptr);
+	Ref<Shader> LoadFile(const std::string& name, const std::filesystem::path& filepath,
+					     const std::vector<Shader::Macro>* userMacros = nullptr);
 	/// <summary>
 	/// Load a shader from GLSL source.
 	/// </summary>
@@ -30,38 +30,38 @@ namespace TRAP::Graphics::ShaderManager
 	/// <param name="glslSource">GLSL source code.</param>
 	/// <param name="userMacros">Optional user defined macros. Default: nullptr.</param>
 	/// <returns>Loaded shader.</returns>
-	Shader* LoadSource(const std::string& name,
-					   const std::string& glslSource,
-					   const std::vector<Shader::Macro>* userMacros = nullptr);
+	Ref<Shader> LoadSource(const std::string& name,
+					       const std::string& glslSource,
+					       const std::vector<Shader::Macro>* userMacros = nullptr);
 
 	/// <summary>
 	/// Add a shader to the ShaderManager.
 	/// </summary>
 	/// <param name="shader">Shader to add.</param>
-	void Add(Scope<Shader> shader);
+	void Add(Ref<Shader> shader);
 	/// <summary>
 	/// Remove a shader from the ShaderManager.
 	/// </summary>
 	/// <param name="shader">Shader to remove.</param>
 	/// <returns>Removed shader on success, nullptr otherwise.</returns>
-	[[maybe_unused]] Scope<Shader> Remove(const Shader* const shader);
+	[[maybe_unused]] Ref<Shader> Remove(Ref<Shader> shader);
 	/// <summary>
 	/// Remove a shader from the ShaderManager via its name.
 	/// </summary>
 	/// <param name="name">Name of shader to remove.</param>
 	/// <returns>Removed shader on success, nullptr otherwise.</returns>
-	[[maybe_unused]] Scope<Shader>  Remove(const std::string& name);
+	[[maybe_unused]] Ref<Shader> Remove(const std::string& name);
 	/// <summary>
 	/// Retrieve a shader from the ShaderManager.
 	/// </summary>
 	/// <param name="name">Name of the shader to retrieve.</param>
 	/// <returns>Shader, Fallback shader if not found.</returns>
-	Shader* Get(const std::string& name);
+	Ref<Shader> Get(const std::string& name);
 	/// <summary>
 	/// Retrieve all loaded shader from the ShaderManager.
 	/// </summary>
 	/// <returns>Map of all loaded shaders.</returns>
-	const std::unordered_map<std::string, Scope<Shader>>& GetShaders();
+	const std::unordered_map<std::string, Ref<Shader>>& GetShaders();
 	/// <summary>
 	/// Clear all shaders from the ShaderManager.
 	/// </summary>
@@ -72,28 +72,23 @@ namespace TRAP::Graphics::ShaderManager
 	/// </summary>
 	/// <param name="nameOrPath">Name or path of a shader.</param>
 	/// <returns>
-	/// Pointer to shader if found (even on unsucessful reload), nullptr otherwise.
+	/// Shader if found (even on unsucessful reload), nullptr otherwise.
 	/// Should only return nullptr if the shader was not found.
 	/// </returns>
-	Shader* Reload(const std::string& nameOrPath);
+	Ref<Shader> Reload(const std::string& nameOrPath);
 	/// <summary>
 	/// Reload a shader.
 	/// </summary>
 	/// <param name="shader">Shader to reload.</param>
 	/// <returns>
-	/// Pointer to shader if found (even on unsuccessful reload), nullptr otherwise.
+	/// Shader if found (even on unsuccessful reload), nullptr otherwise.
 	/// Should only return nullptr if the shader was not found.
 	/// </returns>
-	Shader* Reload(Shader* const shader);
+	Ref<Shader> Reload(Ref<Shader> shader);
 	/// <summary>
 	/// Reload all currently loaded shaders.
 	/// </summary>
 	void ReloadAll();
-
-	/// <summary>
-	/// Shutdown ShaderManager.
-	/// </summary>
-	void Shutdown();
 
 	/// <summary>
 	/// Check whether a shader exists.
