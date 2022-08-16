@@ -284,7 +284,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP::Ref<SubTexture2D> texture)
 {
-	if(texture->GetTexture()->GetType() != TextureType::Texture2D)
+	if(!texture || texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
 
 	DrawQuad(transform, Math::Vec4(1.0f), std::move(texture));
@@ -297,7 +297,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 {
 	TP_PROFILE_FUNCTION();
 
-	if(texture->GetTexture()->GetType() != TextureType::Texture2D)
+	if(!texture || texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
 
 	Math::Mat4 transformation;

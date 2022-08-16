@@ -37,8 +37,11 @@ void AntiAliasingTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 	const float angle = TRAP::Application::GetTime().GetSeconds() * TRAP::Math::PI<float>();
 
 	TRAP::Graphics::Renderer2D::BeginScene(m_camera);
-	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
-	TRAP::Graphics::Renderer2D::DrawQuad({ { 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {1.0f, 1.0f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
+	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {0.25f, 0.25f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
+	TRAP::Graphics::Renderer2D::DrawQuad({ {-0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {0.25f, 0.25f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
+	TRAP::Graphics::Renderer2D::DrawQuad({ { 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {0.25f, 0.25f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
+	TRAP::Graphics::Renderer2D::DrawQuad({ { 0.5f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {0.25f, 0.25f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
+	TRAP::Graphics::Renderer2D::DrawQuad({ { 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, angle}, {0.25f, 0.25f, 1.0f} }, {1.0f, 1.0f, 1.0f, 1.0f});
 	TRAP::Graphics::Renderer2D::EndScene();
 
 	//Simple performance metrics

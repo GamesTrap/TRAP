@@ -3064,7 +3064,7 @@ SITREP 08/15/2022|22w33a1
     - Tests Added VRSTests ~<15 mins
 
 SITREP 08/16/2022|22w33a2
-    - Changed TRAP Engine version to 22w33a2(0.8.25)
+    - Changed TRAP Engine version to 22w33a2(0.8.26)
     - ParticleSystem2D Added dynamic particle limit ~<15 mins
     - Renderer2D Fixed TextureSlotIndex not being reset on BeginScene() ~<5 mins
     - Added SubTexture2D to make sprite sheets usable ~<25 mins
@@ -3077,3 +3077,10 @@ SITREP 08/16/2022|22w33a2
     - Sandbox2D now uses SpriteManager ~<5 mins
     - ShaderManager and Shader now use TRAP::Ref (updated all programs) ~>20 mins
     - TextureManager and Texture now use TRAP::Ref (updated all programs) ~>30 mins
+    - AntiAliasingTests adjusted scaling of quads ~<5 mins
+
+SITREP 08/17/2022|22w33b1
+    - Changed TRAP Engine version to 22w33b1(0.8.27)
+    - Tests Added sprite sheets ~<5 mins
+    - Tests Added SpriteSheetTests ~<30 mins
+    - Renderer2D Fixed a crash while using nullptr SubTexture2D ~<5 mins
