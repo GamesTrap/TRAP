@@ -9,7 +9,7 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>> Sprites
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFromCoords(const std::string& name,
-                                                                                        TRAP::Graphics::Texture* texture,
+                                                                                        Ref<TRAP::Graphics::Texture> texture,
                                                                                         const TRAP::Math::Vec2& coords,
                                                                                         const TRAP::Math::Vec2& cellSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
@@ -36,7 +36,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFromPixels(const std::string& name,
-                                                                                        TRAP::Graphics::Texture* texture,
+                                                                                        Ref<TRAP::Graphics::Texture> texture,
                                                                                         const TRAP::Math::Vec2& pixelPos,
                                                                                         const TRAP::Math::Vec2& pixelSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)

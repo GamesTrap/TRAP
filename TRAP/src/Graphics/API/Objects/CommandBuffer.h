@@ -297,7 +297,7 @@ namespace TRAP::Graphics
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		virtual void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						            TRAP::Graphics::Texture* texture,
+						            Ref<TRAP::Graphics::Texture> texture,
 		                            RendererAPI::ShadingRateCombiner postRasterizerRate,
 							        RendererAPI::ShadingRateCombiner finalRate) const = 0;
 

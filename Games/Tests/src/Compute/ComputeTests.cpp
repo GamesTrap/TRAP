@@ -100,9 +100,9 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         TRAP::Graphics::RendererAPI::TextureBarrier barrier{};
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
-        barrier.Texture = m_colTex;
+        barrier.Texture = m_colTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex;
+        barrier.Texture = m_compTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
 
         //ALWAYS Bind descriptors (textures, buffers, etc) before binding the shader (pipeline)!
@@ -122,9 +122,9 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
         barrier = {};
         barrier.CurrentState = TRAP::Graphics::RendererAPI::ResourceState::UnorderedAccess;
         barrier.NewState = TRAP::Graphics::RendererAPI::ResourceState::ShaderResource;
-        barrier.Texture = m_colTex;
+        barrier.Texture = m_colTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
-        barrier.Texture = m_compTex;
+        barrier.Texture = m_compTex.get();
         TRAP::Graphics::RenderCommand::TextureBarrier(barrier, TRAP::Graphics::QueueType::Compute);
     }
 

@@ -238,7 +238,7 @@ namespace TRAP::Graphics
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		/// <param name="window">Window to set shading rate for. Default: Main Window.</param>
 		static void SetShadingRate(ShadingRate shadingRate,
-						           Texture* texture,
+						           Ref<Texture> texture,
 		                           ShadingRateCombiner postRasterizerRate,
 							       ShadingRateCombiner finalRate, Window* window = nullptr);
 		/// <summary>
@@ -496,7 +496,7 @@ namespace TRAP::Graphics
 		/// <param name="oldLayout">Current resource state of the given texture.</param>
 		/// <param name="newLayout">New resource state for the given texture.</param>
 		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
-		static void Transition(Texture* texture, RendererAPI::ResourceState oldLayout,
+		static void Transition(Ref<Texture> texture, RendererAPI::ResourceState oldLayout,
 		                       RendererAPI::ResourceState newLayout,
 		                       QueueType queueType = QueueType::Graphics);
 

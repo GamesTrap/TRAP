@@ -21,7 +21,7 @@ private:
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
-	TRAP::Graphics::Texture* m_spriteSheet;
+	TRAP::Ref<TRAP::Graphics::Texture> m_spriteSheet;
 
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_updateFPSTimer;

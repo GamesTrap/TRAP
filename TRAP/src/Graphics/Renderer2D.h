@@ -62,7 +62,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="transform">Transform of the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
-		static void DrawQuad(const Transform& transform, Texture* const texture);
+		static void DrawQuad(const Transform& transform, Ref<Texture> texture);
 		/// <summary>
 		/// Draw a colored and textured quad.
 		/// </summary>
@@ -70,7 +70,7 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color,
-		                     Texture* const texture);
+		                     Ref<Texture> texture);
 		/// <summary>
 		/// Draw a textured quad.
 		/// </summary>
@@ -94,7 +94,7 @@ namespace TRAP::Graphics
 		/// <param name="texture">Texture for the quad.</param>
 		/// <param name="texCoords">Optional: Texture coordinates for the quad.</param>
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
-		                     Texture* const texture, const std::array<Math::Vec2, 4>* texCoords);
+		                     Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords);
 
 		//Stats
 		struct Statistics
@@ -133,7 +133,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="texture">Texture to find index for.</param>
 		/// <returns>Index to the texture.</returns>
-		static float GetTextureIndex(Texture* texture);
+		static float GetTextureIndex(Ref<Texture> texture);
 		/// <summary>
 		/// Allocated new buffers for a new draw call.
 		/// Note: If the buffers are already allocated, this function will do nothing.

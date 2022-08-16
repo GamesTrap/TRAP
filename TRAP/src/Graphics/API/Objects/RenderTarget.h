@@ -104,7 +104,7 @@ namespace TRAP::Graphics
 		/// Retrieve the texture base of the render target.
 		/// </summary>
 		/// <returns>Render target texture base.</returns>
-		TRAP::Graphics::Texture* GetTexture() const;
+		Ref<TRAP::Graphics::Texture> GetTexture() const;
 
 	protected:
 		/// <summary>
@@ -112,7 +112,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		RenderTarget();
 
-		TRAP::Scope<TRAP::Graphics::Texture> m_texture;
+		TRAP::Ref<TRAP::Graphics::Texture> m_texture;
 
 		TRAP::Math::Vec4 m_clearColor;
 		float m_clearDepth;

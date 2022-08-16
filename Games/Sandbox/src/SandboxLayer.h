@@ -286,7 +286,7 @@ private:
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer{};
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer{};
 	TRAP::Ref<TRAP::Graphics::Sampler> m_sampler{};
-	TRAP::Graphics::Texture* m_texture{};
+	TRAP::Ref<TRAP::Graphics::Texture> m_texture{};
 	TRAP::Ref<TRAP::Graphics::Shader> m_shader{};
 };
 

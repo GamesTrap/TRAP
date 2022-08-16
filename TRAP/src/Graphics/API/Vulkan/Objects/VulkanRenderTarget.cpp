@@ -7,6 +7,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
+#include <memory>
 
 std::atomic<int32_t> TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs = 1;
 
@@ -117,7 +118,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 	textureDesc.Name = desc.Name;
 
-	m_texture = TRAP::MakeScope<VulkanTexture>();
+	m_texture = TRAP::MakeRef<VulkanTexture>();
 	m_texture->Init(textureDesc);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
@@ -126,7 +127,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	else
 		viewType = depthOrArraySize > 1 ? VK_IMAGE_VIEW_TYPE_1D_ARRAY : VK_IMAGE_VIEW_TYPE_1D;
 
-	auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(m_texture.get());
+	auto vkTexture = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(m_texture);
 	VkImageViewCreateInfo rtvDesc = VulkanInits::ImageViewCreateInfo(vkTexture->GetVkImage(), viewType,
 	                                                                 ImageFormatToVkFormat(desc.Format), 1,
 																	 depthOrArraySize);
@@ -155,7 +156,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	//To keep in line with DirectX 12, we transition them to the specified layout
 	//manually so app code doesn't have to worry about this
 	//Render targets wont be created during runtime so this overhead will be minimal
-	VulkanRenderer::UtilInitialTransition(m_texture.get(), desc.StartState);
+	VulkanRenderer::UtilInitialTransition(m_texture, desc.StartState);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

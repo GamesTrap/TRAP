@@ -17,6 +17,7 @@
 #include "VulkanInits.h"
 #include "VulkanQueue.h"
 #include "VulkanTexture.h"
+#include <memory>
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
@@ -246,7 +247,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
 	for(std::size_t i = 0; i < renderTargets.size(); ++i)
 	{
-		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(renderTargets[i]->GetTexture());
+		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(renderTargets[i]->GetTexture());
 		if(vkTex->IsLazilyAllocated())
 			colorStoreActions[i] = RendererAPI::StoreActionType::DontCare;
 		else if(loadActions)
@@ -267,7 +268,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	if(depthStencil)
 	{
 		const VulkanRenderTarget* dStencil = dynamic_cast<VulkanRenderTarget*>(depthStencil.get());
-		const VulkanTexture* vkTex = dynamic_cast<VulkanTexture*>(dStencil->GetTexture());
+		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(dStencil->GetTexture());
 
 		if(vkTex->IsLazilyAllocated())
 		{
@@ -1196,7 +1197,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI::ShadingRate rate,
-															  Texture* /*texture*/,
+															  Ref<Texture> /*texture*/,
 															  const RendererAPI::ShadingRateCombiner postRasterizerState,
 															  const RendererAPI::ShadingRateCombiner finalRate) const
 {
@@ -1310,9 +1311,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(TRAP::Graphics::API::VulkanTexture* srcImage,
+void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(Ref<TRAP::Graphics::API::VulkanTexture> srcImage,
 															const RendererAPI::ResourceState srcState,
-															TRAP::Graphics::API::VulkanTexture* dstImage,
+															Ref<TRAP::Graphics::API::VulkanTexture> dstImage,
 															const RendererAPI::ResourceState dstState) const
 {
 	VkImageResolve imageResolve{};

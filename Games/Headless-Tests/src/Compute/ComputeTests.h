@@ -30,8 +30,8 @@ private:
 		0, 1, 2, 2, 3, 0
 	};
 
-    TRAP::Graphics::Texture* m_colTex;
-    TRAP::Graphics::Texture* m_compTex;
+    TRAP::Ref<TRAP::Graphics::Texture> m_colTex;
+    TRAP::Ref<TRAP::Graphics::Texture> m_compTex;
 };
 
 #endif /*GAMESTRAP_COMPUTETESTS_H*/

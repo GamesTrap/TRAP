@@ -27,6 +27,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "FileSystem/FileSystem.h"
+#include <memory>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -321,7 +322,7 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
+void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
                   const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
 	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
@@ -329,7 +330,7 @@ void ImGui::Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampl
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		const auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
+		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
 		const auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
 		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
@@ -339,7 +340,7 @@ void ImGui::Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Graphics::Texture* image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
+void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
 			      const ImVec4& tint_col, const ImVec4& border_col)
 {
 	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
@@ -347,7 +348,7 @@ void ImGui::Image(TRAP::Graphics::Texture* image, const ImVec2& size, const ImVe
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
-		const auto* vkImage = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(image);
+		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
 		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 		                                                      vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

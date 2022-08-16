@@ -347,7 +347,7 @@ namespace TRAP::Graphics
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		/// <param name="window">Window to set the shading rate for. Default: Main Window.</param>
 		virtual void SetShadingRate(ShadingRate shadingRate,
-						            TRAP::Graphics::Texture* texture,
+						            Ref<TRAP::Graphics::Texture> texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, Window* window = nullptr) const = 0;
 
@@ -653,7 +653,7 @@ namespace TRAP::Graphics
 		/// <param name="oldLayout">Current resource state of the given texture.</param>
 		/// <param name="newLayout">New resource state for the given texture.</param>
 		/// <param name="queueType">Queue type on which to perform the transition. Default: Graphics.</param>
-		static void Transition(TRAP::Graphics::Texture* texture,
+		static void Transition(Ref<TRAP::Graphics::Texture> texture,
 							   TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 							   TRAP::Graphics::RendererAPI::ResourceState newLayout,
 							   TRAP::Graphics::RendererAPI::QueueType queueType = QueueType::Graphics);
@@ -2191,9 +2191,9 @@ namespace TRAP::Graphics
 			//Array of pipeline descriptors
 			//DescriptorSet buffer extraction
 			//Custom binding (RayTracing acceleration structure ...)
-			std::variant<std::vector<TRAP::Graphics::Texture*>, std::vector<Sampler*>,
+			std::variant<std::vector<Ref<TRAP::Graphics::Texture>>, std::vector<Sampler*>,
 				std::vector<Buffer*>, std::vector<Pipeline*>,
-				std::vector<DescriptorSet*>> Resource{std::vector<TRAP::Graphics::Texture*>()}; //TODO RayTracing acceleration structure
+				std::vector<DescriptorSet*>> Resource{std::vector<Ref<TRAP::Graphics::Texture>>()}; //TODO RayTracing acceleration structure
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};

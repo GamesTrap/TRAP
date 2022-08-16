@@ -162,7 +162,7 @@ void TRAP::Graphics::RenderCommand::SetFrontFace(const FrontFace face, Window* w
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate,
-												   Texture* texture,
+												   Ref<Texture> texture,
 												   const ShadingRateCombiner postRasterizerRate,
 												   const ShadingRateCombiner finalRate, Window* window)
 {
@@ -402,7 +402,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::RenderCommand::CaptureScreenshot(Window
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::Transition(Texture* texture, const RendererAPI::ResourceState oldLayout,
+void TRAP::Graphics::RenderCommand::Transition(Ref<Texture> texture, const RendererAPI::ResourceState oldLayout,
 											   const RendererAPI::ResourceState newLayout, const QueueType queueType)
 {
 	RendererAPI::Transition(texture, oldLayout, newLayout, queueType);

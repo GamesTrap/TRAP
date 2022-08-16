@@ -4,6 +4,19 @@
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/Shaders/Shader.h"
 
+TRAP::Events::TextureReloadEvent::TextureReloadEvent(TRAP::Ref<TRAP::Graphics::Texture> texture)
+	: m_texture(texture)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Events::TextureReloadEvent::GetTexture() const
+{
+	return m_texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::TextureReloadEvent::ToString() const
 {
     return "TextureReloadEvent: " + m_texture->GetName();

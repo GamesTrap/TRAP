@@ -317,7 +317,7 @@ namespace TRAP::Graphics::API
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						    TRAP::Graphics::Texture* texture,
+						    Ref<TRAP::Graphics::Texture> texture,
 		                    RendererAPI::ShadingRateCombiner postRasterizerRate,
 							RendererAPI::ShadingRateCombiner finalRate) const override;
 
@@ -358,8 +358,8 @@ namespace TRAP::Graphics::API
 		/// <param name="srcState">Source texture state.</param>
 		/// <param name="dstImage">Destination non-multisample color texture to resolve into.</param>
 		/// <param name="dstState">Destination texture state.</param>
-		void ResolveImage(API::VulkanTexture* srcImage, RendererAPI::ResourceState srcState,
-		                  API::VulkanTexture* dstImage, RendererAPI::ResourceState dstState) const;
+		void ResolveImage(Ref<API::VulkanTexture> srcImage, RendererAPI::ResourceState srcState,
+		                  Ref<API::VulkanTexture> dstImage, RendererAPI::ResourceState dstState) const;
 
 		/// <summary>
 		/// Retrieve the currently active VkRenderPass.

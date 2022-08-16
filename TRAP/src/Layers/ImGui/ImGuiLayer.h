@@ -107,7 +107,7 @@ namespace ImGui
 	/// <param name="uv1">UV1 coordinates.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <param name="border_col">Border color.</param>
-	void Image(TRAP::Graphics::Texture* image, TRAP::Graphics::Sampler* sampler,
+	void Image(TRAP::Ref<TRAP::Graphics::Texture> image, TRAP::Graphics::Sampler* sampler,
 	           const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
@@ -121,7 +121,7 @@ namespace ImGui
 	/// <param name="uv1">UV1 coordinates.</param>
 	/// <param name="tint_col">Tint color.</param>
 	/// <param name="border_col">Border color.</param>
-	void Image(TRAP::Graphics::Texture* image, const ImVec2& size,
+	void Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
 	           const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 			   const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));

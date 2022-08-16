@@ -127,7 +127,7 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::RenderTarget::GetDes
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::RenderTarget::GetTexture() const
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::RenderTarget::GetTexture() const
 {
-	return m_texture.get();
+	return m_texture;
 }

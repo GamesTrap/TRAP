@@ -3,17 +3,17 @@
 #include "Texture.h"
 #include "FileSystem/FileSystem.h"
 
-std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> Textures;
+std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>> Textures;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
-                                                              const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
+                                                                        const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(filepath, TextureType::Texture2D, TextureCubeFormat::NONE,
-	                                                 flags);
+	Ref<Texture> texture = Texture::CreateFromFile(filepath, TextureType::Texture2D, TextureCubeFormat::NONE,
+	                                               flags);
 	if(texture)
 	{
 		const std::string name = texture->GetName();
@@ -28,14 +28,14 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const std::filesystem::path& filepath,
-                                                              const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
+	                                                                    const std::filesystem::path& filepath,
+                                                                        const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::Texture2D,
-													 TextureCubeFormat::NONE, flags);
+	Ref<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::Texture2D,
+												   TextureCubeFormat::NONE, flags);
 
 	if(texture)
 	{
@@ -49,14 +49,14 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const Image* const img,
-                                                              const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
+	                                                                    const Image* const img,
+                                                                        const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromImage(name, img, TextureType::Texture2D, TextureCubeFormat::NONE,
-													  flags);
+	Ref<Texture> texture = Texture::CreateFromImage(name, img, TextureType::Texture2D, TextureCubeFormat::NONE,
+													flags);
 
 	if (texture)
 	{
@@ -70,14 +70,14 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const std::filesystem::path& filepath,
-															  const TextureCubeFormat format,
-                                                              const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
+	                                                                    const std::filesystem::path& filepath,
+															            const TextureCubeFormat format,
+                                                                        const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::TextureCube, format, flags);
+	Ref<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::TextureCube, format, flags);
 
 	if(texture)
 	{
@@ -91,13 +91,13 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
-	                                                          const TextureCubeFormat format,
-                                                              const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
+	                                                                    const TextureCubeFormat format,
+                                                                        const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFile(filepath, TextureType::TextureCube, format, flags);
+	Ref<Texture> texture = Texture::CreateFromFile(filepath, TextureType::TextureCube, format, flags);
 
 	if(texture)
 	{
@@ -113,13 +113,13 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::filesys
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const std::array<std::filesystem::path, 6>& filepaths,
-                                                              const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
+	                                                                    const std::array<std::filesystem::path, 6>& filepaths,
+                                                                        const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromFiles(name, filepaths, flags);
+	Ref<Texture> texture = Texture::CreateFromFiles(name, filepaths, flags);
 
 	if(texture)
 	{
@@ -133,14 +133,14 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string& name,
-	                                                          const Image* const img,
-															  const TextureCubeFormat format,
-															  const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::string& name,
+	                                                                    const Image* const img,
+															            const TextureCubeFormat format,
+															            const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture::CreateFromImage(name, img, TextureType::TextureCube, format, flags);
+	Ref<Texture> texture = Texture::CreateFromImage(name, img, TextureType::TextureCube, format, flags);
 
 	if(texture)
 	{
@@ -154,7 +154,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Load(const std::string&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
+void TRAP::Graphics::TextureManager::Add(Ref<Texture> texture)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -170,7 +170,7 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const Texture* const texture)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(Ref<Texture> texture)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -178,7 +178,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(cons
 	{
 		if (Exists(texture->GetName()))
 		{
-			Scope<Texture> tex = std::move(Textures[texture->GetName()]);
+			Ref<Texture> tex = std::move(Textures[texture->GetName()]);
 			Textures.erase(texture->GetName());
 			return tex;
 		}
@@ -191,13 +191,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const std::string& name)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const std::string& name)
 {
 	TP_PROFILE_FUNCTION();
 
 	if (Exists(name))
 	{
-		Scope<Texture> tex = std::move(Textures[name]);
+		Ref<Texture> tex = std::move(Textures[name]);
 		Textures.erase(name);
 		return tex;
 	}
@@ -209,15 +209,15 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get(const std::string& name,
-                                                             const TextureType textureType)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std::string& name,
+                                                                       const TextureType textureType)
 {
 	TP_PROFILE_FUNCTION();
 
 	if(Exists(name))
 	{
 		if (Textures[name]->GetType() == textureType)
-				return Textures[name].get();
+				return Textures[name];
 	}
 
 	if (textureType == TextureType::Texture2D)
@@ -228,7 +228,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get(const std::string& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get2D(const std::string& name)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const std::string& name)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -237,7 +237,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get2D(const std::string
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::GetCube(const std::string& name)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const std::string& name)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -246,7 +246,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::GetCube(const std::stri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures()
+const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures()
 {
 	return Textures;
 }
@@ -260,7 +260,7 @@ void TRAP::Graphics::TextureManager::Clean()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::string& nameOrPath)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const std::string& nameOrPath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -269,7 +269,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 		//Name
 		if(Exists(nameOrPath))
 		{
-			auto* texture = Textures[nameOrPath].get();
+			auto texture = Textures[nameOrPath];
 			if(texture->Reload())
 				TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
 
@@ -289,7 +289,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 					if(texture->Reload())
 						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
 
-					return texture.get();
+					return texture;
 				}
 			}
 			else if (texture->GetType() == TextureType::TextureCube)
@@ -304,7 +304,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 						if(texture->Reload())
 							TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
 
-						return texture.get();
+						return texture;
 					}
 				}
 			}
@@ -319,7 +319,7 @@ TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Reload(Texture* const texture)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(Ref<Texture> texture)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -343,19 +343,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 
 	TP_INFO(Log::TextureManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, texture] : Textures)
-		Reload(texture.get());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::TextureManager::Shutdown()
-{
-	TP_PROFILE_FUNCTION();
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::TextureManagerPrefix, "Destroying textures");
-#endif
-	Clean();
+		Reload(texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

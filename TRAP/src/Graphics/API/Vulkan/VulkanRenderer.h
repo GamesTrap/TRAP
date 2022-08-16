@@ -242,7 +242,7 @@ namespace TRAP::Graphics::API
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		/// <param name="window">Window to set the shading rate for. Default: Main Window.</param>
 		void SetShadingRate(ShadingRate shadingRate,
-							TRAP::Graphics::Texture* texture,
+							Ref<TRAP::Graphics::Texture> texture,
 							ShadingRateCombiner postRasterizerRate,
 							ShadingRateCombiner finalRate, Window* window = nullptr) const override;
 
@@ -617,9 +617,9 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		struct NullDescriptors
 		{
-			std::array<TRAP::Scope<TRAP::Graphics::Texture>,
+			std::array<TRAP::Ref<TRAP::Graphics::Texture>,
 			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
-			std::array<TRAP::Scope<TRAP::Graphics::Texture>,
+			std::array<TRAP::Ref<TRAP::Graphics::Texture>,
 			           static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
@@ -646,7 +646,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="texture">Texture to transition.</param>
 		/// <param name="startState">Start state for the texture.</param>
-		static void UtilInitialTransition(TRAP::Graphics::Texture* texture, RendererAPI::ResourceState startState);
+		static void UtilInitialTransition(Ref<TRAP::Graphics::Texture> texture, RendererAPI::ResourceState startState);
 
 		//Per Thread Render Pass synchronization logic
 		//Render-passes are not exposed to the engine code since they are not available on all APIs

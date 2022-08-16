@@ -6,9 +6,9 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Objects/Queue.h"
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
-																			  std::array<std::filesystem::path, 6> filepaths,
-																			  const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std::string name,
+																			std::array<std::filesystem::path, 6> filepaths,
+																			const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -19,13 +19,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 		return nullptr;
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepaths));
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepaths));
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -69,11 +69,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::string name,
-																			 std::filesystem::path filepath,
-																			 const TextureType type,
-																			 const TextureCubeFormat cubeFormat,
-																			 const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::string name,
+																		   std::filesystem::path filepath,
+																		   const TextureType type,
+																		   const TextureCubeFormat cubeFormat,
+																		   const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
@@ -85,13 +85,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		name = filepath.string();
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -135,10 +135,10 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::filesystem::path filepath,
-																			 const TextureType type,
-		                                                                     const TextureCubeFormat cubeFormat,
-																			 const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::filesystem::path filepath,
+																		   const TextureType type,
+		                                                                   const TextureCubeFormat cubeFormat,
+																		   const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
@@ -152,13 +152,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 		return nullptr;
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(*name), std::move(filepath), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -202,9 +202,9 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
-																			   const std::array<const Image*, 6>& imgs,
-																			   const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std::string name,
+																			 const std::array<const Image*, 6>& imgs,
+																			 const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
 	            [](const Image* img) { return img == nullptr; }), "An Image is nullptr!");
@@ -218,7 +218,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 		return nullptr;
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	std::array<std::filesystem::path, 6> filePaths{};
 	for(uint32_t i = 0; i < filePaths.size(); ++i)
@@ -228,7 +228,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), std::move(filePaths));
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), std::move(filePaths));
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -272,11 +272,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std::string name,
-																			  const TRAP::Image* const img,
- 																	          const TextureType type,
-		                                                                      const TextureCubeFormat cubeFormat,
-																			  const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std::string name,
+																			const TRAP::Image* const img,
+ 																	        const TextureType type,
+		                                                                    const TextureCubeFormat cubeFormat,
+																			const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(img, "Image is nullptr!");
 	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Provided cube format is invalid");
@@ -290,13 +290,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 		name = img->GetFilePath().filename().u8string();
 	}
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
+		texture = TRAP::MakeRef<API::VulkanTexture>(std::move(name), img->GetFilePath(), type, cubeFormat);
 
 		//Hot Reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
@@ -341,17 +341,17 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
-																		  const uint32_t width,
-																		  const uint32_t height,
-																		  const uint32_t bitsPerPixel,
-																		  const Image::ColorFormat format,
-																		  const TextureType type,
-																		  const TextureCreationFlags flags)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::string name,
+																		const uint32_t width,
+																		const uint32_t height,
+																		const uint32_t bitsPerPixel,
+																		const Image::ColorFormat format,
+																		const TextureType type,
+																		const TextureCreationFlags flags)
 {
 	TP_PROFILE_FUNCTION();
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
 
@@ -362,7 +362,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::s
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(type);
+		texture = TRAP::MakeRef<API::VulkanTexture>(type);
 		break;
 	}
 
@@ -401,7 +401,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
 {
     TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
 
@@ -410,13 +410,13 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const
 	if(!ValidateLimits(desc))
 		return nullptr;
 
-	TRAP::Scope<Texture> texture = nullptr;
+	TRAP::Ref<Texture> texture = nullptr;
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		texture = TRAP::MakeScope<API::VulkanTexture>(desc.ArraySize == 6 ? TextureType::TextureCube : TextureType::Texture2D);
+		texture = TRAP::MakeRef<API::VulkanTexture>(desc.ArraySize == 6 ? TextureType::TextureCube : TextureType::Texture2D);
 		break;
 	}
 
@@ -444,18 +444,18 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 {
 	const auto fallbackImg = TRAP::Image::LoadFallback();
-	TRAP::Scope<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
-																		 fallbackImg.get(),
-																		 TextureType::Texture2D,
-	                       												 TextureCubeFormat::NONE, TextureCreationFlags::Storage);
+	TRAP::Ref<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
+																	   fallbackImg.get(),
+																	   TextureType::Texture2D,
+	                       											   TextureCubeFormat::NONE, TextureCreationFlags::Storage);
 
 	fallback2DTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
-	RendererAPI::Transition(fallback2DTex.get(), RendererAPI::ResourceState::UnorderedAccess,
+	RendererAPI::Transition(fallback2DTex, RendererAPI::ResourceState::UnorderedAccess,
 	                        RendererAPI::ResourceState::ShaderResource);
 
 	return fallback2DTex;
@@ -463,7 +463,7 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
+TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 {
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
 	std::array<const TRAP::Image*, 6> imgPtrs{};
@@ -473,11 +473,11 @@ TRAP::Scope<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube
 		imgPtrs[i] = imgs[i].get();
 	}
 
-	TRAP::Scope<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
+	TRAP::Ref<TRAP::Graphics::Texture> fallbackCubeTex = CreateFromImages("FallbackCube", imgPtrs, TextureCreationFlags::Storage);
 	fallbackCubeTex->AwaitLoading();
 
 	//By default Storage texture are in Unordered Access layout.
-	RendererAPI::Transition(fallbackCubeTex.get(), RendererAPI::ResourceState::UnorderedAccess,
+	RendererAPI::Transition(fallbackCubeTex, RendererAPI::ResourceState::UnorderedAccess,
 	                        RendererAPI::ResourceState::ShaderResource);
 
 	return fallbackCubeTex;

@@ -93,7 +93,7 @@ namespace TRAP::Graphics::API
 		/// <param name="binding">Binding point of the texture.</param>
 		/// <param name="texture">Texture to use.</param>
 		/// <param name="window">Window to use the shader for.</param>
-		void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* texture,
+		void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture,
 		                Window* window) const override;
 
 		/// <summary>
@@ -104,7 +104,7 @@ namespace TRAP::Graphics::API
 		/// <param name="textures">Textures to use.</param>
 		/// <param name="window">Window to use the shader for.</param>
 		void UseTextures(uint32_t set, uint32_t binding,
-						 const std::vector<TRAP::Graphics::Texture*>& textures,
+						 const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 						 Window* window) const override;
 		/// <summary>
 		/// Use sampler with this shader on the given window.

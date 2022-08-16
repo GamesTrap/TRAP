@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="binding">Binding point of the texture.</param>
 		/// <param name="texture">Texture to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
-		virtual void UseTexture(uint32_t set, uint32_t binding, TRAP::Graphics::Texture* const texture,
+		virtual void UseTexture(uint32_t set, uint32_t binding, Ref<TRAP::Graphics::Texture> texture,
 		                        Window* window = nullptr) const = 0;
 		/// <summary>
 		/// Use multiple textures with this shader on the given window.
@@ -129,7 +129,7 @@ namespace TRAP::Graphics
 		/// <param name="textures">Textures to use.</param>
 		/// <param name="window">Window to use the shader for. Default: Main Window.</param>
 		virtual void UseTextures(uint32_t set, uint32_t binding,
-		                         const std::vector<TRAP::Graphics::Texture*>& textures,
+		                         const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 								 Window* window = nullptr) const = 0;
 		/// <summary>
 		/// Use sampler with this shader on the given window.

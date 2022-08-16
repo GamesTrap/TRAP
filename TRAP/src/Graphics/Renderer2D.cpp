@@ -35,7 +35,7 @@ namespace TRAP::Graphics
 			Scope<VertexBuffer> QuadVertexBuffer = nullptr;
 			Scope<IndexBuffer> QuadIndexBuffer = nullptr;
 			std::vector<QuadVertex> QuadVertices = std::vector<QuadVertex>(MaxVertices);
-			std::vector<Texture*> TextureSlots = std::vector<Texture*>(MaxTextureSlots);
+			std::vector<Ref<Texture>> TextureSlots = std::vector<Ref<Texture>>(MaxTextureSlots);
 			uint32_t QuadCount = 0;
 		};
 		std::array<std::vector<Buffers>, RendererAPI::ImageCount> DataBuffers{};
@@ -45,7 +45,7 @@ namespace TRAP::Graphics
 
 		Ref<Shader> TextureShader;
 		Ref<Sampler> TextureSampler;
-		Scope<Texture> WhiteTexture;
+		Ref<Texture> WhiteTexture;
 
 		QuadVertex* QuadVertexBufferPtr = nullptr;
 
@@ -132,7 +132,7 @@ void TRAP::Graphics::Renderer2D::Init()
 		buffers[s_data.DataBufferIndex].QuadIndexBuffer->AwaitLoading();
 
 		std::fill(buffers[s_data.DataBufferIndex].TextureSlots.begin(),
-	              buffers[s_data.DataBufferIndex].TextureSlots.end(), s_data.WhiteTexture.get());
+	              buffers[s_data.DataBufferIndex].TextureSlots.end(), s_data.WhiteTexture);
 	}
 }
 
@@ -173,7 +173,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 	s_data.QuadVertexBufferPtr = s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].QuadVertices.data();
 
 	for(auto& buffers : s_data.DataBuffers[imageIndex])
-		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture.get());
+		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture);
 	s_data.TextureSlotIndex = 1;
 }
 
@@ -197,7 +197,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 
 	//Reset textures
 	for(auto& buffers : s_data.DataBuffers[imageIndex])
-		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture.get());
+		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture);
 	s_data.TextureSlotIndex = 1;
 }
 
@@ -247,23 +247,23 @@ void TRAP::Graphics::Renderer2D::EndScene()
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color)
 {
-	DrawQuad(transform, color, s_data.WhiteTexture.get());
+	DrawQuad(transform, color, s_data.WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, Texture* const texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, Ref<Texture> texture)
 {
 	if(texture->GetType() != TextureType::Texture2D)
 		return;
 
-	DrawQuad(transform, Math::Vec4(1.0f), texture);
+	DrawQuad(transform, Math::Vec4(1.0f), std::move(texture));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
-                                          Texture* const texture)
+                                          Ref<Texture> texture)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -277,7 +277,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 
-	DrawQuad(transformation, color, texture, nullptr);
+	DrawQuad(transformation, color, std::move(texture), nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -287,7 +287,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP
 	if(texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
 
-	DrawQuad(transform, Math::Vec4(1.0f), texture);
+	DrawQuad(transform, Math::Vec4(1.0f), std::move(texture));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -313,7 +313,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
-                                          Texture* const texture, const std::array<Math::Vec2, 4>* texCoords)
+                                          Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords)
 {
 	constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
@@ -330,8 +330,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 		Reset();
 	}
 
-	Texture* const tex = texture ? texture : s_data.WhiteTexture.get();
-	const float textureIndex = GetTextureIndex(tex);
+	Ref<Texture> tex = texture ? texture : s_data.WhiteTexture;
+	const float textureIndex = GetTextureIndex(std::move(tex));
 
 	for (uint64_t i = 0; i < quadVertexCount; i++)
 	{
@@ -349,7 +349,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Renderer2D::GetTextureIndex(Texture* const texture)
+float TRAP::Graphics::Renderer2D::GetTextureIndex(Ref<Texture> texture)
 {
 	TRAP_ASSERT(texture, "Texture is nullptr!");
 	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a Texture2D!");
@@ -397,7 +397,7 @@ void TRAP::Graphics::Renderer2D::ExtendBuffers()
 	s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].QuadIndexBuffer->AwaitLoading();
 
 	std::fill(s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].TextureSlots.begin(),
-	          s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].TextureSlots.end(), s_data.WhiteTexture.get());
+	          s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].TextureSlots.end(), s_data.WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

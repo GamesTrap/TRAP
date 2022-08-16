@@ -391,7 +391,7 @@ TRAP::Application::~Application()
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down SpriteManager");
 		Graphics::SpriteManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
-		Graphics::TextureManager::Shutdown();
+		Graphics::TextureManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");
 		Graphics::ShaderManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down RendererAPI");
@@ -860,7 +860,7 @@ void TRAP::Application::UpdateHotReloading()
 		{
 			TP_INFO(Log::HotReloadingPrefix, "Texture modified reloading...");
 			Graphics::RendererAPI::GetRenderer()->WaitIdle();
-			TRAP::Graphics::Texture* texture = Graphics::TextureManager::Reload(p.string());
+			TRAP::Ref<TRAP::Graphics::Texture> texture = Graphics::TextureManager::Reload(p.string());
 
 			//Send event
 			TRAP::Events::TextureReloadEvent e(texture);

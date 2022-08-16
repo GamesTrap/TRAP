@@ -21,7 +21,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="texture">Pointer to the affected texture.</param>
-		constexpr TextureReloadEvent(TRAP::Graphics::Texture* texture);
+		TextureReloadEvent(TRAP::Ref<TRAP::Graphics::Texture> texture);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -47,7 +47,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected texture.
 		/// </summary>
 		/// <returns>Texture pointer.</returns>
-		constexpr TRAP::Graphics::Texture* GetTexture() const;
+		TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const;
 
 		/// <summary>
 		/// Get a string representation of the TextureReloadEvent.
@@ -77,7 +77,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-        TRAP::Graphics::Texture* m_texture;
+        TRAP::Ref<TRAP::Graphics::Texture> m_texture;
 	};
 
     /// <summary>
@@ -148,19 +148,6 @@ namespace TRAP::Events
 	private:
         TRAP::Ref<TRAP::Graphics::Shader> m_shader;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Events::TextureReloadEvent::TextureReloadEvent(TRAP::Graphics::Texture* texture)
-	: m_texture(texture)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Graphics::Texture* TRAP::Events::TextureReloadEvent::GetTexture() const
-{
-	return m_texture;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

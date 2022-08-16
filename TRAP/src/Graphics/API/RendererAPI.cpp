@@ -267,7 +267,7 @@ void TRAP::Graphics::RendererAPI::StopRenderPass(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
+void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> texture,
 											 const TRAP::Graphics::RendererAPI::ResourceState oldLayout,
 											 const TRAP::Graphics::RendererAPI::ResourceState newLayout,
 											 const TRAP::Graphics::RendererAPI::QueueType queueType)
@@ -295,7 +295,7 @@ void TRAP::Graphics::RendererAPI::Transition(TRAP::Graphics::Texture* texture,
 
 	//Transition the texture to the correct state
 	TextureBarrier texBarrier{};
-	texBarrier.Texture = texture;
+	texBarrier.Texture = texture.get();
 	texBarrier.CurrentState = oldLayout;
 	texBarrier.NewState = newLayout;
 

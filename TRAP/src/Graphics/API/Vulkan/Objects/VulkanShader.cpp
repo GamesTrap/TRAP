@@ -184,7 +184,7 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
-                                                   TRAP::Graphics::Texture* const texture, Window* window) const
+                                                   Ref<TRAP::Graphics::Texture> const texture, Window* window) const
 {
 	TRAP_ASSERT(texture, "Texture is nullptr!");
 
@@ -208,7 +208,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = name.c_str();
-	params[0].Resource = std::vector<TRAP::Graphics::Texture*>{texture};
+	params[0].Resource = std::vector<Ref<TRAP::Graphics::Texture>>{texture};
 
 	if(shaderUAV && static_cast<bool>(texture->GetDescriptorTypes() & RendererAPI::DescriptorType::RWTexture))
 		params[0].Offset = RendererAPI::DescriptorData::TextureSlice{};
@@ -225,7 +225,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
-													const std::vector<TRAP::Graphics::Texture*>& textures,
+													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 													Window* window) const
 {
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");

@@ -36,7 +36,7 @@ private:
 	};
 
     TRAP::Ref<TRAP::Graphics::Shader> m_shader;
-    TRAP::Graphics::Texture* m_texture;
+    TRAP::Ref<TRAP::Graphics::Texture> m_texture;
 
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
     TRAP::Ref<TRAP::Graphics::RenderTarget> m_resolveTarget;
