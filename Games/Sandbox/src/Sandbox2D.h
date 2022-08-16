@@ -26,6 +26,7 @@ private:
 	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_aButtonTexture;
 	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_bButtonTexture;
 	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_enterKeyTexture;
+	TRAP::Ref<TRAP::Graphics::SubTexture2D> m_circleTexture;
 
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_updateFPSTimer;

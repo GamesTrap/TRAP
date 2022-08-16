@@ -3,6 +3,7 @@
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromCoords(TRAP::Graphics::Texture* texture,
                                                                                        const TRAP::Math::Vec2& coords,
+                                                                                       const TRAP::Math::Vec2& cellSize,
                                                                                        const TRAP::Math::Vec2& spriteSize)
 {
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
@@ -10,13 +11,37 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
 
     const TRAP::Math::Vec2 min
     {
-        (coords.x * spriteSize.x) / texture->GetWidth(),
-        (coords.y * spriteSize.y) / texture->GetHeight()
+        (coords.x * cellSize.x) / texture->GetWidth(),
+        (coords.y * cellSize.y) / texture->GetHeight()
     };
     const TRAP::Math::Vec2 max
     {
-        ((coords.x + 1) * spriteSize.x) / texture->GetWidth(),
-        ((coords.y + 1) * spriteSize.y) / texture->GetHeight()
+        ((coords.x + spriteSize.x) * cellSize.x) / texture->GetWidth(),
+        ((coords.y + spriteSize.y) * cellSize.y) / texture->GetHeight()
+    };
+
+    return MakeRef<SubTexture2D>(texture, min, max);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromPixels(TRAP::Graphics::Texture* texture,
+                                                                                       const TRAP::Math::Vec2& pixelPos,
+                                                                                       const TRAP::Math::Vec2& pixelSize,
+                                                                                       const TRAP::Math::Vec2& spriteSize)
+{
+    TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
+    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
+
+    const TRAP::Math::Vec2 min
+    {
+        pixelPos.x / texture->GetWidth(),
+        pixelPos.y / texture->GetHeight()
+    };
+    const TRAP::Math::Vec2 max
+    {
+        (pixelPos.x + spriteSize.x * pixelSize.x) / texture->GetWidth(),
+        (pixelPos.y + spriteSize.y * pixelSize.y) / texture->GetHeight()
     };
 
     return MakeRef<SubTexture2D>(texture, min, max);

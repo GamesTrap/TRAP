@@ -3071,3 +3071,4 @@ SITREP 08/16/2022|22w33a2
     - Renderer2D Added ability to use SubTexture2D ~<15 mins
     - Sandbox2D Added a test sprite sheet ~<5 mins
     - Sandbox2D now uses sprite sheets ~<5 mins
+    - SubTexture2D Added ability to create from pixel coordinates directly ~<15 mins
