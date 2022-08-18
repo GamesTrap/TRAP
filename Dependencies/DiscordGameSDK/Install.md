@@ -14,4 +14,4 @@ The discord_game_sdk.dll file will be automatically copied to the .exe file's fo
 
 ### Linux
 
-The discord_game_sdk.so file will be automatically copied to /usr/local/lib during linking
+The libdiscord_game_sdk.so file will be automatically copied to the executables folder.

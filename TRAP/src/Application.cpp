@@ -23,6 +23,7 @@
 #include "Utils/Utils.h"
 #include "Window/Monitor.h"
 #include "Utils/Discord/DiscordGameSDK.h"
+#include "Utils/Steam/SteamworksSDK.h"
 #include "Utils/Memory.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -102,7 +103,7 @@ static bool CheckSingleProcessWindows()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Application::Application(std::string gameName)
+TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	: m_hotReloadingEnabled(false),
 	  m_timer(),
 	  m_FramesPerSecond(0),
@@ -160,6 +161,8 @@ TRAP::Application::Application(std::string gameName)
 		TRAP::TRAPLog.SetFilePath(*logFolder / "trap.log");
 	else //Fallback to current directory
 		TRAP::TRAPLog.SetFilePath("trap.log");
+
+	TRAP::Utils::Steam::Initalize(appID);
 
 	std::filesystem::path cfgPath = "engine.cfg";
 #ifndef TRAP_HEADLESS_MODE
@@ -338,6 +341,7 @@ TRAP::Application::~Application()
 
 	m_layerStack.Shutdown();
 
+	TRAP::Utils::Steam::Shutdown();
 	TRAP::Utils::Discord::Destroy();
 	if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
 		Input::Shutdown();
@@ -485,6 +489,8 @@ void TRAP::Application::Run()
 
 		//Needed by Discord Game SDK
 		TRAP::Utils::Discord::RunCallbacks();
+		//Needed by Steamworks SDK
+		TRAP::Utils::Steam::RunCallbacks();
 	}
 }
 
