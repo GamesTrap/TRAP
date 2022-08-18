@@ -40,7 +40,8 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
-		explicit Application(std::string gameName);
+		/// <param name="appID">Optional: Steam AppID for this application. Default: Invalid AppID.</param>
+		explicit Application(std::string gameName, uint32_t appID = 0);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

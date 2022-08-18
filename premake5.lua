@@ -34,6 +34,7 @@ IncludeDir["MODERNDIALOGS"] = "%{wks.location}/Dependencies/ModernDialogs/Modern
 IncludeDir["DISCORDGAMESDK"] = "%{wks.location}/Dependencies/DiscordGameSDK/cpp"
 IncludeDir["NSIGHTAFTERMATH"] = "%{wks.location}/Dependencies/Nsight-Aftermath/include"
 IncludeDir["VMA"] = "%{wks.location}/Dependencies/VulkanMemoryAllocator/include"
+IncludeDir["STEAMWORKSSDK"] = "%{wks.location}/Dependencies/SteamworksSDK/sdk/public/steam"
 
 include "TRAP"
 

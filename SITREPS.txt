@@ -3084,3 +3084,11 @@ SITREP 08/17/2022|22w33b1
     - Tests Added sprite sheets ~<5 mins
     - Tests Added SpriteSheetTests ~<30 mins
     - Renderer2D Fixed a crash while using nullptr SubTexture2D ~<5 mins
+
+SITREP 08/18/2022|22w33c1
+    - Changed TRAP Engine version to 22w33c1(0.8.28)
+    - Branch steamworks:
+        - Update premake scripts to support Steamworks SDK ~<20 mins
+        - Application Added optional AppID parameter to constructor ~<5 mins
+        - SteamworksSDK Initialization, Shutdown and callbacks are now handled in Application ~<10 mins
+        - SteamworksSDK exposed SDK interfaces via TRAP::Utils::Steam ~<15 mins
