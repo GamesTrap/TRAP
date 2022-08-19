@@ -3092,3 +3092,14 @@ SITREP 08/18/2022|22w33c1
         - Application Added optional AppID parameter to constructor ~<5 mins
         - SteamworksSDK Initialization, Shutdown and callbacks are now handled in Application ~<10 mins
         - SteamworksSDK exposed SDK interfaces via TRAP::Utils::Steam ~<15 mins
+    - Merged branch steamworks
+
+SITREP 08/19/2022|22w33c2
+    - Changed TRAP Engine version to 22w33c2(0.8.29)
+    - Added ImGuizmo to dependencies ~<5 mins
+    - Added ImGuizmo premake script ~<5 mins
+    - Updated all premake scripts to use ImGuizmo ~<5 mins
+    - Scene Added GetPrimaryCameraEntity() (only temporary) ~<5 mins
+    - Math Added matrix decompose function ~>15 mins
+    - TRAP-Editor SceneGraphPanel Added GetSelectedEntity() ~<5 mins
+    - TRAP-Editor Added support for gizmos >30 mins

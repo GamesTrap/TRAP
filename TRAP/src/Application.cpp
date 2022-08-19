@@ -569,9 +569,9 @@ TRAP::LayerStack& TRAP::Application::GetLayerStack()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ImGuiLayer TRAP::Application::GetImGuiLayer()
+TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
-	return *s_Instance->m_ImGuiLayer;
+	return *(s_Instance->m_ImGuiLayer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -772,6 +772,8 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 			m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
 		else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
 			m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
+
+		return true;
 	}
 #endif
 	(void)e; //Silence unused parameter warning

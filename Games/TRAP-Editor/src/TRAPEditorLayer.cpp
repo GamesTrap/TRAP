@@ -1,12 +1,15 @@
 #include "TRAPEditorLayer.h"
 
+#include <ImGuizmo.h>
+
 #include <Scene/SceneSerializer.h>
 
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"),
 	  m_viewportSize(),
 	  m_viewportFocused(false),
-	  m_viewportHovered(false)
+	  m_viewportHovered(false),
+	  m_gizmoType(-1)
 {
 }
 
@@ -113,12 +116,65 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	m_viewportFocused = ImGui::IsWindowFocused();
 	m_viewportHovered = ImGui::IsWindowHovered();
-	TRAP::Application::GetImGuiLayer().BlockEvents(!m_viewportFocused || !m_viewportHovered);
+	TRAP::Application::GetImGuiLayer().BlockEvents(!m_viewportFocused && !m_viewportHovered);
 
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
+
+	//Gizmos
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity(); //TODO Mouse picking (currently only works via selection in the scene graph)
+	if(selectedEntity && m_gizmoType != -1 &&
+	   !TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_ALT) &&
+	   !TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_ALT))
+	{
+		//Camera
+		auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //TODO Temporary until the editor has a proper editor camera
+		if(cameraEntity)
+		{
+			const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
+			const TRAP::Math::Mat4& cameraProj = camera.GetProjectionMatrix();
+			TRAP::Math::Mat4 cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
+
+			//Entity transform
+			auto& tc = selectedEntity.GetComponent<TRAP::TransformComponent>();
+			TRAP::Math::Mat4 transform = tc.GetTransform();
+
+			ImGuizmo::SetOrthographic(camera.GetProjectionType() == TRAP::SceneCamera::ProjectionType::Orthographic);
+			ImGuizmo::SetDrawlist();
+
+			const float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
+			const float windowHeight = static_cast<float>(ImGui::GetWindowHeight());
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+			//Snapping
+			const bool snap = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) ||
+			                  TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
+			float snapValue = 0.5f;
+			if(m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 45.0f;
+
+			std::array<float, 3> snapValues = {snapValue, snapValue, snapValue};
+
+			ImGuizmo::Manipulate(&cameraView[0].x, &cameraProj[0].x,
+			                     static_cast<ImGuizmo::OPERATION>(m_gizmoType), ImGuizmo::LOCAL,
+								 &transform[0].x, snap ? snapValues.data() : nullptr);
+
+			if(ImGuizmo::IsUsing())
+			{
+				TRAP::Math::Vec3 position, rotation, scale;
+				TRAP::Math::Decompose(transform, position, rotation, scale);
+				{
+					const TRAP::Math::Vec3 deltaRotation = rotation - tc.Rotation;
+					tc.Position = position;
+					tc.Rotation += deltaRotation;
+					tc.Scale = scale;
+				}
+			}
+		}
+	}
+
 	ImGui::End();
 	ImGui::PopStyleVar();
 
@@ -305,6 +361,29 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		else if (shiftPressed)
 			SaveScene();
 
+		break;
+	}
+
+	//Gizmos
+	//TODO Make these shortcuts customizable
+	case TRAP::Input::Key::Q:
+	{
+		m_gizmoType = -1;
+		break;
+	}
+	case TRAP::Input::Key::W:
+	{
+		m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+		break;
+	}
+	case TRAP::Input::Key::E:
+	{
+		m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+		break;
+	}
+	case TRAP::Input::Key::R:
+	{
+		m_gizmoType = ImGuizmo::OPERATION::SCALE;
 		break;
 	}
 

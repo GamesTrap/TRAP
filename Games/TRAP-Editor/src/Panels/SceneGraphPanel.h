@@ -18,6 +18,8 @@ namespace TRAP
 		void SetContext(const Ref<Scene>& context);
 
 		void OnImGuiRender();
+
+		Entity GetSelectedEntity() const;
 	private:
 		void DrawEntityNode(Entity entity);
 

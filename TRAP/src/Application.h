@@ -89,7 +89,7 @@ namespace TRAP
 		/// Get the default ImGuiLayer
 		/// </summary>
 		/// <returns>Reference to ImGuiLayer.</returns>
-		static ImGuiLayer GetImGuiLayer();
+		static ImGuiLayer& GetImGuiLayer();
 
 		/// <summary>
 		/// Get the current frames per second.

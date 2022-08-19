@@ -36,14 +36,12 @@ void TRAP::Utils::Steam::Initalize([[maybe_unused]] const uint32_t appID)
     }
 
     if(!SteamAPI_Init())
-	{
+    {
         TP_ERROR(TRAP::Log::SteamworksSDKPrefix, "Steam must be running to play this game!");
         std::exit(-1);
-	}
+    }
 
     SteamUtils()->SetWarningMessageHook(&SteamLogCallback);
-
-    // SteamScreenshots()->HookScreenshots(false);
 #endif
 }
 

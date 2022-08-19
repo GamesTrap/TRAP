@@ -25,6 +25,7 @@ project "TestsNetwork"
 	sysincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMGUIZMO}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.VULKAN}/include/",
@@ -49,6 +50,7 @@ project "TestsNetwork"
 		links
 		{
 			"ImGui",
+			"ImGuizmo",
 			"YAMLCpp",
 			"ModernDialogs",
 			"GLSLang",

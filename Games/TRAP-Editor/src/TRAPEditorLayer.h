@@ -36,6 +36,8 @@ private:
 	TRAP::Entity m_squareEntity;
 	TRAP::Entity m_cameraEntity;
 
+	int32_t m_gizmoType;
+
 	//Panels
 	TRAP::SceneGraphPanel m_sceneGraphPanel;
 	std::string m_lastScenePath;

@@ -2119,6 +2119,19 @@ namespace TRAP::Math
 	T Column(const T& m, int32_t index, const typename T::colType& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Decompose a matrix into its position, rotation (euler angles), and scale components.
+	/// </summary>
+	/// <param name="m">Matrix to decompose.</param>
+	/// <param name="outPosition">Output for the position.</param>
+	/// <param name="outRotation">Output for the rotation (in euler angles).</param>
+	/// <param name="outScale">Output for the scale.</param>
+	/// <returns>True on successful decompose, false otherwise.</returns>
+	template<typename T>
+	bool Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale);
+
+	//-------------------------------------------------------------------------------------------------------------------//
 	//Quaternion---------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -4817,6 +4830,76 @@ typename T::colType TRAP::Math::Column(const T& m, const int32_t index)
 	TRAP_ASSERT(index >= 0 && index < m.Length());
 
 	return m[index];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+bool TRAP::Math::Decompose(Mat<4, 4, T> m, Vec<3, T>& outPosition, Vec<3, T>& outRotation, Vec<3, T>& outScale)
+{
+	//Normalize
+	if(Equal(m[3][3], T(0), Epsilon<T>()))
+		return false;
+
+	//First, isolate perspective. This is the messiest.
+	if (NotEqual(m[0][3], T(0), Epsilon<T>()) ||
+		NotEqual(m[1][3], T(0), Epsilon<T>()) ||
+		NotEqual(m[2][3], T(0), Epsilon<T>()))
+	{
+		//Clear the perspective partition
+		m[0][3] = T(0);
+		m[1][3] = T(0);
+		m[2][3] = T(0);
+		m[3][3] = T(1);
+	}
+
+	//Next take care of translation (easy).
+	outPosition = TRAP::Math::Vec<3, T>(m[3]);
+	m[3] = TRAP::Math::Vec<4, T>(T(0), T(0), T(0), m[3].w);
+
+	std::array<TRAP::Math::Vec<3, T>, 3> row;
+
+	//Now get scale and shear.
+	for(uint32_t i = 0; i < 3; ++i)
+	{
+		for(uint32_t j = 0; j < 3; ++j)
+			row[i][j] = m[i][j];
+	}
+
+	//Compute X scale factor and normalize first row.
+	outScale.x = Length(row[0]);
+	row[0] = row[0] * T(1) / Length(row[0]);
+	outScale.y = Length(row[1]);
+	row[1] = row[1] * T(1) / Length(row[1]);
+	outScale.z = Length(row[2]);
+	row[2] = row[2] * T(1) / Length(row[2]);
+
+	//At this point, the matrix (in rows[]) is orthonormal.
+	//Check for a coordinate system flip, If the determinant
+	//is -1, then negate the matrix and the scaling factors.
+	// std::array<TRAP::Math::Vec<3, T>, 3> Pdum3 = Cross(row[1], row[2]);
+	// if(Dot(row[0], Pdum3) < T(0))
+	// {
+	// 	for(uint32_t i = 0; i < 3; ++i)
+	// 	{
+	// 		outScale[i] *= T(-1);
+	// 		row[i] *= T(-1);
+	// 	}
+	// }
+
+	outRotation.y = ASin(-row[0][2]);
+	if(Cos(outRotation.y) != T(0))
+	{
+		outRotation.x = ATan(row[1][2], row[2][2]);
+		outRotation.z = ATan(row[0][1], row[0][0]);
+	}
+	else
+	{
+		outRotation.x = ATan(-row[2][0], row[1][1]);
+		outRotation.z = T(0);
+	}
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -27,7 +27,6 @@
 #include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "FileSystem/FileSystem.h"
-#include <memory>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -244,6 +243,7 @@ void TRAP::ImGuiLayer::Begin()
 	INTERNAL::ImGuiWindowing::NewFrame();
 
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

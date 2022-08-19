@@ -24,6 +24,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}
 IncludeDir["IMGUI"] = "%{wks.location}/Dependencies/ImGui"
+IncludeDir["IMGUIZMO"] = "%{wks.location}/Dependencies/ImGuizmo"
 IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
 IncludeDir["GLSLANG"] = "%{wks.location}/Dependencies/GLSLang"
 IncludeDir["SPIRV"] = "%{wks.location}/Dependencies/GLSLang/SPIRV"
@@ -40,6 +41,7 @@ include "TRAP"
 
 group "Dependencies"
 	include "Dependencies/ImGui.lua"
+	include "Dependencies/ImGuizmo.lua"
 	include "Dependencies/YAMLCpp.lua"
 	include "Dependencies/ModernDialogs.lua"
 	group "Dependencies/GLSLang"

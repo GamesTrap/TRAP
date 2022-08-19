@@ -54,6 +54,13 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Entity TRAP::SceneGraphPanel::GetSelectedEntity() const
+{
+	return m_selectionContext;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 {
 	auto& tag = entity.GetComponent<TagComponent>().Tag;

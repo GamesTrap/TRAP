@@ -48,6 +48,7 @@ project "TRAP"
 	sysincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMGUIZMO}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.SPIRVCROSS}",
@@ -55,12 +56,13 @@ project "TRAP"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
-		"%{IncludeDir.VMA}"
+		"%{IncludeDir.VMA}",
 	}
 
 	links
 	{
 		"ImGui",
+		"ImGuizmo",
 		"YAMLCpp",
 		"ModernDialogs",
 		"GLSLang",
@@ -263,6 +265,7 @@ project "TRAP-Headless"
 	sysincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMGUIZMO}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.SPIRVCROSS}",
@@ -276,6 +279,7 @@ project "TRAP-Headless"
 	links
 	{
 		"ImGui",
+		"ImGuizmo",
 		"YAMLCpp",
 		"ModernDialogs",
 		"GLSLang",
