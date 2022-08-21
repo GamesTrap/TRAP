@@ -7,7 +7,7 @@ class TRAPEditorLayer;
 
 namespace TRAP::Utils
 {
-    class TimeStep;
+    struct TimeStep;
 }
 namespace TRAP::Events
 {

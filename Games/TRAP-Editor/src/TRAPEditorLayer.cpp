@@ -316,6 +316,7 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(m_renderTarget, nullptr, &m_renderTargetLoadActions);
 	TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+	TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None);
 
 	//Update Scene
 	m_activeScene->OnUpdateEditor(deltaTime, m_editorCamera);
