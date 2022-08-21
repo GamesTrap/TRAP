@@ -12,6 +12,7 @@
 #include "Cameras/Camera.h"
 #include "Shaders/ShaderManager.h"
 #include "Textures/TextureManager.h"
+#include "Graphics/Cameras/Editor/EditorCamera.h"
 
 namespace TRAP::Graphics
 {
@@ -180,6 +181,30 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
+{
+	TP_PROFILE_FUNCTION();
+
+	s_data.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
+	s_data.UniformCamera.ViewMatrix = camera.GetViewMatrix();
+
+	//Update Camera
+	s_data.CameraUniformBuffer->SetData(&s_data.UniformCamera, sizeof(Renderer2DData::UniformCamera));
+	s_data.CameraUniformBuffer->AwaitLoading();
+
+	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+
+	//Reset Vertices & Indices
+	s_data.QuadVertexBufferPtr = s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].QuadVertices.data();
+
+	//Reset textures
+	for(auto& buffers : s_data.DataBuffers[imageIndex])
+		std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), s_data.WhiteTexture);
+	s_data.TextureSlotIndex = 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 {
 	TP_PROFILE_FUNCTION();
 

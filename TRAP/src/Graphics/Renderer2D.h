@@ -2,6 +2,7 @@
 #define TRAP_RENDERER2D_H
 
 #include "Cameras/Orthographic/OrthographicCamera.h"
+#include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Textures/Texture.h"
 #include "Textures/SubTexture2D.h"
 
@@ -34,6 +35,11 @@ namespace TRAP::Graphics
 		/// <param name="camera">Orthographic camera.</param>
 		[[deprecated("Use BeginScene(Camera, Mat4) instead!")]]
 		static void BeginScene(const OrthographicCamera& camera);
+		/// <summary>
+		/// Begin a Renderer2D scene.
+		/// </summary>
+		/// <param name="camera">Editor camera.</param>
+		static void BeginScene(const EditorCamera& camera);
 		/// <summary>
 		/// End a running Renderer2D scene.
 		/// </summary>

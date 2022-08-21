@@ -272,6 +272,10 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorEnterCallback(const WindowingAPI::Int
 		bd->PrevUserCallbackCursorEnter(window, entered);
 
 	ImGuiIO& io = ImGui::GetIO();
+
+	if(io.ConfigFlags & ImGuiConfigFlags_NoMouse)
+		return;
+
 	if(entered)
 	{
 		bd->MouseWindow = window;
@@ -295,6 +299,10 @@ void TRAP::INTERNAL::ImGuiWindowing::CursorPosCallback(const WindowingAPI::Inter
 		bd->PrevUserCallbackCursorPos(window, xPos, yPos);
 
 	ImGuiIO& io = ImGui::GetIO();
+
+	if(io.ConfigFlags & ImGuiConfigFlags_NoMouse)
+		return;
+
 	if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		int32_t windowX = 0, windowY = 0;
@@ -315,9 +323,12 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 	if (bd->PrevUserCallbackMouseButton != nullptr && window == bd->Window)
 		bd->PrevUserCallbackMouseButton(window, mouseButton, state);
 
+	ImGuiIO& io = ImGui::GetIO();
+	if(io.ConfigFlags & ImGuiConfigFlags_NoMouse)
+		return;
+
 	UpdateKeyModifiers(bd->Window);
 
-	ImGuiIO& io = ImGui::GetIO();
 	if(static_cast<int32_t>(mouseButton) >= 0 && static_cast<int32_t>(mouseButton) < ImGuiMouseButton_COUNT)
 		io.AddMouseButtonEvent(static_cast<int32_t>(mouseButton), (state == Input::KeyState::Pressed));
 }
@@ -332,6 +343,9 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::Internal
 		bd->PrevUserCallbackScroll(window, xOffset, yOffset);
 
 	ImGuiIO& io = ImGui::GetIO();
+	if(io.ConfigFlags & ImGuiConfigFlags_NoMouse)
+		return;
+
 	io.AddMouseWheelEvent(static_cast<float>(xOffset), static_cast<float>(yOffset));
 }
 
@@ -581,6 +595,9 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseData()
 	ImGuiTRAPData* bd = GetBackendData();
 	ImGuiIO& io = ImGui::GetIO();
 	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
+
+	if(io.ConfigFlags & ImGuiConfigFlags_NoMouse)
+		return;
 
 	ImGuiID mouseViewportID = 0;
 	const ImVec2 mousePosPrev = io.MousePos;

@@ -1,15 +1,21 @@
 #include "TRAPEditorLayer.h"
 
-#include <ImGuizmo.h>
-
+#include "Application.h"
+#include "Graphics/Cameras/Editor/EditorCamera.h"
+#include "Graphics/RenderCommand.h"
+#include "Input/Input.h"
 #include <Scene/SceneSerializer.h>
+
+#include <ImGuizmo.h>
+#include <imgui_internal.h>
 
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"),
 	  m_viewportSize(),
 	  m_viewportFocused(false),
 	  m_viewportHovered(false),
-	  m_gizmoType(-1)
+	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f, 1000.0f),
+	  m_gizmoType(-1), m_allowViewportCameraEvents(false), m_startedCameraMovement(false)
 {
 }
 
@@ -21,6 +27,14 @@ void TRAPEditorLayer::OnImGuiRender()
 	static bool optFullscreenPersistent = true;
 	const bool optFullscreen = optFullscreenPersistent;
 	static ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_None;
+
+	if(ImGui::IsMouseClicked(ImGuiMouseButton_Left) ||
+	   (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !m_startedCameraMovement))
+	{
+		ImGui::FocusWindow(GImGui->HoveredWindow);
+		if(TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Normal)
+			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
+	}
 
 	//We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 	//because it would be confusing to have two docking targets within each others.
@@ -42,7 +56,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	if (dockspaceFlags & ImGuiDockNodeFlags_PassthruCentralNode)
 		windowFlags |= ImGuiWindowFlags_NoBackground;
 
-	//Important: Note that we proceed event if Begin() returns false (aka window is collapsed).
+	//Important: Note that we proceed even if Begin() returns false (aka window is collapsed).
 	//This is because we want to keep our DockSpace() active.
 	//If a DockSpace() is inactive, all active windows docked into it will lose their parent and become undocked.
 	//We cannot preserve the docking relationship between an active window and an inactive docking,
@@ -109,6 +123,27 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
 
+#if 0
+	ImGui::Separator();
+
+	ImGui::Text("Editor Camera Debug:");
+	ImGui::Text("Distance: %f", m_editorCamera.GetDistance());
+	ImGui::Text("Focal Point: %f, %f, %f", m_editorCamera.GetFocalPoint().x, m_editorCamera.GetFocalPoint().y, m_editorCamera.GetFocalPoint().z);
+	ImGui::Text("Up Dir: %f, %f, %f", m_editorCamera.GetUpDirection().x, m_editorCamera.GetUpDirection().y, m_editorCamera.GetUpDirection().z);
+	ImGui::Text("Strafe Dir: %f, %f, %f", m_editorCamera.GetRightDirection().x, m_editorCamera.GetRightDirection().y, m_editorCamera.GetRightDirection().z);
+	ImGui::Text("Yaw: %f", m_editorCamera.GetYaw());
+	ImGui::Text("Yaw Delta: %f", m_editorCamera.m_yawDelta);
+	ImGui::Text("Pitch: %f", m_editorCamera.GetPitch());
+	ImGui::Text("Pitch Delta: %f", m_editorCamera.m_pitchDelta);
+	ImGui::Text("Position: (%f, %f, %f)", m_editorCamera.GetPosition().x, m_editorCamera.GetPosition().y, m_editorCamera.GetPosition().z);
+	ImGui::Text("Position Delta: (%f, %f, %f)", m_editorCamera.m_positionDelta.x, m_editorCamera.m_positionDelta.y, m_editorCamera.m_positionDelta.z);
+	const TRAP::Math::Mat4 m = m_editorCamera.GetViewMatrix();
+	ImGui::Text("View matrix: [%f, %f, %f, %f]",  m[0].x, m[0].y, m[0].z, m[0].w);
+	ImGui::Text("		       [%f, %f, %f, %f]",  m[1].x, m[1].y, m[1].z, m[1].w);
+	ImGui::Text("		       [%f, %f, %f, %f]",  m[2].x, m[2].y, m[2].z, m[2].w);
+	ImGui::Text("		       [%f, %f, %f, %f]",  m[3].x, m[3].y, m[3].z, m[3].w);
+#endif
+
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
@@ -116,32 +151,42 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	m_viewportFocused = ImGui::IsWindowFocused();
 	m_viewportHovered = ImGui::IsWindowHovered();
-	TRAP::Application::GetImGuiLayer().BlockEvents(!m_viewportFocused && !m_viewportHovered);
+	TRAP::Application::GetImGuiLayer().BlockEvents(m_viewportHovered && (TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
+	                                                                           TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle)));
 
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 	ImGui::Image(m_renderTarget->GetTexture(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 0.0f }, ImVec2{ 1.0f, 1.0f });
 
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImVec2 minBound = ImGui::GetWindowPos();
+
+	ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
+	m_allowViewportCameraEvents = (ImGui::IsMouseHoveringRect(minBound, maxBound) && m_viewportFocused) || m_startedCameraMovement;
+
 	//Gizmos
 	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity(); //TODO Mouse picking (currently only works via selection in the scene graph)
 	if(selectedEntity && m_gizmoType != -1 &&
-	   !TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_ALT) &&
-	   !TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_ALT))
+	   !TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
+	   !TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
 	{
 		//Camera
-		auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //TODO Temporary until the editor has a proper editor camera
-		if(cameraEntity)
-		{
-			const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
-			const TRAP::Math::Mat4& cameraProj = camera.GetProjectionMatrix();
-			TRAP::Math::Mat4 cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
+		// auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //Run time camera
+		// if(cameraEntity)
+		// {
+			// const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
+			// const TRAP::Math::Mat4& cameraProj = camera.GetProjectionMatrix();
+			// TRAP::Math::Mat4 cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
+			const TRAP::Math::Mat4& cameraProj = m_editorCamera.GetProjectionMatrix();
+			TRAP::Math::Mat4 cameraView = m_editorCamera.GetViewMatrix();
 
 			//Entity transform
 			auto& tc = selectedEntity.GetComponent<TRAP::TransformComponent>();
 			TRAP::Math::Mat4 transform = tc.GetTransform();
 
-			ImGuizmo::SetOrthographic(camera.GetProjectionType() == TRAP::SceneCamera::ProjectionType::Orthographic);
+			// ImGuizmo::SetOrthographic(camera.GetProjectionType() == TRAP::SceneCamera::ProjectionType::Orthographic); //TODO 2D mode
+			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
 
 			const float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
@@ -159,7 +204,7 @@ void TRAPEditorLayer::OnImGuiRender()
 
 			ImGuizmo::Manipulate(&cameraView[0].x, &cameraProj[0].x,
 			                     static_cast<ImGuizmo::OPERATION>(m_gizmoType), ImGuizmo::LOCAL,
-								 &transform[0].x, snap ? snapValues.data() : nullptr);
+								 &transform[0].x, nullptr, snap ? snapValues.data() : nullptr);
 
 			if(ImGuizmo::IsUsing())
 			{
@@ -172,7 +217,7 @@ void TRAPEditorLayer::OnImGuiRender()
 					tc.Scale = scale;
 				}
 			}
-		}
+		// }
 	}
 
 	ImGui::End();
@@ -211,49 +256,8 @@ void TRAPEditorLayer::OnAttach()
 
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
-#if 0
-	//Entity
-	auto square = m_activeScene->CreateEntity("Square Entity");
-	square.AddComponent<TRAP::SpriteRendererComponent>(TRAP::Math::Vec4{0.0f, 1.0f, 0.0f, 1.0f});
+	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
 
-	m_squareEntity = square;
-
-	m_cameraEntity = m_activeScene->CreateEntity("Camera Entity");
-	m_cameraEntity.AddComponent<TRAP::CameraComponent>();
-
-	class CameraController : public TRAP::ScriptableEntity
-	{
-	public:
-		void OnCreate() override
-		{
-			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
-			pos.x = TRAP::Utils::Random::Get(-5.0f, 5.0f);
-		}
-
-		void OnDestroy() override
-		{}
-
-		void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
-		{
-			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
-			const float speed = 5.0f;
-
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
-				pos.y += speed * deltaTime;
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
-				pos.x -= speed * deltaTime;
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
-				pos.y -= speed * deltaTime;
-			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
-				pos.x += speed * deltaTime;
-		}
-
-		void OnTick() override
-		{}
-	};
-
-	m_cameraEntity.AddComponent<TRAP::NativeScriptComponent>().Bind<CameraController>();
-#endif
 	m_sceneGraphPanel.SetContext(m_activeScene);
 }
 
@@ -278,8 +282,24 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_renderTargetDesc.Height = static_cast<uint32_t>(m_viewportSize.y);
 		m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
+		m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
+
 		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 	}
+
+	m_editorCamera.SetActive(m_allowViewportCameraEvents);
+	m_editorCamera.OnUpdate(deltaTime);
+
+	if((TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
+		TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle)) &&
+	   !m_startedCameraMovement && m_viewportFocused && m_viewportHovered)
+	{
+		m_startedCameraMovement = true;
+	}
+
+	if(!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
+	   !TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
+		m_startedCameraMovement = false;
 
 	TRAP::Graphics::Renderer2D::ResetStats();
 
@@ -298,7 +318,7 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 
 	//Update Scene
-	m_activeScene->OnUpdate(deltaTime);
+	m_activeScene->OnUpdateEditor(deltaTime, m_editorCamera);
 
 	//Stop RenderPass (necessary for transition)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
@@ -322,6 +342,9 @@ void TRAPEditorLayer::OnTick()
 
 void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
 {
+	if(m_allowViewportCameraEvents)
+		m_editorCamera.OnEvent(event);
+
 	TRAP::Events::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) {return OnKeyPress(e); });
 }
@@ -336,59 +359,63 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 	const bool ctrlPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
 	const bool shiftPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift);
-	switch(event.GetKey())
-	{
-	case TRAP::Input::Key::N:
-	{
-		if (ctrlPressed)
-			NewScene();
 
-		break;
-	}
-
-	case TRAP::Input::Key::O:
-	{
-		if (ctrlPressed)
-			OpenScene();
-
-		break;
-	}
-
-	case TRAP::Input::Key::S:
-	{
-		if (ctrlPressed && shiftPressed)
-			SaveSceneAs();
-		else if (shiftPressed)
-			SaveScene();
-
-		break;
-	}
-
-	//Gizmos
 	//TODO Make these shortcuts customizable
-	case TRAP::Input::Key::Q:
+	if(!TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) && !ImGuizmo::IsUsing())
 	{
-		m_gizmoType = -1;
-		break;
-	}
-	case TRAP::Input::Key::W:
-	{
-		m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
-		break;
-	}
-	case TRAP::Input::Key::E:
-	{
-		m_gizmoType = ImGuizmo::OPERATION::ROTATE;
-		break;
-	}
-	case TRAP::Input::Key::R:
-	{
-		m_gizmoType = ImGuizmo::OPERATION::SCALE;
-		break;
-	}
+		switch(event.GetKey())
+		{
+		case TRAP::Input::Key::N:
+		{
+			if (ctrlPressed)
+				NewScene();
 
-	default:
-		break;
+			break;
+		}
+
+		case TRAP::Input::Key::O:
+		{
+			if (ctrlPressed)
+				OpenScene();
+
+			break;
+		}
+
+		case TRAP::Input::Key::S:
+		{
+			if (ctrlPressed && shiftPressed)
+				SaveSceneAs();
+			else if (shiftPressed)
+				SaveScene();
+
+			break;
+		}
+
+		//Gizmos
+		case TRAP::Input::Key::Q:
+		{
+				m_gizmoType = -1;
+			break;
+		}
+		case TRAP::Input::Key::W:
+		{
+			m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		}
+		case TRAP::Input::Key::E:
+		{
+			m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
+		}
+		case TRAP::Input::Key::R:
+		{
+			m_gizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+		}
+
+		default:
+			break;
+		}
 	}
 
 	return false;

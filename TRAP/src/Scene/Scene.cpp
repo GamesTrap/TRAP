@@ -5,6 +5,7 @@
 #include "Graphics/Renderer2D.h"
 #include "Utils/Time/TimeStep.h"
 #include "Entity.h"
+#include "Graphics/Cameras/Editor/EditorCamera.h"
 
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
@@ -24,7 +25,7 @@ void TRAP::Scene::DestroyEntity(const Entity entity)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
+void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 {
 	//Update scripts
 	{
@@ -77,6 +78,23 @@ void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 
 		Graphics::Renderer2D::EndScene();
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::EditorCamera& camera)
+{
+	Graphics::Renderer2D::BeginScene(camera);
+
+	auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+	for (auto entity : group)
+	{
+		auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
+		Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
+	}
+
+	Graphics::Renderer2D::EndScene();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

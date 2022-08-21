@@ -32,14 +32,14 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 		DrawEntityNode(entity);
 	});
 
-	if(ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+	if(ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 	{
 		m_selectionContext = {};
 		m_propertiesPanel.SetEntity({});
 	}
 
 	//Right-click on blank space
-	if(ImGui::BeginPopupContextWindow(nullptr, 1, false))
+	if(ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
 	{
 		if (ImGui::MenuItem("Create Entity"))
 			m_context->CreateEntity("Entity");

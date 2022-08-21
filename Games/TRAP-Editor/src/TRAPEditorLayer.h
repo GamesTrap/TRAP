@@ -23,8 +23,6 @@ private:
 	void SaveScene();
 	void SaveSceneAs();
 
-	// TRAP::Graphics::OrthographicCameraController m_cameraController;
-
 	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions;
 	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
@@ -36,7 +34,12 @@ private:
 	TRAP::Entity m_squareEntity;
 	TRAP::Entity m_cameraEntity;
 
+	TRAP::Graphics::EditorCamera m_editorCamera;
+
 	int32_t m_gizmoType;
+
+	bool m_allowViewportCameraEvents;
+	bool m_startedCameraMovement;
 
 	//Panels
 	TRAP::SceneGraphPanel m_sceneGraphPanel;

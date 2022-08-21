@@ -15,6 +15,10 @@ namespace TRAP
 	{
 		struct TimeStep;
 	}
+	namespace Graphics
+	{
+		class EditorCamera;
+	}
 
 	class Entity;
 
@@ -39,7 +43,8 @@ namespace TRAP
 			return m_registry;
 		}
 
-		void OnUpdate(Utils::TimeStep deltaTime);
+		void OnUpdateRuntime(Utils::TimeStep deltaTime);
+		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
 		void OnTick();
 		void OnViewportResize(uint32_t width, uint32_t height);
 

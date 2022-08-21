@@ -112,6 +112,7 @@
 #include "../src/Graphics/Cameras/Camera.h"
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCamera.h"
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCameraController.h"
+#include "../src/Graphics/Cameras/Editor/EditorCamera.h"
 //-----------------------
 
 //----NETWORK------------

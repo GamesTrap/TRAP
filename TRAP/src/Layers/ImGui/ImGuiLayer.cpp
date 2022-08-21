@@ -389,3 +389,30 @@ ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, cons
 
 	return font;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool ImGui::IsInputEnabled()
+{
+	const auto& io = ImGui::GetIO();
+	return (io.ConfigFlags & ImGuiConfigFlags_NoMouse) == 0 &&
+	       (io.ConfigFlags & ImGuiConfigFlags_NavNoCaptureKeyboard) == 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void ImGui::SetInputEnabled(const bool enable)
+{
+	auto& io = ImGui::GetIO();
+
+	if(enable)
+	{
+		io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+		io.ConfigFlags &= ~ImGuiConfigFlags_NavNoCaptureKeyboard;
+	}
+	else
+	{
+		io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+		io.ConfigFlags |= ImGuiConfigFlags_NavNoCaptureKeyboard;
+	}
+}

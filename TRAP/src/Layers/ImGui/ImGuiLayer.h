@@ -149,6 +149,17 @@ namespace ImGui
 	ImFont* AddFontFromMemoryTTF(void* fontData, int32_t fontSize, float sizePixels,
 							     const ImFontConfig* fontCfg = nullptr,
 							     const ImWchar* glyphRanges = nullptr);
+
+	/// <summary>
+	/// Retrieve whether ImGui input is enabled or not.
+	/// </summary>
+	/// <returns>True if input is enabled, false otherwise.</returns>
+	bool IsInputEnabled();
+	/// <summary>
+	/// Enable or disable ImGui input.
+	/// </summary>
+	/// <param name="enable">Enable or disable.</param>
+	void SetInputEnabled(bool enable);
 }
 
 #endif /*TRAP_IMGUILAYER_H*/

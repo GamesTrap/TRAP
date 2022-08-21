@@ -3103,3 +3103,12 @@ SITREP 08/19/2022|22w33c2
     - Math Added matrix decompose function ~>15 mins
     - TRAP-Editor SceneGraphPanel Added GetSelectedEntity() ~<5 mins
     - TRAP-Editor Added support for gizmos >30 mins
+
+SITREP 08/21/2022|22w33d1
+    - Changed TRAP Engine version to 22w33d1(0.8.30)
+    - ImGuiLayer Added SetInputEnabled() & IsInputEnabled() ~<10 mins
+    - ImGuiWindowing Added ImGuiConfigFlags_NoMouse checks ~<10 mins
+    - Cameras Added EditorCamera (arcball/flycam styles) ~>25 mins
+    - Renderer2D Added support for EditorCamera ~<5 mins
+    - Scene splitted OnUpdate() into OnUpdateRuntime() & OnUpdateEditor() ~<10 mins
+    - TRAP-Editor Added EditorCamera support ~>20 mins
