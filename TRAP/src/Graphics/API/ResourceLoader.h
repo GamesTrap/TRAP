@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 	/// Resource loader.
 	/// Does the heavy lifting of sending data between the CPU and GPU.
 	/// </summary>
-	class ResourceLoader //TODO Maybe use ThreadPool for more parallelization?!
+	class ResourceLoader
 	{
 	public:
 		/// <summary>
@@ -104,6 +104,18 @@ namespace TRAP::Graphics::API
 		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) returns true.
 		/// </param>
 		void EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* token);
+
+		/// <summary>
+		/// Copy data from GPU to the CPU.
+		/// For optimal use, the amount of data to transfer should be minimized as much as possible and
+		/// applications should provide additional graphics/compute work that the GPU can execute alongside the copy.
+		/// </summary>
+		/// <param name="textureDesc">Description of the texture copy.</param>
+		/// <param name="token">
+		/// If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
+		/// If token is not nullptr, the resource will be available after IsTokenCompleted(token) return true.
+		/// </param>
+		void CopyResource(RendererAPI::TextureCopyDesc& textureDesc, SyncToken* token);
 
 		/// <summary>
 		/// Retrieve whether all submitted resource loads and updates have been completed.
@@ -239,6 +251,12 @@ namespace TRAP::Graphics::API
 		/// <param name="token">Optional output sync token.</param>
 		void QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate, SyncToken* token);
 		/// <summary>
+		/// Queue a texture copy.
+		/// </summary>
+		/// <param name="desc">Description of texture copy.</param>
+		/// <param name="token">Optional output sync token.</param>
+		void QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* token);
+		/// <summary>
 		/// Queue a texture barrier.
 		/// </summary>
 		/// <param name="texture">Texture to queue a barrier on.</param>
@@ -362,6 +380,14 @@ namespace TRAP::Graphics::API
 		/// <return>Result of upload.</return>
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 
+		/// <summary>
+		/// Copy a texture to a buffer with the specified resource set.
+		/// </summary>
+		/// <param name="activeSet">Resource set to use.</param>
+		/// <param name="textureCopy">Texture copy request.</param>
+		/// <returns>Result of copy.</returns>
+		UploadFunctionResult CopyTexture(std::size_t activeSet, RendererAPI::TextureCopyDesc& textureCopy);
+
 		RendererAPI::ResourceLoaderDesc m_desc;
 
 		std::atomic<bool> m_run;
@@ -378,6 +404,7 @@ namespace TRAP::Graphics::API
 			BufferBarrier,
 			TextureBarrier,
 			LoadTexture,
+			CopyTexture,
 			Invalid
 		};
 		struct UpdateRequest
@@ -392,6 +419,11 @@ namespace TRAP::Graphics::API
 			/// </summary>
 			/// <param name="texture">Description of texture load.</param>
 			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture);
+			/// <summary>
+			/// Constructor for texture copy request.
+			/// </summary>
+			/// <param name="texture">Description of texture copy.</param>
+			explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy);
 			/// <summary>
 			/// Constructor for texture update request.
 			/// </summary>
@@ -414,7 +446,8 @@ namespace TRAP::Graphics::API
 			TRAP::Scope<TRAP::Image> Image = nullptr;
 			std::variant<RendererAPI::BufferUpdateDesc,
 			             TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal,
-						 RendererAPI::TextureLoadDesc, RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
+						 RendererAPI::TextureLoadDesc, RendererAPI::TextureCopyDesc,
+						 RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
 		};
 		std::vector<UpdateRequest> m_requestQueue;
 
@@ -442,6 +475,9 @@ namespace TRAP::Graphics::API
 			uint64_t BufferSize{};
 			uint32_t BufferCount{};
 			bool IsRecording{};
+
+			//For reading back GPU generated textures, we need to ensure writes have completed before performing the copy.
+			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores;
 		} m_copyEngine;
 		uint32_t m_nextSet;
 	};

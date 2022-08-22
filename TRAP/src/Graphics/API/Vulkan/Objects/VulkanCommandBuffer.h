@@ -253,6 +253,14 @@ namespace TRAP::Graphics::API
 		/// <param name="subresourceDesc">Subresource description.</param>
 		void UpdateSubresource(TRAP::Graphics::Texture* texture, const TRAP::Ref<Buffer>& srcBuffer,
 		                       const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
+		/// <summary>
+		/// Copy a texture partially into a buffer.
+		/// </summary>
+		/// <param name="dstBuffer">Destination to copy data into.</param>
+		/// <param name="texture">Source texture to copy from.</param>
+		/// <param name="subresourceDesc">Subresource description.</param>
+		void CopySubresource(Buffer* dstBuffer, Texture* texture,
+		                     const RendererAPI::SubresourceDataDesc& subresourceDesc) const override;
 
 		/// <summary>
 		/// Reset a query pool.

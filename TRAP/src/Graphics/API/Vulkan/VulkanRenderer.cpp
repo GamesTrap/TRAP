@@ -1537,6 +1537,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	RenderTargetBarrier srcBarrier = {renderTarget, currResState, ResourceState::CopySource};
 	cmd->ResourceBarrier(nullptr, nullptr, &srcBarrier);
 
+	//TODO Replace with CommandBuffer::CopySubresource()
 	const uint32_t rowPitch = renderTarget->GetWidth() * formatByteWidth;
 	const uint32_t width = renderTarget->GetTexture()->GetWidth();
 	const uint32_t height = renderTarget->GetTexture()->GetHeight();
@@ -1833,7 +1834,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 
 	gpd.PrimitiveTopology = PrimitiveTopology::TriangleList;
 	gpd.RenderTargetCount = 1;
-	gpd.ColorFormats = { rT[0]->GetImageFormat(), rT[1]->GetImageFormat(), rT[2]->GetImageFormat() };
+	gpd.ColorFormats = { rT[0]->GetImageFormat() };
 	gpd.SampleCount = rT[0]->GetSampleCount();
 	gpd.SampleQuality = rT[0]->GetSampleQuality();
 	gpd.ShadingRate = RendererAPI::ShadingRate::Full;

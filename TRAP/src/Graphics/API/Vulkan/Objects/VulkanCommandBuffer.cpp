@@ -17,7 +17,6 @@
 #include "VulkanInits.h"
 #include "VulkanQueue.h"
 #include "VulkanTexture.h"
-#include <memory>
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
@@ -719,6 +718,69 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(TRAP::Graphics:
 
 		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, vkTexture->GetVkImage(),
 		                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, numOfPlanes, bufferImagesCopy.data());
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::CopySubresource(Buffer* dstBuffer, Texture* texture,
+                                                               const RendererAPI::SubresourceDataDesc& subresourceDesc) const
+{
+	VulkanTexture* vkTexture = dynamic_cast<VulkanTexture*>(texture);
+	VulkanBuffer* vkBuffer = dynamic_cast<VulkanBuffer*>(dstBuffer);
+
+	const ImageFormat format = texture->GetImageFormat();
+	const bool isSinglePlane = ImageFormatIsSinglePlane(format);
+
+	//TODO Currently all textures can only be single plane (as we dont support formats that have multiple textures inside)
+	if(isSinglePlane)
+	{
+		const uint32_t width = TRAP::Math::Max(1u, texture->GetWidth() >> subresourceDesc.MipLevel);
+		const uint32_t height = TRAP::Math::Max(1u, texture->GetHeight() >> subresourceDesc.MipLevel);
+		const uint32_t depth = TRAP::Math::Max(1u, texture->GetDepth() >> subresourceDesc.MipLevel);
+		const uint32_t numBlocksWide = subresourceDesc.RowPitch / (ImageFormatBitSizeOfBlock(format) >> 3u);
+		const uint32_t numBlocksHigh = (subresourceDesc.SlicePitch / subresourceDesc.RowPitch);
+
+		VkImageSubresourceLayers layers{};
+		layers.aspectMask = texture->GetAspectMask();
+		layers.mipLevel = subresourceDesc.MipLevel;
+		layers.baseArrayLayer = subresourceDesc.ArrayLayer;
+		layers.layerCount = 1;
+
+		const VkBufferImageCopy copy = VulkanInits::ImageCopy(subresourceDesc.SrcOffset,
+		                                                      numBlocksWide * ImageFormatWidthOfBlock(format),
+															  numBlocksHigh * ImageFormatHeightOfBlock(format),
+															  width, height, depth, layers);
+
+		vkCmdCopyImageToBuffer(m_vkCommandBuffer, vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+		                       vkBuffer->GetVkBuffer(), 1, &copy);
+	}
+	else
+	{
+		const uint32_t width = texture->GetWidth();
+		const uint32_t height = texture->GetHeight();
+		const uint32_t depth = texture->GetDepth();
+		const uint32_t numOfPlanes = ImageFormatNumOfPlanes(format);
+
+		uint64_t offset = subresourceDesc.SrcOffset;
+		std::vector<VkBufferImageCopy> bufferImageCopies(numOfPlanes);
+
+		for(uint32_t i = 0; i < numOfPlanes; ++i)
+		{
+			VkImageSubresourceLayers layers{};
+			layers.aspectMask = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
+			layers.mipLevel = subresourceDesc.MipLevel;
+			layers.baseArrayLayer = subresourceDesc.ArrayLayer;
+			layers.layerCount = 1;
+
+			bufferImageCopies[i] = VulkanInits::ImageCopy(offset, 0, 0,
+			                                              ImageFormatPlaneWidth(format, i, width),
+														  ImageFormatPlaneHeight(format, i, height),
+														  depth, layers);
+
+			offset += bufferImageCopies[i].imageExtent.width * bufferImageCopies[i].imageExtent.height *
+			          ImageFormatPlaneSizeOfBlock(format, i);
+		}
 	}
 }
 

@@ -2311,6 +2311,27 @@ namespace TRAP::Graphics
 			} Internal;
 		};
 
+		struct TextureCopyDesc
+		{
+			//Source texture to copy from
+			TRAP::Ref<TRAP::Graphics::Texture> Texture;
+			//Destination buffer to copy to
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
+			//Semaphore to synchronize graphics/compute operations that write
+			//to the textures with the texture -> buffer copy.
+			TRAP::Ref<Semaphore> WaitSemaphore;
+			//Mip level to copy from
+			uint32_t MipLevel;
+			//Array layer to copy from
+			uint32_t ArrayLayer;
+			//Current texture state
+			ResourceState TextureState;
+			//Queue the texture is copied from
+			RendererAPI::QueueType QueueType;
+			//Offset into the destination buffer to start at
+			uint64_t BufferOffset;
+		};
+
 		/// <summary>
 		/// Description for the resource loader.
 		/// </summary>

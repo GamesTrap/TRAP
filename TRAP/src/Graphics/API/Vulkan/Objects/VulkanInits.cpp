@@ -530,6 +530,29 @@ VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t buf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkBufferImageCopy TRAP::Graphics::API::VulkanInits::ImageCopy(const uint32_t bufferOffset, const uint32_t bufferRowLength,
+ 															  const uint32_t bufferImageHeight, const uint32_t width,
+															  const uint32_t height, const uint32_t depth,
+							    							  const VkImageSubresourceLayers layers) noexcept
+{
+	VkBufferImageCopy copy;
+
+	copy.bufferOffset = bufferOffset;
+	copy.bufferRowLength = bufferRowLength;
+	copy.bufferImageHeight = bufferImageHeight;
+	copy.imageSubresource = layers;
+	copy.imageOffset.x = 0;
+	copy.imageOffset.y = 0;
+	copy.imageOffset.z = 0;
+	copy.imageExtent.width = width;
+	copy.imageExtent.height = height;
+	copy.imageExtent.depth = depth;
+
+	return copy;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint64_t allocationSize,
                                                                       const VkBufferUsageFlags usageFlags) noexcept
 {

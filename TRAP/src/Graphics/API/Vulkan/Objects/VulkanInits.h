@@ -295,6 +295,20 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkBufferImageCopy ImageCopy(uint32_t bufferRowLength, uint32_t width, uint32_t height, uint32_t depth,
 							    VkImageSubresourceLayers layers) noexcept;
 
+	/// <summary>
+	/// Create a Vulkan buffer image copy.
+	/// </summary>
+	/// <param name="bufferOffset">Start offset of the buffer.</param>
+	/// <param name="bufferRowLength">Row length of the buffer.</param>
+	/// <param name="bufferImageHeight">Image height of the buffer.</param>
+	/// <param name="width">Width of the image.</param>
+	/// <param name="height">Height of the image.</param>
+	/// <param name="depth">Depth of the image.</param>
+	/// <param name="layers">Number of Vulkan image subresource layers.</param>
+	VkBufferImageCopy ImageCopy(uint32_t bufferOffset, uint32_t bufferRowLength, uint32_t bufferImageHeight,
+							    uint32_t width, uint32_t height, uint32_t depth, VkImageSubresourceLayers layers) noexcept;
+
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>

@@ -118,6 +118,12 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 				break;
 			}
 
+			case UpdateRequestType::CopyTexture:
+			{
+				result = loader->CopyTexture(loader->m_nextSet, std::get<RendererAPI::TextureCopyDesc>(updateState.Desc));
+				break;
+			}
+
 			case UpdateRequestType::Invalid:
 			default:
 				break;
@@ -524,6 +530,13 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::Texture
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::ResourceLoader::CopyResource(RendererAPI::TextureCopyDesc &textureDesc, SyncToken *token)
+{
+	QueueTextureCopy(textureDesc, token);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::API::ResourceLoader::AllResourceLoadsCompleted() const
 {
 	const SyncToken token = m_tokenCounter;
@@ -666,6 +679,26 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 		m_requestQueue.back().UploadBuffer = (textureUpdate.Range.Flags &
 		                                      static_cast<uint32_t>(MappedRangeFlag::TempBuffer) ?
 											 textureUpdate.Range.Buffer : nullptr);
+	}
+	m_queueCond.notify_one();
+
+	if(token)
+		*token = Math::Max(t, *token);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* token)
+{
+	SyncToken t{};
+	{
+		std::lock_guard<std::mutex> lock(m_queueMutex);
+
+		t = m_tokenCounter + 1;
+		++m_tokenCounter;
+
+		m_requestQueue.emplace_back(UpdateRequest(desc));
+		m_requestQueue.back().WaitIndex = t;
 	}
 	m_queueCond.notify_one();
 
@@ -854,6 +887,12 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 	submitDesc.Cmds.push_back(resSet.Cmd);
 
 	submitDesc.SignalFence = resSet.Fence;
+
+	if(!m_copyEngine.WaitSemaphores.empty())
+	{
+		submitDesc.WaitSemaphores = m_copyEngine.WaitSemaphores;
+		m_copyEngine.WaitSemaphores.clear();
+	}
 
 	{
 		m_copyEngine.Queue->Submit(submitDesc);
@@ -1395,6 +1434,56 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::CopyTexture(std::size_t activeSet,
+            																					           RendererAPI::TextureCopyDesc& textureCopy)
+{
+	TRAP::Ref<Texture> texture = textureCopy.Texture;
+	const ImageFormat format = texture->GetImageFormat();
+
+	CommandBuffer* cmd = AcquireCmd(activeSet);
+
+	if(textureCopy.WaitSemaphore)
+		m_copyEngine.WaitSemaphores.push_back(textureCopy.WaitSemaphore);
+
+	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+	{
+		RendererAPI::TextureBarrier barrier{};
+		barrier.Texture = texture.get();
+		barrier.CurrentState = textureCopy.TextureState;
+		barrier.NewState = RendererAPI::ResourceState::CopySource;
+		cmd->ResourceBarrier(nullptr, &barrier, nullptr);
+	}
+
+	uint64_t numBytes = 0;
+	uint64_t rowBytes = 0;
+	uint64_t numRows = 0;
+
+	const bool ret = UtilGetSurfaceInfo(texture->GetWidth(), texture->GetHeight(), format, &numBytes, &rowBytes, &numRows);
+	if(!ret)
+		return UploadFunctionResult::InvalidRequest;
+
+	RendererAPI::SubresourceDataDesc subresourceDesc{};
+	subresourceDesc.ArrayLayer = textureCopy.ArrayLayer;
+	subresourceDesc.MipLevel = textureCopy.MipLevel;
+	subresourceDesc.SrcOffset = textureCopy.BufferOffset;
+
+	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+	{
+		const uint64_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
+		const uint64_t rowAlignment = UtilGetTextureRowAlignment();
+		const uint64_t subRowPitch = ((rowBytes + rowAlignment - 1) / rowAlignment) * rowAlignment;
+		const uint64_t subSlicePitch = (((subRowPitch * numRows) + sliceAlignment - 1) / sliceAlignment) * sliceAlignment;
+		subresourceDesc.RowPitch = subRowPitch;
+		subresourceDesc.SlicePitch = subSlicePitch;
+	}
+
+	cmd->CopySubresource(textureCopy.Buffer.get(), textureCopy.Texture.get(), subresourceDesc);
+
+	return UploadFunctionResult::Completed;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer)
 	: Type(UpdateRequestType::UpdateBuffer), Desc(buffer)
 {}
@@ -1403,6 +1492,12 @@ TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const Renderer
 
 TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureLoadDesc& texture)
 	: Type(UpdateRequestType::LoadTexture), Desc(texture)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::ResourceLoader::UpdateRequest::UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy)
+	: Type(UpdateRequestType::CopyTexture), Desc(textureCopy)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//

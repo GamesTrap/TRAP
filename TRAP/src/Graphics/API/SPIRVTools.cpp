@@ -169,13 +169,13 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 	}
 
 	//4. Reflect output
-	for(const auto& input : allResources.stage_outputs)
+	for(const auto& output : allResources.stage_outputs)
 	{
 		Resource& resource = resources[currentResource++];
 
-		resource.SPIRVCode.ID = input.id;
-		resource.SPIRVCode.TypeID = input.type_id;
-		resource.SPIRVCode.BaseTypeID = input.base_type_id;
+		resource.SPIRVCode.ID = output.id;
+		resource.SPIRVCode.TypeID = output.type_id;
+		resource.SPIRVCode.BaseTypeID = output.base_type_id;
 
 		resource.Type = ResourceType::Outputs;
 
@@ -189,7 +189,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 		//bit width * vecsize = size
 		resource.Size = (static_cast<uint64_t>(type.width / 8)) * type.vecsize;
 
-		resource.Name = input.name;
+		resource.Name = output.name;
 	}
 
 	//5. Reflect the "normal" resources
