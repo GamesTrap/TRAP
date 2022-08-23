@@ -3125,3 +3125,5 @@ SITREP 08/22/2022|22w34a1
     - Changed TRAP Engine version to 22w34a1(0.8.31)
     - RendererAPI/VulkanCommandBuffer LoadActionsDesc Added support for int and uint values in ClearColorValues ~<5 mins
     - VulkanRenderer Added support for multiple fragment render targets ~<10 mins
+    - VertexBufferLayout Added unsigned integer types to ShaderDataType ~<5 mins
+    - VulkanRenderer BindVertexBuffer Added support for integer formats ~<5 mins

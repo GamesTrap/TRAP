@@ -1177,7 +1177,6 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer,
                                                            const VertexBufferLayout& layout, Window* window) const
 {
-	//Vertex Buffer realistically only consists of floating point values
 	constexpr auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
 	{
 		switch(s)
@@ -1193,6 +1192,30 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 		case ShaderDataType::Float4:
 			return ImageFormat::R32G32B32A32_SFLOAT;
+
+		case ShaderDataType::Int:
+			return ImageFormat::R32_SINT;
+
+		case ShaderDataType::Int2:
+			return ImageFormat::R32G32_SINT;
+
+		case ShaderDataType::Int3:
+			return ImageFormat::R32G32B32_SINT;
+
+		case ShaderDataType::Int4:
+			return ImageFormat::R32G32B32A32_SINT;
+
+		case ShaderDataType::UInt:
+			return ImageFormat::R32_SINT;
+
+		case ShaderDataType::UInt2:
+			return ImageFormat::R32G32_SINT;
+
+		case ShaderDataType::UInt3:
+			return ImageFormat::R32G32B32_SINT;
+
+		case ShaderDataType::UInt4:
+			return ImageFormat::R32G32B32A32_SINT;
 
 		case ShaderDataType::None:
 		default:
@@ -1548,6 +1571,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	bufferDesc.Size = static_cast<uint64_t>(renderTarget->GetWidth()) * renderTarget->GetHeight() * formatByteWidth;
 	bufferDesc.Flags = BufferCreationFlags::PersistentMap | BufferCreationFlags::NoDescriptorViewCreation;
 	bufferDesc.StartState = ResourceState::CopyDestination;
+	bufferDesc.QueueType = QueueType::Graphics;
 	TRAP::Ref<Buffer> buffer = Buffer::Create(bufferDesc);
 
 	//Start recording
