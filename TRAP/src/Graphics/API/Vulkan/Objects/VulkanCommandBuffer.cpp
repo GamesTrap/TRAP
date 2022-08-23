@@ -385,9 +385,31 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		for(std::size_t i = 0; i < renderTargets.size(); ++i)
 		{
-			const TRAP::Math::Vec4 clearColor = loadActions->ClearColorValues[i];
 			VkClearValue val{};
-			val.color = { {clearColor.x, clearColor.y, clearColor.z, clearColor.w} };
+			if(std::holds_alternative<TRAP::Math::Vec4>(loadActions->ClearColorValues[i]))
+			{
+				const TRAP::Math::Vec4 clearColor = std::get<TRAP::Math::Vec4>(loadActions->ClearColorValues[i]);
+				val.color.float32[0] = clearColor.x;
+				val.color.float32[1] = clearColor.y;
+				val.color.float32[2] = clearColor.z;
+				val.color.float32[3] = clearColor.w;
+			}
+			else if(std::holds_alternative<TRAP::Math::Vec4i>(loadActions->ClearColorValues[i]))
+			{
+				const TRAP::Math::Vec4i clearColor = std::get<TRAP::Math::Vec4i>(loadActions->ClearColorValues[i]);
+				val.color.int32[0] = clearColor.x;
+				val.color.int32[1] = clearColor.y;
+				val.color.int32[2] = clearColor.z;
+				val.color.int32[3] = clearColor.w;
+			}
+			else if(std::holds_alternative<TRAP::Math::Vec4ui>(loadActions->ClearColorValues[i]))
+			{
+				const TRAP::Math::Vec4ui clearColor = std::get<TRAP::Math::Vec4ui>(loadActions->ClearColorValues[i]);
+				val.color.uint32[0] = clearColor.x;
+				val.color.uint32[1] = clearColor.y;
+				val.color.uint32[2] = clearColor.z;
+				val.color.uint32[3] = clearColor.w;
+			}
 			clearValues.push_back(val);
 		}
 		if(depthStencil)

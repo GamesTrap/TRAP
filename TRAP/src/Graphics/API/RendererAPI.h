@@ -1529,7 +1529,7 @@ namespace TRAP::Graphics
 			//Flags specifying the suitable usage of this buffer (Uniform Buffer, Vertex Buffer, Index Buffer, ...)
 			DescriptorType Descriptors{};
 			//Debug name used in GPU-profile
-			const std::string_view Name{};
+			std::string Name{};
 		};
 
 		/// <summary>
@@ -2226,7 +2226,7 @@ namespace TRAP::Graphics
 			//Action to perform on the stencil attachment on load.
 			LoadActionType LoadActionStencil{};
 			//Clear color(s)
-			std::array<TRAP::Math::Vec4, 8> ClearColorValues{};
+			std::array<std::variant<TRAP::Math::Vec4, TRAP::Math::Vec4ui, TRAP::Math::Vec4i>, 8> ClearColorValues{};
 			//Clear depth value
 			float ClearDepth = 1.0f;
 			//Clear stencil value

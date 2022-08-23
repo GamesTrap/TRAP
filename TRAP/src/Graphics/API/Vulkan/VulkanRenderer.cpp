@@ -1327,7 +1327,16 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const PerWindowData* const p = s_perWindowDataMap[window].get();
+	PerWindowData* const p = s_perWindowDataMap[window].get();
+
+	//We may needs to change the graphics pipeline if RenderTargetCount or ColorFormats don't match
+	if(colorTarget)
+	{
+		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+		gpd.RenderTargetCount = 1;
+		gpd.ColorFormats = {colorTarget->GetImageFormat()};
+		BindShader(gpd.ShaderProgram, window);
+	}
 
 	std::vector<TRAP::Ref<Graphics::RenderTarget>> targets;
 	if(colorTarget)
@@ -1351,7 +1360,18 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const PerWindowData* const p = s_perWindowDataMap[window].get();
+	PerWindowData* const p = s_perWindowDataMap[window].get();
+
+	//We may needs to change the graphics pipeline if RenderTargetCount or ColorFormats don't match
+	if(!colorTargets.empty())
+	{
+		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+		gpd.RenderTargetCount = colorTargets.size();
+		gpd.ColorFormats.resize(colorTargets.size());
+		for(uint32_t i = 0; i < colorTargets.size(); ++i)
+			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
+		BindShader(gpd.ShaderProgram, window);
+	}
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets
 	(
