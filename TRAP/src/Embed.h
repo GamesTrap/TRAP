@@ -70,10 +70,12 @@ namespace TRAP::Embed
 		layout(location = 1) in vec4 Color;
 		layout(location = 2) in vec2 TexCoord;
 		layout(location = 3) in float TexIndex;
+		layout(location = 4) in int EntityID;
 
 		layout(location = 1) out vec4 vColor;
 		layout(location = 2) out vec2 vTexCoord;
 		layout(location = 3) out flat float vTexIndex;
+		layout(location = 4) out flat int vEntityID;
 
 		layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraBuffer
 		{
@@ -87,15 +89,18 @@ namespace TRAP::Embed
 			vColor = Color;
 			vTexCoord = TexCoord;
 			vTexIndex = TexIndex;
+			vEntityID = EntityID;
 		}
 
 #shader fragment
 
 		layout(location = 0) out vec4 FragColor;
+		layout(location = 1) out int FragColor2;
 
 		layout(location = 1) in vec4 vColor;
 		layout(location = 2) in vec2 vTexCoord;
 		layout(location = 3) in flat float vTexIndex;
+		layout(location = 4) in flat int vEntityID;
 
 		layout(UpdateFreqStatic, binding = 1) uniform sampler Sampler;
 		layout(UpdateFreqDynamic, binding = 1) uniform texture2D Textures[32];
@@ -205,6 +210,7 @@ namespace TRAP::Embed
 			}
 
 			FragColor = texColor;
+			FragColor2 = vEntityID;
 		}
 	)"
 	};

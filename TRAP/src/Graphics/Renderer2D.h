@@ -6,6 +6,10 @@
 #include "Textures/Texture.h"
 #include "Textures/SubTexture2D.h"
 
+namespace TRAP
+{
+	struct SpriteRendererComponent;
+}
 namespace TRAP::Graphics
 {
 	class Camera;
@@ -99,8 +103,17 @@ namespace TRAP::Graphics
 		/// <param name="color">Color for the quad.</param>
 		/// <param name="texture">Texture for the quad.</param>
 		/// <param name="texCoords">Optional: Texture coordinates for the quad.</param>
+		/// <param name="entityID">Optional: Entity ID of the quad.</param>
 		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
-		                     Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords);
+		                     Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords, int32_t entityID = -1);
+
+		/// <summary>
+		/// Draw a sprite.
+		/// </summary>
+		/// <param name="transform">Transform matrix for the sprite.</param>
+		/// <param name="sprite">Sprite component data.</param>
+		/// <param name="entityID">Entity ID of this sprite.</param>
+		static void DrawSprite(const TRAP::Math::Mat4& transform, const SpriteRendererComponent& sprite, int32_t entityID);
 
 		//Stats
 		struct Statistics

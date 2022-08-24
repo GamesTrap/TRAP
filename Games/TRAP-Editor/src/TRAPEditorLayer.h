@@ -2,6 +2,7 @@
 #define GAMESTRAP_TRAPEDITORLAYER_H
 
 #include <TRAP.h>
+
 #include "Panels/SceneGraphPanel.h"
 
 class TRAPEditorLayer final : public TRAP::Layer
@@ -23,27 +24,39 @@ private:
 	void SaveScene();
 	void SaveSceneAs();
 
+	void MousePicking();
+
+	//Color RenderTarget
 	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions;
 	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc;
 	TRAP::Ref<TRAP::Graphics::RenderTarget> m_renderTarget;
+
+	//Viewport
 	TRAP::Math::Vec2 m_viewportSize;
+	std::array<TRAP::Math::Vec2, 2> m_viewportBounds;
 	bool m_viewportFocused;
 	bool m_viewportHovered;
 
-	TRAP::Ref<TRAP::Scene> m_activeScene;
-	TRAP::Entity m_squareEntity;
-	TRAP::Entity m_cameraEntity;
-
-	TRAP::Graphics::EditorCamera m_editorCamera;
-
+	//Gizmo
 	int32_t m_gizmoType;
-
 	bool m_allowViewportCameraEvents;
+
+	//Editor Camera
+	TRAP::Graphics::EditorCamera m_editorCamera;
 	bool m_startedCameraMovement;
+
+	//Mouse picking
+	uint32_t m_leftMouseBtnRepeatCount;
+	bool m_entityChanged;
+	TRAP::Graphics::RendererAPI::BufferDesc m_mousePickBufferDesc;
+	TRAP::Ref<TRAP::Graphics::Buffer> m_mousePickBuffer;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_IDRenderTarget;
 
 	//Panels
 	TRAP::SceneGraphPanel m_sceneGraphPanel;
 	std::string m_lastScenePath;
+
+	TRAP::Ref<TRAP::Scene> m_activeScene;
 };
 
 #endif /*GAMESTRAP_TRAPEDITORLAYER_H*/

@@ -3131,3 +3131,8 @@ SITREP 08/23/2022|22w34a2
 SITREP 08/24/2022|22w34b
     - Changed TRAP Engine version to 22w34b1(0.8.33)
     - Fixed TRAPEditorLayer not compiling ~<5 mins
+    - TRAP-Editor SceneGraphPanel Added SetSelectedEntity() ~<5 mins
+    - Renderer2D Added DrawSprite() ~<10 mins
+    - Renderer2D Shader Added entity ID (used by mouse picking in TRAP-Editor) ~<10 mins
+    - Scene now uses Renderer2D::DrawSprite() ~<5 mins
+    - TRAP-Editor Added mouse picking (allows selection of entities from within the viewport) ~>30 mins

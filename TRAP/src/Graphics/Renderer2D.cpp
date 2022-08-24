@@ -13,6 +13,7 @@
 #include "Shaders/ShaderManager.h"
 #include "Textures/TextureManager.h"
 #include "Graphics/Cameras/Editor/EditorCamera.h"
+#include "Scene/Components.h"
 
 namespace TRAP::Graphics
 {
@@ -22,6 +23,9 @@ namespace TRAP::Graphics
 		Math::Vec4 Color;
 		Math::Vec2 TexCoord;
 		float TexIndex;
+
+		//Editor only
+		int32_t EntityID;
 	};
 
 	struct Renderer2DData
@@ -124,7 +128,8 @@ void TRAP::Graphics::Renderer2D::Init()
 			{ ShaderDataType::Float3, "Position" },
 			{ ShaderDataType::Float4, "Color" },
 			{ ShaderDataType::Float2, "TexCoord" },
-			{ ShaderDataType::Float, "TexIndex" }
+			{ ShaderDataType::Float, "TexIndex" },
+			{ ShaderDataType::Int, "EntityID" }
 		});
 
 		buffers[s_data.DataBufferIndex].QuadIndexBuffer = IndexBuffer::Create((*s_data.QuadIndicesData).data(),
@@ -338,7 +343,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
-                                          Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords)
+                                          Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords,
+										  const int32_t entityID)
 {
 	constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
@@ -364,12 +370,21 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 		s_data.QuadVertexBufferPtr->Color = color;
 		s_data.QuadVertexBufferPtr->TexCoord = texCoords ? (*texCoords)[i] : textureCoords[i];
 		s_data.QuadVertexBufferPtr->TexIndex = textureIndex;
+		s_data.QuadVertexBufferPtr->EntityID = entityID;
 		s_data.QuadVertexBufferPtr++;
 	}
 
 	s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].QuadCount++;
 
 	s_data.Stats.QuadCount++;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawSprite(const TRAP::Math::Mat4& transform,
+                                            const TRAP::SpriteRendererComponent& sprite, const int32_t entityID)
+{
+	DrawQuad(transform, sprite.Color, nullptr, nullptr, entityID);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

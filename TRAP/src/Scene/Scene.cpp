@@ -73,7 +73,8 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
+			// Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
+			Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
 		}
 
 		Graphics::Renderer2D::EndScene();
@@ -91,7 +92,8 @@ void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::
 	{
 		auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-		Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
+		// Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
+		Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
 	}
 
 	Graphics::Renderer2D::EndScene();
