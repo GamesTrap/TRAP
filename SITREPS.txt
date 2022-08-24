@@ -3121,9 +3121,13 @@ SITREP 08/22/2022|22w34a1
     - CommandBuffer Added GPU to CPU texture copy support via CopySubresource function ~<30 mins
     - ResourceLoader Added CopyResource (async GPU to CPU texture copy) ~<30 mins
 
-SITREP 08/22/2022|22w34a1
-    - Changed TRAP Engine version to 22w34a1(0.8.31)
+SITREP 08/23/2022|22w34a2
+    - Changed TRAP Engine version to 22w34a2(0.8.32)
     - RendererAPI/VulkanCommandBuffer LoadActionsDesc Added support for int and uint values in ClearColorValues ~<5 mins
     - VulkanRenderer Added support for multiple fragment render targets ~<10 mins
     - VertexBufferLayout Added unsigned integer types to ShaderDataType ~<5 mins
     - VulkanRenderer BindVertexBuffer Added support for integer formats ~<5 mins
+
+SITREP 08/24/2022|22w34b
+    - Changed TRAP Engine version to 22w34b1(0.8.33)
+    - Fixed TRAPEditorLayer not compiling ~<5 mins

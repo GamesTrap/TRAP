@@ -251,8 +251,10 @@ void TRAPEditorLayer::OnAttach()
     m_renderTargetDesc.Name = "Viewport Framebuffer";
 	m_renderTarget = TRAP::Graphics::RenderTarget::Create(m_renderTargetDesc);
 
-	m_renderTargetLoadActions.ClearColorValues[0] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_renderTargetLoadActions.ClearColorValues[0] = TRAP::Math::Vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
 	m_renderTargetLoadActions.LoadActionsColor[0] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
+	m_renderTargetLoadActions.ClearColorValues[1] = TRAP::Math::Vec4i(-1, 0, 0, 0);
+	m_renderTargetLoadActions.LoadActionsColor[1] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
 
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
@@ -480,3 +482,5 @@ void TRAPEditorLayer::SaveSceneAs()
 		serializer.Serialize(m_lastScenePath);
 	}
 }
+
+\ No newline at end of file
