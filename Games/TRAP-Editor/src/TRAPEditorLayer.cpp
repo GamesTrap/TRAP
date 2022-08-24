@@ -482,5 +482,3 @@ void TRAPEditorLayer::SaveSceneAs()
 		serializer.Serialize(m_lastScenePath);
 	}
 }
-
-\ No newline at end of file
