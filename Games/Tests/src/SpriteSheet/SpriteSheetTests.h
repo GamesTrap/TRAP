@@ -25,6 +25,9 @@ private:
 
     std::vector<std::vector<std::string>> m_backgroundMap;
     std::vector<std::vector<std::string>> m_foregroundMap;
+
+	TRAP::Ref<TRAP::Graphics::SpriteAnimation> m_animation;
+	TRAP::Ref<TRAP::Graphics::SpriteAnimation> m_animation2;
 };
 
 #endif /*GAMESTRAP_SPRITESHEETTESTS_H*/

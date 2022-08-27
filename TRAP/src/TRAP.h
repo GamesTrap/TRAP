@@ -105,6 +105,7 @@
 #include "../src/ImageLoader/Image.h"
 #include "../src/Graphics/Textures/Texture.h"
 #include "../src/Graphics/Textures/SubTexture2D.h"
+#include "../src/Graphics/Textures/SpriteAnimation.h"
 #include "../src/Graphics/API/Objects/Sampler.h"
 //-----------------------
 

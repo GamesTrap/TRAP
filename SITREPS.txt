@@ -3128,7 +3128,7 @@ SITREP 08/23/2022|22w34a2
     - VertexBufferLayout Added unsigned integer types to ShaderDataType ~<5 mins
     - VulkanRenderer BindVertexBuffer Added support for integer formats ~<5 mins
 
-SITREP 08/24/2022|22w34b
+SITREP 08/24/2022|22w34b1
     - Changed TRAP Engine version to 22w34b1(0.8.33)
     - Fixed TRAPEditorLayer not compiling ~<5 mins
     - TRAP-Editor SceneGraphPanel Added SetSelectedEntity() ~<5 mins
@@ -3136,3 +3136,8 @@ SITREP 08/24/2022|22w34b
     - Renderer2D Shader Added entity ID (used by mouse picking in TRAP-Editor) ~<10 mins
     - Scene now uses Renderer2D::DrawSprite() ~<5 mins
     - TRAP-Editor Added mouse picking (allows selection of entities from within the viewport) ~>30 mins
+
+SITREP 08/27/2022|22w34c1
+    - Changed TRAP Engine version to 22w34c1(0.8.34)
+    - Added sprite sheet animation support via SpriteAnimation ~<30 mins
+    - SpriteSheetTests Added two SpriteAnimations ~<15 mins

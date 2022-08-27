@@ -9,7 +9,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
 {
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
-    TRAP_ASSERT(!name.empty(), "Name is empty!");
 
     const TRAP::Math::Vec2 min
     {
@@ -35,7 +34,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
 {
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
-    TRAP_ASSERT(!name.empty(), "Name is empty!");
 
     const TRAP::Math::Vec2 min
     {

@@ -16,6 +16,9 @@ void SpriteSheetTests::OnImGuiRender()
     ImGui::Begin("Sprite Sheet Tests", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                                         ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
+    ImGui::Text("Press Shift+P to play/resume animation");
+    ImGui::Text("Press P to pause animation");
+    ImGui::Text("Press R to stop/reset animation");
     ImGui::End();
 }
 
@@ -26,7 +29,7 @@ void SpriteSheetTests::OnAttach()
 	TP_PROFILE_FUNCTION();
 
 	TRAP::Application::GetWindow()->SetTitle("Sprite Sheet Tests");
-
+    
 	//Load Textures
 	m_backgroundSheet = TRAP::Graphics::TextureManager::Load("BackgroundSheet", "./Assets/Textures/SpriteSheets/background_packed.png");
 	m_foregroundSheet = TRAP::Graphics::TextureManager::Load("ForegroundSheet", "./Assets/Textures/SpriteSheets/foreground_packed.png");
@@ -40,6 +43,7 @@ void SpriteSheetTests::OnAttach()
 
     constexpr TRAP::Math::Vec2 foregroundSpriteSize{18.0f, 18.0f};
     constexpr TRAP::Math::Vec2 backgroundSpriteSize{24.0f, 24.0f};
+    constexpr TRAP::Math::Vec2 characterSpriteSize{24.0f, 24.0f};
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EarthBorderLeft", m_foregroundSheet, {1.0f, 6.0f}, foregroundSpriteSize);
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EarthBorderLeftBottom", m_foregroundSheet, {1.0f, 7.0f}, foregroundSpriteSize);
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EarthBorderBottom", m_foregroundSheet, {2.0f, 7.0f}, foregroundSpriteSize);
@@ -100,6 +104,18 @@ void SpriteSheetTests::OnAttach()
         {{"", "", "", "", "", "", ""}},
         {{"", "", "", "", "", "PlantBig", ""}},
     };
+
+    auto frame1 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, {3.0f, 2.0f}, characterSpriteSize);
+    auto frame2 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, {4.0f, 2.0f}, characterSpriteSize);
+    auto frame3 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, {5.0f, 2.0f}, characterSpriteSize);
+    std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>> sprites{frame1, frame2, frame3};
+    m_animation = TRAP::Graphics::SpriteAnimation::Create("TestAnim", sprites, 0.25f);
+
+    frame1 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, { 6.0f, 1.0f }, characterSpriteSize);
+    frame2 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, { 7.0f, 1.0f }, characterSpriteSize);
+    frame3 = TRAP::Graphics::SubTexture2D::CreateFromCoords("", m_characterSheet, { 8.0f, 1.0f }, characterSpriteSize);
+    sprites = {frame1, frame2, frame3};
+    m_animation2 = TRAP::Graphics::SpriteAnimation::Create("TestAnim2", sprites, 0.35f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,6 +124,8 @@ void SpriteSheetTests::OnDetach()
 {
 	TP_PROFILE_FUNCTION();
 
+    m_animation.reset();
+    m_animation2.reset();
     m_backgroundSheet.reset();
     m_foregroundSheet.reset();
     m_characterSheet.reset();
@@ -121,6 +139,9 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	//Update
 	m_cameraController.OnUpdate(deltaTime);
+
+    m_animation->OnUpdate(deltaTime);
+    m_animation2->OnUpdate(deltaTime);
 
 	//Render
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
@@ -150,6 +171,9 @@ void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             }
         }
 	}
+
+    TRAP::Graphics::Renderer2D::DrawQuad({ {5.0f, -7.0f, -0.2f}, {}, {1.0f, 1.0f, 1.0f} }, m_animation->GetCurrentSprite());
+    TRAP::Graphics::Renderer2D::DrawQuad({ {3.0f, -7.0f, -0.2f}, {}, {1.0f, 1.0f, 1.0f} }, m_animation2->GetCurrentSprite());
 	TRAP::Graphics::Renderer2D::EndScene();
 }
 
@@ -169,6 +193,25 @@ bool SpriteSheetTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
     if (event.GetKey() == TRAP::Input::Key::Escape && event.GetRepeatCount() < 1)
         TRAP::Application::Shutdown();
+
+    if (event.GetRepeatCount() < 1)
+    {
+        if (event.GetKey() == TRAP::Input::Key::P && TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift))
+        {
+            m_animation->Pause();
+            m_animation2->Pause();
+        }
+        else if (event.GetKey() == TRAP::Input::Key::P)
+        {
+            m_animation->Play();
+            m_animation2->Play();
+        }
+        else if (event.GetKey() == TRAP::Input::Key::R)
+        {
+            m_animation->Stop();
+            m_animation2->Stop();
+        }
+    }
 
     return true;
 }

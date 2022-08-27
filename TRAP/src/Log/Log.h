@@ -133,7 +133,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[22w34b1]";
+		inline static constexpr auto WindowVersion =                        "[22w34c1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -147,6 +147,7 @@ namespace TRAP
 		inline static constexpr auto TextureManagerTextureCubePrefix =      "[TextureManager][TextureCube] ";
 		inline static constexpr auto TexturePrefix =                        "[Texture] ";
 		inline static constexpr auto SpriteManagerPrefix =                  "[SpriteManager] ";
+		inline static constexpr auto SpriteAnimationPrefix =                "[SpriteAnimation] ";
 		inline static constexpr auto EngineLinuxPrefix =                    "[Engine][Linux] ";
 		inline static constexpr auto EngineLinuxX11Prefix =                 "[Engine][Linux][X11] ";
 		inline static constexpr auto EngineLinuxWaylandPrefix =             "[Engine][Linux][Wayland] ";
