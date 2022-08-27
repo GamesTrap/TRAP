@@ -19,12 +19,12 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class RenderTarget" href="classTRAP_1_1Graphics_1_1RenderTarget.html" /><link rel="prev" title="Class Renderer2D" href="classTRAP_1_1Graphics_1_1Renderer2D.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Class RendererAPI - TRAP 0.8.26 documentation</title>
+        <title>Class RendererAPI - TRAP 0.8.33 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.26 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.33 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -216,6 +216,7 @@
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Hash.html">Namespace TRAP::Utils::Hash</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__INTERNAL.html">Namespace TRAP::Utils::INTERNAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Memory.html">Namespace TRAP::Utils::Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Steam.html">Namespace TRAP::Utils::Steam</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__String.html">Namespace TRAP::Utils::String</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkan__InitInfo.html">Struct ImGui_ImplVulkan_InitInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkanH__Frame.html">Struct ImGui_ImplVulkanH_Frame</a></li>
@@ -298,6 +299,7 @@
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1SubresourceDataDesc.html">Struct RendererAPI::SubresourceDataDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1SwapChainDesc.html">Struct RendererAPI::SwapChainDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureBarrier.html">Struct RendererAPI::TextureBarrier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc.html">Struct RendererAPI::TextureCopyDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureDesc.html">Struct RendererAPI::TextureDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureLoadDesc.html">Struct RendererAPI::TextureLoadDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureUpdateDesc.html">Struct RendererAPI::TextureUpdateDesc</a></li>
@@ -443,6 +445,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1CommandSignature.html">Class CommandSignature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorPool.html">Class DescriptorPool</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html">Class DescriptorSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1EditorCamera.html">Class EditorCamera</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1Fence.html">Class Fence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1IndexBuffer.html">Class IndexBuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1OrthographicCamera.html">Class OrthographicCamera</a></li>
@@ -537,6 +540,8 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ab4da531813502b07fdf35ad2d2d4d32f.html">Function ImGui::AddFontFromMemoryTTF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a99210dee1e3742fc38d914b235fbf5cb.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, TRAP::Graphics::Sampler *, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a65578dcccea1ddf1f754e0d867b90d11.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ae3b06628f574f48e8fca5c52737dc359.html">Function ImGui::IsInputEnabled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a472e04e081a04ea70c92a5bc3596b671.html">Function ImGui::SetInputEnabled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a59d10f31b5e6e31d6518e5a711a2469b.html">Function ImGui_ImplVulkan_AddTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ac0aecfa3957f71f5ca6477f983ccb270.html">Function ImGui_ImplVulkan_ClearCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
@@ -692,7 +697,8 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1af7580510c26e73836b2b7d6b8e3b26ad.html">Function TRAP::Graphics::API::VulkanInits::FenceCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4846ec5bd05516bb81ce7e461d8120b1.html">Function TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ac667789a97091847aa99962cb468949d.html">Function TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4df5fab5a3fe40a5050e3e23db11dac3.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4df5fab5a3fe40a5050e3e23db11dac3.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ae26f0b67af777f4262fedc6aeecdf493.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a86b3b6ac7414bfc0ad8b1cb1d8c1cd4a.html">Function TRAP::Graphics::API::VulkanInits::ImageCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a019c7ffab0d72b5e7a696c2f9b077097.html">Function TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a97c65cfd4f1be54e9fb3537ed6ee518d.html">Function TRAP::Graphics::API::VulkanInits::InstanceCreateInfo</a></li>
@@ -812,6 +818,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a663755d8311cbb1704e601faec0edd86.html">Template Function TRAP::Math::Cross(const Vec&lt;2, T&gt;&amp;, const Vec&lt;2, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a31b141d828fed0b5357d7601364a0ae8.html">Template Function TRAP::Math::Cross(const Vec&lt;3, T&gt;&amp;, const Vec&lt;3, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1aa94101b257ac3d84b1f161db2605a732.html">Template Function TRAP::Math::Cross(const tQuat&lt;T&gt;&amp;, const tQuat&lt;T&gt;&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1aa61e3bb7ff2bbac8e1ef7b07b2552744.html">Template Function TRAP::Math::Decompose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a52338009da20ac2490b92e5ab9cf1b00.html">Template Function TRAP::Math::Degrees(genType)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a85fc0d8fea4906159497a1fdc0113417.html">Template Function TRAP::Math::Degrees(const Vec&lt;L, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1afcf7c0360fcce055fb55ccf62ff01efe.html">Template Function TRAP::Math::Determinant(const Mat&lt;3, 3, T&gt;&amp;)</a></li>
@@ -1257,6 +1264,10 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a89650d67421caae7ab6104c5b06a22cc.html">Template Function TRAP::Utils::Memory::ConvertBytes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a845628728a43196fc895237a8bf00fd5.html">Template Function TRAP::Utils::Memory::SwapBytes(T&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1aa0c14efcf0fc3f4d3f90ed2de4bedcf6.html">Template Function TRAP::Utils::Memory::SwapBytes(Iter, Iter)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1a7fa8680ee3ac0e0bf98100c70dc476c0.html">Function TRAP::Utils::Steam::Initalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1a9c0be413ead34754febbc3f8738e0ced.html">Function TRAP::Utils::Steam::IsInitialized</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1aec3723b55bf3e3b72025dce843eb3d83.html">Function TRAP::Utils::Steam::RunCallbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1a1916ea512b50b78ce8ba451978866402.html">Function TRAP::Utils::Steam::Shutdown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a44c3eceb58b71f563e93f4ada596856d.html">Function TRAP::Utils::String::CompareAnyCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a31ea953f94f3e1f8b1be81c81503e870.html">Template Function TRAP::Utils::String::ConvertToType</a></li>
@@ -1523,6 +1534,7 @@
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1SubresourceDataDesc.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1subresourcedatadesc"><span class="std std-ref">Struct RendererAPI::SubresourceDataDesc</span></a></p></li>
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1SwapChainDesc.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1swapchaindesc"><span class="std std-ref">Struct RendererAPI::SwapChainDesc</span></a></p></li>
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureBarrier.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1texturebarrier"><span class="std std-ref">Struct RendererAPI::TextureBarrier</span></a></p></li>
+<li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1texturecopydesc"><span class="std std-ref">Struct RendererAPI::TextureCopyDesc</span></a></p></li>
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureDesc.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1texturedesc"><span class="std std-ref">Struct RendererAPI::TextureDesc</span></a></p></li>
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureLoadDesc.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1textureloaddesc"><span class="std std-ref">Struct RendererAPI::TextureLoadDesc</span></a></p></li>
 <li><p><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureUpdateDesc.html#exhale-struct-structtrap-1-1graphics-1-1rendererapi-1-1textureupdatedesc"><span class="std std-ref">Struct RendererAPI::TextureUpdateDesc</span></a></p></li>
@@ -4626,7 +4638,7 @@
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI10BufferDesc4NameE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI10BufferDesc4NameE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI10BufferDesc4NameE"></span><span id="TRAP::Graphics::RendererAPI::BufferDesc::Name__std::string_viewC"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1BufferDesc_1a5e82b7f4f02dc21e271b791c0a39fd6b"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Name</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI10BufferDesc4NameE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI10BufferDesc4NameE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI10BufferDesc4NameE"></span><span id="TRAP::Graphics::RendererAPI::BufferDesc::Name__ss"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1BufferDesc_1a688b012d88493299a0e0dc062f2a78c4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Name</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI10BufferDesc4NameE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -5411,7 +5423,7 @@
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE">
-<span id="_CPPv3N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE"></span><span id="TRAP::Graphics::RendererAPI::LoadActionsDesc::ClearColorValues__std::array:TRAP::Math::Vec4.8:"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1LoadActionsDesc_1a0a565ac6c2dc3b96582a885c42631467"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1a63854d1fbcf3090e5fbda9a752080ee8.html#_CPPv4N4TRAP4Math4Vec4E" title="TRAP::Math::Vec4"><span class="n"><span class="pre">Vec4</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">8</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ClearColorValues</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE" title="Permalink to this definition">#</a><br /></dt>
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE"></span><span id="TRAP::Graphics::RendererAPI::LoadActionsDesc::ClearColorValues__std::array:std::variant:TRAP::Math::Vec4.TRAP::Math::Vec4ui.TRAP::Math::Vec4i:.8:"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1LoadActionsDesc_1a40e3659c507525ec4c10d23be7e15171"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">variant</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1a63854d1fbcf3090e5fbda9a752080ee8.html#_CPPv4N4TRAP4Math4Vec4E" title="TRAP::Math::Vec4"><span class="n"><span class="pre">Vec4</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1ab7011c8445728f3b40a70183ead89c57.html#_CPPv4N4TRAP4Math6Vec4uiE" title="TRAP::Math::Vec4ui"><span class="n"><span class="pre">Vec4ui</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1aa68f96ca6524c90f769486accadd145b.html#_CPPv4N4TRAP4Math5Vec4iE" title="TRAP::Math::Vec4i"><span class="n"><span class="pre">Vec4i</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">8</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ClearColorValues</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15LoadActionsDesc16ClearColorValuesE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
@@ -6377,6 +6389,54 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI14TextureBarrier10ArrayLayerE">
 <span id="_CPPv3N4TRAP8Graphics11RendererAPI14TextureBarrier10ArrayLayerE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI14TextureBarrier10ArrayLayerE"></span><span id="TRAP::Graphics::RendererAPI::TextureBarrier::ArrayLayer__uint16_t"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureBarrier_1addbc949cd570d9dc7ea4d179fbe44e14"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ArrayLayer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI14TextureBarrier10ArrayLayerE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDescE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDescE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDescE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TextureCopyDesc</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDescE" title="Permalink to this definition">#</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc7TextureE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc7TextureE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc7TextureE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::Texture__TRAP::Ref:TRAP::Graphics::Texture:"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1a6e8d3d110234fbbb01c64a8675061084"></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Base_8h_1a689f16f15d04794fc0f00d9847bb7aad.html#_CPPv4I0EN4TRAP3RefE" title="TRAP::Ref"><span class="n"><span class="pre">Ref</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Graphics</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1Texture.html#_CPPv4N4TRAP8Graphics7TextureE" title="TRAP::Graphics::Texture"><span class="n"><span class="pre">Texture</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Texture</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc7TextureE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc6BufferE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc6BufferE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc6BufferE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::Buffer__TRAP::Ref:TRAP::Graphics::Buffer:"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1a8d8567c891c75411ece9b19cf8354858"></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Base_8h_1a689f16f15d04794fc0f00d9847bb7aad.html#_CPPv4I0EN4TRAP3RefE" title="TRAP::Ref"><span class="n"><span class="pre">Ref</span></span></a><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Graphics</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1Buffer.html#_CPPv4N4TRAP8Graphics6BufferE" title="TRAP::Graphics::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Buffer</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc6BufferE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc13WaitSemaphoreE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc13WaitSemaphoreE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc13WaitSemaphoreE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::WaitSemaphore__TRAP::Ref:Semaphore:"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1aeffdc8688efece46ffe63ddfcbb6e2d4"></span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Base_8h_1a689f16f15d04794fc0f00d9847bb7aad.html#_CPPv4I0EN4TRAP3RefE" title="TRAP::Ref"><span class="n"><span class="pre">Ref</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1Semaphore.html#_CPPv4N4TRAP8Graphics9SemaphoreE" title="TRAP::Graphics::Semaphore"><span class="n"><span class="pre">Semaphore</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WaitSemaphore</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc13WaitSemaphoreE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc8MipLevelE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc8MipLevelE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc8MipLevelE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::MipLevel__uint32_t"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1a243686fdf8a66c77305f058f3aea83fb"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MipLevel</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc8MipLevelE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc10ArrayLayerE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc10ArrayLayerE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc10ArrayLayerE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::ArrayLayer__uint32_t"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1ab1108a241a6f04c671f2677446b5308a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ArrayLayer</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc10ArrayLayerE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc12TextureStateE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc12TextureStateE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc12TextureStateE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::TextureState__ResourceState"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1ae4254ef7eac74743ee36c246f6d26084"></span><a class="reference internal" href="#_CPPv4N4TRAP8Graphics11RendererAPI13ResourceStateE" title="TRAP::Graphics::RendererAPI::ResourceState"><span class="n"><span class="pre">ResourceState</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TextureState</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc12TextureStateE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc9QueueTypeE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc9QueueTypeE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc9QueueTypeE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::QueueType__RendererAPI::QueueType"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1a3c568df6f3d6c2372e3c2cf008073c32"></span><a class="reference internal" href="#_CPPv4N4TRAP8Graphics11RendererAPIE" title="TRAP::Graphics::RendererAPI"><span class="n"><span class="pre">RendererAPI</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4TRAP8Graphics11RendererAPI9QueueTypeE" title="TRAP::Graphics::RendererAPI::QueueType"><span class="n"><span class="pre">QueueType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">QueueType</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc9QueueTypeE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc12BufferOffsetE">
+<span id="_CPPv3N4TRAP8Graphics11RendererAPI15TextureCopyDesc12BufferOffsetE"></span><span id="_CPPv2N4TRAP8Graphics11RendererAPI15TextureCopyDesc12BufferOffsetE"></span><span id="TRAP::Graphics::RendererAPI::TextureCopyDesc::BufferOffset__uint64_t"></span><span class="target" id="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc_1ad2edef542268fdf9592221ac2f4e1fab"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BufferOffset</span></span></span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics11RendererAPI15TextureCopyDesc12BufferOffsetE" title="Permalink to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </div>

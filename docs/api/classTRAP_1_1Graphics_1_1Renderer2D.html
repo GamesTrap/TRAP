@@ -19,12 +19,12 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class RendererAPI" href="classTRAP_1_1Graphics_1_1RendererAPI.html" /><link rel="prev" title="Class Renderer" href="classTRAP_1_1Graphics_1_1Renderer.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Class Renderer2D - TRAP 0.8.26 documentation</title>
+        <title>Class Renderer2D - TRAP 0.8.33 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.26 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.33 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -216,6 +216,7 @@
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Hash.html">Namespace TRAP::Utils::Hash</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__INTERNAL.html">Namespace TRAP::Utils::INTERNAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Memory.html">Namespace TRAP::Utils::Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Steam.html">Namespace TRAP::Utils::Steam</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__String.html">Namespace TRAP::Utils::String</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkan__InitInfo.html">Struct ImGui_ImplVulkan_InitInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkanH__Frame.html">Struct ImGui_ImplVulkanH_Frame</a></li>
@@ -298,6 +299,7 @@
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1SubresourceDataDesc.html">Struct RendererAPI::SubresourceDataDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1SwapChainDesc.html">Struct RendererAPI::SwapChainDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureBarrier.html">Struct RendererAPI::TextureBarrier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureCopyDesc.html">Struct RendererAPI::TextureCopyDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureDesc.html">Struct RendererAPI::TextureDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureLoadDesc.html">Struct RendererAPI::TextureLoadDesc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structTRAP_1_1Graphics_1_1RendererAPI_1_1TextureUpdateDesc.html">Struct RendererAPI::TextureUpdateDesc</a></li>
@@ -443,6 +445,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1CommandSignature.html">Class CommandSignature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorPool.html">Class DescriptorPool</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1DescriptorSet.html">Class DescriptorSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1EditorCamera.html">Class EditorCamera</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1Fence.html">Class Fence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1IndexBuffer.html">Class IndexBuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Graphics_1_1OrthographicCamera.html">Class OrthographicCamera</a></li>
@@ -537,6 +540,8 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ab4da531813502b07fdf35ad2d2d4d32f.html">Function ImGui::AddFontFromMemoryTTF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a99210dee1e3742fc38d914b235fbf5cb.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, TRAP::Graphics::Sampler *, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a65578dcccea1ddf1f754e0d867b90d11.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ae3b06628f574f48e8fca5c52737dc359.html">Function ImGui::IsInputEnabled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a472e04e081a04ea70c92a5bc3596b671.html">Function ImGui::SetInputEnabled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a59d10f31b5e6e31d6518e5a711a2469b.html">Function ImGui_ImplVulkan_AddTexture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1ac0aecfa3957f71f5ca6477f983ccb270.html">Function ImGui_ImplVulkan_ClearCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a9d953844162b3e7632455f2eb3dfff43.html">Function ImGui_ImplVulkan_DestroyFontUploadObjects</a></li>
@@ -692,7 +697,8 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1af7580510c26e73836b2b7d6b8e3b26ad.html">Function TRAP::Graphics::API::VulkanInits::FenceCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4846ec5bd05516bb81ce7e461d8120b1.html">Function TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ac667789a97091847aa99962cb468949d.html">Function TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4df5fab5a3fe40a5050e3e23db11dac3.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4df5fab5a3fe40a5050e3e23db11dac3.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ae26f0b67af777f4262fedc6aeecdf493.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a86b3b6ac7414bfc0ad8b1cb1d8c1cd4a.html">Function TRAP::Graphics::API::VulkanInits::ImageCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a019c7ffab0d72b5e7a696c2f9b077097.html">Function TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a97c65cfd4f1be54e9fb3537ed6ee518d.html">Function TRAP::Graphics::API::VulkanInits::InstanceCreateInfo</a></li>
@@ -812,6 +818,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a663755d8311cbb1704e601faec0edd86.html">Template Function TRAP::Math::Cross(const Vec&lt;2, T&gt;&amp;, const Vec&lt;2, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a31b141d828fed0b5357d7601364a0ae8.html">Template Function TRAP::Math::Cross(const Vec&lt;3, T&gt;&amp;, const Vec&lt;3, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1aa94101b257ac3d84b1f161db2605a732.html">Template Function TRAP::Math::Cross(const tQuat&lt;T&gt;&amp;, const tQuat&lt;T&gt;&amp;)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1aa61e3bb7ff2bbac8e1ef7b07b2552744.html">Template Function TRAP::Math::Decompose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a52338009da20ac2490b92e5ab9cf1b00.html">Template Function TRAP::Math::Degrees(genType)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1a85fc0d8fea4906159497a1fdc0113417.html">Template Function TRAP::Math::Degrees(const Vec&lt;L, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Math_8h_1afcf7c0360fcce055fb55ccf62ff01efe.html">Template Function TRAP::Math::Determinant(const Mat&lt;3, 3, T&gt;&amp;)</a></li>
@@ -1257,6 +1264,10 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a89650d67421caae7ab6104c5b06a22cc.html">Template Function TRAP::Utils::Memory::ConvertBytes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1a845628728a43196fc895237a8bf00fd5.html">Template Function TRAP::Utils::Memory::SwapBytes(T&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Memory_8h_1aa0c14efcf0fc3f4d3f90ed2de4bedcf6.html">Template Function TRAP::Utils::Memory::SwapBytes(Iter, Iter)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1a7fa8680ee3ac0e0bf98100c70dc476c0.html">Function TRAP::Utils::Steam::Initalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1a9c0be413ead34754febbc3f8738e0ced.html">Function TRAP::Utils::Steam::IsInitialized</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1aec3723b55bf3e3b72025dce843eb3d83.html">Function TRAP::Utils::Steam::RunCallbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_SteamworksSDK_8h_1a1916ea512b50b78ce8ba451978866402.html">Function TRAP::Utils::Steam::Shutdown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a44c3eceb58b71f563e93f4ada596856d.html">Function TRAP::Utils::String::CompareAnyCase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1ae2511885877c5d3869d518663d4d0c62.html">Template Function TRAP::Utils::String::ConvertToString</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_String_8h_1a31ea953f94f3e1f8b1be81c81503e870.html">Template Function TRAP::Utils::String::ConvertToType</a></li>
@@ -1527,6 +1538,17 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics10Renderer2D10BeginSceneERK12EditorCamera">
+<span id="_CPPv3N4TRAP8Graphics10Renderer2D10BeginSceneERK12EditorCamera"></span><span id="_CPPv2N4TRAP8Graphics10Renderer2D10BeginSceneERK12EditorCamera"></span><span id="TRAP::Graphics::Renderer2D::BeginScene__EditorCameraCR"></span><span class="target" id="classTRAP_1_1Graphics_1_1Renderer2D_1a645e11cd5e8bf3531737b2f006785a6b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BeginScene</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="classTRAP_1_1Graphics_1_1EditorCamera.html#_CPPv4N4TRAP8Graphics12EditorCameraE" title="TRAP::Graphics::EditorCamera"><span class="n"><span class="pre">EditorCamera</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">camera</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics10Renderer2D10BeginSceneERK12EditorCamera" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Begin a <a class="reference internal" href="#classTRAP_1_1Graphics_1_1Renderer2D"><span class="std std-ref">Renderer2D</span></a> scene. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>camera</strong> – Editor camera.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics10Renderer2D8EndSceneEv">
 <span id="_CPPv3N4TRAP8Graphics10Renderer2D8EndSceneEv"></span><span id="_CPPv2N4TRAP8Graphics10Renderer2D8EndSceneEv"></span><span id="TRAP::Graphics::Renderer2D::EndScene"></span><span class="target" id="classTRAP_1_1Graphics_1_1Renderer2D_1a151ec094203d40bc2506938b0069ff97"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EndScene</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics10Renderer2D8EndSceneEv" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>End a running <a class="reference internal" href="#classTRAP_1_1Graphics_1_1Renderer2D"><span class="std std-ref">Renderer2D</span></a> scene. </p>
@@ -1605,8 +1627,8 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EXL4EEEE">
-<span id="_CPPv3N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EXL4EEEE"></span><span id="_CPPv2N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EX4EEE"></span><span id="TRAP::Graphics::Renderer2D::DrawQuad__TRAP::Math::Mat4CR.Math::Vec4CR.Ref:Texture:.std::array:Math::Vec2.4:CP"></span><span class="target" id="classTRAP_1_1Graphics_1_1Renderer2D_1adcfb57549911a68230fba8c0e41956f8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DrawQuad</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1ad1445ebf4c5b1cff73a3e17b18d10d8b.html#_CPPv4N4TRAP4Math4Mat4E" title="TRAP::Math::Mat4"><span class="n"><span class="pre">Mat4</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">transform</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1a63854d1fbcf3090e5fbda9a752080ee8.html#_CPPv4N4TRAP4Math4Vec4E" title="TRAP::Math::Vec4"><span class="n"><span class="pre">Vec4</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">color</span></span>, <a class="reference internal" href="typedef_Base_8h_1a689f16f15d04794fc0f00d9847bb7aad.html#_CPPv4I0EN4TRAP3RefE" title="TRAP::Ref"><span class="n"><span class="pre">Ref</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1Texture.html#_CPPv4N4TRAP8Graphics7TextureE" title="TRAP::Graphics::Texture"><span class="n"><span class="pre">Texture</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">texture</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1adbc6a9559125a98c485dfcbd60d01fa5.html#_CPPv4N4TRAP4Math4Vec2E" title="TRAP::Math::Vec2"><span class="n"><span class="pre">Vec2</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">texCoords</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EXL4EEEE" title="Permalink to this definition">#</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EXL4EEEE7int32_t">
+<span id="_CPPv3N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EXL4EEEE7int32_t"></span><span id="_CPPv2N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EX4EEE7int32_t"></span><span id="TRAP::Graphics::Renderer2D::DrawQuad__TRAP::Math::Mat4CR.Math::Vec4CR.Ref:Texture:.std::array:Math::Vec2.4:CP.int32_t"></span><span class="target" id="classTRAP_1_1Graphics_1_1Renderer2D_1a7eba787e5b67298e4aed2f6ddff082c1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DrawQuad</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1ad1445ebf4c5b1cff73a3e17b18d10d8b.html#_CPPv4N4TRAP4Math4Mat4E" title="TRAP::Math::Mat4"><span class="n"><span class="pre">Mat4</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">transform</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1a63854d1fbcf3090e5fbda9a752080ee8.html#_CPPv4N4TRAP4Math4Vec4E" title="TRAP::Math::Vec4"><span class="n"><span class="pre">Vec4</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">color</span></span>, <a class="reference internal" href="typedef_Base_8h_1a689f16f15d04794fc0f00d9847bb7aad.html#_CPPv4I0EN4TRAP3RefE" title="TRAP::Ref"><span class="n"><span class="pre">Ref</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classTRAP_1_1Graphics_1_1Texture.html#_CPPv4N4TRAP8Graphics7TextureE" title="TRAP::Graphics::Texture"><span class="n"><span class="pre">Texture</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">texture</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1adbc6a9559125a98c485dfcbd60d01fa5.html#_CPPv4N4TRAP4Math4Vec2E" title="TRAP::Math::Vec2"><span class="n"><span class="pre">Vec2</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">texCoords</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">entityID</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics10Renderer2D8DrawQuadERKN4TRAP4Math4Mat4ERKN4Math4Vec4E3RefI7TextureEPKNSt5arrayIN4Math4Vec2EXL4EEEE7int32_t" title="Permalink to this definition">#</a><br /></dt>
 <dd><p>Draw a colored and textured quad. This is the base function for all the other DrawQuad functions. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1615,6 +1637,22 @@
 <li><p><strong>color</strong> – Color for the quad.</p></li>
 <li><p><strong>texture</strong> – <a class="reference internal" href="classTRAP_1_1Graphics_1_1Texture.html#classTRAP_1_1Graphics_1_1Texture"><span class="std std-ref">Texture</span></a> for the quad.</p></li>
 <li><p><strong>texCoords</strong> – Optional: <a class="reference internal" href="classTRAP_1_1Graphics_1_1Texture.html#classTRAP_1_1Graphics_1_1Texture"><span class="std std-ref">Texture</span></a> coordinates for the quad.</p></li>
+<li><p><strong>entityID</strong> – Optional: <a class="reference internal" href="classTRAP_1_1Entity.html#classTRAP_1_1Entity"><span class="std std-ref">Entity</span></a> ID of the quad.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4TRAP8Graphics10Renderer2D10DrawSpriteERKN4TRAP4Math4Mat4ERK23SpriteRendererComponent7int32_t">
+<span id="_CPPv3N4TRAP8Graphics10Renderer2D10DrawSpriteERKN4TRAP4Math4Mat4ERK23SpriteRendererComponent7int32_t"></span><span id="_CPPv2N4TRAP8Graphics10Renderer2D10DrawSpriteERKN4TRAP4Math4Mat4ERK23SpriteRendererComponent7int32_t"></span><span id="TRAP::Graphics::Renderer2D::DrawSprite__TRAP::Math::Mat4CR.SpriteRendererComponentCR.int32_t"></span><span class="target" id="classTRAP_1_1Graphics_1_1Renderer2D_1ab298bd8dbbf0a965d866166be6caf838"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DrawSprite</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">TRAP</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Math</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="typedef_Types_8h_1ad1445ebf4c5b1cff73a3e17b18d10d8b.html#_CPPv4N4TRAP4Math4Mat4E" title="TRAP::Math::Mat4"><span class="n"><span class="pre">Mat4</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">transform</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="structTRAP_1_1SpriteRendererComponent.html#_CPPv4N4TRAP23SpriteRendererComponentE" title="TRAP::SpriteRendererComponent"><span class="n"><span class="pre">SpriteRendererComponent</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">sprite</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">entityID</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP8Graphics10Renderer2D10DrawSpriteERKN4TRAP4Math4Mat4ERK23SpriteRendererComponent7int32_t" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Draw a sprite. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform</strong> – <a class="reference internal" href="structTRAP_1_1Graphics_1_1Renderer2D_1_1Transform.html#structTRAP_1_1Graphics_1_1Renderer2D_1_1Transform"><span class="std std-ref">Transform</span></a> matrix for the sprite.</p></li>
+<li><p><strong>sprite</strong> – Sprite component data.</p></li>
+<li><p><strong>entityID</strong> – <a class="reference internal" href="classTRAP_1_1Entity.html#classTRAP_1_1Entity"><span class="std std-ref">Entity</span></a> ID of this sprite.</p></li>
 </ul>
 </dd>
 </dl>
