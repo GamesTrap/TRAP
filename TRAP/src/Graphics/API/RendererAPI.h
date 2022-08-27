@@ -2540,7 +2540,7 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::TextureCreationFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ResourceState);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType);

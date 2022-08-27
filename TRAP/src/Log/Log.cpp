@@ -8,7 +8,7 @@ TRAP::Log TRAP::TRAPLog{};
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::Log()
-	: m_path("trap.log")
+	: m_path("trap.log"), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
 	m_buffer.reserve(256);
 }
@@ -16,7 +16,7 @@ TRAP::Log::Log()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::Log(std::filesystem::path filePath)
-	: m_path(std::move(filePath))
+	: m_path(std::move(filePath)), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
 	m_buffer.reserve(256);
 }
@@ -40,6 +40,13 @@ const std::filesystem::path& TRAP::Log::GetFilePath() const
 void TRAP::Log::SetFilePath(const std::filesystem::path& filePath)
 {
 	m_path = std::move(filePath);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Log::SetImportance(const Level level)
+{
+	m_importance = level;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

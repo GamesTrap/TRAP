@@ -3142,3 +3142,4 @@ SITREP 08/27/2022|22w34c1
     - Added sprite sheet animation support via SpriteAnimation ~<30 mins
     - SpriteSheetTests Added two SpriteAnimations ~<15 mins
     - Fixed gizmo usage when out of selected entity bounds ~<5 mins
+    - Log Added importance level for printing ~<10 mins

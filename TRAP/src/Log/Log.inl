@@ -14,12 +14,16 @@ void TRAP::Log::Trace(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Trace))
+		{
 #if !defined(TRAP_RELEASE)
-		SetColor(FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE);
-		//Standard Magenta
-		std::cout << stream.str() << '\n';
-		ResetColor();
+			SetColor(FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE);
+			//Standard Magenta
+			std::cout << stream.str() << '\n';
+			ResetColor();
 #endif
+		}
+
 		m_buffer.emplace_back(Level::Trace, stream.str());
 	}
 }
@@ -35,12 +39,15 @@ void TRAP::Log::Debug(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Debug))
+		{
 #if !defined(TRAP_RELEASE)
-		//Standard Cyan
-		SetColor(FOREGROUND_GREEN | FOREGROUND_BLUE);
-		std::cout << stream.str() << '\n';
-		ResetColor();
+			//Standard Cyan
+			SetColor(FOREGROUND_GREEN | FOREGROUND_BLUE);
+			std::cout << stream.str() << '\n';
+			ResetColor();
 #endif
+		}
 		m_buffer.emplace_back(Level::Debug, stream.str());
 	}
 }
@@ -56,12 +63,15 @@ void TRAP::Log::Info(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Info))
+		{
 #if !defined(TRAP_RELEASE)
-		//Standard Green
-		SetColor(FOREGROUND_GREEN);
-		std::cout << stream.str() << '\n';
-		ResetColor();
+			//Standard Green
+			SetColor(FOREGROUND_GREEN);
+			std::cout << stream.str() << '\n';
+			ResetColor();
 #endif
+		}
 		m_buffer.emplace_back(Level::Info, stream.str());
 	}
 }
@@ -77,12 +87,15 @@ void TRAP::Log::Warn(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Warn))
+		{
 #if !defined(TRAP_RELEASE)
-		//Bold Yellow
-		SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		std::cout << stream.str() << '\n';
-		ResetColor();
+			//Bold Yellow
+			SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			std::cout << stream.str() << '\n';
+			ResetColor();
 #endif
+		}
 		m_buffer.emplace_back(Level::Warn, stream.str());
 	}
 }
@@ -98,12 +111,15 @@ void TRAP::Log::Error(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Error))
+		{
 #if !defined(TRAP_RELEASE)
-		//Bold Red
-		SetColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		std::cout << stream.str() << '\n';
-		ResetColor();
+			//Bold Red
+			SetColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+			std::cout << stream.str() << '\n';
+			ResetColor();
 #endif
+		}
 		m_buffer.emplace_back(Level::Error, stream.str());
 	}
 }
@@ -119,12 +135,15 @@ void TRAP::Log::Critical(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Critical))
+		{
 #if !defined(TRAP_RELEASE)
-		//Bold White on Red
-		SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		std::cout << stream.str() << '\n';
-		ResetColor();
+			//Bold White on Red
+			SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			std::cout << stream.str() << '\n';
+			ResetColor();
 #endif
+		}
 		m_buffer.emplace_back(Level::Critical, stream.str());
 	}
 }
@@ -142,10 +161,13 @@ void TRAP::Log::Trace(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Trace))
+		{
 #if !defined(TRAP_RELEASE)
-		//Standard Magenta
-		std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
+			//Standard Magenta
+			std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
 #endif
+		}
 		m_buffer.emplace_back(Level::Trace, stream.str());
 	}
 }
@@ -161,10 +183,13 @@ void TRAP::Log::Debug(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Debug))
+		{
 #if !defined(TRAP_RELEASE)
-		//Standard Cyan
-		std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
+			//Standard Cyan
+			std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
 #endif
+		}
 		m_buffer.emplace_back(Level::Debug, stream.str());
 	}
 }
@@ -180,10 +205,13 @@ void TRAP::Log::Info(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Info))
+		{
 #if !defined(TRAP_RELEASE)
-		//Standard Green
-		std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
+			//Standard Green
+			std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
 #endif
+		}
 		m_buffer.emplace_back(Level::Info, stream.str());
 	}
 }
@@ -199,10 +227,13 @@ void TRAP::Log::Warn(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Warn))
+		{
 #if !defined(TRAP_RELEASE)
-		//Bold Yellow
-		std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			//Bold Yellow
+			std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 #endif
+		}
 		m_buffer.emplace_back(Level::Warn, stream.str());
 	}
 }
@@ -218,10 +249,13 @@ void TRAP::Log::Error(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Error))
+		{
 #if !defined(TRAP_RELEASE)
-		//Bold Red
-		std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			//Bold Red
+			std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 #endif
+		}
 		m_buffer.emplace_back(Level::Error, stream.str());
 	}
 }
@@ -237,10 +271,13 @@ void TRAP::Log::Critical(Args&& ... args)
 
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
+		if (static_cast<uint32_t>(m_importance) & static_cast<uint32_t>(Level::Critical))
+		{
 #if !defined(TRAP_RELEASE)
-		//Bold White on Red
-		std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			//Bold White on Red
+			std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 #endif
+		}
 		m_buffer.emplace_back(Level::Critical, stream.str());
 	}
 }

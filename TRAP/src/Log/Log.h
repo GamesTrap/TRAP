@@ -68,13 +68,24 @@ namespace TRAP
 		/// </summary>
 		enum class Level
 		{
-			Trace,
-			Debug,
-			Info,
-			Warn,
-			Error,
-			Critical
+			Trace = 0x00,
+			Debug = 0x01,
+			Info = 0x02,
+			Warn = 0x03,
+			Error = 0x04,
+			Critical = 0x05
 		};
+
+		/// <summary>
+		/// Set the importance level for the log messages.
+		/// Messages that are blow the given importance level
+		/// won't be printed to the console.
+		/// 
+		/// Note: All messages are saved in the log file regardless
+		///       off the importance level.
+		/// </summary>
+		/// <param name="level">Importance level to use.</param>
+		void SetImportance(Level level);
 
 		/// <summary>
 		/// Log a trace message.
@@ -276,10 +287,27 @@ namespace TRAP
 		std::mutex m_mtx;
 
 		std::filesystem::path m_path;
+
+		Level m_importance;
 	};
 
 	extern Log TRAPLog;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+static constexpr inline TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b)
+{
+	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) |
+		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
+}
+static constexpr inline TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b)
+{
+	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) &
+		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
+}
+static constexpr inline TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) { return a = (a | b); }
+static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
