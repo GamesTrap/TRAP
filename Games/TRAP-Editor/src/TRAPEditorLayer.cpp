@@ -550,8 +550,11 @@ void TRAPEditorLayer::MousePicking()
 			const TRAP::Entity entity{static_cast<entt::entity>(id), m_activeScene.get()};
 			if(entity != m_sceneGraphPanel.GetSelectedEntity() && !ImGuizmo::IsUsing())
 			{
-				m_sceneGraphPanel.SetSelectedEntity(entity);
-				m_entityChanged = true;
+				if ((!ImGuizmo::IsOver() && entity != TRAP::Entity()) || id != -1)
+				{
+					m_sceneGraphPanel.SetSelectedEntity(entity);
+					m_entityChanged = true;
+				}
 			}
 		}
 		// TP_TRACE("Mouse = {", mouseX, "}, {", mouseY, "}, ID = {", id, "}");
