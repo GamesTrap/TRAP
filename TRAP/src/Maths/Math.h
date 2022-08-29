@@ -4524,10 +4524,10 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(const T left, const T right, c
 
 	result[0][0] = static_cast<T>(2) / (right - left);
 	result[1][1] = static_cast<T>(2) / (top - bottom);
-	result[2][2] = -static_cast<T>(2) / (zFar - zNear);
+	result[2][2] = -static_cast<T>(1) / (zFar - zNear);
 	result[3][0] = -(right + left) / (right - left);
 	result[3][1] = -(top + bottom) / (top - bottom);
-	result[3][2] = -(zFar + zNear) / (zFar - zNear);
+	result[3][2] = -zNear / (zFar - zNear);
 
 	return result;
 }
@@ -4540,13 +4540,13 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(const T left, const T right, const 
 {
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	result[0][0] = (static_cast<T>(2)* nearVal) / (right - left);
-	result[1][1] = (static_cast<T>(2)* nearVal) / (top - bottom);
+	result[0][0] = (static_cast<T>(2) * nearVal) / (right - left);
+	result[1][1] = (static_cast<T>(2) * nearVal) / (top - bottom);
 	result[2][0] = (right + left) / (right - left);
 	result[2][1] = (top + bottom) / (top - bottom);
-	result[2][2] = -(farVal + nearVal) / (farVal - nearVal);
+	result[2][2] = farVal / (nearVal - farVal);
 	result[2][3] = static_cast<T>(-1);
-	result[3][2] = -(static_cast<T>(2)* farVal* nearVal) / (farVal - nearVal);
+	result[3][2] = -(farVal * nearVal) / (farVal - nearVal);
 
 	return result;
 }
@@ -4564,9 +4564,9 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(const T fovY, const T aspect, c
 
 	result[0][0] = static_cast<T>(1) / (aspect * tanHalfFoVY);
 	result[1][1] = static_cast<T>(1) / (tanHalfFoVY);
-	result[2][2] = -(zFar + zNear) / (zFar - zNear);
+	result[2][2] = zFar / (zNear - zFar);
 	result[2][3] = -static_cast<T>(1);
-	result[3][2] = -(static_cast<T>(2)* zFar* zNear) / (zFar - zNear);
+	result[3][2] = -(zFar * zNear) / (zFar - zNear);
 
 	return result;
 }
@@ -4582,16 +4582,16 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, 
 	TRAP_ASSERT(fov > static_cast<T>(0));
 
 	const T rad = fov;
-	const T h = Cos(static_cast<T>(0.5)* rad) / Sin(static_cast<T>(0.5)* rad);
+	const T h = Cos(static_cast<T>(0.5) * rad) / Sin(static_cast<T>(0.5) * rad);
 	const T w = h * height / width;
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
 	result[0][0] = w;
 	result[1][1] = h;
-	result[2][2] = -(zFar + zNear) / (zFar - zNear);
+	result[2][2] = zFar / (zNear - zFar);
 	result[2][3] = -static_cast<T>(1);
-	result[3][2] = -(static_cast<T>(2)* zFar* zNear) / (zFar - zNear);
+	result[3][2] = -(zFar * zNear) / (zFar - zNear);
 
 	return result;
 }
@@ -4601,7 +4601,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, 
 template <typename T>
 TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(const T fovY, const T aspect, const T zNear)
 {
-	const T range = std::tan(fovY / static_cast<T>(2))* zNear;
+	const T range = std::tan(fovY / static_cast<T>(2)) * zNear;
 	const T left = -range * aspect;
 	const T right = range * aspect;
 	const T bottom = -range;
@@ -4609,11 +4609,11 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(const T fovY, const T a
 
 	Mat<4, 4, T> result(static_cast<T>(0));
 
-	result[0][0] = (static_cast<T>(2)* zNear) / (right - left);
-	result[1][1] = (static_cast<T>(2)* zNear) / (top - bottom);
+	result[0][0] = (static_cast<T>(2) * zNear) / (right - left);
+	result[1][1] = (static_cast<T>(2) * zNear) / (top - bottom);
 	result[2][2] = -static_cast<T>(1);
 	result[2][3] = -static_cast<T>(1);
-	result[3][2] = -static_cast<T>(2)* zNear;
+	result[3][2] = -static_cast<T>(2) * zNear;
 
 	return result;
 }

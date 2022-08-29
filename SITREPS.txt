@@ -3146,3 +3146,8 @@ SITREP 08/27/2022|22w34c1
 
 SITREP 08/28/2022|22w34c2
     - Updated Branding
+
+SITREP 08/30/2022|22w35a1
+    - Changed TRAP Engine version to 22w35a1(0.8.35)
+    - Log Fixed Trace level not working ~<5 mins
+    - Math Orthographic(), Frustum, Perspective, PerspectiveFoV now correctly use 0 to 1 clip values ~<15 mins

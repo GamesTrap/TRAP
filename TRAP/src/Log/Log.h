@@ -68,19 +68,20 @@ namespace TRAP
 		/// </summary>
 		enum class Level
 		{
-			Trace = 0x00,
-			Debug = 0x01,
-			Info = 0x02,
-			Warn = 0x03,
-			Error = 0x04,
-			Critical = 0x05
+			None = 0x00,
+			Trace = 0x01,
+			Debug = 0x02,
+			Info = 0x04,
+			Warn = 0x08,
+			Error = 0x10,
+			Critical = 0x20
 		};
 
 		/// <summary>
 		/// Set the importance level for the log messages.
 		/// Messages that are blow the given importance level
 		/// won't be printed to the console.
-		/// 
+		///
 		/// Note: All messages are saved in the log file regardless
 		///       off the importance level.
 		/// </summary>
@@ -144,7 +145,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[22w34c1]";
+		inline static constexpr auto WindowVersion =                        "[22w35a1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
