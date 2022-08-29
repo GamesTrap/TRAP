@@ -178,7 +178,7 @@ void TRAP::SceneCamera::SetProjectionType(const ProjectionType type)
 void TRAP::SceneCamera::RecalculateProjection()
 {
 	if(m_projectionType == ProjectionType::Perspective)
-		m_projection = Math::Perspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear, m_perspectiveFar);
+		m_projection = Math::Perspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveFar, m_perspectiveNear);
 	else //if (m_projectionType == ProjectionType::Orthographic)
 	{
 		const float orthographicLeft = -m_orthographicSize * m_aspectRatio * 0.5f;
@@ -190,7 +190,7 @@ void TRAP::SceneCamera::RecalculateProjection()
 			                              orthographicRight,
 			                              orthographicBottom,
 			                              orthographicTop,
-			                              m_orthographicNear,
-			                              m_orthographicFar);
+			                              m_orthographicFar,
+										  m_orthographicNear);
 	}
 }

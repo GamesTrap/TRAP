@@ -117,7 +117,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="depth">New depth value (range [0,1]). Default: 1.</param>
 		/// <param name="window">Window to set clear depth value for. Default: Main Window.</param>
-		static void SetClearDepth(float depth = 1.0f, Window* window = nullptr);
+		static void SetClearDepth(float depth = 0.0f, Window* window = nullptr);
 		/// <summary>
 		/// Set the clear stencil value for the given window.
 		/// </summary>

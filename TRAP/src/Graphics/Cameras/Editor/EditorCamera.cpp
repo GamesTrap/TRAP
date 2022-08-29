@@ -9,7 +9,7 @@
 #include "Application.h"
 
 TRAP::Graphics::EditorCamera::EditorCamera(const float fov, const float aspectRatio, float nearClip, float farClip)
-    : Camera(TRAP::Math::Perspective(TRAP::Math::Radians(fov), aspectRatio, nearClip, farClip)),
+    : Camera(TRAP::Math::Perspective(TRAP::Math::Radians(fov), aspectRatio, farClip, nearClip)),
       m_viewMatrix(), m_position(), m_direction(), m_focalPoint(), m_fov(fov), m_aspectRatio(aspectRatio),
       m_nearClip(nearClip), m_farClip(farClip), m_isActive(false), m_panning(), m_rotating(), m_initialMousePosition(),
       m_initialFocalPoint(), m_initialRotation(), m_distance(), m_normalSpeed(0.002f), m_pitch(),
@@ -326,7 +326,7 @@ void TRAP::Graphics::EditorCamera::UpdateView()
 void TRAP::Graphics::EditorCamera::UpdateProjection()
 {
     m_aspectRatio = m_viewportWidth / m_viewportHeight;
-    m_projection = TRAP::Math::Perspective(TRAP::Math::Radians(m_fov), m_aspectRatio, m_nearClip, m_farClip);
+    m_projection = TRAP::Math::Perspective(TRAP::Math::Radians(m_fov), m_aspectRatio, m_farClip, m_nearClip);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

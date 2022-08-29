@@ -3151,3 +3151,5 @@ SITREP 08/30/2022|22w35a1
     - Changed TRAP Engine version to 22w35a1(0.8.35)
     - Log Fixed Trace level not working ~<5 mins
     - Math Orthographic(), Frustum, Perspective, PerspectiveFoV now correctly use 0 to 1 clip values ~<15 mins
+    - EditorCamera/OrthographicCamera(Controller)/SceneCamera Flipped near and far planes ~<5 mins
+    - Implemented Reverse Z buffering (higher depth precision) ~<10 mins

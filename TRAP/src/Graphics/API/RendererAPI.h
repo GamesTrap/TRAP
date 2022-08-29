@@ -204,7 +204,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
 		/// <param name="window">Window to set clear depth value for. Default: Main Window.</param>
-		virtual void SetClearDepth(float depth = 1.0f, Window* window = nullptr) const = 0;
+		virtual void SetClearDepth(float depth = 0.0f, Window* window = nullptr) const = 0;
 		/// <summary>
 		/// Set the clear stencil value to be used by the given window.
 		/// </summary>
@@ -1414,7 +1414,7 @@ namespace TRAP::Graphics
 			ResourceState StartState{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
 			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 1.0f;
+			float ClearDepth = 0.0f;
 			uint32_t ClearStencil = 0;
 			//The image quality level.
 			//The higher the quality, the lower the performance.
@@ -1456,7 +1456,7 @@ namespace TRAP::Graphics
 			TRAP::Graphics::API::ImageFormat Format{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
 			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 1.0f;
+			float ClearDepth = 0.0f;
 			uint32_t ClearStencil = 0;
 			//What state will the texture get created in
 			ResourceState StartState{};
@@ -2049,7 +2049,7 @@ namespace TRAP::Graphics
 			TRAP::Graphics::API::ImageFormat ColorFormat{};
 			//Clear value
 			TRAP::Math::Vec4 ClearColor{};
-			float ClearDepth = 1.0f;
+			float ClearDepth = 0.0f;
 			uint32_t ClearStencil = 0;
 			//Set whether swapchain will be presented using VSync
 			bool EnableVSync{};
@@ -2228,7 +2228,7 @@ namespace TRAP::Graphics
 			//Clear color(s)
 			std::array<std::variant<TRAP::Math::Vec4, TRAP::Math::Vec4ui, TRAP::Math::Vec4i>, 8> ClearColorValues{};
 			//Clear depth value
-			float ClearDepth = 1.0f;
+			float ClearDepth = 0.0f;
 			//Clear stencil value
 			uint32_t ClearStencil = 0;
 			//Action to perform on the color attachment(s) on store.
@@ -2490,7 +2490,7 @@ namespace TRAP::Graphics
 			uint32_t CurrentSwapChainImageIndex;
 
 			TRAP::Math::Vec4 ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
-			float ClearDepth = 1.0f;
+			float ClearDepth = 0.0f;
 			uint32_t ClearStencil = 0;
 
 			bool CurrentVSync;

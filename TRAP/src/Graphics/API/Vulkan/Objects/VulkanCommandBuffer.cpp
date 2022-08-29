@@ -1388,7 +1388,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, con
 	VkClearAttachment attachment;
 	attachment.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
 	attachment.colorAttachment = 0;
-	attachment.clearValue.depthStencil = { 1.0f, stencil };
+	attachment.clearValue.depthStencil = { 0.0f, stencil };
 
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }

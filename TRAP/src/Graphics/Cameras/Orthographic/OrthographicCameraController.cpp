@@ -24,7 +24,7 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const
 																		   const Input::Controller controller)
 	: m_aspectRatio(aspectRatio),
 	  m_bounds({ -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel }),
-	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f),
+	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f),
 	  m_rotation(rotation),
 	  m_useController(useController),
 	  m_controller(controller)
@@ -66,7 +66,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 				m_cameraTranslationSpeed = m_zoomLevel;
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel,
-				                       m_zoomLevel, -1.0f, 1.0f);
+				                       m_zoomLevel, 1.0f, -1.0f);
 			}
 			const float leftTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger) +
 			                           1) / 2;
@@ -76,7 +76,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 				m_cameraTranslationSpeed = m_zoomLevel;
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel,
-				                       m_zoomLevel, -1.0f, 1.0f);
+				                       m_zoomLevel, 1.0f, -1.0f);
 			}
 
 			if (m_rotation)
@@ -165,7 +165,7 @@ void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, c
 
 	m_aspectRatio = width / height;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
-	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
+	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -227,7 +227,7 @@ void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoom
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
 	m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel,
-	                       -1.0f, 1.0f);
+	                       1.0f, -1.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -247,7 +247,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::M
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
-	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
+	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f);
 
 	return false;
 }
