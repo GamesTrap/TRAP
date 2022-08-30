@@ -8,12 +8,11 @@ TRAP::SceneCamera::SceneCamera()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float nearClip, const float farClip)
+void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float nearClip)
 {
 	m_projectionType = ProjectionType::Perspective;
 	m_perspectiveFOV = verticalFOV;
 	m_perspectiveNear = nearClip;
-	m_perspectiveFar = farClip;
 	RecalculateProjection();
 }
 
@@ -53,22 +52,6 @@ void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::SceneCamera::GetPerspectiveClip() const
-{
-	return { m_perspectiveNear, m_perspectiveFar };
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::SceneCamera::SetPerspectiveClip(const Math::Vec2 clip)
-{
-	m_perspectiveNear= clip.x;
-	m_perspectiveFar = clip.y;
-	RecalculateProjection();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 float TRAP::SceneCamera::GetPerspectiveNearClip() const
 {
 	return m_perspectiveNear;
@@ -79,21 +62,6 @@ float TRAP::SceneCamera::GetPerspectiveNearClip() const
 void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 {
 	m_perspectiveNear = nearClip;
-	RecalculateProjection();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-float TRAP::SceneCamera::GetPerspectiveFarClip() const
-{
-	return m_perspectiveFar;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::SceneCamera::SetPerspectiveFarClip(const float farClip)
-{
-	m_perspectiveFar = farClip;
 	RecalculateProjection();
 }
 
@@ -178,7 +146,7 @@ void TRAP::SceneCamera::SetProjectionType(const ProjectionType type)
 void TRAP::SceneCamera::RecalculateProjection()
 {
 	if(m_projectionType == ProjectionType::Perspective)
-		m_projection = Math::Perspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveFar, m_perspectiveNear);
+		m_projection = Math::InfinitePerspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear);
 	else //if (m_projectionType == ProjectionType::Orthographic)
 	{
 		const float orthographicLeft = -m_orthographicSize * m_aspectRatio * 0.5f;

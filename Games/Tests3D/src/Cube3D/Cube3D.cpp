@@ -174,7 +174,7 @@ void Cube3D::OnAttach()
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 	//Camera setup
-    m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f, 1000.0f);
+    m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f);
     m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
                              TRAP::Application::GetWindow()->GetHeight());
 

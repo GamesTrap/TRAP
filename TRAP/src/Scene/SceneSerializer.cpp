@@ -126,7 +126,6 @@ namespace TRAP
 			out << YAML::Key << "ProjectionType" << YAML::Value << static_cast<int32_t>(camera.GetProjectionType());
 			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveVerticalFOV();
 			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
-			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.GetPerspectiveFarClip();
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
 			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
 			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
@@ -254,7 +253,6 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 				cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
 				cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-				cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
 
 				cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
 				cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());

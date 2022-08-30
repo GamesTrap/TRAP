@@ -38,8 +38,7 @@ namespace TRAP::Graphics
         /// <param name="fov">Field of view in degrees.</param>
         /// <param name="aspectRatio">Viewport aspect ratio.</param>
         /// <param name="nearClip">Near clip plane.</param>
-        /// <param name="farClip">Far clip plane.</param>
-        EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);
+        EditorCamera(float fov, float aspectRatio, float nearClip);
         /// <summary>
         /// Destructor
         /// </summary>
@@ -177,11 +176,6 @@ namespace TRAP::Graphics
         /// <returns>Near clip plane.</returns>
         float GetNearClip() const;
         /// <summary>
-        /// Retrieve the far clip plane.
-        /// </summary>
-        /// <returns>Far clip plane.</returns>
-        float GetFarClip() const;
-        /// <summary>
         /// Retrieve the camera pitch.
         /// </summary>
         /// <returns>Pitch.</returns>
@@ -273,7 +267,6 @@ namespace TRAP::Graphics
         float m_fov;
         float m_aspectRatio;
         float m_nearClip;
-        float m_farClip;
 
         bool m_isActive;
         bool m_panning;

@@ -218,10 +218,6 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 			float perspectiveNear = camera.GetPerspectiveNearClip();
 			if (ImGui::DragFloat("Near", &perspectiveNear))
 				camera.SetPerspectiveNearClip(perspectiveNear);
-
-			float perspectiveFar = camera.GetPerspectiveFarClip();
-			if (ImGui::DragFloat("Far", &perspectiveFar))
-				camera.SetPerspectiveFarClip(perspectiveFar);
 		}
 
 		if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)

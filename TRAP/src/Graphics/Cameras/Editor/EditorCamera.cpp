@@ -8,10 +8,10 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 #include "Application.h"
 
-TRAP::Graphics::EditorCamera::EditorCamera(const float fov, const float aspectRatio, float nearClip, float farClip)
-    : Camera(TRAP::Math::Perspective(TRAP::Math::Radians(fov), aspectRatio, farClip, nearClip)),
+TRAP::Graphics::EditorCamera::EditorCamera(const float fov, const float aspectRatio, float nearClip)
+    : Camera(TRAP::Math::InfinitePerspective(TRAP::Math::Radians(fov), aspectRatio, nearClip)),
       m_viewMatrix(), m_position(), m_direction(), m_focalPoint(), m_fov(fov), m_aspectRatio(aspectRatio),
-      m_nearClip(nearClip), m_farClip(farClip), m_isActive(false), m_panning(), m_rotating(), m_initialMousePosition(),
+      m_nearClip(nearClip), m_isActive(false), m_panning(), m_rotating(), m_initialMousePosition(),
       m_initialFocalPoint(), m_initialRotation(), m_distance(), m_normalSpeed(0.002f), m_pitch(),
       m_yaw(), m_pitchDelta(), m_yawDelta(), m_positionDelta(), m_rightDirection(),
       m_cameraMode(CameraMode::ArcBall), m_minFocusDistance(100.0f), m_viewportWidth(1280.0f),
@@ -262,13 +262,6 @@ float TRAP::Graphics::EditorCamera::GetNearClip() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::EditorCamera::GetFarClip() const
-{
-    return m_farClip;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 float TRAP::Graphics::EditorCamera::GetPitch() const
 {
     return m_pitch;
@@ -326,7 +319,7 @@ void TRAP::Graphics::EditorCamera::UpdateView()
 void TRAP::Graphics::EditorCamera::UpdateProjection()
 {
     m_aspectRatio = m_viewportWidth / m_viewportHeight;
-    m_projection = TRAP::Math::Perspective(TRAP::Math::Radians(m_fov), m_aspectRatio, m_farClip, m_nearClip);
+    m_projection = TRAP::Math::InfinitePerspective(TRAP::Math::Radians(m_fov), m_aspectRatio, m_nearClip);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

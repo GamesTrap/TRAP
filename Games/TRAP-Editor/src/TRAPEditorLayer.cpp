@@ -13,7 +13,7 @@ TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"), m_renderTargetLoadActions(), m_renderTargetDesc(),
 	  m_renderTarget(nullptr), m_viewportSize(), m_viewportBounds(), m_viewportFocused(false),
 	  m_viewportHovered(false), m_gizmoType(-1), m_allowViewportCameraEvents(false),
-	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f, 1000.0f),
+	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
 	  m_startedCameraMovement(false), m_leftMouseBtnRepeatCount(0), m_entityChanged(false),
 	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr)
 {
@@ -258,7 +258,7 @@ void TRAPEditorLayer::OnAttach()
 
 	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
-	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
+	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f);
 
 	m_sceneGraphPanel.SetContext(m_activeScene);
 }

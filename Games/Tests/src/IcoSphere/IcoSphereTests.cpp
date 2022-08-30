@@ -48,7 +48,7 @@ void IcoSphereTests::OnAttach()
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
 	//Camera setup
-	m_camera.SetPerspective(TRAP::Math::Radians(m_FOV), 0.01f, 1000.0f);
+	m_camera.SetPerspective(TRAP::Math::Radians(m_FOV), 0.01f);
 	m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
 	                         TRAP::Application::GetWindow()->GetHeight());
 	m_cameraTransform.Position = TRAP::Math::Vec3(0.0f, 0.0f, 8.0f);
