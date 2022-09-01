@@ -421,6 +421,63 @@ namespace TRAP::INTERNAL
 		using PFN_XrmInitialize = void(*)();
 		using PFN_XrmUniqueQuark = XrmQuark(*)();
 		using PFN_XUnregisterIMInstantiateCallback = int(*)(Display*, void*, char*, char*, XIDProc, XPointer);
+
+		typedef struct DBusConnection DBusConnection;
+		typedef struct DBusMessage DBusMessage;
+		typedef uint32_t dbus_bool_t;
+		typedef uint32_t dbus_uint32_t;
+		enum DBusBusType
+		{
+			DBUS_BUS_SESSION,
+			DBUS_BUS_SYSTEM,
+			DBUS_BUS_STARTER
+		};
+		struct DBusError
+		{
+			const char* name;
+			const char* message;
+			uint32_t dummy1 : 1;
+			uint32_t dummy2 : 1;
+			uint32_t dummy3 : 1;
+			uint32_t dummy4 : 1;
+			uint32_t dummy5 : 1;
+			void* padding1;
+		};
+		struct DBusMessageIter
+		{
+			void* dummy1;
+			void* dummy2;
+			dbus_uint32_t dummy3;
+			int32_t dummy4, dummy5, dummy6, dummy7, dummy8, dummy9, dummy10, dummy11;
+			int32_t pad1;
+			void* pad2;
+			void* pad3;
+		};
+		inline static constexpr uint32_t DBUS_NAME_FLAG_REPLACE_EXISTING = 0x2;
+		inline static constexpr uint32_t DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1;
+		inline static constexpr uint32_t DBUS_TYPE_STRING = static_cast<uint32_t>('s');
+		inline static constexpr uint32_t DBUS_TYPE_ARRAY = static_cast<uint32_t>('a');
+		inline static constexpr uint32_t DBUS_TYPE_DICT_ENTRY = static_cast<uint32_t>('e');
+		inline static constexpr uint32_t DBUS_TYPE_VARIANT = static_cast<uint32_t>('v');
+		inline static constexpr uint32_t DBUS_TYPE_BOOLEAN = static_cast<uint32_t>('b');
+		inline static constexpr uint32_t DBUS_TYPE_DOUBLE = static_cast<uint32_t>('d');
+
+
+		//DBus
+		using PFN_DBusErrorInit = void(*)(DBusError*);
+		using PFN_DBusErrorIsSet = dbus_bool_t(*)(const DBusError*);
+		using PFN_DBusErrorFree = void(*)(DBusError*);
+		using PFN_DBusConnectionUnref = void(*)(DBusConnection*);
+		using PFN_DBusConnectionSend = dbus_bool_t(*)(DBusConnection*, DBusMessage*, dbus_uint32_t*);
+		using PFN_DBusConnectionFlush = void(*)(DBusConnection*);
+		using PFN_DBusBusRequestName = int32_t(*)(DBusConnection*, const char*, uint32_t, DBusError*);
+		using PFN_DBusBusGet = DBusConnection*(*)(DBusBusType, DBusError*);
+		using PFN_DBusMessageUnref = void(*)(DBusMessage*);
+		using PFN_DBusMessageNewSignal = DBusMessage*(*)(const char*, const char*, const char*);
+		using PFN_DBusMessageIterInitAppend = void(*)(DBusMessage*, DBusMessageIter*);
+		using PFN_DBusMessageIterAppendBasic = dbus_bool_t(*)(DBusMessageIter*, int32_t, const void*);
+		using PFN_DBusMessageIterOpenContainer = dbus_bool_t(*)(DBusMessageIter*, int32_t, const char*, DBusMessageIter*);
+		using PFN_DBusMessageIterCloseContainer = dbus_bool_t(*)(DBusMessageIter*, DBusMessageIter*);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//
@@ -499,11 +556,11 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		enum class ProgressState
 		{
-			NoProgress = 0x00,
-			Indeterminate = 0x01,
-			Normal = 0x02,
-			Error = 0x04,
-			Paused = 0x08
+			NoProgress = 0,
+			Indeterminate,
+			Normal,
+			Error,
+			Paused
 		};
 	private:
 		//-------//
@@ -990,6 +1047,29 @@ namespace TRAP::INTERNAL
 				PFN_XrmInitialize Initialize{};
 				PFN_XrmUniqueQuark UniqueQuark{};
 			} XRM{};
+
+			struct dbus
+			{
+				void* Handle = nullptr;
+
+				PFN_DBusErrorInit ErrorInit{}; //dbus_error_init
+				PFN_DBusErrorIsSet ErrorIsSet{}; //dbus_error_is_set
+				PFN_DBusErrorFree ErrorFree{}; //dbus_error_free
+				PFN_DBusConnectionUnref ConnectionUnref{}; //dbus_connection_unref
+				PFN_DBusConnectionSend ConnectionSend{}; //dbus_connection_send
+				PFN_DBusConnectionFlush ConnectionFlush{}; //dbus_connection_flush
+				PFN_DBusBusRequestName BusRequestName{}; //dbus_bus_request_name
+				PFN_DBusBusGet BusGet{}; //dbus_bus_get
+				PFN_DBusMessageUnref MessageUnref{}; //dbus_message_unref
+				PFN_DBusMessageNewSignal MessageNewSignal{}; //dbus_message_new_signal
+				PFN_DBusMessageIterInitAppend MessageIterInitAppend{}; //dbus_message_iter_init_append
+				PFN_DBusMessageIterAppendBasic MessageIterAppendBasic{}; //dbus_message_iter_append_basic
+				PFN_DBusMessageIterOpenContainer MessageIterOpenContainer{}; //dbus_message_iter_open_container
+				PFN_DBusMessageIterCloseContainer MessageIterCloseContainer{}; //dbus_message_iter_close_container
+
+				DBusConnection* Connection = nullptr;
+				DBusError Error{};
+			} DBUS;
 #endif
 		};
 	public:
@@ -2105,6 +2185,9 @@ namespace TRAP::INTERNAL
 		static bool GetRawMouseMotionMode(const InternalWindow* window);
 		/// <summary>
 		/// Sets the progress value and state on the taskbar for the specified window.
+		///
+		/// Linux: This only works on KDE & Unity environments.
+		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
 		///
 		/// Errors: Possible errors include Error::Platform_Error and Error::Feature_Unavailable.
 		/// Thread safety: This function must only be called from the main thread.

@@ -1588,6 +1588,7 @@ void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* window, con
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetProgress() must only be called from main thread");
+	TRAP_ASSERT(progress <= 100, "[Window] Progress must be between 0 and 100");
 
 	PlatformSetProgress(window, state, progress);
 }

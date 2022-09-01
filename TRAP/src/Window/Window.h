@@ -210,6 +210,9 @@ namespace TRAP
 		void SetRawMouseInput(bool enabled);
 		/// <summary>
 		/// Sets the progress on the taskbar for the specified window.
+		///
+		/// Linux: This only works on KDE & Unity environments.
+		///        A .desktop file must exist for the application with the same name as given to TRAP::Application.
 		/// </summary>
 		/// <param name="state">State of progress.</param>
 		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>

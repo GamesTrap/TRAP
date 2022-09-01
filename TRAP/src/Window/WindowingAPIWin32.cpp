@@ -2632,7 +2632,28 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* win
 		return;
 	}
 
-	res = window->TaskbarList->SetProgressState(window->Handle, static_cast<TBPFLAG>(state));
+	TBPFLAG flag{};
+	switch(state)
+	{
+	case ProgressState::Indeterminate:
+		flag = TBPF_INDETERMINATE;
+		break;
+	case ProgressState::Normal:
+		flag = TBPF_NORMAL;
+		break;
+	case ProgressState::Error:
+		flag = TBPF_ERROR;
+		break;
+	case ProgressState::Paused:
+		flag = TBPF_PAUSED;
+		break;
+	case ProgressState::NoProgress:
+	default:
+		flag = TBPF_NOPROGRESS;
+		break;
+	}
+
+	res = window->TaskbarList->SetProgressState(window->Handle, flag);
 	if(res != S_OK)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to set progress state");

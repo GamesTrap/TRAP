@@ -3154,3 +3154,7 @@ SITREP 08/30/2022|22w35a1
     - EditorCamera/OrthographicCamera(Controller)/SceneCamera Flipped near and far planes ~<5 mins
     - Implemented Reverse Z buffering (higher depth precision) ~<10 mins
     - EditorCamera/SceneCamera now use infinite far clip plane ~<15 mins
+
+SITREP 09/01/2022|22w35a2
+    - Changed TRAP Engine version to 22w35a2(0.8.36)
+    - WindowingAPI Linux Added support for taskbar progress (KDE & Unity only) ~<40 mins
