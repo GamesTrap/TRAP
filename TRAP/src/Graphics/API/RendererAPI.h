@@ -27,6 +27,7 @@ namespace TRAP::Graphics
 	class SwapChain;
 	class Fence;
 	class Semaphore;
+	class QueryPool;
 	class Queue;
 	class Buffer;
 	class CommandBuffer;
@@ -682,6 +683,19 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window that needs an updated SwapChain.</param>
 		static void ResizeSwapChain(Window* window = nullptr);
+
+		/// <summary>
+		/// Retrieve the GPU side frame time for the graphics queue.
+		/// </summary>
+		/// <param name="window">Window to get frame time from.</param>
+		/// <returns>GPU Graphics frame time in milliseconds.</returns>
+		static float GetGPUGraphicsFrameTime(Window* window = nullptr);
+		/// <summary>
+		/// Retrieve the GPU side frame time for the compute queue.
+		/// </summary>
+		/// <param name="window">Window to get frame time from.</param>
+		/// <returns>GPU Compute frame time in milliseconds.</returns>
+		static float GetGPUComputeFrameTime(Window* window = nullptr);
 
 	//protected:
 		/// <summary>
@@ -2475,8 +2489,11 @@ namespace TRAP::Graphics
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> GraphicsCompleteSemaphores;
+			std::array<TRAP::Ref<QueryPool>, ImageCount> GraphicsTimestampQueryPools;
+			std::array<TRAP::Ref<Buffer>, ImageCount> GraphicsTimestampReadbackBuffers;
 			PipelineDesc GraphicsPipelineDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
+			float GraphicsFrameTime;
 			bool Recording;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
@@ -2501,9 +2518,12 @@ namespace TRAP::Graphics
 			std::array<CommandBuffer*, ImageCount>  ComputeCommandBuffers;
 			std::array<TRAP::Ref<Fence>, ImageCount> ComputeCompleteFences;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> ComputeCompleteSemaphores;
+			std::array<TRAP::Ref<QueryPool>, ImageCount> ComputeTimestampQueryPools;
+			std::array<TRAP::Ref<Buffer>, ImageCount> ComputeTimestampReadbackBuffers;
 			TRAP::Math::Vec3 CurrentComputeWorkGroupSize;
 			PipelineDesc ComputePipelineDesc;
 			TRAP::Ref<Pipeline> CurrentComputePipeline;
+			float ComputeFrameTime;
 			bool RecordingCompute;
 		};
 

@@ -765,6 +765,13 @@ namespace TRAP::Graphics::API
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndComputeRecording(PerWindowData* const p);
 
+		//TODO Document
+		static void BeginGPUFrameProfile(QueueType type, PerWindowData* const p);
+		//TODO Document
+		static void EndGPUFrameProfile(QueueType type, PerWindowData* const p);
+		//TODO Document
+		static float ResolveGPUFrameProfile(QueueType type, PerWindowData* const p);
+
 		std::string m_rendererTitle;
 
 		TRAP::Ref<VulkanInstance> m_instance;

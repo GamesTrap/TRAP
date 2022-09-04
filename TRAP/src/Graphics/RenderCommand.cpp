@@ -415,3 +415,17 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 {
 	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, window);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(Window* window)
+{
+	return RendererAPI::GetGPUGraphicsFrameTime(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(Window* window)
+{
+	return RendererAPI::GetGPUComputeFrameTime(window);
+}

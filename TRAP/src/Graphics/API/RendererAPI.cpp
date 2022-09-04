@@ -357,6 +357,26 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	return s_perWindowDataMap[window]->GraphicsFrameTime;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	return s_perWindowDataMap[window]->ComputeFrameTime;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
 	if(!s_isVulkanCapableFirstTest)
@@ -487,12 +507,18 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 		GraphicCommandBuffers[i] = nullptr;
 		GraphicCommandPools[i].reset();
 
+		GraphicsTimestampQueryPools[i].reset();
+		GraphicsTimestampReadbackBuffers[i].reset();
+
 		ComputeCompleteSemaphores[i].reset();
 		ComputeCompleteFences[i].reset();
 
 		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
 		ComputeCommandBuffers[i] = nullptr;
 		ComputeCommandPools[i].reset();
+
+		ComputeTimestampQueryPools[i].reset();
+		ComputeTimestampReadbackBuffers[i].reset();
 	}
 }
 

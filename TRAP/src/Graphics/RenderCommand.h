@@ -511,6 +511,19 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to do the resolve pass on.</param>
 		static void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
 		                            Window* window = nullptr);
+
+		/// <summary>
+		/// Retrieve the GPU side frame time for the graphics queue.
+		/// </summary>
+		/// <param name="window">Window to get frame time from.</param>
+		/// <returns>GPU Graphics frame time in milliseconds.</returns>
+		static float GetGPUGraphicsFrameTime(Window* window = nullptr);
+		/// <summary>
+		/// Retrieve the GPU side frame time for the compute queue.
+		/// </summary>
+		/// <param name="window">Window to get frame time from.</param>
+		/// <returns>GPU Compute frame time in milliseconds.</returns>
+		static float GetGPUComputeFrameTime(Window* window = nullptr);
 	};
 }
 

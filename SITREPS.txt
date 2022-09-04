@@ -3163,3 +3163,4 @@ SITREP 09/04/2022|22w35b1
     - Changed TRAP Engine version to 22w35b1(0.8.37)
     - Application/RendererAPI Renamed GetFrameTime() to GetCPUFrameTime() ~<5 mins
     - Renderer2D Added missing VertexLayout value in ExtendBuffers() ~<5 mins
+    - RendererAPI Added support for GPU Graphics and Compute frame time querying ~>30 mins

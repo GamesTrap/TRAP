@@ -34,6 +34,7 @@
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/PipelineCache.h"
 #include "Graphics/API/Objects/Pipeline.h"
+#include "Graphics/API/Objects/QueryPool.h"
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/Shaders/ShaderManager.h"
@@ -182,6 +183,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 
 	p->GraphicCommandBuffers[p->ImageIndex]->Begin();
 
+	BeginGPUFrameProfile(QueueType::Graphics, p);
+
 #ifndef TRAP_HEADLESS_MODE
 	RenderTargetBarrier barrier{renderTarget, ResourceState::Present, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
@@ -258,6 +261,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	}
 #endif
 
+	EndGPUFrameProfile(QueueType::Graphics, p);
+
 	//End Recording
 	p->GraphicCommandBuffers[p->ImageIndex]->End();
 
@@ -271,6 +276,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 #endif
 	submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
 	s_graphicQueue->Submit(submitDesc);
+
+	p->GraphicsFrameTime = ResolveGPUFrameProfile(QueueType::Graphics, p);
 
 #ifndef TRAP_HEADLESS_MODE
 	QueuePresentDesc presentDesc{};
@@ -400,6 +407,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* c
 
 	p->ComputeCommandBuffers[p->ImageIndex]->Begin();
 
+	BeginGPUFrameProfile(QueueType::Compute, p);
+
 	if(p->CurrentComputePipeline)
 		p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
 
@@ -413,6 +422,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* con
 	if(!p->RecordingCompute)
 		return;
 
+	EndGPUFrameProfile(QueueType::Compute, p);
+
 	//End Recording
 	p->ComputeCommandBuffers[p->ImageIndex]->End();
 
@@ -422,6 +433,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* con
 	submitDesc.SignalSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
 	submitDesc.SignalFence = {p->ComputeCompleteFences[p->ImageIndex]};
 	s_computeQueue->Submit(submitDesc);
+
+	p->ComputeFrameTime = ResolveGPUFrameProfile(QueueType::Compute, p);
 
 	p->RecordingCompute = false;
 }
@@ -1788,9 +1801,20 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 
 	p->Window = window;
 
+	p->GraphicsFrameTime = 0.0f;
+	p->ComputeFrameTime = 0.0f;
+
+	const RendererAPI::QueryPoolDesc queryPoolDesc{QueryType::Timestamp, 1 * 2};
+	RendererAPI::BufferDesc bufferDesc{};
+	bufferDesc.MemoryUsage = RendererAPI::ResourceMemoryUsage::GPUToCPU;
+	bufferDesc.Flags = RendererAPI::BufferCreationFlags::OwnMemory;
+	bufferDesc.Size = sizeof(uint64_t) * 1 * 2;
+	bufferDesc.StartState = RendererAPI::ResourceState::CopyDestination;
+
 	//For each buffered image
 	for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 	{
+		//Graphics
 		//Create Graphic Command Pool
 		p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue, false });
 		//Allocate Graphic Command Buffer
@@ -1801,11 +1825,26 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 		p->RenderCompleteSemaphores[i] = Semaphore::Create();
 		p->GraphicsCompleteSemaphores[i] = Semaphore::Create();
 
+		p->GraphicsTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
+		bufferDesc.Name = "GPU FrameTime Graphics Query Readback Buffer";
+		RendererAPI::BufferLoadDesc loadDesc{};
+		loadDesc.Desc = bufferDesc;
+		GetResourceLoader()->AddResource(loadDesc, nullptr);
+		p->GraphicsTimestampReadbackBuffers[i] = loadDesc.Buffer;
+
+		//Compute
 		p->ComputeCommandPools[i] = CommandPool::Create({s_computeQueue, false});
 		p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
 
 		p->ComputeCompleteFences[i] = Fence::Create();
 		p->ComputeCompleteSemaphores[i] = Semaphore::Create();
+
+		p->ComputeTimestampQueryPools[i] = QueryPool::Create(queryPoolDesc);
+		bufferDesc.Name = "GPU FrameTime Compute Query Readback Buffer";
+		loadDesc = {};
+		loadDesc.Desc = bufferDesc;
+		GetResourceLoader()->AddResource(loadDesc, nullptr);
+		p->ComputeTimestampReadbackBuffers[i] = loadDesc.Buffer;
 	}
 
 	//Image Acquire Semaphore
@@ -2493,4 +2532,91 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 	TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
 #endif
 	return pipeRes.first->second;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType type, PerWindowData* const p)
+{
+	CommandBuffer* cmd = nullptr;
+	if(type == QueueType::Graphics)
+		cmd = p->GraphicCommandBuffers[p->ImageIndex];
+	else if(type == QueueType::Compute)
+		cmd = p->ComputeCommandBuffers[p->ImageIndex];
+
+	TRAP::Ref<QueryPool> pool = nullptr;
+	if(type == QueueType::Graphics)
+		pool = p->GraphicsTimestampQueryPools[p->ImageIndex];
+	else if(type == QueueType::Compute)
+		pool = p->ComputeTimestampQueryPools[p->ImageIndex];
+
+	cmd->ResetQueryPool(pool, 0, 1 * 2);
+	cmd->BeginQuery(pool, {0});
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType type, PerWindowData* const p)
+{
+	CommandBuffer* cmd = nullptr;
+	if(type == QueueType::Graphics)
+		cmd = p->GraphicCommandBuffers[p->ImageIndex];
+	else if(type == QueueType::Compute)
+		cmd = p->ComputeCommandBuffers[p->ImageIndex];
+
+	TRAP::Ref<QueryPool> pool = nullptr;
+	if(type == QueueType::Graphics)
+		pool = p->GraphicsTimestampQueryPools[p->ImageIndex];
+	else if(type == QueueType::Compute)
+		pool = p->ComputeTimestampQueryPools[p->ImageIndex];
+
+	TRAP::Ref<Buffer> buffer = nullptr;
+	if(type == QueueType::Graphics)
+		buffer = p->GraphicsTimestampReadbackBuffers[p->ImageIndex];
+	else if(type == QueueType::Compute)
+		buffer = p->ComputeTimestampReadbackBuffers[p->ImageIndex];
+
+	cmd->BeginQuery(pool, {1});
+
+	cmd->ResolveQuery(pool, buffer, 0, 1 * 2);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueType type, PerWindowData* const p)
+{
+
+	float time = 0.0f;
+
+	RendererAPI::ReadRange readRange{0, sizeof(uint64_t) * 1 * 2};
+	TRAP::Ref<Buffer> buffer = nullptr;
+	if(type == QueueType::Graphics)
+		buffer = p->GraphicsTimestampReadbackBuffers[p->ImageIndex];
+	else if(type == QueueType::Compute)
+		buffer = p->ComputeTimestampReadbackBuffers[p->ImageIndex];
+	buffer->MapBuffer(&readRange);
+	if(buffer->GetCPUMappedAddress())
+	{
+		const uint64_t startTime = *(static_cast<uint64_t*>(buffer->GetCPUMappedAddress()) + 0);
+		const uint64_t endTime = *(static_cast<uint64_t*>(buffer->GetCPUMappedAddress()) + 1);
+
+		if(endTime > startTime)
+		{
+			const uint64_t nsTime = endTime - startTime;
+			if(type == QueueType::Graphics)
+			{
+				VulkanQueue* graphicsQueue = dynamic_cast<VulkanQueue*>(s_graphicQueue.get());
+				time = static_cast<float>((nsTime / graphicsQueue->GetTimestampFrequency())) * 1000.0f;
+			}
+			else if(type == QueueType::Compute)
+			{
+				VulkanQueue* computeQueue = dynamic_cast<VulkanQueue*>(s_computeQueue.get());
+				time = static_cast<float>((nsTime / computeQueue->GetTimestampFrequency())) * 1000.0f;
+			}
+		}
+
+		buffer->UnMapBuffer();
+	}
+
+	return time;
 }
