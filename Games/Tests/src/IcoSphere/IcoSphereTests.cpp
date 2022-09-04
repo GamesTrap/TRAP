@@ -102,7 +102,7 @@ void IcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
 		TP_INFO("[IcoSphere] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[IcoSphere] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[IcoSphere] CPU FrameTime: ", TRAP::Graphics::Renderer::GetCPUFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }

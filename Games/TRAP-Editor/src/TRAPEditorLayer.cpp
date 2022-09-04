@@ -114,7 +114,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("CPU: %ix %s", TRAP::Utils::GetCPUInfo().LogicalCores, TRAP::Utils::GetCPUInfo().Model.c_str());
 	ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+	ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::Renderer::GetCPUFrameTime());
 	ImGui::Separator();
 	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Stats:");

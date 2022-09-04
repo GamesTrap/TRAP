@@ -22,7 +22,7 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("GPU: %s", TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
 	//ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
-	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+	ImGui::Text("CPU FrameTime: %.3fms", TRAP::Graphics::Renderer::GetCPUFrameTime());
 	ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 	ImGui::NewLine();
 	ImGui::Image(TRAP::Graphics::TextureManager::Get2D("TRAP"), ImVec2(100, 100));
@@ -115,13 +115,13 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		static int frameTimeIndex = 0;
 		if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 		{
-			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetCPUFrameTime();
 			frameTimeIndex++;
 		}
 		else
 		{
 			std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-			m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+			m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetCPUFrameTime();
 		}
 	}
 }

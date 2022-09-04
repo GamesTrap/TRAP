@@ -600,7 +600,7 @@ uint32_t TRAP::Application::GetFPSLimit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Application::GetFrameTime()
+float TRAP::Application::GetCPUFrameTime()
 {
 	return s_Instance->m_FrameTime;
 }

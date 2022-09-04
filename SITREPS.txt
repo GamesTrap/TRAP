@@ -3158,3 +3158,7 @@ SITREP 08/30/2022|22w35a1
 SITREP 09/01/2022|22w35a2
     - Changed TRAP Engine version to 22w35a2(0.8.36)
     - WindowingAPI Linux Added support for taskbar progress (KDE & Unity only) ~<40 mins
+
+SITREP 09/04/2022|22w35b1
+    - Changed TRAP Engine version to 22w35b1(0.8.37)
+    - Application/RendererAPI Renamed GetFrameTime() to GetCPUFrameTime() ~<5 mins

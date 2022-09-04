@@ -48,7 +48,7 @@ void AntiAliasingTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
 		TP_INFO("[AntiAliasing] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[AntiAliasing] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[AntiAliasing] CPU FrameTime: ", TRAP::Graphics::Renderer::GetCPUFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }

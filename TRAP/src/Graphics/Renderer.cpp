@@ -68,9 +68,9 @@ uint32_t TRAP::Graphics::Renderer::GetFPS()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Renderer::GetFrameTime()
+float TRAP::Graphics::Renderer::GetCPUFrameTime()
 {
-	return Application::GetFrameTime();
+	return Application::GetCPUFrameTime();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -109,10 +109,10 @@ namespace TRAP
 		/// <returns>Current FPS limit.</returns>
 		static uint32_t GetFPSLimit();
 		/// <summary>
-		/// Get the current frame time.
+		/// Get the current CPU frame time.
 		/// </summary>
-		/// <returns>Current frame time.</returns>
-		static float GetFrameTime();
+		/// <returns>Current CPU frame time.</returns>
+		static float GetCPUFrameTime();
 		/// <summary>
 		/// Get the current time scale.
 		/// </summary>

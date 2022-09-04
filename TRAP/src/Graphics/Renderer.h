@@ -37,10 +37,10 @@ namespace TRAP::Graphics
 		/// <returns>Frames per second.</returns>
 		static uint32_t GetFPS();
 		/// <summary>
-		/// Retrieve the frame time.
+		/// Retrieve the CPU frame time.
 		/// </summary>
-		/// <returns>Frame time in milliseconds.</returns>
-		static float GetFrameTime();
+		/// <returns>CPU frame time in milliseconds.</returns>
+		static float GetCPUFrameTime();
 		/// <summary>
 		/// Retrieve the current set tick rate.
 		/// Default tick rate is 64.

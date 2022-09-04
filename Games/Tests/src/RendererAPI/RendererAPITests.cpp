@@ -179,7 +179,7 @@ void RendererAPITests::OnUpdate(const TRAP::Utils::TimeStep&)
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
 		TP_INFO("[RendererAPITests] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-		TP_INFO("[RendererAPITests] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+		TP_INFO("[RendererAPITests] CPU FrameTime: ", TRAP::Graphics::Renderer::GetCPUFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
 }
