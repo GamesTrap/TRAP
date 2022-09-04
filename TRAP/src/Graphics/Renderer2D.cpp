@@ -249,7 +249,6 @@ void TRAP::Graphics::Renderer2D::EndScene()
 
 		//Update Vertices
 		buffers.QuadVertexBuffer->SetData(reinterpret_cast<float*>(buffers.QuadVertices.data()), verticesSize);
-		buffers.QuadVertexBuffer->AwaitLoading();
 
 		//Use dynamic shader resources
 		s_data.TextureShader->UseTextures(1, 1, buffers.TextureSlots);
@@ -263,6 +262,7 @@ void TRAP::Graphics::Renderer2D::EndScene()
 		//Use Shader
 		s_data.TextureShader->Use();
 
+		buffers.QuadVertexBuffer->AwaitLoading();
 		RenderCommand::DrawIndexed(indicesCount);
 
 		buffers.QuadCount = 0;
@@ -428,7 +428,8 @@ void TRAP::Graphics::Renderer2D::ExtendBuffers()
 		{ ShaderDataType::Float3, "Position" },
 		{ ShaderDataType::Float4, "Color" },
 		{ ShaderDataType::Float2, "TexCoord" },
-		{ ShaderDataType::Float, "TexIndex" }
+		{ ShaderDataType::Float, "TexIndex" },
+		{ ShaderDataType::Int, "EntityID" }
 	});
 
 	s_data.DataBuffers[imageIndex][s_data.DataBufferIndex].QuadIndexBuffer = IndexBuffer::Create((*s_data.QuadIndicesData).data(),
