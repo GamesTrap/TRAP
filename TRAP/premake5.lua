@@ -45,7 +45,7 @@ project "TRAP"
 		"src"
 	}
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMGUIZMO}",
@@ -90,7 +90,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
 		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.DISCORDGAMESDK}"
 			}
@@ -112,7 +112,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
@@ -124,7 +124,7 @@ project "TRAP"
 		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
 		   os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
 		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.STEAMWORKSSDK}"
 			}
@@ -155,7 +155,7 @@ project "TRAP"
 			os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 			os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.DISCORDGAMESDK}"
 			}
@@ -176,7 +176,7 @@ project "TRAP"
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
@@ -187,7 +187,7 @@ project "TRAP"
 		-- Steamworks SDK stuff
 		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
 		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.STEAMWORKSSDK}"
 			}
@@ -262,7 +262,7 @@ project "TRAP-Headless"
 		"src"
 	}
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMGUIZMO}",

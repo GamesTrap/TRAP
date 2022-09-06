@@ -22,7 +22,7 @@ project "TRAP-Editor"
 		"%{wks.location}/TRAP/src"
 	}
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMGUIZMO}",
@@ -93,7 +93,7 @@ project "TRAP-Editor"
 		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
@@ -165,7 +165,7 @@ project "TRAP-Editor"
 		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}

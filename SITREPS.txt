@@ -3167,4 +3167,6 @@ SITREP 09/04/2022|22w35b1
 
 SITREP 09/06/2022|22w36a1
     - Changed TRAP Engine version to 22w36a1(0.8.38)
-    - 
+    - RendererAPI/VulkanPhysicalDevice Added querying for GPU vendor ~<20 mins
+    - Updated premake5 version ~<5 mins
+    - Updated all premake scripts ~>20 mins

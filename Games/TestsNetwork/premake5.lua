@@ -22,7 +22,7 @@ project "TestsNetwork"
 		"%{wks.location}/TRAP/src"
 	}
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMGUIZMO}",
@@ -98,7 +98,7 @@ project "TestsNetwork"
 		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}
@@ -150,7 +150,7 @@ project "TestsNetwork"
 		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			sysincludedirs
+			externalincludedirs
 			{
 				"%{IncludeDir.NSIGHTAFTERMATH}"
 			}

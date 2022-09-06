@@ -22,7 +22,7 @@ project "Headless-Tests"
 		"%{wks.location}/TRAP/src"
 	}
 
-	sysincludedirs
+	externalincludedirs
 	{
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.IMGUIZMO}",
