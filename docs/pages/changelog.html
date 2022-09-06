@@ -11,7 +11,7 @@
   
 <meta property="og:site_name" content="TRAP Documentation" />
   
-<meta property="og:description" content="Generated on 08/27/2022 2022 TRAP™ Engine 0.8.33 - 08/24/2022|22w34b Fixed TRAPEditorLayer not compiling, TRAP-Editor SceneGraphPanel Added SetSelectedEntity(), Renderer2D Added DrawSprite(), Rende..." />
+<meta property="og:description" content="Generated on 09/06/2022 2022 TRAP™ Engine 0.8.38 - 09/06/2022|22w36a1 RendererAPI/VulkanPhysicalDevice Added querying for GPU vendor, Updated premake5 version, Updated all premake scripts. TRAP™ En..." />
   
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
   
@@ -19,7 +19,7 @@
   <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="TRAP™ Engine End User License Agreement" href="eula.html" /><link rel="prev" title="Getting Started" href="gettingstarted.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Changelog - TRAP 0.8.33 documentation</title>
+        <title>Changelog - TRAP 0.8.38 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.33 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.38 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -463,6 +463,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1Sampler.html">Class Sampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1Semaphore.html">Class Semaphore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1Shader.html">Class Shader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1SpriteAnimation.html">Class SpriteAnimation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1StorageBuffer.html">Class StorageBuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1SubTexture2D.html">Class SubTexture2D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/classTRAP_1_1Graphics_1_1SwapChain.html">Class SwapChain</a></li>
@@ -559,6 +560,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1a2db0beb55053b0878cd8ae72f14f56ef.html">Function ImGui_ImplVulkanH_SelectPresentMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_ImGuiVulkanBackend_8h_1a372dec07c30709ba8557673a0f28864f.html">Function ImGui_ImplVulkanH_SelectSurfaceFormat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_EntryPoint_8h_1ab995e46b20dbac72de84f4193db149b3.html">Function main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_RendererAPI_8h_1aa0aad082e554c460fd8f16065a387850.html">Function MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_RendererAPI_8h_1a1478f3ad0b875760a5f6b49150c02041.html">Function MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::TextureCreationFlags)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_RendererAPI_8h_1a2aab923b408805fdc5d6732a130375bc.html">Function MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ResourceState)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_RendererAPI_8h_1ac2bf0e6213a9e3b786a208783472485a.html">Function MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType)</a></li>
@@ -573,12 +575,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/function_RendererAPI_8h_1a27ec0b4f91734be7422d45a55555b32e.html">Function MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_RendererAPI_8h_1a0f682f017956ae0233f566109ba23d2b.html">Function MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Input_8h_1a7ba5897876b6c80b0787de498d2c64ca.html">Function MAKE_ENUM_FLAG(TRAP::Input::ControllerDPad)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8h_1a91a50f9f5d2d91f9e06151d17528f897.html">Function operator&amp;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8h_1a918251af9616c8abcabf6a4e8f0fcba4.html">Function operator&amp;=</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Event_8h_1abcf89d01c30d91ce84f503a550ca2a4d.html">Function operator&lt;&lt;(std::ostream&amp;, const TRAP::Events::Event&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8inl_1a6ef47234baa497325171138a033ac15c.html">Template Function operator&lt;&lt;(OStream&amp;, const TRAP::Math::Vec&lt;L, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8inl_1a816e5662eb1c444adf80dd54fd17605b.html">Template Function operator&lt;&lt;(OStream&amp;, const TRAP::Math::Mat&lt;L, L, T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8inl_1aa380825402812945ba2005c4933c64fc.html">Template Function operator&lt;&lt;(OStream&amp;, const TRAP::Math::tQuat&lt;T&gt;&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Event_8h_1ae77ac6e372e73bf36dad7e00189da91e.html">Function operator^</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Event_8h_1a0b750015215a08b1b82eff525797b756.html">Function operator^=</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8h_1a3c864e26bbe2610c7d07b9e43b9a0d86.html">Function operator|</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8h_1a035c3d8f12555dd2172525477e463dfc.html">Function operator|=</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Event_8h_1a891d7082da93f0f7aa29777bd38903b1.html">Function operator~</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8h_1a13c5926bd005eb5f9dd7ab286be818de.html">Template Function TP_CRITICAL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/function_Log_8h_1a0268ac8107aaf900cbe5e7774fa009a5.html">Template Function TP_DEBUG</a></li>
@@ -1480,7 +1486,7 @@
         <article role="main">
           <div class="section" id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">#</a></h1>
-<p>Generated on 08/27/2022</p>
+<p>Generated on 09/06/2022</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in-slide-down">
 <summary class="sd-summary-title sd-card-header">
 2022<div class="sd-summary-down docutils">
@@ -1490,7 +1496,84 @@
 </summary><div class="sd-summary-content sd-card-body docutils">
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
 <summary class="sd-summary-title sd-card-header">
-TRAP™ Engine 0.8.33 - 08/24/2022|22w34b<div class="sd-summary-down docutils">
+TRAP™ Engine 0.8.38 - 09/06/2022|22w36a1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">RendererAPI/VulkanPhysicalDevice Added querying for GPU vendor</p></li>
+<li><p class="sd-card-text">Updated premake5 version</p></li>
+<li><p class="sd-card-text">Updated all premake scripts</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.37 - 09/04/2022|22w35b1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Application/RendererAPI Renamed GetFrameTime() to GetCPUFrameTime()</p></li>
+<li><p class="sd-card-text">Renderer2D Added missing VertexLayout value in ExtendBuffers()</p></li>
+<li><p class="sd-card-text">RendererAPI Added support for GPU Graphics and Compute frame time querying</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.36 - 09/01/2022|22w35a2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">WindowingAPI Linux Added support for taskbar progress (KDE &amp; Unity only)</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.35 - 08/30/2022|22w35a1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Log Fixed Trace level not working</p></li>
+<li><p class="sd-card-text">Math Orthographic(), Frustum, Perspective, PerspectiveFoV now correctly use 0 to 1 clip values</p></li>
+<li><p class="sd-card-text">EditorCamera/OrthographicCamera(Controller)/SceneCamera Flipped near and far planes</p></li>
+<li><p class="sd-card-text">Implemented Reverse Z buffering (higher depth precision)</p></li>
+<li><p class="sd-card-text">EditorCamera/SceneCamera now use infinite far clip plane</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 08/28/2022|22w34c2<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Updated Branding</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.34 - 08/27/2022|22w34c1<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">Added sprite sheet animation support via SpriteAnimation</p></li>
+<li><p class="sd-card-text">SpriteSheetTests Added two SpriteAnimations</p></li>
+<li><p class="sd-card-text">Fixed gizmo usage when out of selected entity bounds</p></li>
+<li><p class="sd-card-text">Log Added importance level for printing</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+TRAP™ Engine 0.8.33 - 08/24/2022|22w34b1<div class="sd-summary-down docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
 <div class="sd-summary-up docutils">
 <svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
