@@ -475,6 +475,11 @@ namespace TRAP::Graphics::API
 		/// <returns>GPU's name.</returns>
 		std::string GetCurrentGPUName() const override;
 		/// <summary>
+		/// Retrieve the vendor of the currently used GPU.
+		/// </summary>
+		/// <returns>GPU vendor.</returns>
+		GPUVendor GetCurrentGPUVendor() const override;
+		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
@@ -765,11 +770,23 @@ namespace TRAP::Graphics::API
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndComputeRecording(PerWindowData* const p);
 
-		//TODO Document
+		/// <summary>
+		/// Start frame time profiling of the GPU.
+		/// </summary>
+		/// <param name="type">Queue type to profile.</param>
+		/// <param name="p">Per window data to profile for.</param>
 		static void BeginGPUFrameProfile(QueueType type, PerWindowData* const p);
-		//TODO Document
+		/// <summary>
+		/// End frame time profiling of the GPU.
+		/// </summary>
+		/// <param name="type">Queue type to profile.</param>
+		/// <param name="p">Per window data to profile for.</param>
 		static void EndGPUFrameProfile(QueueType type, PerWindowData* const p);
-		//TODO Document
+		/// <summary>
+		/// Retrieve the result from GPU frame time profiling.
+		/// </summary>
+		/// <param name="type">Queue type to profile.</param>
+		/// <param name="p">Per window data to profile for.</param>
 		static float ResolveGPUFrameProfile(QueueType type, PerWindowData* const p);
 
 		std::string m_rendererTitle;

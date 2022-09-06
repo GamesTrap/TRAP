@@ -327,6 +327,32 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const
+{
+	switch(m_physicalDeviceProperties.vendorID)
+	{
+	case 0x1002:
+	case 0x1010:
+	case 0x10DE:
+	case 0x13B5:
+	case 0x14E4:
+	case 0x5143:
+	case 0x8086:
+	case 0x106B:
+	case 0x7A05:
+	case 0x1EB1:
+	case 0x10003:
+	case 0x10004:
+	case 0x10005:
+		return static_cast<RendererAPI::GPUVendor>(m_physicalDeviceProperties.vendorID);
+
+	default:
+		return RendererAPI::GPUVendor::Unknown;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
 {
 	TRAP_ASSERT(instance, "instance is nullptr");

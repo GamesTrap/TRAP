@@ -107,6 +107,12 @@ namespace TRAP::Graphics::API
 		void RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 
 		/// <summary>
+		/// Retrieve the vendor of the physical device.
+		/// </summary>
+		/// <returns>Vendor.</returns>
+		RendererAPI::GPUVendor GetVendor() const;
+
+		/// <summary>
 		/// Retrieve a list of all rated physical devices.
 		/// Key is the devices score, value is the UUID of the physical device.
 		/// </summary>

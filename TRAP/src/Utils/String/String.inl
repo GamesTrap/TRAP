@@ -141,6 +141,49 @@ T TRAP::Utils::String::ConvertToType(const std::string& input)
 
 		return Utils::LinuxWindowManager::Unknown;
 	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::GPUVendor>) //GPUVendor
+	{
+		if(Utils::String::CompareAnyCase("AMD", input))
+			return Graphics::RendererAPI::GPUVendor::AMD;
+
+		if(Utils::String::CompareAnyCase("ImgTec", input))
+			return Graphics::RendererAPI::GPUVendor::ImgTec;
+
+		if(Utils::String::CompareAnyCase("NVIDIA", input))
+			return Graphics::RendererAPI::GPUVendor::NVIDIA;
+
+		if(Utils::String::CompareAnyCase("ARM", input))
+			return Graphics::RendererAPI::GPUVendor::ARM;
+
+		if(Utils::String::CompareAnyCase("Broadcom", input))
+			return Graphics::RendererAPI::GPUVendor::Broadcom;
+
+		if(Utils::String::CompareAnyCase("Qualcomm", input))
+			return Graphics::RendererAPI::GPUVendor::Qualcomm;
+
+		if(Utils::String::CompareAnyCase("Intel", input))
+			return Graphics::RendererAPI::GPUVendor::Intel;
+
+		if(Utils::String::CompareAnyCase("Apple", input))
+			return Graphics::RendererAPI::GPUVendor::Apple;
+
+		if(Utils::String::CompareAnyCase("Vivante", input))
+			return Graphics::RendererAPI::GPUVendor::Vivante;
+
+		if(Utils::String::CompareAnyCase("VeriSilicon", input))
+			return Graphics::RendererAPI::GPUVendor::VeriSilicon;
+
+		if(Utils::String::CompareAnyCase("Kazan", input))
+			return Graphics::RendererAPI::GPUVendor::Kazan;
+
+		if(Utils::String::CompareAnyCase("Codeplay", input))
+			return Graphics::RendererAPI::GPUVendor::Codeplay;
+
+		if(Utils::String::CompareAnyCase("Mesa", input))
+			return Graphics::RendererAPI::GPUVendor::Mesa;
+
+		return Graphics::RendererAPI::GPUVendor::Unknown;
+	}
 	else
 	{
 		static_assert(sizeof(T) == 0, "Unconvertable type encountered, please use a different type, "
@@ -250,6 +293,41 @@ std::string TRAP::Utils::String::ConvertToString(T value)
 
 		case LinuxWindowManager::Wayland:
 			return "Wayland";
+
+		default:
+			return "Unknown";
+		}
+	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::GPUVendor>) //GPUVendor
+	{
+		switch(value)
+		{
+		case Graphics::RendererAPI::GPUVendor::AMD:
+			return "AMD";
+		case Graphics::RendererAPI::GPUVendor::ImgTec:
+			return "ImgTec";
+		case Graphics::RendererAPI::GPUVendor::NVIDIA:
+			return "NVIDIA";
+		case Graphics::RendererAPI::GPUVendor::ARM:
+			return "ARM";
+		case Graphics::RendererAPI::GPUVendor::Broadcom:
+			return "Broadcom";
+		case Graphics::RendererAPI::GPUVendor::Qualcomm:
+			return "Qualcomm";
+		case Graphics::RendererAPI::GPUVendor::Intel:
+			return "Intel";
+		case Graphics::RendererAPI::GPUVendor::Apple:
+			return "Apple";
+		case Graphics::RendererAPI::GPUVendor::Vivante:
+			return "Vivante";
+		case Graphics::RendererAPI::GPUVendor::VeriSilicon:
+			return "VeriSilicon";
+		case Graphics::RendererAPI::GPUVendor::Kazan:
+			return "Kazan";
+		case Graphics::RendererAPI::GPUVendor::Codeplay:
+			return "Codeplay";
+		case Graphics::RendererAPI::GPUVendor::Mesa:
+			return "Mesa";
 
 		default:
 			return "Unknown";

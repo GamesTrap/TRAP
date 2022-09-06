@@ -1546,6 +1546,13 @@ std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUVendor() const
+{
+	return m_device->GetPhysicalDevice()->GetVendor();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs() const
 {
 	if(!s_usableGPUs.empty())

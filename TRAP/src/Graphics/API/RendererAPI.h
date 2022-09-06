@@ -77,6 +77,7 @@ namespace TRAP::Graphics
 		enum class AntiAliasing;
 		enum class SampleCount;
 		enum class QueueType;
+		enum class GPUVendor;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -581,6 +582,11 @@ namespace TRAP::Graphics
 		/// <returns>GPU's name.</returns>
 		virtual std::string GetCurrentGPUName() const = 0;
 		/// <summary>
+		/// Retrieve the vendor of the currently used GPU.
+		/// </summary>
+		/// <returns>GPU vendor.</returns>
+		virtual GPUVendor GetCurrentGPUVendor() const = 0;
+		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
 		/// </summary>
@@ -850,6 +856,27 @@ namespace TRAP::Graphics
 		{
 			Off,
 			MSAA
+		};
+
+		/// <summary>
+		/// Enum describing the different GPU vendors.
+		/// </summary>
+		enum class GPUVendor
+		{
+			Unknown     = -1,
+			AMD         = 0x1002,
+			ImgTec      = 0x1010,
+			NVIDIA      = 0x10DE,
+			ARM         = 0x13B5,
+			Broadcom    = 0x14E4,
+			Qualcomm    = 0x5143,
+			Intel       = 0x8086,
+			Apple       = 0x106B,
+			Vivante     = 0x7A05,
+			VeriSilicon = 0x1EB1,
+			Kazan       = 0x10003,
+			Codeplay    = 0x10004,
+			Mesa        = 0x10005
 		};
 
 		/// <summary>
