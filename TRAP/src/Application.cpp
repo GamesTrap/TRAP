@@ -427,6 +427,15 @@ void TRAP::Application::Run()
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
 		lastFrameTime = time;
 
+		//FPSLimiter
+		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+		{
+			if(!Graphics::RendererAPI::GPUSettings.ReflexSupported)
+				std::this_thread::sleep_until(nextFrame);
+			else
+				Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+		}
+
 		if (!m_minimized)
 		{
 			{
@@ -470,10 +479,6 @@ void TRAP::Application::Run()
 #endif
 
 		UpdateHotReloading();
-
-		//FPSLimiter
-		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
-			std::this_thread::sleep_until(nextFrame);
 
 		if (!m_minimized)
 		{

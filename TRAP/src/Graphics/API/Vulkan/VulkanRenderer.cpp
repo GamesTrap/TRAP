@@ -1538,6 +1538,24 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::ReflexSleep([[maybe_unused]] Window *window) const
+{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	uint64_t signalValue = 0;
+	VkCall(vkGetSemaphoreCounterValueKHR(m_device->GetVkDevice(), m_device->GetReflexSemaphore(), &signalValue));
+	++signalValue;
+
+	VkSemaphoreWaitInfoKHR waitInfo = VulkanInits::SemaphoreWaitInfo(m_device->GetReflexSemaphore(), signalValue);
+	VkReflexCall(NvLL_VK_Sleep(m_device->GetVkDevice(), signalValue));
+	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<uint64_t>::max()));
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
 	return m_rendererTitle;
@@ -1820,7 +1838,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanRenderer::SetLatencyMode(const LatencyMode mode, Window* window)
+void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode, Window* window)
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -1828,12 +1846,7 @@ bool TRAP::Graphics::API::VulkanRenderer::SetLatencyMode(const LatencyMode mode,
 	[[maybe_unused]] PerWindowData* p = s_perWindowDataMap[window].get();
 
 	if(!GPUSettings.ReflexSupported)
-	{
-		if(mode == LatencyMode::Disabled)
-			return true;
-
-		return false;
-	}
+		return;
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	p->SleepModeParams.bLowLatencyMode = mode != LatencyMode::Disabled;
@@ -1841,8 +1854,6 @@ bool TRAP::Graphics::API::VulkanRenderer::SetLatencyMode(const LatencyMode mode,
 
 	VkReflexCall(NvLL_VK_SetSleepMode(m_device->GetVkDevice(), &p->SleepModeParams));
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
-
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

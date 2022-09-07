@@ -579,6 +579,12 @@ namespace TRAP::Graphics
 									              Window* window = nullptr) const = 0;
 
 		/// <summary>
+		/// NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// </summary>
+		/// <param name="window">Window to sleep for.</param>
+		virtual void ReflexSleep(Window* window = nullptr) const = 0;
+
+		/// <summary>
 		/// Retrieve the renderer title.
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
@@ -628,14 +634,15 @@ namespace TRAP::Graphics
 
 		/// <summary>
 		/// Set the latency mode.
+		/// The actual latency mode may differ from the requested one so check
+		/// the actual used mode with GetLatencyMode().
 		/// Note: Only LatencyMode::Disabled is supported everywhere.
 		///       Other LatencyModes are only available on Windows 10 or
 		///       newer with NVIDIA hardware.
 		/// </summary>
 		/// <param name="mode">LatencyMode to set.</param>
 		/// <param name="window">Window to set latency mode for.</param>
-		/// <returns>True on success, false otherwise.</returns>
-		virtual bool SetLatencyMode(LatencyMode mode, Window* window = nullptr) = 0;
+		virtual void SetLatencyMode(LatencyMode mode, Window* window = nullptr) = 0;
 
 		/// <summary>
 		/// Retrieve the used descriptor pool.

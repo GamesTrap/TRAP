@@ -489,7 +489,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
-VkSemaphore TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() const
+VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore()
 {
 	return m_reflexSemaphore;
 }

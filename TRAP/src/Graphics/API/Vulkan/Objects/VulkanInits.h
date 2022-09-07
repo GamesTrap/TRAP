@@ -163,6 +163,14 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkSemaphoreCreateInfo.</returns>
 	VkSemaphoreCreateInfo SemaphoreCreateInfo() noexcept;
 
+	/// <summary>
+	/// Create a Vulkan semaphore wait info.
+	/// </summary>
+	/// <param name="semaphore">Semaphore to wait on.</param>
+	/// <param name="value">Signal value to set.</param>
+	/// <returns>VkSemaphoreWaitInfoKHR</returns>
+	VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore& semaphore, uint64_t& value) noexcept;
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>

@@ -116,7 +116,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the NVIDIA Reflex semaphore.
 		/// </summary>
 		/// <returns>Semaphore.</returns>
-		VkSemaphore GetReflexSemaphore() const;
+		VkSemaphore& GetReflexSemaphore();
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 	private:

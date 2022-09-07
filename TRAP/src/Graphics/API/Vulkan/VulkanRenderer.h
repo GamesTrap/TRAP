@@ -451,7 +451,7 @@ namespace TRAP::Graphics::API
 		/// <param name="renderTargetBarrier">Render target barrier.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-		                                 Window* window ) const override;
+		                                 Window* window) const override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
@@ -459,6 +459,12 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
 								          Window* window) const override;
+
+		/// <summary>
+		/// NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// </summary>
+		/// <param name="window">Window to sleep for.</param>
+		void ReflexSleep(Window* window) const override;
 
 		/// <summary>
 		/// Retrieve the renderer title.
@@ -523,7 +529,7 @@ namespace TRAP::Graphics::API
 		/// <param name="mode">LatencyMode to set.</param>
 		/// <param name="window">Window to set latency mode for.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool SetLatencyMode(LatencyMode mode, Window* window = nullptr) override;
+		void SetLatencyMode(LatencyMode mode, Window* window = nullptr) override;
 
 		/// <summary>
 		/// Initialize the internal rendering data of the given window.

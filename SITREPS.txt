@@ -3181,3 +3181,11 @@ SITREP 09/07/2022|22w36a2
         - VulkanDevice Added NVIDIA-Reflex initialization ~<15 mins
         - RendererAPI/RenderCommand Added SetLatencyMode() to enable/disable NVIDIA-Reflex ~<20 mins
         - RendererAPI/VulkanRenderer Added SetReflexFPSLimit() ~<15 mins
+
+SITREP 09/08/2022|22w36a3
+    - Changed TRAP Engine version to 22w36a2(0.8.40)
+    - Branch NVReflex:
+        - Application Moved FPSLimiter to start of Run() loop ~<5 mins
+        - VulkanInits Added
+        - RendererAPI/VulkanRenderer Added ReflexSleep() ~<20 mins
+        - Application now uses RendererAPI::ReflexSleep() for FPS limiting when NVIDIA Reflex is supported ~<5 mins
