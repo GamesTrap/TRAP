@@ -9,6 +9,10 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 #include "ImageFormat.h"
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+#include <NvLowLatencyVk.h>
+#endif
+
 namespace TRAP
 {
 	class Application;
@@ -2462,6 +2466,9 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::ShadingRateCombiner ShadingRateCombiner;
 			uint32_t ShadingRateTexelWidth;
 			uint32_t ShadingRateTexelHeight;
+
+			//NVIDIA Reflex
+			bool ReflexSupported;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered

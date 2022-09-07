@@ -6,6 +6,8 @@
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
+#include "Graphics/API/Objects/Semaphore.h"
 #include "Application.h"
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
@@ -198,10 +200,22 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	VulkanRenderer::s_timelineSemaphore = timelineSemaphoreFeatures.timelineSemaphore;
 	LoadShadingRateCaps(shadingRateFeatures);
 
-#if defined(ENABLE_GRAPHICS_DEBUG)
+#ifdef ENABLE_GRAPHICS_DEBUG
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
 		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	m_reflexSemaphore = {};
+	if(m_physicalDevice->GetVendor() == RendererAPI::GPUVendor::NVIDIA && VulkanRenderer::s_timelineSemaphore)
+	{
+		TP_WARN(Log::RendererVulkanDevicePrefix, "The following VkSemaphore error comes from NVIDIA Reflex and can be ignored");
+		const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(m_device, reinterpret_cast<HANDLE*>(&m_reflexSemaphore));
+		VkReflexCall(status);
+		if(status == NVLL_VK_OK)
+			RendererAPI::GPUSettings.ReflexSupported = true;
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -471,6 +485,15 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 {
 	return m_computeQueueIndex;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+VkSemaphore TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() const
+{
+	return m_reflexSemaphore;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
