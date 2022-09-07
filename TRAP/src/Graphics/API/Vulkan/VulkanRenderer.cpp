@@ -618,6 +618,25 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, Window* win
 
 //------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const uint32_t limit)
+{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	for(auto& [win, winData] : s_perWindowDataMap)
+	{
+		winData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
+
+		if(winData->SleepModeParams.bLowLatencyMode && winData->SleepModeParams.bLowLatencyBoost)
+			SetLatencyMode(LatencyMode::EnabledBoost, win);
+		else if(winData->SleepModeParams.bLowLatencyMode)
+			SetLatencyMode(LatencyMode::Enabled, win);
+		else
+			SetLatencyMode(LatencyMode::Disabled, win);
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color, Window* window) const
 {
 	if (!window)

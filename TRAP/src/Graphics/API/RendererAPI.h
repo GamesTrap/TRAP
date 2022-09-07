@@ -197,6 +197,15 @@ namespace TRAP::Graphics
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		virtual bool GetVSync(Window* window = nullptr) const = 0;
 
+		/// <summary>
+		/// Set the FPS limit for NVIDIA-Reflex.
+		/// Note: This function affects all windows.
+		/// Note: Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
+		///       This function is only used internally for NVIDIA-Reflex.
+		/// </summary>
+		/// <param name="limit">FPS target to limit to.</param>
+		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
+
 		//RenderTarget Stuff
 
 		/// <summary>

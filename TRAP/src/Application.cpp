@@ -205,14 +205,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #endif
 	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
-	if (fpsLimit > 0)
-	{
-		if (fpsLimit >= 25 && fpsLimit <= 500)
-			m_fpsLimit = fpsLimit;
-		else
-			m_fpsLimit = 0;
-	}
-
 #ifdef TRAP_HEADLESS_MODE
 	if(enableGPU)
 	{
@@ -279,6 +271,8 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	}
 #endif
 #endif
+
+	SetFPSLimit(fpsLimit);
 
 #ifndef TRAP_HEADLESS_MODE
 	//Update Viewport
@@ -589,6 +583,14 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 		s_Instance->m_fpsLimit = 0;
 	else
 		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, 25u, 500u);
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
+	   TRAP::Graphics::RendererAPI::GetRenderer())
+	{
+		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

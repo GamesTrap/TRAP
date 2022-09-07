@@ -3180,3 +3180,4 @@ SITREP 09/07/2022|22w36a2
         - VulkanCommon Added VkReflexCall() for NVIDIA-Reflex error checking ~<10 mins
         - VulkanDevice Added NVIDIA-Reflex initialization ~<15 mins
         - RendererAPI/RenderCommand Added SetLatencyMode() to enable/disable NVIDIA-Reflex ~<20 mins
+        - RendererAPI/VulkanRenderer Added SetReflexFPSLimit() ~<15 mins

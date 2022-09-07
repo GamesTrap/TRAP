@@ -91,6 +91,15 @@ namespace TRAP::Graphics::API
 		void SetVSync(bool vsync, Window* window) const override;
 
 		/// <summary>
+		/// Set the FPS limit for NVIDIA-Reflex.
+		/// Note: This function affects all windows.
+		/// Note: Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
+		///       This function is only used internally for NVIDIA-Reflex.
+		/// </summary>
+		/// <param name="limit">FPS target to limit to.</param>
+		void SetReflexFPSLimit(uint32_t limit) override;
+
+		/// <summary>
 		/// Set the clear color to be used by the given window.
 		/// </summary>
 		/// <param name="color">New clear color.</param>
