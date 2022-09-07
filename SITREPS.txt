@@ -3170,3 +3170,9 @@ SITREP 09/06/2022|22w36a1
     - RendererAPI/VulkanPhysicalDevice Added querying for GPU vendor ~<20 mins
     - Updated premake5 version ~<5 mins
     - Updated all premake scripts ~>20 mins
+
+SITREP 09/07/2022|22w36a2
+    - Changed TRAP Engine version to 22w36a2(0.8.39)
+    - Branch NVReflex:
+        - Dependencies Added NVIDIA-Reflex folder ~<10 mins
+        - Premake scripts added optional NVIDIA-Reflex support ~<10 mins
