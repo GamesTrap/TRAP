@@ -184,6 +184,15 @@ T TRAP::Utils::String::ConvertToType(const std::string& input)
 
 		return Graphics::RendererAPI::GPUVendor::Unknown;
 	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
+	{
+		if(Utils::String::CompareAnyCase("Enabled", input))
+			return Graphics::RendererAPI::LatencyMode::Enabled;
+		if(Utils::String::CompareAnyCase("Enabled+Boost", input))
+			return Graphics::RendererAPI::LatencyMode::EnabledBoost;
+
+		return Graphics::RendererAPI::LatencyMode::Disabled;
+	}
 	else
 	{
 		static_assert(sizeof(T) == 0, "Unconvertable type encountered, please use a different type, "
@@ -331,6 +340,20 @@ std::string TRAP::Utils::String::ConvertToString(T value)
 
 		default:
 			return "Unknown";
+		}
+	}
+	else if constexpr(std::is_same_v<T, TRAP::Graphics::RendererAPI::LatencyMode>) //LatencyMode
+	{
+		switch(value)
+		{
+		case Graphics::RendererAPI::LatencyMode::Enabled:
+			return "Enabled";
+		case Graphics::RendererAPI::LatencyMode::EnabledBoost:
+			return "Enabled+Boost";
+
+		case Graphics::RendererAPI::LatencyMode::Disabled:
+		default:
+			return "Disabled";
 		}
 	}
 	else

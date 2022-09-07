@@ -3191,3 +3191,4 @@ SITREP 09/08/2022|22w36a3
         - Application now uses RendererAPI::ReflexSleep() for FPS limiting when NVIDIA Reflex is supported ~<5 mins
         - RendererAPI/VulkanRenderer Added GetLatencyMode() ~<20 mins
         - VulkanDevice now only enables NVIDIA Reflex if on Windows 10 or newer ~<5 mins
+        - Utils Added ConvertToString() & ConvertToType() overloads for RendererAPI::LatencyMode ~<5 mins
