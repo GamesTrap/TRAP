@@ -95,6 +95,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
 	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures{};
+	timelineSemaphoreFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR;
 
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{
@@ -121,6 +123,13 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if(VulkanRenderer::s_shadingRate)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shadingRateFeatures);
+		base = base->pNext;
+	}
+
+	//Timeline semaphore
+	if(VulkanRenderer::s_timelineSemaphore)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&timelineSemaphoreFeatures);
 		base = base->pNext;
 	}
 
@@ -186,6 +195,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	VulkanRenderer::s_bufferDeviceAddressExtension = bufferDeviceAddressFeatures.bufferDeviceAddress;
 	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
 	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
+	VulkanRenderer::s_timelineSemaphore = timelineSemaphoreFeatures.timelineSemaphore;
 	LoadShadingRateCaps(shadingRateFeatures);
 
 #if defined(ENABLE_GRAPHICS_DEBUG)

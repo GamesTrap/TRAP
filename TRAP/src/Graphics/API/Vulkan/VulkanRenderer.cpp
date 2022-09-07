@@ -60,6 +60,7 @@ bool TRAP::Graphics::API::VulkanRenderer::s_memoryBudgetExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_externalMemory = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_shadingRate = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
@@ -2167,6 +2168,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
 		s_shadingRate = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+		s_timelineSemaphore = true;
 	}
 
 #ifdef TRAP_PLATFORM_WINDOWS

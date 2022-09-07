@@ -3176,3 +3176,4 @@ SITREP 09/07/2022|22w36a2
     - Branch NVReflex:
         - Dependencies Added NVIDIA-Reflex folder ~<10 mins
         - Premake scripts added optional NVIDIA-Reflex support ~<10 mins
+        - VulkanRenderer Added support for VK_KHR_timeline_semaphore ~<15 mins
