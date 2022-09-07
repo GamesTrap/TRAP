@@ -65,6 +65,10 @@ namespace TRAP::Graphics
 	/// Different sample counts for anti aliasing.
 	/// </summary>
 	using SampleCount = RendererAPI::SampleCount;
+	/// <summary>
+	/// Different different latency modes.
+	/// </summary>
+	using LatencyMode = RendererAPI::LatencyMode;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.
@@ -524,6 +528,17 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
 		static float GetGPUComputeFrameTime(Window* window = nullptr);
+
+		/// <summary>
+		/// Set the latency mode.
+		/// Note: Only LatencyMode::Disabled is supported everywhere.
+		///       Other LatencyModes are only available on Windows 10 or
+		///       newer with NVIDIA hardware.
+		/// </summary>
+		/// <param name="mode">LatencyMode to set.</param>
+		/// <param name="window">Window to set latency mode for.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		static bool SetLatencyMode(LatencyMode mode, Window* window = nullptr);
 	};
 }
 

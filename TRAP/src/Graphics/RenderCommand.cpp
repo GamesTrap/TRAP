@@ -429,3 +429,10 @@ float TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(Window* window)
 {
 	return RendererAPI::GetGPUComputeFrameTime(window);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, Window* window)
+{
+	return RendererAPI::GetRenderer()->SetLatencyMode(mode, window);
+}

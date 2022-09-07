@@ -82,6 +82,7 @@ namespace TRAP::Graphics
 		enum class SampleCount;
 		enum class QueueType;
 		enum class GPUVendor;
+		enum class LatencyMode;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -617,6 +618,17 @@ namespace TRAP::Graphics
 		                             Window* window = nullptr) const = 0;
 
 		/// <summary>
+		/// Set the latency mode.
+		/// Note: Only LatencyMode::Disabled is supported everywhere.
+		///       Other LatencyModes are only available on Windows 10 or
+		///       newer with NVIDIA hardware.
+		/// </summary>
+		/// <param name="mode">LatencyMode to set.</param>
+		/// <param name="window">Window to set latency mode for.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		virtual bool SetLatencyMode(LatencyMode mode, Window* window = nullptr) = 0;
+
+		/// <summary>
 		/// Retrieve the used descriptor pool.
 		/// </summary>
 		/// <returns>Descriptor pool.</returns>
@@ -1053,6 +1065,16 @@ namespace TRAP::Graphics
 			Color_Stencil = Color | Stencil,
 			Color_Depth_Stencil = Color | Stencil | Depth,
 			Depth_Stencil = Depth | Stencil
+		};
+
+		/// <summary>
+		/// Enum describing the different latency modes.
+		/// </summary>
+		enum class LatencyMode
+		{
+			Disabled,
+			Enabled,
+			EnabledBoost
 		};
 
 		/// <summary>
@@ -2559,6 +2581,11 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentComputePipeline;
 			float ComputeFrameTime;
 			bool RecordingCompute;
+
+			//NVIDIA Reflex
+#ifdef NVIDIA_REFLEX_AVAILABLE
+			NVLL_VK_SET_SLEEP_MODE_PARAMS SleepModeParams{};
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 		};
 
 	protected:
@@ -2608,5 +2635,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode);
 
 #endif /*TRAP_RENDERERAPI_H*/

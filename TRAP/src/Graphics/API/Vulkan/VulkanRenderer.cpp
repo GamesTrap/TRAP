@@ -1798,6 +1798,33 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::Graphics::API::VulkanRenderer::SetLatencyMode(const LatencyMode mode, Window* window)
+{
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	[[maybe_unused]] PerWindowData* p = s_perWindowDataMap[window].get();
+
+	if(!GPUSettings.ReflexSupported)
+	{
+		if(mode == LatencyMode::Disabled)
+			return true;
+
+		return false;
+	}
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	p->SleepModeParams.bLowLatencyMode = mode != LatencyMode::Disabled;
+	p->SleepModeParams.bLowLatencyBoost = mode == LatencyMode::EnabledBoost;
+
+	VkReflexCall(NvLL_VK_SetSleepMode(m_device->GetVkDevice(), &p->SleepModeParams));
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) const
 {
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
@@ -1806,6 +1833,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 
 	//Add new Window to map
 	TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
+#endif
 
 	p->Window = window;
 

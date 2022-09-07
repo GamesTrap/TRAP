@@ -506,6 +506,17 @@ namespace TRAP::Graphics::API
 		                     Window* window = nullptr) const override;
 
 		/// <summary>
+		/// Set the latency mode.
+		/// Note: Only LatencyMode::Disabled is supported everywhere.
+		///       Other LatencyModes are only available on Windows 10 or
+		///       newer with NVIDIA hardware.
+		/// </summary>
+		/// <param name="mode">LatencyMode to set.</param>
+		/// <param name="window">Window to set latency mode for.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool SetLatencyMode(LatencyMode mode, Window* window = nullptr) override;
+
+		/// <summary>
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>

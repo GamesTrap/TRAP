@@ -3177,4 +3177,6 @@ SITREP 09/07/2022|22w36a2
         - Dependencies Added NVIDIA-Reflex folder ~<10 mins
         - Premake scripts added optional NVIDIA-Reflex support ~<10 mins
         - VulkanRenderer Added support for VK_KHR_timeline_semaphore ~<15 mins
+        - VulkanCommon Added VkReflexCall() for NVIDIA-Reflex error checking ~<10 mins
         - VulkanDevice Added NVIDIA-Reflex initialization ~<15 mins
+        - RendererAPI/RenderCommand Added SetLatencyMode() to enable/disable NVIDIA-Reflex ~<20 mins
