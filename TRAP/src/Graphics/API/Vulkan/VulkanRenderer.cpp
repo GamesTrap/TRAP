@@ -1838,22 +1838,54 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode, Window* window)
+void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode,
+                                                         [[maybe_unused]] Window* window)
 {
+	if(!GPUSettings.ReflexSupported)
+		return;
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
 	[[maybe_unused]] PerWindowData* p = s_perWindowDataMap[window].get();
 
-	if(!GPUSettings.ReflexSupported)
-		return;
-
-#ifdef NVIDIA_REFLEX_AVAILABLE
 	p->SleepModeParams.bLowLatencyMode = mode != LatencyMode::Disabled;
 	p->SleepModeParams.bLowLatencyBoost = mode == LatencyMode::EnabledBoost;
 
 	VkReflexCall(NvLL_VK_SetSleepMode(m_device->GetVkDevice(), &p->SleepModeParams));
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::LatencyMode TRAP::Graphics::API::VulkanRenderer::GetLatencyMode([[maybe_unused]] Window* window) const
+{
+	if(!GPUSettings.ReflexSupported)
+		return LatencyMode::Disabled;
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	[[maybe_unused]] PerWindowData* p = s_perWindowDataMap[window].get();
+
+	NVLL_VK_GET_SLEEP_STATUS_PARAMS params{};
+	VkReflexCall(NvLL_VK_GetSleepStatus(m_device->GetVkDevice(), &params));
+
+	if(!params.bLowLatencyMode)
+	{
+		p->SleepModeParams.bLowLatencyMode = false;
+		p->SleepModeParams.bLowLatencyBoost = false;
+	}
+
+	if(p->SleepModeParams.bLowLatencyMode && p->SleepModeParams.bLowLatencyBoost)
+		return LatencyMode::EnabledBoost;
+	if(p->SleepModeParams.bLowLatencyMode)
+		return LatencyMode::Enabled;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+	return LatencyMode::Disabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

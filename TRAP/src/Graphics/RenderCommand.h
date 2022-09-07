@@ -538,7 +538,14 @@ namespace TRAP::Graphics
 		/// <param name="mode">LatencyMode to set.</param>
 		/// <param name="window">Window to set latency mode for.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		static bool SetLatencyMode(LatencyMode mode, Window* window = nullptr);
+		static void SetLatencyMode(LatencyMode mode, Window* window = nullptr);
+		/// <summary>
+		/// Retrieve the currently used latency mode.
+		/// Note: This may differ from the requested mode set with SetLatencyMode().
+		/// </summary>
+		/// <param name="window">Window to retrieve latency mode for.</param>
+		/// <returns>Used latency mode.</returns>
+		static LatencyMode GetLatencyMode(Window* window = nullptr);
 	};
 }
 

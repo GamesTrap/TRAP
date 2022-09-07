@@ -643,6 +643,13 @@ namespace TRAP::Graphics
 		/// <param name="mode">LatencyMode to set.</param>
 		/// <param name="window">Window to set latency mode for.</param>
 		virtual void SetLatencyMode(LatencyMode mode, Window* window = nullptr) = 0;
+		/// <summary>
+		/// Retrieve the currently used latency mode.
+		/// Note: This may differ from the requested mode set with SetLatencyMode().
+		/// </summary>
+		/// <param name="window">Window to retrieve latency mode for.</param>
+		/// <returns>Used latency mode.</returns>
+		virtual LatencyMode GetLatencyMode(Window* window = nullptr) const = 0;
 
 		/// <summary>
 		/// Retrieve the used descriptor pool.

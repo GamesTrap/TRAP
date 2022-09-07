@@ -530,6 +530,13 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to set latency mode for.</param>
 		/// <returns>True on success, false otherwise.</returns>
 		void SetLatencyMode(LatencyMode mode, Window* window = nullptr) override;
+		/// <summary>
+		/// Retrieve the currently used latency mode.
+		/// Note: This may differ from the requested mode set with SetLatencyMode().
+		/// </summary>
+		/// <param name="window">Window to retrieve latency mode for.</param>
+		/// <returns>Used latency mode.</returns>
+		LatencyMode GetLatencyMode(Window* window = nullptr) const override;
 
 		/// <summary>
 		/// Initialize the internal rendering data of the given window.
