@@ -430,10 +430,10 @@ void TRAP::Application::Run()
 		//FPSLimiter
 		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
 		{
-			if(!Graphics::RendererAPI::GPUSettings.ReflexSupported)
-				std::this_thread::sleep_until(nextFrame);
-			else
+			if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
 				Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+			else
+				std::this_thread::sleep_until(nextFrame);
 		}
 
 		if (!m_minimized)
@@ -591,7 +591,7 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
-	   TRAP::Graphics::RendererAPI::GetRenderer())
+	   TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
 	{
 		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
 	}

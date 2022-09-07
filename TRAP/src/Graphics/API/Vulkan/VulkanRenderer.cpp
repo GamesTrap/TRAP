@@ -621,6 +621,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, Window* win
 void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const uint32_t limit)
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!GPUSettings.ReflexSupported)
+		return;
+
 	for(auto& [win, winData] : s_perWindowDataMap)
 	{
 		if(limit == 0)
@@ -1541,6 +1544,9 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 void TRAP::Graphics::API::VulkanRenderer::ReflexSleep([[maybe_unused]] Window *window) const
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!GPUSettings.ReflexSupported)
+		return;
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
@@ -1841,10 +1847,10 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode,
                                                          [[maybe_unused]] Window* window)
 {
+#ifdef NVIDIA_REFLEX_AVAILABLE
 	if(!GPUSettings.ReflexSupported)
 		return;
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
 	if(!window)
 		window = TRAP::Application::GetWindow();
 

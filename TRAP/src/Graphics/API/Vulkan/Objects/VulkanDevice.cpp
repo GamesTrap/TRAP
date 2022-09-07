@@ -204,10 +204,11 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
 		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
 #endif /*ENABLE_GRAPHICS_DEBUG*/
-
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	m_reflexSemaphore = {};
-	if(m_physicalDevice->GetVendor() == RendererAPI::GPUVendor::NVIDIA && VulkanRenderer::s_timelineSemaphore)
+	if (m_physicalDevice->GetVendor() == RendererAPI::GPUVendor::NVIDIA &&
+	    VulkanRenderer::s_timelineSemaphore &&
+		TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
 	{
 		TP_WARN(Log::RendererVulkanDevicePrefix, "The following VkSemaphore error comes from NVIDIA Reflex and can be ignored");
 		const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(m_device, reinterpret_cast<HANDLE*>(&m_reflexSemaphore));
@@ -227,6 +228,12 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(RendererAPI::GPUSettings.ReflexSupported)
+		vkDestroySemaphore(m_device, m_reflexSemaphore, nullptr);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	vkDestroyDevice(m_device, nullptr);
 	m_device = nullptr;
 
