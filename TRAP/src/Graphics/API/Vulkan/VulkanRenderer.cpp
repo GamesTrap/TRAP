@@ -623,7 +623,10 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	for(auto& [win, winData] : s_perWindowDataMap)
 	{
-		winData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
+		if(limit == 0)
+			winData->SleepModeParams.minimumIntervalUs = 0;
+		else
+			winData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
 
 		if(winData->SleepModeParams.bLowLatencyMode && winData->SleepModeParams.bLowLatencyBoost)
 			SetLatencyMode(LatencyMode::EnabledBoost, win);
