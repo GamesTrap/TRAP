@@ -465,6 +465,12 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="window">Window to sleep for.</param>
 		void ReflexSleep(Window* window) const override;
+		/// <summary>
+		/// NVIDIA-Reflex latency marker.
+		/// </summary>
+		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
+		/// <param name="marker">Enum value of the marker to set.</param>
+		void ReflexMarker(uint32_t frame, uint32_t marker) const override;
 
 		/// <summary>
 		/// Retrieve the renderer title.

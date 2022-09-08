@@ -112,6 +112,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	  m_tickRate(64),
 	  m_timeScale(1.0f),
 	  m_gameName(std::move(gameName)),
+	  m_globalCounter(0),
 	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
@@ -440,6 +441,23 @@ void TRAP::Application::Run()
 		else if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
 			std::this_thread::sleep_until(nextFrame);
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_INPUT_SAMPLE);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+#ifdef TRAP_PLATFORM_LINUX
+		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+			TRAP::Window::OnUpdate();
+#else
+		TRAP::Window::OnUpdate();
+#endif
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
+			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_TRIGGER_FLASH);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 		if (!m_minimized)
 		{
 			{
@@ -475,13 +493,6 @@ void TRAP::Application::Run()
 				Graphics::RenderCommand::Present(m_window.get());
 		}
 
-#ifdef TRAP_PLATFORM_LINUX
-		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-			TRAP::Window::OnUpdate();
-#else
-		TRAP::Window::OnUpdate();
-#endif
-
 		UpdateHotReloading();
 
 		if (!m_minimized)
@@ -494,6 +505,10 @@ void TRAP::Application::Run()
 		TRAP::Utils::Discord::RunCallbacks();
 		//Needed by Steamworks SDK
 		TRAP::Utils::Steam::RunCallbacks();
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	}
 }
 
@@ -711,6 +726,13 @@ std::thread::id TRAP::Application::GetMainThreadID()
 std::string TRAP::Application::GetGameName()
 {
 	return s_Instance->m_gameName;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint64_t TRAP::Application::GetGlobalCounter()
+{
+	return s_Instance->m_globalCounter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
