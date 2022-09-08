@@ -182,7 +182,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	m_config.Get("RefreshRate", refreshRate);
 	const bool vsync = m_config.Get<bool>("VSync");
 	const bool visible = true;
-	const Graphics::LatencyMode latencyMode = m_config.Get<Graphics::LatencyMode>("NVIDIA Reflex");
+	const Graphics::LatencyMode latencyMode = m_config.Get<Graphics::LatencyMode>("NVIDIAReflex");
 #else
 	const uint32_t width = 2;
 	const uint32_t height = 2;
@@ -377,7 +377,7 @@ TRAP::Application::~Application()
 		m_config.Set("AntiAliasingQuality", sampleCount);
 
 		//NVIDIA Reflex
-		m_config.Set("NVIDIA Reflex", Graphics::RenderCommand::GetLatencyMode());
+		m_config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
 	}
 
 	std::filesystem::path cfgPath = "engine.cfg";
@@ -435,13 +435,10 @@ void TRAP::Application::Run()
 		lastFrameTime = time;
 
 		//FPSLimiter
-		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
-		{
-			if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
-				Graphics::RendererAPI::GetRenderer()->ReflexSleep();
-			else
-				std::this_thread::sleep_until(nextFrame);
-		}
+		if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
+			Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+		else if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+			std::this_thread::sleep_until(nextFrame);
 
 		if (!m_minimized)
 		{
