@@ -280,8 +280,8 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 
 #ifndef TRAP_HEADLESS_MODE
 	//NVIDIA Reflex
-	Graphics::RenderCommand::SetLatencyMode(latencyMode);
 #ifdef NVIDIA_REFLEX_AVAILABLE
+	Graphics::RenderCommand::SetLatencyMode(latencyMode);
 	NVSTATS_INIT(0, 0);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
