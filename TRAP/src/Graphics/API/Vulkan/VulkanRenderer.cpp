@@ -1600,6 +1600,19 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+NVLL_VK_LATENCY_RESULT_PARAMS TRAP::Graphics::API::VulkanRenderer::ReflexGetLatency() const
+{
+	NVLL_VK_LATENCY_RESULT_PARAMS params{};
+
+	VkReflexCall(NvLL_VK_GetLatency(m_device->GetVkDevice(), &params));
+
+	return params;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
 	return m_rendererTitle;

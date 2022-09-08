@@ -589,6 +589,13 @@ namespace TRAP::Graphics
 		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
 		/// <param name="marker">Enum value of the marker to set.</param>
 		virtual void ReflexMarker(uint32_t frame, uint32_t marker) const = 0;
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		/// <summary>
+		/// Retrieve the latency report from NVIDIA-Reflex.
+		/// </summary>
+		/// <returns>Latency report.</returns>
+		virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		/// <summary>
 		/// Retrieve the renderer title.

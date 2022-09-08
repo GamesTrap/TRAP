@@ -509,6 +509,8 @@ void TRAP::Application::Run()
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+		++m_globalCounter;
 	}
 }
 

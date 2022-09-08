@@ -3195,3 +3195,4 @@ SITREP 09/08/2022|22w36a3
         - Tests Added NVIDIAReflexTests ~<20 mins
         - RendererAPI/VulkanRenderer Added ReflexMarker() ~<15 mins
         - Added ReflexMarkers according to NVIDIA Reflex integration guide ~<15 mins
+        - RendererAPI/VulkanRenderer Added ReflexGetLatency() ~<15 mins
