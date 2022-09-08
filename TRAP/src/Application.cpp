@@ -183,7 +183,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	m_config.Get("RefreshRate", refreshRate);
 	const bool vsync = m_config.Get<bool>("VSync");
 	const bool visible = true;
+#ifdef NVIDIA_REFLEX_AVAILABLE
 	const Graphics::LatencyMode latencyMode = m_config.Get<Graphics::LatencyMode>("NVIDIAReflex");
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #else
 	const uint32_t width = 2;
 	const uint32_t height = 2;
@@ -279,6 +281,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #ifndef TRAP_HEADLESS_MODE
 	//NVIDIA Reflex
 	Graphics::RenderCommand::SetLatencyMode(latencyMode);
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	NVSTATS_INIT(0, 0);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 	//Update Viewport
 	int32_t w = 0, h = 0;
@@ -378,7 +383,10 @@ TRAP::Application::~Application()
 		m_config.Set("AntiAliasingQuality", sampleCount);
 
 		//NVIDIA Reflex
+#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+		NVSTATS_SHUTDOWN();
 		m_config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
+#endif
 	}
 
 	std::filesystem::path cfgPath = "engine.cfg";

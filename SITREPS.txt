@@ -3198,3 +3198,4 @@ SITREP 09/08/2022|22w36a3
         - RendererAPI/VulkanRenderer Added ReflexGetLatency() ~<15 mins
         - NVIDIAReflexTests Added latency charts ~<25 mins
         - Premake scripts added NVIDIA Reflex Stats include header ~<5 mins
+        - Added NVSTATS marker ~<10 mins

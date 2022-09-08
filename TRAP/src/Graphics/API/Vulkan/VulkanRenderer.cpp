@@ -1585,9 +1585,12 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexSleep([[maybe_unused]] Window *w
 void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const uint32_t frame,
                                                        [[maybe_unused]] const uint32_t marker) const
 {
-	//TODO NVStats
-
 #ifdef NVIDIA_REFLEX_AVAILABLE
+	NVSTATS_MARKER(marker, frame);
+
+	if(marker == NVSTATS_PC_LATENCY_PING)
+		return;
+
 	if(marker == VK_TRIGGER_FLASH) //BUG This gives ERROR_DEVICE_LOST
 		return;
 
