@@ -73,6 +73,7 @@
 #include <KnownFolders.h>
 #include <ShlObj_core.h>
 #include <Shobjidl.h>
+#include <initguid.h>
 //XInput
 #include <Xinput.h>
 //DirectInput

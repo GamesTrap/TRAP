@@ -3183,7 +3183,7 @@ SITREP 09/07/2022|22w36a2
         - RendererAPI/VulkanRenderer Added SetReflexFPSLimit() ~<15 mins
 
 SITREP 09/08/2022|22w36a3
-    - Changed TRAP Engine version to 22w36a2(0.8.40)
+    - Changed TRAP Engine version to 22w36a3(0.8.40)
     - Branch NVReflex:
         - Application Moved FPSLimiter to start of Run() loop ~<5 mins
         - VulkanInits Added SemaphoreWaitInfo() ~<5 mins
@@ -3197,3 +3197,4 @@ SITREP 09/08/2022|22w36a3
         - Added ReflexMarkers according to NVIDIA Reflex integration guide ~<15 mins
         - RendererAPI/VulkanRenderer Added ReflexGetLatency() ~<15 mins
         - NVIDIAReflexTests Added latency charts ~<25 mins
+        - Premake scripts added NVIDIA Reflex Stats include header ~<5 mins

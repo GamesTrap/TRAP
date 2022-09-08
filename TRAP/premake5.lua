@@ -140,10 +140,12 @@ project "TRAP"
 		-- NVIDIA Reflex SDK stuff
 		if os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc/NvLowLatencyVk.h") and
 		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.lib") and
-		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.dll") then
+		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.dll") and
+		   os.isfile("../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats/reflexstats.h") then
 			externalincludedirs
 			{
-				"%{IncludeDir.NVIDIAREFLEX}"
+				"%{IncludeDir.NVIDIAREFLEX}",
+				"%{IncludeDir.NVIDIAREFLEXSTATS}"
 			}
 
 			defines "NVIDIA_REFLEX_AVAILABLE"
