@@ -184,6 +184,14 @@ namespace TRAP
 		static std::string GetGameName();
 
 		/// <summary>
+		/// Get the global counter.
+		/// The counter is incremented every frame.
+		/// Note: This is mainly used for NVIDIA-Reflex support.
+		/// </summary>
+		/// <returns>Global counter value.</returns>
+		static uint64_t GetGlobalCounter();
+
+		/// <summary>
 		/// Get the hot reloading file watcher.
 		/// </summary>
 		/// <returns>TRAP::FileSystem::FileWatcher* if file watcher is running, false otherwise.</returns>
@@ -288,6 +296,8 @@ namespace TRAP
 		uint32_t m_tickRate;
 		float m_timeScale;
 		std::string m_gameName;
+		//NVIDIA-Reflex
+		uint64_t m_globalCounter;
 
 		ThreadPool m_threadPool;
 

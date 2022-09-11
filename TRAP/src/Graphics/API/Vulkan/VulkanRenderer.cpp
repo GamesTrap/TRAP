@@ -60,6 +60,7 @@ bool TRAP::Graphics::API::VulkanRenderer::s_memoryBudgetExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_externalMemory = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_shadingRate = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
@@ -277,14 +278,27 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
 	s_graphicQueue->Submit(submitDesc);
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_END);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	p->GraphicsFrameTime = ResolveGPUFrameProfile(QueueType::Graphics, p);
 
 #ifndef TRAP_HEADLESS_MODE
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_PRESENT_START);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	QueuePresentDesc presentDesc{};
 	presentDesc.Index = static_cast<uint8_t>(p->CurrentSwapChainImageIndex);
 	presentDesc.WaitSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 	presentDesc.SwapChain = p->SwapChain;
 	const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_PRESENT_END);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 
 	p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
@@ -513,12 +527,19 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//TODO Rename to Flush()
 void TRAP::Graphics::API::VulkanRenderer::Present(Window* window) const
 {
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_START);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	EndComputeRecording(p);
 	EndGraphicRecording(p);
+	//TODO Add Present() for actual presentation of the swapchain image
+	//     Effectively splitting EndGraphicRecording() into two functions
 #ifndef TRAP_HEADLESS_MODE
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
 	{
@@ -613,6 +634,31 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, Window* win
 		window = TRAP::Application::GetWindow();
 
 	s_perWindowDataMap[window]->NewVSync = vsync;
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] const uint32_t limit)
+{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!GPUSettings.ReflexSupported)
+		return;
+
+	for(auto& [win, winData] : s_perWindowDataMap)
+	{
+		if(limit == 0)
+			winData->SleepModeParams.minimumIntervalUs = 0;
+		else
+			winData->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>((1000.0f / static_cast<float>(limit)) * 1000.0f);
+
+		if(winData->SleepModeParams.bLowLatencyMode && winData->SleepModeParams.bLowLatencyBoost)
+			SetLatencyMode(LatencyMode::EnabledBoost, win);
+		else if(winData->SleepModeParams.bLowLatencyMode)
+			SetLatencyMode(LatencyMode::Enabled, win);
+		else
+			SetLatencyMode(LatencyMode::Disabled, win);
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -1515,6 +1561,61 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::ReflexSleep([[maybe_unused]] Window *window) const
+{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!GPUSettings.ReflexSupported)
+		return;
+
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	uint64_t signalValue = 0;
+	VkCall(vkGetSemaphoreCounterValueKHR(m_device->GetVkDevice(), m_device->GetReflexSemaphore(), &signalValue));
+	++signalValue;
+
+	VkSemaphoreWaitInfoKHR waitInfo = VulkanInits::SemaphoreWaitInfo(m_device->GetReflexSemaphore(), signalValue);
+	VkReflexCall(NvLL_VK_Sleep(m_device->GetVkDevice(), signalValue));
+	VkCall(vkWaitSemaphoresKHR(m_device->GetVkDevice(), &waitInfo, std::numeric_limits<uint64_t>::max()));
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const uint32_t frame,
+                                                       [[maybe_unused]] const uint32_t marker) const
+{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	NVSTATS_MARKER(marker, frame);
+
+	if(marker == NVSTATS_PC_LATENCY_PING)
+		return;
+
+	if(marker == VK_TRIGGER_FLASH) //BUG This gives ERROR_DEVICE_LOST
+		return;
+
+	NVLL_VK_LATENCY_MARKER_PARAMS params{};
+	params.frameID = frame;
+	params.markerType = static_cast<NVLL_VK_LATENCY_MARKER_TYPE>(marker);
+	VkReflexCall(NvLL_VK_SetLatencyMarker(m_device->GetVkDevice(), &params));
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+NVLL_VK_LATENCY_RESULT_PARAMS TRAP::Graphics::API::VulkanRenderer::ReflexGetLatency() const
+{
+	NVLL_VK_LATENCY_RESULT_PARAMS params{};
+
+	VkReflexCall(NvLL_VK_GetLatency(m_device->GetVkDevice(), &params));
+
+	return params;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
 	return m_rendererTitle;
@@ -1797,6 +1898,58 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode,
+                                                         [[maybe_unused]] Window* window)
+{
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!GPUSettings.ReflexSupported)
+		return;
+
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	[[maybe_unused]] PerWindowData* p = s_perWindowDataMap[window].get();
+
+	p->SleepModeParams.bLowLatencyMode = mode != LatencyMode::Disabled;
+	p->SleepModeParams.bLowLatencyBoost = mode == LatencyMode::EnabledBoost;
+
+	VkReflexCall(NvLL_VK_SetSleepMode(m_device->GetVkDevice(), &p->SleepModeParams));
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::LatencyMode TRAP::Graphics::API::VulkanRenderer::GetLatencyMode([[maybe_unused]] Window* window) const
+{
+	if(!GPUSettings.ReflexSupported)
+		return LatencyMode::Disabled;
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
+	[[maybe_unused]] PerWindowData* p = s_perWindowDataMap[window].get();
+
+	NVLL_VK_GET_SLEEP_STATUS_PARAMS params{};
+	VkReflexCall(NvLL_VK_GetSleepStatus(m_device->GetVkDevice(), &params));
+
+	if(!params.bLowLatencyMode)
+	{
+		p->SleepModeParams.bLowLatencyMode = false;
+		p->SleepModeParams.bLowLatencyBoost = false;
+	}
+
+	if(p->SleepModeParams.bLowLatencyMode && p->SleepModeParams.bLowLatencyBoost)
+		return LatencyMode::EnabledBoost;
+	if(p->SleepModeParams.bLowLatencyMode)
+		return LatencyMode::Enabled;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+	return LatencyMode::Disabled;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) const
 {
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
@@ -1805,6 +1958,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 
 	//Add new Window to map
 	TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
+#endif
 
 	p->Window = window;
 
@@ -2167,6 +2324,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
 		s_shadingRate = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+		s_timelineSemaphore = true;
 	}
 
 #ifdef TRAP_PLATFORM_WINDOWS

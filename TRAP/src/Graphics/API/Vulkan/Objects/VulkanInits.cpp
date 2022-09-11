@@ -292,6 +292,22 @@ VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo() no
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkSemaphoreWaitInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreWaitInfo(VkSemaphore& semaphore, uint64_t& value) noexcept
+{
+	VkSemaphoreWaitInfoKHR info;
+
+	info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.semaphoreCount = 1;
+	info.pSemaphores = &semaphore;
+	info.pValues = &value;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(const VkFormat format,
 	                                                                            const VkSampleCountFlagBits sampleCount,
 	                                                                            const VkAttachmentLoadOp loadOp,

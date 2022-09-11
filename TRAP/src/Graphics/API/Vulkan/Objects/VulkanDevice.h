@@ -111,6 +111,14 @@ namespace TRAP::Graphics::API
 		/// <returns>Compute queue index.</returns>
 		uint8_t GetComputeQueueIndex() const;
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		/// <summary>
+		/// Retrieve the NVIDIA Reflex semaphore.
+		/// </summary>
+		/// <returns>Semaphore.</returns>
+		VkSemaphore& GetReflexSemaphore();
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	private:
 		friend VulkanQueue;
 
@@ -156,6 +164,10 @@ namespace TRAP::Graphics::API
 		uint8_t m_graphicsQueueIndex;
 		uint8_t m_transferQueueIndex;
 		uint8_t m_computeQueueIndex;
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		VkSemaphore m_reflexSemaphore;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		VkDevice m_device;
 	};

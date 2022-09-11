@@ -15,6 +15,7 @@
 #include "InputLag/InputLagTests.h"
 #include "Monitors/MonitorTests.h"
 #include "MultiWindow/MultiWindowTests.h"
+#include "NVIDIAReflex/NVIDIAReflexTests.h"
 #include "Opacity/OpacityTests.h"
 #include "RendererAPI/RendererAPIInfo.h"
 #include "RendererAPI/RendererAPITests.h"
@@ -48,6 +49,7 @@ public:
 		// PushLayer(std::make_unique<InputLagTests>());
 		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<MultiWindowTests>());
+		PushLayer(std::make_unique<NVIDIAReflexTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
 		// PushLayer(std::make_unique<RendererAPIInfo>());
 		// PushLayer(std::make_unique<RendererAPITests>());
@@ -57,7 +59,7 @@ public:
 		// PushLayer(std::make_unique<TitleTests>());
 		// PushLayer(std::make_unique<VRSTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
-		PushLayer(std::make_unique<WindowStateTests>());
+		// PushLayer(std::make_unique<WindowStateTests>());
 		// PushLayer(std::make_unique<WindowFeaturesTests>());
 	}
 };

@@ -163,6 +163,24 @@ project "TestsNetwork"
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
 
+		-- NVIDIA Reflex SDK stuff
+		if os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc/NvLowLatencyVk.h") and
+		   os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.lib") and
+		   os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/lib/NvLowLatencyVk.dll") and
+		   os.isfile("../../Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats/reflexstats.h") then
+			links "%{IncludeDir.NVIDIAREFLEX}/../lib/NvLowLatencyVk.lib"
+
+			postbuildcommands "{COPYDIR} %{IncludeDir.NVIDIAREFLEX}/../lib/NvLowLatencyVk.dll %{cfg.targetdir}"
+
+			externalincludedirs
+			{
+				"%{IncludeDir.NVIDIAREFLEX}",
+				"%{IncludeDir.NVIDIAREFLEXSTATS}"
+			}
+
+			defines "NVIDIA_REFLEX_AVAILABLE"
+		end
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"

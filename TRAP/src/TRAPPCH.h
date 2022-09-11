@@ -99,4 +99,9 @@
 #include <GFSDK_Aftermath_GpuCrashDump.h>
 #endif
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+#include <NvLowLatencyVk.h>
+#include <reflexstats.h>
+#endif
+
 #endif /*TRAP_TRAPPCH_H*/

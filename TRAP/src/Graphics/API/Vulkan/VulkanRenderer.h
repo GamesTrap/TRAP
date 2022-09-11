@@ -91,6 +91,15 @@ namespace TRAP::Graphics::API
 		void SetVSync(bool vsync, Window* window) const override;
 
 		/// <summary>
+		/// Set the FPS limit for NVIDIA-Reflex.
+		/// Note: This function affects all windows.
+		/// Note: Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
+		///       This function is only used internally for NVIDIA-Reflex.
+		/// </summary>
+		/// <param name="limit">FPS target to limit to.</param>
+		void SetReflexFPSLimit(uint32_t limit) override;
+
+		/// <summary>
 		/// Set the clear color to be used by the given window.
 		/// </summary>
 		/// <param name="color">New clear color.</param>
@@ -442,7 +451,7 @@ namespace TRAP::Graphics::API
 		/// <param name="renderTargetBarrier">Render target barrier.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-		                                 Window* window ) const override;
+		                                 Window* window) const override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
@@ -450,6 +459,25 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
 								          Window* window) const override;
+
+		/// <summary>
+		/// NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// </summary>
+		/// <param name="window">Window to sleep for.</param>
+		void ReflexSleep(Window* window) const override;
+		/// <summary>
+		/// NVIDIA-Reflex latency marker.
+		/// </summary>
+		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
+		/// <param name="marker">Enum value of the marker to set.</param>
+		void ReflexMarker(uint32_t frame, uint32_t marker) const override;
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		/// <summary>
+		/// Retrieve the latency report from NVIDIA-Reflex.
+		/// </summary>
+		/// <returns>Latency report.</returns>
+		NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const override;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 		/// <summary>
 		/// Retrieve the renderer title.
@@ -506,6 +534,24 @@ namespace TRAP::Graphics::API
 		                     Window* window = nullptr) const override;
 
 		/// <summary>
+		/// Set the latency mode.
+		/// Note: Only LatencyMode::Disabled is supported everywhere.
+		///       Other LatencyModes are only available on Windows 10 or
+		///       newer with NVIDIA hardware.
+		/// </summary>
+		/// <param name="mode">LatencyMode to set.</param>
+		/// <param name="window">Window to set latency mode for.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		void SetLatencyMode(LatencyMode mode, Window* window = nullptr) override;
+		/// <summary>
+		/// Retrieve the currently used latency mode.
+		/// Note: This may differ from the requested mode set with SetLatencyMode().
+		/// </summary>
+		/// <param name="window">Window to retrieve latency mode for.</param>
+		/// <returns>Used latency mode.</returns>
+		LatencyMode GetLatencyMode(Window* window = nullptr) const override;
+
+		/// <summary>
 		/// Initialize the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to initialize the internal rendering data for.</param>
@@ -536,6 +582,7 @@ namespace TRAP::Graphics::API
 		static bool s_maintenance4Extension;
 		static bool s_externalMemory;
 		static bool s_shadingRate;
+		static bool s_timelineSemaphore;
 
 		static bool s_debugMarkerSupport;
 

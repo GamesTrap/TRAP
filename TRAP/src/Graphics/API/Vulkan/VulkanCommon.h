@@ -46,6 +46,18 @@ namespace TRAP::Graphics::API
 	/// <param name="line">Line number of the error check call.</param>
 	/// <returns>True for non error codes, otherwise false.</returns>
 	constexpr bool ErrorCheck(VkResult result, std::string_view function, std::string_view file, int32_t line);
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	/// <summary>
+	/// Check the if given NvLL_VK_Status contains an error.
+	/// If the given NvLL_VK_Status contains an error, the function will log information about the error.
+	/// </summary>
+	/// <param name="result">NvLL_VK_Status to check.</param>
+	/// <param name="function">Name of the function that called the error checker.</param>
+	/// <param name="file">Name of the file where the function is in that called the error checker.</param>
+	/// <param name="line">Line number of the error check call.</param>
+	/// <returns>True for non error codes, otherwise false.</returns>
+	constexpr bool ReflexErrorCheck(NvLL_VK_Status result, std::string_view function, std::string_view file, int32_t line);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 	/// <summary>
 	/// Convert the RendererAPI::QueueType to VkQueueFlags.
 	/// </summary>
@@ -350,6 +362,9 @@ namespace TRAP::Graphics::API
 #else
 	//Utility to check VkResult for errors and log them.
 	#define VkCall(x) ::TRAP::Graphics::API::ErrorCheck(x, #x, __FILE__, __LINE__);
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	#define VkReflexCall(x) ::TRAP::Graphics::API::ReflexErrorCheck(x, #x, __FILE__, __LINE__);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 #else
 	/// <summary>
@@ -357,6 +372,10 @@ namespace TRAP::Graphics::API
 	/// </summary>
 	constexpr void VkCall(VkResult)
 	{}
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	constexpr void VkReflexCall(NvLL_VK_Status)
+	{}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -435,6 +454,64 @@ constexpr bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const std:
 
 	return false;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+constexpr bool TRAP::Graphics::API::ReflexErrorCheck(const NvLL_VK_Status result, const std::string_view function,
+                                                     const std::string_view file, const int32_t line)
+{
+	if(result == NVLL_VK_OK)
+		return true;
+
+	switch (result)
+	{
+	case NVLL_VK_ERROR:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_ERROR: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_LIBRARY_NOT_FOUND:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_LIBRARY_NOT_FOUND: ", function, " @[", file, ':', line,
+				']');
+		break;
+	case NVLL_VK_NO_IMPLEMENTATION:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_IMPLEMENTATION: ", function, " @[", file, ':', line,
+				']');
+		break;
+	case NVLL_VK_API_NOT_INITIALIZED:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_NOT_INITIALIZED: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_INVALID_ARGUMENT:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_ARGUMENT: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_INVALID_HANDLE:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_HANDLE: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_INCOMPATIBLE_STRUCT_VERSION:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INCOMPATIBLE_STRUCT_VERSION: ", function, " @[", file, ':', line,
+				']');
+		break;
+	case NVLL_VK_INVALID_POINTER:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_INVALID_POINTER: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_OUT_OF_MEMORY:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_OUT_OF_MEMORY: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_API_IN_USE:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_API_IN_USE: ", function, " @[", file, ':', line, ']');
+		break;
+	case NVLL_VK_NO_VULKAN:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "NVLL_VK_NO_VULKAN: ", function, " @[", file, ':', line,
+				']');
+		break;
+
+	default:
+		TP_ERROR(Log::RendererVulkanReflexPrefix, "Unknown error: ", function, " @[", file, ':', line, ']');
+		break;
+	}
+
+	return false;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

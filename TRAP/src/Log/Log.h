@@ -145,7 +145,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion =                        "[22w36a1]";
+		inline static constexpr auto WindowVersion =                        "[22w36a3]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -207,6 +207,7 @@ namespace TRAP
 		inline static constexpr auto RendererSwapChainPrefix =              "[Renderer][SwapChain] ";
 		inline static constexpr auto RendererAftermathTrackerPrefix =       "[Renderer][AftermathTracker] ";
 		inline static constexpr auto RendererVulkanPrefix =                 "[Renderer][Vulkan] ";
+		inline static constexpr auto RendererVulkanReflexPrefix =           "[Renderer][Vulkan][Reflex] ";
 		inline static constexpr auto RendererVulkanDevicePrefix =           "[Renderer][Vulkan][Device] ";
 		inline static constexpr auto RendererVulkanPhysicalDevicePrefix =   "[Renderer][Vulkan][PhysicalDevice] ";
 		inline static constexpr auto RendererVulkanDescriptorPoolPrefix =   "[Renderer][Vulkan][DescriptorPool] ";

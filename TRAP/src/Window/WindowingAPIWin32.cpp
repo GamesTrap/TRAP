@@ -209,6 +209,11 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                                           const LPARAM lParam)
 {
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(NVSTATS_IS_PING_MSG_ID(uMsg))
+		TRAP::Graphics::RendererAPI::GetRenderer()->ReflexMarker(TRAP::Application::GetGlobalCounter(), NVSTATS_PC_LATENCY_PING);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(hWnd, L"TRAP"));
 
 	if (!windowPtr)

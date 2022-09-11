@@ -9,6 +9,10 @@
 #include "Layers/ImGui/ImGuiLayer.h"
 #include "ImageFormat.h"
 
+#ifdef NVIDIA_REFLEX_AVAILABLE
+#include <NvLowLatencyVk.h>
+#endif
+
 namespace TRAP
 {
 	class Application;
@@ -78,6 +82,7 @@ namespace TRAP::Graphics
 		enum class SampleCount;
 		enum class QueueType;
 		enum class GPUVendor;
+		enum class LatencyMode;
 		struct LoadActionsDesc;
 		struct BufferBarrier;
 		struct TextureBarrier;
@@ -191,6 +196,15 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve VSync for. Default: Main Window.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		virtual bool GetVSync(Window* window = nullptr) const = 0;
+
+		/// <summary>
+		/// Set the FPS limit for NVIDIA-Reflex.
+		/// Note: This function affects all windows.
+		/// Note: Do not call this function in user code! Use TRAP::Application::SetFPSLimit() instead.
+		///       This function is only used internally for NVIDIA-Reflex.
+		/// </summary>
+		/// <param name="limit">FPS target to limit to.</param>
+		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
 
 		//RenderTarget Stuff
 
@@ -565,6 +579,25 @@ namespace TRAP::Graphics
 									              Window* window = nullptr) const = 0;
 
 		/// <summary>
+		/// NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// </summary>
+		/// <param name="window">Window to sleep for.</param>
+		virtual void ReflexSleep(Window* window = nullptr) const = 0;
+		/// <summary>
+		/// NVIDIA-Reflex latency marker.
+		/// </summary>
+		/// <param name="frame">Frame to set marker for. Must be unique for each frame!</param>
+		/// <param name="marker">Enum value of the marker to set.</param>
+		virtual void ReflexMarker(uint32_t frame, uint32_t marker) const = 0;
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		/// <summary>
+		/// Retrieve the latency report from NVIDIA-Reflex.
+		/// </summary>
+		/// <returns>Latency report.</returns>
+		virtual NVLL_VK_LATENCY_RESULT_PARAMS ReflexGetLatency() const = 0;
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+		/// <summary>
 		/// Retrieve the renderer title.
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
@@ -611,6 +644,25 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to do the resolve pass on.</param>
 		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
 		                             Window* window = nullptr) const = 0;
+
+		/// <summary>
+		/// Set the latency mode.
+		/// The actual latency mode may differ from the requested one so check
+		/// the actual used mode with GetLatencyMode().
+		/// Note: Only LatencyMode::Disabled is supported everywhere.
+		///       Other LatencyModes are only available on Windows 10 or
+		///       newer with NVIDIA hardware.
+		/// </summary>
+		/// <param name="mode">LatencyMode to set.</param>
+		/// <param name="window">Window to set latency mode for.</param>
+		virtual void SetLatencyMode(LatencyMode mode, Window* window = nullptr) = 0;
+		/// <summary>
+		/// Retrieve the currently used latency mode.
+		/// Note: This may differ from the requested mode set with SetLatencyMode().
+		/// </summary>
+		/// <param name="window">Window to retrieve latency mode for.</param>
+		/// <returns>Used latency mode.</returns>
+		virtual LatencyMode GetLatencyMode(Window* window = nullptr) const = 0;
 
 		/// <summary>
 		/// Retrieve the used descriptor pool.
@@ -1049,6 +1101,16 @@ namespace TRAP::Graphics
 			Color_Stencil = Color | Stencil,
 			Color_Depth_Stencil = Color | Stencil | Depth,
 			Depth_Stencil = Depth | Stencil
+		};
+
+		/// <summary>
+		/// Enum describing the different latency modes.
+		/// </summary>
+		enum class LatencyMode
+		{
+			Disabled,
+			Enabled,
+			EnabledBoost
 		};
 
 		/// <summary>
@@ -2462,6 +2524,9 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::ShadingRateCombiner ShadingRateCombiner;
 			uint32_t ShadingRateTexelWidth;
 			uint32_t ShadingRateTexelHeight;
+
+			//NVIDIA Reflex
+			bool ReflexSupported;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
@@ -2552,6 +2617,11 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentComputePipeline;
 			float ComputeFrameTime;
 			bool RecordingCompute;
+
+			//NVIDIA Reflex
+#ifdef NVIDIA_REFLEX_AVAILABLE
+			NVLL_VK_SET_SLEEP_MODE_PARAMS SleepModeParams{};
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 		};
 
 	protected:
@@ -2601,5 +2671,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCombiner);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearBufferType);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::LatencyMode);
 
 #endif /*TRAP_RENDERERAPI_H*/

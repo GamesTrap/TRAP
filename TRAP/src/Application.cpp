@@ -112,6 +112,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	  m_tickRate(64),
 	  m_timeScale(1.0f),
 	  m_gameName(std::move(gameName)),
+	  m_globalCounter(0),
 	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) :
 	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
@@ -182,6 +183,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	m_config.Get("RefreshRate", refreshRate);
 	const bool vsync = m_config.Get<bool>("VSync");
 	const bool visible = true;
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	const Graphics::LatencyMode latencyMode = m_config.Get<Graphics::LatencyMode>("NVIDIAReflex");
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 #else
 	const uint32_t width = 2;
 	const uint32_t height = 2;
@@ -204,14 +208,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	m_config.Get("EnableGPU", enableGPU);
 #endif
 	Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
-
-	if (fpsLimit > 0)
-	{
-		if (fpsLimit >= 25 && fpsLimit <= 500)
-			m_fpsLimit = fpsLimit;
-		else
-			m_fpsLimit = 0;
-	}
 
 #ifdef TRAP_HEADLESS_MODE
 	if(enableGPU)
@@ -280,7 +276,15 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #endif
 #endif
 
+	SetFPSLimit(fpsLimit);
+
 #ifndef TRAP_HEADLESS_MODE
+	//NVIDIA Reflex
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	Graphics::RenderCommand::SetLatencyMode(latencyMode);
+	NVSTATS_INIT(0, 0);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	//Update Viewport
 	int32_t w = 0, h = 0;
 	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
@@ -377,6 +381,12 @@ TRAP::Application::~Application()
 		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, sampleCount);
 		m_config.Set("AntiAliasing", antiAliasing);
 		m_config.Set("AntiAliasingQuality", sampleCount);
+
+		//NVIDIA Reflex
+#if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
+		NVSTATS_SHUTDOWN();
+		m_config.Set("NVIDIAReflex", Graphics::RenderCommand::GetLatencyMode());
+#endif
 	}
 
 	std::filesystem::path cfgPath = "engine.cfg";
@@ -433,6 +443,29 @@ void TRAP::Application::Run()
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
 		lastFrameTime = time;
 
+		//FPSLimiter
+		if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
+			Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+		else if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+			std::this_thread::sleep_until(nextFrame);
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_INPUT_SAMPLE);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+#ifdef TRAP_PLATFORM_LINUX
+		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
+			TRAP::Window::OnUpdate();
+#else
+		TRAP::Window::OnUpdate();
+#endif
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		if(Input::IsMouseButtonPressed(Input::MouseButton::Left))
+			Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_TRIGGER_FLASH);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 		if (!m_minimized)
 		{
 			{
@@ -468,18 +501,7 @@ void TRAP::Application::Run()
 				Graphics::RenderCommand::Present(m_window.get());
 		}
 
-#ifdef TRAP_PLATFORM_LINUX
-		if(TRAP::Utils::GetLinuxWindowManager() != TRAP::Utils::LinuxWindowManager::Unknown)
-			TRAP::Window::OnUpdate();
-#else
-		TRAP::Window::OnUpdate();
-#endif
-
 		UpdateHotReloading();
-
-		//FPSLimiter
-		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
-			std::this_thread::sleep_until(nextFrame);
 
 		if (!m_minimized)
 		{
@@ -491,6 +513,12 @@ void TRAP::Application::Run()
 		TRAP::Utils::Discord::RunCallbacks();
 		//Needed by Steamworks SDK
 		TRAP::Utils::Steam::RunCallbacks();
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+		++m_globalCounter;
 	}
 }
 
@@ -589,6 +617,14 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 		s_Instance->m_fpsLimit = 0;
 	else
 		s_Instance->m_fpsLimit = TRAP::Math::Clamp(fps, 25u, 500u);
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE &&
+	   TRAP::Graphics::RendererAPI::GPUSettings.ReflexSupported)
+	{
+		Graphics::RendererAPI::GetRenderer()->SetReflexFPSLimit(s_Instance->m_fpsLimit);
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -700,6 +736,13 @@ std::thread::id TRAP::Application::GetMainThreadID()
 std::string TRAP::Application::GetGameName()
 {
 	return s_Instance->m_gameName;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint64_t TRAP::Application::GetGlobalCounter()
+{
+	return s_Instance->m_globalCounter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

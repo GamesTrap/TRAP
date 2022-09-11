@@ -6,6 +6,8 @@
 #include "Graphics/API/Objects/AftermathTracker.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
+#include "Graphics/API/Objects/Semaphore.h"
 #include "Application.h"
 
 TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
@@ -95,6 +97,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
 	VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 	shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+	VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreFeatures{};
+	timelineSemaphoreFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR;
 
 	if (VulkanRenderer::s_bufferDeviceAddressExtension)
 	{
@@ -121,6 +125,13 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	if(VulkanRenderer::s_shadingRate)
 	{
 		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&shadingRateFeatures);
+		base = base->pNext;
+	}
+
+	//Timeline semaphore
+	if(VulkanRenderer::s_timelineSemaphore)
+	{
+		base->pNext = reinterpret_cast<VkBaseOutStructure*>(&timelineSemaphoreFeatures);
 		base = base->pNext;
 	}
 
@@ -186,12 +197,26 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	VulkanRenderer::s_bufferDeviceAddressExtension = bufferDeviceAddressFeatures.bufferDeviceAddress;
 	VulkanRenderer::s_samplerYcbcrConversionExtension = ycbcrFeatures.samplerYcbcrConversion;
 	VulkanRenderer::s_shaderDrawParameters = shaderDrawParametersFeatures.shaderDrawParameters;
+	VulkanRenderer::s_timelineSemaphore = timelineSemaphoreFeatures.timelineSemaphore;
 	LoadShadingRateCaps(shadingRateFeatures);
 
-#if defined(ENABLE_GRAPHICS_DEBUG)
+#ifdef ENABLE_GRAPHICS_DEBUG
 	if (m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName[0] != '\0')
 		SetDeviceName(m_physicalDevice->GetVkPhysicalDeviceProperties().deviceName);
-#endif
+#endif /*ENABLE_GRAPHICS_DEBUG*/
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	m_reflexSemaphore = {};
+	if (m_physicalDevice->GetVendor() == RendererAPI::GPUVendor::NVIDIA &&
+	    VulkanRenderer::s_timelineSemaphore &&
+		TRAP::Utils::IsWindows10BuildOrGreaterWin32(10240))
+	{
+		TP_WARN(Log::RendererVulkanDevicePrefix, "The following VkSemaphore error comes from NVIDIA Reflex and can be ignored");
+		const NvLL_VK_Status status = NvLL_VK_InitLowLatencyDevice(m_device, reinterpret_cast<HANDLE*>(&m_reflexSemaphore));
+		VkReflexCall(status);
+		if(status == NVLL_VK_OK)
+			RendererAPI::GPUSettings.ReflexSupported = true;
+	}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -203,6 +228,12 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");
 #endif
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	if(RendererAPI::GPUSettings.ReflexSupported)
+		vkDestroySemaphore(m_device, m_reflexSemaphore, nullptr);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
 	vkDestroyDevice(m_device, nullptr);
 	m_device = nullptr;
 
@@ -461,6 +492,15 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 {
 	return m_computeQueueIndex;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore()
+{
+	return m_reflexSemaphore;
+}
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
