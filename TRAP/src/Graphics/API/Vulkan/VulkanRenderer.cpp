@@ -278,12 +278,68 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
 	s_graphicQueue->Submit(submitDesc);
 
-#ifdef NVIDIA_REFLEX_AVAILABLE
-	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_END);
-#endif /*NVIDIA_REFLEX_AVAILABLE*/
-
 	p->GraphicsFrameTime = ResolveGPUFrameProfile(QueueType::Graphics, p);
 
+	p->Recording = false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* const p)
+{
+	TRAP_ASSERT(p);
+
+	if(p->RecordingCompute)
+		return;
+
+	//Start Recording
+	const TRAP::Ref<Fence> computeCompleteFence = p->ComputeCompleteFences[p->ImageIndex];
+
+	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
+	if (computeCompleteFence->GetStatus() == FenceStatus::Incomplete)
+		computeCompleteFence->Wait();
+
+	//Reset cmd pool for this frame
+	p->ComputeCommandPools[p->ImageIndex]->Reset();
+
+	p->ComputeCommandBuffers[p->ImageIndex]->Begin();
+
+	BeginGPUFrameProfile(QueueType::Compute, p);
+
+	if(p->CurrentComputePipeline)
+		p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
+
+	p->RecordingCompute = true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* const p)
+{
+	if(!p->RecordingCompute)
+		return;
+
+	EndGPUFrameProfile(QueueType::Compute, p);
+
+	//End Recording
+	p->ComputeCommandBuffers[p->ImageIndex]->End();
+
+	QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds = { p->ComputeCommandBuffers[p->ImageIndex] };
+	submitDesc.WaitSemaphores = { p->GraphicsCompleteSemaphores[p->ImageIndex] };
+	submitDesc.SignalSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
+	submitDesc.SignalFence = {p->ComputeCompleteFences[p->ImageIndex]};
+	s_computeQueue->Submit(submitDesc);
+
+	p->ComputeFrameTime = ResolveGPUFrameProfile(QueueType::Compute, p);
+
+	p->RecordingCompute = false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::Present(PerWindowData* const p)
+{
 #ifndef TRAP_HEADLESS_MODE
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
@@ -396,61 +452,6 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		}
 	}
 #endif
-
-	p->Recording = false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* const p)
-{
-	TRAP_ASSERT(p);
-
-	if(p->RecordingCompute)
-		return;
-
-	//Start Recording
-	const TRAP::Ref<Fence> computeCompleteFence = p->ComputeCompleteFences[p->ImageIndex];
-
-	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
-	if (computeCompleteFence->GetStatus() == FenceStatus::Incomplete)
-		computeCompleteFence->Wait();
-
-	//Reset cmd pool for this frame
-	p->ComputeCommandPools[p->ImageIndex]->Reset();
-
-	p->ComputeCommandBuffers[p->ImageIndex]->Begin();
-
-	BeginGPUFrameProfile(QueueType::Compute, p);
-
-	if(p->CurrentComputePipeline)
-		p->ComputeCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentComputePipeline);
-
-	p->RecordingCompute = true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::EndComputeRecording(PerWindowData* const p)
-{
-	if(!p->RecordingCompute)
-		return;
-
-	EndGPUFrameProfile(QueueType::Compute, p);
-
-	//End Recording
-	p->ComputeCommandBuffers[p->ImageIndex]->End();
-
-	QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds = { p->ComputeCommandBuffers[p->ImageIndex] };
-	submitDesc.WaitSemaphores = { p->GraphicsCompleteSemaphores[p->ImageIndex] };
-	submitDesc.SignalSemaphores = { p->ComputeCompleteSemaphores[p->ImageIndex] };
-	submitDesc.SignalFence = {p->ComputeCompleteFences[p->ImageIndex]};
-	s_computeQueue->Submit(submitDesc);
-
-	p->ComputeFrameTime = ResolveGPUFrameProfile(QueueType::Compute, p);
-
-	p->RecordingCompute = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -527,8 +528,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//TODO Rename to Flush()
-void TRAP::Graphics::API::VulkanRenderer::Present(Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::Flush(Window* window) const
 {
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
@@ -538,8 +538,13 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window) const
 
 	EndComputeRecording(p);
 	EndGraphicRecording(p);
-	//TODO Add Present() for actual presentation of the swapchain image
-	//     Effectively splitting EndGraphicRecording() into two functions
+
+#ifdef NVIDIA_REFLEX_AVAILABLE
+	ReflexMarker(Application::GetGlobalCounter(), VK_RENDERSUBMIT_END);
+#endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+	Present(p);
+
 #ifndef TRAP_HEADLESS_MODE
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
 	{

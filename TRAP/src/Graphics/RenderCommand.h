@@ -80,12 +80,17 @@ namespace TRAP::Graphics
 	{
 	public:
 		/// <summary>
-		/// Present frame to given window.
+		/// Flush renderer for the given window.
 		///
-		/// Note: TRAP::Application automatically presents to the main window.
+		/// 1. Stops graphics and compute recording.
+		/// 2. Submits the graphics and compute commands.
+		/// 3. Presents the rendered image to the screen.
+		/// 4. Starts graphics and compute recording for the next frame.
+		///
+		/// Note: TRAP::Application automatically flushes for the main window.
 		/// </summary>
-		/// <param name="window">Window to present to.</param>
-		static void Present(Window* window);
+		/// <param name="window">Window to flush renderer.</param>
+		static void Flush(Window* window);
 
 		//VSync functions
 

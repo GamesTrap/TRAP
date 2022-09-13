@@ -169,10 +169,15 @@ namespace TRAP::Graphics
 		virtual void InitInternal(const std::string_view gameName) = 0;
 
 		/// <summary>
-		/// Present to the given window.
+		/// Flush renderer for the given window.
+		///
+		/// 1. Stops graphics and compute recording.
+		/// 2. Submits the graphics and compute commands.
+		/// 3. Presents the rendered image to the screen.
+		/// 4. Starts graphics and compute recording for the next frame.
 		/// </summary>
-		/// <param name="window">Window to present.</param>
-		virtual void Present(Window* window) const = 0;
+		/// <param name="window">Window to flush.</param>
+		virtual void Flush(Window* window) const = 0;
 
 		/// <summary>
 		/// Dispatch to the given window.

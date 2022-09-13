@@ -149,7 +149,7 @@ void MultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		TRAP::Graphics::RenderCommand::DrawIndexed(3, 0, 0, m_window.get());
 
 		//Secondary Windows need to explicitly present its content
-		TRAP::Graphics::RenderCommand::Present(m_window.get());
+		TRAP::Graphics::RenderCommand::Flush(m_window.get());
 	}
 
 	//Main Window OnUpdate

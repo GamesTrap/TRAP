@@ -3203,3 +3203,5 @@ SITREP 09/08/2022|22w36a3
 SITREP 09/13/2022|22w37a1
     - Changed TRAP Engine version to 22w37a1(0.8.41)
     - Changed some for loop data types ~<10 mins
+    - RendererAPI Renamed Present() to Flush() ~<5 mins
+    - VulkanRenderer split presentation from EndGraphicRecording() ~<10 mins

@@ -67,10 +67,15 @@ namespace TRAP::Graphics::API
 		void InitInternal(const std::string_view gameName) override;
 
 		/// <summary>
-		/// Present to the given window.
+		/// Flush renderer for the given window.
+		///
+		/// 1. Stops graphics and compute recording.
+		/// 2. Submits the graphics and compute commands.
+		/// 3. Presents the rendered image to the screen.
+		/// 4. Starts graphics and compute recording for the next frame.
 		/// </summary>
 		/// <param name="window">Window to present.</param>
-		void Present(Window* window) const override;
+		void Flush(Window* window) const override;
 
 		/// <summary>
 		/// Dispatch to the given window.
@@ -816,6 +821,12 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="p">Per window data used for recording.</param>
 		static void EndComputeRecording(PerWindowData* const p);
+
+		/// <summary>
+		/// Present the currently recorded frame.
+		/// </summary>
+		/// <param name="p">Per widow data used for presentation.</param>
+		static void Present(PerWindowData* const p);
 
 		/// <summary>
 		/// Start frame time profiling of the GPU.

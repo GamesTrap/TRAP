@@ -3,9 +3,9 @@
 
 #include "Application.h"
 
-void TRAP::Graphics::RenderCommand::Present(Window* window)
+void TRAP::Graphics::RenderCommand::Flush(Window* window)
 {
-	RendererAPI::GetRenderer()->Present(window);
+	RendererAPI::GetRenderer()->Flush(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
