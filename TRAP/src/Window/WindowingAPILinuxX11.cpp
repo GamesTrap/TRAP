@@ -209,7 +209,7 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* timeout)
 		if(!WaitForData(fds.data(), fds.size(), timeout))
 			return false;
 
-		for(uint32_t i = 1; i < fds.size(); ++i)
+		for(std::size_t i = 1; i < fds.size(); ++i)
 		{
 			if(fds[i].revents & POLLIN)
 				return true;
@@ -907,7 +907,7 @@ bool TRAP::INTERNAL::WindowingAPI::HasUsableInputMethodStyle()
 	if(s_Data.XLIB.GetIMValues(s_Data.IM, XNQueryInputStyle, &styles, nullptr) != nullptr)
 		return false;
 
-	for(uint32_t i = 0; i < styles->count_styles; i++)
+	for(uint16_t i = 0; i < styles->count_styles; i++)
 	{
 		if(styles->supported_styles[i] == (XIMPreeditNothing | XIMStatusNothing))
 		{
@@ -980,7 +980,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 	if(disconnectedCount)
 	{
 		disconnected.resize(s_Data.Monitors.size());
-		for(uint32_t i = 0; i < s_Data.Monitors.size(); i++)
+		for(std::size_t i = 0; i < s_Data.Monitors.size(); i++)
 			disconnected[i] = s_Data.Monitors[i].get();
 	}
 
@@ -1446,7 +1446,7 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const TRAP::Image* const im
 	const uint8_t* source = static_cast<const uint8_t*>(image->GetPixelData());
 	XcursorPixel* target = native->pixels;
 
-	for(uint32_t i = 0; i < image->GetWidth() * image->GetHeight(); i++, target++, source += 4)
+	for(uint64_t i = 0; i < image->GetWidth() * image->GetHeight(); i++, target++, source += 4)
 	{
 		const uint32_t alpha = source[3];
 
@@ -2098,7 +2098,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 		result.reserve(oi->nmode);
 
-		for(uint32_t i = 0; i < static_cast<uint32_t>(oi->nmode); i++)
+		for(int32_t i = 0; i < oi->nmode; i++)
 		{
 			const XRRModeInfo* mi = GetModeInfo(sr, oi->modes[i]);
 			if(!static_cast<bool>((mi->modeFlags & RR_Interlace) == 0))
@@ -2870,7 +2870,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* window,
 		*target++ = image->GetWidth();
 		*target++ = image->GetHeight();
 
-		for(uint32_t j = 0; j < image->GetWidth() * image->GetHeight(); j++)
+		for(uint64_t j = 0; j < image->GetWidth() * image->GetHeight(); j++)
 		{
 			*target++ = (static_cast<uint64_t>(imgData[j * 4 + 0]) << 16) |
 						(static_cast<uint64_t>(imgData[j * 4 + 1]) <<  8) |
@@ -4095,7 +4095,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				formats = reinterpret_cast<Atom*>(event.xclient.data.l) + 2;
 			}
 
-			for(uint32_t i = 0; i < count; i++)
+			for(uint64_t i = 0; i < count; i++)
 			{
 				if(formats[i] == s_Data.text_uri_list)
 				{
@@ -4478,7 +4478,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* monitor, con
 	XRRCrtcInfo* ci = s_Data.RandR.GetCrtcInfo(s_Data.display, sr, monitor->CRTC);
 	XRROutputInfo* oi = s_Data.RandR.GetOutputInfo(s_Data.display, sr, monitor->Output);
 
-	for(uint32_t i = 0; i < static_cast<uint32_t>(oi->nmode); i++)
+	for(int32_t i = 0; i < oi->nmode; i++)
 	{
 		const XRRModeInfo* mi = GetModeInfo(sr, oi->modes[i]);
 		if(!((mi->modeFlags & RR_Interlace) == 0))
@@ -4753,7 +4753,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 			}
 
 			//Fall back to key aliases in case the key name did not match
-			for(uint32_t i = 0; i < desc->names->num_key_aliases; i++)
+			for(uint8_t i = 0; i < desc->names->num_key_aliases; i++)
 			{
 				if(key != TRAP::Input::Key::Unknown)
 					break;

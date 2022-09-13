@@ -667,11 +667,11 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 
 	const ImGuiMouseCursor imguiCursor = ImGui::GetMouseCursor();
 	const ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
-	for(uint32_t n = 0; n < static_cast<uint32_t>(platformIO.Viewports.Size); n++)
+	for(int32_t n = 0; n < platformIO.Viewports.Size; n++)
 	{
 		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>
 		(
-			platformIO.Viewports[static_cast<int>(n)]->PlatformHandle
+			platformIO.Viewports[n]->PlatformHandle
 		);
 
 		if(imguiCursor == ImGuiMouseCursor_None || io.MouseDrawCursor)
@@ -907,7 +907,7 @@ void TRAP::INTERNAL::ImGuiWindowing::DestroyWindow(ImGuiViewport* viewport)
 		{
 			//Release any keys that were pressed in the window being destroyed and are still held down,
 			//because we will not receive any release events after window is destroyed.
-			for(int32_t i = 0; i < static_cast<int32_t>(bd->KeyOwnerWindows.size()); ++i)
+			for(std::size_t i = 0; i < bd->KeyOwnerWindows.size(); ++i)
 			{
 				if(bd->KeyOwnerWindows[i] == vd->WindowPtr)
 					KeyCallback(vd->WindowPtr, static_cast<TRAP::Input::Key>(i), Input::KeyState::Released); //Later params are only used for main viewport, on which this function is never called.

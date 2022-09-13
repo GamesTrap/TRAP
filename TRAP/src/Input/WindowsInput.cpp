@@ -379,7 +379,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 		InternalInputControllerAxis(con, 4, xis.Gamepad.bLeftTrigger / 127.5f - 1.f);
 		InternalInputControllerAxis(con, 5, xis.Gamepad.bRightTrigger / 127.5f - 1.f);
 
-		for(uint32_t i = 0; i < buttons.size(); i++)
+		for(std::size_t i = 0; i < buttons.size(); i++)
 		{
 			const bool value = (xis.Gamepad.wButtons & buttons[i]) ? true : false;
 			InternalInputControllerButton(con, i, value);

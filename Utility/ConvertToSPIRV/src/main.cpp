@@ -54,7 +54,7 @@ bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& out
 	}
 
 	//Check for help flag
-	for(uint32_t i = 0; i < static_cast<uint32_t>(argc); ++i)
+	for(int32_t i = 0; i < argc; ++i)
 	{
 		if(argv[i] == "-h"sv || argv[i] == "--help"sv)
 		{
@@ -64,11 +64,11 @@ bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& out
 	}
 
 	//Check for custom output file name
-	for(uint32_t i = 0; i < static_cast<uint32_t>(argc); ++i)
+	for(int32_t i = 0; i < argc; ++i)
 	{
 		if(argv[i] == "-o"sv || argv[i] == "--output"sv)
 		{
-			if(i + 1 < static_cast<uint32_t>(argc))
+			if(i + 1 < argc)
 			{
 				outOutputPath = argv[i + 1];
 				break;
@@ -82,11 +82,11 @@ bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& out
 	}
 
 	//Check for custom macros
-	for(uint32_t i = 0; i < static_cast<uint32_t>(argc); ++i)
+	for(int32_t i = 0; i < argc; ++i)
 	{
 		if(argv[i] == "-m"sv || argv[i] == "--macro"sv)
 		{
-			if(i + 1 < static_cast<uint32_t>(argc))
+			if(i + 1 < argc)
 			{
 				std::string macro = argv[i + 1];
 				std::size_t equalSign = macro.find('=');

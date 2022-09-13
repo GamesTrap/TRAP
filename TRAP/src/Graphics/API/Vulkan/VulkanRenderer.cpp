@@ -620,7 +620,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 	}
 
 	//Calculate used work group sizes
-	for(uint32_t i = 0; i < workGroupElements.size(); ++i)
+	for(std::size_t i = 0; i < workGroupElements.size(); ++i)
 		workGroupElements[i] = static_cast<uint32_t>(TRAP::Math::Round(workGroupElements[i] / p->CurrentComputeWorkGroupSize[i]));
 
 	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(workGroupElements[0], workGroupElements[1], workGroupElements[2]);
@@ -1292,7 +1292,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 	const TRAP::Ref<VertexLayout> lay = TRAP::MakeRef<VertexLayout>();
 	const std::vector<VertexBufferElement>& elements = layout.GetElements();
 	lay->AttributeCount = static_cast<uint32_t>(elements.size());
-	for(uint32_t i = 0; i < elements.size(); ++i)
+	for(std::size_t i = 0; i < elements.size(); ++i)
 	{
 		lay->Attributes[i].Binding = 0;
 		lay->Attributes[i].Location = i;
@@ -1450,7 +1450,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 		gpd.RenderTargetCount = colorTargets.size();
 		gpd.ColorFormats.resize(colorTargets.size());
-		for(uint32_t i = 0; i < colorTargets.size(); ++i)
+		for(std::size_t i = 0; i < colorTargets.size(); ++i)
 			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
 		BindShader(gpd.ShaderProgram, window);
 	}

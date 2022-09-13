@@ -221,7 +221,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 	TRAP::Ref<Texture> texture = nullptr;
 
 	std::array<std::filesystem::path, 6> filePaths{};
-	for(uint32_t i = 0; i < filePaths.size(); ++i)
+	for(std::size_t i = 0; i < filePaths.size(); ++i)
 		filePaths[i] = imgs[i]->GetFilePath();
 
 	switch (RendererAPI::GetRenderAPI())
@@ -467,7 +467,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 {
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
 	std::array<const TRAP::Image*, 6> imgPtrs{};
-	for(uint32_t i = 0; i < imgs.size(); ++i)
+	for(std::size_t i = 0; i < imgs.size(); ++i)
 	{
 		imgs[i] = TRAP::Image::LoadFallback();
 		imgPtrs[i] = imgs[i].get();

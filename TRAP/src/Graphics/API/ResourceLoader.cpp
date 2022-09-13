@@ -1084,7 +1084,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 						pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
 
 					uint8_t* dstData = data + subSlicePitch * z;
-					for(uint32_t r = 0; r < subNumRows; ++r)
+					for(uint64_t r = 0; r < subNumRows; ++r)
 						std::copy_n(pixelData + r * subRowSize, subRowSize, dstData + r * subRowPitch);
 				}
 			}
@@ -1264,7 +1264,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				TP_WARN(Log::TexturePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
-				for(uint32_t i = 0; i < ownedImages.size(); ++i)
+				for(std::size_t i = 0; i < ownedImages.size(); ++i)
 				{
 					ownedImages[i] = TRAP::Image::LoadFallback();
 					ptrImages[i] = ownedImages[i].get();
@@ -1327,11 +1327,11 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				TP_WARN(Log::TexturePrefix, "Texture using FallbackCube texture");
 				textureDesc.Name = "FallbackCube";
 
-				for(uint32_t i = 0; i < ownedImages.size(); ++i)
+				for(std::size_t i = 0; i < ownedImages.size(); ++i)
 					ownedImages[i] = TRAP::Image::LoadFallback();
 			}
 
-			for(uint32_t i = 0; i < ownedImages.size(); ++i)
+			for(std::size_t i = 0; i < ownedImages.size(); ++i)
 				ptrImages[i] = ownedImages[i].get();
 
 			textureDesc.Width = ptrImages[0]->GetWidth();
@@ -1405,7 +1405,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	{
 		textureDesc.Name = "FallbackCube";
 
-		for(uint32_t i = 0; i < ownedImages.size(); ++i)
+		for(std::size_t i = 0; i < ownedImages.size(); ++i)
 		{
 			ownedImages[i] = TRAP::Image::LoadFallback();
 			ptrImages[i] = ownedImages[i].get();

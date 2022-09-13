@@ -131,7 +131,7 @@ uint32_t TRAP::Monitor::GetID() const
 	TP_PROFILE_FUNCTION();
 
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
-	for(uint32_t i = 0; i < monitors.size(); i++)
+	for(std::size_t i = 0; i < monitors.size(); i++)
 	{
 		if (monitors[i] == m_handle)
 			return i;

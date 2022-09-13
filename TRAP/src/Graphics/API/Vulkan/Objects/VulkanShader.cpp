@@ -147,7 +147,7 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 			m_cleanedDescriptorSets[m_lastImageIndex] = std::move(m_dirtyDescriptorSets[m_lastImageIndex]);
 
 		//Set current descriptor sets as dirty
-		for(uint32_t i = 0; i < m_descriptorSets.size(); ++i)
+		for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
 			m_dirtyDescriptorSets[currImageIndex].push_back(std::move(m_descriptorSets[i]));
 	}
 
@@ -159,7 +159,7 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 		VulkanRootSignature* root = dynamic_cast<VulkanRootSignature*>(m_rootSignature.get());
 		RendererAPI::DescriptorSetDesc setDesc{};
 		setDesc.RootSignature = m_rootSignature;
-		for(uint32_t i = 0; i < m_descriptorSets.size(); ++i)
+		for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
 		{
 			if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
 			{
@@ -397,7 +397,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 	std::array<ShaderReflection::ShaderReflection,
 	           static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> stageReflections{};
 
-	for(uint32_t i = 0; i < stageReflections.size(); i++)
+	for(std::size_t i = 0; i < stageReflections.size(); i++)
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(BIT(i));
 		if(stageMask == (m_shaderStages & stageMask))
@@ -531,7 +531,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 		m_numThreadsPerGroup = m_reflection->StageReflections[0].NumThreadsPerGroup;
 
 	//Create DescriptorSets
-	for(uint32_t i = 0; i < m_descriptorSets.size(); ++i)
+	for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
 	{
 		if(dynamic_cast<VulkanRootSignature*>
 		(

@@ -424,7 +424,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 		}
 	}
 
-	for(uint32_t i = 0; i < shaders.size(); i++)
+	for(std::size_t i = 0; i < shaders.size(); i++)
 	{
 		if (Utils::String::ToLower(shaders[i]).find("main") == std::string::npos)
 		{
@@ -619,7 +619,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 	RendererAPI::BinaryShaderDesc desc{};
 	desc.Stages = shaderStages;
 
-	for(uint32_t i = 0; i < shaders.size(); ++i)
+	for(std::size_t i = 0; i < shaders.size(); ++i)
 	{
 		if(shaders[i].empty())
 			continue;

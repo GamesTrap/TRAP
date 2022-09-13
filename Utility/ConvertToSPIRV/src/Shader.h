@@ -341,7 +341,7 @@ inline bool PreProcessGLSL(Shader& shader, const std::vector<std::array<std::str
             shader.SubShaderSources[ShaderStageToIndex.at(currentShaderStage)].Source.append(lines[i] + '\n');
 	}
 
-	for(uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
+	for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
         if(!FindEntryPoint(shader.SubShaderSources[i].Source) &&
            static_cast<uint32_t>(IndexToShaderStage.at(i) & shader.Stages))
@@ -536,7 +536,7 @@ inline bool SaveSPIRV(Shader& shader, std::filesystem::path customOutput)
     }
     file.write(reinterpret_cast<char*>(&SPIRVSubShadersCount), sizeof(uint32_t));
 
-    for(uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
+    for(std::size_t i = 0; i < shader.SubShaderSources.size(); ++i)
     {
         if(!shader.SubShaderSources[i].SPIRV.empty())
         {
