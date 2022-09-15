@@ -1,33 +1,66 @@
-function CreateInfoH()
-    -- Create build_info.h which is neccessary for ShaderLang.cpp
-    print("Checking Python")
-    local res = true
-    local out, errorCode = os.outputof("python --version")
-    if(errorCode ~= 0) then
-        term.setTextColor(term.errorColor)
-        print("Unable to find Python 3.\nMake sure it is accessible via python")
-        term.setTextColor(nil)
-        res = false
-    end
+VersionMajor = 0
+VersionMinor = 0
+VersionPatch = 0
 
-    if (res) then
-        local f = io.open("GLSLang/glslang/build_info.h", "r")
-        if (f ~= nil) then
-            io.close(f)
-        else
-            local out, errorCode = os.outputof("python GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
-            if(errorCode ~= 0) then
-                term.setTextColor(term.errorColor)
-                print("Unable to create Dependencies/GLSLang/glslang/build_info.h")
-                term.setTextColor(nil)
-                res = false
+function RetrieveVersion()
+    local pattern = "^#* +(%d+)%.(%d+)%.(%d+)( +)(%d%d%d%d%-%d%d%-%d%d) *$"
+    local changeFile = "GLSLang/CHANGES.md"
+    local changeFileContent = io.readfile(changeFile)
+
+    if changeFileContent then
+        --For each line in changeFileContent
+        for line in changeFileContent:gmatch("[^\r\n]+") do
+            --If the line matches the pattern
+            if line:match(pattern) then
+                --Get the version
+                local major, minor, patch, _, date = line:match(pattern)
+                VersionMajor = major
+                VersionMinor = minor
+                VersionPatch = patch
+                -- term.setTextColor(term.infoColor)
+                -- print("Detected GLSLang version " .. VersionMajor .. "." .. VersionMinor .. "." .. VersionPatch)
+                -- term.setTextColor(nil)
+                return
             end
         end
-    else
-        os.exit(-1)
     end
+
+    term.setTextColor(term.errorColor)
+    print("Unable to retrieve version from Dependencies/GLSLang/CHANGES.md")
+    term.setTextColor(nil)
+    os.exit(-1)
 end
 
+function GenerateBuildInfoH()
+    if (VersionMajor == 0 and VersionMinor == 0 and VersionPatch == 0) then
+        RetrieveVersion()
+    end
+
+    local templateFile = "GLSLang/build_info.h.tmpl"
+    local targetFile = "GLSLang/glslang/build_info.h"
+
+    --Does target file already exist
+    if os.isfile(targetFile) then
+        return
+    end
+
+    local ok, err = os.touchfile(templateFile, targetFile)
+
+    if not ok then
+        term.setTextColor(term.errorColor)
+        print("Unable to copy " .. templateFile .. " to " .. targetFile .. ": " .. err)
+        term.setTextColor(nil)
+        os.exit(-1)
+    end
+
+    --Replace @major@ @minor@ @patch@ and @flavor@
+    local content = io.readfile(templateFile)
+    content = content:gsub("@major@", VersionMajor)
+    content = content:gsub("@minor@", VersionMinor)
+    content = content:gsub("@patch@", VersionPatch)
+    content = content:gsub("@flavor@", "")
+    io.writefile(targetFile, content)
+end
 
 project "GLSLang"
     kind "StaticLib"
@@ -40,7 +73,7 @@ project "GLSLang"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
-    CreateInfoH()
+    GenerateBuildInfoH() --Generate build_info.h
 
     files
     {

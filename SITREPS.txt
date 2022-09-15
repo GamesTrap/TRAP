@@ -3209,3 +3209,4 @@ SITREP 09/13/2022|22w37a1
 SITREP 09/15/2022|22w37a2
     - Changed TRAP Engine version to 22w37a2(0.8.42)
     - Cleaned up premake scripts ~<20 mins
+    - Removed Python dependency from GLSLang.lua script ~>15 mins
