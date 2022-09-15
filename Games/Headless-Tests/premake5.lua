@@ -17,10 +17,7 @@ project "Headless-Tests"
 		"src/**.cpp"
 	}
 
-	includedirs
-	{
-		"%{wks.location}/TRAP/src"
-	}
+	includedirs "%{wks.location}/TRAP/src"
 
 	externalincludedirs
 	{
@@ -36,15 +33,9 @@ project "Headless-Tests"
 		"%{IncludeDir.VMA}"
 	}
 
-	links
-	{
-		"TRAP-Headless"
-	}
+	links "TRAP-Headless"
 
-	defines
-	{
-		"TRAP_HEADLESS_MODE"
-	}
+	defines "TRAP_HEADLESS_MODE"
 
 	filter "system:linux"
 		links

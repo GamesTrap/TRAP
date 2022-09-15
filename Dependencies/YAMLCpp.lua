@@ -17,15 +17,9 @@ project "YAMLCpp"
 		"YAMLCpp/include/**.h"
 	}
 
-	includedirs
-	{
-        "%{IncludeDir.YAMLCPP}"
-	}
+	includedirs "%{IncludeDir.YAMLCPP}"
 
-	defines
-	{
-		"YAML_CPP_STATIC_DEFINE"
-	}
+	defines "YAML_CPP_STATIC_DEFINE"
 
     filter "configurations:Debug"
 	    runtime "Debug"

@@ -3205,3 +3205,7 @@ SITREP 09/13/2022|22w37a1
     - Changed some for loop data types ~<10 mins
     - RendererAPI Renamed Present() to Flush() ~<5 mins
     - VulkanRenderer split presentation from EndGraphicRecording() ~<10 mins
+
+SITREP 09/15/2022|22w37a2
+    - Changed TRAP Engine version to 22w37a2(0.8.42)
+    - Cleaned up premake scripts ~<20 mins

@@ -40,10 +40,7 @@ project "TRAP"
 		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 	}
 
-	includedirs
-	{
-		"src"
-	}
+	includedirs	"src"
 
 	externalincludedirs
 	{
@@ -90,10 +87,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/DiscordGameSDK/lib/x86_64/discord_game_sdk.dll") and
 		   os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
-			externalincludedirs
-			{
-				"%{IncludeDir.DISCORDGAMESDK}"
-			}
+			externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
 
 			files
 			{
@@ -112,10 +106,7 @@ project "TRAP"
 		   os.isfile("../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
@@ -124,15 +115,9 @@ project "TRAP"
 		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.dll") and
 		   os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/win64/steam_api64.lib") and
 		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs
-			{
-				"%{IncludeDir.STEAMWORKSSDK}"
-			}
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
 
-			files
-			{
-				"%{IncludeDir.DISCORDGAMESDK}/**.h"
-			}
+			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
 
 			defines "USE_STEAMWORKS_SDK"
 		end
@@ -169,10 +154,7 @@ project "TRAP"
 			os.isdir("../Dependencies/DiscordGameSDK/cpp") and
 			os.isfile("../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
-			externalincludedirs
-			{
-				"%{IncludeDir.DISCORDGAMESDK}"
-			}
+			externalincludedirs "%{IncludeDir.DISCORDGAMESDK}"
 
 			files
 			{
@@ -190,10 +172,7 @@ project "TRAP"
 		   os.isdir("../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
 
-			externalincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
@@ -201,15 +180,9 @@ project "TRAP"
 		-- Steamworks SDK stuff
 		if os.isfile("../Dependencies/SteamworksSDK/sdk/redistributable_bin/linux64/libsteam_api.so") and
 		   os.isdir("../Dependencies/SteamworksSDK/sdk/public/steam") then
-			externalincludedirs
-			{
-				"%{IncludeDir.STEAMWORKSSDK}"
-			}
+			externalincludedirs "%{IncludeDir.STEAMWORKSSDK}"
 
-			files
-			{
-				"%{IncludeDir.DISCORDGAMESDK}/**.h"
-			}
+			files "%{IncludeDir.DISCORDGAMESDK}/**.h"
 
 			defines "USE_STEAMWORKS_SDK"
 		end
@@ -271,10 +244,7 @@ project "TRAP-Headless"
 		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp",
 	}
 
-	includedirs
-	{
-		"src"
-	}
+	includedirs "src"
 
 	externalincludedirs
 	{

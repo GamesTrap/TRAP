@@ -14,10 +14,7 @@ workspace "TRAP"
 		"RelWithDebInfo"
 	}
 
-	flags
-	{
-		"MultiProcessorCompile"
-	}
+	flags "MultiProcessorCompile"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

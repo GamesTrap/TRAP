@@ -17,10 +17,7 @@ project "TestsNetwork"
 		"src/**.cpp"
 	}
 
-	includedirs
-	{
-		"%{wks.location}/TRAP/src"
-	}
+	includedirs "%{wks.location}/TRAP/src"
 
 	externalincludedirs
 	{
@@ -36,15 +33,9 @@ project "TestsNetwork"
 		"%{IncludeDir.VMA}"
 	}
 
-	links
-	{
-		"TRAP-Headless"
-	}
+	links "TRAP-Headless"
 
-	defines
-	{
-		"TRAP_HEADLESS_MODE"
-	}
+	defines "TRAP_HEADLESS_MODE"
 
 	filter "system:linux"
 		links
@@ -80,10 +71,7 @@ project "TestsNetwork"
 			links "discord_game_sdk"
 			libdirs "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64"
 
-			postbuildcommands
-			{
-				"{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/libdiscord_game_sdk.so %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/libdiscord_game_sdk.so %{cfg.targetdir}"
 
 			files
 			{
@@ -98,15 +86,9 @@ project "TestsNetwork"
 		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
-			postbuildcommands
-			{
-				"{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
@@ -125,10 +107,7 @@ project "TestsNetwork"
 		   os.isdir("../../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
-			links
-			{
-				"%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
-			}
+			links "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
 
 			files
 			{
@@ -136,10 +115,7 @@ project "TestsNetwork"
 				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
-			postbuildcommands
-			{
-				"{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 
 			defines "USE_DISCORD_GAME_SDK"
 		end
@@ -150,15 +126,9 @@ project "TestsNetwork"
 		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
-			postbuildcommands
-			{
-				"{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end

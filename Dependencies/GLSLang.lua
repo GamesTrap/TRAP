@@ -1,26 +1,33 @@
--- Create build_info.h which is neccessary for ShaderLang.cpp
-print("Checking Python")
-local res = true
-local out, errorCode = os.outputof("python --version")
-if(errorCode ~= 0) then
-    print("Unable to find Python 3.\nMake sure it is accessible via python")
-    res = false
+function CreateInfoH()
+    -- Create build_info.h which is neccessary for ShaderLang.cpp
+    print("Checking Python")
+    local res = true
+    local out, errorCode = os.outputof("python --version")
+    if(errorCode ~= 0) then
+        term.setTextColor(term.errorColor)
+        print("Unable to find Python 3.\nMake sure it is accessible via python")
+        term.setTextColor(nil)
+        res = false
+    end
+
+    if (res) then
+        local f = io.open("GLSLang/glslang/build_info.h", "r")
+        if (f ~= nil) then
+            io.close(f)
+        else
+            local out, errorCode = os.outputof("python GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
+            if(errorCode ~= 0) then
+                term.setTextColor(term.errorColor)
+                print("Unable to create Dependencies/GLSLang/glslang/build_info.h")
+                term.setTextColor(nil)
+                res = false
+            end
+        end
+    else
+        os.exit(-1)
+    end
 end
 
-if (res) then
-    local f = io.open("GLSLang/glslang/build_info.h", "r")
-    if (f ~= nil) then
-        io.close(f)
-    else
-        local out, errorCode = os.outputof("python GLSLang/build_info.py GLSLang/ -i GLSLang/build_info.h.tmpl -o GLSLang/glslang/build_info.h")
-        if(errorCode ~= 0) then
-            print("Unable to create Dependencies/GLSLang/glslang/build_info.h")
-            res = false
-        end
-    end
-else
-    os.exit(-1)
-end
 
 project "GLSLang"
     kind "StaticLib"
@@ -32,6 +39,8 @@ project "GLSLang"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+
+    CreateInfoH()
 
     files
     {
@@ -59,10 +68,7 @@ project "GLSLang"
         "GLSLang/glslang/MachineIndependent/pch.h"
     }
 
-    includedirs
-    {
-        "%{IncludeDir.GLSLANG}"
-    }
+    includedirs "%{IncludeDir.GLSLANG}"
 
     defines
     {
@@ -74,10 +80,7 @@ project "GLSLang"
     }
 
     filter "system:windows"
-        files
-        {
-            "GLSLang/glslang/OSDependent/Windows/ossource.cpp"
-        }
+        files "GLSLang/glslang/OSDependent/Windows/ossource.cpp"
 
         defines
         {
@@ -86,10 +89,7 @@ project "GLSLang"
         }
 
     filter "system:linux"
-        files
-        {
-            "GLSLang/glslang/OSDependent/Unix/ossource.cpp"
-        }
+        files "GLSLang/glslang/OSDependent/Unix/ossource.cpp"
 
         defines
         {
@@ -144,10 +144,7 @@ project "SPIRV"
         "GLSLang/SPIRV/spirv.hpp"
     }
 
-    removefiles
-    {
-        "GLSLang/SPIRV/SpvTools.cpp"
-    }
+    removefiles "GLSLang/SPIRV/SpvTools.cpp"
 
     includedirs
     {
@@ -155,10 +152,7 @@ project "SPIRV"
         "%{IncludeDir.GLSLANG}/SPIRV",
     }
 
-    links
-    {
-        "GLSLang"
-    }
+    links "GLSLang"
 
     filter "system:windows"
         defines
@@ -203,10 +197,7 @@ project "GLSLang-Default-Resource-Limits"
         "GLSLang/StandAlone/ResourceLimits.h"
     }
 
-    links
-    {
-        "GLSLang"
-    }
+    links "GLSLang"
 
     filter "system:windows"
         defines

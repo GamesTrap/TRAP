@@ -83,10 +83,7 @@ project "SPIRV-Cross-GLSL"
         "SPIRV-Cross/spirv_glsl.hpp"
     }
 
-    links
-    {
-        "SPIRV-Cross-Core"
-    }
+    links "SPIRV-Cross-Core"
 
     filter "configurations:Debug"
         runtime "Debug"
@@ -117,10 +114,7 @@ project "SPIRV-Cross-HLSL"
         "SPIRV-Cross/spirv_hlsl.hpp"
     }
 
-    links
-    {
-        "SPIRV-Cross-GLSL"
-    }
+    links "SPIRV-Cross-GLSL"
 
     filter "configurations:Debug"
         runtime "Debug"

@@ -17,10 +17,7 @@ project "Sandbox"
 		"src/**.cpp"
 	}
 
-	includedirs
-	{
-		"%{wks.location}/TRAP/src"
-	}
+	includedirs "%{wks.location}/TRAP/src"
 
 	externalincludedirs
 	{
@@ -36,10 +33,7 @@ project "Sandbox"
 		"%{IncludeDir.VMA}"
 	}
 
-	links
-	{
-		"TRAP"
-	}
+	links "TRAP"
 
 	filter "system:linux"
 		links
@@ -75,10 +69,7 @@ project "Sandbox"
 			links "discord_game_sdk"
 			libdirs "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64"
 
-			postbuildcommands
-			{
-				"{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/libdiscord_game_sdk.so %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYFILE} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/libdiscord_game_sdk.so %{cfg.targetdir}"
 
 			files
 			{
@@ -93,15 +84,9 @@ project "Sandbox"
 		if os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/libGFSDK_Aftermath_Lib.x64.so") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
-			postbuildcommands
-			{
-				"{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYFILE} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/libGFSDK_Aftermath_Lib.x64.so %{cfg.targetdir}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
@@ -113,15 +98,9 @@ project "Sandbox"
 			links "steam_api"
 			libdirs "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64"
 
-			postbuildcommands
-			{
-				"{COPYFILE} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64/libsteam_api.so %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYFILE} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/linux64/libsteam_api.so %{cfg.targetdir}"
 
-			files
-			{
-				"%{IncludeDir.STEAMWORKSSDK}/**.h"
-			}
+			files "%{IncludeDir.STEAMWORKSSDK}/**.h"
 
 			defines "USE_STEAMWORKS_SDK"
 		end
@@ -140,10 +119,7 @@ project "Sandbox"
 		   os.isdir("../../Dependencies/DiscordGameSDK/cpp") and
 		   os.isfile("../../Dependencies/DiscordGameSDK/cpp/discord.h") then
 
-			links
-			{
-				"%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
-			}
+			links "%{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll.lib"
 
 			files
 			{
@@ -151,10 +127,7 @@ project "Sandbox"
 				"%{IncludeDir.DISCORDGAMESDK}/**.cpp"
 			}
 
-			postbuildcommands
-			{
-				"{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYDIR} %{IncludeDir.DISCORDGAMESDK}/../lib/x86_64/discord_game_sdk.dll %{cfg.targetdir}"
 
 			defines "USE_DISCORD_GAME_SDK"
 		end
@@ -165,15 +138,9 @@ project "Sandbox"
 		   os.isfile("../../Dependencies/Nsight-Aftermath/lib/x64/llvm_7_0_1.dll") and
 		   os.isdir("../../Dependencies/Nsight-Aftermath/include") and
 		   os.isfile("../../Dependencies/Nsight-Aftermath/include/GFSDK_Aftermath.h") then
-			externalincludedirs
-			{
-				"%{IncludeDir.NSIGHTAFTERMATH}"
-			}
+			externalincludedirs "%{IncludeDir.NSIGHTAFTERMATH}"
 
-			postbuildcommands
-			{
-				"{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYDIR} %{IncludeDir.NSIGHTAFTERMATH}/../lib/x64/GFSDK_Aftermath_Lib.x64.dll %{cfg.targetdir}"
 
 			defines "NSIGHT_AFTERMATH_AVAILABLE"
 		end
@@ -185,15 +152,9 @@ project "Sandbox"
 
 			links "%{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.lib"
 
-			postbuildcommands
-			{
-				"{COPYDIR} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.dll %{cfg.targetdir}"
-			}
+			postbuildcommands "{COPYDIR} %{IncludeDir.STEAMWORKSSDK}/../../redistributable_bin/win64/steam_api64.dll %{cfg.targetdir}"
 
-			files
-			{
-				"%{IncludeDir.STEAMWORKSSDK}/**.h"
-			}
+			files "%{IncludeDir.STEAMWORKSSDK}/**.h"
 
 			defines "USE_STEAMWORKS_SDK"
 		end

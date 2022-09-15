@@ -15,10 +15,7 @@ project "ImGuizmo"
         "ImGuizmo/ImGuizmo.h"
     }
 
-    includedirs
-    {
-		"%{IncludeDir.IMGUI}"
-    }
+    includedirs "%{IncludeDir.IMGUI}"
 
     defines "IMGUI_DISABLE_OBSOLETE_FUNCTIONS"
 
