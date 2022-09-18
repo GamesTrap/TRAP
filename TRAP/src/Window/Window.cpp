@@ -223,7 +223,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 	std::string newTitle = m_data.Title + " - TRAP™ V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) +
 	                       "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) +
 						   "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		                   "[INDEV]" + Log::WindowVersion + Graphics::Renderer::GetTitle();
+		                   "[INDEV]" + Log::WindowVersion + Graphics::RendererAPI::GetRenderer()->GetTitle();
 #ifdef TRAP_PLATFORM_LINUX
 		newTitle += "[" + Utils::String::ConvertToString(Utils::GetLinuxWindowManager()) + "]";
 #endif
@@ -963,7 +963,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	{
 		//Update Window Title
 	#ifndef TRAP_RELEASE
-		newTitle += Graphics::Renderer::GetTitle();
+		newTitle += Graphics::RendererAPI::GetRenderer()->GetTitle();
 	#ifdef TRAP_PLATFORM_LINUX
 		if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
 			newTitle += "[Wayland]";

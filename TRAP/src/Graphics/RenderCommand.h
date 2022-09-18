@@ -522,6 +522,22 @@ namespace TRAP::Graphics
 		                            const Window* window = nullptr);
 
 		/// <summary>
+		/// Retrieve the CPU side frames per second.
+		/// </summary>
+		/// <returns>CPU frames per second.</returns>
+		static uint32_t GetCPUFPS();
+		/// <summary>
+		/// Retrieve the GPU side frames per second.
+		/// </summary>
+		/// <param name="window">Window to get frames per second from.</param>
+		/// <returns>GPU frames per second.</returns>
+		static uint32_t GetGPUFPS(const Window* window = nullptr);
+		/// <summary>
+		/// Retrieve the CPU side frame time.
+		/// </summary>
+		/// <returns>CPU frame time in milliseconds.</returns>
+		static float GetCPUFrameTime();
+		/// <summary>
 		/// Retrieve the GPU side frame time for the graphics queue.
 		/// </summary>
 		/// <param name="window">Window to get frame time from.</param>
@@ -533,6 +549,12 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to get frame time from.</param>
 		/// <returns>GPU Compute frame time in milliseconds.</returns>
 		static float GetGPUComputeFrameTime(const Window* window = nullptr);
+
+		/// <summary>
+		/// Retrieve the name of the GPU that is currently used by the RendererAPI.
+		/// </summary>
+		/// <returns>GPU name.</returns>
+		static std::string GetGPUName();
 
 		/// <summary>
 		/// Set the latency mode.

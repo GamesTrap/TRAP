@@ -1,7 +1,7 @@
 #ifndef TRAP_RENDERER_H
 #define TRAP_RENDERER_H
 
-#include "Application.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics
 {
@@ -24,40 +24,6 @@ namespace TRAP::Graphics
 		/// Shutdown Renderer.
 		/// </summary>
 		static void Shutdown();
-
-		/// <summary>
-		/// Retrieve the renderer title.
-		/// Example when using Vulkan: "[Vulkan 1.1.108]"
-		/// </summary>
-		/// <returns>Renderer title.</returns>
-		static std::string GetTitle();
-		/// <summary>
-		/// Retrieve the frames per second.
-		/// </summary>
-		/// <returns>Frames per second.</returns>
-		static uint32_t GetFPS();
-		/// <summary>
-		/// Retrieve the CPU frame time.
-		/// </summary>
-		/// <returns>CPU frame time in milliseconds.</returns>
-		static float GetCPUFrameTime();
-		/// <summary>
-		/// Retrieve the current set tick rate.
-		/// Default tick rate is 64.
-		/// </summary>
-		/// <returns>Tick rate.</returns>
-		static uint32_t GetTickRate();
-		/// <summary>
-		/// Retrieve the name of the currently used GPU.
-		/// </summary>
-		/// <returns>Name of GPU.</returns>
-		static std::string GetGPUName();
-
-		/// <summary>
-		/// Set the tick rate.
-		/// </summary>
-		/// <param name="tickRate">New tick rate.</param>
-		static void SetTickRate(uint32_t tickRate);
 
 		/// <summary>
 		/// Begin a Renderer scene.

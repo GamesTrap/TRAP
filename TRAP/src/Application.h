@@ -290,7 +290,6 @@ namespace TRAP
 		Utils::Config m_config;
 
 		Utils::Timer m_timer;
-		uint32_t m_FramesPerSecond;
 		float m_FrameTime;
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;

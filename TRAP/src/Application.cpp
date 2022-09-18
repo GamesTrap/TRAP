@@ -106,7 +106,6 @@ static bool CheckSingleProcessWindows()
 TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	: m_hotReloadingEnabled(false),
 	  m_timer(),
-	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
 	  m_fpsLimit(0),
 	  m_tickRate(64),
@@ -264,7 +263,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 
 		//Update Window Title (Debug/RelWithDebInfo)
 		if(renderAPI != Graphics::RenderAPI::NONE)
-			m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+			m_window->SetTitle(m_window->GetTitle() + Graphics::RendererAPI::GetRenderer()->GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	}
 #ifdef TRAP_HEADLESS_MODE
@@ -504,10 +503,7 @@ void TRAP::Application::Run()
 		UpdateHotReloading();
 
 		if (!m_minimized)
-		{
 			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
-		}
 
 		//Needed by Discord Game SDK
 		TRAP::Utils::Discord::RunCallbacks();
@@ -600,13 +596,6 @@ TRAP::LayerStack& TRAP::Application::GetLayerStack()
 TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
 	return *(s_Instance->m_ImGuiLayer);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Application::GetFPS()
-{
-	return s_Instance->m_FramesPerSecond;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

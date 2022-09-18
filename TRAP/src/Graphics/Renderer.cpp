@@ -54,48 +54,6 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::Renderer::GetTitle()
-{
-	return RendererAPI::GetRenderer()->GetTitle();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::Renderer::GetFPS()
-{
-	return Application::GetFPS();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-float TRAP::Graphics::Renderer::GetCPUFrameTime()
-{
-	return Application::GetCPUFrameTime();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::Renderer::GetTickRate()
-{
-	return Application::GetTickRate();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Graphics::Renderer::GetGPUName()
-{
-	return RendererAPI::GetRenderer()->GetCurrentGPUName();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
-{
-	Application::SetTickRate(tickRate);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
 	TP_PROFILE_FUNCTION();

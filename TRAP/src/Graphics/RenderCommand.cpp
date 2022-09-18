@@ -418,6 +418,29 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
+{
+	return static_cast<uint32_t>(1000.0f / Application::GetCPUFrameTime());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
+{
+	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window), RendererAPI::GetGPUComputeFrameTime(window));
+
+	return static_cast<uint32_t>(1000.0f / maxGPUFrameTime);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RenderCommand::GetCPUFrameTime()
+{
+	return Application::GetCPUFrameTime();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 float TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window* const window)
 {
 	return RendererAPI::GetGPUGraphicsFrameTime(window);
@@ -428,6 +451,13 @@ float TRAP::Graphics::RenderCommand::GetGPUGraphicsFrameTime(const Window* const
 float TRAP::Graphics::RenderCommand::GetGPUComputeFrameTime(const Window* const window)
 {
 	return RendererAPI::GetGPUComputeFrameTime(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::RenderCommand::GetGPUName()
+{
+	return RendererAPI::GetRenderer()->GetCurrentGPUName();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

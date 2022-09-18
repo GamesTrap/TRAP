@@ -3213,4 +3213,6 @@ SITREP 09/15/2022|22w37a2
 
 SITREP 09/18/2022|22w37b1
     - Changed TRAP Engine version to 22w37b1(0.8.43)
-    - Worked on const correctnes for pointers ~>45 mins
+    - Worked on const correctness for pointers ~>45 mins
+    - Moved some functions from TRAP::Graphics::Renderer to TRAP::Graphics::RenderCommand ~>30 mins
+    - Updated all programs ~<30 mins
