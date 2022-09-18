@@ -3216,3 +3216,4 @@ SITREP 09/18/2022|22w37b1
     - Worked on const correctness for pointers ~>45 mins
     - Moved some functions from TRAP::Graphics::Renderer to TRAP::Graphics::RenderCommand ~>30 mins
     - Updated all programs ~<30 mins
+    - VulkanRenderer Fixed EndGPUFrameProfile() called while a RenderPass may still be active ~<10 mins

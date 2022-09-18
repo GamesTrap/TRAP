@@ -260,6 +260,11 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 		barrier = {MSAARenderTarget, ResourceState::RenderTarget, ResourceState::Present};
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 	}
+#else
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+																std::numeric_limits<uint32_t>::max(),
+																std::numeric_limits<uint32_t>::max());
+
 #endif
 
 	EndGPUFrameProfile(QueueType::Graphics, p);
