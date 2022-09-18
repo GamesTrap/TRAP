@@ -536,7 +536,7 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progress)
+void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progress) const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -1043,7 +1043,7 @@ void TRAP::Window::SetupEventCallbacks()
 {
 	//Set WindowingAPI callbacks
 	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t w, const int32_t h)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t w, const int32_t h)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 			data.Width = w;
@@ -1058,7 +1058,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetWindowMinimizeCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, bool restored)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, bool restored)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1079,7 +1079,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetWindowMaximizeCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, bool restored)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, bool restored)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1100,7 +1100,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetWindowPosCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t x, const int32_t y)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t x, const int32_t y)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1119,7 +1119,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetWindowFocusCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const bool focused)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const bool focused)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1140,7 +1140,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetWindowCloseCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1153,7 +1153,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetKeyCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::Key key, const Input::KeyState state)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const Input::Key key, const Input::KeyState state)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1195,7 +1195,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetCharCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const uint32_t codePoint)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const uint32_t codePoint)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1208,7 +1208,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetMouseButtonCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::MouseButton button, const Input::KeyState state)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const Input::MouseButton button, const Input::KeyState state)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1229,7 +1229,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetScrollCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const double xOffset, const double yOffset)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const double xOffset, const double yOffset)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1242,7 +1242,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetCursorPosCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const double xPos, const double yPos)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const double xPos, const double yPos)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1255,7 +1255,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t w, const int32_t h)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t w, const int32_t h)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 			data.Width = w;
@@ -1270,7 +1270,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetCursorEnterCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const bool entered)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const bool entered)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1291,7 +1291,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetDropCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, std::vector<std::string> paths)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, std::vector<std::string> paths)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1304,7 +1304,7 @@ void TRAP::Window::SetupEventCallbacks()
 	);
 
 	INTERNAL::WindowingAPI::SetContentScaleCallback(m_window.get(),
-		[](const INTERNAL::WindowingAPI::InternalWindow* window, const float xScale, const float yScale)
+		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const float xScale, const float yScale)
 		{
 			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1316,7 +1316,7 @@ void TRAP::Window::SetupEventCallbacks()
 		}
 	);
 
-	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor* mon,
+	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor* const mon,
 	                                              const bool connected)
 	{
 		if(!connected && Monitor::GetAllMonitors().size() == 1)

@@ -64,7 +64,7 @@ bool TRAP::Input::InitController()
 
 	int32_t count = 0;
 
-	DIR* dir = opendir(dirName.data());
+	DIR* const dir = opendir(dirName.data());
 	if(dir)
 	{
 		const dirent* entry = nullptr;
@@ -121,7 +121,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 	if(!PollController(controller, PollMode::Presence))
 		return;
 
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
 	if(!con->LinuxCon.VibrationSupported)
 		return;
@@ -288,7 +288,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 		}
 	}
 
-	ControllerInternal* con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
+	ControllerInternal* const con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
 	if(!con)
 	{
 		close(LinuxCon.FD);
@@ -322,7 +322,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 //Frees all resources associated with the specified controller
 void TRAP::Input::CloseController(Controller controller)
 {
-	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
 	close(con->LinuxCon.FD);
 
@@ -363,7 +363,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 	while(size > offset)
 	{
 		regmatch_t match;
-		const inotify_event* e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
+		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
 
 		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
 
@@ -394,7 +394,7 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 {
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
-		ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+		ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
 		//Read all queued events (non-blocking)
 		while(true)
@@ -438,14 +438,14 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Poll state of absolute axes
-void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
+void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 {
 	for (int32_t code = 0; code < ABS_CNT; code++)
 	{
 		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
 
-		const input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		const input_absinfo* const info = &con->LinuxCon.ABSInfo[code];
 
 		if (ioctl(con->LinuxCon.FD, EVIOCGABS(code), info) < 0)
 			continue;
@@ -457,7 +457,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Apply an EV_ABS event to the specified controller
-void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int32_t value)
+void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
 	const int32_t index = con->LinuxCon.ABSMap[code];
 
@@ -486,7 +486,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 
 		const int32_t dpad = (code - ABS_HAT0X) / 2;
 		const int32_t axis = (code - ABS_HAT0X) % 2;
-		int32_t* state = con->LinuxCon.DPads[dpad].data();
+		int32_t* const state = con->LinuxCon.DPads[dpad].data();
 
 		//NOTE: Looking at several input drivers, it seems all DPad events use
 		//-1 for left / up, 0 for centered and 1 for right / down
@@ -501,7 +501,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 	}
 	else
 	{
-		const input_absinfo* info = &con->LinuxCon.ABSInfo[code];
+		const input_absinfo* const info = &con->LinuxCon.ABSInfo[code];
 		float normalized = static_cast<float>(value);
 
 		const int range = info->maximum - info->minimum;
@@ -519,7 +519,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value)
+void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
 	if(code - BTN_MISC >= 0)
 		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value);

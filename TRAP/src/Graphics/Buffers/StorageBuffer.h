@@ -77,7 +77,7 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to use for the data retrieval.</param>
 		template<typename T>
 		void GetData(const T* data, uint64_t size, const uint64_t offset = 0,
-		             Window* window = nullptr);
+		             const Window* window = nullptr);
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -109,7 +109,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New shader storage buffer.</returns>
-		static Scope<StorageBuffer> Create(void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<StorageBuffer> Create(const void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
 		/// <summary>
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New shader storage buffer.</returns>
-		static Scope<StorageBuffer> Init(void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<StorageBuffer> Init(const void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_storageBuffers;
 
@@ -128,7 +128,7 @@ namespace TRAP::Graphics
 }
 
 template<typename T>
-inline void TRAP::Graphics::StorageBuffer::GetData(const T* data, const uint64_t size, const uint64_t offset, Window* window)
+inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* window)
 {
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
 

@@ -75,7 +75,7 @@ namespace TRAP::Graphics::API
 		/// 4. Starts graphics and compute recording for the next frame.
 		/// </summary>
 		/// <param name="window">Window to present.</param>
-		void Flush(Window* window) const override;
+		void Flush(const Window* const window) const override;
 
 		/// <summary>
 		/// Dispatch to the given window.
@@ -85,7 +85,7 @@ namespace TRAP::Graphics::API
 		/// These values will be divided by the shader's work group size and rounded up.
 		/// </param>
 		/// <param name="window">Window to Dispatch.</param>
-		void Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) const override;
+		void Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* window) const override;
 		//TODO DispatchIndirect
 
 		/// <summary>
@@ -93,7 +93,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="vsync">Enable or disable VSync.</param>
 		/// <param name="window">Window to set VSync for. Default: Main Window.</param>
-		void SetVSync(bool vsync, Window* window) const override;
+		void SetVSync(bool vsync, const Window* window) const override;
 
 		/// <summary>
 		/// Set the FPS limit for NVIDIA-Reflex.
@@ -109,19 +109,19 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="color">New clear color.</param>
 		/// <param name="window">Window to set clear color for. Default: Main Window.</param>
-		void SetClearColor(const Math::Vec4& color, Window* window) const override;
+		void SetClearColor(const Math::Vec4& color, const Window* window) const override;
 		/// <summary>
 		/// Set the clear depth value to be used by the given window.
 		/// </summary>
 		/// <param name="depth">New clear depth value. Must be between 0.0f and 1.0f</param>
 		/// <param name="window">Window to set clear depth value for. Default: Main Window.</param>
-		void SetClearDepth(float depth, Window* window) const override;
+		void SetClearDepth(float depth, const Window* window) const override;
 		/// <summary>
 		/// Set the clear stencil value to be used by the given window.
 		/// </summary>
 		/// <param name="stencil">New clear stencil value.</param>
 		/// <param name="window">Window to set clear stencil value for. Default: Main Window.</param>
-		void SetClearStencil(uint32_t stencil, Window* window) const override;
+		void SetClearStencil(uint32_t stencil, const Window* window) const override;
 #ifdef TRAP_HEADLESS_MODE
 		/// <summary>
 		/// Set the resolution of the render targets used by the given window.
@@ -131,110 +131,110 @@ namespace TRAP::Graphics::API
 		/// <param name="width">New width.</param>
 		/// <param name="height">New height.</param>
 		/// <param name="window">Window to set resolution for. Default: Main Window.</param>
-		void SetResolution(uint32_t width, uint32_t height, Window* window) const override;
+		void SetResolution(uint32_t width, uint32_t height, const Window* window) const override;
 #endif
 		/// <summary>
 		/// Enable or disable depth testing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable depth testing.</param>
 		/// <param name="window">Window to set depth testing for. Default: Main Window.</param>
-		void SetDepthTesting(bool enabled, Window* window) const override;
+		void SetDepthTesting(bool enabled, const Window* window) const override;
 		/// <summary>
 		/// Enable or disable depth writing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable depth writing.</param>
 		/// <param name="window">Window to set depth writing for. Default: Main Window.</param>
-		void SetDepthWriting(bool enabled, Window* window) const override;
+		void SetDepthWriting(bool enabled, const Window* window) const override;
 		/// <summary>
 		/// Set the depth function for the given window.
 		/// </summary>
 		/// <param name="function">Function to use for depth testing.</param>
 		/// <param name="window">Window to set depth function for. Default: Main Window.</param>
-		void SetDepthFunction(CompareMode function, Window* window) const override;
+		void SetDepthFunction(CompareMode function, const Window* window) const override;
 		/// <summary>
 		/// Set the depth action to perform when depth testing fails for the given window.
 		/// </summary>
 		/// <param name="front">Depth action to perform when depth testing fails.</param>
 		/// <param name="back">Depth action to perform when depth testing fails.</param>
 		/// <param name="window">Window to set the depth fail action for. Default: Main Window.</param>
-		void SetDepthFail(StencilOp front, StencilOp back, Window* window) const override;
+		void SetDepthFail(StencilOp front, StencilOp back, const Window* window) const override;
 		/// <summary>
 		/// Set the depth bias (scalar factor to add to each fragments depth value) for the given window.
 		/// </summary>
 		/// <param name="depthBias">Depth bias.</param>
 		/// <param name="window">Window to set the depth bias for. Default: Main Window.</param>
-		void SetDepthBias(int32_t depthBias, Window* window) const override;
+		void SetDepthBias(int32_t depthBias, const Window* window) const override;
 		/// <summary>
 		/// Set the depth bias slope factor (scalar factor applied to fragment's slope in depth bias calculation) for the given window.
 		/// </summary>
 		/// <param name="factor">Depth bias slope factor.</param>
 		/// <param name="window">Window to set the depth bias slope factor for. Default: Main Window.</param>
-		void SetDepthBiasSlopeFactor(float factor, Window* window) const override;
+		void SetDepthBiasSlopeFactor(float factor, const Window* window) const override;
 		/// <summary>
 		/// Enable or disable stencil testing for the given window.
 		/// </summary>
 		/// <param name="enabled">Enable or disable stencil testing.</param>
 		/// <param name="window">Window to set stencil testing for. Default: Main Window.</param>
-		void SetStencilTesting(bool enabled, Window* window) const override;
+		void SetStencilTesting(bool enabled, const Window* window) const override;
 		/// <summary>
 		/// Set the stencil action to perform when stencil testing fails for the given window.
 		/// </summary>
 		/// <param name="front">Stencil action to perform when stencil testing fails.</param>
 		/// <param name="back">Stencil action to perform when stencil testing fails.</param>
 		/// <param name="window">Window to set the stencil fail action for. Default: Main Window.</param>
-		void SetStencilFail(StencilOp front, StencilOp back, Window* window) const override;
+		void SetStencilFail(StencilOp front, StencilOp back, const Window* window) const override;
 		/// <summary>
 		/// Set the stencil action to perform when stencil testing and depth testing passes for the given window.
 		/// </summary>
 		/// <param name="front">Stencil action to perform when passed.</param>
 		/// <param name="back">Stencil action to perform when passed.</param>
 		/// <param name="window">Window to set the stencil pass action for. Default: Main Window.</param>
-		void SetStencilPass(StencilOp front, StencilOp back, Window* window) const override;
+		void SetStencilPass(StencilOp front, StencilOp back, const Window* window) const override;
 		/// <summary>
 		/// Set the stencil functions for the given window.
 		/// </summary>
 		/// <param name="front">Function to use on the front for stencil testing.</param>
 		/// <param name="back">Function to use on the back for stencil testing.</param>
 		/// <param name="window">Window to set stencil functions for. Default: Main Window.</param>
-		void SetStencilFunction(CompareMode front, CompareMode back, Window* window) const override;
+		void SetStencilFunction(CompareMode front, CompareMode back, const Window* window) const override;
 		/// <summary>
 		/// Set the stencil mask for the given window.
 		/// </summary>
 		/// <param name="read">Select the bits of the stencil values to test.</param>
 		/// <param name="write">Select the bits of the stencil values updated by the stencil test.</param>
 		/// <param name="window">Window to set stencil mask for. Default: Main Window.</param>
-		void SetStencilMask(uint8_t read, uint8_t write, Window* window) const override;
+		void SetStencilMask(uint8_t read, uint8_t write, const Window* window) const override;
 		/// <summary>
 		/// Set the cull mode for the given window.
 		/// </summary>
 		/// <param name="mode">Cull mode to use.</param>
 		/// <param name="window">Window to set cull mode for. Default: Main Window.</param>
-		void SetCullMode(CullMode mode, Window* window) const override;
+		void SetCullMode(CullMode mode, const Window* window) const override;
 		/// <summary>
 		/// Set the fill mode for the given window.
 		/// </summary>
 		/// <param name="mode">Fill mode to use.</param>
 		/// <param name="window">Window to set fill mode for. Default: Main Window.</param>
-		void SetFillMode(FillMode mode, Window* window) const override;
+		void SetFillMode(FillMode mode, const Window* window) const override;
 		/// <summary>
 		/// Set the primitive topology for the given window.
 		/// </summary>
 		/// <param name="topology">Primitive topology to use.</param>
 		/// <param name="window">Window to set primitive topology for. Default: Main Window.</param>
-		void SetPrimitiveTopology(PrimitiveTopology topology, Window* window) const override;
+		void SetPrimitiveTopology(PrimitiveTopology topology, const Window* window) const override;
 		/// <summary>
 		/// Set the front face winding order for the given window.
 		/// </summary>
 		/// <param name="face">Front face winding order to use.</param>
 		/// <param name="window">Window to set front face winding order for. Default: Main Window.</param>
-		void SetFrontFace(FrontFace face, Window* window) const override;
+		void SetFrontFace(FrontFace face, const Window* window) const override;
 		/// <summary>
 		/// Set the blend mode for the given window.
 		/// </summary>
 		/// <param name="modeRGB">Blend mode to use for the RGB channels.</param>
 		/// <param name="modeAlpha">Blend mode to use for the alpha channel.</param>
 		/// <param name="window">Window to set the blend mode for. Default: Main Window.</param>
-		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window) const override;
+		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, const Window* window) const override;
 		/// <summary>
 		/// Set the blend constants/factors for the given window.
 		/// </summary>
@@ -245,7 +245,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to set the blend constants for. Default: Main Window.</param>
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
-							  Window* window) const override;
+							  const Window* window) const override;
 		//TODO EXPERIMENTAL
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
@@ -258,14 +258,14 @@ namespace TRAP::Graphics::API
 		void SetShadingRate(ShadingRate shadingRate,
 							Ref<TRAP::Graphics::Texture> texture,
 							ShadingRateCombiner postRasterizerRate,
-							ShadingRateCombiner finalRate, Window* window = nullptr) const override;
+							ShadingRateCombiner finalRate, const Window* window = nullptr) const override;
 
 		/// <summary>
 		/// Clear the given window's render target.
 		/// </summary>
 		/// <param name="clearType">Type of buffer to clear.</param>
 		/// <param name="window">Window to clear. Default: Main Window.</param>
-		void Clear(ClearBufferType clearType, Window* window) const override;
+		void Clear(ClearBufferType clearType, const Window* window) const override;
 
 		/// <summary>
 		/// Set viewport size for the given window.
@@ -278,7 +278,7 @@ namespace TRAP::Graphics::API
 		/// <param name="maxDepth">New max depth value. Default: 1.0f.</param>
 		/// <param name="window">Window to set viewport for. Default: Main Window.</param>
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height, float minDepth,
-		                 float maxDepth, Window* window) const override;
+		                 float maxDepth, const Window* window) const override;
 		/// <summary>
 		/// Set scissor size for the given window.
 		/// </summary>
@@ -287,7 +287,7 @@ namespace TRAP::Graphics::API
 		/// <param name="width">New scissor width.</param>
 		/// <param name="height">New scissor height.</param>
 		/// <param name="window">Window to set scissor size for. Default: Main Window.</param>
-		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window) const override;
+		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, const Window* window) const override;
 
 		/// <summary>
 		/// Draw non-indexed, non-instanced geometry for the given window.
@@ -295,7 +295,7 @@ namespace TRAP::Graphics::API
 		/// <param name="vertexCount">Number of vertices to draw.</param>
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
-		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window) const override;
+		void Draw(uint32_t vertexCount, uint32_t firstVertex, const Window* window) const override;
 		/// <summary>
 		/// Draw indexed, non-instanced geometry for the given window.
 		/// </summary>
@@ -304,7 +304,7 @@ namespace TRAP::Graphics::API
 		/// <param name="firstVertex">Index of the first vertex to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
 		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex,
-		                 Window* window) const override;
+		                 const Window* window) const override;
 		/// <summary>
 		/// Draw non-indexed, instanced geometry for the given window.
 		/// </summary>
@@ -314,7 +314,7 @@ namespace TRAP::Graphics::API
 		/// <param name="firstInstance">Index of the first instance to draw. Default: 0.</param>
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
 		void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex,
-		                   uint32_t firstInstance, Window* window) const override;
+		                   uint32_t firstInstance, const Window* window) const override;
 		/// <summary>
 		/// Draw indexed, instanced geometry for the given window.
 		/// </summary>
@@ -326,14 +326,14 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to draw for. Default: Main Window.</param>
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount,
 		                          uint32_t firstIndex, uint32_t firstInstance,
-							      uint32_t firstVertex, Window* window) const override;
+							      uint32_t firstVertex, const Window* window) const override;
 
 		/// <summary>
 		/// Bind shader on the given window.
 		/// </summary>
 		/// <param name="shader">Shader to bind.</param>
 		/// <param name="window">Window to bind the shader for. Default: Main Window.</param>
-		void BindShader(Shader* shader, Window* window) const;
+		void BindShader(Shader* shader, const Window* window) const;
 		/// <summary>
 		/// Bind vertex buffer on the given window.
 		/// </summary>
@@ -341,7 +341,7 @@ namespace TRAP::Graphics::API
 		/// <param name="layout">Layout of the vertex buffer.</param>
 		/// <param name="window">Window to bind the vertex buffer for. Default: Main Window.</param>
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const VertexBufferLayout& layout,
-		                      Window* window) const override;
+		                      const Window* window) const override;
 		/// <summary>
 		/// Bind an index buffer on the given window.
 		/// </summary>
@@ -349,7 +349,7 @@ namespace TRAP::Graphics::API
 		/// <param name="indexType">Data type used by the index buffer.</param>
 		/// <param name="window">Window to bind the vertex buffer for. Default: Main Window.</param>
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType,
-		                     Window* window ) const override;
+		                     const Window* window) const override;
 		/// <summary>
 		/// Bind a descriptor set on the given window.
 		/// </summary>
@@ -357,7 +357,7 @@ namespace TRAP::Graphics::API
 		/// <param name="index">Index for which descriptor set to bind.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the descriptor set for. Default: Main Window.</param>
-		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, QueueType queueType, Window* window) const override;
+		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, QueueType queueType, const Window* window) const override;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// Note: There is an optimized function which uses the index into the RootSignature
@@ -367,7 +367,7 @@ namespace TRAP::Graphics::API
 		/// <param name="constantsData">Pointer to the constant buffer data.</param>
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
-		void BindPushConstants(const char* name, const void* constantsData, QueueType queueType, Window* window) const override;
+		void BindPushConstants(const char* name, const void* constantsData, QueueType queueType, const Window* window) const override;
 		/// <summary>
 		/// Bind push constant buffer data on the given window.
 		/// </summary>
@@ -376,7 +376,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type on which to perform the bind operation. Default: Graphics.</param>
 		/// <param name="window">Window to bind the push constants for. Default: Main Window.</param>
 		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData, QueueType queueType,
-		                              Window* window) const override;
+		                              const Window* window) const override;
 		/// <summary>
 		/// Bind render target(s) on the given window.
 		///
@@ -396,7 +396,7 @@ namespace TRAP::Graphics::API
 							  std::vector<uint32_t>* colorArraySlices,
 							  std::vector<uint32_t>* colorMipSlices,
 							  uint32_t depthArraySlice, uint32_t depthMipSlice,
-							  Window* window) const override;
+							  const Window* window) const override;
 		/// <summary>
 		/// Bind render target(s) on the given window.
 		///
@@ -416,7 +416,7 @@ namespace TRAP::Graphics::API
 							   std::vector<uint32_t>* colorArraySlices,
 							   std::vector<uint32_t>* colorMipSlices,
 							   uint32_t depthArraySlice, uint32_t depthMipSlice,
-							   Window* window) const override;
+							   const Window* window) const override;
 
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
@@ -425,7 +425,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		void ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier, QueueType queueType,
-		                           Window* window) const override;
+		                           const Window* window) const override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
@@ -433,7 +433,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-									QueueType queueType, Window* window) const override;
+									QueueType queueType, const Window* window) const override;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
@@ -441,7 +441,7 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		void ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier, QueueType queueType,
-		                            Window* window) const override;
+		                            const Window* window) const override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
@@ -449,27 +449,26 @@ namespace TRAP::Graphics::API
 		/// <param name="queueType">Queue type on which to perform the barrier operation. Default: Graphics.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-									 QueueType queueType, Window* window) const override;
+									 QueueType queueType, const Window* window) const override;
 		/// <summary>
 		/// Add a resource barrier (memory dependency) for the given window.
 		/// </summary>
 		/// <param name="renderTargetBarrier">Render target barrier.</param>
 		/// <param name="window">Window to add the barrier for. Default: Main Window.</param>
 		void ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-		                                 Window* window) const override;
+		                                 const Window* window) const override;
 		/// <summary>
 		/// Add resource barriers (memory dependencies) for the given window.
 		/// </summary>
 		/// <param name="renderTargetBarriers">Render target barriers.</param>
 		/// <param name="window">Window to add the barriers for. Default: Main Window.</param>
 		void ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
-								          Window* window) const override;
+								          const Window* window) const override;
 
 		/// <summary>
-		/// NVIDIA-Reflex Sleep/synchronize on the given window.
+		/// NVIDIA-Reflex Sleep/synchronize.
 		/// </summary>
-		/// <param name="window">Window to sleep for.</param>
-		void ReflexSleep(Window* window) const override;
+		void ReflexSleep() const override;
 		/// <summary>
 		/// NVIDIA-Reflex latency marker.
 		/// </summary>
@@ -495,7 +494,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="window">Window to retrieve VSync for. Default: Main Window.</param>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
-		bool GetVSync(Window* window) const override;
+		bool GetVSync(const Window* window) const override;
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.
@@ -524,7 +523,7 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="window">Window to capture screenshot on. Default: Main Window.</param>
 		/// <returns>Captured screenshot as TRAP::Image on success, Black 1x1 TRAP::Image otherwise.</returns>
-		TRAP::Scope<TRAP::Image> CaptureScreenshot(Window* window) const override;
+		TRAP::Scope<TRAP::Image> CaptureScreenshot(const Window* window) const override;
 
 		/// <summary>
 		/// Resolve a MSAA render target to a non MSAA render target.
@@ -536,7 +535,7 @@ namespace TRAP::Graphics::API
 		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
 		/// <param name="window">Window to do the resolve pass on.</param>
 		void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
-		                     Window* window = nullptr) const override;
+		                     const Window* window = nullptr) const override;
 
 		/// <summary>
 		/// Set the latency mode.
@@ -565,7 +564,7 @@ namespace TRAP::Graphics::API
 		/// Remove the internal rendering data of the given window.
 		/// </summary>
 		/// <param name="window">Window to remove the internal rendering data from.</param>
-		void RemovePerWindowData(Window* window) const override;
+		void RemovePerWindowData(const Window* window) const override;
 
 		void WaitIdle() const override;
 
@@ -833,19 +832,19 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		static void BeginGPUFrameProfile(QueueType type, PerWindowData* const p);
+		static void BeginGPUFrameProfile(QueueType type, const PerWindowData* const p);
 		/// <summary>
 		/// End frame time profiling of the GPU.
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		static void EndGPUFrameProfile(QueueType type, PerWindowData* const p);
+		static void EndGPUFrameProfile(QueueType type, const PerWindowData* const p);
 		/// <summary>
 		/// Retrieve the result from GPU frame time profiling.
 		/// </summary>
 		/// <param name="type">Queue type to profile.</param>
 		/// <param name="p">Per window data to profile for.</param>
-		static float ResolveGPUFrameProfile(QueueType type, PerWindowData* const p);
+		static float ResolveGPUFrameProfile(QueueType type, const PerWindowData* const p);
 
 		std::string m_rendererTitle;
 

@@ -694,7 +694,7 @@ bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += (*absPath).u8string();
-    FILE* xdg = popen(cmd.c_str(), "r");
+    FILE* const xdg = popen(cmd.c_str(), "r");
     if(!xdg)
         return false;
     pclose(xdg);
@@ -734,7 +734,7 @@ bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += (*absPath).parent_path().u8string();
-    FILE* xdg = popen(cmd.c_str(), "r");
+    FILE* const xdg = popen(cmd.c_str(), "r");
     if(!xdg)
         return false;
     pclose(xdg);
@@ -770,7 +770,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
     cmd += (*absPath).u8string();
-    FILE* xdg = popen(cmd.c_str(), "r");
+    FILE* const xdg = popen(cmd.c_str(), "r");
     if(!xdg)
         return false;
     pclose(xdg);
@@ -805,7 +805,7 @@ std::optional<std::filesystem::path> GetHomeFolderPathLinux()
         return homeDir;
 
     const uid_t uid = getuid();
-    const char* homeEnv = getenv("HOME");
+    const char* const homeEnv = getenv("HOME");
     if(uid != 0 && homeEnv)
     {
         //We only acknowledge HOME if not root.
@@ -826,7 +826,7 @@ std::optional<std::filesystem::path> GetHomeFolderPathLinux()
         homeDir = std::filesystem::path{};
         return std::nullopt;
     }
-    const char* tempRes = pw->pw_dir;
+    const char* const tempRes = pw->pw_dir;
     if(!tempRes)
     {
         TP_ERROR(TRAP::Log::FileSystemPrefix, "Failed to get home folder path (", errorCode, ")");
@@ -862,7 +862,7 @@ std::optional<std::filesystem::path> GetDocumentsFolderPathLinux()
     documentsDir = "$HOME/Documents";
 
     //Get config folder
-    const char* tempRes = getenv("XDG_CONFIG_HOME");
+    const char* const tempRes = getenv("XDG_CONFIG_HOME");
     std::filesystem::path configPath{};
     if(tempRes)
         configPath = tempRes;

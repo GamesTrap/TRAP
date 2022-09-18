@@ -18,7 +18,7 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(void* data, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
@@ -64,7 +64,7 @@ const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::StorageBuffer::SetData(const void* data, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
 {
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
@@ -117,7 +117,7 @@ uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(void* data, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const void* const data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
 	TRAP::Scope<StorageBuffer> buffer = TRAP::Scope<StorageBuffer>(new StorageBuffer(updateFrequency));

@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	}
 #endif
 
-	if (std::find_if(extensions.begin(), extensions.end(), [](const char* ext)
+	if (std::find_if(extensions.begin(), extensions.end(), [](const char* const ext)
 		{
 			return std::strcmp(ext, VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME) == 0;
 		}) != extensions.end())

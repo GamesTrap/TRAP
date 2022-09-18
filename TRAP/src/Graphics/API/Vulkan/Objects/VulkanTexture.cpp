@@ -534,7 +534,7 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 
 uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
 														   const VkPhysicalDeviceMemoryProperties &memProps,
-														   const VkMemoryPropertyFlags props, VkBool32 *memTypeFound)
+														   const VkMemoryPropertyFlags props, VkBool32* const memTypeFound)
 {
 	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
 	{

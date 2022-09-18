@@ -59,7 +59,7 @@ namespace TRAP::Graphics
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use index buffer on.</param>
-		void Use(Window* window = nullptr) const;
+		void Use(const Window* window = nullptr) const;
 
 		/// <summary>
 		/// Update the buffers index data.
@@ -67,14 +67,14 @@ namespace TRAP::Graphics
 		/// <param name="indices">Pointer to the updated data.</param>
 		/// <param name="size">Size of the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		void SetData(uint16_t* indices, uint64_t size, uint64_t offset = 0);
+		void SetData(const uint16_t* indices, uint64_t size, uint64_t offset = 0);
 		/// <summary>
 		/// Update the buffers index data.
 		/// </summary>
 		/// <param name="indices">Pointer to the updated data.</param>
 		/// <param name="size">Size of the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used index data.</param>
-		void SetData(uint32_t* indices, uint64_t size, uint64_t offset = 0);
+		void SetData(const uint32_t* indices, uint64_t size, uint64_t offset = 0);
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -93,7 +93,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		static Scope<IndexBuffer> Create(uint16_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<IndexBuffer> Create(const uint16_t* indices, uint64_t size, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its data.
 		/// </summary>
@@ -101,7 +101,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
-		static Scope<IndexBuffer> Create(uint32_t* indices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<IndexBuffer> Create(const uint32_t* indices, uint64_t size, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new index buffer and set its size.
 		/// </summary>
@@ -119,7 +119,7 @@ namespace TRAP::Graphics
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New index buffer.</returns>
 		template<typename T>
-		static TRAP::Scope<IndexBuffer> Init(T* indices, const uint64_t size, const UpdateFrequency updateFrequency);
+		static TRAP::Scope<IndexBuffer> Init(const T* indices, const uint64_t size, const UpdateFrequency updateFrequency);
 
 		/// <summary>
 		/// Set new index buffer data.
@@ -141,7 +141,7 @@ namespace TRAP::Graphics
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(T* indices, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const uint64_t size,
                                                                            const UpdateFrequency updateFrequency)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
@@ -184,7 +184,7 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(T* in
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* indices, const uint64_t size,
+void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const uint64_t size,
                                                   const uint64_t offset)
 {
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,

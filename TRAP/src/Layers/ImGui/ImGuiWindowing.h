@@ -226,7 +226,7 @@ namespace TRAP::INTERNAL
 		/// Update modifier keys.
 		/// </summary>
 		/// <param name="window">Window to check modifier keys on.</param>
-		static void UpdateKeyModifiers(WindowingAPI::InternalWindow* window);
+		static void UpdateKeyModifiers(const WindowingAPI::InternalWindow* window);
 
 		/// <summary>
 		/// Translate untranslated keys from the WindowingAPI

@@ -452,7 +452,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
         std::size_t offset = 0;
         while(offset < static_cast<std::size_t>(len)) //Process events
         {
-            const inotify_event* event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
+            const inotify_event* const event = reinterpret_cast<const inotify_event*>(buf.data() + offset); //Must use reinterpret_cast because of flexible array member
             if(!event->len)
             {
                 offset += sizeof(inotify_event) + event->len;

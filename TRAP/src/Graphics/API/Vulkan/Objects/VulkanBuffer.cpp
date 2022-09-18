@@ -224,7 +224,7 @@ void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanBuffer::MapBuffer(RendererAPI::ReadRange* range)
+void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* const range)
 {
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "Trying to unmap non-CPU accessible resource");

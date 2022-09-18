@@ -91,9 +91,9 @@ void RendererAPIInfo::OnImGuiRender()
 
     if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
     {
-        TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer());
-        TRAP::Graphics::API::VulkanInstance* vkInstance = vkRenderer->GetInstance().get();
-        TRAP::Graphics::API::VulkanDevice* vkDev = vkRenderer->GetDevice().get();
+        const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer());
+        const TRAP::Graphics::API::VulkanInstance* const vkInstance = vkRenderer->GetInstance().get();
+        const TRAP::Graphics::API::VulkanDevice* const vkDev = vkRenderer->GetDevice().get();
         const std::vector<std::string> instLayers = vkInstance->GetUsedInstanceLayers();
         const std::vector<std::string> instExts = vkInstance->GetUsedInstanceExtensions();
         const std::vector<std::string> devExts = vkDev->GetUsedPhysicalDeviceExtensions();

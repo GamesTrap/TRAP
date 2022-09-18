@@ -18,7 +18,7 @@
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
 												const RendererAPI::BinaryShaderDesc& desc,
-                                                const std::vector<Macro>* userMacros, const bool valid)
+                                                const std::vector<Macro>* const userMacros, const bool valid)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const RendererAPI::BinaryShaderDesc& desc,
-                                                const std::vector<Macro>* userMacros, const bool valid)
+                                                const std::vector<Macro>* const userMacros, const bool valid)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
@@ -75,7 +75,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,
-                                                const std::vector<Macro>* userMacros,
+                                                const std::vector<Macro>* const userMacros,
 												const RendererAPI::ShaderStage stages)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_numThreadsPerGroup(),
@@ -129,7 +129,7 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::Use(Window* window)
+void TRAP::Graphics::API::VulkanShader::Use(const Window* window)
 {
 	if(!window)
 		window = Application::GetWindow();
@@ -156,7 +156,7 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 	   m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
 	{
 		//Descriptor sets are now dirty, so we need new ones
-		VulkanRootSignature* root = dynamic_cast<VulkanRootSignature*>(m_rootSignature.get());
+		const VulkanRootSignature* const root = dynamic_cast<VulkanRootSignature*>(m_rootSignature.get());
 		RendererAPI::DescriptorSetDesc setDesc{};
 		setDesc.RootSignature = m_rootSignature;
 		for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
@@ -184,7 +184,7 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
-                                                   Ref<TRAP::Graphics::Texture> const texture, Window* window) const
+                                                   Ref<TRAP::Graphics::Texture> const texture, const Window* window) const
 {
 	TRAP_ASSERT(texture, "Texture is nullptr!");
 
@@ -226,7 +226,7 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 
 void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
-													Window* window) const
+													const Window* window) const
 {
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
 
@@ -269,7 +269,7 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
-	                                               TRAP::Graphics::Sampler* const sampler, Window* window) const
+	                                               TRAP::Graphics::Sampler* const sampler, const Window* window) const
 {
 	TRAP_ASSERT(sampler, "Sampler is nullptr!");
 
@@ -304,7 +304,7 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
-													Window* window) const
+													const Window* window) const
 {
 	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
 
@@ -340,8 +340,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
-                                               TRAP::Graphics::UniformBuffer* uniformBuffer,
-											   const uint64_t size,  const uint64_t offset, Window* window) const
+                                               const TRAP::Graphics::UniformBuffer* const uniformBuffer,
+											   const uint64_t size,  const uint64_t offset, const Window* window) const
 {
 	TRAP_ASSERT(uniformBuffer, "UniformBuffer is nullptr!");
 
@@ -360,8 +360,8 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
-                                                TRAP::Graphics::StorageBuffer* storageBuffer,
-											    const uint64_t size, Window* window) const
+                                                const TRAP::Graphics::StorageBuffer* const storageBuffer,
+											    const uint64_t size, const Window* window) const
 {
 	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
 
@@ -609,8 +609,8 @@ void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_vie
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint32_t binding,
-												  TRAP::Graphics::Buffer* buffer, uint64_t size, uint64_t offset,
-												  Window* window) const
+												  TRAP::Graphics::Buffer* const buffer, uint64_t size, uint64_t offset,
+												  const Window* const window) const
 {
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding,
@@ -663,7 +663,7 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 
 std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint32_t set, const uint32_t binding,
                                                                       const RendererAPI::DescriptorType type,
-																	  bool* outUAV,
+																	  bool* const outUAV,
 																	  const uint64_t size) const
 {
 	for(const auto& resource : m_reflection->ShaderResources)

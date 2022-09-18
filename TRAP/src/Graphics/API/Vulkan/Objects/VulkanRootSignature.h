@@ -103,6 +103,11 @@ namespace TRAP::Graphics::API
 		/// <returns>Descriptor if found, nullptr otherwise.</returns>
 		RendererAPI::DescriptorInfo* GetDescriptor(const char* resName);
 		/// <summary>
+		/// Retrieve a descriptor via its name.
+		/// </summary>
+		/// <returns>Descriptor if found, nullptr otherwise.</returns>
+		const RendererAPI::DescriptorInfo* GetDescriptor(const char* resName) const;
+		/// <summary>
 		/// Retrieve the amount of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>Amount of descriptors.</returns>

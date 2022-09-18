@@ -109,7 +109,7 @@ void DoTransform(std::array<uint64_t, 25>& A)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 25>& A, const std::size_t rate)
+void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t, 25>& A, const std::size_t rate)
 {
 	const std::size_t r = rate / 8;
 	const std::size_t r64 = rate / 64;
@@ -124,7 +124,7 @@ void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 25>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t length)
+std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* const data, uint64_t length)
 {
 	constexpr std::size_t hs = 256;
 	constexpr std::size_t rate = 1600U - hs * 2;
@@ -165,7 +165,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t length)
+std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* const data, uint64_t length)
 {
 	constexpr std::size_t hs = 512;
 	constexpr std::size_t rate = 1600U - hs * 2;

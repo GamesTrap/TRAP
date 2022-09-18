@@ -21,7 +21,7 @@ namespace TRAP::Utils::Memory
 	{
 		if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>)
 		{
-		    uint8_t* ptr = reinterpret_cast<uint8_t*>(&t);
+		    uint8_t* const ptr = reinterpret_cast<uint8_t*>(&t);
 			std::array<std::uint8_t, sizeof(T)> raw_src, raw_dst;
 
 			std::copy_n(ptr, sizeof(T), raw_src.data());
@@ -58,7 +58,7 @@ namespace TRAP::Utils::Memory
 	/// <param name="source">Bytes to convert.</param>
 	/// <returns>Converted bytes.</returns>
 	template<typename T>
-	inline static T ConvertByte(const uint8_t* source)
+	inline static T ConvertByte(const uint8_t* const source)
 	{
 		if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
 		             std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))

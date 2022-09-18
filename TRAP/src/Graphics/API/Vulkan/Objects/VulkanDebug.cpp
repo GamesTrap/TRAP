@@ -57,7 +57,7 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 
 VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                                                                     const VkDebugUtilsMessageTypeFlagsEXT,
-                                                                    const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+                                                                    const VkDebugUtilsMessengerCallbackDataEXT* const callbackData,
                                                                     void*)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
@@ -84,7 +84,7 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 																	 const size_t /*location*/,
 																	 const int32_t messageCode,
 																	 const std::string_view layerPrefix,
-																	 const std::string_view message, void* /*userData*/)
+																	 const std::string_view message, void* const /*userData*/)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();

@@ -70,13 +70,13 @@ namespace TRAP::Graphics
 		/// <param name="data">Pointer to the updated data.</param>
 		/// <param name="size">Size of the updated data.</param>
 		/// <param name="offset">Byte offset into the currently used vertex data.</param>
-		void SetData(float* data, uint64_t size, uint64_t offset = 0);
+		void SetData(const float* data, uint64_t size, uint64_t offset = 0);
 
 		/// <summary>
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
 		/// <param name="window">Window to use vertex buffer on.</param>
-		void Use(Window* window = nullptr) const;
+		void Use(const Window* window = nullptr) const;
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -95,7 +95,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New vertex buffer.</returns>
-		static Scope<VertexBuffer> Create(float* vertices, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<VertexBuffer> Create(const float* vertices, uint64_t size, UpdateFrequency updateFrequency);
 		/// <summary>
 		/// Create a new vertex buffer and set its size.
 		/// </summary>

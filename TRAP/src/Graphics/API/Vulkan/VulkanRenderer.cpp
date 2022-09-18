@@ -528,7 +528,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string_view ga
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Flush(Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) const
 {
 	PerWindowData* const p = s_perWindowDataMap[window].get();
 
@@ -607,12 +607,12 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(Window* window) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
-	PerWindowData* const p = s_perWindowDataMap[window].get();
+	const PerWindowData* const p = s_perWindowDataMap[window].get();
 
 	if(!p->RecordingCompute)
 		return;
@@ -633,7 +633,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -668,7 +668,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -678,7 +678,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color,
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -688,7 +688,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, Windo
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -700,14 +700,14 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil
 
 #ifdef TRAP_HEADLESS_MODE
 void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, const uint32_t height,
-														Window* window) const
+														const Window* window) const
 {
 	TRAP_ASSERT(width > 0 && height > 0, "Invalid render target resolution!");
 
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	auto* p = s_perWindowDataMap[window].get();
+	auto* const p = s_perWindowDataMap[window].get();
 	p->Resize = true;
 	p->NewWidth = width;
 	p->NewHeight = height;
@@ -716,7 +716,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, co
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -729,7 +729,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, Wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -742,7 +742,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, Wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode function, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode function, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -755,7 +755,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode fun
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, const StencilOp back, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, const StencilOp back, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -771,7 +771,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -784,7 +784,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -797,7 +797,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float fa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -811,7 +811,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, const StencilOp back,
-                                                         Window* window) const
+                                                         const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -827,7 +827,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, const StencilOp back, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, const StencilOp back, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -844,7 +844,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode front, const CompareMode back,
-                                                             Window* window) const
+                                                             const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -860,7 +860,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -876,7 +876,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -889,7 +889,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, const Window* window) const
 {
 	if(mode != FillMode::Solid && !GPUSettings.FillModeNonSolid)
 		return;
@@ -904,7 +904,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTopology topology, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTopology topology, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -916,7 +916,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -929,7 +929,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, Win
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha,
-                                                       Window* window) const
+                                                       const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -947,7 +947,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant sourceRGB,
 														   const BlendConstant sourceAlpha,
                                                            const BlendConstant destinationRGB,
-                                                           const BlendConstant destinationAlpha, Window* window) const
+                                                           const BlendConstant destinationAlpha, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -967,7 +967,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
 						            					 Ref<TRAP::Graphics::Texture> texture,
 		                            					 ShadingRateCombiner postRasterizerRate,
-							        					 ShadingRateCombiner finalRate, Window* window) const
+							        					 ShadingRateCombiner finalRate, const Window* window) const
 {
 	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
 
@@ -1017,7 +1017,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1068,7 +1068,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 
 void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width,
                                                       const uint32_t height, const float minDepth,
-                                                      const float maxDepth, Window* window) const
+                                                      const float maxDepth, const Window* window) const
 {
 	if (width == 0 || height == 0)
 		return;
@@ -1086,7 +1086,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
-                                                     const uint32_t height, Window* window) const
+                                                     const uint32_t height, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1099,7 +1099,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uin
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const uint32_t firstVertex,
-                                               Window* window) const
+                                               const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1112,7 +1112,7 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
-                                                      const uint32_t firstVertex, Window* window) const
+                                                      const uint32_t firstVertex, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1126,7 +1126,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 
 void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCount, const uint32_t instanceCount,
                                                         const uint32_t firstVertex, const uint32_t firstInstance,
-                                                        Window* window) const
+                                                        const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1141,7 +1141,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCou
 
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t indexCount, const uint32_t instanceCount,
                                                                const uint32_t firstIndex, const uint32_t firstInstance,
-						                                       const uint32_t firstVertex, Window* window) const
+						                                       const uint32_t firstVertex, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1154,7 +1154,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t in
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1239,7 +1239,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer,
-                                                           const VertexBufferLayout& layout, Window* window) const
+                                                           const VertexBufferLayout& layout, const Window* window) const
 {
 	constexpr auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
 	{
@@ -1311,7 +1311,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer,
-                                                          const IndexType indexType, Window* window) const
+                                                          const IndexType indexType, const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1324,7 +1324,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index,
-															const QueueType queueType, Window* window) const
+															const QueueType queueType, const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1341,8 +1341,8 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* name, const void* constantsData,
-															const QueueType queueType, Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* const name, const void* const constantsData,
+															const QueueType queueType, const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1372,9 +1372,9 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* name, co
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex,
-                                                                   const void* constantsData,
+                                                                   const void* const constantsData,
 																   const QueueType queueType,
-																   Window* window) const
+																   const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1405,11 +1405,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_
 
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graphics::RenderTarget>& colorTarget,
 		                                                   const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							                               const RendererAPI::LoadActionsDesc* loadActions,
-							                               std::vector<uint32_t>* colorArraySlices,
-							                               std::vector<uint32_t>* colorMipSlices,
+							                               const RendererAPI::LoadActionsDesc* const loadActions,
+							                               std::vector<uint32_t>* const colorArraySlices,
+							                               std::vector<uint32_t>* const colorMipSlices,
 							                               const uint32_t depthArraySlice,
-														   const uint32_t depthMipSlice, Window* window) const
+														   const uint32_t depthMipSlice, const Window* window) const
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -1438,11 +1438,11 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 
 void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TRAP::Ref<Graphics::RenderTarget>>& colorTargets,
 		                                                    const TRAP::Ref<Graphics::RenderTarget>& depthStencil,
-							                                const RendererAPI::LoadActionsDesc* loadActions,
-							                                std::vector<uint32_t>* colorArraySlices,
-							                                std::vector<uint32_t>* colorMipSlices,
+							                                const RendererAPI::LoadActionsDesc* const loadActions,
+							                                std::vector<uint32_t>* const colorArraySlices,
+							                                std::vector<uint32_t>* const colorMipSlices,
 							                                const uint32_t depthArraySlice,
-														    const uint32_t depthMipSlice, Window* window) const
+														    const uint32_t depthMipSlice, const Window* window) const
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -1469,7 +1469,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAPI::BufferBarrier& bufferBarrier,
-															    const QueueType queueType, Window* window) const
+															    const QueueType queueType, const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1487,7 +1487,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
-																 const QueueType queueType, Window* window) const
+																 const QueueType queueType, const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1505,7 +1505,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vect
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererAPI::TextureBarrier& textureBarrier,
-																 const QueueType queueType, Window* window) const
+																 const QueueType queueType, const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1523,7 +1523,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererA
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
-																  const QueueType queueType, Window* window) const
+																  const QueueType queueType, const Window* window) const
 {
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
 
@@ -1541,7 +1541,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vec
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const RendererAPI::RenderTargetBarrier& renderTargetBarrier,
-									                                  Window* window) const
+									                                  const Window* window) const
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -1554,7 +1554,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const Rend
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers,
-									                                   Window* window) const
+									                                   const Window* window) const
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -1566,14 +1566,11 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::ReflexSleep([[maybe_unused]] Window *window) const
+void TRAP::Graphics::API::VulkanRenderer::ReflexSleep() const
 {
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(!GPUSettings.ReflexSupported)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	uint64_t signalValue = 0;
 	VkCall(vkGetSemaphoreCounterValueKHR(m_device->GetVkDevice(), m_device->GetReflexSemaphore(), &signalValue));
@@ -1628,7 +1625,7 @@ std::string TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanRenderer::GetVSync(Window* window) const
+bool TRAP::Graphics::API::VulkanRenderer::GetVSync(const Window* window) const
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -1680,14 +1677,14 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 
 //Helper function to generate screenshot data. See CaptureScreenshot.
 void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<RenderTarget>& renderTarget,
-														  const ResourceState currResState, void* outPixelData)
+														  const ResourceState currResState, void* const outPixelData)
 {
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = s_graphicQueue;
 	cmdPoolDesc.Transient = true;
 	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
-	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
 
 	//Add a staging buffer
 	const uint16_t formatByteWidth = static_cast<uint16_t>(ImageFormatBitSizeOfBlock(renderTarget->GetImageFormat()) / 8u);
@@ -1724,9 +1721,9 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 	layers.layerCount = 1;
 	const VkBufferImageCopy copy = API::VulkanInits::ImageCopy(bufferRowLength, width, height, depth, layers);
 
-	const VulkanCommandBuffer* vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+	const VulkanCommandBuffer* const vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
 	const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(renderTarget->GetTexture());
-	const VulkanBuffer* vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
+	const VulkanBuffer* const vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
 
 	vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
 
@@ -1759,12 +1756,12 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(Window* window) const
+TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(const Window* window) const
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const auto* winData = s_perWindowDataMap[window].get();
+	const auto* const winData = s_perWindowDataMap[window].get();
 	const uint32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
 
 	//Wait for queues to finish
@@ -1866,14 +1863,14 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 
 void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<RenderTarget> source,
                                                           const TRAP::Ref<RenderTarget> destination,
-														  Window* window) const
+														  const Window* window) const
 {
 	TRAP_ASSERT(s_currentAntiAliasing == AntiAliasing::MSAA, "Renderer is not using MSAA");
 
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const PerWindowData* p = s_perWindowDataMap[window].get();
+	const PerWindowData* const p = s_perWindowDataMap[window].get();
 
 	Ref<VulkanTexture> dstTex = std::dynamic_pointer_cast<VulkanTexture>(destination->GetTexture());
 	Ref<VulkanTexture> MSAATex = std::dynamic_pointer_cast<VulkanTexture>(source->GetTexture());
@@ -1890,7 +1887,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 	barrier = {destination, ResourceState::RenderTarget, ResourceState::CopyDestination};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 
-	const VulkanCommandBuffer* vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
+	const VulkanCommandBuffer* const vkCmdBuf = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
 	vkCmdBuf->ResolveImage(MSAATex, ResourceState::CopySource, dstTex, ResourceState::CopyDestination);
 
 	//Transition destination from CopyDestination to RenderTarget
@@ -1955,7 +1952,7 @@ TRAP::Graphics::RendererAPI::LatencyMode TRAP::Graphics::API::VulkanRenderer::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window) const
 {
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
 		//Window is already in map
@@ -2146,7 +2143,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window) cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::RemovePerWindowData(Window* window) const
+void TRAP::Graphics::API::VulkanRenderer::RemovePerWindowData(const Window* const window) const
 {
 	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
 		s_perWindowDataMap.erase(window);
@@ -2248,7 +2245,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensions(VulkanPhysicalDevice* physicalDevice)
+std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensions(VulkanPhysicalDevice* const physicalDevice)
 {
 	std::vector<std::string> extensions{};
 
@@ -2549,7 +2546,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	cmdPoolDesc.Transient = true;
 	const TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 
-	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
 
 	const TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>();
 
@@ -2605,7 +2602,7 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(Ref<TRAP::Graphi
                                                                 const RendererAPI::ResourceState startState)
 {
 	std::lock_guard<std::mutex> lock(s_NullDescriptors->InitialTransitionMutex);
-	VulkanCommandBuffer* cmd = s_NullDescriptors->InitialTransitionCmd;
+	VulkanCommandBuffer* const cmd = s_NullDescriptors->InitialTransitionCmd;
 	s_NullDescriptors->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
 	const TextureBarrier barrier{texture.get(), RendererAPI::ResourceState::Undefined, startState};
@@ -2711,9 +2708,9 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType type, PerWindowData* const p)
+void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType type, const PerWindowData* const p)
 {
-	CommandBuffer* cmd = nullptr;
+	const CommandBuffer* cmd = nullptr;
 	if(type == QueueType::Graphics)
 		cmd = p->GraphicCommandBuffers[p->ImageIndex];
 	else if(type == QueueType::Compute)
@@ -2731,9 +2728,9 @@ void TRAP::Graphics::API::VulkanRenderer::BeginGPUFrameProfile(const QueueType t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType type, PerWindowData* const p)
+void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType type, const PerWindowData* const p)
 {
-	CommandBuffer* cmd = nullptr;
+	const CommandBuffer* cmd = nullptr;
 	if(type == QueueType::Graphics)
 		cmd = p->GraphicCommandBuffers[p->ImageIndex];
 	else if(type == QueueType::Compute)
@@ -2758,7 +2755,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGPUFrameProfile(const QueueType typ
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueType type, PerWindowData* const p)
+float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueType type, const PerWindowData* const p)
 {
 
 	float time = 0.0f;
@@ -2780,12 +2777,12 @@ float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueTyp
 			const uint64_t nsTime = endTime - startTime;
 			if(type == QueueType::Graphics)
 			{
-				VulkanQueue* graphicsQueue = dynamic_cast<VulkanQueue*>(s_graphicQueue.get());
+				const VulkanQueue* const graphicsQueue = dynamic_cast<VulkanQueue*>(s_graphicQueue.get());
 				time = static_cast<float>((nsTime / graphicsQueue->GetTimestampFrequency())) * 1000.0f;
 			}
 			else if(type == QueueType::Compute)
 			{
-				VulkanQueue* computeQueue = dynamic_cast<VulkanQueue*>(s_computeQueue.get());
+				const VulkanQueue* const computeQueue = dynamic_cast<VulkanQueue*>(s_computeQueue.get());
 				time = static_cast<float>((nsTime / computeQueue->GetTimestampFrequency())) * 1000.0f;
 			}
 		}

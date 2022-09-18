@@ -97,7 +97,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New uniform buffer.</returns>
-		static Scope<UniformBuffer> Create(void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<UniformBuffer> Create(const void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 	private:
 		/// <summary>
@@ -107,7 +107,7 @@ namespace TRAP::Graphics
 		/// <param name="size">Byte size of the data to upload.</param>
 		/// <param name="updateFrequency">Update frequency for the buffer.</param>
 		/// <returns>New uniform buffer.</returns>
-		static Scope<UniformBuffer> Init(void* data, uint64_t size, UpdateFrequency updateFrequency);
+		static Scope<UniformBuffer> Init(const void* data, uint64_t size, UpdateFrequency updateFrequency);
 
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 

@@ -63,7 +63,7 @@ TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateC
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(CommandBuffer* cmdBuffer)
+void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuffer* const cmdBuffer)
 {
 	for(std::size_t i = 0; i < m_commandBuffers.size(); i++)
 	{

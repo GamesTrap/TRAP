@@ -433,7 +433,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 {
 	TP_PROFILE_FUNCTION();
 
-	const char* name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
+	const char* const name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
 
 	if (!name)
 		return NonPrintableKeyToString(key);
@@ -699,7 +699,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 
 	if(ParseMapping(mapping, map))
 	{
-		Mapping* previous = FindMapping(mapping.guid);
+		Mapping* const previous = FindMapping(mapping.guid);
 		if (previous)
 			*previous = mapping;
 		else
@@ -708,7 +708,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 
 	for(uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
-		ControllerInternal* con = &s_controllerInternal[cID];
+		ControllerInternal* const con = &s_controllerInternal[cID];
 		if(s_controllerInternal[cID].Connected)
 			con->mapping = FindValidMapping(con);
 	}
@@ -739,7 +739,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 	if (cID > static_cast<uint32_t>(Controller::Sixteen))
 		return nullptr;
 
-	ControllerInternal* con = &s_controllerInternal[cID];
+	ControllerInternal* const con = &s_controllerInternal[cID];
 	con->Connected = true;
 	con->Name = std::move(name);
 	con->guid = std::move(guid);
@@ -758,7 +758,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller DPad
-void TRAP::Input::InternalInputControllerDPad(ControllerInternal* con, const int32_t dpad, const uint8_t value)
+void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const int32_t dpad, const uint8_t value)
 {
 	const int32_t base = con->ButtonCount + dpad * 4;
 
@@ -790,7 +790,7 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* con, const int
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller axis
-void TRAP::Input::InternalInputControllerAxis(ControllerInternal* con, const int32_t axis, const float value)
+void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const int32_t axis, const float value)
 {
 	con->Axes[axis] = value;
 }
@@ -798,7 +798,7 @@ void TRAP::Input::InternalInputControllerAxis(ControllerInternal* con, const int
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller button
-void TRAP::Input::InternalInputControllerButton(ControllerInternal* con, const int32_t button, const bool pressed)
+void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const int32_t button, const bool pressed)
 {
 	con->Buttons[button] = pressed;
 }
@@ -925,7 +925,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 		if(found && fields[j].Element)
 		{
-			MapElement* e = fields[j].Element;
+			MapElement* const e = fields[j].Element;
 			int8_t minimum = -1;
 			int8_t maximum = 1;
 			uint32_t charOffset = 0;
@@ -1011,9 +1011,9 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Finds a mapping based on controller GUID and verifies element indices
-TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* con)
+TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* const con)
 {
-	Mapping* mapping = FindMapping(con->guid);
+	Mapping* const mapping = FindMapping(con->guid);
 
 	if(!mapping)
 		return nullptr;
@@ -1046,7 +1046,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Checks whether a controller mapping element is present in the hardware
-bool TRAP::Input::IsValidElementForController(const MapElement* e, const ControllerInternal* con)
+bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
 {
 	if(e->Type == 3 && (e->Index >> 4) >= static_cast<int32_t>(con->DPads.size() + 1))
 		return false;
@@ -1065,12 +1065,12 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
-	const ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
 	if (!con->mapping)
 		return false;
 
-	const MapElement* e = &con->mapping->Buttons[static_cast<uint8_t>(button)];
+	const MapElement* const e = &con->mapping->Buttons[static_cast<uint8_t>(button)];
 	if (e->Index < con->ButtonCount)
 	{
 		if (e->Type == 2) //Button
@@ -1107,12 +1107,12 @@ float TRAP::Input::GetMappedControllerAxis(const Controller controller, const Co
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 
-	const ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
 	if(!con->mapping)
 		return 0.0f;
 
-	const MapElement* e = &con->mapping->Axes[static_cast<uint8_t>(axis)];
+	const MapElement* const e = &con->mapping->Axes[static_cast<uint8_t>(axis)];
 	if(e->Type == 1) //Axis
 	{
 		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) +
@@ -1139,12 +1139,12 @@ TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(const Controlle
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 
-	const ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	const ControllerInternal* const con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
 	if (!con->mapping)
 		return ControllerDPad::Centered;
 
-	const MapElement* e = &con->mapping->Buttons[11 + (dpad * 4)];
+	const MapElement* const e = &con->mapping->Buttons[11 + (dpad * 4)];
 	if(e->Type == 3)
 		return con->DPads[e->Index >> 4];
 

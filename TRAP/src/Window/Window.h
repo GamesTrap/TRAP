@@ -216,7 +216,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="state">State of progress.</param>
 		/// <param name="progress">How much has been completed. Valid values: 0 - 100.</param>
-		void SetProgress(ProgressState state, uint32_t progress);
+		void SetProgress(ProgressState state, uint32_t progress) const;
 		/// <summary>
 		/// Resets the window icon to the TRAP logo.
 		/// </summary>

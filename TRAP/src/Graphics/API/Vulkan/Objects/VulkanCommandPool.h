@@ -56,7 +56,7 @@ namespace TRAP::Graphics::API
 		/// Free a command buffer
 		/// </summary>
 		/// <param name="cmdBuffer">Command buffer to free.</param>
-		void FreeCommandBuffer(CommandBuffer* cmdBuffer) override;
+		void FreeCommandBuffer(const CommandBuffer* const cmdBuffer) override;
 
 		/// <summary>
 		/// Reset the command pool.

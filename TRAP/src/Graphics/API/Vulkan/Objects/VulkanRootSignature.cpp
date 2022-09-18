@@ -286,7 +286,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		//Loop through descriptor belonging to this update frequency and increment the cumulative descriptor count
 		for(std::size_t descIndex = 0; descIndex < layout.Descriptors.size(); ++descIndex)
 		{
-			RendererAPI::DescriptorInfo* descInfo = layout.Descriptors[descIndex];
+			RendererAPI::DescriptorInfo* const descInfo = layout.Descriptors[descIndex];
 			descInfo->IndexInParent = static_cast<uint32_t>(descIndex);
 			descInfo->HandleIndex = m_vkCumulativeDescriptorsCounts[i];
 			m_vkCumulativeDescriptorsCounts[i] += descInfo->Size;
@@ -295,7 +295,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		m_vkDynamicDescriptorCounts[i] = static_cast<uint8_t>(layout.DynamicDescriptors.size());
 		for(std::size_t descIndex = 0; descIndex < m_vkDynamicDescriptorCounts[i]; ++descIndex)
 		{
-			RendererAPI::DescriptorInfo* descInfo = layout.DynamicDescriptors[descIndex];
+			RendererAPI::DescriptorInfo* const descInfo = layout.DynamicDescriptors[descIndex];
 			descInfo->RootDescriptorIndex = static_cast<uint32_t>(descIndex);
 		}
 	}
@@ -328,7 +328,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			//Fill the write descriptors with default values during initialization so the only thing we change
 			//in CmdBindDescriptors are the VkBuffer / VKImageView objects
-			for (auto* descInfo : layout.Descriptors)
+			for (const auto* const descInfo : layout.Descriptors)
 			{
 				const uint64_t offset = descInfo->HandleIndex * sizeof(VulkanRenderer::DescriptorUpdateData);
 
@@ -560,7 +560,18 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* resName)
+TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
+{
+	const auto it = m_descriptorNameToIndexMap.find(resName);
+	if (it != m_descriptorNameToIndexMap.end())
+		return &m_descriptors[it->second];
+
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName) const
 {
 	const auto it = m_descriptorNameToIndexMap.find(resName);
 	if (it != m_descriptorNameToIndexMap.end())

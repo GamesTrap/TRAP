@@ -210,7 +210,7 @@ std::string TRAP::Utils::String::GetStrError()
         error.resize(error.find('\0'));
         return error;
     #else
-        char* errorCStr = strerror_r(errno, error.data(), error.size());
+        const char* const errorCStr = strerror_r(errno, error.data(), error.size());
         return std::string(errorCStr);
     #endif
 

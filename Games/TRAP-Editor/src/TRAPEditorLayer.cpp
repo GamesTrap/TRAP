@@ -41,7 +41,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 	if(optFullscreen)
 	{
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		const ImGuiViewport* const viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);
 		ImGui::SetNextWindowViewport(viewport->ID);

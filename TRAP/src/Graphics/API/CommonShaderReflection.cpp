@@ -166,7 +166,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 		for(std::size_t i = 0; i < variableCount; ++i)
 		{
 			variables[i] = *uniqueVariable[i];
-			const ShaderResource* parentResource = uniqueVariableParent[i];
+			const ShaderResource* const parentResource = uniqueVariableParent[i];
 			//Look for parent
 			for(std::size_t j = 0; j < resourceCount; ++j)
 			{

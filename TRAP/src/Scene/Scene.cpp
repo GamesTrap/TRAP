@@ -46,7 +46,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 
 	//Render 2D
 	//Find Main Camera
-	Graphics::Camera* mainCamera = nullptr;
+	const Graphics::Camera* mainCamera = nullptr;
 	Math::Mat4 cameraTransform;
 	{
 		auto view = m_registry.view<TransformComponent, CameraComponent>();

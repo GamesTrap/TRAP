@@ -196,7 +196,7 @@ void TRAP::Network::TCPSocketIPv6::Disconnect()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* data, const std::size_t size) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* const data, const std::size_t size) const
 {
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
@@ -208,7 +208,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* dat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* const data, const std::size_t size,
                                                                  std::size_t& sent) const
 {
 	//Check the parameters
@@ -242,7 +242,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* dat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* const data, const std::size_t size,
                                                                     std::size_t& received) const
 {
 	//First clear the variables to fill
@@ -286,7 +286,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet)
 
 	//Get the data to send from the packet
 	std::size_t size = 0;
-	const void* data = packet.OnSend(size);
+	const void* const data = packet.OnSend(size);
 
 	//First convert the packet size to network byte order
 	uint32_t packetSize = static_cast<uint32_t>(size);
@@ -331,7 +331,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		//(event a 4 byte variable may be received in more than one call)
 		while(m_pendingPacket.SizeReceived < sizeof(m_pendingPacket.Size))
 		{
-			char* data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
+			char* const data = reinterpret_cast<char*>(&m_pendingPacket.Size) + m_pendingPacket.SizeReceived;
 			const Status status = Receive(data, sizeof(m_pendingPacket.Size) - m_pendingPacket.SizeReceived,
 			                              received);
 			m_pendingPacket.SizeReceived += received;
@@ -368,7 +368,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 		if(received > 0)
 		{
 			m_pendingPacket.Data.resize(m_pendingPacket.Data.size() + received);
-			char* begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
+			char* const begin = &m_pendingPacket.Data[0] + m_pendingPacket.Data.size() - received;
 			std::copy_n(buffer.data(), received, begin);
 		}
 	}

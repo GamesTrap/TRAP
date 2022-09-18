@@ -5,7 +5,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const float* const vertices, const uint64_t size,
                                                                                const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
@@ -75,14 +75,14 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBuffer::Use(Window* window) const
+void TRAP::Graphics::VertexBuffer::Use(const Window* const window) const
 {
 	RendererAPI::GetRenderer()->BindVertexBuffer(m_vertexBuffer, m_bufferLayout, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBuffer::SetData(float* data, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::VertexBuffer::SetData(const float* const data, const uint64_t size, const uint64_t offset)
 {
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize());
@@ -111,7 +111,7 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* vertices, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* const vertices, const uint64_t size,
  																		     const UpdateFrequency updateFrequency)
 {
 	TRAP::Scope<VertexBuffer> buffer = TRAP::Scope<VertexBuffer>(new VertexBuffer());

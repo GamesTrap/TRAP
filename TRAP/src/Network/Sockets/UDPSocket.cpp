@@ -98,7 +98,7 @@ void TRAP::Network::UDPSocket::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const data, const std::size_t size,
                                                              const IPv4Address& remoteAddress,
 														     const uint16_t remotePort)
 {
@@ -130,7 +130,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, const std::size_t size,
+TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data, const std::size_t size,
                                                                 std::size_t& received, IPv4Address& remoteAddress,
 																uint16_t& remotePort) const
 {
@@ -195,7 +195,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 
 	//Get the data to send from the packet
 	std::size_t size = 0;
-	const void* data = packet.OnSend(size);
+	const void* const data = packet.OnSend(size);
 
 	//Send it
 	return Send(data, size, remoteAddress, remotePort);

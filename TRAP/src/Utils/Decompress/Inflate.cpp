@@ -24,7 +24,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Maths/Math.h"
 
-TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* data, const std::size_t size)
+TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* const data, const std::size_t size)
 	: Data(data), Size(size), BitSize(0), BP(0), Buffer(0)
 {
 	std::size_t temp = 0;
@@ -466,7 +466,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 
 //Given the code lengths(as stored in the PNG file), generate the tree as defined by Deflate.
 //MaxBitLength is the maximum bits that a code in the tree can have.
-bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* bitLength,
+bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* const bitLength,
                                                                      const std::size_t numCodes,
 																	 const uint32_t maxBitLength)
 {
@@ -815,7 +815,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t sourceLength, uint8_t* destination,
+bool TRAP::Utils::Decompress::Inflate(const uint8_t* const source, const std::size_t sourceLength, uint8_t* const destination,
                                       const std::size_t destinationLength)
 {
 	TP_PROFILE_FUNCTION();

@@ -418,7 +418,7 @@ uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields,
 	                                             std::array<uint32_t, 4>& masks) const
 {
-	BitField* bf = bitFields.data();
+	BitField* const bf = bitFields.data();
 
 	uint32_t totalMask = 0;
 	BitField totalField{};
@@ -509,7 +509,7 @@ uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bit
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageData,
-	                                      std::vector<uint8_t>* colorTable)
+	                                      const std::vector<uint8_t>* const colorTable)
 {
 	int32_t x = 0, y = 0;
 	uint8_t t = 0, r = 0;

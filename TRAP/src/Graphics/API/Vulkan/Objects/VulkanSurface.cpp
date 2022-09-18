@@ -9,7 +9,7 @@
 
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 												  const TRAP::Ref<VulkanDevice>& device,
-                                                  TRAP::Window* window)
+                                                  const TRAP::Window* const window)
 	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
 {
 	TRAP_ASSERT(m_instance, "instance is nullptr");

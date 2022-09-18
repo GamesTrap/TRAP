@@ -97,7 +97,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* SPIRVBinary, const uint32_t binarySize)
+TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* const SPIRVBinary, const uint32_t binarySize)
 	: m_compiler(TRAP::MakeScope<spirv_cross::Compiler>(SPIRVBinary, binarySize))
 {
 }

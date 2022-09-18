@@ -343,7 +343,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color,
-                                          Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords,
+                                          Ref<Texture> texture, const std::array<Math::Vec2, 4>* const texCoords,
 										  const int32_t entityID)
 {
 	constexpr uint64_t quadVertexCount = 4;

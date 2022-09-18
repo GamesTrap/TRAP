@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to create surface for.</param>
 		VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 		              const TRAP::Ref<VulkanDevice>& device,
-		              TRAP::Window* window);
+		              const TRAP::Window* const window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>

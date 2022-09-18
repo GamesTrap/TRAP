@@ -335,7 +335,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 
 	if(fence != nullptr)
 	{
-		VulkanFence* fen = dynamic_cast<VulkanFence*>(fence.get());
+		VulkanFence* const fen = dynamic_cast<VulkanFence*>(fence.get());
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
@@ -352,7 +352,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	}
 	else
 	{
-		VulkanSemaphore* sema = dynamic_cast<VulkanSemaphore*>(signalSemaphore.get());
+		VulkanSemaphore* const sema = dynamic_cast<VulkanSemaphore*>(signalSemaphore.get());
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 

@@ -80,7 +80,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 	TRAP_ASSERT(computeDesc.ShaderProgram);
 	TRAP_ASSERT(computeDesc.RootSignature);
-	const VulkanShader* vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
+	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
 	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE);
 
 	m_type = RendererAPI::PipelineType::Compute;
@@ -129,7 +129,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	renderPassDesc.DepthStencilFormat = graphicsDesc.DepthStencilFormat;
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
-	const VulkanShader* vShader = dynamic_cast<VulkanShader*>(shaderProgram);
+	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(shaderProgram);
 	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflectionCount; ++i)
 	{
 		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE);

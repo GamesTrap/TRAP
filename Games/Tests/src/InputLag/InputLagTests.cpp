@@ -133,6 +133,6 @@ void InputLagTests::DrawMarker(const int32_t lead, TRAP::Math::Vec2 pos)
 {
 	static const std::array<ImColor, 4> colors{ImColor(255, 0, 0), ImColor(255, 255, 0), ImColor(0, 255, 0), ImColor(0, 96, 255)};
 
-	auto* drawList = ImGui::GetBackgroundDrawList();
+	auto* const drawList = ImGui::GetBackgroundDrawList();
 	drawList->AddCircleFilled(ImVec2(pos.x, pos.y), 10, colors[lead], 0);
 }

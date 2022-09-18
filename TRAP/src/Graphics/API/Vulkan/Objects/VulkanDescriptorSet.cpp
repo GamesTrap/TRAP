@@ -120,9 +120,9 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 		VALIDATE_DESCRIPTOR(!param.Name.empty() || (paramIndex != std::numeric_limits<uint32_t>::max()),
 		                    "DescriptorData has nullptr name and invalid index");
 
-		const RendererAPI::DescriptorInfo* desc = (paramIndex != std::numeric_limits<uint32_t>::max()) ?
-		                                          (&rootSignature->GetDescriptors()[paramIndex]) :
-												  rootSignature->GetDescriptor(param.Name.c_str());
+		const RendererAPI::DescriptorInfo* const desc = (paramIndex != std::numeric_limits<uint32_t>::max()) ?
+		                                                (&rootSignature->GetDescriptors()[paramIndex]) :
+												        rootSignature->GetDescriptor(param.Name.c_str());
 		if(paramIndex != std::numeric_limits<uint32_t>::max())
 		{
 			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param index ", paramIndex);
@@ -310,7 +310,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 									std::to_string(RendererAPI::GPUSettings.MaxUniformBufferRange)));
 
 				m_dynamicSizeOffsets[index].Offset = !off.Offsets.empty() ? static_cast<uint32_t>(off.Offsets[0]) : 0;
-				const VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
+				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[0]);
 				updateData[desc->HandleIndex + static_cast<std::size_t>(0)].BufferInfo =
 				{
 					buf->GetVkBuffer(),
@@ -341,7 +341,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Buffer (") + desc->Name +
 				                    std::string(" [") + std::to_string(arr) + "])");
 
-				const VulkanBuffer* buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
+				const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffers[arr]);
 				updateData[desc->HandleIndex + static_cast<std::size_t>(arr)].BufferInfo =
 				{
 					buf->GetVkBuffer(),

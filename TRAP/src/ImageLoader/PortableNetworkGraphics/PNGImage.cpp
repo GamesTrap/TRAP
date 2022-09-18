@@ -812,7 +812,7 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination,
+bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
 										      const int destinationLength)
 {
 	if (sourceLength < 2)
@@ -857,7 +857,7 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 		return false;
 	}
 
-	const uint8_t* buf = &source[sourceLength - 4];
+	const uint8_t* const buf = &source[sourceLength - 4];
 	const std::array<uint8_t, 4> adler32 =
 	{
 		buf[0],
@@ -882,9 +882,9 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
-	                                            const uint8_t* scanline,
-	                                            const uint8_t* precon,
+bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
+	                                            const uint8_t* const scanline,
+	                                            const uint8_t* const precon,
 	                                            const std::size_t byteWidth,
 	                                            const uint8_t filterType,
 	                                            const std::size_t length)
@@ -1021,7 +1021,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* recon,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const uint32_t width, const uint32_t height,
+bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const in,
+									    const uint32_t width, const uint32_t height,
                                         const uint32_t bitsPerPixel)
 {
 	//For PNG Filter Method 0
@@ -1093,7 +1094,7 @@ std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* out, uint8_t* in, const uint32_t width,
+bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* const out, uint8_t* const in, const uint32_t width,
                                                     const uint32_t height, const uint32_t bitsPerPixel,
 													const uint8_t interlaceMethod)
 {
@@ -1180,7 +1181,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* out, const uint8_t* in, const uint32_t width,
+void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_t* const in, const uint32_t width,
                                                 const uint32_t height, const uint32_t bitsPerPixel)
 {
 	//out has the following size in bits: width * height * bitsPerPixel.

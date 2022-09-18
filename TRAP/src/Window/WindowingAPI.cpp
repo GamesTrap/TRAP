@@ -196,7 +196,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* monitor)
+std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* const monitor)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitorName() must only be called from main thread");
@@ -248,7 +248,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* const monitor)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetVideoMode() must only be called from main thread");
@@ -265,7 +265,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
+std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* const monitor)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetVideoModes() must only be called from main thread");
@@ -289,7 +289,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
 	                                                                                                 const uint32_t height,
 	                                                                                                 const std::string title,
-	                                                                                                 InternalMonitor* monitor)
+	                                                                                                 InternalMonitor* const monitor)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::CreateWindow() must only be called from main thread");
@@ -353,7 +353,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, const bool value)
+void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* const window, const bool value)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowShouldClose() must only be called from main thread");
@@ -370,7 +370,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, const std::string& title)
+void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* const window, const std::string& title)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowTitle() must only be called from main thread");
@@ -387,7 +387,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor* monitor, float& xScale,
+void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor* const monitor, float& xScale,
                                                           float& yScale)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
@@ -409,7 +409,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor*
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Center the cursor in the content area of the specified window
-void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow* const window)
 {
 	int32_t width = 0, height = 0;
 
@@ -464,7 +464,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 		return;
 
 	//Make sure the cursor is not being used by any window
-	for(InternalWindow* window : s_Data.WindowList)
+	for(InternalWindow* const window : s_Data.WindowList)
 	{
 		if (window->Cursor == cursor.get())
 			SetCursor(window, nullptr);
@@ -583,7 +583,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCursor* cursor)
+void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* const window, InternalCursor* const cursor)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursor() must only be called from main thread");
@@ -602,7 +602,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* window, InternalCur
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const Image* const image)
+void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* const window, const Image* const image)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowIcon() must only be called from main thread");
@@ -657,7 +657,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const I
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, const int32_t xPos, const int32_t yPos)
+void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* const window, const int32_t xPos, const int32_t yPos)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowPos() must only be called from main thread");
@@ -678,7 +678,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* window, co
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the position of the content area of the specified window.
-void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos)
+void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* const window, int32_t& xPos, int32_t& yPos)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowPos() must only be called from main thread");
@@ -699,7 +699,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* window, in
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the size of the content area of the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const int32_t width, const int32_t height)
+void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* const window, const int32_t width, const int32_t height)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowSize() must only be called from main thread");
@@ -722,7 +722,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const i
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the size of the content area of the specified window.
-void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* const window, int32_t& width, int32_t& height)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowSize() must only be called from main thread");
@@ -743,7 +743,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* window, i
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the size of the framebuffer of the specified window.
-void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height)
+void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* const window, int32_t& width, int32_t& height)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetFrameBufferSize() must only be called from main thread");
@@ -764,7 +764,7 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* wind
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the opacity of the whole window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window, const float opacity)
+void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* const window, const float opacity)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowOpacity() must only be called from main thread");
@@ -788,7 +788,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the opacity of the whole window.
-float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* window)
+float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowOpacity() must only be called from main thread");
@@ -827,7 +827,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets an attribute for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const Hint hint, const bool value)
+void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* const window, const Hint hint, const bool value)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowHint() must only be called from main thread");
@@ -882,7 +882,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns an attribute of the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, const Hint hint)
+bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* const window, const Hint hint)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetWindowHint() must only be called from main thread");
@@ -934,8 +934,8 @@ bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the mode, monitor, video mode and placement of a window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
-                                                    InternalMonitor* monitor,
+void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* const window,
+                                                    InternalMonitor* const monitor,
                                                     const int32_t xPos,
                                                     const int32_t yPos,
                                                     const int32_t width,
@@ -977,7 +977,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the mode, monitor and placement of a window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor)
+void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* const window, InternalMonitor* const monitor)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 	TRAP_ASSERT(monitor, "[Window] Window is nullptr!");
@@ -995,7 +995,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the user pointer of the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* window, void* pointer)
+void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* const window, void* const pointer)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1011,7 +1011,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* window, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the user pointer of the specified window.
-void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* window)
+void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1043,7 +1043,7 @@ void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the position callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, const WindowPositionFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* const window, const WindowPositionFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowPosCallback() must only be called from main thread");
@@ -1061,7 +1061,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* window, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the size callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window, const WindowSizeFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* const window, const WindowSizeFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowSizeCallback() must only be called from main thread");
@@ -1079,7 +1079,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the minimize callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* window,
+void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* const window,
                                                              const WindowMinimizeFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
@@ -1098,7 +1098,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the maximize callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* window,
+void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* const window,
                                                              const WindowMaximizeFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
@@ -1117,7 +1117,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the close callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window, const WindowCloseFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* const window, const WindowCloseFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowCloseCallback() must only be called from main thread");
@@ -1135,7 +1135,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the focus callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* window, const WindowFocusFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* const window, const WindowFocusFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetWindowFocusCallback() must only be called from main thread");
@@ -1153,7 +1153,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the framebuffer resize callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* window,
+void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* const window,
                                                               const FrameBufferSizeFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
@@ -1189,7 +1189,7 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the key callback.
-void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const KeyFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* const window, const KeyFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetKeyCallback() must only be called from main thread");
@@ -1207,7 +1207,7 @@ void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* window, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the Unicode character callback.
-void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const CharFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* const window, const CharFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCharCallback() must only be called from main thread");
@@ -1225,7 +1225,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the mouse button callback.
-void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window, const MouseButtonFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* const window, const MouseButtonFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetMouseButtonCallback() must only be called from main thread");
@@ -1243,7 +1243,7 @@ void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the cursor position callback.
-void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, const CursorPositionFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* const window, const CursorPositionFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorPosCallback() must only be called from main thread");
@@ -1261,7 +1261,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the cursor enter callback.
-void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window, const CursorEnterFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* const window, const CursorEnterFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorEnterCallback() must only be called from main thread");
@@ -1279,7 +1279,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the scroll callback.
-void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, const ScrollFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* const window, const ScrollFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetScrollCallback() must only be called from main thread");
@@ -1297,7 +1297,7 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the path drop callback.
-void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* window, const DropFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* const window, const DropFunc callback)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetDropCallback() must only be called from main thread");
@@ -1322,7 +1322,7 @@ TRAP::INTERNAL::WindowingAPI::MonitorFunc TRAP::INTERNAL::WindowingAPI::GetMonit
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the position callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::GetWindowPosCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::GetWindowPosCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1332,7 +1332,7 @@ TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::G
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the size callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWindowSizeCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWindowSizeCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1342,7 +1342,7 @@ TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the close callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetWindowCloseCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetWindowCloseCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1352,7 +1352,7 @@ TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetW
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the focus callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetWindowFocusCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetWindowFocusCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1362,7 +1362,7 @@ TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetW
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the framebuffer resize callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::GetFrameBufferSizeCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::GetFrameBufferSizeCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1372,7 +1372,7 @@ TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the window content scale callback for the specified window.
-TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAPI::GetWindowContentScaleCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAPI::GetWindowContentScaleCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1382,7 +1382,7 @@ TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the key callback.
-TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1392,7 +1392,7 @@ TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallba
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the Unicode character callback.
-TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1402,7 +1402,7 @@ TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCall
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the mouse button callback.
-TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetMouseButtonCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetMouseButtonCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1412,7 +1412,7 @@ TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetM
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the cursor position callback.
-TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::GetCursorPosCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::GetCursorPosCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1422,7 +1422,7 @@ TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::G
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the cursor enter callback.
-TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1432,7 +1432,7 @@ TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetC
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the scroll callback.
-TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScrollCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScrollCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1442,7 +1442,7 @@ TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScroll
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Gets the path drop callback.
-TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCallback(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCallback(const InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -1504,7 +1504,7 @@ void TRAP::INTERNAL::WindowingAPI::PostEmptyEvent()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the cursor mode for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const CursorMode mode)
+void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* const window, const CursorMode mode)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorMode() must only be called from main thread");
@@ -1522,7 +1522,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const C
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the cursor mode for the specified window.
-TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow* window)
+TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursorMode(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetCursorMode() must only be called from main thread");
@@ -1550,7 +1550,7 @@ bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* const window, const bool enabled)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetRawMouseMotionMode() must only be called from main thread");
@@ -1571,7 +1571,7 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrvieves the raw mouse motion mode for the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* window)
+bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorMode() must only be called from main thread");
@@ -1582,7 +1582,7 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* window, const ProgressState state,
+void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* const window, const ProgressState state,
 											   const uint32_t progress)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
@@ -1623,7 +1623,7 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a keyboard key for the specified window.
-TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* window, const Input::Key key)
+TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow* const window, const Input::Key key)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetKey() must only be called from main thread");
@@ -1647,7 +1647,7 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow*
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the last reported state of a mouse button for the specified window.
-TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* window, const Input::MouseButton button)
+TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const InternalWindow* const window, const Input::MouseButton button)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMouseButton() must only be called from main thread");
@@ -1665,7 +1665,7 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const Interna
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the position of the cursor, relative to the content area of the window
-void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const double xPos, const double yPos)
+void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* const window, const double xPos, const double yPos)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::SetCursorPos() must only be called from main thread");
@@ -1702,7 +1702,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const do
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the position of the cursor relative to the content area of the window.
-void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, double& xPos, double& yPos)
+void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* const window, double& xPos, double& yPos)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetCursorPos() must only be called from main thread");
@@ -1729,7 +1729,7 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, do
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the position of the monitor's viewport on the virtual screen.
-void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos)
+void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* const monitor, int32_t& xPos, int32_t& yPos)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::GetMonitorPos() must only be called from main thread");
@@ -1749,7 +1749,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* monitor,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos,
+void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* const monitor, int32_t& xPos, int32_t& yPos,
                                                       int32_t& width, int32_t& height)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
@@ -1773,7 +1773,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* mon
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Makes the specified window visible.
-void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::ShowWindow() must only be called from main thread");
@@ -1797,7 +1797,7 @@ void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Brings the specified window to front and sets input focus.
-void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::FocusWindow() must only be called from main thread");
@@ -1815,7 +1815,7 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Maximizes the specified window.
-void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::MaximizeWindow() must only be called from main thread");
@@ -1836,7 +1836,7 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Minimizes the specified window.
-void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::MinimizeWindow() must only be called from main thread");
@@ -1854,7 +1854,7 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Requests user attention to the specified window.
-void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::RequestWindowAttention() must only be called from main thread");
@@ -1892,7 +1892,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* const window)
 {
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
 	            "WindowingAPI::RestoreWindow() must only be called from main thread");
@@ -1909,7 +1909,7 @@ void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
+void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* const window,
                                                        const int32_t minWidth,
                                                        const int32_t minHeight,
                                                        const int32_t maxWidth,
@@ -2019,8 +2019,8 @@ std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExte
 
 //Creates a Vulkan surface for the specified window.
 VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
-                                                           const InternalWindow* window,
-                                                           const VkAllocationCallbacks* allocator,
+                                                           const InternalWindow* const window,
+                                                           const VkAllocationCallbacks* const allocator,
                                                            VkSurfaceKHR& surface)
 {
 	TRAP_ASSERT(instance, "[Vulkan] Instance is nullptr!");
@@ -2161,7 +2161,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult r
 
 //Notifies shared code of a cursor motion event
 //The position is specified in content area relative screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const double xPos, const double yPos)
+void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* const window, const double xPos, const double yPos)
 {
 	TRAP_ASSERT(window != nullptr);
 	TRAP_ASSERT(xPos > -std::numeric_limits<float>::max());
@@ -2183,7 +2183,7 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a physical key event
-void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t,
+void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* const window, Input::Key key, const int32_t,
                                             Input::KeyState state)
 {
 	TRAP_ASSERT(window != nullptr);
@@ -2214,7 +2214,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key k
 
 //Notifies shared code of a Unicode codepoint input event
 //The 'plain' parameter determines whether to emit a regular character event
-void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const uint32_t codePoint)
+void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* const window, const uint32_t codePoint)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2228,7 +2228,7 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a mouse button click event
-void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, const Input::MouseButton button,
+void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* const window, const Input::MouseButton button,
                                                    const Input::KeyState state)
 {
 	TRAP_ASSERT(window != nullptr);
@@ -2247,7 +2247,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a scroll event
-void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset,
+void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* const window, const double xOffset,
                                                const double yOffset)
 {
 	TRAP_ASSERT(window != nullptr);
@@ -2263,7 +2263,7 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a cursor enter/leave event
-void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, const bool entered)
+void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(const InternalWindow* const window, const bool entered)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2275,7 +2275,7 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, cons
 
 //Notifies shared code that a window framebuffer has been resized
 //The size is specified in pixels
-void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* window, const int32_t width,
+void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* const window, const int32_t width,
                                                         const int32_t height)
 {
 	TRAP_ASSERT(window != nullptr);
@@ -2290,7 +2290,7 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* wi
 
 //Notifies shared code that a window has been resized
 //The size is specified in screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window, const int32_t width,
+void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* const window, const int32_t width,
                                                    const int32_t height)
 {
 	TRAP_ASSERT(window != nullptr);
@@ -2304,7 +2304,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code that a window has been minimized
-void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* window, const bool restored)
+void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* const window, const bool restored)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2315,7 +2315,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* win
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code that a window has been maximized
-void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* window, const bool restored)
+void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* const window, const bool restored)
 {
 	if (window->Callbacks.Maximize)
 		window->Callbacks.Maximize(window, !restored);
@@ -2325,7 +2325,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* win
 
 //Notifies shared code that a window has moved
 //The position is specified in content area relative screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* window, const int32_t x, const int32_t y)
+void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* const window, const int32_t x, const int32_t y)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2336,7 +2336,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* window, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code that the user wishes to close a window
-void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* const window)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2349,7 +2349,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* windo
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of files or directories dropped on a window
-void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* window, const std::vector<std::string>& paths)
+void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* const window, const std::vector<std::string>& paths)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2360,7 +2360,7 @@ void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code that a window has lost or received input focus
-void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, const bool focused)
+void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* const window, const bool focused)
 {
 	TRAP_ASSERT(window != nullptr);
 
@@ -2404,7 +2404,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Retrieves the available modes for the specified monitor
-bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* monitor)
+bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* const monitor)
 {
 	if (!monitor->Modes.empty())
 		return true;
@@ -2488,10 +2488,10 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Lexically compare video modes, used by qsort
-int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* fp, const void* sp)
+int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* const fp, const void* const sp)
 {
-	const InternalVideoMode* fm = static_cast<const InternalVideoMode*>(fp);
-	const InternalVideoMode* sm = static_cast<const InternalVideoMode*>(sp);
+	const InternalVideoMode* const fm = static_cast<const InternalVideoMode*>(fp);
+	const InternalVideoMode* const sm = static_cast<const InternalVideoMode*>(sp);
 	const int32_t fbpp = fm->RedBits + fm->GreenBits + fm->BlueBits;
 	const int32_t sbpp = sm->RedBits + sm->GreenBits + sm->BlueBits;
 	const int32_t farea = fm->Width * fm->Height;
@@ -2536,7 +2536,7 @@ void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Chooses the video mode most closely matching the desired one
-TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor,
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* const monitor,
                                                                                                const InternalVideoMode& desired)
 {
 	uint32_t leastSizeDiff = std::numeric_limits<uint32_t>::max();
@@ -2549,7 +2549,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 
 	for (auto& mode : monitor->Modes)
 	{
-		InternalVideoMode* current = &mode;
+		InternalVideoMode* const current = &mode;
 
 		uint32_t colorDiff = 0;
 
@@ -2648,7 +2648,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* const window)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 
@@ -2657,7 +2657,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* window, const bool value)
+void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* const window, const bool value)
 {
 	TRAP_ASSERT(window, "[Window] Window is nullptr!");
 

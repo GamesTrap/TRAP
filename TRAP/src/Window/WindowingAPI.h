@@ -3646,7 +3646,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="window">Internal window which is meant.</param>
 		/// <param name="entered">Whether the cursor entered or leaved the window.</param>
-		static void InputCursorEnter(InternalWindow* window, bool entered);
+		static void InputCursorEnter(const InternalWindow* window, bool entered);
 		/// <summary>
 		/// Notifies shared code that a window framebuffer has been resized.
 		/// The size is specified in pixels.
@@ -3928,7 +3928,7 @@ namespace TRAP::INTERNAL
 		/// <param name="event">X11 event.</param>
 		/// <param name="pointer">Pointer to the window.</param>
 		/// <returns>True if it is a _NET_FRAME_EXTENTS event for the specified window, false otherwise.</returns>
-		static bool IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer);
+		static bool IsFrameExtentsEvent(const Display* display, const XEvent* event, XPointer pointer);
 		/// <summary>
 		/// Wait for data to arrive on any of the specified file descriptors
 		/// </summary>
@@ -3980,13 +3980,13 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window to update hints for.</param>
 		/// <param name="width">Width of the window.</param>
 		/// <param name="height">Height of the window.</param>
-		static void UpdateNormalHints(InternalWindow* window, int32_t width, int32_t height);
+		static void UpdateNormalHints(const InternalWindow* const window, int32_t width, int32_t height);
 		/// <summary>
 		/// Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses.
 		/// </summary>
 		/// <param name="window">Internal window to wait for.</param>
 		/// <returns>True if a VisibilityNotify event was received, false otherwise.</returns>
-		static bool WaitForVisibilityNotify(InternalWindow* window);
+		static bool WaitForVisibilityNotify(const InternalWindow* const window);
 		/// <summary>
 		/// Updates the full screen status of the window.
 		/// </summary>
@@ -4024,7 +4024,7 @@ namespace TRAP::INTERNAL
 		/// <param name="display">X11 display.</param>
 		/// <param name="event">X11 error event.</param>
 		/// <returns>True if the error was handled, false otherwise.</returns>
-		static int32_t ErrorHandler(Display* display, XErrorEvent* event);
+		static int32_t ErrorHandler(Display* const display, XErrorEvent* const event);
 		/// <summary>
 		/// Clears the X error handler callback.
 		/// </summary>
@@ -4072,7 +4072,7 @@ namespace TRAP::INTERNAL
 		/// <param name="event">X11 event.</param>
 		/// <param name="pointer">Pointer to the event.</param>
 		/// <returns>True if the event is a selection event, false otherwise.</returns>
-		static int32_t IsSelectionEvent(Display* display, XEvent* event, XPointer pointer);
+		static int32_t IsSelectionEvent(Display* const display, XEvent* const event, XPointer pointer);
 		/// <summary>
 		/// Set the specified property to the selection converted to the requested target.
 		/// </summary>

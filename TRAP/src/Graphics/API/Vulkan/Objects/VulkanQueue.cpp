@@ -216,7 +216,7 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 	uint32_t presentIndex = desc.Index;
 
-	const VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
+	const VulkanSwapChain* const sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
 	const VkSwapchainKHR sc = sChain->GetVkSwapChain();
 	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
 

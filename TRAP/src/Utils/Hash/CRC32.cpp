@@ -556,7 +556,7 @@ constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* data, uint64_t length)
+std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* const data, uint64_t length)
 {
 	TP_PROFILE_FUNCTION();
 

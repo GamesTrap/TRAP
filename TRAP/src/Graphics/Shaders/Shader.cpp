@@ -182,7 +182,7 @@ bool TRAP::Graphics::Shader::IsShaderValid() const
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name,
                                                                          const std::filesystem::path& filePath,
-																		 const std::vector<Macro>* userMacros)
+																		 const std::vector<Macro>* const userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -226,7 +226,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
-                                                                         const std::vector<Macro>* userMacros)
+                                                                         const std::vector<Macro>* const userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -273,7 +273,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
                                                                            const std::string& glslSource,
-																		   const std::vector<Macro>* userMacros)
+																		   const std::vector<Macro>* const userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -347,7 +347,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
                                             std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
                                             RendererAPI::ShaderStage& shaderStages,
-											const std::vector<Macro>* userMacros)
+											const std::vector<Macro>* const userMacros)
 {
 	RendererAPI::ShaderStage currentShaderStage = RendererAPI::ShaderStage::None;
 	const std::vector<std::string> lines = Utils::String::GetLines(glslSource);
@@ -471,7 +471,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConversion(const char* source,
+TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConversion(const char* const source,
 	                                                                              	   const RendererAPI::ShaderStage stage,
 	                                                                              	   std::string& preProcessedSource)
 {
@@ -505,7 +505,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
+bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* const shader)
 {
 	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
@@ -524,7 +524,7 @@ bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* shader, glslang::TProgram& program)
+bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* const shader, glslang::TProgram& program)
 {
 	if(shader)
 		program.addShader(shader);
@@ -633,7 +633,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 		if (preProcessedSource.empty())
 			return{};
 
-		const char* preProcessedCStr = preProcessedSource.c_str();
+		const char* const preProcessedCStr = preProcessedSource.c_str();
 		glslShaders[i]->setStrings(&preProcessedCStr, 1);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -822,7 +822,7 @@ bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesystem::path& filePath,
-                                     const std::vector<Macro>* userMacros,
+                                     const std::vector<Macro>* const userMacros,
 									 RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader)
 {
 	std::string glslSource;

@@ -98,7 +98,7 @@ TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
 	//Check if machine is using little-endian or big-endian
 	const int32_t intVal = 1;
-	const uint8_t* uVal = reinterpret_cast<const uint8_t*>(&intVal);
+	const uint8_t* const uVal = reinterpret_cast<const uint8_t*>(&intVal);
 #if __cpp_lib_endian
 	static Endian endian = static_cast<Endian>(std::endian::native == std::endian::little);
 #else

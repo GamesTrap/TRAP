@@ -146,7 +146,7 @@ VkDebugMarkerMarkerInfoEXT TRAP::Graphics::API::VulkanInits::DebugMarkerMarkerIn
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* pNext,
+VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* const pNext,
                                                                       const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
 																	  const std::vector<const char*>& deviceExtensions) noexcept
 {
@@ -243,7 +243,7 @@ VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetL
 
 VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
 	                                                                                                      const uint32_t entryCount,
-	                                                                                                      VkDescriptorUpdateTemplateEntry* entries,
+	                                                                                                      const VkDescriptorUpdateTemplateEntry* const entries,
 	                                                                                                      const VkPipelineBindPoint bindPoint,
 	                                                                                                      VkPipelineLayout pipelineLayout,
 	                                                                                                      const uint32_t setIndex) noexcept
@@ -690,9 +690,9 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const uint32_t layoutCount,
-	                                                                                  VkDescriptorSetLayout* layouts,
+	                                                                                  const VkDescriptorSetLayout* const layouts,
 	                                                                                  const uint32_t pushConstantRangeCount,
-	                                                                                  VkPushConstantRange* pushConstants) noexcept
+	                                                                                  const VkPushConstantRange* const pushConstants) noexcept
 {
 	VkPipelineLayoutCreateInfo info;
 
@@ -792,9 +792,9 @@ VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShader
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const uint32_t inputBindingCount,
-	                                                                                                      VkVertexInputBindingDescription* inputBindings,
+	                                                                                                      const VkVertexInputBindingDescription* const inputBindings,
 	                                                                                                      const uint32_t inputAttributeCount,
-	                                                                                                      VkVertexInputAttributeDescription* inputAttributes) noexcept
+	                                                                                                      const VkVertexInputAttributeDescription* const inputAttributes) noexcept
 {
 	VkPipelineVertexInputStateCreateInfo info;
 
@@ -929,7 +929,7 @@ VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCre
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(const uint32_t stageCount,
-	                                                                                      VkPipelineShaderStageCreateInfo* stages,
+	                                                                                      const VkPipelineShaderStageCreateInfo* const stages,
 	                                                                                      const VkPipelineVertexInputStateCreateInfo& vi,
 	                                                                                      const VkPipelineInputAssemblyStateCreateInfo& ia,
 	                                                                                      const VkPipelineViewportStateCreateInfo& vs,

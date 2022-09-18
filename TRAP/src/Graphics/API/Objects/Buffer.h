@@ -67,7 +67,7 @@ namespace TRAP::Graphics
 		/// Note: MapBuffer must not be called if memory usage is GPU only.
 		/// </summary>
 		/// <param name="range">Optional range of the buffer to map. Default: Whole buffer.</param>
-		virtual void MapBuffer(RendererAPI::ReadRange* range) = 0;
+		virtual void MapBuffer(const RendererAPI::ReadRange* const range) = 0;
 		/// <summary>
 		/// Unmap CPU mapped memory region.
 		///

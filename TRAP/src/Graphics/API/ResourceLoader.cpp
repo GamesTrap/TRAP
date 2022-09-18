@@ -28,7 +28,7 @@ static constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loader)
+void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* const loader)
 {
 	TRAP_ASSERT(loader);
 
@@ -231,8 +231,8 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Gra
 
 bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t width, const uint32_t height,
 	                                                         const TRAP::Graphics::API::ImageFormat fmt,
-															 uint64_t* outNumBytes, uint64_t* outRowBytes,
-															 uint64_t* outNumRows)
+															 uint64_t* const outNumBytes, uint64_t* const outRowBytes,
+															 uint64_t* const outNumRows)
 {
 	uint64_t numBytes = 0;
 	uint64_t rowBytes = 0;
@@ -303,7 +303,7 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceLoaderDesc* desc)
+TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceLoaderDesc* const desc)
 	: m_desc(desc ? *desc : DefaultResourceLoaderDesc),
 	  m_run(true),
 	  m_tokenCompleted(0),
@@ -329,7 +329,7 @@ TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* const token)
 {
 	const uint64_t stagingBufferSize = m_copyEngine.BufferSize;
 	const bool update = desc.Data || desc.ForceReset;
@@ -356,7 +356,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 			//The data is too large for a single staging buffer copy, so perform it in stages.
 
 			//Save the data parameter so we can restore it later.
-			const void* data = desc.Data;
+			const void* const data = desc.Data;
 
 			RendererAPI::BufferUpdateDesc updateDesc{};
 			updateDesc.Buffer = desc.Buffer;
@@ -406,7 +406,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* const token)
 {
 	TRAP_ASSERT(textureDesc.Texture);
 
@@ -496,7 +496,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* const token)
 {
 	if (desc.Internal.MappedRange.Flags & static_cast<uint32_t>(MappedRangeFlag::UnMapBuffer))
 		desc.Buffer->UnMapBuffer();
@@ -512,7 +512,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferU
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* const token)
 {
 	TextureUpdateDescInternal internalDesc = {};
 	internalDesc.Texture = desc.Texture;
@@ -560,14 +560,14 @@ TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastToken
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* token) const
+bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* const token) const
 {
 	return *token <= m_tokenCompleted;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const token)
 {
 	std::unique_lock<std::mutex> lock(m_tokenMutex);
 	while (!IsTokenCompleted(token))
@@ -595,7 +595,7 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 
 void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer,
                                                              const RendererAPI::ResourceState state,
-															 SyncToken* token)
+															 SyncToken* const token)
 {
 	SyncToken t = 0;
 	{
@@ -618,7 +618,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc,
-                                                            SyncToken* token)
+                                                            SyncToken* const token)
 {
 	SyncToken t{};
 	{
@@ -642,7 +642,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc,
-											               SyncToken* token)
+											               SyncToken* const token)
 {
 	SyncToken t{};
 	{
@@ -663,7 +663,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::Te
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate,
-															 SyncToken* token)
+															 SyncToken* const token)
 {
 	TRAP_ASSERT(textureUpdate.Range.Buffer);
 
@@ -688,7 +688,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* const token)
 {
 	SyncToken t{};
 	{
@@ -708,8 +708,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::Te
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Texture* texture,
-                                                              const RendererAPI::ResourceState state, SyncToken* token)
+void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Texture* const texture,
+                                                              const RendererAPI::ResourceState state, SyncToken* const token)
 {
 	SyncToken t{};
 	{
@@ -747,7 +747,7 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 	{
 		const TRAP::Ref<Buffer> buffer = resSet.Buffer;
 		TRAP_ASSERT(buffer->GetCPUMappedAddress());
-		uint8_t* dstData = static_cast<uint8_t*>(buffer->GetCPUMappedAddress()) + offset;
+		uint8_t* const dstData = static_cast<uint8_t*>(buffer->GetCPUMappedAddress()) + offset;
 		m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace = offset + memoryRequirement;
 		return { dstData, std::move(buffer), offset, memoryRequirement };
 	}
@@ -909,12 +909,12 @@ bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* texture,
-                                                                CommandBuffer* cmd)
+void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* const texture,
+                                                                CommandBuffer* const cmd)
 {
 	//Check if image format supports linear blitting
 	VkFormatProperties formatProperties;
-	const TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
+	const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			RendererAPI::GetRenderer()
 		);
@@ -959,7 +959,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 		blit.dstSubresource.baseArrayLayer = 0;
 		blit.dstSubresource.layerCount = 1;
 
-		const auto* vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
+		const auto* const vkTexture = dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(texture);
 
 		vkCmdBlitImage(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(),
 			           vkTexture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
@@ -988,7 +988,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	TRAP_ASSERT(buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly ||
 		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU);
 
-	const CommandBuffer* cmd = AcquireCmd(activeSet);
+	const CommandBuffer* const cmd = AcquireCmd(activeSet);
 
 	const RendererAPI::MappedMemoryRange range = bufferUpdateDesc.Internal.MappedRange;
 	cmd->UpdateBuffer(buffer, bufferUpdateDesc.DstOffset, range.Buffer, range.Offset, range.Size);
@@ -1005,9 +1005,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
 	const bool dataAlreadyFilled = textureUpdateDesc.Range.Buffer != nullptr;
-	TRAP::Graphics::Texture* texture = textureUpdateDesc.Texture;
+	TRAP::Graphics::Texture* const texture = textureUpdateDesc.Texture;
 	const TRAP::Graphics::API::ImageFormat format = texture->GetImageFormat();
-	CommandBuffer* cmd = AcquireCmd(activeSet);
+	CommandBuffer* const cmd = AcquireCmd(activeSet);
 
 	const uint64_t sliceAlignment = UtilGetTextureSubresourceAlignment(format);
 	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
@@ -1066,7 +1066,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			const uint64_t subNumRows = numRows;
 			const uint32_t subDepth = d;
 			const uint64_t subRowSize = rowBytes;
-			uint8_t* data = upload.Data + offset;
+			uint8_t* const data = upload.Data + offset;
 
 			if(!dataAlreadyFilled)
 			{
@@ -1083,7 +1083,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 					else
 						pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
 
-					uint8_t* dstData = data + subSlicePitch * z;
+					uint8_t* const dstData = data + subSlicePitch * z;
 					for(uint64_t r = 0; r < subNumRows; ++r)
 						std::copy_n(pixelData + r * subRowSize, subRowSize, dstData + r * subRowPitch);
 				}
@@ -1146,7 +1146,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	else
 	{
 		//Use already in memory images
-		for(const auto* img : textureLoadDesc.Images)
+		for(const auto* const img : textureLoadDesc.Images)
 		{
 			if(!img)
 			{
@@ -1291,7 +1291,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			TRAP::Scope<TRAP::Image> baseImg = nullptr;
 			if(!textureLoadDesc.Images[0])
 				baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
-			const TRAP::Image* baseImgPtr = textureLoadDesc.Images[0] ? textureLoadDesc.Images[0] : baseImg.get();
+			const TRAP::Image* const baseImgPtr = textureLoadDesc.Images[0] ? textureLoadDesc.Images[0] : baseImg.get();
 
 			bool valid = true;
 			if(baseImgPtr->GetWidth() > baseImgPtr->GetHeight()) //Horizontal
@@ -1440,7 +1440,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	TRAP::Ref<Texture> texture = textureCopy.Texture;
 	const ImageFormat format = texture->GetImageFormat();
 
-	CommandBuffer* cmd = AcquireCmd(activeSet);
+	const CommandBuffer* const cmd = AcquireCmd(activeSet);
 
 	if(textureCopy.WaitSemaphore)
 		m_copyEngine.WaitSemaphores.push_back(textureCopy.WaitSemaphore);

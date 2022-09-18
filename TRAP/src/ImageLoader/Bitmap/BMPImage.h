@@ -114,7 +114,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="compressedImageData">Compressed image data.</param>
 		/// <param name="colorTable">Color table.</param>
-		void DecodeRLE8(std::vector<uint8_t>& compressedImageData, std::vector<uint8_t>* colorTable);
+		void DecodeRLE8(std::vector<uint8_t>& compressedImageData, const std::vector<uint8_t>* colorTable);
 
 		std::vector<uint8_t> m_data;
 	};

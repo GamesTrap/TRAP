@@ -39,7 +39,7 @@ TRAP::Network::Packet::Packet()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::Packet::Append(const void* data, const std::size_t sizeInBytes)
+void TRAP::Network::Packet::Append(const void* const data, const std::size_t sizeInBytes)
 {
 	if(!data || (sizeInBytes == 0))
 		return;
@@ -261,7 +261,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
 {
 	//First extract string length
 	uint32_t length = 0;
@@ -303,7 +303,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* const data)
 {
 	//First extract string length
 	uint32_t length = 0;
@@ -514,7 +514,7 @@ const void* TRAP::Network::Packet::OnSend(std::size_t& size)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::Packet::OnReceive(const void* data, const std::size_t size)
+void TRAP::Network::Packet::OnReceive(const void* const data, const std::size_t size)
 {
 	Append(data, size);
 }

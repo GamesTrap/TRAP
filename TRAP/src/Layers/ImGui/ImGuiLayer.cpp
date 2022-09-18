@@ -89,7 +89,7 @@ void TRAP::ImGuiLayer::OnAttach()
 
 	SetDarkThemeColors();
 
-	INTERNAL::WindowingAPI::InternalWindow* window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>
+	INTERNAL::WindowingAPI::InternalWindow* const window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	(
 		Application::GetWindow()->GetInternalWindow()
 	);
@@ -101,7 +101,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI());
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
+		const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
@@ -174,7 +174,7 @@ void TRAP::ImGuiLayer::OnDetach()
 		if(tempFolder)
 			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
 		m_imguiPipelineCache.reset();
-		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
+		const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
@@ -222,7 +222,7 @@ void TRAP::ImGuiLayer::Begin()
 	{
 		//Bind SwapChain RenderTarget if no RenderPass is active
 		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
-		const auto* vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+		const auto* const vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			winData.GraphicCommandBuffers[winData.ImageIndex]
 		);
@@ -322,7 +322,7 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, TRAP::Graphics::Sampler* sampler, const ImVec2& size,
+void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics::Sampler* const sampler, const ImVec2& size,
                   const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
 	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
@@ -331,7 +331,7 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, TRAP::Graphics::Samp
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
 		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
-		const auto* vkSampler = dynamic_cast<TRAP::Graphics::API::VulkanSampler*>(sampler);
+		const auto* const vkSampler = dynamic_cast<const TRAP::Graphics::API::VulkanSampler*>(sampler);
 		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(vkSampler->GetVkSampler(), vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
@@ -359,10 +359,10 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float sizePixels,
-							      const ImFontConfig* fontCfgTemplate, const ImWchar* glyphRanges)
+							      const ImFontConfig* const fontCfgTemplate, const ImWchar* const glyphRanges)
 {
 	//Add font like normally
-	ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
+	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_UploadFontsTexture();
@@ -376,10 +376,10 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float s
 //-------------------------------------------------------------------------------------------------------------------//
 
 ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, const float sizePixels,
-								    const ImFontConfig* fontCfg, const ImWchar* glyphRanges)
+								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
 	//Add font like normally
-	ImFont* font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData, fontSize, sizePixels, fontCfg, glyphRanges);
+	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData, fontSize, sizePixels, fontCfg, glyphRanges);
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_UploadFontsTexture();

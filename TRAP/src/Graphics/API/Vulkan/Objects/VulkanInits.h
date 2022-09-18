@@ -144,7 +144,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkDescriptorUpdateTemplateCreateInfo.</returns>
 	VkDescriptorUpdateTemplateCreateInfo DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
 		                                                                    uint32_t entryCount,
-		                                                                    VkDescriptorUpdateTemplateEntry* entries,
+		                                                                    const VkDescriptorUpdateTemplateEntry* const entries,
 		                                                                    VkPipelineBindPoint bindPoint,
 		                                                                    VkPipelineLayout pipelineLayout,
 		                                                                    uint32_t setIndex) noexcept;
@@ -392,9 +392,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="pushConstantRangeCount">Number of push constant ranges.</param>
 	/// <param name="pushConstants">Vulkan push constant ranges.</param>
 	/// <returns>VkPipelineLayoutCreateInfo.</returns>
-	VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(uint32_t layoutCount, VkDescriptorSetLayout* layouts,
+	VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(uint32_t layoutCount, const VkDescriptorSetLayout* const layouts,
 	                                                    uint32_t pushConstantRangeCount,
-														VkPushConstantRange* pushConstants) noexcept;
+														const VkPushConstantRange* const pushConstants) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline color blend state create info.
@@ -446,9 +446,9 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="inputAttributes">Vulkan vertex input attribute descriptions.</param>
 	/// <returns>VkPipelineVertexInputStateCreateInfo.</returns>
 	VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(uint32_t inputBindingCount,
-		                                                                    VkVertexInputBindingDescription* inputBindings,
+		                                                                    const VkVertexInputBindingDescription* const inputBindings,
 		                                                                    uint32_t inputAttributeCount,
-		                                                                    VkVertexInputAttributeDescription* inputAttributes) noexcept;
+		                                                                    const VkVertexInputAttributeDescription* const inputAttributes) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline input assembly state create info.
@@ -525,7 +525,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="renderPass">Vulkan render pass.</param>
 	/// <returns>VkGraphicsPipelineCreateInfo.</returns>
 	VkGraphicsPipelineCreateInfo GraphicsPipelineCreateInfo(uint32_t stageCount,
-															VkPipelineShaderStageCreateInfo* stages,
+															const VkPipelineShaderStageCreateInfo* const stages,
 															const VkPipelineVertexInputStateCreateInfo& vi,
 															const VkPipelineInputAssemblyStateCreateInfo& ia,
 															const VkPipelineViewportStateCreateInfo& vs,

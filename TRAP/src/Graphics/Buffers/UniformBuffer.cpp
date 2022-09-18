@@ -18,7 +18,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(void* data,
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const void* const data,
 																				 const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
@@ -65,7 +65,7 @@ const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::UniformBuffer::SetData(const void* data, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
 {
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize());
@@ -118,7 +118,7 @@ uint64_t TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const uint64_t byte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(void* data, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const void* const data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));

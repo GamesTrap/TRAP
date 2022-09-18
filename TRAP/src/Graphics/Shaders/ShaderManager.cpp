@@ -10,7 +10,7 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
-    																      const std::vector<Shader::Macro>* userMacros)
+    																      const std::vector<Shader::Macro>* const userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -30,7 +30,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::string& name,
 																          const std::filesystem::path& filepath,
-																          const std::vector<Shader::Macro>* userMacros)
+																          const std::vector<Shader::Macro>* const userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -48,7 +48,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(const std::string& name,
 														              		const std::string& glslSource,
-																      		const std::vector<Shader::Macro>* userMacros)
+																      		const std::vector<Shader::Macro>* const userMacros)
 {
 	TP_PROFILE_FUNCTION();
 

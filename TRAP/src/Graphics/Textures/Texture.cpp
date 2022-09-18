@@ -207,7 +207,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 																			 const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
-	            [](const Image* img) { return img == nullptr; }), "An Image is nullptr!");
+	            [](const Image* const img) { return img == nullptr; }), "An Image is nullptr!");
 
 	TP_PROFILE_FUNCTION();
 
@@ -688,7 +688,7 @@ TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Texture::Update(const void* data, const uint32_t sizeInBytes, const uint32_t mipLevel,
+void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t sizeInBytes, const uint32_t mipLevel,
                                      const uint32_t arrayLayer)
 {
 	TRAP_ASSERT(data, "Update: Data is nullptr!");

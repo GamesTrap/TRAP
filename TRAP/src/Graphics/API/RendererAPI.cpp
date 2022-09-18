@@ -20,7 +20,7 @@
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
-std::unordered_map<TRAP::Window*,
+std::unordered_map<const TRAP::Window*,
                    TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
@@ -216,7 +216,7 @@ TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMain
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(Window* window)
+TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(const Window* window)
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -229,12 +229,12 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
+void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const auto* winData = s_perWindowDataMap[window].get();
+	const auto* const winData = s_perWindowDataMap[window].get();
 
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 #ifndef TRAP_HEADLESS_MODE
@@ -259,8 +259,11 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::StopRenderPass(Window* window)
+void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 {
+	if(!window)
+		window = TRAP::Application::GetWindow();
+
 	GetRenderer()->BindRenderTarget(nullptr, nullptr, nullptr, nullptr, nullptr, static_cast<uint32_t>(-1),
 	                                static_cast<uint32_t>(-1), window);
 }
@@ -288,7 +291,7 @@ void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> textur
 	cmdPoolDesc.Transient = true;
 	TRAP::Ref<CommandPool> cmdPool = TRAP::Graphics::CommandPool::Create(cmdPoolDesc);
 
-	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer* const cmd = cmdPool->AllocateCommandBuffer(false);
 
 	//Start recording
 	cmd->Begin();
@@ -347,7 +350,7 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::ResizeSwapChain(Window* window)
+void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 {
 	if (!window)
 		window = TRAP::Application::GetWindow();
@@ -357,7 +360,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(Window* window)
+float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -367,7 +370,7 @@ float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(Window* window)
+float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 {
 	if(!window)
 		window = TRAP::Application::GetWindow();
@@ -524,7 +527,7 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(TRAP::Window* window)
+uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
 {
 	TRAP_ASSERT(window, "Window is nullptr!");
 

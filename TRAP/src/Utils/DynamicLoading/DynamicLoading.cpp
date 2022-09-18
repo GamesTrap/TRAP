@@ -14,7 +14,7 @@ void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::DynamicLoading::FreeLibrary(void* module)
+void TRAP::Utils::DynamicLoading::FreeLibrary(void* const module)
 {
 #ifdef TRAP_PLATFORM_WINDOWS
 	FreeLibrary(static_cast<HMODULE>(module));

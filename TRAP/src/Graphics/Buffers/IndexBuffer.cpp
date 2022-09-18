@@ -4,7 +4,7 @@
 #include "Graphics/API/Objects/Buffer.h"
 #include "VertexBufferLayout.h"
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t* const indices, const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
@@ -14,7 +14,7 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint16_t* indices, const uint64_t size,
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint16_t* const indices, const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
 	TP_PROFILE_FUNCTION();
@@ -72,21 +72,21 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(uint16_t* indices, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(const uint16_t* const indices, const uint64_t size, const uint64_t offset)
 {
 	SetDataInternal(indices, size, offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::SetData(uint32_t* indices, const uint64_t size, const uint64_t offset)
+void TRAP::Graphics::IndexBuffer::SetData(const uint32_t* const indices, const uint64_t size, const uint64_t offset)
 {
 	SetDataInternal(indices, size, offset);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::IndexBuffer::Use(Window* window) const
+void TRAP::Graphics::IndexBuffer::Use(const Window* const window) const
 {
 	RendererAPI::GetRenderer()->BindIndexBuffer(m_indexBuffer, m_indexType, window);
 }

@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t* size, void* data) const
+void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t* const size, void* const data) const
 {
 	TRAP_ASSERT(m_device);
 

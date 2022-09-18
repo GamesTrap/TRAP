@@ -11,7 +11,7 @@ bool steamInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 #ifdef USE_STEAMWORKS_SDK
-void SteamLogCallback(const int32_t severity, const char* msg)
+void SteamLogCallback(const int32_t severity, const char* const msg)
 {
     if(severity == 0)
         TP_INFO(TRAP::Log::SteamworksSDKPrefix, msg);

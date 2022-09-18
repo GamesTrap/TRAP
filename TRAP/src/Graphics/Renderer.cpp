@@ -131,7 +131,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, VertexBuffer* vertexBuffer, const Math::Mat4& transform)
+void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
 	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
 
@@ -158,7 +158,7 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, VertexBuffer* vertexBu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer,
+void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
 									  const Math::Mat4& transform)
 {
 	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");

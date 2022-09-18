@@ -29,7 +29,7 @@ TRAP::Network::IPv6Address::IPv6Address(const std::string address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address::IPv6Address(const char* address)
+TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	: m_address(), m_valid(false)
 {
 	Resolve(address);
