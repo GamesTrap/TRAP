@@ -1155,17 +1155,20 @@ void ImGui_ImplVulkan_NewFrame()
     IM_UNUSED(bd);
 
     //Delete old descriptor sets and increase frame count
-    for(std::unordered_map<VkDescriptorSet, uint32_t>::iterator it = g_AllocatedDescriptorSets.begin(); it != g_AllocatedDescriptorSets.end(); ++it)
+    for(auto it = g_AllocatedDescriptorSets.begin(); it != g_AllocatedDescriptorSets.end();)
     {
         if(it->second > TRAP::Graphics::RendererAPI::ImageCount)
         {
             VkCall(vkFreeDescriptorSets(v->Device, v->DescriptorPool, 1, &it->first));
             it = g_AllocatedDescriptorSets.erase(it);
-            if(it == nullptr)
-                break;
+            continue; //Do next iteration so it also gets erased when needed
         }
 
-        it->second++;
+        if(it != g_AllocatedDescriptorSets.end())
+        {
+            it->second++;
+            it++;
+        }
     }
 }
 
