@@ -3223,3 +3223,4 @@ SITREP 09/19/2022|22w38a1
     - Texture/ShaderManager made sure that fallback textures/shaders are still available after Clean() is called ~<15 mins
     - ImGuiLayer/ImGuiVulkanBackend Added tracking of used descriptor sets and freeing them after RendererAPI::ImageCount frames ~<20 mins
     - Texture/ShaderManager Fixed fallback textures/shaders not deleting on TRAP::Application destructor ~<5 mins
+    - ImGuiVulkanBackend Fixed ImGui_ImplVulkan_NewFrame() auto deduction failing ~<5 mins
