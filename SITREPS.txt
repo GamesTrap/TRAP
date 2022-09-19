@@ -3222,3 +3222,4 @@ SITREP 09/19/2022|22w38a1
     - Changed TRAP Engine version to 22w38a1(0.8.44)
     - Texture/ShaderManager made sure that fallback textures/shaders are still available after Clean() is called ~<15 mins
     - ImGuiLayer/ImGuiVulkanBackend Added tracking of used descriptor sets and freeing them after RendererAPI::ImageCount frames ~<20 mins
+    - Texture/ShaderManager Fixed fallback textures/shaders not deleting on TRAP::Application destructor ~<5 mins
