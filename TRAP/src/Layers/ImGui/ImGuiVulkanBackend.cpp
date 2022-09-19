@@ -31,6 +31,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandBuffer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Objects/Fence.h"
 
@@ -166,7 +167,7 @@ struct ImGui_ImplVulkan_Data
     {}
 };
 
-std::unordered_map<VkDescriptorSet, uint32_t> g_AllocatedDescriptorSets;
+std::vector<VkDescriptorPool> g_DescriptorPools;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -635,8 +636,6 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
     }
 
     bd->FontDescriptorSet = static_cast<VkDescriptorSet>(ImGui_ImplVulkan_AddTexture(bd->FontSampler, bd->FontView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
-    if(g_AllocatedDescriptorSets.find(bd->FontDescriptorSet) != g_AllocatedDescriptorSets.end())
-        g_AllocatedDescriptorSets.erase(bd->FontDescriptorSet);
 
     // Create the Upload Buffer:
     {
@@ -1110,6 +1109,9 @@ bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_
 
     ImGui_ImplVulkan_CreateDeviceObjects();
 
+    if(info->DescriptorPool)
+        g_DescriptorPools.push_back(info->DescriptorPool);
+
     // Our render function expect RendererUserData to be storing the window render buffer we need (for the main viewport we won't use ->Window)
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
     main_viewport->RendererUserData = IM_NEW(ImGui_ImplVulkan_ViewportData)();
@@ -1127,9 +1129,14 @@ void ImGui_ImplVulkan_Shutdown()
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(bd != nullptr && "No renderer backend to shutdown, or already shutdown?");
     ImGuiIO& io = ImGui::GetIO();
+    const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
     // First destroy objects in all viewports
     ImGui_ImplVulkan_DestroyDeviceObjects();
+
+    for(VkDescriptorPool& descPool : g_DescriptorPools)
+        vkDestroyDescriptorPool(v->Device, descPool, v->Allocator);
+    g_DescriptorPools.clear();
 
     // Manually delete main viewport render data in-case we haven't initialized for viewports
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
@@ -1139,6 +1146,8 @@ void ImGui_ImplVulkan_Shutdown()
 
     // Clean up windows
     ImGui_ImplVulkan_ShutdownPlatformInterface();
+
+    ImGui_ImplVulkan_ClearCache();
 
     io.BackendRendererName = nullptr;
     io.BackendRendererUserData = nullptr;
@@ -1150,26 +1159,8 @@ void ImGui_ImplVulkan_Shutdown()
 void ImGui_ImplVulkan_NewFrame()
 {
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
     IM_ASSERT(bd != nullptr && "Did you call ImGui_ImplVulkan_Init()?");
     IM_UNUSED(bd);
-
-    //Delete old descriptor sets and increase frame count
-    for(auto it = g_AllocatedDescriptorSets.begin(); it != g_AllocatedDescriptorSets.end();)
-    {
-        if(it->second > TRAP::Graphics::RendererAPI::ImageCount)
-        {
-            VkCall(vkFreeDescriptorSets(v->Device, v->DescriptorPool, 1, &it->first));
-            it = g_AllocatedDescriptorSets.erase(it);
-            continue; //Do next iteration so it also gets erased when needed
-        }
-
-        if(it != g_AllocatedDescriptorSets.end())
-        {
-            it->second++;
-            it++;
-        }
-    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1617,30 +1608,88 @@ void ImGui_ImplVulkanH_DestroyWindowRenderBuffers(VkDevice device, ImGui_ImplVul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::vector<VkDescriptorPoolSize> g_DescriptorPoolSizes =
+{
+    { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+    { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+    { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+    { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+    { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+    { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+    { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+};
+
+void ImGui_ImplVulkan_CreateNewDescriptorPool()
+{
+    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
+    ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
+
+    VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+
+    VkDescriptorPoolCreateInfo poolInfo = TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(g_DescriptorPoolSizes,
+																				                     1000);
+
+    VkCall(vkCreateDescriptorPool(v->Device, &poolInfo, nullptr, &descriptorPool));
+
+    g_DescriptorPools.push_back(descriptorPool);
+    v->DescriptorPool = descriptorPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+struct VkDetails
+{
+    VkSampler Sampler;
+    VkImageView ImageView;
+    VkImageLayout ImageLayout;
+    VkDescriptorSet DescriptorSet;
+};
+
+static std::unordered_map<void*, VkDetails> s_VulkanTextureCache;
+
 ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout)
 {
-    const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
-    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-
-    // Create Descriptor Set:
+    if(s_VulkanTextureCache.find((void*)imageView) == s_VulkanTextureCache.end())
     {
-        VkDescriptorSetAllocateInfo allocInfo = {};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = v->DescriptorPool;
-        allocInfo.descriptorSetCount = 1;
-        allocInfo.pSetLayouts = &bd->DescriptorSetLayout;
-        const VkResult err = vkAllocateDescriptorSets(v->Device, &allocInfo, &descriptorSet);
-        check_vk_result(err);
+        VkDetails& vulkanDetails = s_VulkanTextureCache[(void*)imageView];
+        vulkanDetails.Sampler = sampler;
+        vulkanDetails.ImageView = imageView;
+        vulkanDetails.ImageLayout = imageLayout;
 
-        //Cache descriptor set so we can free it later
-        if(descriptorSet != VK_NULL_HANDLE)
-            g_AllocatedDescriptorSets[descriptorSet] = 0;
+        const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
+        const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
+        VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+
+        // Create Descriptor Set:
+        {
+            VkDescriptorSetAllocateInfo allocInfo = {};
+            allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+            allocInfo.descriptorPool = v->DescriptorPool;
+            allocInfo.descriptorSetCount = 1;
+            allocInfo.pSetLayouts = &bd->DescriptorSetLayout;
+            VkResult err = vkAllocateDescriptorSets(v->Device, &allocInfo, &descriptorSet);
+            // check_vk_result(err);
+
+            if(descriptorSet == VK_NULL_HANDLE)
+            {
+                ImGui_ImplVulkan_CreateNewDescriptorPool();
+
+                //Try again now with the new pool
+                allocInfo.descriptorPool = v->DescriptorPool;
+                err = vkAllocateDescriptorSets(v->Device, &allocInfo, &descriptorSet);
+                check_vk_result(err);
+            }
+        }
+
+        vulkanDetails.DescriptorSet = descriptorSet;
+        ImGui_ImplVulkan_UpdateTextureInfo(vulkanDetails.DescriptorSet, vulkanDetails.Sampler, vulkanDetails.ImageView, vulkanDetails.ImageLayout);
     }
 
-    ImGui_ImplVulkan_UpdateTextureInfo(descriptorSet, sampler, imageView, imageLayout);
-
-    return (ImTextureID)descriptorSet;
+    return (ImTextureID)s_VulkanTextureCache[(void*)imageView].DescriptorSet;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1667,6 +1716,13 @@ ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, Vk
     }
 
     return (ImTextureID)descriptorSet;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void ImGui_ImplVulkan_ClearCache()
+{
+    s_VulkanTextureCache.clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

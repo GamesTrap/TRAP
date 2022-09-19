@@ -28,6 +28,8 @@
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "FileSystem/FileSystem.h"
 
+#include <imgui_internal.h>
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::ImGuiLayer::ImGuiLayer()
@@ -108,7 +110,6 @@ void TRAP::ImGuiLayer::OnAttach()
 
 		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
 		                                                                                           1000);
-		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
@@ -175,13 +176,14 @@ void TRAP::ImGuiLayer::OnDetach()
 		if(tempFolder)
 			m_imguiPipelineCache->Save(*tempFolder / "ImGui.cache");
 		m_imguiPipelineCache.reset();
-		const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
-		(
-			TRAP::Graphics::RendererAPI::GetRenderer()
-		);
+		// const TRAP::Graphics::API::VulkanRenderer* const renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
+		// (
+		// 	TRAP::Graphics::RendererAPI::GetRenderer()
+		// );
 		if(m_imguiDescriptorPool)
 		{
-			vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
+			//Gets cleard by ImGui_ImplVulkan_Shutdown()
+			// vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
 			m_imguiDescriptorPool = nullptr;
 		}
 		TP_TRACE(Log::ImGuiPrefix, "Finished Vulkan shutdown");
@@ -371,7 +373,13 @@ bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& 
 		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
 												              vkImage->GetSRVVkImageView(),
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		return ImGui::ImageButton(texID, size, uv0, uv1,frame_padding, bg_col, tint_col);
+
+		VkImageView imgView = vkImage->GetSRVVkImageView();
+		std::size_t imgViewHash = 0;
+		TRAP::Utils::HashCombine(imgViewHash, imgView);
+		const ImGuiID imgViewID = static_cast<uint32_t>(imgViewHash);
+
+		return ImGui::ImageButtonEx(imgViewID, texID, size, uv0, uv1, ImVec2(frame_padding, frame_padding), bg_col, tint_col);
 	}
 
 	return false;

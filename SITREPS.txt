@@ -3224,3 +3224,6 @@ SITREP 09/19/2022|22w38a1
     - ImGuiLayer/ImGuiVulkanBackend Added tracking of used descriptor sets and freeing them after RendererAPI::ImageCount frames ~<20 mins
     - Texture/ShaderManager Fixed fallback textures/shaders not deleting on TRAP::Application destructor ~<5 mins
     - ImGuiVulkanBackend Fixed ImGui_ImplVulkan_NewFrame() auto deduction failing ~<5 mins
+    - ImGuiVulkanBackend Reverted new tracking and freeing of used descriptor sets ~<10 mins
+    - ImGuiVulkanBackend Re-added caching of used descriptor sets ~<10 mins
+    - ImGuiVulkanBackend Added automatic creation of DescriptorPools when descriptor set allocation limit is reached ~<10 mins
