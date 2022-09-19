@@ -106,8 +106,9 @@ void TRAP::ImGuiLayer::OnAttach()
 			TRAP::Graphics::RendererAPI::GetRenderer()
 		);
 
-		const VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
-		                                                                                                 1000);
+		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
+		                                                                                           1000);
+		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr,
 		                              &m_imguiDescriptorPool));
 
@@ -354,6 +355,26 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, 
 		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		ImGui::Image(texID, size, uv0, uv1, tint_col, border_col);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, const ImVec2& uv0,
+                        const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+{
+	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
+	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
+	{
+		const auto vkImage = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(image);
+		const ImTextureID texID = ImGui_ImplVulkan_AddTexture(TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(),
+												              vkImage->GetSRVVkImageView(),
+		                                                      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		return ImGui::ImageButton(texID, size, uv0, uv1,frame_padding, bg_col, tint_col);
+	}
+
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

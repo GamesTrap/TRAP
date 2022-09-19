@@ -127,6 +127,22 @@ namespace ImGui
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
 
 	/// <summary>
+	/// Draw an image button with ImGui
+	/// </summary>
+	/// <param name="image">Image to draw.</param>
+	/// <param name="size">Size for the image.</param>
+	/// <param name="uv0">UV0 coordinates.</param>
+	/// <param name="uv1">UV1 coordinates.</param>
+	/// <param name="frame_padding">Frame padding.</param>
+	/// <param name="bg_col">Background color.</param>
+	/// <param name="tint_col">Tint color.</param>
+	/// <returns>True if image button is pressed, false otherwise.</returns>
+    bool ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size,
+	                 const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
+					 int frame_padding = -1, const ImVec4& bg_col = ImVec4(0,0,0,0),
+					 const ImVec4& tint_col = ImVec4(1,1,1,1));
+
+	/// <summary>
 	/// Add a TTF font to ImGui from file.
 	/// </summary>
 	/// <param name="filename">Path to TTF file.</param>
