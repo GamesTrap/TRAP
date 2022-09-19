@@ -256,6 +256,10 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP:
 void TRAP::Graphics::TextureManager::Clean()
 {
 	Textures.clear();
+
+	//Make sure that fallback textures are always available
+	Graphics::TextureManager::Add(Graphics::Texture::CreateFallback2D());
+	Graphics::TextureManager::Add(Graphics::Texture::CreateFallbackCube());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

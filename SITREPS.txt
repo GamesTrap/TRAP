@@ -3217,3 +3217,7 @@ SITREP 09/18/2022|22w37b1
     - Moved some functions from TRAP::Graphics::Renderer to TRAP::Graphics::RenderCommand ~>30 mins
     - Updated all programs ~<30 mins
     - VulkanRenderer Fixed EndGPUFrameProfile() called while a RenderPass may still be active ~<10 mins
+
+SITREP 09/19/2022|22w38a1
+    - Changed TRAP Engine version to 22w38a1(0.8.44)
+    - Texture/ShaderManager made sure that fallback textures/shaders are still available after Clean() is called ~<15 mins

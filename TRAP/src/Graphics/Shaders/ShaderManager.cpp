@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "ShaderManager.h"
 
+#include "Embed.h"
 #include "FileSystem/FileSystem.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -142,6 +143,10 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::
 void TRAP::Graphics::ShaderManager::Clean()
 {
 	Shaders.clear();
+
+	//Make sure that fallback shaders are always available
+	Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader));
+	Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
