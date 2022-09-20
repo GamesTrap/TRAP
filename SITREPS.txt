@@ -3250,3 +3250,6 @@ SITREP 09/20/2022|22w38a2
     - TRAP-Editor now uses a copy of the scene to use for playing state, preserving the original scene ~<10 mins
     - TRAP-Editor Merged PropertiesPanel into SceneGraphPanel ~<10 mins
     - TRAP-Editor Added keyboard shortcuts for entity duplication/deletion ~<15 mins
+    - Added Box2D as submodule ~<5 mins
+    - Premake Added support for Box2D ~<5 mins
+    - Updated all premake scripts ~<5 mins

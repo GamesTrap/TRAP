@@ -30,7 +30,8 @@ project "Tests3D"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
-		"%{IncludeDir.VMA}"
+		"%{IncludeDir.VMA}",
+		"%{IncludeDir.BOX2D}"
 	}
 
 	links "TRAP"
@@ -45,6 +46,7 @@ project "Tests3D"
 			"GLSLang",
 			"SPIRV",
 			"GLSLang-Default-Resource-Limits",
+			"Box2D",
 
 			"dl",
 			"pthread",

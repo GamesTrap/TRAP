@@ -54,6 +54,7 @@ project "TRAP"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
+		"%{IncludeDir.BOX2D}"
 	}
 
 	links
@@ -66,7 +67,8 @@ project "TRAP"
 		"SPIRV",
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL"
+		"SPIRV-Cross-HLSL",
+		"Box2D"
 	}
 
 	defines "YAML_CPP_STATIC_DEFINE"
@@ -257,7 +259,8 @@ project "TRAP-Headless"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
-		"%{IncludeDir.VMA}"
+		"%{IncludeDir.VMA}",
+		"%{IncludeDir.BOX2D}"
 	}
 
 	links
@@ -270,7 +273,8 @@ project "TRAP-Headless"
 		"SPIRV",
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
-		"SPIRV-Cross-HLSL"
+		"SPIRV-Cross-HLSL",
+		"Box2D"
 	}
 
 	defines

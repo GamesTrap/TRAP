@@ -30,7 +30,8 @@ project "TestsNetwork"
 		"%{IncludeDir.ENTT}",
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
-		"%{IncludeDir.VMA}"
+		"%{IncludeDir.VMA}",
+		"%{IncludeDir.BOX2D}"
 	}
 
 	links "TRAP-Headless"
@@ -47,6 +48,7 @@ project "TestsNetwork"
 			"GLSLang",
 			"SPIRV",
 			"GLSLang-Default-Resource-Limits",
+			"Box2D",
 
 			"dl",
 			"pthread",
