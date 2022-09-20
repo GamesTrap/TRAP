@@ -226,6 +226,19 @@ void TRAPEditorLayer::OnAttach()
 	//THIS IS THE TRAP EDITOR!!!11!!1!
 	TRAP::Application::GetWindow()->SetTitle("TRAP™ Editor");
 
+	//Copy Default editor layout (imgui.ini) if it doesn't exist
+	auto gameDocsFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
+	std::filesystem::path imguiIniPath;
+	if(gameDocsFolder)
+	{
+		imguiIniPath = *gameDocsFolder / "imgui.ini";
+		if(!TRAP::FileSystem::FileOrFolderExists(imguiIniPath))
+		{
+			if(TRAP::FileSystem::CopyFile("./Resources/Layouts/Default.ini", imguiIniPath))
+				ImGui::LoadIniSettingsFromDisk(imguiIniPath.c_str());
+		}
+	}
+
 	//Set Discord stuff
 	TRAP::Utils::Discord::SetActivity({"trapwhitelogo2048x2048", "TRAP™ Editor", "TRAP™ Editor", "Developed by TrappedGames"});
 
