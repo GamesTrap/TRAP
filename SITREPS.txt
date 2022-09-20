@@ -3235,3 +3235,4 @@ SITREP 09/20/2022|22w38a2
     - TRAP-Editor Added automatic copying of default editor layout if no layout was found ~<10 mins
     - TRAP-Editor Fixed MSVC compiler error ~<5 mins
     - Updated WindowingAPIWin32 ~<10 mins
+    - Added UID class ~<15 mins

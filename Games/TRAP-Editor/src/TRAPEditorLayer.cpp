@@ -506,6 +506,9 @@ void TRAPEditorLayer::NewScene()
 
 void TRAPEditorLayer::OpenScene()
 {
+	if(m_sceneState != SceneState::Edit)
+		OnSceneStop();
+
 	const std::string path = TRAP::Utils::Dialogs::OpenSingleFile("TRAP Scene", m_lastScenePath.empty() ? "" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
 	if (!path.empty())
 	{
