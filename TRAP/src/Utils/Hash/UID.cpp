@@ -35,3 +35,10 @@ TRAP::Utils::UID::operator uint64_t()
 {
     return m_uid;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Utils::UID::operator uint64_t() const
+{
+    return m_uid;
+}

@@ -1,9 +1,19 @@
 #include "TRAPPCH.h"
 #include "Entity.h"
 
+#include "Scene/Components.h"
+#include "Utils/Hash/UID.h"
+
 TRAP::Entity::Entity(const entt::entity handle, Scene* const scene)
 	: m_entityHandle(handle), m_scene(scene)
 {}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Utils::UID TRAP::Entity::GetUID()
+{
+	return GetComponent<UIDComponent>().UID;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

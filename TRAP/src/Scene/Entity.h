@@ -16,6 +16,11 @@
 
 namespace TRAP
 {
+	namespace Utils
+	{
+		class UID;
+	}
+
 	/// <summary>
 	/// Entity class.
 	/// </summary>
@@ -63,6 +68,8 @@ namespace TRAP
 
 			m_scene->m_registry.remove<T>(m_entityHandle);
 		}
+
+		Utils::UID GetUID();
 
 		operator bool() const;
 		operator entt::entity() const;

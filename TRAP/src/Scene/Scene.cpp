@@ -5,11 +5,21 @@
 #include "Graphics/Renderer2D.h"
 #include "Utils/Time/TimeStep.h"
 #include "Entity.h"
+#include "ScriptableEntity.h"
 #include "Graphics/Cameras/Editor/EditorCamera.h"
+#include "Utils/Hash/UID.h"
 
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
+	return CreateEntityWithUID(Utils::UID(), name);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
+{
 	Entity entity = { m_registry.create(), this };
+	entity.AddComponent<UIDComponent>(uid);
 	entity.AddComponent<TransformComponent>();
 	auto& tag = entity.AddComponent<TagComponent>();
 	tag.Tag = name.empty() ? tag.Tag = "Entity" : tag.Tag = name;
@@ -158,8 +168,12 @@ TRAP::Entity TRAP::Scene::GetPrimaryCameraEntity()
 template<typename T>
 void TRAP::Scene::OnComponentAdded(Entity, T&)
 {
-	static_assert(sizeof(T) == 0, "ComponentAdded is not implemented for this type!");
+	// static_assert(sizeof(T) == 0, "ComponentAdded is not implemented for this type!");
 }
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::UIDComponent>(Entity, UIDComponent&)
+{}
 
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity, TransformComponent&)
@@ -168,7 +182,8 @@ void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity, TransformCo
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity, CameraComponent& component)
 {
-	component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
+	if(m_viewportWidth > 0 && m_viewportHeight > 0)
+		component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
 }
 
 template<>

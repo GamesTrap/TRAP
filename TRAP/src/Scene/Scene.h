@@ -14,6 +14,7 @@ namespace TRAP
 	namespace Utils
 	{
 		struct TimeStep;
+		class UID;
 	}
 	namespace Graphics
 	{
@@ -35,6 +36,7 @@ namespace TRAP
 		Scene& operator=(Scene&&) = default;
 
 		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
 		//TEMP

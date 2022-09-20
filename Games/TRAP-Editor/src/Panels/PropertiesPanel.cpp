@@ -112,9 +112,10 @@ void TRAP::PropertiesPanel::OnImGuiRender()
 
 void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 {
-	if (entity.HasComponent<TagComponent>())
+	if (entity.HasComponent<TagComponent>() && entity.HasComponent<UIDComponent>())
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
+		const Utils::UID uid = entity.GetUID();
 
 		//TODO Replace array with real string?!
 		std::array<char, 256> buffer{};
@@ -126,6 +127,12 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 		if(ImGui::InputText("##Tag", buffer.data(), buffer.size() * sizeof(char)))
 		{
 			tag = std::string(buffer.data());
+		}
+		if(ImGui::IsItemHovered(/*ImGuiHoveredFlags_DelayShort*/)) //TODO
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text("UID: %lu", static_cast<uint64_t>(uid));
+			ImGui::EndTooltip();
 		}
 	}
 

@@ -3236,3 +3236,9 @@ SITREP 09/20/2022|22w38a2
     - TRAP-Editor Fixed MSVC compiler error ~<5 mins
     - Updated WindowingAPIWin32 ~<10 mins
     - Added UID class ~<15 mins
+    - UID Added missing operator implementation ~<5 mins
+    - Components Added UIDComponent ~<5 mins
+    - Entity Added GetUID() utility function ~<5 mins
+    - Scene Added CreateEntityWithUID() ~<5 mins
+    - SceneSerializer now loads and saves entity UIDs ~<5 mins
+    - TRAP-Editor PropertiesPanel now displays entity UID on name text field hover ~<5 mins

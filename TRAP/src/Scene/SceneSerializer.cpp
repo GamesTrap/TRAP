@@ -86,8 +86,10 @@ namespace TRAP
 
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
+		TRAP_ASSERT(entity.HasComponent<UIDComponent>());
+
 		out << YAML::BeginMap; //Entity
-		out << YAML::Key << "Entity" << YAML::Value << "00000000000000"; //Entity ID
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetUID(); //Entity UID
 
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -219,16 +221,16 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 	{
 		for (auto entity : entities)
 		{
-			const uint64_t uuid = entity["Entity"].as<uint64_t>(); //TODO
+			const uint64_t uid = entity["Entity"].as<uint64_t>();
 
 			std::string name;
 			auto tagComponent = entity["TagComponent"];
 			if (tagComponent)
 				name = tagComponent["Tag"].as<std::string>();
 
-			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with ID = ", uuid, ", name = ", name);
+			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with UID = ", uid, ", name = ", name);
 
-			Entity deserializedEntity = m_scene->CreateEntity(name);
+			Entity deserializedEntity = m_scene->CreateEntityWithUID(uid, name);
 
 			auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)

@@ -2,15 +2,27 @@
 #define TRAP_COMPONENTS_H
 
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
 #include "Maths/Math.h"
+#include "Utils/Hash/UID.h"
 
 namespace TRAP
 {
 	/// <summary>
+	/// Unique identifier component.
+	/// Every entity has a global unique identifier.
+	/// This component may not be added/removed to/from an entity.
+	/// </summary>
+	struct UIDComponent
+	{
+		TRAP::Utils::UID UID;
+
+		UIDComponent() = default;
+	};
+
+	/// <summary>
 	/// Tag component.
 	/// Every entity has a tag component containing the name for the entity.
-	/// This component may not be added/remove to/from an entity.
+	/// This component may not be added/removed to/from an entity.
 	/// </summary>
 	struct TagComponent
 	{
@@ -88,6 +100,7 @@ namespace TRAP
 	};
 
 	//TODO Document
+	class ScriptableEntity;
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;
