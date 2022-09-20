@@ -248,6 +248,79 @@ bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination,
+                                  const bool overwriteExisting)
+{
+    TP_PROFILE_FUNCTION();
+
+    std::error_code ec;
+    std::filesystem::copy_options options = std::filesystem::copy_options::recursive;
+    if(overwriteExisting)
+        options |= std::filesystem::copy_options::overwrite_existing;
+    else
+        options |= std::filesystem::copy_options::skip_existing;
+    std::filesystem::copy(source, destination, options, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy folder: \"", source.u8string(), "\" to \"", destination.u8string(),
+                 "\" (", ec.message(), ")");
+        return false;
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::filesystem::path& destination,
+                                const bool overwriteExisting)
+{
+    //Sanity checks
+    if(!FileOrFolderExists(source))
+        return false;
+    if(!source.has_filename())
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(), "\" (missing filename)");
+        return false;
+    }
+    if(destination.empty())
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(), "\" (empty destination)");
+        return false;
+    }
+
+    if(destination.has_parent_path() && !FileOrFolderExists(destination.parent_path()))
+    {
+        if(!CreateFolder(destination.parent_path()))
+            return false;
+    }
+
+    std::filesystem::path destWithFilename = destination;
+    if(!destination.has_filename())
+        destWithFilename /= source.filename();
+
+    std::error_code ec;
+    std::filesystem::copy_options cpOptions{};
+    if(overwriteExisting)
+        cpOptions = std::filesystem::copy_options::overwrite_existing;
+    else
+        cpOptions = std::filesystem::copy_options::skip_existing;
+
+    const bool res = std::filesystem::copy_file(source, destWithFilename, cpOptions);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(),
+                 "\" to \"", destWithFilename.u8string(), "\"(", ec.message(), ")");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
     return MoveFolder(oldPath, newPath);

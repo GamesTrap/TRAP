@@ -134,6 +134,25 @@ namespace TRAP
 		bool MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder);
 
 		/// <summary>
+		/// Copy folder from source to destination.
+		///
+		/// Note: If destination already exists, contents will be merged.
+		/// </summary>
+		/// <param name="source">Source folder to copy from.</param>
+		/// <param name="destination">Target folder to copy into.</param>
+		/// <param name="overwriteExisting">Whether to overwrite already existing files or not.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination, bool overwriteExisting = false);
+		/// <summary>
+		/// Copy file from source to destination.
+		/// </summary>
+		/// <param name="source">Source file to copy.</param>
+		/// <param name="destination">Target to copy into.</param>
+		/// <param name="overwriteExisting">Whether to overwrite existing file or not.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		bool CopyFile(const std::filesystem::path& source, const std::filesystem::path& destination, bool overwriteExisting = false);
+
+		/// <summary>
 		/// Rename folder from oldPath to newPath.
 		/// </summary>
 		/// <param name="oldPath">Folder path to rename.</param>

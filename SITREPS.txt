@@ -3231,3 +3231,4 @@ SITREP 09/19/2022|22w38a1
 SITREP 09/20/2022|22w38a2
     - Changed TRAP Engine version to 22w38a2(0.8.45)
     - TRAP-Editor Added SceneState and play/pause button ~<20 mins
+    - FileSystem Added CopyFile() and CopyFolder() functions ~<30 mins
