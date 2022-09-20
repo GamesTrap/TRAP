@@ -235,7 +235,7 @@ void TRAPEditorLayer::OnAttach()
 		if(!TRAP::FileSystem::FileOrFolderExists(imguiIniPath))
 		{
 			if(TRAP::FileSystem::CopyFile("./Resources/Layouts/Default.ini", imguiIniPath))
-				ImGui::LoadIniSettingsFromDisk(imguiIniPath.c_str());
+				ImGui::LoadIniSettingsFromDisk(imguiIniPath.u8string().c_str());
 		}
 	}
 

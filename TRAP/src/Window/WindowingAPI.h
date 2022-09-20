@@ -3834,20 +3834,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Window Ex style as a DWORD.</returns>
 		static DWORD GetWindowExStyle(const InternalWindow* window);
 		/// <summary>
-		/// Translate content area size to full window size according to styles and DPI.
-		/// </summary>
-		/// <param name="style">Window style.</param>
-		/// <param name="exStyle">Window Ex style.</param>
-		/// <param name="contentWidth">Content width.</param>
-		/// <param name="contentHeight">Content height.</param>
-		/// <param name="fullWidth">Full width.</param>
-		/// <param name="fullHeight">Full height.</param>
-		/// <param name="dpi">DPI.</param>
-		static void GetFullWindowSize(DWORD style, DWORD exStyle,
-									  int32_t contentWidth, int32_t contentHeight,
-									  int32_t& fullWidth, int32_t& fullHeight,
-									  UINT dpi);
-		/// <summary>
 		/// Returns whether the cursor is in the content area of the specified window.
 		/// </summary>
 		/// <param name="window">Internal window to check</param>

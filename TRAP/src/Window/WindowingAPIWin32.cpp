@@ -694,28 +694,30 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	case WM_GETMINMAXINFO:
 	{
-		int32_t xOffset, yOffset;
-		UINT DPI = USER_DEFAULT_SCREEN_DPI;
+		RECT frame{};
 		MINMAXINFO* mmi = reinterpret_cast<MINMAXINFO*>(lParam);
+		const DWORD style = GetWindowStyle(windowPtr);
+		const DWORD exStyle = GetWindowExStyle(windowPtr);
+
 
 		if (windowPtr->Monitor)
 			break;
 
 		if (Utils::IsWindows10Version1607OrGreaterWin32())
-			DPI = s_Data.User32.GetDPIForWindow(windowPtr->Handle);
-
-		GetFullWindowSize(GetWindowStyle(windowPtr), GetWindowExStyle(windowPtr), 0, 0, xOffset, yOffset, DPI);
+			s_Data.User32.AdjustWindowRectExForDPI(&frame, style, FALSE, exStyle, s_Data.User32.GetDPIForWindow(windowPtr->Handle));
+		else
+			AdjustWindowRectEx(&frame, style, FALSE, exStyle);
 
 		if(windowPtr->MinWidth != -1 && windowPtr->MinHeight != -1)
 		{
-			mmi->ptMinTrackSize.x = windowPtr->MinWidth + xOffset;
-			mmi->ptMinTrackSize.y = windowPtr->MinHeight + yOffset;
+			mmi->ptMinTrackSize.x = windowPtr->MinWidth + frame.right - frame.left;
+			mmi->ptMinTrackSize.y = windowPtr->MinHeight + frame.bottom - frame.top;
 		}
 
 		if(windowPtr->MaxWidth != -1 && windowPtr->MaxHeight != -1)
 		{
-			mmi->ptMaxTrackSize.x = windowPtr->MaxWidth + xOffset;
-			mmi->ptMaxTrackSize.y = windowPtr->MaxHeight + yOffset;
+			mmi->ptMaxTrackSize.x = windowPtr->MaxWidth + frame.right - frame.left;
+			mmi->ptMaxTrackSize.y = windowPtr->MaxHeight + frame.bottom - frame.top;
 		}
 
 		if(!windowPtr->Decorated)
@@ -1226,7 +1228,7 @@ DWORD TRAP::INTERNAL::WindowingAPI::GetWindowExStyle(const InternalWindow* windo
 //Creates the TRAP window
 bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig)
 {
-	int32_t xPos, yPos, fullWidth, fullHeight;
+	int32_t frameX, frameY, frameWidth, frameHeight;
 	DWORD style = GetWindowStyle(window);
 	const DWORD exStyle = GetWindowExStyle(window);
 
@@ -1264,29 +1266,33 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 		//NOTE: This window placement is temporary and approximate, as the
 		//      correct position and size cannot be known until the monitor
 		//      video mode has been picked in SetVideoModeWin32
-		xPos = mi.rcMonitor.left;
-		yPos = mi.rcMonitor.top;
-		fullWidth = mi.rcMonitor.right - mi.rcMonitor.left;
-		fullHeight = mi.rcMonitor.bottom - mi.rcMonitor.top;
+		frameX = mi.rcMonitor.left;
+		frameY = mi.rcMonitor.top;
+		frameWidth = mi.rcMonitor.right - mi.rcMonitor.left;
+		frameHeight = mi.rcMonitor.bottom - mi.rcMonitor.top;
 	}
 	else
 	{
-		xPos = CW_USEDEFAULT;
-		yPos = CW_USEDEFAULT;
+		RECT rect = { 0, 0, WNDConfig.Width, WNDConfig.Height };
 
 		window->Maximized = WNDConfig.Maximized;
 		if (WNDConfig.Maximized)
 			style |= WS_MAXIMIZE;
 
-		GetFullWindowSize(style, exStyle, WNDConfig.Width, WNDConfig.Height, fullWidth, fullHeight,
-			              USER_DEFAULT_SCREEN_DPI);
+		AdjustWindowRectEx(&rect, style, FALSE, exStyle);
+
+		frameX = CW_USEDEFAULT;
+		frameY = CW_USEDEFAULT;
+
+		frameWidth = rect.right - rect.left;
+		frameHeight = rect.bottom - rect.top;
 	}
 
 	const std::wstring wideTitle = TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(WNDConfig.Title);
 	if (wideTitle.empty())
 		return false;
 
-	window->Handle = CreateWindowExW(exStyle, MAKEINTATOM(s_Data.MainWindowClass), wideTitle.data(), style, xPos, yPos, fullWidth, fullHeight,
+	window->Handle = CreateWindowExW(exStyle, MAKEINTATOM(s_Data.MainWindowClass), wideTitle.data(), style, frameX, frameY, frameWidth, frameHeight,
 		                             nullptr /*No parent window*/, nullptr /*No window menu*/,
 									 s_Data.Instance, nullptr);
 
@@ -1513,24 +1519,6 @@ bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 	}
 
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Translate content area size to full window size according to styles and DPI
-void TRAP::INTERNAL::WindowingAPI::GetFullWindowSize(const DWORD style, const DWORD exStyle,
-	                                                 const int32_t contentWidth, const int32_t contentHeight,
-	                                                 int32_t& fullWidth, int32_t& fullHeight, const UINT dpi)
-{
-	RECT rect = { 0, 0, contentWidth, contentHeight };
-
-	if (Utils::IsWindows10Version1607OrGreaterWin32())
-		s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, exStyle, dpi);
-	else
-		AdjustWindowRectEx(&rect, style, FALSE, exStyle);
-
-	fullWidth = rect.right - rect.left;
-	fullHeight = rect.bottom - rect.top;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
