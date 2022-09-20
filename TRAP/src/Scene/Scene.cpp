@@ -9,6 +9,82 @@
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Utils/Hash/UID.h"
 
+template<typename... Component>
+static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
+{
+	([&]()
+	{
+		const auto view = src.view<Component>();
+		for(const auto srcEntity : view)
+		{
+			const entt::entity dstEntity = enttMap.at(src.get<TRAP::UIDComponent>(srcEntity).UID);
+
+			auto& srcComponent = src.get<Component>(srcEntity);
+			dst.emplace_or_replace<Component>(dstEntity, srcComponent);
+		}
+	}(), ...);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename... Component>
+static void CopyComponent(TRAP::ComponentGroup<Component...>, entt::registry& dst, entt::registry& src,
+                          const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
+{
+	CopyComponent<Component...>(dst, src, enttMap);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename... Component>
+static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
+{
+	([&]()
+	{
+		if(src.HasComponent<Component>())
+			dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
+	}(), ...);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename... Component>
+static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Entity dst, TRAP::Entity src)
+{
+	CopyComponentIfExists<Component...>(dst, src);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
+{
+	TRAP::Ref<Scene> newScene = TRAP::MakeRef<Scene>();
+
+	newScene->m_viewportWidth = other->m_viewportWidth;
+	newScene->m_viewportHeight = other->m_viewportHeight;
+
+	auto& srcSceneRegistry = other->m_registry;
+	auto& dstSceneRegistry = newScene->m_registry;
+	std::unordered_map<Utils::UID, entt::entity> enttMap{};
+
+	//Create entities with UID and Tag in newScene for each entity with an UID component in other scene.
+	auto UIDView = srcSceneRegistry.view<UIDComponent>();
+	for(auto e : UIDView)
+	{
+		Utils::UID uid = srcSceneRegistry.get<UIDComponent>(e).UID;
+		const auto& name = srcSceneRegistry.get<TagComponent>(e).Tag;
+		Entity newEntity = newScene->CreateEntityWithUID(uid, name);
+		enttMap[uid] = static_cast<entt::entity>(newEntity);
+	}
+
+	//Copy components (except UIDComponent and TagComponent)
+	CopyComponent(AllComponents{}, dstSceneRegistry, srcSceneRegistry, enttMap);
+
+	return newScene;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	return CreateEntityWithUID(Utils::UID(), name);
@@ -146,6 +222,14 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 		if(!cameraComponent.FixedAspectRatio)
 			cameraComponent.Camera.SetViewportSize(width, height);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Scene::DuplicateEntity(Entity entity)
+{
+	Entity newEntity = CreateEntity(entity.GetName());
+	CopyComponentIfExists(AllComponents{}, newEntity, entity);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -17,6 +17,13 @@ TRAP::Utils::UID TRAP::Entity::GetUID()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::string& TRAP::Entity::GetName()
+{
+	return GetComponent<TagComponent>().Tag;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Entity::operator bool() const
 {
 	return m_entityHandle != entt::null;

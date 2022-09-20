@@ -115,6 +115,12 @@ namespace TRAP
 			DestroyScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
+
+	template<typename... Component>
+	struct ComponentGroup{};
+
+	using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
+	                                     CameraComponent, NativeScriptComponent>;
 }
 
 #endif /*TRAP_COMPONENTS_H*/

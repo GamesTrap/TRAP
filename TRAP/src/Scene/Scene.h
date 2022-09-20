@@ -1,6 +1,8 @@
 #ifndef TRAP_SCENE_H
 #define TRAP_SCENE_H
 
+#include "Core/Base.h"
+
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
@@ -35,6 +37,8 @@ namespace TRAP
 		Scene& operator=(const Scene&) = delete;
 		Scene& operator=(Scene&&) = default;
 
+		static TRAP::Ref<Scene> Copy(Ref<Scene> other);
+
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
@@ -49,6 +53,8 @@ namespace TRAP
 		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
 		void OnTick();
 		void OnViewportResize(uint32_t width, uint32_t height);
+
+		void DuplicateEntity(Entity entity);
 
 		Entity GetPrimaryCameraEntity();
 
