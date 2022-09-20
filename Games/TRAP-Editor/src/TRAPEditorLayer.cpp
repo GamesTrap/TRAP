@@ -10,12 +10,14 @@
 #include <imgui_internal.h>
 
 TRAPEditorLayer::TRAPEditorLayer()
-	: Layer("TRAPEditorLayer"), m_renderTargetLoadActions(), m_renderTargetDesc(),
+	: Layer("TRAPEditorLayer"), m_iconPlay(nullptr), m_iconStop(nullptr),
+	  m_renderTargetLoadActions(), m_renderTargetDesc(),
 	  m_renderTarget(nullptr), m_viewportSize(), m_viewportBounds(), m_viewportFocused(false),
 	  m_viewportHovered(false), m_gizmoType(-1), m_allowViewportCameraEvents(false),
 	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
 	  m_startedCameraMovement(false), m_leftMouseBtnRepeatCount(0), m_entityChanged(false),
-	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr)
+	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr),
+	  m_sceneState(SceneState::Edit)
 {
 }
 
@@ -212,6 +214,8 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::End();
 	ImGui::PopStyleVar();
 
+	UIToolbar();
+
 	ImGui::End();
 }
 
@@ -227,6 +231,9 @@ void TRAPEditorLayer::OnAttach()
 
 	//Enable Developer features
 	TRAP::Application::SetHotReloading(true);
+
+	m_iconPlay = TRAP::Graphics::Texture::CreateFromFile("./Resources/Icons/Play.png", TRAP::Graphics::TextureType::Texture2D);
+	m_iconStop = TRAP::Graphics::Texture::CreateFromFile("./Resources/Icons/Stop.png", TRAP::Graphics::TextureType::Texture2D);
 
 	//Setup Viewport FrameBuffer
 	TRAP::Graphics::RendererAPI::RenderTargetDesc desc{};
@@ -304,9 +311,6 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 	}
 
-	m_editorCamera.SetActive(m_allowViewportCameraEvents);
-	m_editorCamera.OnUpdate(deltaTime);
-
 	if((TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) ||
 		TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle)) &&
 	   !m_startedCameraMovement && m_viewportFocused && m_viewportHovered)
@@ -338,7 +342,36 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None);
 
 	//Update Scene
-	m_activeScene->OnUpdateEditor(deltaTime, m_editorCamera);
+	switch(m_sceneState)
+	{
+	case SceneState::Edit:
+	{
+		m_editorCamera.SetActive(m_allowViewportCameraEvents);
+		m_editorCamera.OnUpdate(deltaTime);
+
+		m_activeScene->OnUpdateEditor(deltaTime, m_editorCamera);
+		break;
+	}
+
+	case SceneState::Play:
+	{
+		m_activeScene->OnUpdateRuntime(deltaTime);
+		break;
+	}
+
+	// case SceneState::Pause:
+	{
+		// break;
+	}
+
+	// case SceneState::Simulate:
+	{
+		// break;
+	}
+
+	default:
+		break;
+	}
 
 	//Stop RenderPass (necessary for transition)
 	TRAP::Graphics::RenderCommand::BindRenderTarget(nullptr);
@@ -571,4 +604,55 @@ void TRAPEditorLayer::MousePicking()
 		m_leftMouseBtnRepeatCount = 0;
 		m_entityChanged = false;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::UIToolbar()
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 2.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+	const auto& colors = ImGui::GetStyle().Colors;
+	const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+	const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+	ImGui::Begin("##toolbar", nullptr, /*ImGuiWindowFlags_NoDecoration | */ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	{
+		const float size = ImGui::GetWindowHeight() - 4.0f;
+		TRAP::Ref<TRAP::Graphics::Texture> icon = m_sceneState == SceneState::Edit ? m_iconPlay : m_iconStop;
+		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if(ImGui::ImageButton(icon, ImVec2(size, size), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f), 0))
+		{
+			if(m_sceneState == SceneState::Edit)
+				OnScenePlay();
+			else if(m_sceneState == SceneState::Play)
+				OnSceneStop();
+			// else if(m_sceneState == SceneState::Pause)
+			// 	OnScenePause();
+			// else if(m_sceneState == SceneState::Simulate)
+			// 	OnSceneSimulate();
+		}
+	}
+
+	ImGui::PopStyleVar(2);
+	ImGui::PopStyleColor(3);
+
+	ImGui::End();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnScenePlay()
+{
+	m_sceneState = SceneState::Play;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnSceneStop()
+{
+	m_sceneState = SceneState::Edit;
 }

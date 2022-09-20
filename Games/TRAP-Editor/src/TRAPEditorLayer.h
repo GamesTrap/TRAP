@@ -26,6 +26,18 @@ private:
 
 	void MousePicking();
 
+	void OnScenePlay();
+	void OnSceneStop();
+	// void OnScenePause();
+	// void OnSceneSimulate();
+
+	//UI Panels
+	void UIToolbar();
+
+	//UI Icons
+	TRAP::Ref<TRAP::Graphics::Texture> m_iconPlay;
+	TRAP::Ref<TRAP::Graphics::Texture> m_iconStop;
+
 	//Color RenderTarget
 	TRAP::Graphics::RendererAPI::LoadActionsDesc m_renderTargetLoadActions;
 	TRAP::Graphics::RendererAPI::RenderTargetDesc m_renderTargetDesc;
@@ -56,7 +68,17 @@ private:
 	TRAP::SceneGraphPanel m_sceneGraphPanel;
 	std::string m_lastScenePath;
 
+	//Scene
 	TRAP::Ref<TRAP::Scene> m_activeScene;
+
+	enum class SceneState
+	{
+		Edit,
+		Play,
+		// Pause,
+		// Simulate
+	};
+	SceneState m_sceneState;
 };
 
 #endif /*GAMESTRAP_TRAPEDITORLAYER_H*/
