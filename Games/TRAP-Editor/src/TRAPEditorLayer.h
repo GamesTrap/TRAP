@@ -25,6 +25,9 @@ private:
 	void SaveSceneAs();
 
 	void MousePicking();
+	void DuplicateEntity();
+	void DeleteEntity();
+	void SerializeScene(TRAP::Ref<TRAP::Scene> scene, const std::filesystem::path& path);
 
 	void OnScenePlay();
 	void OnSceneStop();

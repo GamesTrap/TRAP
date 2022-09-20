@@ -279,12 +279,9 @@ void TRAPEditorLayer::OnAttach()
 	m_mousePickBufferDesc.Name = "Viewport ID Buffer";
 	m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
-	m_editorScene = TRAP::MakeRef<TRAP::Scene>();
-	m_activeScene = m_editorScene;
+	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
 	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f);
-
-	m_sceneGraphPanel.SetContext(m_activeScene);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -462,6 +459,19 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 			break;
 		}
 
+		//Entity Shortcuts
+		case TRAP::Input::Key::D: //TODO Also duplicate if left clicking on a translation gizmoe while holding shift
+		{
+			if(ctrlPressed)
+				DuplicateEntity();
+			break;
+		}
+		case TRAP::Input::Key::Delete:
+		{
+			DeleteEntity();
+			break;
+		}
+
 		//Gizmos
 		case TRAP::Input::Key::Q:
 		{
@@ -539,8 +549,7 @@ void TRAPEditorLayer::SaveScene()
 	if (!path.empty())
 		m_lastScenePath = path;
 
-	TRAP::SceneSerializer serializer(m_activeScene);
-	serializer.Serialize(m_lastScenePath);
+	SerializeScene(m_activeScene, m_lastScenePath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -552,9 +561,7 @@ void TRAPEditorLayer::SaveSceneAs()
 	if (!path.empty())
 	{
 		m_lastScenePath = path;
-
-		TRAP::SceneSerializer serializer(m_activeScene);
-		serializer.Serialize(m_lastScenePath);
+		SerializeScene(m_activeScene, m_lastScenePath);
 	}
 }
 
@@ -625,6 +632,41 @@ void TRAPEditorLayer::MousePicking()
 		m_leftMouseBtnRepeatCount = 0;
 		m_entityChanged = false;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::DeleteEntity()
+{
+	if(m_sceneState != SceneState::Edit)
+		return;
+
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
+	if(selectedEntity)
+	{
+		m_sceneGraphPanel.SetSelectedEntity(TRAP::Entity(entt::null, m_activeScene.get()));
+		m_activeScene->DestroyEntity(selectedEntity);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::DuplicateEntity()
+{
+	if(m_sceneState != SceneState::Edit)
+		return;
+
+	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
+	if(selectedEntity)
+		m_editorScene->DuplicateEntity(selectedEntity);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::SerializeScene(TRAP::Ref<TRAP::Scene> scene, const std::filesystem::path& path)
+{
+	TRAP::SceneSerializer serializer(scene);
+	serializer.Serialize(path.u8string());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
