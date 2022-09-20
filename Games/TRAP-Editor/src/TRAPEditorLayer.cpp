@@ -17,7 +17,7 @@ TRAPEditorLayer::TRAPEditorLayer()
 	  m_editorCamera(45.0f, 16.0f / 9.0f, 0.1f),
 	  m_startedCameraMovement(false), m_leftMouseBtnRepeatCount(0), m_entityChanged(false),
 	  m_mousePickBufferDesc(), m_mousePickBuffer(nullptr), m_IDRenderTarget(nullptr), m_activeScene(nullptr),
-	  m_sceneState(SceneState::Edit)
+	  m_editorScene(nullptr), m_sceneState(SceneState::Edit)
 {
 }
 
@@ -279,7 +279,8 @@ void TRAPEditorLayer::OnAttach()
 	m_mousePickBufferDesc.Name = "Viewport ID Buffer";
 	m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
-	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
+	m_editorScene = TRAP::MakeRef<TRAP::Scene>();
+	m_activeScene = m_editorScene;
 
 	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f);
 
@@ -514,12 +515,16 @@ void TRAPEditorLayer::OpenScene()
 	{
 		m_lastScenePath = path;
 
-		m_activeScene = TRAP::MakeRef<TRAP::Scene>();
-		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
-		m_sceneGraphPanel.SetContext(m_activeScene);
+		TRAP::Ref<TRAP::Scene> newScene = TRAP::MakeRef<TRAP::Scene>();
+		TRAP::SceneSerializer serializer(newScene);
+		if(serializer.Deserialize(m_lastScenePath))
+		{
+			m_editorScene = newScene;
+			m_editorScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+			m_sceneGraphPanel.SetContext(m_editorScene);
 
-		TRAP::SceneSerializer serializer(m_activeScene);
-		serializer.Deserialize(m_lastScenePath);
+			m_activeScene = m_editorScene;
+		}
 	}
 }
 
@@ -664,6 +669,10 @@ void TRAPEditorLayer::UIToolbar()
 void TRAPEditorLayer::OnScenePlay()
 {
 	m_sceneState = SceneState::Play;
+
+	m_activeScene = TRAP::Scene::Copy(m_editorScene);
+
+	m_sceneGraphPanel.SetContext(m_activeScene);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -671,4 +680,8 @@ void TRAPEditorLayer::OnScenePlay()
 void TRAPEditorLayer::OnSceneStop()
 {
 	m_sceneState = SceneState::Edit;
+
+	m_activeScene = m_editorScene;
+
+	m_sceneGraphPanel.SetContext(m_activeScene);
 }

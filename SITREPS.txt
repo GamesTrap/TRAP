@@ -3247,3 +3247,4 @@ SITREP 09/20/2022|22w38a2
     - Entity Added AddOrReplaceComponent() ~<5 mins
     - Scene Added support for copying and duplicating of entities ~>20 mins
     - Scene Added Copy() to copy scenes ~>10 mins
+    - TRAP-Editor now uses a copy of the scene to use for playing state, preserving the original scene ~<10 mins

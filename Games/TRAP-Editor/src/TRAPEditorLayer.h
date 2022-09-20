@@ -70,6 +70,7 @@ private:
 
 	//Scene
 	TRAP::Ref<TRAP::Scene> m_activeScene;
+	TRAP::Ref<TRAP::Scene> m_editorScene;
 
 	enum class SceneState
 	{
