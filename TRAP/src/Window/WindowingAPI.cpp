@@ -188,6 +188,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 		break;
 
 	case Hint::Hovered:
+		[[fallthrough]];
 	default:
 		InputError(Error::Invalid_Enum, " Invalid window hint!");
 		break;
@@ -869,10 +870,15 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* const window, c
 		break;
 
 	case Hint::Maximized:
+		[[fallthrough]];
 	case Hint::Minimized:
+		[[fallthrough]];
 	case Hint::Visible:
+		[[fallthrough]];
 	case Hint::Focused:
+		[[fallthrough]];
 	case Hint::Hovered:
+		[[fallthrough]];
 	default:
 		InputError(Error::Invalid_Enum, " Invalid window attribute provided!");
 		break;

@@ -87,7 +87,7 @@ constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor,
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Major version number.</returns>
-constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
+constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version) noexcept
 {
 	return version >> 22u;
 }
@@ -99,7 +99,7 @@ constexpr uint32_t TRAP_VERSION_MAJOR(const uint32_t version)
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Minor version number.</returns>
-constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
+constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version) noexcept
 {
 	return version >> 12u;
 }
@@ -111,7 +111,7 @@ constexpr uint32_t TRAP_VERSION_MINOR(const uint32_t version)
 /// </summary>
 /// <param name="version">Version number created with TRAP_MAKE_VERSION.</param>
 /// <returns>Patch version number.</returns>
-constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
+constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 {
 	return version & 0xFFFu;
 }

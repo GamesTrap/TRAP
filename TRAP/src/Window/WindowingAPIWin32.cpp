@@ -289,6 +289,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		switch (wParam & 0xFFF0)
 		{
 		case SC_SCREENSAVE:
+			[[fallthrough]];
 		case SC_MONITORPOWER:
 		{
 			if (windowPtr->Monitor)
@@ -326,6 +327,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	}
 
 	case WM_CHAR:
+		[[fallthrough]];
 	case WM_SYSCHAR:
 	{
 		if (wParam >= 0xD800 && wParam <= 0xDBFF)
@@ -367,8 +369,11 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	}
 
 	case WM_KEYDOWN:
+		[[fallthrough]];
 	case WM_SYSKEYDOWN:
+		[[fallthrough]];
 	case WM_KEYUP:
+		[[fallthrough]];
 	case WM_SYSKEYUP:
 	{
 		Input::Key key = Input::Key::Unknown;
@@ -457,12 +462,19 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	}
 
 	case WM_LBUTTONDOWN:
+		[[fallthrough]];
 	case WM_RBUTTONDOWN:
+		[[fallthrough]];
 	case WM_MBUTTONDOWN:
+		[[fallthrough]];
 	case WM_XBUTTONDOWN:
+		[[fallthrough]];
 	case WM_LBUTTONUP:
+		[[fallthrough]];
 	case WM_RBUTTONUP:
+		[[fallthrough]];
 	case WM_MBUTTONUP:
+		[[fallthrough]];
 	case WM_XBUTTONUP:
 	{
 		uint32_t i;
@@ -616,6 +628,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	}
 
 	case WM_ENTERSIZEMOVE:
+		[[fallthrough]];
 	case WM_ENTERMENULOOP:
 	{
 		if (windowPtr->FrameAction)
@@ -632,6 +645,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	}
 
 	case WM_EXITSIZEMOVE:
+		[[fallthrough]];
 	case WM_EXITMENULOOP:
 	{
 		if (windowPtr->FrameAction)
@@ -744,6 +758,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 	}
 
 	case WM_NCACTIVATE:
+		[[fallthrough]];
 	case WM_NCPAINT:
 	{
 		//Prevent title bar from being drawn after restoring a minimized undecorated window
@@ -1461,6 +1476,9 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::HelperWindowProc(HWND hWnd, UINT 
 		}
 		break;
 	}
+
+	default:
+		break;
 	}
 
 	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
@@ -2641,6 +2659,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* win
 		flag = TBPF_PAUSED;
 		break;
 	case ProgressState::NoProgress:
+		[[fallthrough]];
 	default:
 		flag = TBPF_NOPROGRESS;
 		break;

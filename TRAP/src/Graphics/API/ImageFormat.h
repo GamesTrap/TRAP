@@ -686,24 +686,43 @@ namespace TRAP::Graphics::API
         switch(fmt)
         {
         case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_444_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_444_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
             return true;
 
@@ -721,26 +740,44 @@ namespace TRAP::Graphics::API
         switch(fmt)
         {
         case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_444_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_444_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
             return 3;
 
         case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
             return 2;
 
@@ -773,19 +810,33 @@ namespace TRAP::Graphics::API
         switch(fmt)
         {
         case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
             return width >> 1;
 
@@ -809,12 +860,19 @@ namespace TRAP::Graphics::API
         switch(fmt)
         {
         case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
             return height >> 1;
 
@@ -833,30 +891,46 @@ namespace TRAP::Graphics::API
         switch(fmt)
         {
         case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8_R8_3PLANE_444_UNORM:
             return 1;
 
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16_R16_3PLANE_444_UNORM:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
             return 2;
 
         case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
             return 0 == plane ? 1 : 2;
 
         case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+            [[fallthrough]];
         case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+            [[fallthrough]];
         case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
             return 0 == plane ? 2 : 4;
 
@@ -874,66 +948,127 @@ namespace TRAP::Graphics::API
         switch(fmt)
         {
         case ImageFormat::DXBC1_RGB_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC1_RGB_SRGB:
+            [[fallthrough]];
         case ImageFormat::DXBC1_RGBA_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC1_RGBA_SRGB:
+            [[fallthrough]];
         case ImageFormat::DXBC2_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC2_SRGB:
+            [[fallthrough]];
         case ImageFormat::DXBC3_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC3_SRGB:
+            [[fallthrough]];
         case ImageFormat::DXBC4_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC4_SNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC5_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC5_SNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC6H_UFLOAT:
+            [[fallthrough]];
         case ImageFormat::DXBC6H_SFLOAT:
+            [[fallthrough]];
         case ImageFormat::DXBC7_UNORM:
+            [[fallthrough]];
         case ImageFormat::DXBC7_SRGB:
+            [[fallthrough]];
         case ImageFormat::PVRTC1_2BPP_UNORM:
+            [[fallthrough]];
         case ImageFormat::PVRTC1_4BPP_UNORM:
+            [[fallthrough]];
         case ImageFormat::PVRTC2_2BPP_UNORM:
+            [[fallthrough]];
         case ImageFormat::PVRTC2_4BPP_UNORM:
+            [[fallthrough]];
         case ImageFormat::PVRTC1_2BPP_SRGB:
+            [[fallthrough]];
         case ImageFormat::PVRTC1_4BPP_SRGB:
+            [[fallthrough]];
         case ImageFormat::PVRTC2_2BPP_SRGB:
+            [[fallthrough]];
         case ImageFormat::PVRTC2_4BPP_SRGB:
+            [[fallthrough]];
         case ImageFormat::ETC2_R8G8B8_UNORM:
+            [[fallthrough]];
         case ImageFormat::ETC2_R8G8B8_SRGB:
+            [[fallthrough]];
         case ImageFormat::ETC2_R8G8B8A1_UNORM:
+            [[fallthrough]];
         case ImageFormat::ETC2_R8G8B8A1_SRGB:
+            [[fallthrough]];
         case ImageFormat::ETC2_R8G8B8A8_UNORM:
+            [[fallthrough]];
         case ImageFormat::ETC2_R8G8B8A8_SRGB:
+            [[fallthrough]];
         case ImageFormat::ETC2_EAC_R11_UNORM:
+            [[fallthrough]];
         case ImageFormat::ETC2_EAC_R11_SNORM:
+            [[fallthrough]];
         case ImageFormat::ETC2_EAC_R11G11_UNORM:
+            [[fallthrough]];
         case ImageFormat::ETC2_EAC_R11G11_SNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_4x4_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_4x4_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_5x4_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_5x4_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_5x5_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_5x5_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_6x5_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_6x5_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_6x6_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_6x6_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_8x5_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_8x5_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_8x6_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_8x6_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_8x8_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_8x8_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x5_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x5_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x6_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x6_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x8_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x8_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x10_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_10x10_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_12x10_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_12x10_SRGB:
+            [[fallthrough]];
         case ImageFormat::ASTC_12x12_UNORM:
+            [[fallthrough]];
         case ImageFormat::ASTC_12x12_SRGB:
             return true;
 

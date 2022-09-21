@@ -576,17 +576,23 @@ constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFo
 	switch(imageFormat)
 	{
 	case API::ImageFormat::R8_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R16_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R32_SFLOAT:
 		return Image::ColorFormat::GrayScale;
 
 	case API::ImageFormat::R8G8_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32_SFLOAT:
 		return Image::ColorFormat::GrayScaleAlpha;
 
 	case API::ImageFormat::R8G8B8A8_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16B16A16_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32B32A32_SFLOAT:
 		return Image::ColorFormat::RGBA;
 
@@ -602,17 +608,23 @@ constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(con
 	switch(imageFormat)
 	{
 	case API::ImageFormat::R8_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R8G8_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R8G8B8A8_UNORM:
 		return 8;
 
 	case API::ImageFormat::R16_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16_UNORM:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16B16A16_UNORM:
 		return 16;
 
 	case API::ImageFormat::R32_SFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32_SFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32B32A32_SFLOAT:
 		return 32;
 

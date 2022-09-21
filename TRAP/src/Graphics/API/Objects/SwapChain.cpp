@@ -31,6 +31,7 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapch
 		return API::VulkanGetRecommendedSwapchainFormat(HDR, SRGB);
 
 	case RenderAPI::NONE:
+		[[fallthrough]];
 	default:
 		return TRAP::Graphics::API::ImageFormat::Undefined;
 	}

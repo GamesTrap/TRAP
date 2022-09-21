@@ -352,6 +352,7 @@ std::string TRAP::Utils::String::ConvertToString(T value)
 			return "Enabled+Boost";
 
 		case Graphics::RendererAPI::LatencyMode::Disabled:
+			[[fallthrough]];
 		default:
 			return "Disabled";
 		}

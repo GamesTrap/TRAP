@@ -781,7 +781,9 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 			//TODO RayTracing
 
 		case RendererAPI::ShaderStage::None:
+			[[fallthrough]];
 		case RendererAPI::ShaderStage::SHADER_STAGE_COUNT:
+			[[fallthrough]];
 		default:
 			break;
 		}

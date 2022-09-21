@@ -3261,3 +3261,4 @@ SITREP 09/21/2022|22w38b1
     - Components Added Rigidbody2D and BoxCollider2D components ~<10 mins
     - SceneSerializer Added support for Rigidbody2D and BoxCollider2D components ~<15 mins
     - TRAP-Editor SceneGraphPanel Added support for Rigidbody2D and BoxCollider2D components ~<15 mins
+    - Added [[fallthrough]] attribute where needed ~<15 mins

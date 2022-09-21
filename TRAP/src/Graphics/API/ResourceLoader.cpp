@@ -125,6 +125,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 			}
 
 			case UpdateRequestType::Invalid:
+            	[[fallthrough]];
 			default:
 				break;
 			}

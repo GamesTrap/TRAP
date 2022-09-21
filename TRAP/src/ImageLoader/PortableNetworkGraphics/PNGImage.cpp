@@ -105,13 +105,16 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		switch (data.BitDepth)
 		{
 		case 1:
+			[[fallthrough]];
 		case 2:
+			[[fallthrough]];
 		case 4:
 			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
 			return;
 
 		case 8:
+			[[fallthrough]];
 		case 16:
 			m_bitsPerPixel = data.BitDepth;
 			break;
@@ -136,7 +139,9 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 		switch (data.BitDepth)
 		{
 		case 1:
+			[[fallthrough]];
 		case 2:
+			[[fallthrough]];
 		case 4:
 			TP_ERROR(Log::ImagePNGPrefix, "Bit depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
 			TP_WARN(Log::ImagePNGPrefix, "Using default image!");
@@ -453,6 +458,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 	}
 
 	case 2:
+		[[fallthrough]];
 	case 3:
 	{
 		file.seekg(4 + 3, std::ios::cur);
@@ -505,6 +511,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 	switch (data.ColorType)
 	{
 	case 0:
+		[[fallthrough]];
 	case 4:
 	{
 		file.seekg(4 + 2, std::ios::cur);
@@ -512,6 +519,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 	}
 
 	case 2:
+		[[fallthrough]];
 	case 6:
 	{
 		file.seekg(4 + 6, std::ios::cur);

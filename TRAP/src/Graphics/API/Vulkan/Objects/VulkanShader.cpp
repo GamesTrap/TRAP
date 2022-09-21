@@ -495,6 +495,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 				}
 
 				case RendererAPI::ShaderStage::Compute:
+					[[fallthrough]];
 				case RendererAPI::ShaderStage::RayTracing:
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.Compute.ByteCode, stageMask);

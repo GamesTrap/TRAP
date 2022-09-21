@@ -296,6 +296,7 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
         break;
 
     case GFSDK_Aftermath_Result_FAIL_Unknown:
+        [[fallthrough]];
     default:
         TP_ERROR(Log::RendererAftermathTrackerPrefix, "Unknown AftermathTracker error");
         break;

@@ -5724,9 +5724,10 @@ constexpr TRAP::Math::Vec<3, T> TRAP::Math::RGBColor(const Vec<3, T>& hsvColor)
 		const T p = hsv.z * (T(1) - hsv.y * frac);
 		const T q = hsv.z * (T(1) - hsv.y * (T(1) - frac));
 
-		switch(int32_t(sector))
+		switch(static_cast<int32_t>(sector))
 		{
 		default:
+			[[fallthrough]];
 		case 0:
 			rgbColor.r = hsv.z;
 			rgbColor.g = q;

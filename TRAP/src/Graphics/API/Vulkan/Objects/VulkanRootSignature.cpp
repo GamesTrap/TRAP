@@ -390,7 +390,9 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					break;
 
 				case RendererAPI::DescriptorType::UniformBuffer:
+					[[fallthrough]];
 				case RendererAPI::DescriptorType::Buffer:
+					[[fallthrough]];
 				case RendererAPI::DescriptorType::BufferRaw:
 					for(uint32_t arr = 0; arr < arrayCount; ++arr)
 					{
@@ -404,6 +406,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					break;
 
 				case RendererAPI::DescriptorType::RWBuffer:
+					[[fallthrough]];
 				case RendererAPI::DescriptorType::RWBufferRaw:
 					for(uint32_t arr = 0; arr < arrayCount; ++arr)
 					{

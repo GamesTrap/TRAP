@@ -832,7 +832,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryP
 		break;
 
 	case VK_QUERY_TYPE_PIPELINE_STATISTICS:
+		[[fallthrough]];
 	case VK_QUERY_TYPE_OCCLUSION:
+		[[fallthrough]];
 	default:
 		break;
 	}

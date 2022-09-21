@@ -238,13 +238,21 @@ bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	}
 
 	case TRAP::Input::Key::One:
+		[[fallthrough]];
 	case TRAP::Input::Key::Two:
+		[[fallthrough]];
 	case TRAP::Input::Key::Three:
+		[[fallthrough]];
 	case TRAP::Input::Key::Four:
+		[[fallthrough]];
 	case TRAP::Input::Key::Five:
+		[[fallthrough]];
 	case TRAP::Input::Key::Six:
+		[[fallthrough]];
 	case TRAP::Input::Key::Seven:
+		[[fallthrough]];
 	case TRAP::Input::Key::Eight:
+		[[fallthrough]];
 	case TRAP::Input::Key::Nine:
 	{
 		int32_t index = static_cast<int32_t>(event.GetKey()) - static_cast<int32_t>(TRAP::Input::Key::One);

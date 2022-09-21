@@ -329,8 +329,11 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			}
 
 		case RendererAPI::DescriptorType::Buffer:
+			[[fallthrough]];
 		case RendererAPI::DescriptorType::BufferRaw:
+			[[fallthrough]];
 		case RendererAPI::DescriptorType::RWBuffer:
+			[[fallthrough]];
 		case RendererAPI::DescriptorType::RWBufferRaw:
 		{
 			const std::vector<Buffer*>& buffers = std::get<std::vector<Buffer*>>(param.Resource);

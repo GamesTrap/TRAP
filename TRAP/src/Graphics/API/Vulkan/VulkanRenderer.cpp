@@ -1287,6 +1287,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 			return ImageFormat::R32G32B32A32_SINT;
 
 		case ShaderDataType::None:
+			[[fallthrough]];
 		default:
 			return ImageFormat::Undefined;
 		}

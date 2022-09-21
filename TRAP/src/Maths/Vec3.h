@@ -364,6 +364,7 @@ constexpr T& TRAP::Math::Vec<3, T>::operator[](const int i)
 	switch (i)
 	{
 	default:
+		[[fallthrough]];
 	case 0:
 		return x;
 
@@ -383,6 +384,7 @@ constexpr const T& TRAP::Math::Vec<3, T>::operator[](const int i) const
 	switch (i)
 	{
 	default:
+		[[fallthrough]];
 	case 0:
 		return x;
 

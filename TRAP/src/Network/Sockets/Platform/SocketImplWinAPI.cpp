@@ -99,13 +99,18 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 	switch(WSAGetLastError())
 	{
 	case WSAEWOULDBLOCK:
+		[[fallthrough]];
 	case WSAEALREADY:
 		return TRAP::Network::Socket::Status::NotReady;
 
 	case WSAECONNABORTED:
+		[[fallthrough]];
 	case WSAECONNRESET:
+		[[fallthrough]];
 	case WSAETIMEDOUT:
+		[[fallthrough]];
 	case WSAENETRESET:
+		[[fallthrough]];
 	case WSAENOTCONN:
 		return TRAP::Network::Socket::Status::Disconnected;
 

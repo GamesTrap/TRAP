@@ -332,17 +332,29 @@ TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice
 	switch(m_physicalDeviceProperties.vendorID)
 	{
 	case 0x1002:
+		[[fallthrough]];
 	case 0x1010:
+		[[fallthrough]];
 	case 0x10DE:
+		[[fallthrough]];
 	case 0x13B5:
+		[[fallthrough]];
 	case 0x14E4:
+		[[fallthrough]];
 	case 0x5143:
+		[[fallthrough]];
 	case 0x8086:
+		[[fallthrough]];
 	case 0x106B:
+		[[fallthrough]];
 	case 0x7A05:
+		[[fallthrough]];
 	case 0x1EB1:
+		[[fallthrough]];
 	case 0x10003:
+		[[fallthrough]];
 	case 0x10004:
+		[[fallthrough]];
 	case 0x10005:
 		return static_cast<RendererAPI::GPUVendor>(m_physicalDeviceProperties.vendorID);
 

@@ -296,6 +296,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 			switch (con->WinCon.Objects[i].Type)
 			{
 			case TRAP_TYPE_AXIS:
+				[[fallthrough]];
 			case TRAP_TYPE_SLIDER:
 			{
 				const float value = (*static_cast<LONG*>(data) + 0.5f) / 32767.5f;

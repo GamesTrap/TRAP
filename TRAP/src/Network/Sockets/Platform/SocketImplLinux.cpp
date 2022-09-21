@@ -119,10 +119,15 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 		return TRAP::Network::Socket::Status::NotReady;
 
 	case ECONNABORTED:
+		[[fallthrough]];
 	case ECONNRESET:
+		[[fallthrough]];
 	case ETIMEDOUT:
+		[[fallthrough]];
 	case ENETRESET:
+		[[fallthrough]];
 	case ENOTCONN:
+		[[fallthrough]];
 	case EPIPE:
 		return TRAP::Network::Socket::Status::Disconnected;
 

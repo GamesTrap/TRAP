@@ -1212,6 +1212,9 @@ void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 					return;
 				}
 				break;
+
+			default:
+				break;
 			}
 		}
 
@@ -4313,6 +4316,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	{
 		return;
 	}
+
+	default:
+		break;
 	}
 }
 
@@ -4864,6 +4870,7 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const KeySym* co
 			return TRAP::Input::Key::KP_9;
 
 		case XK_KP_Separator:
+			[[fallthrough]];
 		case XK_KP_Decimal:
 			return TRAP::Input::Key::KP_Decimal;
 
@@ -4899,12 +4906,16 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const KeySym* co
 			return TRAP::Input::Key::Right_Control;
 
 		case XK_Meta_L:
+			[[fallthrough]];
 		case XK_Alt_L:
 			return TRAP::Input::Key::Left_ALT;
 
 		case XK_Mode_switch: //Mapped to Alt_R on many keyboards
+			[[fallthrough]];
 		case XK_ISO_Level3_Shift: //AltGr on at least some machines
+			[[fallthrough]];
 		case XK_Meta_R:
+			[[fallthrough]];
 		case XK_Alt_R:
 			return TRAP::Input::Key::Right_ALT;
 
