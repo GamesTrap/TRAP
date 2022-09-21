@@ -11,6 +11,8 @@
 	#pragma warning(pop)
 #endif
 
+class b2World;
+
 namespace TRAP
 {
 	namespace Utils
@@ -43,15 +45,13 @@ namespace TRAP
 		Entity CreateEntityWithUID(Utils::UID uid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
-		//TEMP
-		entt::registry& Reg()
-		{
-			return m_registry;
-		}
+		void OnRuntimeStart();
+		void OnRuntimeStop();
 
+		void OnTickRuntime(const TRAP::Utils::TimeStep& deltaTime);
 		void OnUpdateRuntime(Utils::TimeStep deltaTime);
 		void OnUpdateEditor(Utils::TimeStep deltaTime, Graphics::EditorCamera& camera);
-		void OnTick();
+		void OnTick(const TRAP::Utils::TimeStep& deltaTime);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 		void DuplicateEntity(Entity entity);
@@ -65,6 +65,8 @@ namespace TRAP
 		friend class Entity;
 		friend class SceneSerializer;
 		friend class SceneGraphPanel;
+
+		b2World* m_physicsWorld = nullptr;
 
 		entt::registry m_registry;
 		uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

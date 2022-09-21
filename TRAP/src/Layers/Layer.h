@@ -51,7 +51,8 @@ namespace TRAP
 		/// <summary>
 		/// Called every tick (default 100 ticks).
 		/// </summary>
-		virtual void OnTick();
+		/// <param name="deltaTime">Time difference between current and last tick.</param>
+		virtual void OnTick(const Utils::TimeStep& deltaTime);
 		/// <summary>
 		/// Called every frame.
 		/// Should be used for debug GUIs.

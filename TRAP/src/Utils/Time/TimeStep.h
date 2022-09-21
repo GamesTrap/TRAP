@@ -11,7 +11,7 @@ namespace TRAP::Utils
 		/// <summary>
 		/// Constructor for a single step in time.
 		/// </summary>
-		/// <param name="time">Time for the time step.</param>
+		/// <param name="time">Time for the time step in seconds.</param>
 		explicit TimeStep(float time);
 
 		/// <summary>

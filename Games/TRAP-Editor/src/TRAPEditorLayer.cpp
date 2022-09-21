@@ -199,7 +199,7 @@ void TRAPEditorLayer::OnImGuiRender()
 			    !TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Right) &&
 	            !TRAP::Input::IsMouseButtonPressed(TRAP::Input::MouseButton::Middle))
 			{
-				TRAP::Math::Vec3 position, rotation, scale;
+				TRAP::Math::Vec3 position{}, rotation{}, scale{};
 				TRAP::Math::Decompose(transform, position, rotation, scale);
 				{
 					const TRAP::Math::Vec3 deltaRotation = rotation - tc.Rotation;
@@ -279,7 +279,9 @@ void TRAPEditorLayer::OnAttach()
 	m_mousePickBufferDesc.Name = "Viewport ID Buffer";
 	m_mousePickBuffer = TRAP::Graphics::Buffer::Create(m_mousePickBufferDesc);
 
-	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
+	m_editorScene = TRAP::MakeRef<TRAP::Scene>();
+	m_activeScene = m_editorScene;
+	m_sceneGraphPanel.SetContext(m_activeScene);
 
 	m_editorCamera = TRAP::Graphics::EditorCamera(30.0f, 16.0f / 9.0f, 0.1f);
 }
@@ -400,10 +402,26 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAPEditorLayer::OnTick()
+void TRAPEditorLayer::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Update Scene
-	m_activeScene->OnTick();
+	switch(m_sceneState)
+	{
+	case SceneState::Edit:
+	{
+		break;
+	}
+
+	case SceneState::Play:
+	{
+		m_activeScene->OnTick(deltaTime);
+		m_activeScene->OnTickRuntime(deltaTime);
+		break;
+	}
+
+	default:
+		break;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -644,8 +662,8 @@ void TRAPEditorLayer::DeleteEntity()
 	TRAP::Entity selectedEntity = m_sceneGraphPanel.GetSelectedEntity();
 	if(selectedEntity)
 	{
-		m_sceneGraphPanel.SetSelectedEntity(TRAP::Entity(entt::null, m_activeScene.get()));
-		m_activeScene->DestroyEntity(selectedEntity);
+		m_sceneGraphPanel.SetSelectedEntity(TRAP::Entity(entt::null, m_editorScene.get()));
+		m_editorScene->DestroyEntity(selectedEntity);
 	}
 }
 
@@ -713,6 +731,7 @@ void TRAPEditorLayer::OnScenePlay()
 	m_sceneState = SceneState::Play;
 
 	m_activeScene = TRAP::Scene::Copy(m_editorScene);
+	m_activeScene->OnRuntimeStart();
 
 	m_sceneGraphPanel.SetContext(m_activeScene);
 }
@@ -721,6 +740,8 @@ void TRAPEditorLayer::OnScenePlay()
 
 void TRAPEditorLayer::OnSceneStop()
 {
+	m_activeScene->OnRuntimeStop();
+
 	m_sceneState = SceneState::Edit;
 
 	m_activeScene = m_editorScene;

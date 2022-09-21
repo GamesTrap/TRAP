@@ -14,7 +14,7 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
-	void OnTick() override;
+	void OnTick(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:

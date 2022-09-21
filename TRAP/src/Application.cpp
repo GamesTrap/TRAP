@@ -484,7 +484,7 @@ void TRAP::Application::Run()
 					TP_PROFILE_SCOPE("LayerStack OnTick");
 
 					for (const auto& layer : m_layerStack)
-						layer->OnTick();
+						layer->OnTick(Utils::TimeStep(tickTimer.Elapsed()));
 				}
 
 				tickTimer.Reset();

@@ -255,6 +255,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	{
 		DisplayAddComponentEntry<CameraComponent>("Camera");
 		DisplayAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
+		DisplayAddComponentEntry<Rigidbody2DComponent>("Rigidbody 2D");
+		DisplayAddComponentEntry<BoxCollider2DComponent>("Box Collider 2D");
 
 		ImGui::EndPopup();
 	}
@@ -274,15 +276,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	{
 		auto& camera = component.Camera;
 
-		if (ImGui::Checkbox("Primary", &component.Primary))
-		{
-			auto view = m_context->Reg().view<CameraComponent>();
-			for(auto ent : view)
-			{
-				if(entity != ent)
-					view.get<CameraComponent>(ent).Primary = false;
-			}
-		}
+		ImGui::Checkbox("Primary", &component.Primary);
 
 		constexpr std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
 		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())];
@@ -336,6 +330,41 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 	{
 		ImGui::ColorEdit4("Color", &component.Color[0]);
+	});
+
+	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
+	{
+		constexpr std::array<const char*, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
+		const char* currentBodyTypeString = bodyTypeStrings[static_cast<std::size_t>(component.Type)];
+		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
+		{
+			for(int32_t i = 0; i < 3; ++i)
+			{
+				bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
+				if(ImGui::Selectable(bodyTypeStrings[i], isSelected))
+				{
+					currentBodyTypeString = bodyTypeStrings[i];
+					component.Type = static_cast<Rigidbody2DComponent::BodyType>(i);
+				}
+
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+	});
+
+	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
+	{
+		ImGui::DragFloat2("Offset", &component.Offset[0]);
+		ImGui::DragFloat2("Size", &component.Size[0]);
+		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
 	});
 }
 

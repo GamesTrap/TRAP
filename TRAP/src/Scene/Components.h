@@ -116,11 +116,45 @@ namespace TRAP
 		}
 	};
 
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Physics------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	struct Rigidbody2DComponent
+	{
+		enum class BodyType {Static, Dynamic, Kinematic};
+		BodyType Type = BodyType::Static;
+		bool FixedRotation = false;
+
+		//Storage for runtime data
+		void* RuntimeBody = nullptr;
+
+		Rigidbody2DComponent() = default;
+	};
+
+	struct BoxCollider2DComponent
+	{
+		TRAP::Math::Vec2 Offset{0.0f, 0.0f};
+		TRAP::Math::Vec2 Size{0.5f, 0.5f};
+
+		//TODO Move into Physics Material in future
+		float Density = 1.0f;
+		float Friction = 0.5f;
+		float Restitution = 0.0f;
+		float RestitutionThreshold = 0.5f;
+
+		//Storage for runtime data
+		void* RuntimeFixture = nullptr;
+
+		BoxCollider2DComponent() = default;
+	};
+
 	template<typename... Component>
 	struct ComponentGroup{};
 
 	using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
-	                                     CameraComponent, NativeScriptComponent>;
+	                                     CameraComponent, NativeScriptComponent,
+										 Rigidbody2DComponent, BoxCollider2DComponent>;
 }
 
 #endif /*TRAP_COMPONENTS_H*/

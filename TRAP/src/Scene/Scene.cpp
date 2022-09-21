@@ -9,6 +9,38 @@
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Utils/Hash/UID.h"
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <box2d/b2_world.h>
+#include <box2d/b2_body.h>
+#include <box2d/b2_fixture.h>
+#include <box2d/b2_polygon_shape.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
+{
+	switch(bodyType)
+	{
+	case TRAP::Rigidbody2DComponent::BodyType::Static:
+		return b2_staticBody;
+
+	case TRAP::Rigidbody2DComponent::BodyType::Dynamic:
+		return b2_dynamicBody;
+
+	case TRAP::Rigidbody2DComponent::BodyType::Kinematic:
+		return b2_kinematicBody;
+
+	default:
+		TRAP_ASSERT(false, "Unknown body type!");
+		return b2_staticBody;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<typename... Component>
 static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
 {
@@ -111,6 +143,79 @@ void TRAP::Scene::DestroyEntity(const Entity entity)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Scene::OnRuntimeStart()
+{
+	m_physicsWorld = new b2World({0.0f, -9.8f});
+
+	auto view = m_registry.view<Rigidbody2DComponent>();
+	for(auto e : view)
+	{
+		Entity entity{e, this};
+		auto& transform = entity.GetComponent<TransformComponent>();
+		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
+
+		b2BodyDef bodyDef{};
+		bodyDef.type = TRAPRigidbody2DTypeToBox2DBody(rigidbody2D.Type);
+		bodyDef.position.Set(transform.Position.x, transform.Position.y);
+		bodyDef.angle = transform.Rotation.z;
+
+		b2Body* body = m_physicsWorld->CreateBody(&bodyDef);
+		body->SetFixedRotation(rigidbody2D.FixedRotation);
+		rigidbody2D.RuntimeBody = body;
+
+		if(entity.HasComponent<BoxCollider2DComponent>())
+		{
+			auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
+
+			b2PolygonShape boxShape{};
+			boxShape.SetAsBox(boxCollider2D.Size.x * transform.Scale.x, boxCollider2D.Size.y * transform.Scale.y);
+
+			b2FixtureDef fixtureDef{};
+			fixtureDef.shape = &boxShape;
+			fixtureDef.density = boxCollider2D.Density;
+			fixtureDef.friction = boxCollider2D.Friction;
+			fixtureDef.restitution = boxCollider2D.Restitution;
+			fixtureDef.restitutionThreshold = boxCollider2D.RestitutionThreshold;
+			boxCollider2D.RuntimeFixture = body->CreateFixture(&fixtureDef);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Scene::OnRuntimeStop()
+{
+	delete m_physicsWorld;
+	m_physicsWorld = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
+{
+	//Physics
+	const int32_t velocityIterations = 6;
+	const int32_t positionIterations = 2;
+	m_physicsWorld->Step(deltaTime, velocityIterations, positionIterations);
+
+	//Retrieve transform from Box2D
+	auto view = m_registry.view<Rigidbody2DComponent>();
+	for(auto e : view)
+	{
+		Entity entity{e, this};
+		auto& transform = entity.GetComponent<TransformComponent>();
+		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
+
+		b2Body* body = static_cast<b2Body*>(rigidbody2D.RuntimeBody);
+		const auto& position = body->GetPosition();
+		transform.Position.x = position.x;
+		transform.Position.y = position.y;
+		transform.Rotation.z = body->GetAngle();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 {
 	//Update scripts
@@ -187,7 +292,7 @@ void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Scene::OnTick()
+void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Update scripts
 	{
@@ -202,7 +307,7 @@ void TRAP::Scene::OnTick()
 				nsc.Instance->OnCreate();
 			}
 
-			nsc.Instance->OnTick();
+			nsc.Instance->OnTick(deltaTime);
 		});
 	}
 }
@@ -280,4 +385,12 @@ void TRAP::Scene::OnComponentAdded<TRAP::TagComponent>(Entity, TagComponent&)
 
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::NativeScriptComponent>(Entity, NativeScriptComponent&)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::Rigidbody2DComponent>(Entity, Rigidbody2DComponent&)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::BoxCollider2DComponent>(Entity, BoxCollider2DComponent&)
 {}
