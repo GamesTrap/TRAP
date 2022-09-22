@@ -59,9 +59,9 @@ namespace TRAP::Embed
 	};
 
 	/// <summary>
-	/// 2D Renderer shader
+	/// 2D Renderer quad shader
 	/// </summary>
-	inline static constexpr std::string_view Renderer2DShader
+	inline static constexpr std::string_view Renderer2DQuadShader
 	{
 		R"(
 #shader vertex
@@ -210,6 +210,50 @@ namespace TRAP::Embed
 			}
 
 			FragColor = texColor;
+			FragColor2 = vEntityID;
+		}
+	)"
+	};
+
+	/// <summary>
+	/// 2D Renderer line shader
+	/// </summary>
+	inline static constexpr std::string_view Renderer2DLineShader
+	{
+		R"(
+#shader vertex
+
+		layout(location = 0) in vec3 Position;
+		layout(location = 1) in vec4 Color;
+		layout(location = 2) in int EntityID;
+
+		layout(location = 1) out vec4 vColor;
+		layout(location = 2) out flat int vEntityID;
+
+		layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraBuffer
+		{
+			mat4 sys_ProjectionMatrix;
+			mat4 sys_ViewMatrix;
+		} Camera;
+
+		void main()
+		{
+			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * vec4(Position, 1.0f);
+			vColor = Color;
+			vEntityID = EntityID;
+		}
+
+#shader fragment
+
+		layout(location = 0) out vec4 FragColor;
+		layout(location = 1) out int FragColor2;
+
+		layout(location = 1) in vec4 vColor;
+		layout(location = 2) in flat int vEntityID;
+
+		void main()
+		{
+			FragColor = vColor;
 			FragColor2 = vEntityID;
 		}
 	)"

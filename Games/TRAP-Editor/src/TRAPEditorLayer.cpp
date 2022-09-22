@@ -125,6 +125,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Renderer2D Stats:");
 	ImGui::Text("DrawCalls: %u", stats.DrawCalls);
 	ImGui::Text("Quads: %u", stats.QuadCount);
+	ImGui::Text("Lines: %u", stats.LineCount);
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
 
