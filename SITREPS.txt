@@ -3266,3 +3266,4 @@ SITREP 09/21/2022|22w38b1
 SITREP 09/23/2022|22w38c1
     - Changed TRAP Engine version to 22w38c1(0.8.47)
     - Renderer2D Added support for line and rectangle (non filled) rendering ~>30 mins
+    - TRAP-Editor gizmos now use the correct camera when SceneState is Play ~<5 mins

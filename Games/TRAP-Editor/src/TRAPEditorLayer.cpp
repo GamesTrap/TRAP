@@ -164,8 +164,21 @@ void TRAPEditorLayer::OnImGuiRender()
 			// const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
 			// const TRAP::Math::Mat4& cameraProj = camera.GetProjectionMatrix();
 			// TRAP::Math::Mat4 cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
-			const TRAP::Math::Mat4& cameraProj = m_editorCamera.GetProjectionMatrix();
-			TRAP::Math::Mat4 cameraView = m_editorCamera.GetViewMatrix();
+
+			auto cameraEntity = m_activeScene->GetPrimaryCameraEntity(); //Run time camera
+			TRAP::Math::Mat4 cameraProj{};
+			TRAP::Math::Mat4 cameraView{};
+			if(m_sceneState == SceneState::Edit || !cameraEntity)
+			{
+				cameraProj = m_editorCamera.GetProjectionMatrix();
+				cameraView = m_editorCamera.GetViewMatrix();
+			}
+			else if(m_sceneState == SceneState::Play)
+			{
+				const auto& camera = cameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
+				cameraProj = camera.GetProjectionMatrix();
+				cameraView = TRAP::Math::Inverse(cameraEntity.GetComponent<TRAP::TransformComponent>().GetTransform());
+			}
 
 			//Entity transform
 			auto& tc = selectedEntity.GetComponent<TRAP::TransformComponent>();
