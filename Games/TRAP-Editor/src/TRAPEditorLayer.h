@@ -24,6 +24,8 @@ private:
 	void SaveScene();
 	void SaveSceneAs();
 
+	void OnOverlayRender();
+
 	void MousePicking();
 	void DuplicateEntity();
 	void DeleteEntity();
@@ -83,6 +85,9 @@ private:
 		// Simulate
 	};
 	SceneState m_sceneState;
+
+	//Other Settings
+	bool m_showPhysicsColliders;
 };
 
 #endif /*GAMESTRAP_TRAPEDITORLAYER_H*/

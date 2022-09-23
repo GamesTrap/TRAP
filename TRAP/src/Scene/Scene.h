@@ -58,6 +58,12 @@ namespace TRAP
 
 		Entity GetPrimaryCameraEntity();
 
+		template<typename... Components>
+		auto GetAllEntitiesWithComponents()
+		{
+			return m_registry.view<Components...>();
+		}
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

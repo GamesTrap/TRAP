@@ -3267,3 +3267,6 @@ SITREP 09/23/2022|22w38c1
     - Changed TRAP Engine version to 22w38c1(0.8.47)
     - Renderer2D Added support for line and rectangle (non filled) rendering ~>30 mins
     - TRAP-Editor gizmos now use the correct camera when SceneState is Play ~<5 mins
+    - Scene Added GetAllEntitiesWithComponents() ~<5 mins
+    - TRAP-Editor Added OnOverlayRender() ~<20 mins
+    - TRAP-Editor Added visualization for physics colliders (BoxCollider2D) ~<20 mins

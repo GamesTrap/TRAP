@@ -359,8 +359,8 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 	DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
 	{
-		ImGui::DragFloat2("Offset", &component.Offset[0]);
-		ImGui::DragFloat2("Size", &component.Size[0]);
+		ImGui::DragFloat2("Offset", &component.Offset[0], 0.1f);
+		ImGui::DragFloat2("Size", &component.Size[0], 0.1f);
 		ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
