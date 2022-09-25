@@ -260,6 +260,71 @@ namespace TRAP::Embed
 	};
 
 	/// <summary>
+	/// 2D Renderer circle shader
+	/// </summary>
+	inline static constexpr std::string_view Renderer2DCircleShader
+	{
+		R"(
+#shader vertex
+
+		layout(location = 0) in vec3 WorldPosition;
+		layout(location = 1) in vec3 LocalPosition;
+		layout(location = 2) in vec4 Color;
+		layout(location = 3) in float Thickness;
+		layout(location = 4) in float Fade;
+		layout(location = 5) in int EntityID;
+
+		layout(location = 1) out vec3 vLocalPosition;
+		layout(location = 2) out vec4 vColor;
+		layout(location = 3) out float vThickness;
+		layout(location = 4) out float vFade;
+		layout(location = 5) out flat int vEntityID;
+
+		layout(std140, UpdateFreqDynamic, binding = 0) uniform CameraBuffer
+		{
+			mat4 sys_ProjectionMatrix;
+			mat4 sys_ViewMatrix;
+		} Camera;
+
+		void main()
+		{
+			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * vec4(WorldPosition, 1.0f);
+			vLocalPosition = LocalPosition;
+			vColor = Color;
+			vThickness = Thickness;
+			vFade = Fade;
+			vEntityID = EntityID;
+		}
+
+#shader fragment
+
+		layout(location = 0) out vec4 FragColor;
+		layout(location = 1) out int FragColor2;
+
+		layout(location = 1) in vec3 vLocalPosition;
+		layout(location = 2) in vec4 vColor;
+		layout(location = 3) in float vThickness;
+		layout(location = 4) in float vFade;
+		layout(location = 5) in flat int vEntityID;
+
+		void main()
+		{
+			float distance = 1.0 - length(vLocalPosition);
+			float circle = smoothstep(0.0, vFade, distance);
+			circle *= smoothstep(vThickness + vFade, vThickness * vThickness, distance);
+
+			if(circle == 0.0)
+				discard;
+
+			FragColor = vColor;
+			FragColor.a *= circle;
+
+			FragColor2 = vEntityID;
+		}
+	)"
+	};
+
+	/// <summary>
 	/// Default debug image pixel data RGBA 32BPP
 	/// </summary>
 	inline static constexpr std::array<uint8_t, 4096> DefaultImageData =

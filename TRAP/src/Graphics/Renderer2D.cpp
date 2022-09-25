@@ -28,6 +28,18 @@ namespace TRAP::Graphics
 		int32_t EntityID;
 	};
 
+	struct CircleVertex
+	{
+		Math::Vec3 WorldPosition;
+		Math::Vec3 LocalPosition;
+		Math::Vec4 Color;
+		float Thickness;
+		float Fade;
+
+		//Editor only
+		int32_t EntityID;
+	};
+
 	struct LineVertex
 	{
 		Math::Vec3 Position;
@@ -42,6 +54,9 @@ namespace TRAP::Graphics
 		static constexpr uint32_t MaxQuads = 100000;
 		static constexpr uint32_t MaxQuadVertices = MaxQuads * 4;
 		static constexpr uint32_t MaxQuadIndices = MaxQuads * 6;
+		static constexpr uint32_t MaxCircles = 100000;
+		static constexpr uint32_t MaxCircleVertices = MaxCircles * 4;
+		static constexpr uint32_t MaxCircleIndices = MaxCircles * 6;
 		static constexpr uint32_t MaxLines = 100000;
 		static constexpr uint32_t MaxLineVertices = MaxLines * 2;
 		static constexpr uint32_t MaxTextureSlots = 32;
@@ -56,6 +71,15 @@ namespace TRAP::Graphics
 		};
 		std::array<std::vector<QuadBuffers>, RendererAPI::ImageCount> QuadDataBuffers{};
 		uint32_t QuadDataBufferIndex = 0;
+		struct CircleBuffers
+		{
+			Scope<VertexBuffer> CircleVertexBuffer = nullptr;
+			Scope<IndexBuffer> CircleIndexBuffer = nullptr;
+			std::vector<CircleVertex> CircleVertices = std::vector<CircleVertex>(MaxQuadVertices);
+			uint32_t CircleCount = 0;
+		};
+		std::array<std::vector<CircleBuffers>, RendererAPI::ImageCount> CircleDataBuffers{};
+		uint32_t CircleDataBufferIndex = 0;
 		struct LineBuffers
 		{
 			Scope<VertexBuffer> LineVertexBuffer = nullptr;
@@ -69,10 +93,12 @@ namespace TRAP::Graphics
 
 		Ref<Shader> QuadShader;
 		Ref<Shader> LineShader;
+		Ref<Shader> CircleShader;
 		Ref<Sampler> TextureSampler;
 		Ref<Texture> WhiteTexture;
 
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+		CircleVertex* CircleVertexBufferPtr = nullptr;
 		LineVertex* LineVertexBufferPtr = nullptr;
 
 		uint32_t TextureSlotIndex = 1; //0 = White texture
@@ -119,6 +145,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data.TextureSampler = Sampler::Create(samplerDesc);
 
 	InitQuads();
+	InitCircles();
 	InitLines();
 }
 
@@ -135,10 +162,12 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	s_data.QuadIndicesData.reset();
 	s_data.CameraUniformBuffer.reset();
 	s_data.TextureSampler.reset();
+	s_data.CircleShader.reset();
 	s_data.QuadShader.reset();
 	s_data.LineShader.reset();
 	s_data.WhiteTexture.reset();
 	s_data.QuadDataBuffers = {};
+	s_data.CircleDataBuffers = {};
 	s_data.LineDataBuffers = {};
 }
 
@@ -159,6 +188,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 
 	//Reset Vertices & Indices
 	s_data.QuadVertexBufferPtr = s_data.QuadDataBuffers[imageIndex][s_data.QuadDataBufferIndex].QuadVertices.data();
+	s_data.CircleVertexBufferPtr = s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex].CircleVertices.data();
 	s_data.LineVertexBufferPtr = s_data.LineDataBuffers[imageIndex][s_data.LineDataBufferIndex].LineVertices.data();
 
 	for(auto& buffers : s_data.QuadDataBuffers[imageIndex])
@@ -183,6 +213,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 
 	//Reset Vertices & Indices
 	s_data.QuadVertexBufferPtr = s_data.QuadDataBuffers[imageIndex][s_data.QuadDataBufferIndex].QuadVertices.data();
+	s_data.CircleVertexBufferPtr = s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex].CircleVertices.data();
 	s_data.LineVertexBufferPtr = s_data.LineDataBuffers[imageIndex][s_data.LineDataBufferIndex].LineVertices.data();
 
 	//Reset textures
@@ -208,6 +239,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 
 	//Reset Vertices & Indices
 	s_data.QuadVertexBufferPtr = s_data.QuadDataBuffers[imageIndex][s_data.QuadDataBufferIndex].QuadVertices.data();
+	s_data.CircleVertexBufferPtr = s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex].CircleVertices.data();
 	s_data.LineVertexBufferPtr = s_data.LineDataBuffers[imageIndex][s_data.LineDataBufferIndex].LineVertices.data();
 
 	//Reset textures
@@ -242,6 +274,34 @@ void DrawQuadBuffer(TRAP::Graphics::Renderer2DData::QuadBuffers& buffers, TRAP::
 	TRAP::Graphics::RenderCommand::DrawIndexed(indicesCount);
 
 	buffers.QuadCount = 0;
+
+	renderer2DData.Stats.DrawCalls++;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void DrawCircleBuffer(TRAP::Graphics::Renderer2DData::CircleBuffers& buffers, TRAP::Graphics::Renderer2DData& renderer2DData)
+{
+	const uint32_t verticesSize = buffers.CircleCount * sizeof(TRAP::Graphics::CircleVertex) * 4;
+	const uint32_t indicesCount = buffers.CircleCount * 6;
+
+	//Update Vertices
+	buffers.CircleVertexBuffer->SetData(reinterpret_cast<float*>(buffers.CircleVertices.data()), verticesSize);
+
+	//Use dynamic shader resources
+	renderer2DData.CircleShader->UseUBO(1, 0, renderer2DData.CameraUniformBuffer.get());
+
+	//Use Vertex & Index Buffer
+	buffers.CircleVertexBuffer->Use();
+	buffers.CircleIndexBuffer->Use();
+
+	//Use Shader
+	renderer2DData.CircleShader->Use();
+
+	buffers.CircleVertexBuffer->AwaitLoading();
+	TRAP::Graphics::RenderCommand::DrawIndexed(indicesCount);
+
+	buffers.CircleCount = 0;
 
 	renderer2DData.Stats.DrawCalls++;
 }
@@ -291,6 +351,12 @@ void TRAP::Graphics::Renderer2D::EndScene()
 			DrawQuadBuffer(buffers, s_data);
 	}
 
+	for(auto& buffers : s_data.CircleDataBuffers[imageIndex])
+	{
+		if(buffers.CircleCount != 0)
+			DrawCircleBuffer(buffers, s_data);
+	}
+
 	for(auto& buffers : s_data.LineDataBuffers[imageIndex])
 	{
 		if(buffers.LineCount != 0)
@@ -298,6 +364,7 @@ void TRAP::Graphics::Renderer2D::EndScene()
 	}
 
 	s_data.QuadDataBufferIndex = 0;
+	s_data.CircleDataBufferIndex = 0;
 	s_data.LineDataBufferIndex = 0;
 }
 
@@ -409,6 +476,37 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const Math::Vec4& color,
+                                            const float thickness, const float fade, const int32_t entityID)
+{
+	constexpr uint64_t circleVertexCount = 4;
+
+	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+
+	if (s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex].CircleCount * 6 >= Renderer2DData::MaxCircleIndices)
+	{
+		ExtendCircleBuffers();
+		ResetCircle();
+	}
+
+	for (uint64_t i = 0; i < circleVertexCount; i++)
+	{
+		s_data.CircleVertexBufferPtr->WorldPosition = Math::Vec3(transform * s_data.QuadVertexPositions[i]);
+		s_data.CircleVertexBufferPtr->LocalPosition = Math::Vec3(s_data.QuadVertexPositions[i] * 2.0f); //Range [-1, 1]
+		s_data.CircleVertexBufferPtr->Color = color;
+		s_data.CircleVertexBufferPtr->Thickness = thickness;
+		s_data.CircleVertexBufferPtr->Fade = fade;
+		s_data.CircleVertexBufferPtr->EntityID = entityID;
+		s_data.CircleVertexBufferPtr++;
+	}
+
+	s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex].CircleCount++;
+
+	s_data.Stats.CircleCount++;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::Renderer2D::DrawSprite(const TRAP::Math::Mat4& transform,
                                             const TRAP::SpriteRendererComponent& sprite, const int32_t entityID)
 {
@@ -478,14 +576,14 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 
 uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const
 {
-	return (QuadCount * 4) + (LineCount * 2);
+	return (QuadCount * 4) + (CircleCount * 4) + (LineCount * 2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const
 {
-	return QuadCount * 6;
+	return (QuadCount * 6) + (CircleCount * 6);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -557,6 +655,37 @@ void TRAP::Graphics::Renderer2D::InitQuads()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Renderer2D::InitCircles()
+{
+	s_data.CircleShader = Shader::CreateFromSource("Renderer2D_Circle", std::string(Embed::Renderer2DCircleShader));
+
+	//Create and fill circle index and vertex buffers
+	for(auto& buffers : s_data.CircleDataBuffers)
+	{
+		buffers.emplace_back();
+
+		buffers[s_data.CircleDataBufferIndex].CircleVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxCircleVertices * sizeof(CircleVertex),
+																						UpdateFrequency::Dynamic);
+		buffers[s_data.CircleDataBufferIndex].CircleVertexBuffer->SetLayout
+		({
+			{ ShaderDataType::Float3, "WorldPosition" },
+			{ ShaderDataType::Float3, "LocalPosition" },
+			{ ShaderDataType::Float4, "Color" },
+			{ ShaderDataType::Float, "Thickness" },
+			{ ShaderDataType::Float, "Fade" },
+			{ ShaderDataType::Int, "EntityID" }
+		});
+
+		//This uses the same indices as for quads
+		buffers[s_data.CircleDataBufferIndex].CircleIndexBuffer = IndexBuffer::Create((*s_data.QuadIndicesData).data(),
+																	                  Renderer2DData::MaxCircleIndices * sizeof(uint32_t),
+																	                  UpdateFrequency::Dynamic);
+		buffers[s_data.CircleDataBufferIndex].CircleIndexBuffer->AwaitLoading();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::Renderer2D::InitLines()
 {
 	s_data.LineShader = Shader::CreateFromSource("Renderer2D_Line", std::string(Embed::Renderer2DLineShader));
@@ -586,6 +715,15 @@ void TRAP::Graphics::Renderer2D::ResetQuad()
 	s_data.QuadVertexBufferPtr = s_data.QuadDataBuffers[imageIndex][s_data.QuadDataBufferIndex].QuadVertices.data();
 
 	s_data.TextureSlotIndex = 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::ResetCircle()
+{
+	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+
+	s_data.CircleVertexBufferPtr = s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex].CircleVertices.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -651,6 +789,40 @@ void TRAP::Graphics::Renderer2D::ExtendQuadBuffers()
 		                                                          TRAP::Graphics::Renderer2DData::MaxQuadIndices * sizeof(uint32_t),
 		                                                          TRAP::Graphics::UpdateFrequency::Dynamic);
 	buffers.QuadIndexBuffer->AwaitLoading();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::ExtendCircleBuffers()
+{
+	s_data.CircleDataBufferIndex++;
+
+	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
+
+	if(s_data.CircleDataBufferIndex < s_data.CircleDataBuffers[imageIndex].size()) //Already allocated
+		return;
+
+	s_data.CircleDataBuffers[imageIndex].emplace_back();
+
+	auto& buffers = s_data.CircleDataBuffers[imageIndex][s_data.CircleDataBufferIndex];
+
+	buffers.CircleVertexBuffer = TRAP::Graphics::VertexBuffer::Create(TRAP::Graphics::Renderer2DData::MaxCircleVertices * sizeof(TRAP::Graphics::CircleVertex),
+	                                                                  TRAP::Graphics::UpdateFrequency::Dynamic);
+	buffers.CircleVertexBuffer->SetLayout
+	({
+		{ TRAP::Graphics::ShaderDataType::Float3, "WorldPosition" },
+		{ TRAP::Graphics::ShaderDataType::Float3, "LocalPosition" },
+		{ TRAP::Graphics::ShaderDataType::Float4, "Color" },
+		{ TRAP::Graphics::ShaderDataType::Float, "Thickness" },
+		{ TRAP::Graphics::ShaderDataType::Float, "Fade" },
+		{ TRAP::Graphics::ShaderDataType::Int, "EntityID" }
+	});
+
+	//This uses the same indices as for quads
+	buffers.CircleIndexBuffer = TRAP::Graphics::IndexBuffer::Create(s_data.QuadIndicesData->data(),
+		                                                            TRAP::Graphics::Renderer2DData::MaxCircleIndices * sizeof(uint32_t),
+		                                                            TRAP::Graphics::UpdateFrequency::Dynamic);
+	buffers.CircleIndexBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

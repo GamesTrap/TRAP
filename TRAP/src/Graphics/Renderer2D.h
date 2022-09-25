@@ -108,6 +108,18 @@ namespace TRAP::Graphics
 		                     Ref<Texture> texture, const std::array<Math::Vec2, 4>* texCoords, int32_t entityID = -1);
 
 		/// <summary>
+		/// Draw a colored circle with given thickness and fading.
+		/// This is the base function for all the other DrawCircle functions.
+		/// </summary>
+		/// <param name="transform">Transform matrix for the circle.</param>
+		/// <param name="color">Color for the circle.</param>
+		/// <param name="thickness">Optional: Thickness for the circle.</param>
+		/// <param name="fade">Optional: Fade for the circle.</param>
+		/// <param name="entityID">Optional: Entity ID of the quad.</param>
+		static void DrawCircle(const TRAP::Math::Mat4& transform, const Math::Vec4& color,
+		                       float thickness = 1.0f, float fade = 0.005f, int32_t entityID = -1);
+
+		/// <summary>
 		/// Draw a sprite.
 		/// </summary>
 		/// <param name="transform">Transform matrix for the sprite.</param>
@@ -145,6 +157,7 @@ namespace TRAP::Graphics
 		{
 			uint32_t DrawCalls = 0;
 			uint32_t QuadCount = 0;
+			uint32_t CircleCount = 0;
 			uint32_t LineCount = 0;
 
 			/// <summary>
@@ -174,6 +187,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		static void InitQuads();
 		/// <summary>
+		/// Initialize the data neccessary for rendering circles.
+		/// </summary>
+		static void InitCircles();
+		/// <summary>
 		/// Initialize the data neccessary for rendering lines.
 		/// </summary>
 		static void InitLines();
@@ -181,6 +198,10 @@ namespace TRAP::Graphics
 		/// Reset quad pointers and current texture slot for a new draw call.
 		/// </summary>
 		static void ResetQuad();
+		/// <summary>
+		/// Reset circle pointers for a new draw call.
+		/// </summary>
+		static void ResetCircle();
 		/// <summary>
 		/// Reset line pointers for a new draw call.
 		/// </summary>
@@ -195,6 +216,10 @@ namespace TRAP::Graphics
 		/// Extend the buffers for quad rendering to allow for more quads.
 		/// </summary>
 		static void ExtendQuadBuffers();
+		/// <summary>
+		/// Extend the buffers for circle rendering to allow for more circles.
+		/// </summary>
+		static void ExtendCircleBuffers();
 		/// <summary>
 		/// Extend the buffers for line rendering to allow for more line.
 		/// </summary>

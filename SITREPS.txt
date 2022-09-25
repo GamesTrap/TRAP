@@ -3270,3 +3270,8 @@ SITREP 09/23/2022|22w38c1
     - Scene Added GetAllEntitiesWithComponents() ~<5 mins
     - TRAP-Editor Added OnOverlayRender() ~<20 mins
     - TRAP-Editor Added visualization for physics colliders (BoxCollider2D) ~<20 mins
+
+SITREP 09/26/2022|22w39a1
+    - Changed TRAP Engine version to 22w39a1(0.8.48)
+    - Embed Added Renderer2D circle shader ~<20 mins
+    - Renderer2D Added support for circle rendering ~>40 mins

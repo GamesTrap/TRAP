@@ -94,19 +94,24 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 			for(float x = -size; x < size; x += 0.5f)
 			{
 				TRAP::Math::Vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
-				TRAP::Graphics::Renderer2D::DrawQuad({{x, y, 0.0f}, {}, {0.45f, 0.45f, 1.0f}}, color);
+
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(TRAP::Math::Vec3(x, y, 0.0f)) *
+		                                       Mat4Cast(TRAP::Math::Quat(Radians(TRAP::Math::Vec3(0.0f)))) *
+										       TRAP::Math::Scale(TRAP::Math::Vec3(0.45f, 0.45f, 1.0f));
+				TRAP::Graphics::Renderer2D::DrawCircle(trans, color, 1.0f, 0.005f);
+				// TRAP::Graphics::Renderer2D::DrawQuad({{x, y, 0.0f}, {}, {0.45f, 0.45f, 1.0f}}, color);
 			}
 		}
 
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, -0.1f}, {}, {0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, -0.1f}, {}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, -0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
-			                                 { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, -0.1f}, {}, {0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, -0.1f}, {}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, -0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 1.0f} },
+		// 	                                 { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-3.0f, 0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("EnterKey"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.5f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("AButton"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("BButton"));
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, -0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("Circle"));
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {-3.0f, 0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("EnterKey"));
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {-2.5f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("AButton"));
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, 0.0f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("BButton"));
+		// TRAP::Graphics::Renderer2D::DrawQuad({ {-2.0f, -0.5f, 0.0f}, {}, {0.5f, 0.5f, 0.5f} }, TRAP::Graphics::SpriteManager::Get("Circle"));
 	}
 	TRAP::Graphics::Renderer2D::EndScene();
 
