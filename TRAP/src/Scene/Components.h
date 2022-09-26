@@ -87,6 +87,19 @@ namespace TRAP
 	};
 
 	/// <summary>
+	/// Circle renderer component.
+	/// Optional component containing circle renderer data.
+	/// </summary>
+	struct CircleRendererComponent
+	{
+		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		float Thickness = 1.0f;
+		float Fade = 0.005f;
+
+		CircleRendererComponent() = default;
+	};
+
+	/// <summary>
 	/// Camera component.
 	/// Optional component containing camera data.
 	/// </summary>
@@ -153,8 +166,9 @@ namespace TRAP
 	struct ComponentGroup{};
 
 	using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
-	                                     CameraComponent, NativeScriptComponent,
-										 Rigidbody2DComponent, BoxCollider2DComponent>;
+	                                     CircleRendererComponent, CameraComponent,
+										 NativeScriptComponent, Rigidbody2DComponent,
+										 BoxCollider2DComponent>;
 }
 
 #endif /*TRAP_COMPONENTS_H*/

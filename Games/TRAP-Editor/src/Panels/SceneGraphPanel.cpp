@@ -193,17 +193,21 @@ void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction fun
 		ImGui::Separator();
 		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
 		ImGui::PopStyleVar();
-		ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-		if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
-			ImGui::OpenPopup("ComponentSettings");
-
 		bool removeComponent = false;
-		if (ImGui::BeginPopup("ComponentSettings"))
+		if(!std::is_same_v<T, TRAP::TransformComponent>)
 		{
-			if (ImGui::MenuItem("Remove Component"))
-				removeComponent = true;
+			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+			if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
+				ImGui::OpenPopup("ComponentSettings");
 
-			ImGui::EndPopup();
+			if (ImGui::BeginPopup("ComponentSettings"))
+			{
+				if (ImGui::MenuItem("Remove Component"))
+					removeComponent = true;
+
+				ImGui::EndPopup();
+			}
+
 		}
 
 		if (open)
@@ -211,9 +215,11 @@ void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction fun
 			func(component);
 			ImGui::TreePop();
 		}
-
-		if (removeComponent)
-			entity.RemoveComponent<T>();
+		if(!std::is_same_v<T, TRAP::TransformComponent>)
+		{
+			if (removeComponent)
+				entity.RemoveComponent<T>();
+		}
 	}
 }
 
@@ -255,6 +261,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	{
 		DisplayAddComponentEntry<CameraComponent>("Camera");
 		DisplayAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
+		DisplayAddComponentEntry<CircleRendererComponent>("Circle Renderer");
 		DisplayAddComponentEntry<Rigidbody2DComponent>("Rigidbody 2D");
 		DisplayAddComponentEntry<BoxCollider2DComponent>("Box Collider 2D");
 
@@ -330,6 +337,13 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 	{
 		ImGui::ColorEdit4("Color", &component.Color[0]);
+	});
+
+	DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component)
+	{
+		ImGui::ColorEdit4("Color", &component.Color[0]);
+		ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0f, 1.0f);
+		ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0f, 1.0f);
 	});
 
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)

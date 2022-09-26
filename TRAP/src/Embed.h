@@ -311,7 +311,7 @@ namespace TRAP::Embed
 		{
 			float distance = 1.0 - length(vLocalPosition);
 			float circle = smoothstep(0.0, vFade, distance);
-			circle *= smoothstep(vThickness + vFade, vThickness * vThickness, distance);
+			circle *= smoothstep(vThickness + vFade, vThickness, distance);
 
 			if(circle == 0.0)
 				discard;

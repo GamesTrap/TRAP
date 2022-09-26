@@ -259,13 +259,24 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 	{
 		Graphics::Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
-		auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		//Render sprites
+		auto spriteGroup = m_registry.view<TransformComponent, SpriteRendererComponent>();
+		for (auto entity : spriteGroup)
 		{
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+			auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
 			// Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
 			Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
+		}
+
+		//Render circles
+		auto circleGroup = m_registry.view<TransformComponent, CircleRendererComponent>();
+		for (auto entity : circleGroup)
+		{
+			auto [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
+
+			Graphics::Renderer2D::DrawCircle(transform.GetTransform(), circle.Color,
+											circle.Thickness, circle.Fade, static_cast<int32_t>(entity));
 		}
 
 		Graphics::Renderer2D::EndScene();
@@ -278,13 +289,24 @@ void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::
 {
 	Graphics::Renderer2D::BeginScene(camera);
 
-	auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-	for (auto entity : group)
+	//Renderer sprites
+	auto spriteGroup = m_registry.view<TransformComponent, SpriteRendererComponent>();
+	for (auto entity : spriteGroup)
 	{
-		auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+		auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
 		// Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
 		Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
+	}
+
+	//Render circles
+	auto circleGroup = m_registry.view<TransformComponent, CircleRendererComponent>();
+	for (auto entity : circleGroup)
+	{
+		auto [transform, circle] = circleGroup.get<TransformComponent, CircleRendererComponent>(entity);
+
+		Graphics::Renderer2D::DrawCircle(transform.GetTransform(), circle.Color,
+		                                 circle.Thickness, circle.Fade, static_cast<int32_t>(entity));
 	}
 
 	Graphics::Renderer2D::EndScene();
@@ -377,6 +399,10 @@ void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity, CameraComponen
 
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::SpriteRendererComponent>(Entity, SpriteRendererComponent&)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::CircleRendererComponent>(Entity, CircleRendererComponent&)
 {}
 
 template<>

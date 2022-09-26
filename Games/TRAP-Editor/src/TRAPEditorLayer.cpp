@@ -1,5 +1,6 @@
 #include "TRAPEditorLayer.h"
 
+#include "Graphics/RenderCommand.h"
 #include "Scene/SceneSerializer.h"
 
 #include <ImGuizmo.h>
@@ -122,6 +123,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Renderer2D Stats:");
 	ImGui::Text("DrawCalls: %u", stats.DrawCalls);
 	ImGui::Text("Quads: %u", stats.QuadCount);
+	ImGui::Text("Circles: %u", stats.CircleCount);
 	ImGui::Text("Lines: %u", stats.LineCount);
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
@@ -357,6 +359,8 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TRAP::Graphics::RenderCommand::BindRenderTargets({ m_renderTarget, m_IDRenderTarget }, nullptr, &m_renderTargetLoadActions);
 	TRAP::Graphics::RenderCommand::SetViewport(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
 	TRAP::Graphics::RenderCommand::SetScissor(0, 0, m_renderTarget->GetWidth(), m_renderTarget->GetHeight());
+
+	//Culling
 	TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None);
 
 	//Update Scene
@@ -478,7 +482,7 @@ bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		{
 			if (ctrlPressed && shiftPressed)
 				SaveSceneAs();
-			else if (shiftPressed)
+			else if (ctrlPressed)
 				SaveScene();
 
 			break;

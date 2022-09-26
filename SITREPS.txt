@@ -3275,3 +3275,7 @@ SITREP 09/26/2022|22w39a1
     - Changed TRAP Engine version to 22w39a1(0.8.48)
     - Embed Added Renderer2D circle shader ~<20 mins
     - Renderer2D Added support for circle rendering ~>40 mins
+    - TRAP-Editor TransformComponent now can not be removed anymore ~<5 mins
+    - TRAP-Editor Changed save shortcut from Shift+S to CTRL+S ~<5 mins
+    - Added CircleRendererComponent ~<5 mins
+    - Scene/SceneSerializer Added support for circle rendering and CircleRendererComponent ~<30 mins
