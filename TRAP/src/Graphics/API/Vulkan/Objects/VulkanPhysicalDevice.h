@@ -47,6 +47,12 @@ namespace TRAP::Graphics::API
 		/// <returns>Vulkan physical device handle.</returns>
 		VkPhysicalDevice GetVkPhysicalDevice() const;
 		/// <summary>
+		/// Retrieve the Vulkan physical device format properties for a specific format.
+		/// </summary>
+		/// <param name="format">Format to retrieve properties for.</param>
+		/// <returns>VkFormatProperties.</returns>
+		VkFormatProperties GetVkPhysicalDeviceFormatProperties(VkFormat format) const;
+		/// <summary>
 		/// Retrieve the Vulkan physical device properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceProperties.</returns>

@@ -914,14 +914,11 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
                                                                 CommandBuffer* const cmd)
 {
 	//Check if image format supports linear blitting
-	VkFormatProperties formatProperties;
 	const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
 		(
 			RendererAPI::GetRenderer()
 		);
-	vkGetPhysicalDeviceFormatProperties(vkRenderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice(),
-										TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()),
-										&formatProperties);
+	const VkFormatProperties formatProperties = vkRenderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()));
 
 	if(!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
 	{

@@ -9,7 +9,7 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
-#include <memory>
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 	: m_vkPipeline(VK_NULL_HANDLE),
@@ -305,6 +305,18 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		const VkPipelineDepthStencilStateCreateInfo ds = graphicsDesc.DepthState ?
 		                                                 UtilToDepthDesc(*graphicsDesc.DepthState) :
 												         VulkanRenderer::DefaultDepthDesc;
+
+		if(graphicsDesc.BlendState) //Set affected render target mask for blending (only enable blending for supported formats)
+		{
+			graphicsDesc.BlendState->RenderTargetMask = {};
+			for(std::size_t i = 0; i < graphicsDesc.ColorFormats.size(); ++i)
+			{
+				const ImageFormat fmt = graphicsDesc.ColorFormats[i];
+				const auto formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(ImageFormatToVkFormat(fmt));
+				if(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT)
+					graphicsDesc.BlendState->RenderTargetMask |= static_cast<RendererAPI::BlendStateTargets>(BIT(i));
+			}
+		}
 
 		std::vector<VkPipelineColorBlendAttachmentState> cbAttachments(8);
 		VkPipelineColorBlendStateCreateInfo cb = graphicsDesc.BlendState ?

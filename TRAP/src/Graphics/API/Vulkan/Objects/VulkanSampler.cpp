@@ -64,9 +64,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 	{
 		TRAP_ASSERT(VulkanRenderer::s_samplerYcbcrConversionExtension);
 
-		VkFormatProperties formatProps{};
-		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), format,
-											&formatProps);
+		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(format);
 		if(conversionDesc.ChromaOffsetX == RendererAPI::SampleLocation::Midpoint)
 		{
 			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT);

@@ -3279,3 +3279,9 @@ SITREP 09/26/2022|22w39a1
     - TRAP-Editor Changed save shortcut from Shift+S to CTRL+S ~<5 mins
     - Added CircleRendererComponent ~<5 mins
     - Scene/SceneSerializer Added support for circle rendering and CircleRendererComponent ~<30 mins
+
+SITREP 09/27/2022|22w39a2
+    - Changed TRAP Engine version to 22w39a2(0.8.49)
+    - VulkanPhysicalDevice Added GetVkPhysicalDeviceFormatProperties() ~<5 mins
+    - VulkanCommon/VulkanPipeline now automatically disables blending for formats that dont support it ~<10 mins
+    - TRAP-Editor Enabled blending ~<5 mins

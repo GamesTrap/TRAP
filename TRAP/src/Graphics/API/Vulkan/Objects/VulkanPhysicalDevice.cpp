@@ -73,11 +73,11 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	// Capabilities for VulkanRenderer
 	for (uint32_t i = 0; i < static_cast<uint32_t>(TRAP::Graphics::API::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
 	{
-		VkFormatProperties formatSupport;
 		const VkFormat fmt = ImageFormatToVkFormat(static_cast<TRAP::Graphics::API::ImageFormat>(i));
 		if (fmt == VK_FORMAT_UNDEFINED)
 			continue;
 
+		VkFormatProperties formatSupport{};
 		vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &formatSupport);
 		VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[i] = (formatSupport.optimalTilingFeatures &
 															 VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
@@ -211,6 +211,17 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const
 {
 	return m_physicalDevice;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkFormatProperties TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFormatProperties(const VkFormat format) const
+{
+	VkFormatProperties formatProps{};
+
+	vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &formatProps);
+
+	return formatProps;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
