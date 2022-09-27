@@ -3288,3 +3288,4 @@ SITREP 09/27/2022|22w39a2
     - Renderer2D Quad/Circle now only use a single index buffer instead of one for each draw call ~<10 mins
     - Refactored Renderer2D ~>40 mins
     - Renderer2D Made circle anti aliasing resolution independent ~<10 mins
+    - Updated supported DiscordGameSDK version to 3.2.1 ~<5 mins
