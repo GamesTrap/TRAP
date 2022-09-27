@@ -3286,3 +3286,4 @@ SITREP 09/27/2022|22w39a2
     - VulkanCommon/VulkanPipeline now automatically disables blending for formats that dont support it ~<10 mins
     - TRAP-Editor Enabled blending ~<5 mins
     - Renderer2D Quad/Circle now only use a single index buffer instead of one for each draw call ~<10 mins
+    - Refactored Renderer2D ~>40 mins

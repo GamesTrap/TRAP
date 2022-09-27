@@ -182,49 +182,6 @@ namespace TRAP::Graphics
 		static void ResetStats();
 
 	private:
-		/// <summary>
-		/// Initialize the data neccessary for rendering quads.
-		/// </summary>
-		static void InitQuads();
-		/// <summary>
-		/// Initialize the data neccessary for rendering circles.
-		/// </summary>
-		static void InitCircles();
-		/// <summary>
-		/// Initialize the data neccessary for rendering lines.
-		/// </summary>
-		static void InitLines();
-		/// <summary>
-		/// Reset quad pointers and current texture slot for a new draw call.
-		/// </summary>
-		static void ResetQuad();
-		/// <summary>
-		/// Reset circle pointers for a new draw call.
-		/// </summary>
-		static void ResetCircle();
-		/// <summary>
-		/// Reset line pointers for a new draw call.
-		/// </summary>
-		static void ResetLine();
-		/// <summary>
-		/// Utility to retrieve the index for the given texture.
-		/// </summary>
-		/// <param name="texture">Texture to find index for.</param>
-		/// <returns>Index to the texture.</returns>
-		static float GetTextureIndex(Ref<Texture> texture);
-		/// <summary>
-		/// Extend the buffers for quad rendering to allow for more quads.
-		/// </summary>
-		static void ExtendQuadBuffers();
-		/// <summary>
-		/// Extend the buffers for circle rendering to allow for more circles.
-		/// </summary>
-		static void ExtendCircleBuffers();
-		/// <summary>
-		/// Extend the buffers for line rendering to allow for more line.
-		/// </summary>
-		static void ExtendLineBuffers();
-
 		static Renderer2DData s_data;
 	};
 }
