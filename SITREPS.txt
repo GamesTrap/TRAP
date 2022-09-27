@@ -3289,3 +3289,7 @@ SITREP 09/27/2022|22w39a2
     - Refactored Renderer2D ~>40 mins
     - Renderer2D Made circle anti aliasing resolution independent ~<10 mins
     - Updated supported DiscordGameSDK version to 3.2.1 ~<5 mins
+    - Components Added CircleCollider2DComponent ~<10 mins
+    - SceneSerializer Added support for CircleCollider2DComponent ~<10 mins
+    - Scene Added CircleCollider2DComponent Box2D physics integration ~<10 mins
+    - SceneGraphPanel Added support for CircleCollider2DComponent ~<5 mins

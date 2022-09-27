@@ -162,13 +162,30 @@ namespace TRAP
 		BoxCollider2DComponent() = default;
 	};
 
+	struct CircleCollider2DComponent
+	{
+		TRAP::Math::Vec2 Offset{0.0f, 0.0f};
+		float Radius = 0.5f;
+
+		//TODO Move into Physics Material in future
+		float Density = 1.0f;
+		float Friction = 0.5f;
+		float Restitution = 0.0f;
+		float RestitutionThreshold = 0.5f;
+
+		//Storage for runtime data
+		void* RuntimeFixture = nullptr;
+
+		CircleCollider2DComponent() = default;
+	};
+
 	template<typename... Component>
 	struct ComponentGroup{};
 
 	using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent,
 	                                     CircleRendererComponent, CameraComponent,
 										 NativeScriptComponent, Rigidbody2DComponent,
-										 BoxCollider2DComponent>;
+										 BoxCollider2DComponent, CircleCollider2DComponent>;
 }
 
 #endif /*TRAP_COMPONENTS_H*/

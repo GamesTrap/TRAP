@@ -16,6 +16,7 @@
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_circle_shape.h>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
@@ -177,6 +178,23 @@ void TRAP::Scene::OnRuntimeStart()
 			fixtureDef.restitution = boxCollider2D.Restitution;
 			fixtureDef.restitutionThreshold = boxCollider2D.RestitutionThreshold;
 			boxCollider2D.RuntimeFixture = body->CreateFixture(&fixtureDef);
+		}
+
+		if(entity.HasComponent<CircleCollider2DComponent>())
+		{
+			auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
+
+			b2CircleShape circleShape{};
+			circleShape.m_p.Set(circleCollider2D.Offset.x, circleCollider2D.Offset.y);
+			circleShape.m_radius = circleCollider2D.Radius;
+
+			b2FixtureDef fixtureDef{};
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = circleCollider2D.Density;
+			fixtureDef.friction = circleCollider2D.Friction;
+			fixtureDef.restitution = circleCollider2D.Restitution;
+			fixtureDef.restitutionThreshold = circleCollider2D.RestitutionThreshold;
+			circleCollider2D.RuntimeFixture = body->CreateFixture(&fixtureDef);
 		}
 	}
 }
@@ -419,4 +437,8 @@ void TRAP::Scene::OnComponentAdded<TRAP::Rigidbody2DComponent>(Entity, Rigidbody
 
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::BoxCollider2DComponent>(Entity, BoxCollider2DComponent&)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::CircleCollider2DComponent>(Entity, CircleCollider2DComponent&)
 {}
