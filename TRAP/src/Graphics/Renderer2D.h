@@ -26,6 +26,12 @@ namespace TRAP::Graphics
 		/// Shutdown Renderer2D.
 		/// </summary>
 		static void Shutdown();
+		/// <summary>
+		/// Reset the Renderer2D for a new frame.
+		///
+		/// Note: This functions gets called by TRAP::Application
+		/// </summary>
+		static void Reset();
 
 		/// <summary>
 		/// Begin a Renderer2D scene.
@@ -182,7 +188,8 @@ namespace TRAP::Graphics
 		static void ResetStats();
 
 	private:
-		static Renderer2DData s_data;
+		static std::vector<Renderer2DData> s_data;
+		static uint32_t s_dataIndex;
 	};
 }
 

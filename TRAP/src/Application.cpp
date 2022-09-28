@@ -501,7 +501,10 @@ void TRAP::Application::Run()
 			ImGuiLayer::End();
 #endif
 			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+			{
 				Graphics::RenderCommand::Flush(m_window.get());
+				Graphics::Renderer2D::Reset();
+			}
 		}
 
 		UpdateHotReloading();

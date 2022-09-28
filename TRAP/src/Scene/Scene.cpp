@@ -186,7 +186,7 @@ void TRAP::Scene::OnRuntimeStart()
 
 			b2CircleShape circleShape{};
 			circleShape.m_p.Set(circleCollider2D.Offset.x, circleCollider2D.Offset.y);
-			circleShape.m_radius = circleCollider2D.Radius;
+			circleShape.m_radius = transform.Scale.x * circleCollider2D.Radius;
 
 			b2FixtureDef fixtureDef{};
 			fixtureDef.shape = &circleShape;
@@ -283,7 +283,6 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 		{
 			auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			// Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
 			Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
 		}
 
@@ -313,7 +312,6 @@ void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::
 	{
 		auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-		// Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr, nullptr);
 		Graphics::Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int32_t>(entity));
 	}
 
