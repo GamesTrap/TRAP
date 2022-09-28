@@ -641,6 +641,22 @@ void TRAPEditorLayer::OnOverlayRender()
 				TRAP::Graphics::Renderer2D::DrawRect(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
 			}
 		}
+
+		//Circle Collider 2D visualization
+		{
+			auto view = m_activeScene->GetAllEntitiesWithComponents<TRAP::TransformComponent, TRAP::CircleCollider2DComponent>();
+			for(auto entity : view)
+			{
+				auto [transform, circleCollider] = view.get<TRAP::TransformComponent, TRAP::CircleCollider2DComponent>(entity);
+
+				const TRAP::Math::Vec3 position = transform.Position + TRAP::Math::Vec3(circleCollider.Offset, -colliderProjectionZ);
+				const TRAP::Math::Vec3 scale = transform.Scale * TRAP::Math::Vec3(circleCollider.Radius * 2.0f);
+
+				const TRAP::Math::Mat4 trans = TRAP::Math::Translate(position) * TRAP::Math::Scale(scale);
+
+				TRAP::Graphics::Renderer2D::DrawCircle(trans, TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f), 0.01f);
+			}
+		}
 	}
 
 	TRAP::Graphics::Renderer2D::EndScene();
