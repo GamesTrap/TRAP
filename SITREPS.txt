@@ -3299,3 +3299,7 @@ SITREP 09/28/2022|22w39b1
     - Renderer2D Added support for multiple per-frame instances ~>40 mins
     - Application Added call to Renderer2D::Reset() ~<5 mins
     - TRAP-Editor Added circle collider visualization ~<5 mins
+
+SITREP 09/29/2022|22w39b2
+    - Changed TRAP Engine version to 22w39b2(0.8.51)
+    - Scene Copy() reversed iterating of UIDComponents so that the entities have the same order as in the original scene ~<5 mins

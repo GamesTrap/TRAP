@@ -101,11 +101,12 @@ TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 	std::unordered_map<Utils::UID, entt::entity> enttMap{};
 
 	//Create entities with UID and Tag in newScene for each entity with an UID component in other scene.
+	//Reversed so the entities have the same order as in the original scene.
 	auto UIDView = srcSceneRegistry.view<UIDComponent>();
-	for(auto e : UIDView)
+	for(auto it = UIDView.rbegin(); it != UIDView.rend(); ++it)
 	{
-		Utils::UID uid = srcSceneRegistry.get<UIDComponent>(e).UID;
-		const auto& name = srcSceneRegistry.get<TagComponent>(e).Tag;
+		Utils::UID uid = srcSceneRegistry.get<UIDComponent>(*it).UID;
+		const auto& name = srcSceneRegistry.get<TagComponent>(*it).Tag;
 		Entity newEntity = newScene->CreateEntityWithUID(uid, name);
 		enttMap[uid] = static_cast<entt::entity>(newEntity);
 	}
