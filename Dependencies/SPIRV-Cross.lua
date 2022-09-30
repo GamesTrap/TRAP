@@ -31,11 +31,12 @@ project "SPIRV-Cross-Core"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
 
 project "SPIRV-Cross-Reflect"
     kind "StaticLib"
@@ -60,11 +61,12 @@ project "SPIRV-Cross-Reflect"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
 
 project "SPIRV-Cross-GLSL"
     kind "StaticLib"
@@ -91,11 +93,12 @@ project "SPIRV-Cross-GLSL"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
 
 project "SPIRV-Cross-HLSL"
     kind "StaticLib"
@@ -122,8 +125,9 @@ project "SPIRV-Cross-HLSL"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
