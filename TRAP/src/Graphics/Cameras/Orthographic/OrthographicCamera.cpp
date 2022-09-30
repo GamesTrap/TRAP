@@ -6,7 +6,6 @@ TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left, const f
 	: m_projectionMatrix(Math::Orthographic(left, right, bottom, top, far, near)), m_viewMatrix(Math::Mat4(1.0f)),
 	  m_position(0.0f), m_rotation(0.0f)
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -14,8 +13,6 @@ TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left, const f
 void TRAP::Graphics::OrthographicCamera::SetProjection(const float left, const float right, const float bottom,
                                                        const float top, const float near, const float far)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_projectionMatrix = Math::Orthographic(left, right, bottom, top, far, near);
 }
 
@@ -30,8 +27,6 @@ const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetPosition() const
 
 void TRAP::Graphics::OrthographicCamera::SetPosition(const Math::Vec3& position)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_position = position;
 	RecalculateViewMatrix();
 }
@@ -47,8 +42,6 @@ const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetRotation() const
 
 void TRAP::Graphics::OrthographicCamera::SetRotation(const Math::Vec3& rotation)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_rotation = rotation;
 	RecalculateViewMatrix();
 }

@@ -605,8 +605,6 @@ uint32_t TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* ca
 
 void TRAP::Graphics::Renderer2D::Init()
 {
-	TP_PROFILE_FUNCTION();
-
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
 #endif
@@ -618,8 +616,6 @@ void TRAP::Graphics::Renderer2D::Init()
 
 void TRAP::Graphics::Renderer2D::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
-
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
 #endif
@@ -641,8 +637,6 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 
 void TRAP::Graphics::Renderer2D::Reset()
 {
-	TP_PROFILE_FUNCTION();
-
 	s_dataIndex = 0;
 }
 
@@ -650,8 +644,6 @@ void TRAP::Graphics::Renderer2D::Reset()
 
 void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Create new Renderer2DData if needed
 	if(s_dataIndex >= s_data.size())
 		s_data.emplace_back();
@@ -678,8 +670,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 
 void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Create new Renderer2DData if needed
 	if(s_dataIndex >= s_data.size())
 		s_data.emplace_back();
@@ -706,8 +696,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 
 void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Create new Renderer2DData if needed
 	if(s_dataIndex >= s_data.size())
 		s_data.emplace_back();
@@ -734,8 +722,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 
 void TRAP::Graphics::Renderer2D::EndScene()
 {
-	TP_PROFILE_FUNCTION();
-
 	auto& currData = s_data[s_dataIndex];
 
 	currData.Stats.DrawCalls += currData.QuadData.DrawBuffers(currData.CameraUniformBuffer.get());
@@ -767,8 +753,6 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, Ref<Textur
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
                                           Ref<Texture> texture)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(texture->GetType() != TextureType::Texture2D)
 		return;
 
@@ -797,8 +781,6 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const TRAP
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color,
                                           const TRAP::Ref<SubTexture2D> texture)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!texture || texture->GetTexture()->GetType() != TextureType::Texture2D)
 		return;
 

@@ -45,8 +45,6 @@ std::array<std::string, 2> TRAP::Graphics::Shader::SupportedShaderFormatSuffixes
 
 bool TRAP::Graphics::Shader::Reload()
 {
-	TP_PROFILE_FUNCTION();
-
 	if(m_filepath.empty())
 		return false;
 
@@ -128,8 +126,6 @@ bool TRAP::Graphics::Shader::Reload()
 
 std::string TRAP::Graphics::Shader::GetName() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_name;
 }
 
@@ -137,8 +133,6 @@ std::string TRAP::Graphics::Shader::GetName() const
 
 std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_filepath;
 }
 
@@ -184,8 +178,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
                                                                          const std::filesystem::path& filePath,
 																		 const std::vector<Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(name.empty())
 	{
 		TP_WARN(Log::ShaderPrefix, "Name is empty! Using filename as mame!");
@@ -228,8 +220,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
                                                                          const std::vector<Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
-
 	RendererAPI::BinaryShaderDesc desc{};
 	Ref<Shader> failShader = nullptr;
 	const auto name = FileSystem::GetFileName(filePath);
@@ -275,8 +265,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const
                                                                            const std::string& glslSource,
 																		   const std::vector<Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
-
 	std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
 	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
 	if(!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))

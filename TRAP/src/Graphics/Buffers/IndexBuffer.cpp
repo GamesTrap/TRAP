@@ -7,8 +7,6 @@
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t* const indices, const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init<uint32_t>(indices, size, updateFrequency);
 }
 
@@ -17,8 +15,6 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint16_t* const indices, const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init<uint16_t>(indices, size, updateFrequency);
 }
 
@@ -27,8 +23,6 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init<uint16_t>(nullptr, size, updateFrequency); //uint16_t gets ignored
 }
 

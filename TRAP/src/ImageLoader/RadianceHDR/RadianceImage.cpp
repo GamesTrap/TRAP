@@ -8,8 +8,6 @@
 TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	: eMax(-127), eMin(127)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
 	m_bitsPerPixel = 96;

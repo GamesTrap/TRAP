@@ -35,8 +35,6 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const
 
 void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (m_useController)
 	{
 		if (Input::IsControllerConnected(m_controller)) //Controller
@@ -144,8 +142,6 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 {
-	TP_PROFILE_FUNCTION();
-
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& event)
 		{
@@ -161,8 +157,6 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 
 void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, const float height)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_aspectRatio = width / height;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
 	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f);
@@ -221,8 +215,6 @@ float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const
 
 void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoomLevel)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_zoomLevel = zoomLevel;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
@@ -241,8 +233,6 @@ const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCame
 
 bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::MouseScrollEvent& e)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_zoomLevel -= e.GetYOffset() * 0.25f;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
@@ -256,8 +246,6 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::M
 
 bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Events::FrameBufferResizeEvent& e)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
 

@@ -50,8 +50,6 @@ std::vector<TRAP::Input::Mapping> TRAP::Input::s_mappings{};
 
 void TRAP::Input::Init()
 {
-	TP_PROFILE_FUNCTION();
-
 	TP_DEBUG(Log::InputPrefix, "Initializing");
 
 	InitControllerMappings();
@@ -64,8 +62,6 @@ void TRAP::Input::Init()
 
 void TRAP::Input::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
-
 	TP_DEBUG(Log::InputPrefix, "Shutting down input");
 
 	ShutdownController();
@@ -75,8 +71,6 @@ void TRAP::Input::Shutdown()
 
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (key == Key::Unknown)
 	{
 		TP_WARN(Log::InputPrefix, "Invalid key provided!");
@@ -93,8 +87,6 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (key == Key::Unknown)
 	{
 		TP_WARN(Log::InputPrefix, "Invalid key provided!");
@@ -116,8 +108,6 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
-	TP_PROFILE_FUNCTION();
-
 	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (Application::GetWindow()->GetInternalWindow()),
 															  button);
@@ -129,8 +119,6 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsMouseButtonPressed!");
@@ -147,8 +135,6 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* c
 
 bool TRAP::Input::IsRawMouseInputSupported()
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::RawMouseMotionSupported();
 }
 
@@ -163,8 +149,6 @@ bool TRAP::Input::IsControllerConnected(const Controller controller)
 
 bool TRAP::Input::IsControllerGamepad(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
 
@@ -178,8 +162,6 @@ bool TRAP::Input::IsControllerGamepad(const Controller controller)
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
-	TP_PROFILE_FUNCTION();
-
 	double xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), xPos, yPos);
@@ -191,8 +173,6 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to GetMousePosition!");
@@ -210,8 +190,6 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 
 float TRAP::Input::GetMouseX()
 {
-	TP_PROFILE_FUNCTION();
-
 	return GetMousePosition().x;
 }
 
@@ -219,8 +197,6 @@ float TRAP::Input::GetMouseX()
 
 float TRAP::Input::GetMouseY()
 {
-	TP_PROFILE_FUNCTION();
-
 	return GetMousePosition().y;
 }
 
@@ -228,8 +204,6 @@ float TRAP::Input::GetMouseY()
 
 float TRAP::Input::GetMouseX(const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	return GetMousePosition(window).x;
 }
 
@@ -237,8 +211,6 @@ float TRAP::Input::GetMouseX(const Window* const window)
 
 float TRAP::Input::GetMouseY(const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	return GetMousePosition(window).y;
 }
 
@@ -431,8 +403,6 @@ std::string NonPrintableKeyToString(const TRAP::Input::Key key)
 
 std::string TRAP::Input::GetKeyName(const Key key)
 {
-	TP_PROFILE_FUNCTION();
-
 	const char* const name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
 
 	if (!name)
@@ -445,8 +415,6 @@ std::string TRAP::Input::GetKeyName(const Key key)
 
 float TRAP::Input::GetControllerAxis(const Controller controller, const ControllerAxis axis)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return 0.0f;
 
@@ -457,8 +425,6 @@ float TRAP::Input::GetControllerAxis(const Controller controller, const Controll
 
 TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller controller, const uint32_t dpad)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerDPad::Centered;
 
@@ -469,8 +435,6 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller cont
 
 bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const ControllerButton button)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
 
@@ -481,8 +445,6 @@ bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const C
 
 std::string TRAP::Input::GetControllerName(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
 
@@ -499,8 +461,6 @@ std::string TRAP::Input::GetControllerName(const Controller controller)
 
 std::string TRAP::Input::GetControllerGUID(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
 
@@ -514,8 +474,6 @@ std::string TRAP::Input::GetControllerGUID(const Controller controller)
 
 std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
@@ -529,8 +487,6 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller
 
 std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
@@ -544,8 +500,6 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controll
 
 std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
@@ -559,8 +513,6 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(cons
 
 void TRAP::Input::SetControllerVibration(const Controller controller, const float leftMotor, const float rightMotor)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
 
@@ -580,8 +532,6 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 
 void TRAP::Input::SetControllerVibration(const Controller controller, const Math::Vec2& intensity)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
 
@@ -601,8 +551,6 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Controller controller)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerBatteryStatus::Wired;
 
@@ -616,8 +564,6 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Con
 
 void TRAP::Input::SetMousePosition(const float x, const float y)
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), x, y);
 }
@@ -626,8 +572,6 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 
 void TRAP::Input::SetMousePosition(const float x, const float y, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
@@ -642,8 +586,6 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Window* c
 
 void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), position.x, position.y);
 }
@@ -652,8 +594,6 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 
 void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
@@ -668,8 +608,6 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* con
 
 void TRAP::Input::SetClipboard(const std::string& str)
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetClipboardString(str);
 }
 
@@ -677,8 +615,6 @@ void TRAP::Input::SetClipboard(const std::string& str)
 
 std::string TRAP::Input::GetClipboard()
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
@@ -693,8 +629,6 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 
 void TRAP::Input::UpdateControllerMappings(const std::string& map)
 {
-	TP_PROFILE_FUNCTION();
-
 	Mapping mapping{};
 
 	if(ParseMapping(mapping, map))

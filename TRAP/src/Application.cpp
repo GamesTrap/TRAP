@@ -116,8 +116,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Register SIGINT callback to capture CTRL+C
 #ifdef TRAP_HEADLESS_MODE
 #ifdef TRAP_PLATFORM_LINUX
@@ -335,8 +333,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 
 TRAP::Application::~Application()
 {
-	TP_PROFILE_BEGIN_SESSION("Shutdown", "TRAPProfile-Shutdown.json");
-	TP_PROFILE_FUNCTION();
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
@@ -418,24 +414,18 @@ TRAP::Application::~Application()
 	FileSystem::Shutdown();
 
 	s_Instance = nullptr;
-
-	TP_PROFILE_END_SESSION();
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::Run()
 {
-	TP_PROFILE_FUNCTION();
-
 	float lastFrameTime = 0.0f;
 	auto nextFrame = std::chrono::steady_clock::now();
 	Utils::Timer tickTimer;
 
 	while (m_running)
 	{
-		TP_PROFILE_SCOPE("RunLoop");
-
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
@@ -471,21 +461,13 @@ void TRAP::Application::Run()
 
 		if (!m_minimized)
 		{
-			{
-				TP_PROFILE_SCOPE("LayerStack OnUpdate");
-
-				for (const auto& layer : m_layerStack)
-					layer->OnUpdate(deltaTime);
-			}
+			for (const auto& layer : m_layerStack)
+				layer->OnUpdate(deltaTime);
 
 			if (tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
 			{
-				{
-					TP_PROFILE_SCOPE("LayerStack OnTick");
-
-					for (const auto& layer : m_layerStack)
-						layer->OnTick(Utils::TimeStep(tickTimer.Elapsed()));
-				}
+				for (const auto& layer : m_layerStack)
+					layer->OnTick(Utils::TimeStep(tickTimer.Elapsed()));
 
 				tickTimer.Reset();
 			}
@@ -493,8 +475,6 @@ void TRAP::Application::Run()
 #ifndef TRAP_HEADLESS_MODE
 			ImGuiLayer::Begin();
 			{
-				TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
-
 				for (const auto& layer : m_layerStack)
 					layer->OnImGuiRender();
 			}
@@ -529,8 +509,6 @@ void TRAP::Application::Run()
 
 void TRAP::Application::OnEvent(Events::Event& e)
 {
-	TP_PROFILE_FUNCTION();
-
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event)
 		{
@@ -706,8 +684,6 @@ TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
 
@@ -715,8 +691,6 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 std::string TRAP::Application::GetClipboardString()
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
@@ -787,8 +761,6 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 
 bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
-	TP_PROFILE_FUNCTION();
-
 	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
 	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
 

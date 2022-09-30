@@ -8,8 +8,6 @@
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const float* const vertices, const uint64_t size,
                                                                                const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init(vertices, size, updateFrequency);
 }
 
@@ -18,8 +16,6 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(c
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size,
                                                                                const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init(nullptr, size, updateFrequency);
 }
 

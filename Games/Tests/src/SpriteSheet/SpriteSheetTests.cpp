@@ -11,8 +11,6 @@ SpriteSheetTests::SpriteSheetTests()
 
 void SpriteSheetTests::OnImGuiRender()
 {
-	TP_PROFILE_FUNCTION();
-
     ImGui::Begin("Sprite Sheet Tests", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                                         ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
@@ -26,10 +24,8 @@ void SpriteSheetTests::OnImGuiRender()
 
 void SpriteSheetTests::OnAttach()
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Application::GetWindow()->SetTitle("Sprite Sheet Tests");
-    
+
 	//Load Textures
 	m_backgroundSheet = TRAP::Graphics::TextureManager::Load("BackgroundSheet", "./Assets/Textures/SpriteSheets/background_packed.png");
 	m_foregroundSheet = TRAP::Graphics::TextureManager::Load("ForegroundSheet", "./Assets/Textures/SpriteSheets/foreground_packed.png");
@@ -122,8 +118,6 @@ void SpriteSheetTests::OnAttach()
 
 void SpriteSheetTests::OnDetach()
 {
-	TP_PROFILE_FUNCTION();
-
     m_animation.reset();
     m_animation2.reset();
     m_backgroundSheet.reset();
@@ -135,8 +129,6 @@ void SpriteSheetTests::OnDetach()
 
 void SpriteSheetTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Update
 	m_cameraController.OnUpdate(deltaTime);
 

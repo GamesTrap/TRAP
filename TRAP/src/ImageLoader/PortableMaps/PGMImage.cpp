@@ -8,8 +8,6 @@
 
 TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::GrayScale;
 

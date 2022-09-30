@@ -9,15 +9,12 @@
 TRAP::Utils::Config::Config()
 	: m_hasChanged(false)
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_data.clear();
 
 	//Load
@@ -51,8 +48,6 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!m_hasChanged)
 		return true;
 
@@ -140,8 +135,6 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::HasChanged() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_hasChanged;
 }
 
@@ -149,8 +142,6 @@ bool TRAP::Utils::Config::HasChanged() const
 
 void TRAP::Utils::Config::Print() const
 {
-	TP_PROFILE_FUNCTION();
-
 	for (const auto& [key, value] : m_data)
 		TP_TRACE(Log::ConfigPrefix, key, " = ", value);
 

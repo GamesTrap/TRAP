@@ -57,10 +57,6 @@
 #include "../src/Utils/Discord/DiscordGameSDK.h"
 //-----------------------
 
-//----DEBUG--------------
-#include "../src/Utils/Profiler/Instrumentor.h"
-//-----------------------
-
 //----MATHS--------------
 #include "../src/Maths/Math.h"
 #include "../src/Maths/Vec2.h"

@@ -10,8 +10,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std:
 																			std::array<std::filesystem::path, 6> filepaths,
 																			const TextureCreationFlags flags)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(name.empty())
 	{
 		TRAP_ASSERT(false, "Name is empty!");
@@ -77,8 +75,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 {
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
-	TP_PROFILE_FUNCTION();
-
 	if(name.empty())
 	{
 		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
@@ -141,8 +137,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 																		   const TextureCreationFlags flags)
 {
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
-
-	TP_PROFILE_FUNCTION();
 
 	const auto name = FileSystem::GetFileName(filepath);
 	if(!name)
@@ -208,8 +202,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 {
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
 	            [](const Image* const img) { return img == nullptr; }), "An Image is nullptr!");
-
-	TP_PROFILE_FUNCTION();
 
 	if(name.empty())
 	{
@@ -282,8 +274,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std:
 	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Provided cube format is invalid");
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
-	TP_PROFILE_FUNCTION();
-
 	if(name.empty() && !img->GetFilePath().empty())
 	{
 		TP_WARN(Log::TexturePrefix, "Name is empty! Using filename as name!");
@@ -349,8 +339,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::str
 																		const TextureType type,
 																		const TextureCreationFlags flags)
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Ref<Texture> texture = nullptr;
 
 	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
@@ -404,8 +392,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::str
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
 {
     TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
-
-	TP_PROFILE_FUNCTION();
 
 	if(!ValidateLimits(desc))
 		return nullptr;
@@ -487,8 +473,6 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 
 bool TRAP::Graphics::Texture::Reload()
 {
-	TP_PROFILE_FUNCTION();
-
 	//Can't reload if there is no filepath
 	if(m_textureType == TextureType::Texture2D && m_filepaths[0].empty())
 		return false;

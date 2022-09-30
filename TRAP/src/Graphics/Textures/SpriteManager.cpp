@@ -14,8 +14,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
                                                                                         const TRAP::Math::Vec2& cellSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
 {
-	TP_PROFILE_FUNCTION();
-
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
     TRAP_ASSERT(!name.empty(), "Name is empty!");
@@ -41,8 +39,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
                                                                                         const TRAP::Math::Vec2& pixelSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
 {
-	TP_PROFILE_FUNCTION();
-
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
     TRAP_ASSERT(!name.empty(), "Name is empty!");
@@ -64,8 +60,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 
 void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 {
-	TP_PROFILE_FUNCTION();
-
     if(!sprite)
         return;
 
@@ -80,8 +74,6 @@ void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Ref<SubTexture2D> sprite)
 {
-	TP_PROFILE_FUNCTION();
-
     if(!sprite)
         return nullptr;
 
@@ -101,8 +93,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Re
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(const std::string& name)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (Exists(name))
 	{
 		Ref<SubTexture2D> spr = std::move(Sprites[name]);
@@ -119,8 +109,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string& name)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(Exists(name))
 	{
         return Sprites[name];
@@ -148,8 +136,6 @@ void TRAP::Graphics::SpriteManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(const std::string& nameOrPath)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!std::filesystem::exists(nameOrPath))
 	{
 		//Name
@@ -188,8 +174,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(co
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Ref<SubTexture2D> sprite)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!Exists(sprite->GetName()))
 	{
 		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"", sprite->GetName(), "\" to reload.");
@@ -206,8 +190,6 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Re
 
 void TRAP::Graphics::SpriteManager::ReloadAll()
 {
-	TP_PROFILE_FUNCTION();
-
 	TP_INFO(Log::SpriteManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, sprite] : Sprites)
 		Reload(sprite);

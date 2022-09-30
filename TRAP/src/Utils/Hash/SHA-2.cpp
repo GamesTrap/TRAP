@@ -264,8 +264,6 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, uint64_t length)
 {
-	TP_PROFILE_FUNCTION();
-
 	std::array<uint32_t, 8> hash =
 	{
 		0x6a09e667,
@@ -327,8 +325,6 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
 
 std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, uint64_t length)
 {
-	TP_PROFILE_FUNCTION();
-
 	std::size_t pos = 0;
 	uint64_t total = 0;
 	std::array<uint64_t, 8> hash =

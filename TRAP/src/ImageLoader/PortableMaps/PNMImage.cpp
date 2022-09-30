@@ -8,8 +8,6 @@
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePNMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");

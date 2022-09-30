@@ -13,8 +13,6 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
     																      const std::vector<Shader::Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
-
 	Ref<Shader> shader = Shader::CreateFromFile(filepath, userMacros);
 
 	if(!shader)
@@ -33,8 +31,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 																          const std::filesystem::path& filepath,
 																          const std::vector<Shader::Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
-
 	Ref<Shader> shader = Shader::CreateFromFile(name, filepath, userMacros);
 
 	if(!shader)
@@ -51,8 +47,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 														              		const std::string& glslSource,
 																      		const std::vector<Shader::Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
-
 	Ref<Shader> shader = Shader::CreateFromSource(name, glslSource, userMacros);
 
 	if(!shader)
@@ -67,8 +61,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 
 void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 
 	if(!Exists(shader->GetName()))
@@ -81,8 +73,6 @@ void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shader> shader)
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 
 	if (Exists(shader->GetName()))
@@ -101,8 +91,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shad
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (Exists(name))
 	{
 		Ref<Shader> shader = std::move(Shaders[name]);
@@ -119,8 +107,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(Exists(name))
 		return Shaders[name];
 
@@ -153,8 +139,6 @@ void TRAP::Graphics::ShaderManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrPath)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!std::filesystem::exists(nameOrPath))
 	{
 		//Name
@@ -193,8 +177,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shader> shader)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!Exists(shader->GetName()))
 	{
 		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", shader->GetName(), "\" to reload.");
@@ -211,8 +193,6 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shad
 
 void TRAP::Graphics::ShaderManager::ReloadAll()
 {
-	TP_PROFILE_FUNCTION();
-
 	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, shader] : Shaders)
 		Reload(shader);

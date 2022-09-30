@@ -8,8 +8,6 @@
 
 TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePAMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");

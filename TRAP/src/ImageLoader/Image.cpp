@@ -136,8 +136,6 @@ TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const
 
 std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
-
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 3);
 
@@ -156,8 +154,6 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& sour
 
 std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
-
 	for (uint32_t i = 0; i < width * height * 3; i += 3)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
@@ -168,8 +164,6 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& sour
 
 std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
-
 	for (uint32_t i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
@@ -180,8 +174,6 @@ std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& so
 
 std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
-	TP_PROFILE_FUNCTION();
-
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * channels);
 
@@ -220,8 +212,6 @@ std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, co
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& filepath)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(!IsSupportedImageFile(filepath))
 	{
 		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown image \"", filepath, "\"!");
@@ -272,8 +262,6 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint8_t>& pixelData)
 {
-	TP_PROFILE_FUNCTION();
-
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
 
@@ -281,8 +269,6 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint16_t>& pixelData)
 {
-	TP_PROFILE_FUNCTION();
-
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
 
@@ -290,8 +276,6 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<float>& pixelData)
 {
-	TP_PROFILE_FUNCTION();
-
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
 
@@ -299,8 +283,6 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
-	TP_PROFILE_FUNCTION();
-
 	return MakeScope<INTERNAL::CustomImage>("", 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 }
 
@@ -308,8 +290,6 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 
 bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
-	TP_PROFILE_FUNCTION();
-
 	const auto fileEnding = FileSystem::GetFileEnding(filepath);
 	if(!fileEnding)
 		return false;

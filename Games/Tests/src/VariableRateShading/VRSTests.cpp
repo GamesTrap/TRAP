@@ -11,8 +11,6 @@ VRSTests::VRSTests()
 
 void VRSTests::OnImGuiRender()
 {
-	TP_PROFILE_FUNCTION();
-
 	ImGui::Begin("Variable Rate Shading", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 	                                               ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
@@ -37,8 +35,6 @@ void VRSTests::OnImGuiRender()
 
 void VRSTests::OnAttach()
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Application::GetWindow()->SetTitle("Variable Rate Shading");
 
     if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full))
@@ -95,8 +91,6 @@ void VRSTests::OnAttach()
 
 void VRSTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Update
 	m_cameraController.OnUpdate(deltaTime);
 

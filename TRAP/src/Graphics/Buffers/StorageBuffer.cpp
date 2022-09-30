@@ -11,8 +11,6 @@
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init(nullptr, size, updateFrequency);
 }
 
@@ -21,8 +19,6 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
-	TP_PROFILE_FUNCTION();
-
 	return Init(data, size, updateFrequency);
 }
 

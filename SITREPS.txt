@@ -3303,3 +3303,7 @@ SITREP 09/28/2022|22w39b1
 SITREP 09/29/2022|22w39b2
     - Changed TRAP Engine version to 22w39b2(0.8.51)
     - Scene Copy() reversed iterating of UIDComponents so that the entities have the same order as in the original scene ~<5 mins
+
+SITREP 09/30/2022|22w39c1
+    - Changed TRAP Engine version to 22w39c1(0.8.52)
+    - Removed Instrumentor and all its macros ~<20 mins

@@ -12,8 +12,6 @@ std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
 
 void TRAP::FileSystem::Init()
 {
-    TP_PROFILE_FUNCTION();
-
 	TP_DEBUG(Log::FileSystemPrefix, "Initializing File System");
 
     //Create game temp folder
@@ -43,8 +41,6 @@ void TRAP::FileSystem::Init()
 
 std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
@@ -77,8 +73,6 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
 
 std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
@@ -106,8 +100,6 @@ std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem:
 
 bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer, const WriteMode mode)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty() || buffer.empty())
         return false;
 
@@ -130,8 +122,6 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::v
 
 bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const std::string_view text, const WriteMode mode)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty() || text.empty())
         return false;
 
@@ -156,8 +146,6 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const st
 
 bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty())
         return false;
 
@@ -177,8 +165,6 @@ bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 
 bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty())
         return false;
 
@@ -251,8 +237,6 @@ bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std
 bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination,
                                   const bool overwriteExisting)
 {
-    TP_PROFILE_FUNCTION();
-
     std::error_code ec;
     std::filesystem::copy_options options = std::filesystem::copy_options::recursive;
     if(overwriteExisting)
@@ -337,8 +321,6 @@ bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const st
 
 bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty())
         return false;
 
@@ -359,8 +341,6 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 
 std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path, const bool recursive)
 {
-    TP_PROFILE_FUNCTION();
-
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
@@ -463,8 +443,6 @@ std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesy
 
 std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
@@ -484,8 +462,6 @@ std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTim
 
 std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty() || !path.has_filename())
         return std::nullopt;
 
@@ -496,8 +472,6 @@ std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::fi
 
 std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty() || !path.has_stem())
         return std::nullopt;
 
@@ -508,8 +482,6 @@ std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::
 
 std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem::path& path)
 {
-    TP_PROFILE_FUNCTION();
-
     if(path.empty() || !path.has_extension())
         return std::nullopt;
 
@@ -520,8 +492,6 @@ std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::filesystem::path& filePath)
 {
-    TP_PROFILE_FUNCTION();
-
     if (filePath.empty())
         return std::nullopt;
 

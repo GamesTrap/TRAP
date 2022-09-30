@@ -3,8 +3,6 @@
 
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
-	TP_PROFILE_FUNCTION();
-
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	m_handle = monitors[monitor];
 }
@@ -20,8 +18,6 @@ std::string TRAP::Monitor::GetName() const
 
 std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {
-	TP_PROFILE_FUNCTION();
-
 	std::vector<VideoMode> modes{};
 	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(m_handle);
 
@@ -35,8 +31,6 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 
 TRAP::Math::Vec2 TRAP::Monitor::GetContentScale() const
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Math::Vec2 scale{};
 	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, scale.x, scale.y);
 
@@ -61,8 +55,6 @@ float TRAP::Monitor::GetContentScaleY() const
 
 TRAP::Math::Vec2i TRAP::Monitor::GetPosition() const
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Math::Vec2i pos{};
 	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, pos.x, pos.y);
 
@@ -87,8 +79,6 @@ int32_t TRAP::Monitor::GetPositionY() const
 
 TRAP::Math::Vec4i TRAP::Monitor::GetWorkArea() const
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Math::Vec4i workArea{};
 	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, workArea.x, workArea.y,
 	                                           workArea.z, workArea.w);
@@ -128,8 +118,6 @@ int32_t TRAP::Monitor::GetWorkAreaY() const
 
 uint32_t TRAP::Monitor::GetID() const
 {
-	TP_PROFILE_FUNCTION();
-
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	for(std::size_t i = 0; i < monitors.size(); i++)
 	{
@@ -144,8 +132,6 @@ uint32_t TRAP::Monitor::GetID() const
 
 std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 {
-	TP_PROFILE_FUNCTION();
-
 	std::vector<Monitor> monitors{};
 	const uint32_t monitorSize = static_cast<uint32_t>(INTERNAL::WindowingAPI::GetMonitors().size());
 	for (uint32_t i = 0; i < monitorSize; i++)

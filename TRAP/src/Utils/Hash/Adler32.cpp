@@ -5,8 +5,6 @@
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64_t length)
 {
-	TP_PROFILE_FUNCTION();
-
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 
 	uint32_t s1 = 1u & 0xFFFFu;

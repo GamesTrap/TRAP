@@ -60,8 +60,6 @@ const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffe
 
 void TRAP::Log::Save() const
 {
-	TP_PROFILE_FUNCTION();
-
 	//Build final path and filename
 	const auto folderPath = FileSystem::GetFolderPath(m_path);
 	const auto fileName = FileSystem::GetFileName(m_path);
@@ -87,8 +85,6 @@ void TRAP::Log::Save() const
 
 void TRAP::Log::Clear()
 {
-	TP_PROFILE_FUNCTION();
-
 	m_buffer.clear();
 	m_buffer.reserve(256);
 }

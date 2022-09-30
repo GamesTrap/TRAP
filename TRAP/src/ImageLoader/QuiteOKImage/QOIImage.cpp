@@ -13,8 +13,6 @@ static constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,
 
 TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImageQOIPrefix, "Loading image: \"", m_filepath.u8string(), "\"");

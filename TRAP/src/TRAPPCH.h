@@ -56,7 +56,6 @@
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 #include "Log/Log.h"
-#include "Utils/Profiler/Instrumentor.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"

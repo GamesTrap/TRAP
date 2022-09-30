@@ -39,8 +39,6 @@ std::unordered_map<std::size_t, TRAP::INTERNAL::WindowingAPI::InternalVideoMode>
 TRAP::Window::Window(const WindowProps &props)
 	: m_window(nullptr), m_useMonitor(nullptr)
 {
-	TP_PROFILE_FUNCTION();
-
 	TP_INFO
 	(
 	    Log::WindowPrefix, "Initializing window: \"", props.Title, "\" ", props.Width, 'x', props.Height, '@',
@@ -62,8 +60,6 @@ TRAP::Window::Window(const WindowProps &props)
 
 TRAP::Window::~Window()
 {
-	TP_PROFILE_FUNCTION();
-
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
 
@@ -77,8 +73,6 @@ TRAP::Window::~Window()
 
 void TRAP::Window::OnUpdate()
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::PollEvents();
 }
 
@@ -177,8 +171,6 @@ bool TRAP::Window::GetRawMouseInput() const noexcept
 
 TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 {
-	TP_PROFILE_FUNCTION();
-
 	Math::Vec2 contentScale{};
 	INTERNAL::WindowingAPI::GetWindowContentScale(m_window.get(), contentScale.x, contentScale.y);
 
@@ -189,8 +181,6 @@ TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 
 float TRAP::Window::GetOpacity() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowOpacity(m_window.get());
 }
 
@@ -212,8 +202,6 @@ void* TRAP::Window::GetInternalWindow() const
 
 void TRAP::Window::SetTitle(const std::string& title)
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!title.empty())
 		m_data.Title = title;
 	else
@@ -239,8 +227,6 @@ void TRAP::Window::SetTitle(const std::string& title)
 
 void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint32_t height, uint32_t refreshRate)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(mode == DisplayMode::Windowed) //Check if new mode will also be windowed
 	{
 		if(m_data.displayMode == DisplayMode::Windowed)
@@ -445,8 +431,6 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 
 void TRAP::Window::SetMonitor(Monitor& monitor)
 {
-	TP_PROFILE_FUNCTION();
-
 	const uint32_t oldMonitor = m_data.Monitor;
 
 	TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set monitor: ", monitor.GetName(), " (", monitor.GetID(), ")");
@@ -473,8 +457,6 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 
 void TRAP::Window::SetCursorMode(const CursorMode& mode)
 {
-	TP_PROFILE_FUNCTION();
-
 #ifndef TRAP_RELEASE
 	if (mode == CursorMode::Normal)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Normal");
@@ -494,8 +476,6 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 
 void TRAP::Window::SetCursorType(const CursorType& cursor) const
 {
-	TP_PROFILE_FUNCTION();
-
 	Scope<INTERNAL::WindowingAPI::InternalCursor> internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
 	INTERNAL::WindowingAPI::SetCursor(m_window.get(), internalCursor.get());
 	INTERNAL::ImGuiWindowing::SetCustomCursor(internalCursor); //Make ImGui the owner of the cursor
@@ -505,8 +485,6 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspot, const int32_t yHotspot) const
 {
-	TP_PROFILE_FUNCTION();
-
 	Scope<INTERNAL::WindowingAPI::InternalCursor> cursor = INTERNAL::WindowingAPI::CreateCursor
 		(
 			image, xHotspot, yHotspot
@@ -519,8 +497,6 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspo
 
 void TRAP::Window::SetRawMouseInput(const bool enabled)
 {
-	TP_PROFILE_FUNCTION();
-
 	if(Input::IsRawMouseInputSupported())
 	{
 		m_data.RawMouseInput = enabled;
@@ -538,8 +514,6 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progress) const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetProgress(m_window.get(), state, progress);
 }
 
@@ -547,8 +521,6 @@ void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progres
 
 void TRAP::Window::SetIcon() const
 {
-	TP_PROFILE_FUNCTION();
-
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
 	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, Image::ColorFormat::RGBA,
 	                                                                            TRAPLogo).get());
@@ -558,8 +530,6 @@ void TRAP::Window::SetIcon() const
 
 void TRAP::Window::SetIcon(const Image* const image) const
 {
-	TP_PROFILE_FUNCTION();
-
 	if (!image)
 	{
 		SetIcon();
@@ -602,8 +572,6 @@ void TRAP::Window::SetEventCallback(const EventCallbackFn& callback) noexcept
 
 void TRAP::Window::SetResizable(const bool enabled) const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable, enabled);
 }
 
@@ -611,8 +579,6 @@ void TRAP::Window::SetResizable(const bool enabled) const
 
 void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHeight)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_data.MinWidth = static_cast<int32_t>(minWidth);
 	m_data.MinHeight = static_cast<int32_t>(minHeight);
 
@@ -649,8 +615,6 @@ void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHei
 
 void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHeight)
 {
-	TP_PROFILE_FUNCTION();
-
 	m_data.MaxWidth = static_cast<int32_t>(maxWidth);
 	m_data.MaxHeight = static_cast<int32_t>(maxHeight);
 
@@ -682,8 +646,6 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 
 void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetWindowPos(m_window.get(), x, y);
 
 	m_data.windowModeParams.XPos = x;
@@ -694,8 +656,6 @@ void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
 
 void TRAP::Window::SetOpacity(const float opacity) const
 {
-	TP_PROFILE_FUNCTION();
-
 	if(opacity >= 0.0f || opacity <= 1.0f)
 		INTERNAL::WindowingAPI::SetWindowOpacity(m_window.get(), opacity);
 	else
@@ -706,8 +666,6 @@ void TRAP::Window::SetOpacity(const float opacity) const
 
 void TRAP::Window::SetDragAndDrop(const bool enabled) const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::SetDragAndDrop(m_window.get(), enabled);
 }
 
@@ -723,8 +681,6 @@ void TRAP::Window::SetVSync(const bool enabled)
 
 bool TRAP::Window::IsMaximized() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
 }
 
@@ -732,8 +688,6 @@ bool TRAP::Window::IsMaximized() const
 
 bool TRAP::Window::IsMinimized() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Minimized);
 }
 
@@ -741,8 +695,6 @@ bool TRAP::Window::IsMinimized() const
 
 bool TRAP::Window::IsResizable() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable);
 }
 
@@ -750,8 +702,6 @@ bool TRAP::Window::IsResizable() const
 
 bool TRAP::Window::IsVisible() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Visible);
 }
 
@@ -759,8 +709,6 @@ bool TRAP::Window::IsVisible() const
 
 bool TRAP::Window::IsFocused() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Focused);
 }
 
@@ -768,8 +716,6 @@ bool TRAP::Window::IsFocused() const
 
 bool TRAP::Window::IsDecorated() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Decorated);
 }
 
@@ -777,8 +723,6 @@ bool TRAP::Window::IsDecorated() const
 
 bool TRAP::Window::IsHovered() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Hovered);
 }
 
@@ -786,8 +730,6 @@ bool TRAP::Window::IsHovered() const
 
 void TRAP::Window::Maximize() const
 {
-	TP_PROFILE_FUNCTION();
-
 	if(m_data.displayMode == DisplayMode::Windowed)
 		INTERNAL::WindowingAPI::MaximizeWindow(m_window.get());
 }
@@ -796,8 +738,6 @@ void TRAP::Window::Maximize() const
 
 void TRAP::Window::Minimize() const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::MinimizeWindow(m_window.get());
 }
 
@@ -805,8 +745,6 @@ void TRAP::Window::Minimize() const
 
 void TRAP::Window::RequestAttention() const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::RequestWindowAttention(m_window.get());
 }
 
@@ -814,8 +752,6 @@ void TRAP::Window::RequestAttention() const
 
 void TRAP::Window::Focus() const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::FocusWindow(m_window.get());
 }
 
@@ -823,8 +759,6 @@ void TRAP::Window::Focus() const
 
 void TRAP::Window::Hide() const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::HideWindow(m_window.get());
 }
 
@@ -832,8 +766,6 @@ void TRAP::Window::Hide() const
 
 void TRAP::Window::Show() const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::ShowWindow(m_window.get());
 }
 
@@ -841,8 +773,6 @@ void TRAP::Window::Show() const
 
 void TRAP::Window::Restore() const
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::RestoreWindow(m_window.get());
 }
 
@@ -1026,8 +956,6 @@ void TRAP::Window::Init(const WindowProps& props)
 
 void TRAP::Window::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
-
 	INTERNAL::WindowingAPI::DestroyWindow(std::move(m_window));
 	m_window = nullptr;
 	if (!s_windows)
@@ -1398,7 +1326,6 @@ TRAP::WindowProps::WindowProps(std::string title,
 	  Monitor(monitor),
 	  Advanced{advanced}
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1420,5 +1347,4 @@ TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
 	  RawMouseInput(rawMouseInput),
 	  CursorMode(cursorMode)
 {
-	TP_PROFILE_FUNCTION();
 }
