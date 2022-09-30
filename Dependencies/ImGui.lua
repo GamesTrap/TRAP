@@ -32,8 +32,9 @@ project "ImGui"
 
 	filter "configurations:Release"
 		runtime "Release"
-        optimize "On"
+        optimize "Full"
 
 	filter "configurations:RelWithDebInfo"
 		runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"

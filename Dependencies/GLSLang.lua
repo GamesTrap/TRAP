@@ -136,11 +136,12 @@ project "GLSLang"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
 
 project "SPIRV"
     kind "StaticLib"
@@ -207,11 +208,12 @@ project "SPIRV"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
 
 project "GLSLang-Default-Resource-Limits"
     kind "StaticLib"
@@ -252,8 +254,9 @@ project "GLSLang-Default-Resource-Limits"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"
+        optimize "Full"
 
     filter "configurations:RelWithDebInfo"
         runtime "Release"
-        optimize "On"
+        optimize "Debug"
+		symbols "On"
