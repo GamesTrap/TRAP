@@ -33,3 +33,8 @@ project "YAMLCpp"
 		runtime "Release"
         optimize "Debug"
 		symbols "On"
+
+	filter "configurations:Profiling"
+		runtime "Release"
+		optimize "Full"
+		symbols "On"

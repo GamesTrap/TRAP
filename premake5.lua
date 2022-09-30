@@ -11,7 +11,8 @@ workspace "TRAP"
 	{
 		"Debug",
 		"Release",
-		"RelWithDebInfo"
+		"RelWithDebInfo",
+		"Profiling"
 	}
 
 	flags "MultiProcessorCompile"
