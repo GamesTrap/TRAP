@@ -24,6 +24,10 @@ void TRAP::Log::Trace(Args&& ... args)
 #endif
 		}
 
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Magenta);
+#endif
+
 		m_buffer.emplace_back(Level::Trace, stream.str());
 	}
 }
@@ -48,6 +52,11 @@ void TRAP::Log::Debug(Args&& ... args)
 			ResetColor();
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Cyan);
+#endif
+
 		m_buffer.emplace_back(Level::Debug, stream.str());
 	}
 }
@@ -72,6 +81,11 @@ void TRAP::Log::Info(Args&& ... args)
 			ResetColor();
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Green);
+#endif
+
 		m_buffer.emplace_back(Level::Info, stream.str());
 	}
 }
@@ -96,6 +110,11 @@ void TRAP::Log::Warn(Args&& ... args)
 			ResetColor();
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Yellow);
+#endif
+
 		m_buffer.emplace_back(Level::Warn, stream.str());
 	}
 }
@@ -120,6 +139,11 @@ void TRAP::Log::Error(Args&& ... args)
 			ResetColor();
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Red);
+#endif
+
 		m_buffer.emplace_back(Level::Error, stream.str());
 	}
 }
@@ -144,6 +168,11 @@ void TRAP::Log::Critical(Args&& ... args)
 			ResetColor();
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::DarkRed);
+#endif
+
 		m_buffer.emplace_back(Level::Critical, stream.str());
 	}
 }
@@ -168,6 +197,11 @@ void TRAP::Log::Trace(Args&& ... args)
 			std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Magenta);
+#endif
+
 		m_buffer.emplace_back(Level::Trace, stream.str());
 	}
 }
@@ -190,6 +224,11 @@ void TRAP::Log::Debug(Args&& ... args)
 			std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Cyan);
+#endif
+
 		m_buffer.emplace_back(Level::Debug, stream.str());
 	}
 }
@@ -212,6 +251,11 @@ void TRAP::Log::Info(Args&& ... args)
 			std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Green);
+#endif
+
 		m_buffer.emplace_back(Level::Info, stream.str());
 	}
 }
@@ -234,6 +278,11 @@ void TRAP::Log::Warn(Args&& ... args)
 			std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Yellow);
+#endif
+
 		m_buffer.emplace_back(Level::Warn, stream.str());
 	}
 }
@@ -256,6 +305,11 @@ void TRAP::Log::Error(Args&& ... args)
 			std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::Red);
+#endif
+
 		m_buffer.emplace_back(Level::Error, stream.str());
 	}
 }
@@ -278,6 +332,11 @@ void TRAP::Log::Critical(Args&& ... args)
 			std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 #endif
 		}
+
+#ifdef TRACY_ENABLE
+		TracyMessageC(stream.str().c_str(), stream.str().size(), tracy::Color::DarkRed);
+#endif
+
 		m_buffer.emplace_back(Level::Critical, stream.str());
 	}
 }

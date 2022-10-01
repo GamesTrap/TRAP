@@ -3313,3 +3313,8 @@ SITREP 09/30/2022|22w39c1
 SITREP 10/01/2022|22w39c2
     - Changed TRAP Engine version to 22w39c2(0.8.53)
     - Premake scripts Added support for Tracy ~<20 mins
+    - Profiler Added names for threads ~<10 mins
+    - String Fixed double null terminator ins GetTimeStamp() and GetDateTimeStamp() ~<5 mins
+    - Profiler Added log messages ~<15 mins
+    - Base Added overloads for new and delete (only used for memory profiling) ~<5 mins
+    - Profiler Added all mutexes ~>20 mins

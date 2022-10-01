@@ -680,12 +680,12 @@ namespace TRAP::Graphics::API
 			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
 			TRAP::Ref<VulkanSampler> DefaultSampler;
-			std::mutex SubmitMutex;
+			TracyLockable(std::mutex, SubmitMutex);
 
 			//Unlike DirectX 12, Vulkan textures start in undefined layout.
 			//With this, we transition them to the specified layout so app code doesn't
 			//have to worry about this
-			std::mutex InitialTransitionMutex;
+			TracyLockable(std::mutex, InitialTransitionMutex);
 			TRAP::Ref<VulkanQueue> InitialTransitionQueue;
 			TRAP::Ref<VulkanCommandPool> InitialTransitionCmdPool;
 			VulkanCommandBuffer* InitialTransitionCmd;
@@ -859,7 +859,7 @@ namespace TRAP::Graphics::API
 		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting
 		//a FrameBuffer Map for the first time)
 		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
-		static std::mutex s_renderPassMutex;
+		inline static TracyLockable(std::mutex, s_renderPassMutex);
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;

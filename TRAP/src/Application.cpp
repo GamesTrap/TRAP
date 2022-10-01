@@ -125,6 +125,9 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #endif
 #endif
 
+	//Set Main Thread name for profiler
+	tracy::SetThreadName("Main Thread");
+
 	//Single process mode
 #ifdef ENABLE_SINGLE_PROCESS_ONLY
 	bool singleProcess = true;
@@ -746,7 +749,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("", false);
+		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", "", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)
@@ -845,7 +848,8 @@ void TRAP::Application::UpdateHotReloading()
 
 	//Hot code
 	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex);
+		std::lock_guard lock(m_hotReloadingMutex);
+		LockMark(m_hotReloadingMutex)
 
 		//Shader
 		shaderPaths = m_hotReloadingShaderPaths;
@@ -936,7 +940,8 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 
 	if(texture)
 	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex); //Hot code
+		std::lock_guard lock(m_hotReloadingMutex); //Hot code
+		LockMark(m_hotReloadingMutex)
 
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingTexturePaths)
@@ -949,7 +954,8 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	}
 	else if(shader)
 	{
-		std::lock_guard<std::mutex> lock(m_hotReloadingMutex); //Hot code
+		std::lock_guard lock(m_hotReloadingMutex); //Hot code
+		LockMark(m_hotReloadingMutex)
 
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingShaderPaths)

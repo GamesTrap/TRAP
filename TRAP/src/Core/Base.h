@@ -3,6 +3,15 @@
 
 #include <memory>
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//Tracy - Profiler
+#include <Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 #include "PlatformDetection.h"
 
 //Set this define to enable RenderDoc layer
@@ -198,6 +207,15 @@ constexpr T BIT(T x)
 {
 	return T(1) << x;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRACY_ENABLE
+//Overloads for new and delete (only used for profiling)
+void* operator new(const std::size_t count);
+void operator delete(void* ptr) noexcept;
+void operator delete(void* ptr, std::size_t count) noexcept;
+#endif /*TRACY_ENABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

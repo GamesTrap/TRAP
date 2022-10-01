@@ -5,8 +5,8 @@
 #include "Events/FileEvent.h"
 #include "Utils/Utils.h"
 
-TRAP::FileSystem::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
-    : m_recursive(recursive), m_run(true)
+TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, const bool recursive)
+    : m_recursive(recursive), m_run(true), m_name(std::move(name))
 {
     if(paths.empty())
         return;
@@ -17,8 +17,8 @@ TRAP::FileSystem::FileWatcher::FileWatcher(const std::vector<std::filesystem::pa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileSystem::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
-    : m_recursive(recursive), m_run(true)
+TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::filesystem::path& path, const bool recursive)
+    : m_recursive(recursive), m_run(true), m_name(std::move(name))
 {
     if(path.empty())
         return;
@@ -195,6 +195,12 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
 #ifdef TRAP_PLATFORM_WINDOWS
 void TRAP::FileSystem::FileWatcher::Watch()
 {
+	//Set Thread name for profiler
+    if(m_name.empty())
+	    tracy::SetThreadName("FileWatcher");
+    else
+	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
+
     //Thread init
     std::vector<Events::FileChangeEvent> events;
 
@@ -325,6 +331,12 @@ void TRAP::FileSystem::FileWatcher::Watch()
 #elif defined(TRAP_PLATFORM_LINUX)
 void TRAP::FileSystem::FileWatcher::Watch()
 {
+	//Set Thread name for profiler
+    if(m_name.empty())
+	    tracy::SetThreadName("FileWatcher");
+    else
+	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
+
     //Thread init
     std::vector<Events::FileChangeEvent> events;
 

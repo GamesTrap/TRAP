@@ -5,6 +5,15 @@
 #include <queue>
 #include <condition_variable>
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//Tracy - Profiler
+#include <Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 namespace TRAP
 {
 	template<typename T>
@@ -98,8 +107,8 @@ namespace TRAP
 
 	private:
 		std::queue<T> m_queue{};
-		mutable std::mutex m_mutex;
-		std::condition_variable m_ready;
+		mutable TracyLockable(std::mutex, m_mutex);
+		std::condition_variable_any m_ready;
 		bool m_done = false;
 	};
 }
@@ -112,6 +121,7 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::
 {
 	{
 		std::unique_lock lock(m_mutex);
+		LockMark(m_mutex);
 		m_queue.push(item);
 	}
 
@@ -126,6 +136,7 @@ typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::
 {
 	{
 		std::unique_lock lock(m_mutex);
+		LockMark(m_mutex);
 		m_queue.emplace(std::forward<T>(item));
 	}
 
@@ -143,6 +154,7 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::
 {
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
+		LockMark(m_mutex);
 		if (!lock)
 			return false;
 
@@ -161,6 +173,7 @@ typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::
 {
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
+		LockMark(m_mutex);
 		if (!lock)
 			return false;
 
@@ -179,6 +192,7 @@ typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assig
 TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	std::unique_lock lock(m_mutex);
+	LockMark(m_mutex);
 	while (m_queue.empty() && !m_done)
 		m_ready.wait(lock);
 
@@ -198,6 +212,7 @@ template <typename Q>
 typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	std::unique_lock lock(m_mutex);
+	LockMark(m_mutex);
 	while (m_queue.empty() && !m_done)
 		m_ready.wait(lock);
 
@@ -218,6 +233,7 @@ typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assig
 TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
+	LockMark(m_mutex);
 	if (!lock || m_queue.empty())
 		return false;
 
@@ -233,6 +249,7 @@ template <typename Q>
 typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
+	LockMark(m_mutex);
 	if (!lock || m_queue.empty())
 		return false;
 
@@ -249,6 +266,7 @@ void TRAP::BlockingQueue<T>::Done() noexcept
 {
 	{
 		std::unique_lock lock(m_mutex);
+		LockMark(m_mutex);
 		m_done = true;
 	}
 
@@ -261,6 +279,7 @@ template <typename T>
 bool TRAP::BlockingQueue<T>::Empty() const noexcept
 {
 	std::scoped_lock lock(m_mutex);
+	LockMark(m_mutex);
 	return m_queue.empty();
 }
 
@@ -270,6 +289,7 @@ template <typename T>
 uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
 {
 	std::scoped_lock lock(m_mutex);
+	LockMark(m_mutex);
 	return m_queue.size();
 }
 

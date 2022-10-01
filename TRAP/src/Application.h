@@ -276,7 +276,7 @@ namespace TRAP
 
 		std::vector<std::filesystem::path> m_hotReloadingShaderPaths;
 		std::vector<std::filesystem::path> m_hotReloadingTexturePaths;
-		std::mutex m_hotReloadingMutex;
+		TracyLockable(std::mutex, m_hotReloadingMutex);
 		std::unique_ptr<FileSystem::FileWatcher> m_hotReloadingFileWatcher;
 		bool m_hotReloadingEnabled;
 

@@ -32,12 +32,17 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 {
 	TRAP_ASSERT(loader);
 
+	//Set Thread name for profiler
+	tracy::SetThreadName("ResourceLoader");
+
 	SyncToken maxToken{};
 
 	while(loader->m_run)
 	{
 		{
-			std::unique_lock<std::mutex> lock(loader->m_queueMutex);
+			std::unique_lock lock(loader->m_queueMutex);
+			auto& mutex = loader->m_queueMutex;
+			LockMark(mutex);
 
 			//Check for pending tokens
 			//Safe to use m_tokenCounter as we are inside critical section
@@ -56,7 +61,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 		//Signal pending tokens from previous frames
 		{
-			std::lock_guard<std::mutex> lock(loader->m_tokenMutex);
+			std::lock_guard lock(loader->m_tokenMutex);
+			auto& mutex = loader->m_tokenMutex;
+			LockMark(mutex);
 			loader->m_tokenCompleted = loader->m_currentTokenState[loader->m_nextSet];
 		}
 		loader->m_tokenCond.notify_all();
@@ -65,7 +72,9 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 		std::vector<UpdateRequest> activeQueue;
 		{
-			std::lock_guard<std::mutex> lock(loader->m_queueMutex);
+			std::lock_guard lock(loader->m_queueMutex);
+			auto& mutex = loader->m_queueMutex;
+			LockMark(mutex);
 
 			std::vector<UpdateRequest>& requestQueue = loader->m_requestQueue;
 
@@ -570,7 +579,8 @@ bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* cons
 
 void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const token)
 {
-	std::unique_lock<std::mutex> lock(m_tokenMutex);
+	std::unique_lock lock(m_tokenMutex);
+	LockMark(m_tokenMutex);
 	while (!IsTokenCompleted(token))
 		m_tokenCond.wait(lock);
 }
@@ -600,7 +610,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 {
 	SyncToken t = 0;
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
 		t = m_tokenCounter + 1;
 		++m_tokenCounter;
@@ -623,7 +634,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 {
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
 		t = m_tokenCounter + 1;
 		++m_tokenCounter;
@@ -647,7 +659,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::Te
 {
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
 		t = m_tokenCounter + 1;
 		++m_tokenCounter;
@@ -670,7 +683,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
 		t = m_tokenCounter + 1;
 		++m_tokenCounter;
@@ -693,7 +707,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::Te
 {
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
 		t = m_tokenCounter + 1;
 		++m_tokenCounter;
@@ -714,7 +729,8 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 {
 	SyncToken t{};
 	{
-		std::lock_guard<std::mutex> lock(m_queueMutex);
+		std::lock_guard lock(m_queueMutex);
+		LockMark(m_queueMutex);
 
 		t = m_tokenCounter + 1;
 		++m_tokenCounter;

@@ -151,7 +151,8 @@ VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorS
 {
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time
-	std::lock_guard<std::mutex> lockGuard(m_mutex);
+	std::lock_guard lockGuard(m_mutex);
+	LockMark(m_mutex);
 
 	VkDescriptorSetAllocateInfo info = VulkanInits::DescriptorSetAllocateInfo(m_currentPool,
 	                                                                          layout);

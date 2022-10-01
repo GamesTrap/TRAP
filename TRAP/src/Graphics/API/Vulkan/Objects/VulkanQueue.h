@@ -105,7 +105,11 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 
 		VkQueue m_vkQueue;
+#ifdef TRACY_ENABLE
+		tracy::Lockable<std::mutex>& m_submitMutex;
+#else
 		std::mutex& m_submitMutex;
+#endif
 		uint8_t m_vkQueueFamilyIndex;
 		uint8_t m_vkQueueIndex;
 		RendererAPI::QueueType m_type;

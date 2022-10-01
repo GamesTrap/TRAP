@@ -93,7 +93,6 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Default
 
 std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap{};
 std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap{};
-std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 
 std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
 std::unordered_map<uint64_t,
@@ -122,7 +121,8 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 	RemoveDefaultResources();
 
-	std::lock_guard<std::mutex> lock(s_renderPassMutex);
+	std::lock_guard lock(s_renderPassMutex);
+	LockMark(s_renderPassMutex);
 	s_frameBufferMap.clear();
 
 	s_renderPassMap.clear();
@@ -361,6 +361,8 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerWindowData* const p)
 	GetRenderer()->ReflexMarker(Application::GetGlobalCounter(), VK_PRESENT_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 #endif
+
+	FrameMark;
 
 	p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
 
@@ -2607,7 +2609,9 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(Ref<TRAP::Graphics::Texture> texture,
                                                                 const RendererAPI::ResourceState startState)
 {
-	std::lock_guard<std::mutex> lock(s_NullDescriptors->InitialTransitionMutex);
+	std::lock_guard lock(s_NullDescriptors->InitialTransitionMutex);
+	auto& mutex = s_NullDescriptors->InitialTransitionMutex;
+	LockMark(mutex);
 	VulkanCommandBuffer* const cmd = s_NullDescriptors->InitialTransitionCmd;
 	s_NullDescriptors->InitialTransitionCmdPool->Reset();
 	cmd->Begin();
@@ -2626,7 +2630,8 @@ void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(Ref<TRAP::Graphi
 TRAP::Graphics::API::VulkanRenderer::RenderPassMap& TRAP::Graphics::API::VulkanRenderer::GetRenderPassMap()
 {
 	//Only need a lock when creating a new RenderPass Map for this thread
-	std::lock_guard<std::mutex> lock(s_renderPassMutex);
+	std::lock_guard lock(s_renderPassMutex);
+	LockMark(s_renderPassMutex);
 	const auto it = s_renderPassMap.find(std::this_thread::get_id());
 	if (it == s_renderPassMap.end())
 	{
@@ -2642,7 +2647,8 @@ TRAP::Graphics::API::VulkanRenderer::RenderPassMap& TRAP::Graphics::API::VulkanR
 TRAP::Graphics::API::VulkanRenderer::FrameBufferMap& TRAP::Graphics::API::VulkanRenderer::GetFrameBufferMap()
 {
 	//Only need a lock when creating a new FrameBuffer Map for this thread
-	std::lock_guard<std::mutex> lock(s_renderPassMutex);
+	std::lock_guard lock(s_renderPassMutex);
+	LockMark(s_renderPassMutex);
 	const auto it = s_frameBufferMap.find(std::this_thread::get_id());
 	if(it == s_frameBufferMap.end())
 	{

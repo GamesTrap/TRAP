@@ -176,7 +176,7 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 	std::array<char, 9> buffer{};
 	strftime(buffer.data(), buffer.size(), "%T", &tm);
 
-	return std::string(buffer.begin(), buffer.end());
+	return std::string(buffer.data(), buffer.size() - 1); //Copy data except the null terminator
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -195,7 +195,7 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 	std::array<char, 20> buffer{};
 	strftime(buffer.data(), buffer.size(), "%F %T", &tm);
 
-	return std::string(buffer.begin(), buffer.end());
+	return std::string(buffer.data(), buffer.size() - 1); //Copy data except the null terminator
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

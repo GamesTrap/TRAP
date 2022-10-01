@@ -7,7 +7,7 @@
 
 bool initialized = false;
 
-std::mutex mutex{};
+TracyLockable(std::mutex, aftermath_mutex);
 
 void* handle = nullptr;
 #ifdef ENABLE_NSIGHT_AFTERMATH
@@ -42,7 +42,8 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
 
     const std::filesystem::path folderPath = *docsFolder / "TRAP" / TRAP::Application::GetGameName() / "crash-dumps";
     const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
-    std::lock_guard lock(mutex);
+    std::lock_guard lock(aftermath_mutex);
+    LockMark(aftermath_mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
     std::copy_n(static_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
     if(!TRAP::FileSystem::FileOrFolderExists(folderPath))
