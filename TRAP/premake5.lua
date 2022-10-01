@@ -191,6 +191,9 @@ project "TRAP"
 			defines "USE_STEAMWORKS_SDK"
 		end
 
+	filter "files:../Dependencies/Tracy/TracyClient.cpp"
+		flags {"NoPCH"}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"
@@ -325,6 +328,9 @@ project "TRAP-Headless"
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
 		}
+
+	filter "files:../Dependencies/Tracy/TracyClient.cpp"
+		flags {"NoPCH"}
 
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"

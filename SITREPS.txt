@@ -3320,3 +3320,4 @@ SITREP 10/01/2022|22w39c2
     - Profiler Added all mutexes ~>20 mins
     - Profiler Added instrumentation everywhere ~>30 mins
     - Profiler color coded instrumentation ~<20 mins
+    - Premake disabled PCH for TracyClient.cpp ~<5 mins
