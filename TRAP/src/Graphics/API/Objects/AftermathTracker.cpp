@@ -33,7 +33,7 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
                  void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     const auto docsFolder = TRAP::FileSystem::GetDocumentsFolderPath();
     if(!docsFolder)
@@ -59,7 +59,7 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
 void LoadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef TRAP_PLATFORM_WINDOWS
     handle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
@@ -108,7 +108,7 @@ void LoadFunctions()
 void UnloadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     TRAP::Utils::DynamicLoading::FreeLibrary(handle);
 
@@ -134,7 +134,7 @@ void UnloadFunctions()
 
 [[maybe_unused]] bool TRAP::Graphics::AftermathTracker::Initialize()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     if(initialized)
         return true;
@@ -179,7 +179,7 @@ void UnloadFunctions()
 
 void TRAP::Graphics::AftermathTracker::Shutdown()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     if(!initialized)
         return;
@@ -205,7 +205,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
     {
@@ -219,7 +219,7 @@ void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const
 #ifdef ENABLE_NSIGHT_AFTERMATH
 void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Result res)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     if(res == GFSDK_Aftermath_Result_Success)
         return;
@@ -322,7 +322,7 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
 
 GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     if(!initialized)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;

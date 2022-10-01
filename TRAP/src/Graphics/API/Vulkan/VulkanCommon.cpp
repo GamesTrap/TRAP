@@ -12,7 +12,7 @@
 void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[maybe_unused]] const uint64_t handle,
 										  [[maybe_unused]] const VkObjectType type, [[maybe_unused]] const std::string_view name)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)
@@ -43,7 +43,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
                                                                         const RendererAPI::QueueType queueType)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	VkPipelineStageFlags flags = 0;
 
@@ -128,7 +128,7 @@ VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const Vk
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
 	                                                                     std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	int32_t blendDescIndex = 0;
 
@@ -182,7 +182,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 
 VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
 	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
@@ -230,7 +230,7 @@ VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const
 
 VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES);
 	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES);
@@ -262,7 +262,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
                                                                 VkMemoryRequirements& memReq,
                                                                 std::vector<uint64_t>& planesOffsets)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	memReq = {};
 
@@ -300,7 +300,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
 																						  const bool SRGB)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #if !defined(TRAP_PLATFORM_ANDROID)
 	if(SRGB)

@@ -6,7 +6,7 @@
 
 TRAP::Graphics::CommandPool::CommandPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Creating CommandPool");
@@ -17,7 +17,7 @@ TRAP::Graphics::CommandPool::CommandPool()
 
 TRAP::Graphics::CommandPool::~CommandPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Destroying CommandPool");
@@ -28,7 +28,7 @@ TRAP::Graphics::CommandPool::~CommandPool()
 
 TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const RendererAPI::CommandPoolDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

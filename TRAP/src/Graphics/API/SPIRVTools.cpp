@@ -10,7 +10,7 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 	                       std::size_t& currentResource,
 	                       const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for(const auto& input : allResources)
 	{
@@ -102,14 +102,14 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* const SPIRVBinary, const uint32_t binarySize)
 	: m_compiler(TRAP::MakeScope<spirv_cross::Compiler>(SPIRVBinary, binarySize))
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_entryPoint = m_compiler->get_entry_points_and_stages()[0].name;
 }
@@ -118,7 +118,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//1. Get all shader resources
 	spirv_cross::ShaderResources allResources;
@@ -249,7 +249,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if (m_shaderResources.empty())
 		return; //Error code here
@@ -312,7 +312,7 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectComputeShaderWorkGroupSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	std::array<uint32_t, 3> res{};
 
@@ -329,7 +329,7 @@ std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectC
 
 uint32_t TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationControlShaderControlPoint() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	uint32_t controlPoints = m_compiler->get_entry_point(m_entryPoint, m_compiler->get_execution_model()).output_vertices;
 
@@ -348,7 +348,7 @@ uint32_t TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationCont
 
 const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_shaderResources;
 }
@@ -357,7 +357,7 @@ const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::AP
 
 const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_uniformVariables;
 }
@@ -366,7 +366,7 @@ const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::AP
 
 std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_entryPoint;
 }

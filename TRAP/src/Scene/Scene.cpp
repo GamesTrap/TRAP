@@ -23,7 +23,7 @@
 
 static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	switch(bodyType)
 	{
@@ -47,7 +47,7 @@ static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::Bod
 template<typename... Component>
 static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	([&]()
 	{
@@ -68,7 +68,7 @@ template<typename... Component>
 static void CopyComponent(TRAP::ComponentGroup<Component...>, entt::registry& dst, entt::registry& src,
                           const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	CopyComponent<Component...>(dst, src, enttMap);
 }
@@ -78,7 +78,7 @@ static void CopyComponent(TRAP::ComponentGroup<Component...>, entt::registry& ds
 template<typename... Component>
 static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	([&]()
 	{
@@ -92,7 +92,7 @@ static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
 template<typename... Component>
 static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Entity dst, TRAP::Entity src)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	CopyComponentIfExists<Component...>(dst, src);
 }
@@ -101,7 +101,7 @@ static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Enti
 
 TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	TRAP::Ref<Scene> newScene = TRAP::MakeRef<Scene>();
 
@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	return CreateEntityWithUID(Utils::UID(), name);
 }
@@ -142,7 +142,7 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 
 TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	Entity entity = { m_registry.create(), this };
 	entity.AddComponent<UIDComponent>(uid);
@@ -156,7 +156,7 @@ TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string&
 
 void TRAP::Scene::DestroyEntity(const Entity entity)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	m_registry.destroy(entity);
 }
@@ -165,7 +165,7 @@ void TRAP::Scene::DestroyEntity(const Entity entity)
 
 void TRAP::Scene::OnRuntimeStart()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	m_physicsWorld = new b2World({0.0f, -9.8f});
 
@@ -224,7 +224,7 @@ void TRAP::Scene::OnRuntimeStart()
 
 void TRAP::Scene::OnRuntimeStop()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	delete m_physicsWorld;
 	m_physicsWorld = nullptr;
@@ -234,7 +234,7 @@ void TRAP::Scene::OnRuntimeStop()
 
 void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	//Physics
 	const int32_t velocityIterations = 6;
@@ -261,7 +261,7 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 
 void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	//Update scripts
 	{
@@ -331,7 +331,7 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 
 void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::EditorCamera& camera)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	Graphics::Renderer2D::BeginScene(camera);
 
@@ -361,7 +361,7 @@ void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::
 
 void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	//Update scripts
 	{
@@ -385,7 +385,7 @@ void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 
 void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	m_viewportWidth = width;
 	m_viewportHeight = height;
@@ -404,7 +404,7 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 
 void TRAP::Scene::DuplicateEntity(Entity entity)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	Entity newEntity = CreateEntity(entity.GetName());
 	CopyComponentIfExists(AllComponents{}, newEntity, entity);
@@ -414,7 +414,7 @@ void TRAP::Scene::DuplicateEntity(Entity entity)
 
 TRAP::Entity TRAP::Scene::GetPrimaryCameraEntity()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	auto view = m_registry.view<CameraComponent>();
 	for(auto entity : view)
@@ -446,7 +446,7 @@ void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity, TransformCo
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity, CameraComponent& component)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	if(m_viewportWidth > 0 && m_viewportHeight > 0)
 		component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);

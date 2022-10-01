@@ -45,7 +45,7 @@ std::array<std::string, 2> TRAP::Graphics::Shader::SupportedShaderFormatSuffixes
 
 bool TRAP::Graphics::Shader::Reload()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(m_filepath.empty())
 		return false;
@@ -128,7 +128,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 std::string TRAP::Graphics::Shader::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_name;
 }
@@ -137,7 +137,7 @@ std::string TRAP::Graphics::Shader::GetName() const
 
 std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_filepath;
 }
@@ -146,7 +146,7 @@ std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 
 TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_shaderStages;
 }
@@ -155,7 +155,7 @@ TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages
 
 const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_macros;
 }
@@ -164,7 +164,7 @@ const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMac
 
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_rootSignature;
 }
@@ -174,7 +174,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignatur
 const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
                  TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_descriptorSets;
 }
@@ -183,7 +183,7 @@ const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
 
 bool TRAP::Graphics::Shader::IsShaderValid() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_valid;
 }
@@ -194,7 +194,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
                                                                          const std::filesystem::path& filePath,
 																		 const std::vector<Macro>* const userMacros)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(name.empty())
 	{
@@ -238,7 +238,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
                                                                          const std::vector<Macro>* const userMacros)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::BinaryShaderDesc desc{};
 	Ref<Shader> failShader = nullptr;
@@ -285,7 +285,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const
                                                                            const std::string& glslSource,
 																		   const std::vector<Macro>* const userMacros)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
 	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
@@ -322,7 +322,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const
 
 bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& filePath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//Check SPIRV Magic Number
 	if (!FileSystem::FileOrFolderExists(filePath))
@@ -361,7 +361,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
                                             RendererAPI::ShaderStage& shaderStages,
 											const std::vector<Macro>* const userMacros)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::ShaderStage currentShaderStage = RendererAPI::ShaderStage::None;
 	const std::vector<std::string> lines = Utils::String::GetLines(glslSource);
@@ -489,7 +489,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 	                                                                              	   const RendererAPI::ShaderStage stage,
 	                                                                              	   std::string& preProcessedSource)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP::Scope<glslang::TShader> shader = TRAP::MakeScope<glslang::TShader>(StageToEShLang.at(stage));
 	shader->setStrings(&source, 1);
@@ -523,7 +523,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 
 bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* const shader)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
@@ -544,7 +544,7 @@ bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* const shader)
 
 bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* const shader, glslang::TProgram& program)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(shader)
 		program.addShader(shader);
@@ -565,7 +565,7 @@ bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* const shader, glslang
 
 bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage& shaderStages)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//Check if any Shader Stage is set
 	if (RendererAPI::ShaderStage::None == shaderStages)
@@ -630,7 +630,7 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLSLToSPIRV(const std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
 	                                                                                     const RendererAPI::ShaderStage& shaderStages)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(!s_glslangInitialized)
 	{
@@ -719,7 +719,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::ShaderStage stage,
 															 glslang::TProgram& program)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	std::vector<uint32_t> SPIRV{};
 
@@ -748,7 +748,7 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::
 
 TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint32_t>& SPIRV)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
@@ -824,7 +824,7 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 
 bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& filePath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const auto fileEnding = FileSystem::GetFileEnding(filePath);
 	if(!fileEnding)
@@ -857,7 +857,7 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
                                      const std::vector<Macro>* const userMacros,
 									 RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	std::string glslSource;
 	bool isSPIRV = false;

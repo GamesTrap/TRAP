@@ -12,7 +12,7 @@ std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
 
 void TRAP::FileSystem::Init()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
 	TP_DEBUG(Log::FileSystemPrefix, "Initializing File System");
 
@@ -43,7 +43,7 @@ void TRAP::FileSystem::Init()
 
 std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(path))
         return std::nullopt;
@@ -77,7 +77,7 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
 
 std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(path))
         return std::nullopt;
@@ -106,7 +106,7 @@ std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem:
 
 bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer, const WriteMode mode)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty() || buffer.empty())
         return false;
@@ -130,7 +130,7 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::v
 
 bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const std::string_view text, const WriteMode mode)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty() || text.empty())
         return false;
@@ -156,7 +156,7 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const st
 
 bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty())
         return false;
@@ -177,7 +177,7 @@ bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 
 bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty())
         return false;
@@ -223,7 +223,7 @@ bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 
 bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(FileOrFolderExists(newPath))
         return false;
@@ -245,7 +245,7 @@ bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldPath, const st
 
 bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     return MoveFolder(filePath, destFolder / filePath.filename());
 }
@@ -255,7 +255,7 @@ bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std
 bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination,
                                   const bool overwriteExisting)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     std::error_code ec;
     std::filesystem::copy_options options = std::filesystem::copy_options::recursive;
@@ -280,7 +280,7 @@ bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std
 bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::filesystem::path& destination,
                                 const bool overwriteExisting)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     //Sanity checks
     if(!FileOrFolderExists(source))
@@ -329,7 +329,7 @@ bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::
 
 bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     return MoveFolder(oldPath, newPath);
 }
@@ -338,7 +338,7 @@ bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const 
 
 bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const std::string_view newName)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     return RenameFolder(oldPath, (oldPath.parent_path() / newName / oldPath.extension()));
 }
@@ -347,7 +347,7 @@ bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const st
 
 bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty())
         return false;
@@ -369,7 +369,7 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 
 std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path, const bool recursive)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(path))
         return std::nullopt;
@@ -473,7 +473,7 @@ std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesy
 
 std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(path))
         return std::nullopt;
@@ -494,7 +494,7 @@ std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTim
 
 std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty() || !path.has_filename())
         return std::nullopt;
@@ -506,7 +506,7 @@ std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::fi
 
 std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty() || !path.has_stem())
         return std::nullopt;
@@ -518,7 +518,7 @@ std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::
 
 std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(path.empty() || !path.has_extension())
         return std::nullopt;
@@ -530,7 +530,7 @@ std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::filesystem::path& filePath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if (filePath.empty())
         return std::nullopt;
@@ -542,7 +542,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     std::error_code ec;
     const std::filesystem::path path = std::filesystem::temp_directory_path(ec);
@@ -560,7 +560,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetGameTempFolderPath()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     const auto tempFolder = GetTempFolderPath();
     if(!tempFolder)
@@ -573,7 +573,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameTempFolderPath()
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     std::error_code ec;
     const std::filesystem::path path = std::filesystem::current_path(ec);
@@ -591,7 +591,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
 #ifdef TRAP_PLATFORM_WINDOWS
     PWSTR path = nullptr;
@@ -620,7 +620,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetGameDocumentsFolderPath()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
 	const auto docsFolder = GetDocumentsFolderPath();
     if(!docsFolder)
@@ -633,7 +633,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameDocumentsFolderPat
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
 #ifndef TRAP_HEADLESS_MODE
     const auto docsFolder = GetGameDocumentsFolderPath();
@@ -650,7 +650,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 
 bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     std::error_code ec;
     const bool res = std::filesystem::equivalent(p1, p2, ec);
@@ -668,7 +668,7 @@ bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const s
 
 bool TRAP::FileSystem::IsPathAbsolute(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     //is_absolute() may throw implementation-defined exception
     try
@@ -686,7 +686,7 @@ bool TRAP::FileSystem::IsPathAbsolute(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::IsPathRelative(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     //is_relative() may throw implementation-defined exception
     try
@@ -704,7 +704,7 @@ bool TRAP::FileSystem::IsPathRelative(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     std::error_code ec;
     const bool res = std::filesystem::is_directory(p, ec);
@@ -722,7 +722,7 @@ bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     std::error_code ec;
     const bool res = std::filesystem::is_regular_file(p, ec);
@@ -740,7 +740,7 @@ bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 
 std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(p.is_absolute())
         return p;
@@ -761,7 +761,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std:
 
 std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(p.is_relative())
         return p;
@@ -782,7 +782,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std:
 
 bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(p) || !IsFolder(p))
         return false;
@@ -820,7 +820,7 @@ bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(p) || !IsFile(p))
         return false;
@@ -862,7 +862,7 @@ bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     if(!FileOrFolderExists(p))
         return false;
@@ -914,7 +914,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 /// </returns>
 std::optional<std::filesystem::path> GetHomeFolderPathLinux()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     static std::filesystem::path homeDir{};
 
@@ -971,7 +971,7 @@ std::optional<std::filesystem::path> GetHomeFolderPathLinux()
 /// </returns>
 std::optional<std::filesystem::path> GetDocumentsFolderPathLinux()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Blue);
 
     static std::filesystem::path documentsDir{};
 

@@ -5,7 +5,7 @@
 
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -26,7 +26,7 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 TRAP::Graphics::DescriptorPool::DescriptorPool()
 	: m_numDescriptorSets()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
@@ -37,7 +37,7 @@ TRAP::Graphics::DescriptorPool::DescriptorPool()
 
 TRAP::Graphics::DescriptorPool::~DescriptorPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
@@ -48,7 +48,7 @@ TRAP::Graphics::DescriptorPool::~DescriptorPool()
 
 uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_numDescriptorSets;
 }

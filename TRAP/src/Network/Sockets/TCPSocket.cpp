@@ -55,14 +55,14 @@ namespace
 TRAP::Network::TCPSocket::TCPSocket()
 	: Socket(Type::TCP)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -88,7 +88,7 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 
 TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return IPv4Address::None; //We failed to retrieve the address
@@ -113,7 +113,7 @@ TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
 
 uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -139,7 +139,7 @@ uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Address& remoteAddress,
                                                                 const uint16_t remotePort, Utils::TimeStep timeout)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Disconnect the socket if it is already connected
 	Disconnect();
@@ -224,7 +224,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 
 void TRAP::Network::TCPSocket::Disconnect()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Close the socket
 	Close();
@@ -237,7 +237,7 @@ void TRAP::Network::TCPSocket::Disconnect()
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const data, const std::size_t size) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
@@ -252,7 +252,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const data, const std::size_t size,
                                                              std::size_t& sent) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Check the parameters
 	if(!data || (size == 0))
@@ -288,7 +288,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* const d
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data, const std::size_t size,
                                                                 std::size_t& received) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First clear the variables to fill
 	received = 0;
@@ -320,7 +320,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* const data
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//TCP is a stream protocol, it doesn't preserve messages boundaries.
 	//This means that we have to send the packet size first, so that the
@@ -366,7 +366,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 
 TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First clear the variables to fill
 	packet.Clear();
@@ -437,5 +437,5 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 TRAP::Network::TCPSocket::PendingPacket::PendingPacket()
 	: Size(0), SizeReceived(0)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }

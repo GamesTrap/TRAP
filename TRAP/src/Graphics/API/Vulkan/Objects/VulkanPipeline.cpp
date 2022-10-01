@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	  m_type(),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device);
 
@@ -59,7 +59,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 
 TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(m_vkPipeline);
@@ -77,7 +77,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
 	const VkPipelineCache psoCache = desc.Cache ?
@@ -114,7 +114,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
 	const VkPipelineCache psoCache = desc.Cache ?
@@ -379,7 +379,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkPipeline;
 }
@@ -388,7 +388,7 @@ VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 
 TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_type;
 }
@@ -397,7 +397,7 @@ TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::G
 
 void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;

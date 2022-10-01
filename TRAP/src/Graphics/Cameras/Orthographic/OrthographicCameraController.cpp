@@ -6,7 +6,7 @@
 
 float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return Right - Left;
 }
@@ -15,7 +15,7 @@ float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const
 
 float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return Top - Bottom;
 }
@@ -33,14 +33,14 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const
 	  m_useController(useController),
 	  m_controller(controller)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if (m_useController)
 	{
@@ -149,7 +149,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& event)
@@ -166,7 +166,7 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 
 void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, const float height)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_aspectRatio = width / height;
 	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
@@ -177,7 +177,7 @@ void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, c
 
 TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_camera;
 }
@@ -186,7 +186,7 @@ TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController
 
 const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_camera;
 }
@@ -195,7 +195,7 @@ const TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraCont
 
 float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_cameraTranslationSpeed;
 }
@@ -204,7 +204,7 @@ float TRAP::Graphics::OrthographicCameraController::GetTranslationSpeed() const
 
 void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const float translationSpeed)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_cameraTranslationSpeed = translationSpeed;
 }
@@ -213,7 +213,7 @@ void TRAP::Graphics::OrthographicCameraController::SetTranslationSpeed(const flo
 
 float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_cameraRotationSpeed;
 }
@@ -222,7 +222,7 @@ float TRAP::Graphics::OrthographicCameraController::GetRotationSpeed() const
 
 void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const float rotationSpeed)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_cameraRotationSpeed = rotationSpeed;
 }
@@ -231,7 +231,7 @@ void TRAP::Graphics::OrthographicCameraController::SetRotationSpeed(const float 
 
 float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_zoomLevel;
 }
@@ -240,7 +240,7 @@ float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const
 
 void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoomLevel)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_zoomLevel = zoomLevel;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
@@ -253,7 +253,7 @@ void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoom
 
 const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCameraController::GetBounds() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_bounds;
 }
@@ -262,7 +262,7 @@ const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCame
 
 bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::MouseScrollEvent& e)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_zoomLevel -= e.GetYOffset() * 0.25f;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
@@ -277,7 +277,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(const Events::M
 
 bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(const Events::FrameBufferResizeEvent& e)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if (e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));

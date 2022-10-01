@@ -23,7 +23,7 @@ uint32_t TRAP::Graphics::Renderer::s_currentDrawCalls = 0;
 
 void TRAP::Graphics::Renderer::Init()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	s_maxDrawCalls = RendererAPI::GPUSettings.MaxStorageBufferRange /
 	                 static_cast<uint32_t>(StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
@@ -41,7 +41,7 @@ void TRAP::Graphics::Renderer::Init()
 
 void TRAP::Graphics::Renderer::Shutdown()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	Renderer2D::Shutdown();
 
@@ -56,7 +56,7 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	s_currentDrawCalls = 0;
 
@@ -70,7 +70,7 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 
 void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	s_currentDrawCalls = 0;
 
@@ -84,14 +84,14 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 void TRAP::Graphics::Renderer::EndScene()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
 
@@ -119,7 +119,7 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
 									  const Math::Mat4& transform)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
 	TRAP_ASSERT(indexBuffer, "IndexBuffer is nullptr!");
@@ -149,5 +149,5 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 TRAP::Graphics::Renderer::SceneData::SceneData() noexcept
 	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }

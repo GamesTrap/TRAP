@@ -27,7 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* const data, const std::size_t size)
 	: Data(data), Size(size), BitSize(0), BP(0), Buffer(0)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	std::size_t temp = 0;
 	if (MultiplyOverflow(size, 8u, BitSize))
@@ -40,7 +40,7 @@ TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* const dat
 
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9(const std::size_t nBits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
@@ -64,7 +64,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9(const std::size_t
 
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_t nBits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
@@ -91,7 +91,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits17(const std::size_
 
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_t nBits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
@@ -120,7 +120,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits25(const std::size_
 
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_t nBits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const std::size_t start = BP >> 3u;
 	const std::size_t size = Size;
@@ -153,7 +153,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits32(const std::size_
 //Must have enough bits available with EnsureBits
 uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_t nBits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const uint32_t result = PeekBits(nBits);
 	AdvanceBits(nBits);
@@ -166,7 +166,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::ReadBits(const std::size_
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::size_t a, const std::size_t b,
                                                                    const std::size_t c)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	std::size_t d = 0;
 	if (AddOverflow(a, b, d))
@@ -180,7 +180,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::si
 //Get bits without advancing the bit pointer. Must have enough bits available with EnsureBits
 uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_t nBits) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return Buffer & ((1u << nBits) - 1u);
 }
@@ -190,7 +190,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_
 //Must have enough bits available with EnsureBits
 void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t nBits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	Buffer >>= nBits;
 	BP += nBits;
@@ -203,7 +203,7 @@ void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b,
                                                                     std::size_t& result)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	result = a * b; //Unsigned multiplication is well defined and safe
 
@@ -215,7 +215,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::s
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b,
                                                                std::size_t& result)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	result = a + b; //Unsigned addition is well defined and safe
 
@@ -227,7 +227,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t
 TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
 	: MaxBitLength(0), NumCodes(0)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -235,7 +235,7 @@ TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
 //Get the tree of a deflated block with fixed tree, as specified in the deflate specification
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(HuffmanTree& treeLL, HuffmanTree& treeD)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	if (!treeLL.GenerateFixedLiteralLengthTree())
 		return false;
@@ -252,7 +252,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateFixed(Huffman
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(HuffmanTree& treeLL, HuffmanTree& treeD,
                                                                            BitReader& reader)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	//Make sure that length values that arent filled in will be 0, or a wrong tree will be generated
 	uint32_t n = 0, i = 0;
@@ -433,7 +433,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 //Returns the code. The bit reader must already have been ensured at least 15bits
 uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
 	const uint16_t l = TableLength[code];
@@ -457,7 +457,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 //Get the literal and length code of a deflated block with fixed tree, as per the deflate specification
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	uint32_t i = 0;
 	//256 literals, the end code, some length codes, and 2 unused codes
@@ -483,7 +483,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthT
 //Get the distance code tree of a deflated block with fixed tree, as specified in the deflate specification
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	//The distance codes have their own symbols, 30 used, 2 unused
 	std::array<uint32_t, NumDistanceSymbols> bitLength{};
@@ -503,7 +503,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint3
                                                                      const std::size_t numCodes,
 																	 const uint32_t maxBitLength)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	Lengths.resize(numCodes);
 	for (uint32_t i = 0; i != numCodes; ++i)
@@ -518,7 +518,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint3
 
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	uint32_t bits = 0;
 
@@ -550,7 +550,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	static const uint32_t headSize = 1u << FirstBits; //Size of the first table
 	static const uint32_t mask = (1u << FirstBits) /*headSize*/ - 1u;
@@ -683,7 +683,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 
 uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint32_t bits, const uint32_t num)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	uint32_t result = 0;
 	for (uint32_t i = 0; i < num; i++)
@@ -697,7 +697,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint3
 bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos,
                                                              BitReader& reader)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	const std::size_t size = reader.Size;
 
@@ -738,7 +738,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos,
                                                             BitReader& reader, const uint32_t btype)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	HuffmanTree treeLL; //The Huffman tree for literal and length codes
 	HuffmanTree treeD; //The Huffman tree for distance codes
@@ -859,7 +859,7 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 bool TRAP::Utils::Decompress::Inflate(const uint8_t* const source, const std::size_t sourceLength, uint8_t* const destination,
                                       const std::size_t destinationLength)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	std::vector<uint8_t> result(destinationLength, 0);
 

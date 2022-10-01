@@ -11,7 +11,7 @@
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return Init(nullptr, size, updateFrequency);
 }
@@ -22,7 +22,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 																				 const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return Init(data, size, updateFrequency);
 }
@@ -31,7 +31,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 	m_uniformBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
@@ -41,7 +41,7 @@ TRAP::Graphics::UniformBuffer::UniformBuffer(const RendererAPI::DescriptorUpdate
 
 TRAP::Graphics::UniformBuffer::~UniformBuffer()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_uniformBuffers = {};
 }
@@ -50,7 +50,7 @@ TRAP::Graphics::UniformBuffer::~UniformBuffer()
 
 uint64_t TRAP::Graphics::UniformBuffer::GetSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_uniformBuffers[0]->GetSize();
 }
@@ -59,7 +59,7 @@ uint64_t TRAP::Graphics::UniformBuffer::GetSize() const
 
 TRAP::Graphics::UpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequency() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_uniformBuffers.size() == 1 ? UpdateFrequency::Static : UpdateFrequency::Dynamic;
 }
@@ -68,7 +68,7 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::UniformBuffer::GetUpdateFrequenc
 
 const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuffer::GetUBOs() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_uniformBuffers;
 }
@@ -77,7 +77,7 @@ const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuf
 
 void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize());
@@ -98,7 +98,7 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64
 
 bool TRAP::Graphics::UniformBuffer::IsLoaded() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for(std::size_t i = 0; i < m_uniformBuffers.size(); ++i)
 	{
@@ -113,7 +113,7 @@ bool TRAP::Graphics::UniformBuffer::IsLoaded() const
 
 void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for(std::size_t i = 0; i < m_uniformBuffers.size(); ++i)
 		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
@@ -123,7 +123,7 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 
 uint64_t TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const uint64_t byteSize)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const uint64_t minUBOAlignment = RendererAPI::GPUSettings.UniformBufferAlignment;
 	uint64_t alignedSize = byteSize;
@@ -139,7 +139,7 @@ uint64_t TRAP::Graphics::UniformBuffer::CalculateAlignedSize(const uint64_t byte
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Init(const void* const data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer(updateFrequency));
 

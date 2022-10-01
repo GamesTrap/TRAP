@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::HTTP::Request::Request(const std::string uri, const Method method, std::string body)
 	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(std::move(body))
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	SetURI(std::move(uri));
 }
@@ -43,7 +43,7 @@ TRAP::Network::HTTP::Request::Request(const std::string uri, const Method method
 
 void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std::string& value)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_fields[Utils::String::ToLower(field)] = value;
 }
@@ -52,7 +52,7 @@ void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std:
 
 void TRAP::Network::HTTP::Request::SetMethod(const Method method)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_method = method;
 }
@@ -61,7 +61,7 @@ void TRAP::Network::HTTP::Request::SetMethod(const Method method)
 
 void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_uri = std::move(uri);
 
@@ -74,7 +74,7 @@ void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 
 void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const uint32_t minor)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_majorVersion = major;
 	m_minorVersion = minor;
@@ -84,7 +84,7 @@ void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const ui
 
 void TRAP::Network::HTTP::Request::SetBody(std::string body)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_body = std::move(body);
 }
@@ -93,7 +93,7 @@ void TRAP::Network::HTTP::Request::SetBody(std::string body)
 
 std::string TRAP::Network::HTTP::Request::Prepare() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	std::ostringstream out;
 
@@ -147,7 +147,7 @@ std::string TRAP::Network::HTTP::Request::Prepare() const
 
 bool TRAP::Network::HTTP::Request::HasField(const std::string& field) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_fields.find(Utils::String::ToLower(field)) != m_fields.end();
 }
@@ -159,14 +159,14 @@ TRAP::Network::HTTP::Response::Response()
 	  m_majorVersion(0),
 	  m_minorVersion(0)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	const FieldTable::const_iterator it = m_fields.find(Utils::String::ToLower(field));
 	if (it != m_fields.end())
@@ -179,7 +179,7 @@ std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) co
 
 TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_status;
 }
@@ -188,7 +188,7 @@ TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus()
 
 uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_majorVersion;
 }
@@ -197,7 +197,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const
 
 uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_minorVersion;
 }
@@ -206,7 +206,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const
 
 std::string TRAP::Network::HTTP::Response::GetBody() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_body;
 }
@@ -215,7 +215,7 @@ std::string TRAP::Network::HTTP::Response::GetBody() const
 
 void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	std::istringstream in(data);
 
@@ -293,7 +293,7 @@ void TRAP::Network::HTTP::Response::Parse(const std::string& data)
 
 void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	std::string line;
 	while(std::getline(in, line) && (line.size() > 2))
@@ -320,7 +320,7 @@ void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 TRAP::Network::HTTP::HTTP()
 	: m_port(0)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -328,7 +328,7 @@ TRAP::Network::HTTP::HTTP()
 TRAP::Network::HTTP::HTTP(const std::string host, const uint16_t port)
 	: m_port(0)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	SetHost(std::move(host), port);
 }
@@ -337,7 +337,7 @@ TRAP::Network::HTTP::HTTP(const std::string host, const uint16_t port)
 
 void TRAP::Network::HTTP::SetHost(const std::string& host, const uint16_t port)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Check the protocol
 	if(Utils::String::ToLower(host.substr(0, 7)) == "http://")
@@ -373,7 +373,7 @@ void TRAP::Network::HTTP::SetHost(const std::string& host, const uint16_t port)
 
 TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& request, Utils::TimeStep timeout)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First make sure that the request is valid
 	//Add missing mandatory fields

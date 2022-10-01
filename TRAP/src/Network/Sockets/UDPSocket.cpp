@@ -37,14 +37,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::UDPSocket::UDPSocket()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -69,7 +69,7 @@ uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port, const IPv4Address& address)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Close the socket if it is already bound
 	Close();
@@ -97,7 +97,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 
 void TRAP::Network::UDPSocket::Unbind()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Simply close the socket
 	Close();
@@ -109,7 +109,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
                                                              const IPv4Address& remoteAddress,
 														     const uint16_t remotePort)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Create the internal socket if it doesn't exist
 	CreateIPv4();
@@ -143,7 +143,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
                                                                 std::size_t& received, IPv4Address& remoteAddress,
 																uint16_t& remotePort) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First clear the variables to fill
 	received = 0;
@@ -195,7 +195,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, const IPv4Address& remoteAddress,
                                                              const uint16_t remotePort)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
@@ -219,7 +219,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress,
                                                                 uint16_t& remotePort)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//See the detailed comment in Send(Packet) above.
 

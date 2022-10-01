@@ -40,7 +40,7 @@ namespace TRAP::Utils::DynamicLoading
 template<typename T>
 inline T TRAP::Utils::DynamicLoading::GetLibrarySymbol([[maybe_unused]] void* module, [[maybe_unused]] const std::string_view name)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 #ifdef TRAP_PLATFORM_WINDOWS
     return reinterpret_cast<T>(::GetProcAddress(static_cast<HMODULE>(module), name.data()));

@@ -6,14 +6,14 @@
 TRAP::Utils::TimeStep::TimeStep(const float time)
 	: m_time(time)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::TimeStep::operator float() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return m_time;
 }
@@ -22,7 +22,7 @@ TRAP::Utils::TimeStep::operator float() const
 
 float TRAP::Utils::TimeStep::GetSeconds() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return m_time;
 }
@@ -31,7 +31,7 @@ float TRAP::Utils::TimeStep::GetSeconds() const
 
 float TRAP::Utils::TimeStep::GetMilliseconds() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return m_time * 1000.0f;
 }

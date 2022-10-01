@@ -6,14 +6,14 @@
 TRAP::Graphics::Camera::Camera(const TRAP::Math::Mat4& projection)
 	: m_projection(projection)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Math::Mat4& TRAP::Graphics::Camera::GetProjectionMatrix() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_projection;
 }

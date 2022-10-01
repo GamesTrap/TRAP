@@ -26,7 +26,7 @@ namespace TRAP::Utils::Hash
 	template<std::size_t N>
 	std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
 	{
-    	ZoneScoped;
+    	ZoneScopedC(tracy::Color::Violet);
 
 		std::stringstream ss{};
 		for (const uint8_t& i : hash)

@@ -8,7 +8,7 @@
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const float* const vertices, const uint64_t size,
                                                                                const UpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return Init(vertices, size, updateFrequency);
 }
@@ -18,7 +18,7 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(c
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size,
                                                                                const UpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return Init(nullptr, size, updateFrequency);
 }
@@ -28,14 +28,14 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(c
 TRAP::Graphics::VertexBuffer::VertexBuffer()
 	: m_vertexBuffer(nullptr), m_token()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::VertexBuffer::~VertexBuffer()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_vertexBuffer.reset();
 }
@@ -44,7 +44,7 @@ TRAP::Graphics::VertexBuffer::~VertexBuffer()
 
 const TRAP::Graphics::VertexBufferLayout& TRAP::Graphics::VertexBuffer::GetLayout() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_bufferLayout;
 }
@@ -53,7 +53,7 @@ const TRAP::Graphics::VertexBufferLayout& TRAP::Graphics::VertexBuffer::GetLayou
 
 void TRAP::Graphics::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_bufferLayout = layout;
 }
@@ -62,7 +62,7 @@ void TRAP::Graphics::VertexBuffer::SetLayout(const VertexBufferLayout& layout)
 
 uint64_t TRAP::Graphics::VertexBuffer::GetSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vertexBuffer->GetSize();
 }
@@ -71,7 +71,7 @@ uint64_t TRAP::Graphics::VertexBuffer::GetSize() const
 
 uint32_t TRAP::Graphics::VertexBuffer::GetCount() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return static_cast<uint32_t>(m_vertexBuffer->GetSize() / static_cast<uint64_t>(m_bufferLayout.GetStride()));
 }
@@ -80,7 +80,7 @@ uint32_t TRAP::Graphics::VertexBuffer::GetCount() const
 
 TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::Static :
 	                                                                                         UpdateFrequency::Dynamic;
@@ -90,7 +90,7 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::VertexBuffer::GetUpdateFrequency
 
 void TRAP::Graphics::VertexBuffer::Use(const Window* const window) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::GetRenderer()->BindVertexBuffer(m_vertexBuffer, m_bufferLayout, window);
 }
@@ -99,7 +99,7 @@ void TRAP::Graphics::VertexBuffer::Use(const Window* const window) const
 
 void TRAP::Graphics::VertexBuffer::SetData(const float* const data, const uint64_t size, const uint64_t offset)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize());
@@ -116,7 +116,7 @@ void TRAP::Graphics::VertexBuffer::SetData(const float* const data, const uint64
 
 bool TRAP::Graphics::VertexBuffer::IsLoaded() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_token);
 }
@@ -125,7 +125,7 @@ bool TRAP::Graphics::VertexBuffer::IsLoaded() const
 
 void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::GetResourceLoader()->WaitForToken(&m_token);
 }
@@ -135,7 +135,7 @@ void TRAP::Graphics::VertexBuffer::AwaitLoading() const
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Init(const float* const vertices, const uint64_t size,
  																		     const UpdateFrequency updateFrequency)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP::Scope<VertexBuffer> buffer = TRAP::Scope<VertexBuffer>(new VertexBuffer());
 

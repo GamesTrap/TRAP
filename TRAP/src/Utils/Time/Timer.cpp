@@ -3,7 +3,7 @@
 
 TRAP::Utils::Timer::Timer()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	Reset();
 }
@@ -12,7 +12,7 @@ TRAP::Utils::Timer::Timer()
 
 void TRAP::Utils::Timer::Reset()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	m_start = std::chrono::high_resolution_clock::now();
 }
@@ -21,7 +21,7 @@ void TRAP::Utils::Timer::Reset()
 
 float TRAP::Utils::Timer::Elapsed() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
 		(
@@ -33,7 +33,7 @@ float TRAP::Utils::Timer::Elapsed() const
 
 float TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
 		(

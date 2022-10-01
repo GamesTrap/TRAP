@@ -4,7 +4,7 @@
 template<typename T>
 T TRAP::Utils::String::ConvertToType(const std::string& input)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	if constexpr(std::is_integral_v<T> && std::is_signed_v<T> && !std::is_same_v<T, char> && !std::is_same_v<T, bool>) //Integers
 	{
@@ -207,7 +207,7 @@ T TRAP::Utils::String::ConvertToType(const std::string& input)
 template<typename T>
 std::string TRAP::Utils::String::ConvertToString(T value)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	if constexpr(std::is_same_v<T, std::string>)
 	{

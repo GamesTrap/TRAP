@@ -35,14 +35,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::Packet::Packet()
 	: m_readPos(0), m_sendPos(0), m_isValid(true)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Network::Packet::Append(const void* const data, const std::size_t sizeInBytes)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(!data || (sizeInBytes == 0))
 		return;
@@ -56,7 +56,7 @@ void TRAP::Network::Packet::Append(const void* const data, const std::size_t siz
 
 std::size_t TRAP::Network::Packet::GetReadPosition() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_readPos;
 }
@@ -65,7 +65,7 @@ std::size_t TRAP::Network::Packet::GetReadPosition() const
 
 void TRAP::Network::Packet::Clear()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_data.clear();
 	m_readPos = 0;
@@ -76,7 +76,7 @@ void TRAP::Network::Packet::Clear()
 
 const void* TRAP::Network::Packet::GetData() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return !m_data.empty() ? &m_data[0] : nullptr;
 }
@@ -85,7 +85,7 @@ const void* TRAP::Network::Packet::GetData() const
 
 std::size_t TRAP::Network::Packet::GetDataSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_data.size();
 }
@@ -94,7 +94,7 @@ std::size_t TRAP::Network::Packet::GetDataSize() const
 
 bool TRAP::Network::Packet::EndOfPacket() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_readPos >= m_data.size();
 }
@@ -103,7 +103,7 @@ bool TRAP::Network::Packet::EndOfPacket() const
 
 TRAP::Network::Packet::operator bool() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return m_isValid;
 }
@@ -112,7 +112,7 @@ TRAP::Network::Packet::operator bool() const
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	uint8_t value = 0;
 	if (*this >> value)
@@ -125,7 +125,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(CheckSize(sizeof(data)))
 	{
@@ -140,7 +140,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(CheckSize(sizeof(data)))
 	{
@@ -155,7 +155,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(CheckSize(sizeof(data)))
 	{
@@ -174,7 +174,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if (CheckSize(sizeof(data)))
 	{
@@ -193,7 +193,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if (CheckSize(sizeof(data)))
 	{
@@ -212,7 +212,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if (CheckSize(sizeof(data)))
 	{
@@ -231,7 +231,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(CheckSize(sizeof(data)))
 	{
@@ -250,7 +250,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if (CheckSize(sizeof(data)))
 	{
@@ -269,7 +269,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(CheckSize(sizeof(data)))
 	{
@@ -284,7 +284,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if (CheckSize(sizeof(data)))
 	{
@@ -300,7 +300,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First extract string length
 	uint32_t length = 0;
@@ -323,7 +323,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First extract string length
 	uint32_t length = 0;
@@ -346,7 +346,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* const data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First extract string length
 	uint32_t length = 0;
@@ -371,7 +371,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* const data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::wstring& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First extract the string length
 	uint32_t length = 0;
@@ -396,7 +396,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::wstring& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const bool data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	*this << static_cast<uint8_t>(data);
 	return *this;
@@ -406,7 +406,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const bool data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int8_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	Append(&data, sizeof(data));
 	return *this;
@@ -416,7 +416,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int8_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint8_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	Append(&data, sizeof(data));
 	return *this;
@@ -426,7 +426,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint8_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	int16_t toWrite = data;
 
@@ -441,7 +441,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	uint16_t toWrite = data;
 
@@ -456,7 +456,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	int32_t toWrite = data;
 
@@ -471,7 +471,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	uint32_t toWrite = data;
 
@@ -486,7 +486,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	int64_t toWrite = data;
 
@@ -501,7 +501,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint64_t data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	uint64_t toWrite = data;
 
@@ -516,7 +516,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint64_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(float data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	Append(&data, sizeof(data));
 	return *this;
@@ -526,7 +526,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(float data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	Append(&data, sizeof(data));
 	return *this;
@@ -536,7 +536,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
@@ -553,7 +553,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view 
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
@@ -570,7 +570,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view
 
 bool TRAP::Network::Packet::CheckSize(const std::size_t size)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	m_isValid = m_isValid && (m_readPos + size <= m_data.size());
 
@@ -581,7 +581,7 @@ bool TRAP::Network::Packet::CheckSize(const std::size_t size)
 
 const void* TRAP::Network::Packet::OnSend(std::size_t& size)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	size = GetDataSize();
 	return GetData();
@@ -591,7 +591,7 @@ const void* TRAP::Network::Packet::OnSend(std::size_t& size)
 
 void TRAP::Network::Packet::OnReceive(const void* const data, const std::size_t size)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	Append(data, size);
 }

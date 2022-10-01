@@ -39,7 +39,7 @@ namespace TRAP
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			TRAP_ASSERT(!HasComponent<T>(), "Entity already has component!");
 			T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
@@ -50,7 +50,7 @@ namespace TRAP
 		template<typename T, typename... Args>
 		T& AddOrReplaceComponent(Args&&... args)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			T& component = m_scene->m_registry.emplace_or_replace<T>(m_entityHandle, std::forward<Args>(args)...);
 			m_scene->OnComponentAdded<T>(*this, component);
@@ -60,7 +60,7 @@ namespace TRAP
 		template<typename T>
 		T& GetComponent()
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
 
@@ -70,7 +70,7 @@ namespace TRAP
 		template<typename T>
 		bool HasComponent()
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			//Renamed in EnTT v3.7.0 from registry::has<T...> to registry::all_of<T...>
 			return m_scene->m_registry.all_of<T>(m_entityHandle);
@@ -80,7 +80,7 @@ namespace TRAP
 		template<typename T>
 		void RemoveComponent()
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
 

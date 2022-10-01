@@ -11,7 +11,7 @@
 TRAP::Graphics::API::VulkanFence::VulkanFence()
 	: m_fence(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanFence::VulkanFence()
 
 TRAP::Graphics::API::VulkanFence::~VulkanFence()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_fence);
 
@@ -43,7 +43,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_fence;
 }
@@ -52,7 +52,7 @@ VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const
 
 TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(!m_submitted)
 		return RendererAPI::FenceStatus::NotSubmitted;
@@ -71,7 +71,7 @@ TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetSt
 
 void TRAP::Graphics::API::VulkanFence::Wait()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(m_submitted)
 	{

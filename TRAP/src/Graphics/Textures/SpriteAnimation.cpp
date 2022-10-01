@@ -3,7 +3,7 @@
 
 TRAP::Ref<TRAP::Graphics::SpriteAnimation> TRAP::Graphics::SpriteAnimation::Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(speed >= 0.0f, "Speed must be positive!");
 	TRAP_ASSERT(!sprites.empty(), "Missing sprites!");
@@ -22,14 +22,14 @@ TRAP::Ref<TRAP::Graphics::SpriteAnimation> TRAP::Graphics::SpriteAnimation::Crea
 TRAP::Graphics::SpriteAnimation::SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed)
 	: m_name(std::move(name)), m_sprites(std::move(sprites)), m_speed(speed), m_currentTime(0), m_currentSpriteIndex(0), m_stopped(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if (m_stopped)
 		return;
@@ -47,7 +47,7 @@ void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime)
 
 const std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteAnimation::GetAllSprites() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_sprites;
 }
@@ -56,7 +56,7 @@ const std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::Spri
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteAnimation::GetCurrentSprite()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_sprites[m_currentSpriteIndex];
 }
@@ -65,7 +65,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteAnimation::GetCurr
 
 void TRAP::Graphics::SpriteAnimation::SetSpeed(const float speed)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_speed = speed;
 }
@@ -74,7 +74,7 @@ void TRAP::Graphics::SpriteAnimation::SetSpeed(const float speed)
 
 float TRAP::Graphics::SpriteAnimation::GetSpeed() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_speed;
 }
@@ -83,7 +83,7 @@ float TRAP::Graphics::SpriteAnimation::GetSpeed() const
 
 void TRAP::Graphics::SpriteAnimation::Play()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_stopped = false;
 }
@@ -92,7 +92,7 @@ void TRAP::Graphics::SpriteAnimation::Play()
 
 void TRAP::Graphics::SpriteAnimation::Pause()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_stopped = true;
 }
@@ -101,7 +101,7 @@ void TRAP::Graphics::SpriteAnimation::Pause()
 
 void TRAP::Graphics::SpriteAnimation::Stop()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_stopped = true;
 	m_currentSpriteIndex = 0;

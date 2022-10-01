@@ -9,7 +9,7 @@
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	m_filepath = std::move(filepath);
 
@@ -403,7 +403,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::BMPImage::GetPixelData() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	return m_data.data();
 }
@@ -412,7 +412,7 @@ const void* TRAP::INTERNAL::BMPImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	return m_data.size();
 }
@@ -422,7 +422,7 @@ uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields,
 	                                             std::array<uint32_t, 4>& masks) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	BitField* const bf = bitFields.data();
 
@@ -459,7 +459,7 @@ bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFie
 
 bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	uint32_t bit = 0;
 	for (; bit < 32 && !(mask & (static_cast<uint32_t>(1) << bit)); bit++);
@@ -483,7 +483,7 @@ bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mas
 
 uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSpan)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	uint32_t output = 0;
 
@@ -506,7 +506,7 @@ uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSp
 
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	return x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1);
 }
@@ -515,7 +515,7 @@ uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bit
 
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	return x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1);
 }
@@ -525,7 +525,7 @@ uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bit
 void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageData,
 	                                      const std::vector<uint8_t>* const colorTable)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	int32_t x = 0, y = 0;
 	uint8_t t = 0, r = 0;

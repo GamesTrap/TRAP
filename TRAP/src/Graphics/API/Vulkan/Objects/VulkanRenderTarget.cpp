@@ -19,7 +19,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	  m_used(),
 	  m_ID(++s_RenderTargetIDs)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_width = desc.Width;
 	m_height = desc.Height;
@@ -165,7 +165,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_texture);
 	TRAP_ASSERT(m_vkDescriptor);
@@ -206,7 +206,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkDescriptor;
 }
@@ -215,7 +215,7 @@ VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
 
 const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkSliceDescriptors;
 }
@@ -224,7 +224,7 @@ const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkIm
 
 uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_ID;
 }
@@ -233,7 +233,7 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 
 void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_texture->SetTextureName(name);
 }

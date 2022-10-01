@@ -9,14 +9,14 @@
 TRAP::Utils::Config::Config()
 	: m_hasChanged(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	m_data.clear();
 
@@ -51,7 +51,7 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	if(!m_hasChanged)
 		return true;
@@ -140,7 +140,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::HasChanged() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	return m_hasChanged;
 }
@@ -149,7 +149,7 @@ bool TRAP::Utils::Config::HasChanged() const
 
 void TRAP::Utils::Config::Print() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	for (const auto& [key, value] : m_data)
 		TP_TRACE(Log::ConfigPrefix, key, " = ", value);
@@ -164,7 +164,7 @@ void TRAP::Utils::Config::Print() const
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
 std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view line) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Violet);
 
 	if (!line.empty() && line[0] != '#')
 	{

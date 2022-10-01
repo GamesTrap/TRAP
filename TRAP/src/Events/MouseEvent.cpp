@@ -3,7 +3,7 @@
 
 std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseMoveEvent: " + std::to_string(m_mouseX) + ", " + std::to_string(m_mouseY);
 }
@@ -12,7 +12,7 @@ std::string TRAP::Events::MouseMoveEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -21,7 +21,7 @@ TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 
 std::string TRAP::Events::MouseMoveEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseMove";
 }
@@ -30,7 +30,7 @@ std::string TRAP::Events::MouseMoveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
@@ -41,7 +41,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() con
 
 std::string TRAP::Events::MouseScrollEvent::ToString() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseScrollEvent: " + std::to_string(GetXOffset()) + ", " + std::to_string(GetYOffset());
 }
@@ -50,7 +50,7 @@ std::string TRAP::Events::MouseScrollEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -59,7 +59,7 @@ TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 
 std::string TRAP::Events::MouseScrollEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseScroll";
 }
@@ -68,7 +68,7 @@ std::string TRAP::Events::MouseScrollEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
@@ -79,7 +79,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() c
 
 TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::Mouse | EventCategory::Input | EventCategory::MouseButton;
 }
@@ -88,7 +88,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	switch(button)
 	{
@@ -112,7 +112,7 @@ std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::Mou
 
 std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseButtonPressEvent: " + MouseButtonToString(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
@@ -122,7 +122,7 @@ std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -131,7 +131,7 @@ TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() cons
 
 std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseButtonPress";
 }
@@ -142,7 +142,7 @@ std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 
 std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseButtonReleaseEvent: " + MouseButtonToString(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
@@ -152,7 +152,7 @@ std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -161,7 +161,7 @@ TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() co
 
 std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseButtonRelease";
 }
@@ -172,7 +172,7 @@ std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 
 TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -181,7 +181,7 @@ TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 
 std::string TRAP::Events::MouseEnterEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseEnter";
 }
@@ -190,7 +190,7 @@ std::string TRAP::Events::MouseEnterEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
@@ -201,7 +201,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() co
 
 TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -210,7 +210,7 @@ TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 
 std::string TRAP::Events::MouseLeaveEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "MouseLeave";
 }
@@ -219,7 +219,7 @@ std::string TRAP::Events::MouseLeaveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::Mouse | EventCategory::Input;
 }

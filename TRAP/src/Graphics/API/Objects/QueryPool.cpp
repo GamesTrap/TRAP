@@ -5,7 +5,7 @@
 
 TRAP::Graphics::QueryPool::QueryPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueryPoolPrefix, "Creating QueryPool");
@@ -16,7 +16,7 @@ TRAP::Graphics::QueryPool::QueryPool()
 
 TRAP::Graphics::QueryPool::~QueryPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
@@ -27,7 +27,7 @@ TRAP::Graphics::QueryPool::~QueryPool()
 
 TRAP::Ref<TRAP::Graphics::QueryPool> TRAP::Graphics::QueryPool::Create(const RendererAPI::QueryPoolDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

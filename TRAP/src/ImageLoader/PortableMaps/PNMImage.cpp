@@ -8,7 +8,7 @@
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	m_filepath = std::move(filepath);
 
@@ -149,7 +149,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -161,7 +161,7 @@ const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);

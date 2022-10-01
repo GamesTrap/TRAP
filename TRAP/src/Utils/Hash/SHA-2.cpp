@@ -157,7 +157,7 @@ constexpr uint64_t Sigma1(const uint64_t x)
 
 void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t, 8>& hash)
 {
-    ZoneScoped;
+    ZoneScopedC(tracy::Color::Violet);
 
 	for(uint64_t blk = 0; blk < numBlks; blk++)
 	{
@@ -213,7 +213,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint32_t
 
 void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t, 8>& hash)
 {
-    ZoneScoped;
+    ZoneScopedC(tracy::Color::Violet);
 
 	for(uint64_t blk = 0; blk < numBlks; blk++)
 	{
@@ -268,7 +268,7 @@ void Transform(const void* const mp, const uint64_t numBlks, std::array<uint64_t
 
 std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, uint64_t length)
 {
-    ZoneScoped;
+    ZoneScopedC(tracy::Color::Violet);
 
 	std::array<uint32_t, 8> hash =
 	{
@@ -324,7 +324,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const void* const data, uint
 
 std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
 {
-    ZoneScoped;
+    ZoneScopedC(tracy::Color::Violet);
 
 	return SHA2_256(str.data(), str.length());
 }
@@ -333,7 +333,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA2_256(const std::string_view str)
 
 std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, uint64_t length)
 {
-    ZoneScoped;
+    ZoneScopedC(tracy::Color::Violet);
 
 	std::size_t pos = 0;
 	uint64_t total = 0;
@@ -389,7 +389,7 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const void* const data, uint
 
 std::array<uint8_t, 64> TRAP::Utils::Hash::SHA2_512(const std::string_view str)
 {
-    ZoneScoped;
+    ZoneScopedC(tracy::Color::Violet);
 
 	return SHA2_512(str.data(), str.length());
 }

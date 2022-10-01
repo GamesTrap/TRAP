@@ -10,7 +10,7 @@
 TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc)
 	: m_cache(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device);
 
@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 
 TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_cache);
 
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t* const size, void* const data) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device);
 
@@ -54,7 +54,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t*
 
 void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path& path)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	std::vector<uint8_t> data{};
 	std::size_t dataSize = 0;
@@ -74,7 +74,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path&
 
 VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_cache;
 }

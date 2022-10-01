@@ -5,7 +5,7 @@
 
 TRAP::Graphics::CommandSignature::CommandSignature()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Creating CommandSignature");
@@ -16,7 +16,7 @@ TRAP::Graphics::CommandSignature::CommandSignature()
 
 TRAP::Graphics::CommandSignature::~CommandSignature()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
@@ -27,7 +27,7 @@ TRAP::Graphics::CommandSignature::~CommandSignature()
 
 TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const RendererAPI::CommandSignatureDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

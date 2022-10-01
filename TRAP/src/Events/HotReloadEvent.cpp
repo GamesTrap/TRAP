@@ -7,14 +7,14 @@
 TRAP::Events::TextureReloadEvent::TextureReloadEvent(TRAP::Ref<TRAP::Graphics::Texture> texture)
 	: m_texture(texture)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Events::TextureReloadEvent::GetTexture() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return m_texture;
 }
@@ -23,7 +23,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Events::TextureReloadEvent::GetTexture(
 
 std::string TRAP::Events::TextureReloadEvent::ToString() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
     return "TextureReloadEvent: " + m_texture->GetName();
 }
@@ -32,7 +32,7 @@ std::string TRAP::Events::TextureReloadEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -41,7 +41,7 @@ TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetEventType() const
 
 std::string TRAP::Events::TextureReloadEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "TextureReload";
 }
@@ -50,7 +50,7 @@ std::string TRAP::Events::TextureReloadEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::TextureReloadEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::HotReload;
 }
@@ -62,14 +62,14 @@ TRAP::Events::EventCategory TRAP::Events::TextureReloadEvent::GetCategoryFlags()
 TRAP::Events::ShaderReloadEvent::ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Shader> shader)
     : m_shader(shader)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Events::ShaderReloadEvent::GetShader() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
     return m_shader;
 }
@@ -78,7 +78,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Events::ShaderReloadEvent::GetShader() c
 
 std::string TRAP::Events::ShaderReloadEvent::ToString() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
     return "ShaderReloadEvent: " + m_shader->GetName();
 }
@@ -87,7 +87,7 @@ std::string TRAP::Events::ShaderReloadEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetEventType() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return GetStaticType();
 }
@@ -96,7 +96,7 @@ TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetEventType() const
 
 std::string TRAP::Events::ShaderReloadEvent::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return "ShaderReload";
 }
@@ -105,7 +105,7 @@ std::string TRAP::Events::ShaderReloadEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::ShaderReloadEvent::GetCategoryFlags() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Purple);
 
 	return EventCategory::HotReload;
 }

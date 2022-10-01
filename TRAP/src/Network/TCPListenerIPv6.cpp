@@ -39,14 +39,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
 	: Socket(Type::TCP)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -71,7 +71,7 @@ uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Close the socket if it is already bound
 	Close();
@@ -107,7 +107,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint1
 
 void TRAP::Network::TCPListenerIPv6::Close()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Simply close the socket
 	Socket::Close();
@@ -117,7 +117,7 @@ void TRAP::Network::TCPListenerIPv6::Close()
 
 TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())

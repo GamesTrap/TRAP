@@ -4,7 +4,7 @@
 TRAP::Graphics::CommandBuffer::CommandBuffer()
 	: m_queue(nullptr)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandBufferPrefix, "Creating CommandBuffer");
@@ -15,7 +15,7 @@ TRAP::Graphics::CommandBuffer::CommandBuffer()
 
 TRAP::Graphics::CommandBuffer::~CommandBuffer()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandBufferPrefix, "Destroying CommandBuffer");
@@ -26,7 +26,7 @@ TRAP::Graphics::CommandBuffer::~CommandBuffer()
 
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::CommandBuffer::GetQueue() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_queue;
 }

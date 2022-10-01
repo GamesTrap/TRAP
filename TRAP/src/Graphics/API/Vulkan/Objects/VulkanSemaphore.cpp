@@ -10,7 +10,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 	: m_semaphore(VK_NULL_HANDLE),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 
 TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_semaphore);
 
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 
 VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_semaphore;
 }

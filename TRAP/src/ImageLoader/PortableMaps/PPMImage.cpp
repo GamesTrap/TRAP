@@ -8,7 +8,7 @@
 
 TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::RGB;
@@ -108,7 +108,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -120,7 +120,7 @@ const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
@@ -132,7 +132,7 @@ uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 
 void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesystem::path& filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//NOTE Only supports 24/32BPP RGB(A) Input
 

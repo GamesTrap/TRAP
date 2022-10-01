@@ -6,56 +6,56 @@
 TRAP::Layer::Layer(std::string debugName)
 	: m_DebugName(std::move(debugName))
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnAttach()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnDetach()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnUpdate(const Utils::TimeStep& /*deltaTime*/)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnTick(const Utils::TimeStep& /*deltaTime*/)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnImGuiRender()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnEvent(Events::Event& /*event*/)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Layer::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
 	return m_DebugName;
 }

@@ -40,7 +40,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	sockaddr_in addr{};
 
@@ -62,7 +62,7 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
                                                                 uint16_t port)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	sockaddr_in6 addr{};
 	std::copy(address.begin(), address.end(), addr.sin6_addr.s6_addr);
@@ -80,7 +80,7 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 
 TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	return -1;
 }
@@ -89,7 +89,7 @@ TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	::close(sock);
 }
@@ -98,7 +98,7 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock
 
 void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	const int32_t status = fcntl(sock, F_GETFL);
 	if (block)
@@ -117,7 +117,7 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//The followings are sometimes equal to EWOULDBLOCK,
 	//so we have to make a special case for them in order

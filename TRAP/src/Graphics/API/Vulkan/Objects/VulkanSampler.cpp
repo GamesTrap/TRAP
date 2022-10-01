@@ -13,7 +13,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 	  m_vkSamplerYcbcrConversion(),
 	  m_vkSamplerYcbcrConversionInfo()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -105,7 +105,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_vkSampler);
 
@@ -123,7 +123,7 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkSampler;
 }

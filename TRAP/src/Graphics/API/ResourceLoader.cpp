@@ -30,7 +30,7 @@ static constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip)
 
 void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* const loader)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(loader);
 
@@ -179,7 +179,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return TRAP::Math::Max(static_cast<uint64_t>(1), RendererAPI::GPUSettings.UploadBufferTextureRowAlignment);
 }
@@ -188,7 +188,7 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureRowAlignment()
 
 uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetTextureSubresourceAlignment(const TRAP::Graphics::API::ImageFormat fmt)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const uint64_t blockSize = Math::Max(static_cast<uint64_t>(1), static_cast<uint64_t>(TRAP::Graphics::API::ImageFormatBitSizeOfBlock(fmt) >> 3));
 	const uint64_t alignment = ((RendererAPI::GPUSettings.UploadBufferTextureAlignment + blockSize - 1) /
@@ -209,7 +209,7 @@ uint64_t TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceSize(const TRAP::Gra
 																 const uint32_t baseArrayLayer,
 																 const uint32_t arrayLayers)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	uint64_t requiredSize = 0;
 
@@ -252,7 +252,7 @@ bool TRAP::Graphics::API::ResourceLoader::UtilGetSurfaceInfo(const uint32_t widt
 															 uint64_t* const outNumBytes, uint64_t* const outRowBytes,
 															 uint64_t* const outNumRows)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	uint64_t numBytes = 0;
 	uint64_t rowBytes = 0;
@@ -331,7 +331,7 @@ TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceL
 	  m_currentTokenState(),
       m_nextSet()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	SetupCopyEngine();
 
@@ -343,7 +343,7 @@ TRAP::Graphics::API::ResourceLoader::ResourceLoader(const RendererAPI::ResourceL
 
 TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_run = false;
 
@@ -355,7 +355,7 @@ TRAP::Graphics::API::ResourceLoader::~ResourceLoader()
 
 void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const uint64_t stagingBufferSize = m_copyEngine.BufferSize;
 	const bool update = desc.Data || desc.ForceReset;
@@ -434,7 +434,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 
 void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDesc& textureDesc, SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(textureDesc.Texture);
 
@@ -467,7 +467,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 
 void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::BufferUpdateDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const TRAP::Ref<Buffer>& buffer = desc.Buffer;
 	TRAP_ASSERT(buffer);
@@ -502,7 +502,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 
 void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const TRAP::Graphics::Texture* texture = desc.Texture;
 	const TRAP::Graphics::API::ImageFormat fmt = texture->GetImageFormat();
@@ -530,7 +530,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 
 void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if (desc.Internal.MappedRange.Flags & static_cast<uint32_t>(MappedRangeFlag::UnMapBuffer))
 		desc.Buffer->UnMapBuffer();
@@ -548,7 +548,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::BufferU
 
 void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TextureUpdateDescInternal internalDesc = {};
 	internalDesc.Texture = desc.Texture;
@@ -568,7 +568,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::Texture
 
 void TRAP::Graphics::API::ResourceLoader::CopyResource(RendererAPI::TextureCopyDesc &textureDesc, SyncToken *token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	QueueTextureCopy(textureDesc, token);
 }
@@ -577,7 +577,7 @@ void TRAP::Graphics::API::ResourceLoader::CopyResource(RendererAPI::TextureCopyD
 
 bool TRAP::Graphics::API::ResourceLoader::AllResourceLoadsCompleted() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const SyncToken token = m_tokenCounter;
 	return token <= m_tokenCompleted;
@@ -587,7 +587,7 @@ bool TRAP::Graphics::API::ResourceLoader::AllResourceLoadsCompleted() const
 
 void TRAP::Graphics::API::ResourceLoader::WaitForAllResourceLoads()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const SyncToken token = m_tokenCounter;
 	WaitForToken(&token);
@@ -597,7 +597,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForAllResourceLoads()
 
 TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastTokenCompleted() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_tokenCompleted;
 }
@@ -606,7 +606,7 @@ TRAP::Graphics::API::SyncToken TRAP::Graphics::API::ResourceLoader::GetLastToken
 
 bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* const token) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return *token <= m_tokenCompleted;
 }
@@ -615,7 +615,7 @@ bool TRAP::Graphics::API::ResourceLoader::IsTokenCompleted(const SyncToken* cons
 
 void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	std::unique_lock lock(m_tokenMutex);
 	LockMark(m_tokenMutex);
@@ -629,7 +629,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitForToken(const SyncToken* const to
 TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateUploadMemory(const uint64_t memoryRequirement,
                                                                                                          const uint32_t alignment)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::BufferDesc desc{};
 	desc.Size = memoryRequirement;
@@ -648,7 +648,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
                                                              const RendererAPI::ResourceState state,
 															 SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	SyncToken t = 0;
 	{
@@ -674,7 +674,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferBarrier(const TRAP::Ref<Buf
 void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc,
                                                             SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	SyncToken t{};
 	{
@@ -701,7 +701,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueBufferUpdate(const RendererAPI::B
 void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc,
 											               SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	SyncToken t{};
 	{
@@ -725,7 +725,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureLoad(const RendererAPI::Te
 void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate,
 															 SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(textureUpdate.Range.Buffer);
 
@@ -753,7 +753,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 
 void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::TextureCopyDesc& desc, SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	SyncToken t{};
 	{
@@ -777,7 +777,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureCopy(const RendererAPI::Te
 void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Texture* const texture,
                                                               const RendererAPI::ResourceState state, SyncToken* const token)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	SyncToken t{};
 	{
@@ -804,7 +804,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureBarrier(TRAP::Graphics::Te
 TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoader::AllocateStagingMemory(const uint64_t memoryRequirement,
                                                                                                           const uint32_t alignment)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	uint64_t offset = m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace;
 	if(alignment != 0)
@@ -839,7 +839,7 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 
 void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for(UpdateRequest& request : m_requestQueue)
 	{
@@ -852,7 +852,7 @@ void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory()
 
 void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//TODO Use Transfer Queue if texture already has mip maps inside it (they don't need to be generated)
 	//     Graphics Queue is required in order to use vkCmdBlitImage
@@ -890,7 +890,7 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 
 void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for(uint32_t i = 0; i < m_copyEngine.BufferCount; ++i)
 	{
@@ -918,7 +918,7 @@ void TRAP::Graphics::API::ResourceLoader::CleanupCopyEngine()
 
 void TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t activeSet) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(!m_copyEngine.IsRecording);
 	const CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
@@ -931,7 +931,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t ac
 
 void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const std::size_t activeSet)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(!m_copyEngine.IsRecording);
 	m_copyEngine.ResourceSets[activeSet].AllocatedSpace = 0;
@@ -944,7 +944,7 @@ void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const std::size_t a
 
 TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(const std::size_t activeSet)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
 	if(!m_copyEngine.IsRecording)
@@ -961,7 +961,7 @@ TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::ResourceLoader::AcquireCmd(c
 
 void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t activeSet)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(!m_copyEngine.IsRecording)
 		return;
@@ -989,7 +989,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerFlush(const std::size_t active
 
 bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return !m_requestQueue.empty();
 }
@@ -999,7 +999,7 @@ bool TRAP::Graphics::API::ResourceLoader::AreTasksAvailable() const
 void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::Texture* const texture,
                                                                 CommandBuffer* const cmd)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//Check if image format supports linear blitting
 	const TRAP::Graphics::API::VulkanRenderer* const vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>
@@ -1070,7 +1070,7 @@ void TRAP::Graphics::API::ResourceLoader::VulkanGenerateMipMaps(TRAP::Graphics::
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateBuffer(const std::size_t activeSet,
 																											const RendererAPI::BufferUpdateDesc& bufferUpdateDesc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const TRAP::Ref<Buffer>& buffer = bufferUpdateDesc.Buffer;
 	TRAP_ASSERT(buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly ||
@@ -1090,7 +1090,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 																											 const TextureUpdateDescInternal& textureUpdateDesc,
 																											 const std::array<const TRAP::Image*, 6>* const images)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
@@ -1215,7 +1215,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::LoadTexture(const std::size_t activeSet,
 																										   TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const TRAP::Graphics::RendererAPI::TextureLoadDesc& textureLoadDesc = std::get<TRAP::Graphics::RendererAPI::TextureLoadDesc>
 		(
@@ -1529,7 +1529,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::CopyTexture(std::size_t activeSet,
             																					           RendererAPI::TextureCopyDesc& textureCopy)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP::Ref<Texture> texture = textureCopy.Texture;
 	const ImageFormat format = texture->GetImageFormat();

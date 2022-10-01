@@ -18,7 +18,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_presentQueue(), m_swapChain(), m_presentQueueFamilyIndex(), m_imageCount(), m_enableVSync()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_swapChain);
 
@@ -49,7 +49,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 
 void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	//////////////////
 	//Create Surface//
@@ -318,7 +318,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_device->WaitIdle();
 
@@ -334,7 +334,7 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
                                                                 const TRAP::Ref<Fence>& fence) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device != VK_NULL_HANDLE);
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
@@ -384,7 +384,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 
 void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::SwapChainDesc desc = m_desc;
 	desc.EnableVSync = !desc.EnableVSync;
@@ -399,7 +399,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::SampleCount sampleCount)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	RendererAPI::SwapChainDesc desc = m_desc;
 	desc.SampleCount = sampleCount;
@@ -412,7 +412,7 @@ void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::Sam
 
 VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_swapChain;
 }
@@ -421,7 +421,7 @@ VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 
 VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_presentQueue;
 }

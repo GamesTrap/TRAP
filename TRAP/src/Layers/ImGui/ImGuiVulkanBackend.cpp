@@ -314,7 +314,7 @@ static uint32_t __glsl_shader_frag_spv[] =
 // FIXME: multi-context support is not tested and probably dysfunctional in this backend.
 static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     return ImGui::GetCurrentContext() ? static_cast<ImGui_ImplVulkan_Data*>(ImGui::GetIO().BackendRendererUserData) : nullptr;
 }
@@ -323,7 +323,7 @@ static ImGui_ImplVulkan_Data* ImGui_ImplVulkan_GetBackendData()
 
 static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, uint32_t type_bits)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -343,7 +343,7 @@ static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, ui
 
 static void check_vk_result(VkResult err)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (!bd)
@@ -358,7 +358,7 @@ static void check_vk_result(VkResult err)
 static void CreateOrResizeBuffer(VkBuffer& buffer, VkDeviceMemory& buffer_memory, VkDeviceSize& p_buffer_size,
                                  size_t new_size, VkBufferUsageFlagBits usage)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -399,7 +399,7 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkPipeline 
                                               VkCommandBuffer command_buffer,
                                               ImGui_ImplVulkanH_FrameRenderBuffers* rb, int fb_width, int fb_height)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
 
@@ -444,7 +444,7 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkPipeline 
 // Render function
 void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     const int fb_width = static_cast<int32_t>(draw_data->DisplaySize.x * draw_data->FramebufferScale.x);
@@ -592,7 +592,7 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
 
 bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
@@ -736,7 +736,7 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
 void ImGui_ImplVulkan_DestroyFontsTexture()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -753,7 +753,7 @@ void ImGui_ImplVulkan_DestroyFontsTexture()
 
 void ImGui_ImplVulkan_UploadFontsTexture()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     //Destroy old font
     ImGui_ImplVulkan_DestroyFontsTexture();
@@ -780,7 +780,7 @@ void ImGui_ImplVulkan_UploadFontsTexture()
 
 static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     // Create the shader modules
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
@@ -808,7 +808,7 @@ static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAlloca
 
 static void ImGui_ImplVulkan_CreateFontSampler(VkDevice device, const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (bd->FontSampler)
@@ -834,7 +834,7 @@ static void ImGui_ImplVulkan_CreateFontSampler(VkDevice device, const VkAllocati
 
 static void ImGui_ImplVulkan_CreateDescriptorSetLayout(VkDevice device, const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (bd->DescriptorSetLayout)
@@ -859,7 +859,7 @@ static void ImGui_ImplVulkan_CreateDescriptorSetLayout(VkDevice device, const Vk
 
 static void ImGui_ImplVulkan_CreatePipelineLayout(VkDevice device, const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     if (bd->PipelineLayout)
@@ -889,7 +889,7 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
                                             VkSampleCountFlagBits MSAASamples, VkPipeline* pipeline,
                                             uint32_t subpass)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_CreateShaderModules(device, allocator);
@@ -999,7 +999,7 @@ static void ImGui_ImplVulkan_CreatePipeline(VkDevice device, const VkAllocationC
 
 bool ImGui_ImplVulkan_CreateDeviceObjects()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -1076,7 +1076,7 @@ bool ImGui_ImplVulkan_CreateDeviceObjects()
 
 void ImGui_ImplVulkan_DestroyFontUploadObjects()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -1096,7 +1096,7 @@ void ImGui_ImplVulkan_DestroyFontUploadObjects()
 
 void ImGui_ImplVulkan_DestroyDeviceObjects()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -1118,7 +1118,7 @@ void ImGui_ImplVulkan_DestroyDeviceObjects()
 
 bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_pass)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGuiIO& io = ImGui::GetIO();
     IM_ASSERT(io.BackendRendererUserData == nullptr && "Already initialized a renderer backend!");
@@ -1162,7 +1162,7 @@ bool ImGui_ImplVulkan_Init(ImGui_ImplVulkan_InitInfo* info, VkRenderPass render_
 
 void ImGui_ImplVulkan_Shutdown()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(bd != nullptr && "No renderer backend to shutdown, or already shutdown?");
@@ -1196,7 +1196,7 @@ void ImGui_ImplVulkan_Shutdown()
 
 void ImGui_ImplVulkan_NewFrame()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(bd != nullptr && "Did you call ImGui_ImplVulkan_Init()?");
@@ -1207,7 +1207,7 @@ void ImGui_ImplVulkan_NewFrame()
 
 void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     IM_ASSERT(min_image_count >= 2);
@@ -1244,7 +1244,7 @@ VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physic
                                                          int request_formats_count,
                                                          VkColorSpaceKHR request_color_space)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     IM_ASSERT(request_formats != nullptr);
     IM_ASSERT(request_formats_count > 0);
@@ -1298,7 +1298,7 @@ VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_d
                                                      const VkPresentModeKHR* request_modes,
                                                      int request_modes_count)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     IM_ASSERT(request_modes != nullptr);
     IM_ASSERT(request_modes_count > 0);
@@ -1328,7 +1328,7 @@ void ImGui_ImplVulkanH_CreateWindowCommandBuffers(VkPhysicalDevice physical_devi
                                                   ImGui_ImplVulkanH_Window* wd, uint32_t queue_family,
                                                   const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     IM_ASSERT(physical_device != VK_NULL_HANDLE && device != VK_NULL_HANDLE);
     (void)physical_device;
@@ -1379,7 +1379,7 @@ void ImGui_ImplVulkanH_CreateWindowCommandBuffers(VkPhysicalDevice physical_devi
 
 int ImGui_ImplVulkanH_GetMinImageCountFromPresentMode(VkPresentModeKHR present_mode)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     if (present_mode == VK_PRESENT_MODE_MAILBOX_KHR)
         return 3;
@@ -1398,7 +1398,7 @@ void ImGui_ImplVulkanH_CreateWindowSwapChain(VkPhysicalDevice physical_device, V
                                              ImGui_ImplVulkanH_Window* wd, const VkAllocationCallbacks* allocator,
                                              int w, int h, uint32_t min_image_count)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     VkResult err;
     const VkSwapchainKHR old_swapchain = wd->Swapchain;
@@ -1575,7 +1575,7 @@ void ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevic
                                             const VkAllocationCallbacks* allocator, int width, int height,
                                             uint32_t min_image_count)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     (void)instance;
     ImGui_ImplVulkanH_CreateWindowSwapChain(physical_device, device, wd, allocator, width, height, min_image_count);
@@ -1588,7 +1588,7 @@ void ImGui_ImplVulkanH_CreateOrResizeWindow(VkInstance instance, VkPhysicalDevic
 void ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui_ImplVulkanH_Window* wd,
                                      const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     vkDeviceWaitIdle(device); // FIXME: We could wait on the Queue if we had the queue in wd-> (otherwise VulkanH functions can't use globals)
     //vkQueueWaitIdle(bd->Queue);
@@ -1615,7 +1615,7 @@ void ImGui_ImplVulkanH_DestroyWindow(VkInstance instance, VkDevice device, ImGui
 void ImGui_ImplVulkanH_DestroyFrame(VkDevice device, ImGui_ImplVulkanH_Frame* fd,
                                     const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     vkDestroyFence(device, fd->Fence, allocator);
     vkFreeCommandBuffers(device, fd->CommandPool, 1, &fd->CommandBuffer);
@@ -1633,7 +1633,7 @@ void ImGui_ImplVulkanH_DestroyFrame(VkDevice device, ImGui_ImplVulkanH_Frame* fd
 void ImGui_ImplVulkanH_DestroyFrameSemaphores(VkDevice device, ImGui_ImplVulkanH_FrameSemaphores* fsd,
                                               const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     vkDestroySemaphore(device, fsd->ImageAcquiredSemaphore, allocator);
     vkDestroySemaphore(device, fsd->RenderCompleteSemaphore, allocator);
@@ -1645,7 +1645,7 @@ void ImGui_ImplVulkanH_DestroyFrameSemaphores(VkDevice device, ImGui_ImplVulkanH
 void ImGui_ImplVulkanH_DestroyFrameRenderBuffers(VkDevice device, ImGui_ImplVulkanH_FrameRenderBuffers* buffers,
                                                  const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     if (buffers->VertexBuffer) { vkDestroyBuffer(device, buffers->VertexBuffer, allocator); buffers->VertexBuffer = VK_NULL_HANDLE; }
     if (buffers->VertexBufferMemory) { vkFreeMemory(device, buffers->VertexBufferMemory, allocator); buffers->VertexBufferMemory = VK_NULL_HANDLE; }
@@ -1660,7 +1660,7 @@ void ImGui_ImplVulkanH_DestroyFrameRenderBuffers(VkDevice device, ImGui_ImplVulk
 void ImGui_ImplVulkanH_DestroyWindowRenderBuffers(VkDevice device, ImGui_ImplVulkanH_WindowRenderBuffers* buffers,
                                                   const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     for (uint32_t n = 0; n < buffers->Count; n++)
         ImGui_ImplVulkanH_DestroyFrameRenderBuffers(device, &buffers->FrameRenderBuffers[n], allocator);
@@ -1689,7 +1689,7 @@ const std::vector<VkDescriptorPoolSize> g_DescriptorPoolSizes =
 
 void ImGui_ImplVulkan_CreateNewDescriptorPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -1719,7 +1719,7 @@ static std::unordered_map<void*, VkDetails> s_VulkanTextureCache;
 
 ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     if(s_VulkanTextureCache.find((void*)imageView) == s_VulkanTextureCache.end())
     {
@@ -1765,7 +1765,7 @@ ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView imageView
 ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler,
                                                VkImageView imageView, VkImageLayout imageLayout)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     const ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
@@ -1792,7 +1792,7 @@ ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, Vk
 
 void ImGui_ImplVulkan_ClearCache()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     s_VulkanTextureCache.clear();
 }
@@ -1801,7 +1801,7 @@ void ImGui_ImplVulkan_ClearCache()
 
 void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
 	const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
@@ -1828,7 +1828,7 @@ void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 
 void ImGui_ImplVulkanH_DestroyAllViewportsRenderBuffers(VkDevice device, const VkAllocationCallbacks* allocator)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
     for (int n = 0; n < platform_io.Viewports.Size; n++)
@@ -1846,7 +1846,7 @@ void ImGui_ImplVulkanH_DestroyAllViewportsRenderBuffers(VkDevice device, const V
 
 static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = IM_NEW(ImGui_ImplVulkan_ViewportData)();
@@ -1888,7 +1888,7 @@ static void ImGui_ImplVulkan_CreateWindow(ImGuiViewport* viewport)
 
 static void ImGui_ImplVulkan_DestroyWindow(ImGuiViewport* viewport)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     // The main viewport (owned by the application) will always have RendererUserData == nullptr since we didn't create the data for it.
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
@@ -1907,7 +1907,7 @@ static void ImGui_ImplVulkan_DestroyWindow(ImGuiViewport* viewport)
 
 static void ImGui_ImplVulkan_SetWindowSize(ImGuiViewport* viewport, ImVec2 size)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
@@ -1922,7 +1922,7 @@ static void ImGui_ImplVulkan_SetWindowSize(ImGuiViewport* viewport, ImVec2 size)
 
 static void ImGui_ImplVulkan_RenderWindow(ImGuiViewport* viewport, void*)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
@@ -2000,7 +2000,7 @@ static void ImGui_ImplVulkan_RenderWindow(ImGuiViewport* viewport, void*)
 
 static void ImGui_ImplVulkan_SwapBuffers(ImGuiViewport* viewport, void*)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     const ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_ViewportData* vd = static_cast<ImGui_ImplVulkan_ViewportData*>(viewport->RendererUserData);
@@ -2032,7 +2032,7 @@ static void ImGui_ImplVulkan_SwapBuffers(ImGuiViewport* viewport, void*)
 
 void ImGui_ImplVulkan_InitPlatformInterface()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
     if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -2048,7 +2048,7 @@ void ImGui_ImplVulkan_InitPlatformInterface()
 
 void ImGui_ImplVulkan_ShutdownPlatformInterface()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Brown);
 
     ImGui::DestroyPlatformWindows();
 }

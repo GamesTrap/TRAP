@@ -20,7 +20,7 @@ namespace YAML
 	{
 		static Node encode(const TRAP::Math::Vec2& rhs)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			Node node;
 			node.push_back(rhs.x);
@@ -31,7 +31,7 @@ namespace YAML
 
 		static bool decode(const Node& node, TRAP::Math::Vec2& rhs)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			if (!node.IsSequence() || node.size() != 2)
 				return false;
@@ -47,7 +47,7 @@ namespace YAML
 	{
 		static Node encode(const TRAP::Math::Vec3& rhs)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			Node node;
 			node.push_back(rhs.x);
@@ -59,7 +59,7 @@ namespace YAML
 
 		static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			if (!node.IsSequence() || node.size() != 3)
 				return false;
@@ -76,7 +76,7 @@ namespace YAML
 	{
 		static Node encode(const TRAP::Math::Vec4& rhs)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			Node node;
 			node.push_back(rhs.x);
@@ -89,7 +89,7 @@ namespace YAML
 
 		static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
 		{
-			ZoneScoped;
+			ZoneScopedC(tracy::Color::Turquoise);
 
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
@@ -107,7 +107,7 @@ namespace TRAP
 {
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec2& v)
 	{
-		ZoneScoped;
+		ZoneScopedC(tracy::Color::Turquoise);
 
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
@@ -116,7 +116,7 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec3& v)
 	{
-		ZoneScoped;
+		ZoneScopedC(tracy::Color::Turquoise);
 
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
@@ -125,7 +125,7 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec4& v)
 	{
-		ZoneScoped;
+		ZoneScopedC(tracy::Color::Turquoise);
 
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
@@ -134,7 +134,7 @@ namespace TRAP
 
 	static std::string Rigidbody2DBodyTypeToString(Rigidbody2DComponent::BodyType type)
 	{
-		ZoneScoped;
+		ZoneScopedC(tracy::Color::Turquoise);
 
 		switch(type)
 		{
@@ -155,7 +155,7 @@ namespace TRAP
 
 	static Rigidbody2DComponent::BodyType Rigidbody2DBodyTypeFromString(const std::string& bodyTypeString)
 	{
-		ZoneScoped;
+		ZoneScopedC(tracy::Color::Turquoise);
 
 		if(bodyTypeString == "Static")
 			return Rigidbody2DComponent::BodyType::Static;
@@ -170,7 +170,7 @@ namespace TRAP
 
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
-		ZoneScoped;
+		ZoneScopedC(tracy::Color::Turquoise);
 
 		TRAP_ASSERT(entity.HasComponent<UIDComponent>());
 
@@ -302,14 +302,14 @@ namespace TRAP
 TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene)
 	: m_scene(std::move(scene))
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	YAML::Emitter out;
 	out << YAML::BeginMap;
@@ -334,7 +334,7 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 
 void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	TRAP_ASSERT(false, "Not implemented yet!");
 }
@@ -343,7 +343,7 @@ void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 
 bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	if (!FileSystem::FileOrFolderExists(filepath))
 	{
@@ -472,7 +472,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 bool TRAP::SceneSerializer::DeserializeRuntime(const std::filesystem::path&)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Turquoise);
 
 	TRAP_ASSERT(false, "Not implemented yet!");
 	return false;

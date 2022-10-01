@@ -21,7 +21,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture()
 	  m_vkDeviceMemory(),
 	  m_lazilyAllocated(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	PreInit();
 }
@@ -38,7 +38,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::array<s
 	  m_vkDeviceMemory(),
 	  m_lazilyAllocated(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_name = std::move(name);
 	m_filepaths = std::move(filepaths);
@@ -59,7 +59,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(std::string name, std::filesys
 	  m_vkDeviceMemory(),
 	  m_lazilyAllocated(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_name = std::move(name);
 	m_filepaths[0] = std::move(filepath);
@@ -81,7 +81,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
 	  m_vkDeviceMemory(),
 	  m_lazilyAllocated(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_textureType = type;
 
@@ -92,7 +92,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(const TextureType type)
 
 TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	Shutdown();
 }
@@ -101,7 +101,7 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 
 void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Invalid resolution");
 	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1), "Multi-Sampled texture cannot have mip maps");
@@ -432,7 +432,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkSRVDescriptor;
 }
@@ -441,7 +441,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const
 
 VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkSRVStencilDescriptor;
 }
@@ -450,7 +450,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
 
 const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkUAVDescriptors;
 }
@@ -459,7 +459,7 @@ const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImag
 
 VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkImage;
 }
@@ -468,7 +468,7 @@ VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const
 
 VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkAllocation;
 }
@@ -477,7 +477,7 @@ VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const
 
 bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_lazilyAllocated;
 }
@@ -486,7 +486,7 @@ bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const
 
 void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view name) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(!name.empty());
 
@@ -504,7 +504,7 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view n
 
 void TRAP::Graphics::API::VulkanTexture::Shutdown()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Destroying Texture");
@@ -548,7 +548,7 @@ void TRAP::Graphics::API::VulkanTexture::Shutdown()
 
 void TRAP::Graphics::API::VulkanTexture::PreInit()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	const auto *vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer *>(TRAP::Graphics::RendererAPI::GetRenderer());
 
@@ -565,7 +565,7 @@ uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
 														   const VkPhysicalDeviceMemoryProperties &memProps,
 														   const VkMemoryPropertyFlags props, VkBool32* const memTypeFound)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
 	{

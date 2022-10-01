@@ -64,7 +64,7 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
                                          const ColorFormat format, std::vector<T> pixelData)
 	: m_data(), m_data2Byte(), m_dataHDR()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	static_assert(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value ||
 	              std::is_same<T, float>::value, "Invalid type!");

@@ -39,7 +39,7 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(stageCount == 0)
 	{

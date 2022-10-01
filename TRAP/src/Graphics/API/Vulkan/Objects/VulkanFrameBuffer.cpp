@@ -14,7 +14,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	  m_arraySize(),
       m_device(std::move(device))
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -125,7 +125,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_framebuffer);
 
@@ -140,7 +140,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 
 VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_framebuffer;
 }
@@ -149,7 +149,7 @@ VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
 
 uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_width;
 }
@@ -158,7 +158,7 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
 
 uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_height;
 }
@@ -167,7 +167,7 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
 
 uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_arraySize;
 }

@@ -5,7 +5,7 @@
 
 TRAP::Graphics::Queue::Queue()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueuePrefix, "Creating Queue");
@@ -16,7 +16,7 @@ TRAP::Graphics::Queue::Queue()
 
 TRAP::Graphics::Queue::~Queue()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueuePrefix, "Destroying Queue");
@@ -27,7 +27,7 @@ TRAP::Graphics::Queue::~Queue()
 
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::Queue::Create(const RendererAPI::QueueDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

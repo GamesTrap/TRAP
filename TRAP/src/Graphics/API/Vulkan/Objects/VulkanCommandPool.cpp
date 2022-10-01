@@ -11,7 +11,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkCommandPool(VK_NULL_HANDLE)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	m_queue = desc.Queue;
 
@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	TRAP_ASSERT(m_vkCommandPool);
 
@@ -55,7 +55,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_vkCommandPool;
 }
@@ -64,7 +64,7 @@ VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
 
 TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary)).get();
 }
@@ -73,7 +73,7 @@ TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateC
 
 void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuffer* const cmdBuffer)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	for(std::size_t i = 0; i < m_commandBuffers.size(); i++)
 	{
@@ -92,7 +92,7 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuff
 
 void TRAP::Graphics::API::VulkanCommandPool::Reset() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	VkCall(vkResetCommandPool(m_device->GetVkDevice(), m_vkCommandPool, 0));
 }

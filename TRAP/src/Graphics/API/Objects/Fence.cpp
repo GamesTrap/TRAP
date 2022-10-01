@@ -5,7 +5,7 @@
 
 TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -26,7 +26,7 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 TRAP::Graphics::Fence::Fence()
 	: m_submitted(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
@@ -37,7 +37,7 @@ TRAP::Graphics::Fence::Fence()
 
 TRAP::Graphics::Fence::~Fence()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
@@ -48,7 +48,7 @@ TRAP::Graphics::Fence::~Fence()
 
 bool TRAP::Graphics::Fence::IsSubmitted() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_submitted;
 }
@@ -57,7 +57,7 @@ bool TRAP::Graphics::Fence::IsSubmitted() const
 
 void TRAP::Graphics::Fence::WaitForFences(std::vector<Fence>& fences)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	if(fences.empty())
 		return;

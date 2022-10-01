@@ -39,14 +39,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::TCPListener::TCPListener()
 	: Socket(Type::TCP)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
@@ -71,7 +71,7 @@ uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t port, const IPv4Address& address)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Close the socket if it is already bound
 	Close();
@@ -108,7 +108,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t 
 
 void TRAP::Network::TCPListener::Close()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Simply close the socket
 	Socket::Close();
@@ -118,7 +118,7 @@ void TRAP::Network::TCPListener::Close()
 
 TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& socket) const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Azure);
 
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())

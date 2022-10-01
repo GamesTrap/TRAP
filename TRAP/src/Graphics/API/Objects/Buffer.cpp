@@ -6,7 +6,7 @@
 TRAP::Graphics::Buffer::Buffer()
 	: m_CPUMappedAddress(nullptr), m_size(), m_descriptors(), m_memoryUsage()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Creating Buffer");
@@ -17,7 +17,7 @@ TRAP::Graphics::Buffer::Buffer()
 
 TRAP::Graphics::Buffer::~Buffer()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Destroying Buffer");
@@ -28,7 +28,7 @@ TRAP::Graphics::Buffer::~Buffer()
 
 TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const RendererAPI::BufferDesc& desc)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{

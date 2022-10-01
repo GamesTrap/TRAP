@@ -8,7 +8,7 @@
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
@@ -118,7 +118,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PFMImage::GetPixelData() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	return m_data.data();
 }
@@ -127,7 +127,7 @@ const void* TRAP::INTERNAL::PFMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	return m_data.size() * sizeof(float);
 }

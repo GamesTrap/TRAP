@@ -5,7 +5,7 @@
 
 TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -26,7 +26,7 @@ TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 TRAP::Graphics::Semaphore::Semaphore()
 	: m_signaled(false)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSemaphorePrefix, "Creating Semaphore");
@@ -37,7 +37,7 @@ TRAP::Graphics::Semaphore::Semaphore()
 
 TRAP::Graphics::Semaphore::~Semaphore()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
@@ -48,7 +48,7 @@ TRAP::Graphics::Semaphore::~Semaphore()
 
 bool TRAP::Graphics::Semaphore::IsSignaled() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_signaled;
 }

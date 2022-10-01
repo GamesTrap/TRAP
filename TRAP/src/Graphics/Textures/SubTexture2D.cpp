@@ -7,7 +7,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
                                                                                        const TRAP::Math::Vec2& cellSize,
                                                                                        const TRAP::Math::Vec2& spriteSize)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
@@ -34,7 +34,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
                                                                                        const TRAP::Math::Vec2& pixelSize,
                                                                                        const TRAP::Math::Vec2& spriteSize)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
@@ -59,7 +59,7 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
                                            const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max)
     : m_texture(std::move(texture)), m_name(std::move(name))
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     m_texCoords[0] = { min.x, max.y };
     m_texCoords[1] = max;
@@ -71,7 +71,7 @@ TRAP::Graphics::SubTexture2D::SubTexture2D(std::string name, Ref<TRAP::Graphics:
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::SubTexture2D::GetTexture() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     return m_texture;
 }
@@ -80,7 +80,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::SubTexture2D::GetTexture() co
 
 const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoords() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     return m_texCoords;
 }
@@ -89,7 +89,7 @@ const std::array<TRAP::Math::Vec2, 4>& TRAP::Graphics::SubTexture2D::GetTexCoord
 
 std::string TRAP::Graphics::SubTexture2D::GetName()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     return m_name;
 }
@@ -98,7 +98,7 @@ std::string TRAP::Graphics::SubTexture2D::GetName()
 
 const std::string& TRAP::Graphics::SubTexture2D::GetName() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
     return m_name;
 }

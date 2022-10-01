@@ -13,7 +13,7 @@
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	m_filepath = std::move(filepath);
 
@@ -302,7 +302,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -314,7 +314,7 @@ const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
@@ -331,7 +331,7 @@ static const std::array<std::string, 11> UnusedChunks
 bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
                                             AlreadyLoaded& alreadyLoaded, const bool needSwap)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (nextChunk.MagicNumber == "IHDR" && !alreadyLoaded.IHDR)
 	{
@@ -399,7 +399,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 
 bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	IHDRChunk ihdrChunk{};
 	//Read in IHDR Chunk
@@ -457,7 +457,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 
 bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	switch (data.ColorType)
 	{
@@ -496,7 +496,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 
 bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
@@ -520,7 +520,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 
 bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	switch (data.ColorType)
 	{
@@ -555,7 +555,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 
 bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//TODO Use this chunk!
 	switch (data.ColorType)
@@ -649,7 +649,7 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (length % 3 != 0)
 	{
@@ -711,7 +711,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 
 bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, const uint32_t length)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	std::vector<uint8_t> compressedData(length);
 	std::array<uint8_t, 4> CRC{};
@@ -743,7 +743,7 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 
 bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//Check if Width is (in)valid
 	if(!ihdrChunk.Width)
@@ -845,7 +845,7 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
 										      const int destinationLength)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	if (sourceLength < 2)
 	{
@@ -921,7 +921,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 	                                            const uint8_t filterType,
 	                                            const std::size_t length)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//For PNG Filter Method 0
 	//UnFilter a PNG Image Scanline by Scanline.
@@ -1059,7 +1059,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const
 									    const uint32_t width, const uint32_t height,
                                         const uint32_t bitsPerPixel)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//For PNG Filter Method 0
 	//This function unFilters a single image(e.g. without interlacing this is called once, with Adam7 seven times)
@@ -1092,7 +1092,7 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const
 
 uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	uint16_t pa = static_cast<uint16_t>(Math::Abs(b - c));
 	const uint16_t pb = static_cast<uint16_t>(Math::Abs(a - c));
@@ -1113,7 +1113,7 @@ uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, u
 std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
                                                      const uint32_t bitsPerPixel)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//In an IDAT chunk, each scanline is a multiple of 8 bits and in addition has one extra byte per line: the filter byte.
 	//+ 1 for the filter byte, and possibly plus padding bits per line
@@ -1128,7 +1128,7 @@ std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const
 std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
                                                  const uint32_t bitsPerPixel)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	const std::size_t n = static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
 	return ((n / 8u) * bitsPerPixel) + ((n & 7u) * bitsPerPixel + 7u) / 8u;
@@ -1140,7 +1140,7 @@ bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* const out, uint8_t*
                                                     const uint32_t height, const uint32_t bitsPerPixel,
 													const uint8_t interlaceMethod)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//out must be a buffer big enough to contain full image, and in must contain the full decompressed
 	//data from the IDAT chunks(with filter bytes and possible padding bits)
@@ -1193,7 +1193,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	                                              const uint32_t height,
 	                                              const uint32_t bitsPerPixel)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
 
@@ -1230,7 +1230,7 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_t* const in, const uint32_t width,
                                                 const uint32_t height, const uint32_t bitsPerPixel)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	//out has the following size in bits: width * height * bitsPerPixel.
 	//in is possibly bigger due to padding bits between reduced images.
@@ -1267,7 +1267,7 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 
 std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8_t>& raw)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	std::vector<uint16_t> result(raw.size() / 2, 0);
 	uint32_t resultIndex = 0;
@@ -1299,7 +1299,7 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
                                                               const uint32_t height, const Data& data)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Green);
 
 	std::vector<uint8_t> result(static_cast<std::size_t>(width) * height * 4, 0);
 	uint32_t resultIndex = 0;

@@ -5,14 +5,14 @@ TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType ty
                                                          const bool normalized)
 	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	switch (Type)
 	{
@@ -39,7 +39,7 @@ uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements)
 	: m_elements(elements)
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	CalculateOffsetsAndStride();
 }
@@ -48,7 +48,7 @@ TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_li
 
 uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_stride;
 }
@@ -57,7 +57,7 @@ uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const
 
 const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_elements;
 }
@@ -66,7 +66,7 @@ const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBu
 
 std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_elements.begin();
 }
@@ -75,7 +75,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::Verte
 
 std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_elements.end();
 }
@@ -84,7 +84,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::Verte
 
 std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_elements.begin();
 }
@@ -93,7 +93,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics:
 
 std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	return m_elements.end();
 }
@@ -102,7 +102,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics:
 
 void TRAP::Graphics::VertexBufferLayout::CalculateOffsetsAndStride()
 {
-	ZoneScoped;
+	ZoneScopedC(tracy::Color::Red);
 
 	uint32_t offset = 0;
 	m_stride = 0;
