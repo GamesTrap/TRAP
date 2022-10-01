@@ -37,6 +37,7 @@ IncludeDir["STEAMWORKSSDK"] = "%{wks.location}/Dependencies/SteamworksSDK/sdk/pu
 IncludeDir["NVIDIAREFLEX"] = "%{wks.location}/Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Vulkan/Reflex_Vulkan/inc"
 IncludeDir["NVIDIAREFLEXSTATS"] = "%{wks.location}/Dependencies/NVIDIA-Reflex/Nvidia_Reflex_SDK_1.6/1.6/Reflex_Stats"
 IncludeDir["BOX2D"] = "%{wks.location}/Dependencies/Box2D/include"
+IncludeDir["TRACY"] = "%{wks.location}/Dependencies/Tracy"
 
 include "TRAP"
 

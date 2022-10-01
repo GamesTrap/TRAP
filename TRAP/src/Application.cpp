@@ -428,8 +428,10 @@ void TRAP::Application::Run()
 	{
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
+#ifndef TRACY_ENABLE /*Disable this when profiling*/
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
+#endif
 
 		const Utils::Timer FrameTimeTimer;
 		const float time = m_timer.Elapsed();
@@ -439,7 +441,11 @@ void TRAP::Application::Run()
 		//FPSLimiter
 		if(Graphics::RendererAPI::GPUSettings.ReflexSupported)
 			Graphics::RendererAPI::GetRenderer()->ReflexSleep();
+#ifndef TRACY_ENABLE
 		else if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+#else
+		else if (m_fpsLimit)
+#endif
 			std::this_thread::sleep_until(nextFrame);
 
 #ifdef NVIDIA_REFLEX_AVAILABLE

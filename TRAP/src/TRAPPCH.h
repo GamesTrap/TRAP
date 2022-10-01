@@ -45,6 +45,15 @@
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
 #endif
+//Tracy - Profiler
+#include <Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 //ImGUI
 #include <imgui.h>
 #include <ImGuizmo.h>

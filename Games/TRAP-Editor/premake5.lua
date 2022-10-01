@@ -14,7 +14,8 @@ project "TRAP-Editor"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"%{IncludeDir.TRACY}/TracyClient.cpp"
 	}
 
 	includedirs "%{wks.location}/TRAP/src"
@@ -31,7 +32,8 @@ project "TRAP-Editor"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.BOX2D}"
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links "TRAP"
@@ -198,7 +200,12 @@ project "TRAP-Editor"
 		symbols "On"
 
 	filter "configurations:Profiling"
-		defines "TRAP_RELEASE"
+		editandcontinue "Off"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
 		runtime "Release"
 		optimize "Full"
 		symbols "On"

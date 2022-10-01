@@ -20,7 +20,8 @@ project "TRAP"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl"
+		"src/**.inl",
+		"%{IncludeDir.TRACY}/TracyClient.cpp"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -54,7 +55,8 @@ project "TRAP"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.BOX2D}"
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links
@@ -206,7 +208,12 @@ project "TRAP"
 		symbols "On"
 
 	filter "configurations:Profiling"
-		defines "TRAP_RELEASE"
+		editandcontinue "Off"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
 		runtime "Release"
 		optimize "Full"
 		symbols "On"
@@ -233,7 +240,8 @@ project "TRAP-Headless"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl"
+		"src/**.inl",
+		"%{IncludeDir.TRACY}/TracyClient.cpp"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -266,7 +274,8 @@ project "TRAP-Headless"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.BOX2D}"
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links
@@ -334,7 +343,12 @@ project "TRAP-Headless"
 		symbols "On"
 
 	filter "configurations:Profiling"
-		defines "TRAP_RELEASE"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		editandcontinue "Off"
 		runtime "Release"
 		optimize "Full"
 		symbols "On"

@@ -36,6 +36,7 @@ project "Box2D"
 		symbols "On"
 
     filter "configurations:Profiling"
+        editandcontinue "Off"
         runtime "Release"
         optimize "Full"
         symbols "On"

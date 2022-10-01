@@ -3309,3 +3309,7 @@ SITREP 09/30/2022|22w39c1
     - Changed premake scripts optimize levels ~<5 mins
     - Removed Instrumentor and all its macros ~<20 mins
     - Premake scripts Added configuration for profiling ~<5 mins
+
+SITREP 10/01/2022|22w39c2
+    - Changed TRAP Engine version to 22w39c2(0.8.53)
+    - Premake scripts Added support for Tracy ~<20 mins

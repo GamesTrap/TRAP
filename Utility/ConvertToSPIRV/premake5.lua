@@ -51,6 +51,12 @@ project "ConvertToSPIRV"
 		symbols "On"
 
 	filter "configurations:Profiling"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		editandcontinue "Off"
 		runtime "Release"
 		optimize "Full"
 		symbols "On"
