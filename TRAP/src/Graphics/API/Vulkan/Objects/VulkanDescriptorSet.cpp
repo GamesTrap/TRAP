@@ -25,6 +25,8 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 		  m_set(set),
 	      m_device(std::move(device))
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
 }
 
@@ -32,6 +34,8 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const
 {
+	ZoneScoped;
+
 	return m_vkDescriptorSetHandles;
 }
 
@@ -39,6 +43,8 @@ const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::Ge
 
 TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanDescriptorSet::GetRootSignature() const
 {
+	ZoneScoped;
+
 	return m_rootSignature;
 }
 
@@ -46,6 +52,8 @@ TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanD
 
 TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const
 {
+	ZoneScoped;
+
 	return m_set > 0 ? RendererAPI::DescriptorUpdateFrequency::Dynamic :
 	                   RendererAPI::DescriptorUpdateFrequency::Static;
 }
@@ -54,6 +62,8 @@ TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::Vulk
 
 uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const
 {
+	ZoneScoped;
+
 	return m_dynamicOffsetCount;
 }
 
@@ -61,6 +71,8 @@ uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const
 
 std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const
 {
+	ZoneScoped;
+
 	return m_dynamicSizeOffsets;
 }
 
@@ -68,6 +80,8 @@ std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API
 
 uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
 {
+	ZoneScoped;
+
 	return m_maxSets;
 }
 
@@ -75,6 +89,8 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
 
 uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const
 {
+	ZoneScoped;
+
 	return m_set;
 }
 
@@ -83,6 +99,8 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const
 void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
                                                       const std::vector<RendererAPI::DescriptorData>& params)
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 #define VALIDATE_DESCRIPTOR(descriptor, ...)                                                  \
 	if(!(descriptor))                                                                         \

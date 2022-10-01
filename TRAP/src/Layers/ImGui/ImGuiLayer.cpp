@@ -35,12 +35,15 @@
 TRAP::ImGuiLayer::ImGuiLayer()
 	: Layer("ImGuiLayer"), m_blockEvents(true), m_imguiPipelineCache(nullptr), m_imguiDescriptorPool(nullptr)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::ImGuiLayer::OnAttach()
 {
+	ZoneScoped;
+
 	//Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -163,6 +166,8 @@ void TRAP::ImGuiLayer::OnAttach()
 
 void TRAP::ImGuiLayer::OnDetach()
 {
+	ZoneScoped;
+
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan shutdown...");
@@ -194,6 +199,8 @@ void TRAP::ImGuiLayer::OnDetach()
 
 void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 {
+	ZoneScoped;
+
 	if (m_blockEvents)
 	{
 		const ImGuiIO& io = ImGui::GetIO();
@@ -206,6 +213,8 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 
 void TRAP::ImGuiLayer::SetMSAASamples(const uint32_t sampleCount)
 {
+	ZoneScoped;
+
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(sampleCount));
 }
@@ -214,6 +223,8 @@ void TRAP::ImGuiLayer::SetMSAASamples(const uint32_t sampleCount)
 
 void TRAP::ImGuiLayer::Begin()
 {
+	ZoneScoped;
+
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		//Bind SwapChain RenderTarget if no RenderPass is active
@@ -246,6 +257,8 @@ void TRAP::ImGuiLayer::Begin()
 
 void TRAP::ImGuiLayer::End()
 {
+	ZoneScoped;
+
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(static_cast<float>(Application::GetWindow()->GetWidth()),
 	                        static_cast<float>(Application::GetWindow()->GetHeight()));
@@ -276,6 +289,8 @@ void TRAP::ImGuiLayer::End()
 
 void TRAP::ImGuiLayer::BlockEvents(const bool block)
 {
+	ZoneScoped;
+
 	m_blockEvents = block;
 }
 
@@ -283,6 +298,8 @@ void TRAP::ImGuiLayer::BlockEvents(const bool block)
 
 void TRAP::ImGuiLayer::SetDarkThemeColors()
 {
+	ZoneScoped;
+
 	auto& colors = ImGui::GetStyle().Colors;
 	colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.105f, 0.11f, 1.0f);
 
@@ -319,6 +336,8 @@ void TRAP::ImGuiLayer::SetDarkThemeColors()
 void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics::Sampler* const sampler, const ImVec2& size,
                   const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
 	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
 
@@ -337,6 +356,8 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics
 void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1,
 			      const ImVec4& tint_col, const ImVec4& border_col)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
 	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
 
@@ -355,6 +376,8 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, 
 bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, const ImVec2& uv0,
                         const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
 	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
 
@@ -381,6 +404,8 @@ bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& 
 ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float sizePixels,
 							      const ImFontConfig* const fontCfgTemplate, const ImWchar* const glyphRanges)
 {
+	ZoneScoped;
+
 	//Add font like normally
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.data(), sizePixels, fontCfgTemplate, glyphRanges);
 
@@ -398,6 +423,8 @@ ImFont* ImGui::AddFontFromFileTTF(const std::string_view filename, const float s
 ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, const float sizePixels,
 								    const ImFontConfig* const fontCfg, const ImWchar* const glyphRanges)
 {
+	ZoneScoped;
+
 	//Add font like normally
 	ImFont* const font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(fontData, fontSize, sizePixels, fontCfg, glyphRanges);
 
@@ -414,6 +441,8 @@ ImFont* ImGui::AddFontFromMemoryTTF(void* fontData, const int32_t fontSize, cons
 
 bool ImGui::IsInputEnabled()
 {
+	ZoneScoped;
+
 	const auto& io = ImGui::GetIO();
 	return (io.ConfigFlags & ImGuiConfigFlags_NoMouse) == 0 &&
 	       (io.ConfigFlags & ImGuiConfigFlags_NavNoCaptureKeyboard) == 0;
@@ -423,6 +452,8 @@ bool ImGui::IsInputEnabled()
 
 void ImGui::SetInputEnabled(const bool enable)
 {
+	ZoneScoped;
+
 	auto& io = ImGui::GetIO();
 
 	if(enable)

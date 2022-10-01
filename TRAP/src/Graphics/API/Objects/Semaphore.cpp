@@ -5,6 +5,8 @@
 
 TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -24,6 +26,8 @@ TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 TRAP::Graphics::Semaphore::Semaphore()
 	: m_signaled(false)
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSemaphorePrefix, "Creating Semaphore");
 #endif
@@ -33,6 +37,8 @@ TRAP::Graphics::Semaphore::Semaphore()
 
 TRAP::Graphics::Semaphore::~Semaphore()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSemaphorePrefix, "Destroying Semaphore");
 #endif
@@ -42,5 +48,7 @@ TRAP::Graphics::Semaphore::~Semaphore()
 
 bool TRAP::Graphics::Semaphore::IsSignaled() const
 {
+	ZoneScoped;
+
 	return m_signaled;
 }

@@ -34,12 +34,15 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::Socket::Socket(const Type type)
 	: m_type(type), m_socket(INTERNAL::Network::SocketImpl::InvalidSocket()), m_isBlocking(true)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::Socket::~Socket()
 {
+	ZoneScoped;
+
 	//Close the socket before it gets destructed
 	Close();
 }
@@ -48,6 +51,8 @@ TRAP::Network::Socket::~Socket()
 
 void TRAP::Network::Socket::SetBlocking(const bool blocking)
 {
+	ZoneScoped;
+
 	//Apply if the socket is already created
 	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		INTERNAL::Network::SocketImpl::SetBlocking(m_socket, blocking);
@@ -59,6 +64,8 @@ void TRAP::Network::Socket::SetBlocking(const bool blocking)
 
 bool TRAP::Network::Socket::IsBlocking() const
 {
+	ZoneScoped;
+
 	return m_isBlocking;
 }
 
@@ -66,6 +73,8 @@ bool TRAP::Network::Socket::IsBlocking() const
 
 TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
 {
+	ZoneScoped;
+
 	return m_socket;
 }
 
@@ -73,6 +82,8 @@ TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
 
 void TRAP::Network::Socket::CreateIPv4()
 {
+	ZoneScoped;
+
 	//Don't create the socket if it already exists
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		return;
@@ -92,6 +103,8 @@ void TRAP::Network::Socket::CreateIPv4()
 
 void TRAP::Network::Socket::CreateIPv6()
 {
+	ZoneScoped;
+
 	//Don't create the socket if it already exists
 	if (m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		return;
@@ -111,6 +124,8 @@ void TRAP::Network::Socket::CreateIPv6()
 
 void TRAP::Network::Socket::Create(const SocketHandle handle)
 {
+	ZoneScoped;
+
 	//Don't create the socket if it already exists
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 		return;
@@ -146,6 +161,8 @@ void TRAP::Network::Socket::Create(const SocketHandle handle)
 
 void TRAP::Network::Socket::Close()
 {
+	ZoneScoped;
+
 	//Close the socket
 	if(m_socket != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{

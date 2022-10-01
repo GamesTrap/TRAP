@@ -85,6 +85,8 @@ namespace TRAP
 template <typename F, typename ... Args>
 void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 {
+	ZoneScoped;
+
 	auto work = [p = std::forward<F>(f), t = { std::forward<Args>(args)... }]()
 	{
 		std::apply(p, t);
@@ -105,6 +107,8 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 template <typename F, typename ... Args>
 auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
 {
+	ZoneScoped;
+
 	using TaskReturnType = std::invoke_result_t<F, Args...>;
 	using TaskType = std::packaged_task<TaskReturnType()>;
 

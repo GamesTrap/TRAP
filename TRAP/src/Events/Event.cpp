@@ -3,6 +3,8 @@
 
 std::string TRAP::Events::Event::ToString() const
 {
+	ZoneScoped;
+
 	return GetName();
 }
 
@@ -10,6 +12,8 @@ std::string TRAP::Events::Event::ToString() const
 
 bool TRAP::Events::Event::IsInCategory(const EventCategory category) const
 {
+	ZoneScoped;
+
 	return static_cast<bool>(GetCategoryFlags() & category);
 }
 
@@ -17,5 +21,7 @@ bool TRAP::Events::Event::IsInCategory(const EventCategory category) const
 
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e)
 {
+	ZoneScoped;
+
 	return os << e.ToString();
 }

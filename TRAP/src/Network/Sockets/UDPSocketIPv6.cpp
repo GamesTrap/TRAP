@@ -10,12 +10,15 @@
 TRAP::Network::UDPSocketIPv6::UDPSocketIPv6()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 {
+	ZoneScoped;
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -39,6 +42,8 @@ uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t port, const IPv6Address& address)
 {
+	ZoneScoped;
+
 	//Close the socket if it is already bound
 	Close();
 
@@ -64,6 +69,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t 
 
 void TRAP::Network::UDPSocketIPv6::Unbind()
 {
+	ZoneScoped;
+
 	//Simply close the socket
 	Close();
 }
@@ -74,6 +81,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* con
                                                                  const IPv6Address& remoteAddress,
 																 const uint16_t remotePort)
 {
+	ZoneScoped;
+
 	//Create the internal socket if it doesn't exist
 	CreateIPv6();
 
@@ -106,6 +115,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 																	IPv6Address& remoteAddress,
 																	uint16_t& remotePort) const
 {
+	ZoneScoped;
+
 	//First clear the variables to fill
 	received = 0;
 	remoteAddress = IPv6Address();
@@ -162,6 +173,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* const 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet, const IPv6Address& remoteAddress,
                                                                  const uint16_t remotePort)
 {
+	ZoneScoped;
+
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
 	//is guaranteed to be ok.
@@ -184,6 +197,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet,
 TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(Packet& packet, IPv6Address& remoteAddress,
                                                                     uint16_t& remotePort)
 {
+	ZoneScoped;
+
 	//See the detailed comment in Send(Packet) above.
 
 	//Receive the datagram

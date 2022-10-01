@@ -250,6 +250,8 @@ TRAP::Math::tQuat<T>::operator Mat<4, 4, T>() const
 template <typename T>
 TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& u, const Vec<3, T>& v)
 {
+	ZoneScoped;
+
 	//TODO Can't use TRAP::Math::Sqrt here
 	const T normUNormV = std::sqrt(Dot(u, u) * Dot(v, v));
 	T realPart = normUNormV + Dot(u, v);
@@ -290,12 +292,16 @@ constexpr TRAP::Math::tQuat<T>::tQuat(const Vec<3, T>& eulerAnglesInRadians)
 template <typename T>
 TRAP::Math::tQuat<T>::tQuat(const Mat<3, 3, T>& m)
 {
+	ZoneScoped;
+
 	*this = QuaternionCast(m);
 }
 
 template <typename T>
 TRAP::Math::tQuat<T>::tQuat(const Mat<4, 4, T>& m)
 {
+	ZoneScoped;
+
 	*this = QuaternionCast(m);
 }
 
@@ -395,6 +401,8 @@ constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
 template<typename T>
 std::string TRAP::Math::tQuat<T>::ToString() const
 {
+	ZoneScoped;
+
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)
 		postfix = "f";

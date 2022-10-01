@@ -54,6 +54,8 @@ static BOOL WINAPI SIGINTHandlerRoutine(_In_ DWORD dwCtrlType)
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_LINUX)
 static bool CheckSingleProcessLinux()
 {
+	ZoneScoped;
+
 	static int32_t socketFD = -1;
 	static int32_t rc = 1;
 	static constexpr uint16_t port = 49420; //Just a free (hopefully) random port
@@ -91,6 +93,8 @@ static bool CheckSingleProcessLinux()
 #if defined(ENABLE_SINGLE_PROCESS_ONLY) && defined(TRAP_PLATFORM_WINDOWS)
 static bool CheckSingleProcessWindows()
 {
+	ZoneScoped;
+
 	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
 	if(!hMutex) //Error creating mutex
 		return false;
@@ -116,6 +120,8 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	               std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
+	ZoneScoped;
+
 	//Register SIGINT callback to capture CTRL+C
 #ifdef TRAP_HEADLESS_MODE
 #ifdef TRAP_PLATFORM_LINUX
@@ -336,6 +342,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 
 TRAP::Application::~Application()
 {
+	ZoneScoped;
 	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP modules...");
 
 	if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
@@ -423,6 +430,8 @@ TRAP::Application::~Application()
 
 void TRAP::Application::Run()
 {
+	ZoneScoped;
+
 	float lastFrameTime = 0.0f;
 	auto nextFrame = std::chrono::steady_clock::now();
 	Utils::Timer tickTimer;
@@ -518,6 +527,8 @@ void TRAP::Application::Run()
 
 void TRAP::Application::OnEvent(Events::Event& e)
 {
+	ZoneScoped;
+
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event)
 		{
@@ -561,6 +572,8 @@ void TRAP::Application::OnEvent(Events::Event& e)
 
 void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
 {
+	ZoneScoped;
+
 	m_layerStack.PushLayer(std::move(layer));
 }
 
@@ -568,6 +581,8 @@ void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
 
 void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 {
+	ZoneScoped;
+
 	m_layerStack.PushOverlay(std::move(overlay));
 }
 
@@ -575,6 +590,8 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 const TRAP::Utils::Config& TRAP::Application::GetConfig()
 {
+	ZoneScoped;
+
 	return s_Instance->m_config;
 }
 
@@ -582,6 +599,8 @@ const TRAP::Utils::Config& TRAP::Application::GetConfig()
 
 TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
+	ZoneScoped;
+
 	return s_Instance->m_layerStack;
 }
 
@@ -589,6 +608,8 @@ TRAP::LayerStack& TRAP::Application::GetLayerStack()
 
 TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
+	ZoneScoped;
+
 	return *(s_Instance->m_ImGuiLayer);
 }
 
@@ -596,6 +617,8 @@ TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 
 void TRAP::Application::SetFPSLimit(const uint32_t fps)
 {
+	ZoneScoped;
+
 	if(fps == 0)
 		s_Instance->m_fpsLimit = 0;
 	else
@@ -614,6 +637,8 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 
 uint32_t TRAP::Application::GetFPSLimit()
 {
+	ZoneScoped;
+
 	return s_Instance->m_fpsLimit;
 }
 
@@ -621,6 +646,8 @@ uint32_t TRAP::Application::GetFPSLimit()
 
 float TRAP::Application::GetCPUFrameTime()
 {
+	ZoneScoped;
+
 	return s_Instance->m_FrameTime;
 }
 
@@ -628,6 +655,8 @@ float TRAP::Application::GetCPUFrameTime()
 
 float TRAP::Application::GetTimeScale()
 {
+	ZoneScoped;
+
 	return s_Instance->m_timeScale;
 }
 
@@ -635,6 +664,8 @@ float TRAP::Application::GetTimeScale()
 
 uint32_t TRAP::Application::GetTickRate()
 {
+	ZoneScoped;
+
 	return s_Instance->m_tickRate;
 }
 
@@ -642,6 +673,8 @@ uint32_t TRAP::Application::GetTickRate()
 
 void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
+	ZoneScoped;
+
 	s_Instance->m_tickRate = tickRate;
 }
 
@@ -649,6 +682,8 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Application::SetTimeScale(const float timeScale)
 {
+	ZoneScoped;
+
 	s_Instance->m_timeScale = timeScale;
 }
 
@@ -656,6 +691,8 @@ void TRAP::Application::SetTimeScale(const float timeScale)
 
 void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 {
+	ZoneScoped;
+
 	s_Instance->m_newRenderAPI = renderAPI;
 }
 
@@ -663,6 +700,8 @@ void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 
 void TRAP::Application::Shutdown()
 {
+	ZoneScoped;
+
 	s_Instance->m_running = false;
 }
 
@@ -670,6 +709,8 @@ void TRAP::Application::Shutdown()
 
 TRAP::Window* TRAP::Application::GetWindow()
 {
+	ZoneScoped;
+
 	return s_Instance->m_window.get();
 }
 
@@ -677,6 +718,8 @@ TRAP::Window* TRAP::Application::GetWindow()
 
 TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
+	ZoneScoped;
+
 	const Utils::TimeStep timeStep(s_Instance->m_timer.Elapsed());
 
 	return timeStep;
@@ -686,6 +729,8 @@ TRAP::Utils::TimeStep TRAP::Application::GetTime()
 
 TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
+	ZoneScoped;
+
 	return s_Instance->m_threadPool;
 }
 
@@ -693,6 +738,8 @@ TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
 
@@ -700,6 +747,8 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 std::string TRAP::Application::GetClipboardString()
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
@@ -707,6 +756,8 @@ std::string TRAP::Application::GetClipboardString()
 
 std::thread::id TRAP::Application::GetMainThreadID()
 {
+	ZoneScoped;
+
 	return s_Instance->m_mainThreadID;
 }
 
@@ -714,6 +765,8 @@ std::thread::id TRAP::Application::GetMainThreadID()
 
 std::string TRAP::Application::GetGameName()
 {
+	ZoneScoped;
+
 	return s_Instance->m_gameName;
 }
 
@@ -721,6 +774,8 @@ std::string TRAP::Application::GetGameName()
 
 uint64_t TRAP::Application::GetGlobalCounter()
 {
+	ZoneScoped;
+
 	return s_Instance->m_globalCounter;
 }
 
@@ -728,6 +783,8 @@ uint64_t TRAP::Application::GetGlobalCounter()
 
 TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 {
+	ZoneScoped;
+
 	if(s_Instance->m_hotReloadingFileWatcher)
 		return s_Instance->m_hotReloadingFileWatcher.get();
 
@@ -738,6 +795,8 @@ TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 
 bool TRAP::Application::IsHotReloadingEnabled()
 {
+	ZoneScoped;
+
 	return s_Instance->m_hotReloadingEnabled;
 }
 
@@ -745,6 +804,8 @@ bool TRAP::Application::IsHotReloadingEnabled()
 
 void TRAP::Application::SetHotReloading(const bool enable)
 {
+	ZoneScoped;
+
 	s_Instance->m_hotReloadingEnabled = enable;
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
@@ -760,6 +821,8 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 {
+	ZoneScoped;
+
 	if(e.GetWindow() == m_window.get())
 		m_running = false;
 
@@ -770,6 +833,8 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 
 bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
+	ZoneScoped;
+
 	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
 	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
 
@@ -780,6 +845,8 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 
 bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 {
+	ZoneScoped;
+
 	if(Window::GetActiveWindows() != 1)
 		return false;
 
@@ -805,6 +872,8 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 
 bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 {
+	ZoneScoped;
+
 	m_focused = true;
 
 	return false;
@@ -814,6 +883,8 @@ bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 
 bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 {
+	ZoneScoped;
+
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
 
@@ -824,6 +895,8 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 
 bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 {
+	ZoneScoped;
+
 	if (Window::GetActiveWindows() == 1)
 		m_minimized = true;
 
@@ -834,6 +907,8 @@ bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 
 bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 {
+	ZoneScoped;
+
 	m_minimized = false;
 
 	return false;
@@ -843,6 +918,8 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 
 void TRAP::Application::UpdateHotReloading()
 {
+	ZoneScoped;
+
 	std::vector<std::filesystem::path> shaderPaths;
 	std::vector<std::filesystem::path> texturePaths;
 
@@ -902,6 +979,8 @@ void TRAP::Application::UpdateHotReloading()
 
 bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 {
+	ZoneScoped;
+
 	if(event.GetStatus() != FileSystem::FileStatus::Modified)
 		return false; //Only handle modified files
 

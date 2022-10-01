@@ -7,6 +7,8 @@
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint32_t* const indices, const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	return Init<uint32_t>(indices, size, updateFrequency);
 }
 
@@ -15,6 +17,8 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint16_t* const indices, const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	return Init<uint16_t>(indices, size, updateFrequency);
 }
 
@@ -23,6 +27,8 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(const uint64_t size,
                                                                              const UpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	return Init<uint16_t>(nullptr, size, updateFrequency); //uint16_t gets ignored
 }
 
@@ -31,12 +37,15 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType)
 	: m_indexBuffer(nullptr), m_token(), m_indexType(indexType)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::IndexBuffer::~IndexBuffer()
 {
+	ZoneScoped;
+
 	m_indexBuffer.reset();
 }
 
@@ -44,6 +53,8 @@ TRAP::Graphics::IndexBuffer::~IndexBuffer()
 
 uint32_t TRAP::Graphics::IndexBuffer::GetCount() const
 {
+	ZoneScoped;
+
 	return static_cast<uint32_t>(m_indexBuffer->GetSize() /
 	                             ((m_indexType == RendererAPI::IndexType::UInt16) ? sizeof(uint16_t) :
 	                                                                                sizeof(uint32_t)));
@@ -53,6 +64,8 @@ uint32_t TRAP::Graphics::IndexBuffer::GetCount() const
 
 uint64_t TRAP::Graphics::IndexBuffer::GetSize() const
 {
+	ZoneScoped;
+
 	return m_indexBuffer->GetSize();
 }
 
@@ -60,6 +73,8 @@ uint64_t TRAP::Graphics::IndexBuffer::GetSize() const
 
 TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency() const
 {
+	ZoneScoped;
+
 	return (m_indexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? UpdateFrequency::Static :
 	                                                                                        UpdateFrequency::Dynamic;
 }
@@ -68,6 +83,8 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::IndexBuffer::GetUpdateFrequency(
 
 void TRAP::Graphics::IndexBuffer::SetData(const uint16_t* const indices, const uint64_t size, const uint64_t offset)
 {
+	ZoneScoped;
+
 	SetDataInternal(indices, size, offset);
 }
 
@@ -75,6 +92,8 @@ void TRAP::Graphics::IndexBuffer::SetData(const uint16_t* const indices, const u
 
 void TRAP::Graphics::IndexBuffer::SetData(const uint32_t* const indices, const uint64_t size, const uint64_t offset)
 {
+	ZoneScoped;
+
 	SetDataInternal(indices, size, offset);
 }
 
@@ -82,6 +101,8 @@ void TRAP::Graphics::IndexBuffer::SetData(const uint32_t* const indices, const u
 
 void TRAP::Graphics::IndexBuffer::Use(const Window* const window) const
 {
+	ZoneScoped;
+
 	RendererAPI::GetRenderer()->BindIndexBuffer(m_indexBuffer, m_indexType, window);
 }
 
@@ -89,6 +110,8 @@ void TRAP::Graphics::IndexBuffer::Use(const Window* const window) const
 
 bool TRAP::Graphics::IndexBuffer::IsLoaded() const
 {
+	ZoneScoped;
+
 	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_token);
 }
 
@@ -96,5 +119,7 @@ bool TRAP::Graphics::IndexBuffer::IsLoaded() const
 
 void TRAP::Graphics::IndexBuffer::AwaitLoading() const
 {
+	ZoneScoped;
+
 	RendererAPI::GetResourceLoader()->WaitForToken(&m_token);
 }

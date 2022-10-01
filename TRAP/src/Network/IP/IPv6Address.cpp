@@ -24,6 +24,8 @@ const TRAP::Network::IPv6Address TRAP::Network::IPv6Address::LocalHost(std::arra
 TRAP::Network::IPv6Address::IPv6Address(const std::string address)
 	: m_address(), m_valid(false)
 {
+	ZoneScoped;
+
 	Resolve(std::move(address));
 }
 
@@ -32,6 +34,8 @@ TRAP::Network::IPv6Address::IPv6Address(const std::string address)
 TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 	: m_address(), m_valid(false)
 {
+	ZoneScoped;
+
 	Resolve(address);
 }
 
@@ -40,12 +44,15 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes)
 	: m_address(addressBytes), m_valid(true)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Network::IPv6Address::ToString() const
 {
+	ZoneScoped;
+
 	in6_addr address{};
 #ifdef TRAP_PLATFORM_WINDOWS
 	std::copy(m_address.begin(), m_address.end(), address.u.Byte);
@@ -64,6 +71,8 @@ std::string TRAP::Network::IPv6Address::ToString() const
 
 std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const
 {
+	ZoneScoped;
+
 	return m_address;
 }
 
@@ -71,6 +80,8 @@ std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const
 
 TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 {
+	ZoneScoped;
+
 	//The method here is to connect a UDP socket to anyone (here to localhost),
 	//and get the local socket address with the getsockname function.
 	//UDP connection will not send anything to the network, so this function won't cause any overhead.
@@ -119,6 +130,8 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 
 TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
+	ZoneScoped;
+
 	//HTTP URL v6.ident.me
 	//GetBody
 	TRAP::Network::HTTP server("v6.ident.me");
@@ -135,6 +148,8 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetPublicAddress(const Ut
 
 void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 {
+	ZoneScoped;
+
 	m_address = {};
 	m_valid = false;
 
@@ -185,6 +200,8 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 
 bool TRAP::Network::operator==(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneScoped;
+
 	return !(left < right) && !(right < left);
 }
 
@@ -192,6 +209,8 @@ bool TRAP::Network::operator==(const IPv6Address& left, const IPv6Address& right
 
 bool TRAP::Network::operator!=(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneScoped;
+
 	return !(left == right);
 }
 
@@ -199,6 +218,8 @@ bool TRAP::Network::operator!=(const IPv6Address& left, const IPv6Address& right
 
 bool TRAP::Network::operator<(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneScoped;
+
 	return std::make_pair(left.m_valid, left.m_address) < std::make_pair(right.m_valid, right.m_address);
 }
 
@@ -206,6 +227,8 @@ bool TRAP::Network::operator<(const IPv6Address& left, const IPv6Address& right)
 
 bool TRAP::Network::operator>(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneScoped;
+
 	return right < left;
 }
 
@@ -213,6 +236,8 @@ bool TRAP::Network::operator>(const IPv6Address& left, const IPv6Address& right)
 
 bool TRAP::Network::operator<=(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneScoped;
+
 	return !(right < left);
 }
 
@@ -220,6 +245,8 @@ bool TRAP::Network::operator<=(const IPv6Address& left, const IPv6Address& right
 
 bool TRAP::Network::operator>=(const IPv6Address& left, const IPv6Address& right)
 {
+	ZoneScoped;
+
 	return !(left < right);
 }
 
@@ -227,6 +254,8 @@ bool TRAP::Network::operator>=(const IPv6Address& left, const IPv6Address& right
 
 std::istream& TRAP::Network::operator>>(std::istream& stream, IPv6Address& address)
 {
+	ZoneScoped;
+
 	std::string str;
 	stream >> str;
 	address = IPv6Address(str);
@@ -238,5 +267,7 @@ std::istream& TRAP::Network::operator>>(std::istream& stream, IPv6Address& addre
 
 std::ostream& TRAP::Network::operator<<(std::ostream& stream, const IPv6Address& address)
 {
+	ZoneScoped;
+
 	return stream << address.ToString();
 }

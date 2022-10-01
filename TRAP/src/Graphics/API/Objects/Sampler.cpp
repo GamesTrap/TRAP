@@ -10,6 +10,8 @@ std::unordered_map<TRAP::Graphics::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sample
 
 TRAP::Graphics::Sampler::Sampler()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Creating Sampler");
 #endif
@@ -19,6 +21,8 @@ TRAP::Graphics::Sampler::Sampler()
 
 TRAP::Graphics::Sampler::~Sampler()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererSamplerPrefix, "Destroying Sampler");
 #endif
@@ -28,6 +32,8 @@ TRAP::Graphics::Sampler::~Sampler()
 
 TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const SamplerDesc& desc)
 {
+	ZoneScoped;
+
 	//Try to use cached Sampler
 	if(s_cachedSamplers.find(desc) != s_cachedSamplers.end())
 		return s_cachedSamplers[desc];
@@ -66,6 +72,8 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 
 TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.MinFilter;
 }
 
@@ -73,6 +81,8 @@ TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMinFilter() const
 
 TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.MagFilter;
 }
 
@@ -80,6 +90,8 @@ TRAP::Graphics::FilterType TRAP::Graphics::Sampler::GetMagFilter() const
 
 TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.MipMapMode;
 }
 
@@ -87,6 +99,8 @@ TRAP::Graphics::MipMapMode TRAP::Graphics::Sampler::GetMipMapMode() const
 
 TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.AddressU;
 }
 
@@ -94,6 +108,8 @@ TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressU() const
 
 TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.AddressV;
 }
 
@@ -101,6 +117,8 @@ TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressV() const
 
 TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.AddressW;
 }
 
@@ -108,6 +126,8 @@ TRAP::Graphics::AddressMode TRAP::Graphics::Sampler::GetAddressW() const
 
 float TRAP::Graphics::Sampler::GetMipLodBias() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.MipLodBias;
 }
 
@@ -115,6 +135,8 @@ float TRAP::Graphics::Sampler::GetMipLodBias() const
 
 float TRAP::Graphics::Sampler::GetMaxAnisotropy() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.MaxAnisotropy;
 }
 
@@ -122,6 +144,8 @@ float TRAP::Graphics::Sampler::GetMaxAnisotropy() const
 
 TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const
 {
+	ZoneScoped;
+
 	return m_samplerDesc.CompareFunc;
 }
 
@@ -129,6 +153,8 @@ TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const
 
 void TRAP::Graphics::Sampler::ClearCache()
 {
+	ZoneScoped;
+
 	s_cachedSamplers.clear();
 }
 
@@ -136,6 +162,8 @@ void TRAP::Graphics::Sampler::ClearCache()
 
 std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
 {
+	ZoneScoped;
+
 	std::size_t hash = 0;
 
 	TRAP::Utils::HashCombine

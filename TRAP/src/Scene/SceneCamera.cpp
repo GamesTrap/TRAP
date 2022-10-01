@@ -3,6 +3,8 @@
 
 TRAP::SceneCamera::SceneCamera()
 {
+	ZoneScoped;
+
 	RecalculateProjection();
 }
 
@@ -10,6 +12,8 @@ TRAP::SceneCamera::SceneCamera()
 
 void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float nearClip)
 {
+	ZoneScoped;
+
 	m_projectionType = ProjectionType::Perspective;
 	m_perspectiveFOV = verticalFOV;
 	m_perspectiveNear = nearClip;
@@ -20,6 +24,8 @@ void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float near
 
 void TRAP::SceneCamera::SetOrthographic(const float size, const float nearClip, const float farClip)
 {
+	ZoneScoped;
+
 	m_projectionType = ProjectionType::Orthographic;
 	m_orthographicSize = size;
 	m_orthographicNear = nearClip;
@@ -31,6 +37,8 @@ void TRAP::SceneCamera::SetOrthographic(const float size, const float nearClip, 
 
 void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t height)
 {
+	ZoneScoped;
+
 	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	RecalculateProjection();
 }
@@ -39,6 +47,8 @@ void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t hei
 
 float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const
 {
+	ZoneScoped;
+
 	return m_perspectiveFOV;
 }
 
@@ -46,6 +56,8 @@ float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const
 
 void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 {
+	ZoneScoped;
+
 	m_perspectiveFOV = verticalFov;
 	RecalculateProjection();
 }
@@ -54,6 +66,8 @@ void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 
 float TRAP::SceneCamera::GetPerspectiveNearClip() const
 {
+	ZoneScoped;
+
 	return m_perspectiveNear;
 }
 
@@ -61,6 +75,8 @@ float TRAP::SceneCamera::GetPerspectiveNearClip() const
 
 void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 {
+	ZoneScoped;
+
 	m_perspectiveNear = nearClip;
 	RecalculateProjection();
 }
@@ -69,6 +85,8 @@ void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 
 float TRAP::SceneCamera::GetOrthographicSize() const
 {
+	ZoneScoped;
+
 	return m_orthographicSize;
 }
 
@@ -76,6 +94,8 @@ float TRAP::SceneCamera::GetOrthographicSize() const
 
 void TRAP::SceneCamera::SetOrthographicSize(const float size)
 {
+	ZoneScoped;
+
 	m_orthographicSize = size;
 	RecalculateProjection();
 }
@@ -84,6 +104,8 @@ void TRAP::SceneCamera::SetOrthographicSize(const float size)
 
 TRAP::Math::Vec2 TRAP::SceneCamera::GetOrthographicClip() const
 {
+	ZoneScoped;
+
 	return { m_orthographicNear, m_orthographicFar };
 }
 
@@ -91,6 +113,8 @@ TRAP::Math::Vec2 TRAP::SceneCamera::GetOrthographicClip() const
 
 void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 {
+	ZoneScoped;
+
 	m_orthographicNear = clip.x;
 	m_orthographicFar = clip.y;
 	RecalculateProjection();
@@ -100,6 +124,8 @@ void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 
 float TRAP::SceneCamera::GetOrthographicNearClip() const
 {
+	ZoneScoped;
+
 	return m_orthographicNear;
 }
 
@@ -107,6 +133,8 @@ float TRAP::SceneCamera::GetOrthographicNearClip() const
 
 void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
 {
+	ZoneScoped;
+
 	m_orthographicNear = nearClip;
 	RecalculateProjection();
 }
@@ -115,6 +143,8 @@ void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
 
 float TRAP::SceneCamera::GetOrthographicFarClip() const
 {
+	ZoneScoped;
+
 	return m_orthographicFar;
 }
 
@@ -122,6 +152,8 @@ float TRAP::SceneCamera::GetOrthographicFarClip() const
 
 void TRAP::SceneCamera::SetOrthographicFarClip(const float farClip)
 {
+	ZoneScoped;
+
 	m_orthographicFar = farClip;
 	RecalculateProjection();
 }
@@ -130,6 +162,8 @@ void TRAP::SceneCamera::SetOrthographicFarClip(const float farClip)
 
 TRAP::SceneCamera::ProjectionType TRAP::SceneCamera::GetProjectionType() const
 {
+	ZoneScoped;
+
 	return m_projectionType;
 }
 
@@ -137,6 +171,8 @@ TRAP::SceneCamera::ProjectionType TRAP::SceneCamera::GetProjectionType() const
 
 void TRAP::SceneCamera::SetProjectionType(const ProjectionType type)
 {
+	ZoneScoped;
+
 	m_projectionType = type;
 	RecalculateProjection();
 }
@@ -145,6 +181,8 @@ void TRAP::SceneCamera::SetProjectionType(const ProjectionType type)
 
 void TRAP::SceneCamera::RecalculateProjection()
 {
+	ZoneScoped;
+
 	if(m_projectionType == ProjectionType::Perspective)
 		m_projection = Math::InfinitePerspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear);
 	else //if (m_projectionType == ProjectionType::Orthographic)

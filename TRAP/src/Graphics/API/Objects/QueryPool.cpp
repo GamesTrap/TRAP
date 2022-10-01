@@ -5,6 +5,8 @@
 
 TRAP::Graphics::QueryPool::QueryPool()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueryPoolPrefix, "Creating QueryPool");
 #endif
@@ -14,6 +16,8 @@ TRAP::Graphics::QueryPool::QueryPool()
 
 TRAP::Graphics::QueryPool::~QueryPool()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
 #endif
@@ -23,6 +27,8 @@ TRAP::Graphics::QueryPool::~QueryPool()
 
 TRAP::Ref<TRAP::Graphics::QueryPool> TRAP::Graphics::QueryPool::Create(const RendererAPI::QueryPoolDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

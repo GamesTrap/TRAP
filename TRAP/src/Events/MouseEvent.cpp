@@ -3,6 +3,8 @@
 
 std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "MouseMoveEvent: " + std::to_string(m_mouseX) + ", " + std::to_string(m_mouseY);
 }
 
@@ -10,6 +12,8 @@ std::string TRAP::Events::MouseMoveEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -17,6 +21,8 @@ TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 
 std::string TRAP::Events::MouseMoveEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MouseMove";
 }
 
@@ -24,6 +30,8 @@ std::string TRAP::Events::MouseMoveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Mouse | EventCategory::Input;
 }
 
@@ -33,6 +41,8 @@ TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() con
 
 std::string TRAP::Events::MouseScrollEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "MouseScrollEvent: " + std::to_string(GetXOffset()) + ", " + std::to_string(GetYOffset());
 }
 
@@ -40,6 +50,8 @@ std::string TRAP::Events::MouseScrollEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -47,6 +59,8 @@ TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 
 std::string TRAP::Events::MouseScrollEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MouseScroll";
 }
 
@@ -54,6 +68,8 @@ std::string TRAP::Events::MouseScrollEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Mouse | EventCategory::Input;
 }
 
@@ -63,6 +79,8 @@ TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() c
 
 TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Mouse | EventCategory::Input | EventCategory::MouseButton;
 }
 
@@ -70,6 +88,8 @@ TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
 {
+	ZoneScoped;
+
 	switch(button)
 	{
 	case Input::MouseButton::One:
@@ -92,6 +112,8 @@ std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::Mou
 
 std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "MouseButtonPressEvent: " + MouseButtonToString(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
 }
@@ -100,6 +122,8 @@ std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -107,6 +131,8 @@ TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() cons
 
 std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MouseButtonPress";
 }
 
@@ -116,6 +142,8 @@ std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 
 std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "MouseButtonReleaseEvent: " + MouseButtonToString(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
 }
@@ -124,6 +152,8 @@ std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -131,6 +161,8 @@ TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() co
 
 std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MouseButtonRelease";
 }
 
@@ -140,6 +172,8 @@ std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 
 TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -147,6 +181,8 @@ TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 
 std::string TRAP::Events::MouseEnterEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MouseEnter";
 }
 
@@ -154,6 +190,8 @@ std::string TRAP::Events::MouseEnterEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Mouse | EventCategory::Input;
 }
 
@@ -163,6 +201,8 @@ TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() co
 
 TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -170,6 +210,8 @@ TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 
 std::string TRAP::Events::MouseLeaveEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MouseLeave";
 }
 
@@ -177,5 +219,7 @@ std::string TRAP::Events::MouseLeaveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Mouse | EventCategory::Input;
 }

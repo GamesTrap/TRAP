@@ -37,12 +37,15 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::UDPSocket::UDPSocket()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 {
+	ZoneScoped;
+
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return 0; //We failed to retrieve the port
 
@@ -66,6 +69,8 @@ uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port, const IPv4Address& address)
 {
+	ZoneScoped;
+
 	//Close the socket if it is already bound
 	Close();
 
@@ -92,6 +97,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 
 void TRAP::Network::UDPSocket::Unbind()
 {
+	ZoneScoped;
+
 	//Simply close the socket
 	Close();
 }
@@ -102,6 +109,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* const d
                                                              const IPv4Address& remoteAddress,
 														     const uint16_t remotePort)
 {
+	ZoneScoped;
+
 	//Create the internal socket if it doesn't exist
 	CreateIPv4();
 
@@ -134,6 +143,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
                                                                 std::size_t& received, IPv4Address& remoteAddress,
 																uint16_t& remotePort) const
 {
+	ZoneScoped;
+
 	//First clear the variables to fill
 	received = 0;
 	remoteAddress = IPv4Address();
@@ -184,6 +195,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* const data
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, const IPv4Address& remoteAddress,
                                                              const uint16_t remotePort)
 {
+	ZoneScoped;
+
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
 	//is guaranteed to be ok.
@@ -206,6 +219,8 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress,
                                                                 uint16_t& remotePort)
 {
+	ZoneScoped;
+
 	//See the detailed comment in Send(Packet) above.
 
 	//Receive the datagram

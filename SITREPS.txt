@@ -3318,3 +3318,4 @@ SITREP 10/01/2022|22w39c2
     - Profiler Added log messages ~<15 mins
     - Base Added overloads for new and delete (only used for memory profiling) ~<5 mins
     - Profiler Added all mutexes ~>20 mins
+    - Profiler Added instrumentation everywhere ~>30 mins

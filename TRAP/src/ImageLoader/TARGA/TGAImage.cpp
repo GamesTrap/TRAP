@@ -8,6 +8,8 @@
 
 TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 {
+	ZoneScoped;
+
 	m_filepath = std::move(filepath);
 	TP_DEBUG(Log::ImageTGAPrefix, "Loading image: \"",
 	         m_filepath.u8string(), "\"");
@@ -319,6 +321,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::TGAImage::GetPixelData() const
 {
+	ZoneScoped;
+
 	return m_data.data();
 }
 
@@ -326,6 +330,8 @@ const void* TRAP::INTERNAL::TGAImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const
 {
+	ZoneScoped;
+
 	return m_data.size();
 }
 
@@ -335,6 +341,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
                                                                 const uint32_t height, const uint32_t channels,
 																std::vector<uint8_t>& colorMap)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * channels);
 
@@ -401,6 +409,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEBGRAMap(std::vector<uint
 std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<uint8_t>& source,
                                                                   const uint32_t width, const uint32_t height)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height);
 
@@ -441,6 +451,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::DecodeRLEGrayScale(std::vector<ui
 std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source,
                                                                       const uint32_t width, const uint32_t height)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 3);
 
@@ -482,6 +494,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR16ToRGB24(std::vecto
 std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source,
                                                                       const uint32_t width, const uint32_t height)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 3);
 
@@ -523,6 +537,8 @@ std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGR24ToRGB24(std::vecto
 std::vector<uint8_t> TRAP::INTERNAL::TGAImage::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source,
                                                                       const uint32_t width, const uint32_t height)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 4);
 

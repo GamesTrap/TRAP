@@ -10,6 +10,8 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>> Textures;
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const std::filesystem::path& filepath,
                                                                         const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromFile(filepath, TextureType::Texture2D, TextureCubeFormat::NONE,
 	                                               flags);
 	if(texture)
@@ -30,6 +32,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 	                                                                    const std::filesystem::path& filepath,
                                                                         const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::Texture2D,
 												   TextureCubeFormat::NONE, flags);
 
@@ -49,6 +53,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 	                                                                    const Image* const img,
                                                                         const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromImage(name, img, TextureType::Texture2D, TextureCubeFormat::NONE,
 													flags);
 
@@ -69,6 +75,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 															            const TextureCubeFormat format,
                                                                         const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromFile(name, filepath, TextureType::TextureCube, format, flags);
 
 	if(texture)
@@ -87,6 +95,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 	                                                                    const TextureCubeFormat format,
                                                                         const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromFile(filepath, TextureType::TextureCube, format, flags);
 
 	if(texture)
@@ -107,6 +117,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 	                                                                    const std::array<std::filesystem::path, 6>& filepaths,
                                                                         const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromFiles(name, filepaths, flags);
 
 	if(texture)
@@ -126,6 +138,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 															            const TextureCubeFormat format,
 															            const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	Ref<Texture> texture = Texture::CreateFromImage(name, img, TextureType::TextureCube, format, flags);
 
 	if(texture)
@@ -142,6 +156,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Load(const st
 
 void TRAP::Graphics::TextureManager::Add(Ref<Texture> texture)
 {
+	ZoneScoped;
+
 	if(texture)
 	{
 		if (!Exists(texture->GetName()))
@@ -156,6 +172,8 @@ void TRAP::Graphics::TextureManager::Add(Ref<Texture> texture)
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(Ref<Texture> texture)
 {
+	ZoneScoped;
+
 	if(texture)
 	{
 		if (Exists(texture->GetName()))
@@ -175,6 +193,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(Ref<Te
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const std::string& name)
 {
+	ZoneScoped;
+
 	if (Exists(name))
 	{
 		Ref<Texture> tex = std::move(Textures[name]);
@@ -192,6 +212,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Remove(const 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std::string& name,
                                                                        const TextureType textureType)
 {
+	ZoneScoped;
+
 	if(Exists(name))
 	{
 		if (Textures[name]->GetType() == textureType)
@@ -208,6 +230,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get(const std
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const std::string& name)
 {
+	ZoneScoped;
+
 	return Get(name, TextureType::Texture2D);
 }
 
@@ -215,6 +239,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Get2D(const s
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const std::string& name)
 {
+	ZoneScoped;
+
 	return Get(name, TextureType::TextureCube);
 }
 
@@ -222,6 +248,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const
 
 const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures()
 {
+	ZoneScoped;
+
 	return Textures;
 }
 
@@ -229,6 +257,8 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP:
 
 void TRAP::Graphics::TextureManager::Clean()
 {
+	ZoneScoped;
+
 	Textures.clear();
 
 	//Make sure that fallback textures are always available
@@ -240,6 +270,8 @@ void TRAP::Graphics::TextureManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const std::string& nameOrPath)
 {
+	ZoneScoped;
+
 	if(!std::filesystem::exists(nameOrPath))
 	{
 		//Name
@@ -297,6 +329,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(Ref<Texture> texture)
 {
+	ZoneScoped;
+
 	if(!Exists(texture->GetName()))
 	{
 		TP_WARN(Log::TextureManagerPrefix, "Couldn't find texture: \"", texture->GetName(), "\" to reload.");
@@ -313,6 +347,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(Ref<Te
 
 void TRAP::Graphics::TextureManager::ReloadAll()
 {
+	ZoneScoped;
+
 	TP_INFO(Log::TextureManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, texture] : Textures)
 		Reload(texture);
@@ -322,6 +358,8 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 
 bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
 {
+	ZoneScoped;
+
 	return Textures.find(name) != Textures.end();
 }
 
@@ -329,6 +367,8 @@ bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& path)
 {
+	ZoneScoped;
+
 	for (const auto& [name, texture] : Textures)
 	{
 		if (texture->GetType() == TextureType::Texture2D)

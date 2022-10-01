@@ -23,6 +23,8 @@ uint32_t TRAP::Graphics::Renderer::s_currentDrawCalls = 0;
 
 void TRAP::Graphics::Renderer::Init()
 {
+	ZoneScoped;
+
 	s_maxDrawCalls = RendererAPI::GPUSettings.MaxStorageBufferRange /
 	                 static_cast<uint32_t>(StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 	s_maxDrawCalls = TRAP::Math::Min(s_maxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
@@ -39,6 +41,8 @@ void TRAP::Graphics::Renderer::Init()
 
 void TRAP::Graphics::Renderer::Shutdown()
 {
+	ZoneScoped;
+
 	Renderer2D::Shutdown();
 
 	if(s_sceneStorageBuffer)
@@ -52,6 +56,8 @@ void TRAP::Graphics::Renderer::Shutdown()
 
 void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 {
+	ZoneScoped;
+
 	s_currentDrawCalls = 0;
 
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
@@ -64,6 +70,8 @@ void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
 
 void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
+	ZoneScoped;
+
 	s_currentDrawCalls = 0;
 
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
@@ -76,12 +84,15 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 void TRAP::Graphics::Renderer::EndScene()
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const Math::Mat4& transform)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
 
 	if(s_currentDrawCalls >= s_maxDrawCalls)
@@ -108,6 +119,8 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* const vertexBuffer, const IndexBuffer* const indexBuffer,
 									  const Math::Mat4& transform)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
 	TRAP_ASSERT(indexBuffer, "IndexBuffer is nullptr!");
 
@@ -136,4 +149,5 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 TRAP::Graphics::Renderer::SceneData::SceneData() noexcept
 	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
 {
+	ZoneScoped;
 }

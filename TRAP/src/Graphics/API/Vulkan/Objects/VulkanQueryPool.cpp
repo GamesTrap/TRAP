@@ -9,6 +9,8 @@
 TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc)
 	: m_vkQueryPool(VK_NULL_HANDLE), m_type(), m_count()
 {
+	ZoneScoped;
+
 	const TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
 	TRAP_ASSERT(device);
 
@@ -28,6 +30,8 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 
 TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_vkQueryPool);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -42,6 +46,8 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 
 VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const
 {
+	ZoneScoped;
+
 	return m_vkQueryPool;
 }
 
@@ -49,6 +55,8 @@ VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const
 
 VkQueryType TRAP::Graphics::API::VulkanQueryPool::GetVkQueryType() const
 {
+	ZoneScoped;
+
 	return m_type;
 }
 
@@ -56,5 +64,7 @@ VkQueryType TRAP::Graphics::API::VulkanQueryPool::GetVkQueryType() const
 
 uint32_t TRAP::Graphics::API::VulkanQueryPool::GetCount() const
 {
+	ZoneScoped;
+
 	return m_count;
 }

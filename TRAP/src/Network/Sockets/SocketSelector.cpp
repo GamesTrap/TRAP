@@ -55,6 +55,8 @@ namespace TRAP::Network
 TRAP::Network::SocketSelector::SocketSelector()
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>())
 {
+	ZoneScoped;
+
 	Clear();
 }
 
@@ -62,6 +64,8 @@ TRAP::Network::SocketSelector::SocketSelector()
 
 TRAP::Network::SocketSelector::~SocketSelector()
 {
+	ZoneScoped;
+
 	m_impl.reset();
 }
 
@@ -70,6 +74,7 @@ TRAP::Network::SocketSelector::~SocketSelector()
 TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -77,12 +82,15 @@ TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other)
 	: m_impl(std::move(other.m_impl))
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other)
 {
+	ZoneScoped;
+
 	m_impl = std::move(other.m_impl);
 	return *this;
 }
@@ -91,6 +99,8 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSe
 
 void TRAP::Network::SocketSelector::Add(Socket& socket)
 {
+	ZoneScoped;
+
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
@@ -126,6 +136,8 @@ void TRAP::Network::SocketSelector::Add(Socket& socket)
 
 void TRAP::Network::SocketSelector::Remove(Socket& socket) const
 {
+	ZoneScoped;
+
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
@@ -148,6 +160,8 @@ void TRAP::Network::SocketSelector::Remove(Socket& socket) const
 
 void TRAP::Network::SocketSelector::Clear() const
 {
+	ZoneScoped;
+
 	FD_ZERO(&m_impl->AllSockets);
 	FD_ZERO(&m_impl->SocketsReady);
 
@@ -159,6 +173,8 @@ void TRAP::Network::SocketSelector::Clear() const
 
 bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 {
+	ZoneScoped;
+
 	//Setup the timeout
 	timeval time{};
 	time.tv_sec = static_cast<time_t>(timeout.GetSeconds());
@@ -179,6 +195,8 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
 {
+	ZoneScoped;
+
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
@@ -197,6 +215,8 @@ bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
 
 TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const SocketSelector& right)
 {
+	ZoneScoped;
+
 	SocketSelector temp(right);
 
 	std::swap(m_impl, temp.m_impl);

@@ -8,6 +8,8 @@
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 {
+	ZoneScoped;
+
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePNMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
@@ -147,6 +149,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -157,6 +161,8 @@ const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 

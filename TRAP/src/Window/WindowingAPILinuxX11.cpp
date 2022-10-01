@@ -62,6 +62,8 @@ static constexpr uint32_t InvalidCodepoint = 0xFFFFFFFFu;
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
 int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* const mi)
 {
+	ZoneScoped;
+
 	if(mi->hTotal && mi->vTotal)
 	{
 		return static_cast<int32_t>(TRAP::Math::Round(static_cast<double>(mi->dotClock) /
@@ -77,6 +79,8 @@ int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* co
 TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::VideoModeFromModeInfo(const XRRModeInfo* const mi,
                                                                                                     const XRRCrtcInfo* const ci)
 {
+	ZoneScoped;
+
 	InternalVideoMode mode{};
 
 	if(ci->rotation == RR_Rotate_90 || ci->rotation == RR_Rotate_270)
@@ -103,6 +107,8 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Vi
 void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* const window, const Atom type, const int64_t a,
 												 const int64_t b, const int64_t c, const int64_t d, const int64_t e)
 {
+	ZoneScoped;
+
 	XEvent event = { ClientMessage };
 	event.xclient.window = window->Handle;
 	event.xclient.format = 32; //Data is 32-bit longs
@@ -122,6 +128,8 @@ void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* const win
 //Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
 bool TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(const Display* const, const XEvent* const event, XPointer pointer)
 {
+	ZoneScoped;
+
 	const InternalWindow* const window = reinterpret_cast<InternalWindow*>(pointer);
 
 	return event->type             == PropertyNotify   &&
@@ -135,6 +143,8 @@ bool TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(const Display* const, con
 //Wait for data to arrive on any of the specified file descriptors
 bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* const fds, const nfds_t count, double* const timeout)
 {
+	ZoneScoped;
+
 	while(true)
 	{
 		if(timeout)
@@ -180,6 +190,8 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForData(pollfd* const fds, const nfds_t c
 
 bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* const timeout)
 {
+	ZoneScoped;
+
 	pollfd fd = {ConnectionNumber(s_Data.display), POLLIN, 0};
 
 	while(!s_Data.XLIB.Pending(s_Data.display))
@@ -195,6 +207,8 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForX11Event(double* const timeout)
 
 bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* const timeout)
 {
+	ZoneScoped;
+
 	std::array<pollfd, 3> fds
 	{
 		{
@@ -223,6 +237,8 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForAnyEvent(double* const timeout)
 
 void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
 {
+	ZoneScoped;
+
 	while(true)
 	{
 		const char byte = 0;
@@ -236,6 +252,8 @@ void TRAP::INTERNAL::WindowingAPI::WriteEmptyEvent()
 
 void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 {
+	ZoneScoped;
+
 	while(true)
 	{
 		std::array<char, 64> dummy{};
@@ -249,6 +267,8 @@ void TRAP::INTERNAL::WindowingAPI::DrainEmptyEvents()
 
 bool TRAP::INTERNAL::WindowingAPI::CreateEmptyEventPipe()
 {
+	ZoneScoped;
+
 	if(pipe(s_Data.EmptyEventPipe.data()) != 0)
 	{
 		InputError(Error::Platform_Error, "X11: Failed to create empty event pipe: " + Utils::String::GetStrError());
@@ -278,6 +298,8 @@ bool TRAP::INTERNAL::WindowingAPI::CreateEmptyEventPipe()
 uint64_t TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, const Atom property, const Atom type,
                                                             uint8_t** const value)
 {
+	ZoneScoped;
+
 	Atom actualType{};
 	int32_t actualFormat{};
 	uint64_t itemCount{}, bytesAfter{};
@@ -293,6 +315,8 @@ uint64_t TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, con
 //Updates the normal hints according to the window settings
 void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(const InternalWindow* const window, const int32_t width, const int32_t height)
 {
+	ZoneScoped;
+
 	XSizeHints* const hints = s_Data.XLIB.AllocSizeHints();
 
 	long supplied;
@@ -334,6 +358,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(const InternalWindow* const
 //Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses
 bool TRAP::INTERNAL::WindowingAPI::WaitForVisibilityNotify(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	XEvent dummy;
 	double timeout = 0.1;
 
@@ -351,6 +377,8 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForVisibilityNotify(const InternalWindow*
 //Updates the full screen status of the window
 void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->Monitor)
 	{
 		if(s_Data.Xinerama.Available && s_Data.NET_WM_FULLSCREEN_MONITORS)
@@ -430,6 +458,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* const window
 //Returns the mode info for a RandR mode XID
 const XRRModeInfo* TRAP::INTERNAL::WindowingAPI::GetModeInfo(const XRRScreenResources* const sr, const RRMode id)
 {
+	ZoneScoped;
+
 	for(int32_t i = 0; i < sr->nmode; i++)
 	{
 		if(sr->modes[i].id == id)
@@ -444,6 +474,8 @@ const XRRModeInfo* TRAP::INTERNAL::WindowingAPI::GetModeInfo(const XRRScreenReso
 //Retrieve system content scale via folklore heuristics
 void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& yScale)
 {
+	ZoneScoped;
+
 	//Start by assuming the default X11 DPI
 	//NOTE: Some desktop environments (KDE) may remove the Xft.dpi field when it would be set to 96, so assume
 	//      that is the case if we cannot find it
@@ -479,6 +511,8 @@ void TRAP::INTERNAL::WindowingAPI::GetSystemContentScale(float& xScale, float& y
 //Look for and initialize supported X11 extensions
 bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 {
+	ZoneScoped;
+
 #if defined(__CYGWIN__)
 	s_Data.XI.Handle = TRAP::Utils::DynamicLoading::LoadLibrary("libXi-6.so");
 #elif defined (__OpenBSD__) || defined(__NetBSD__)
@@ -769,6 +803,8 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 //Check whether the running window manager is EMWH-compliant
 void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 {
+	ZoneScoped;
+
 	//First we read the _NET_SUPPORTING_WM_CHECK property on the root window
 	::Window* windowFromRoot = nullptr;
 	if(!GetWindowPropertyX11(s_Data.Root, s_Data.NET_SUPPORTING_WM_CHECK, XA_WINDOW,
@@ -839,6 +875,8 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 //Sets the X error handler callback
 void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(s_Data.PrevErrorHandler == nullptr);
 
 	s_Data.ErrorCode = 0; //0 = Success
@@ -850,6 +888,8 @@ void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 //X error handler
 int32_t TRAP::INTERNAL::WindowingAPI::ErrorHandler(Display* const display, XErrorEvent* const event)
 {
+	ZoneScoped;
+
 	if(s_Data.display != display)
 		return 0;
 
@@ -862,6 +902,8 @@ int32_t TRAP::INTERNAL::WindowingAPI::ErrorHandler(Display* const display, XErro
 //Clears the X error handler callback
 void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 {
+	ZoneScoped;
+
 	//Synchronize to make sure all commands are processed
 	s_Data.XLIB.Sync(s_Data.display, 0);
 	s_Data.XLIB.SetErrorHandler(s_Data.PrevErrorHandler);
@@ -874,6 +916,8 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const Atom* const supportedAtoms, const uint64_t atomCount,
                                                       const std::string_view atomName)
 {
+	ZoneScoped;
+
 	const Atom atom = s_Data.XLIB.InternAtom(s_Data.display, atomName.data(), 0);
 
 	for(uint64_t i = 0; i < atomCount; i++)
@@ -890,6 +934,8 @@ Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(const Atom* const supporte
 //Create a blank cursor for hidden and disabled cursor modes
 Cursor TRAP::INTERNAL::WindowingAPI::CreateHiddenCursor()
 {
+	ZoneScoped;
+
 	const std::array<uint8_t, static_cast<std::size_t>(16) * 16 * 4> pixels = {0};
 	return CreateCursorX11(TRAP::Image::LoadFromMemory(16, 16, TRAP::Image::ColorFormat::RGBA,
 	                                                           std::vector<uint8_t>(pixels.begin(),
@@ -901,6 +947,8 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateHiddenCursor()
 //Check whether the IM has a usable style
 bool TRAP::INTERNAL::WindowingAPI::HasUsableInputMethodStyle()
 {
+	ZoneScoped;
+
 	bool found = false;
 	XIMStyles* styles = nullptr;
 
@@ -924,6 +972,8 @@ bool TRAP::INTERNAL::WindowingAPI::HasUsableInputMethodStyle()
 
 void TRAP::INTERNAL::WindowingAPI::InputMethodDestroyCallback(XIM, XPointer, XPointer)
 {
+	ZoneScoped;
+
 	s_Data.IM = nullptr;
 }
 
@@ -931,6 +981,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMethodDestroyCallback(XIM, XPointer, XPo
 
 void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display*, XPointer, XPointer)
 {
+	ZoneScoped;
+
 	if(s_Data.IM)
 		return;
 
@@ -961,6 +1013,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display*, XPoi
 //Poll for changes in the set of connected monitors
 void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 {
+	ZoneScoped;
+
 	if(!s_Data.RandR.Available || s_Data.RandR.MonitorBroken)
 	{
 		InputMonitor(CreateMonitor("Display"), true, 0);
@@ -1058,6 +1112,8 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 //Returns whether the event is a selection event
 int32_t TRAP::INTERNAL::WindowingAPI::IsSelectionEvent(Display* const, XEvent* const event, XPointer)
 {
+	ZoneScoped;
+
 	if(event->xany.window != s_Data.HelperWindowHandle)
 		return 0;
 
@@ -1071,6 +1127,8 @@ int32_t TRAP::INTERNAL::WindowingAPI::IsSelectionEvent(Display* const, XEvent* c
 //Set the specified property to the selection converted to the requested target
 Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequestEvent* const request)
 {
+	ZoneScoped;
+
 	std::string selectionString{};
 	const std::array<Atom, 2> formats{s_Data.UTF8_STRING, XA_STRING};
 
@@ -1169,6 +1227,8 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 
 void TRAP::INTERNAL::WindowingAPI::HandleSelectionRequest(XEvent& event)
 {
+	ZoneScoped;
+
 	const XSelectionRequestEvent* const request = &event.xselectionrequest;
 
 	XEvent reply = {SelectionNotify};
@@ -1187,6 +1247,8 @@ void TRAP::INTERNAL::WindowingAPI::HandleSelectionRequest(XEvent& event)
 //Push contents of our selection to clipboard manager
 void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 {
+	ZoneScoped;
+
 	s_Data.XLIB.ConvertSelection(s_Data.display, s_Data.CLIPBOARD_MANAGER, s_Data.SAVE_TARGETS, None,
 	                             s_Data.HelperWindowHandle, CurrentTime);
 
@@ -1226,6 +1288,8 @@ void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 
 void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	XIMCallback callback;
 	callback.callback = reinterpret_cast<XIMProc>(InputContextDestroyCallback);
 	callback.client_data = reinterpret_cast<XPointer>(window);
@@ -1256,6 +1320,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow* const w
 
 bool TRAP::INTERNAL::WindowingAPI::IsVisualTransparentX11(Visual* const visual)
 {
+	ZoneScoped;
+
 	if(!s_Data.XRender.Available)
 		return false;
 
@@ -1269,6 +1335,8 @@ bool TRAP::INTERNAL::WindowingAPI::IsVisualTransparentX11(Visual* const visual)
 bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* const window, WindowConfig& WNDConfig,
                                                       Visual* const visual, int32_t depth)
 {
+	ZoneScoped;
+
 	const int32_t width = static_cast<int32_t>(WNDConfig.Width);
 	const int32_t height = static_cast<int32_t>(WNDConfig.Height);
 
@@ -1435,6 +1503,8 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* const wind
 Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const TRAP::Image* const image, int32_t const xHotSpot,
                                                      const int32_t yHotSpot)
 {
+	ZoneScoped;
+
 	if(!s_Data.XCursor.Handle)
 		return 0;
 
@@ -1470,6 +1540,8 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const TRAP::Image* const im
 //Returns whether the window is iconified
 int32_t TRAP::INTERNAL::WindowingAPI::GetWindowState(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	int32_t result = WithdrawnState;
 	struct State
 	{
@@ -1736,6 +1808,8 @@ const std::array<TRAP::INTERNAL::WindowingAPI::CodePair, 828> TRAP::INTERNAL::Wi
 //Encode a Unicode code point to a UTF-8 stream
 std::size_t TRAP::INTERNAL::WindowingAPI::EncodeUTF8(char* const s, const uint32_t ch)
 {
+	ZoneScoped;
+
 	std::size_t count = 0;
 
 	if(ch < 0x80)
@@ -1766,6 +1840,8 @@ std::size_t TRAP::INTERNAL::WindowingAPI::EncodeUTF8(char* const s, const uint32
 
 std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(const Atom selection)
 {
+	ZoneScoped;
+
 	std::string* selectionString = nullptr;
 	const std::array<Atom, 2> targets = {s_Data.UTF8_STRING, XA_STRING};
 
@@ -1870,6 +1946,8 @@ std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(const Atom selectio
 //Convert XKB KeySym to Unicode
 uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
 {
+	ZoneScoped;
+
 	int32_t min = 0;
 	int32_t max = KeySymTab.size() - 1;
 	int32_t mid = 0;
@@ -1906,6 +1984,8 @@ uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
 //Returns whether it is a property event for the specified selection transfer
 int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display* const, XEvent* const event, XPointer pointer)
 {
+	ZoneScoped;
+
 	const XEvent* const notification = reinterpret_cast<XEvent*>(pointer);
 
 	return event->type == PropertyNotify &&
@@ -1919,6 +1999,8 @@ int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display* const, XE
 //Convert the specified Latin-1 string to UTF-8
 std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const std::string_view source)
 {
+	ZoneScoped;
+
 	std::size_t size = 1;
 	const char* sp = nullptr;
 
@@ -1939,6 +2021,8 @@ std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const std::string_
 
 TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor* const monitor)
 {
+	ZoneScoped;
+
 	InternalVideoMode mode{};
 
 	if(s_Data.RandR.Available && !s_Data.RandR.MonitorBroken)
@@ -1974,6 +2058,8 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Pl
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow* const window, int32_t& width,
                                                          int32_t& height)
 {
+	ZoneScoped;
+
 	XWindowAttributes attribs;
 	s_Data.XLIB.GetWindowAttributes(s_Data.display, window->Handle, &attribs);
 
@@ -1985,6 +2071,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowSize(const InternalWindow* c
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* const window, const int32_t xPos, const int32_t yPos)
 {
+	ZoneScoped;
+
 	//HACK: Explicitly setting PPosition to any value causes some WMs, notably Compiz and Metacity, to honor
 	//      the position of unmapped windows
 	if(!PlatformWindowVisible(window))
@@ -2013,6 +2101,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* cons
 														    const int32_t xPos, const int32_t yPos, const int32_t width,
 															const int32_t height, const int32_t /*refreshRate*/)
 {
+	ZoneScoped;
+
 	if(window->Monitor == monitor)
 	{
 		if(monitor)
@@ -2069,6 +2159,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* cons
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWindow* const window,
                                                                       InternalMonitor* const monitor)
 {
+	ZoneScoped;
+
 	window->BorderlessFullscreen = true;
 	window->Monitor = monitor;
 	UpdateNormalHints(window, 0, 0);
@@ -2090,6 +2182,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes(const InternalMonitor* const monitor)
 {
+	ZoneScoped;
+
 	std::vector<InternalVideoMode> result{};
 	uint32_t count = 0;
 
@@ -2141,6 +2235,8 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 {
+	ZoneScoped;
+
 #if !defined(X_HAVE_UTF8_STRING)
 	//HACK: If the current locale is "C" and the Xlib UTF-8 functions are unavailable, apply the environment's
 	//      locale in the hope that it's both available and not "C"
@@ -2415,6 +2511,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if (s_Data.DisabledCursorWindow == window)
 		s_Data.DisabledCursorWindow = nullptr;
 		// EnableCursor(window);
@@ -2449,6 +2547,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* const w
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 {
+	ZoneScoped;
+
 	if(s_Data.HelperWindowHandle)
 	{
 		if(s_Data.XLIB.GetSelectionOwner(s_Data.display, s_Data.CLIPBOARD) == s_Data.HelperWindowHandle)
@@ -2546,6 +2646,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const InternalMonitor*, float& xScale,
                                                                   float& yScale)
 {
+	ZoneScoped;
+
 	xScale = s_Data.ContentScaleX;
 	yScale = s_Data.ContentScaleY;
 }
@@ -2555,6 +2657,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const Internal
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor* const monitor, int32_t& xPos,
                                                          int32_t& yPos)
 {
+	ZoneScoped;
+
 	if(!s_Data.RandR.Available || s_Data.RandR.MonitorBroken)
 		return;
 
@@ -2575,6 +2679,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor* 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(PlatformWindowVisible(window))
 		return;
 
@@ -2586,6 +2692,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(InternalWindow* const wind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(s_Data.NET_ACTIVE_WINDOW)
 		SendEventToWM(window, s_Data.NET_ACTIVE_WINDOW, 1, 0, 0, 0, 0);
 	else if (PlatformWindowVisible(window))
@@ -2602,6 +2710,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* con
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* const window,
 			                                            WindowConfig& WNDConfig)
 {
+	ZoneScoped;
+
 	Visual* visual = nullptr;
 	int32_t depth = 0;
 
@@ -2644,6 +2754,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* const wi
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* const window, const std::string& title)
 {
+	ZoneScoped;
+
 	if (s_Data.XLIB.UTF8)
 	{
 		s_Data.XLIB.UTF8SetWMProperties(s_Data.display,
@@ -2683,6 +2795,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowTitle(const InternalWindow* 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* const cursor, const Image* const image,
                                                         const int32_t xHotspot, const int32_t yHotspot)
 {
+	ZoneScoped;
+
 	cursor->Handle = CreateCursorX11(image, xHotspot, yHotspot);
 
 	return cursor->Handle;
@@ -2692,6 +2806,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* const cu
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* const cursor, const CursorType& type)
 {
+	ZoneScoped;
+
 	if(s_Data.XCursor.Handle)
 	{
 		const char* const theme = s_Data.XCursor.GetTheme(s_Data.display);
@@ -2775,6 +2891,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* const cursor)
 {
+	ZoneScoped;
+
 	if(cursor->Handle)
 		s_Data.XLIB.FreeCursor(s_Data.display, cursor->Handle);
 }
@@ -2783,6 +2901,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* const c
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* const window, const InternalCursor* const /*cursor*/)
 {
+	ZoneScoped;
+
 	if(window->cursorMode != CursorMode::Normal)
 		return;
 
@@ -2794,6 +2914,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* const
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* const window, const CursorMode mode)
 {
+	ZoneScoped;
+
 	if (PlatformWindowFocused(window))
 	{
 		if (mode == CursorMode::Disabled)
@@ -2831,6 +2953,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* const w
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow* const window, const double xPos, const double yPos)
 {
+	ZoneScoped;
+
 	//Store the new position so it can be recognized later
 	window->WarpCursorPosX = static_cast<int32_t>(xPos);
 	window->WarpCursorPosY = static_cast<int32_t>(yPos);
@@ -2844,6 +2968,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(InternalWindow* const wi
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow* const window, double& xPos, double& yPos)
 {
+	ZoneScoped;
+
 	::Window root = 0, child = 0;
 	int32_t rootX = 0, rootY = 0, childX = 0, childY = 0;
 	uint32_t mask = 0;
@@ -2859,6 +2985,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetCursorPos(const InternalWindow* co
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* const window, const Image* const image)
 {
+	ZoneScoped;
+
 	if(image)
 	{
 		const uint32_t longCount = 2 + image->GetWidth() * image->GetHeight();
@@ -2901,6 +3029,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowIcon(InternalWindow* const w
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow* const window, int32_t& xPos, int32_t& yPos)
 {
+	ZoneScoped;
+
 	::Window dummy = 0;
 	int32_t x = 0, y = 0;
 
@@ -2914,6 +3044,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowPos(const InternalWindow* co
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* const window, const int32_t width, const int32_t height)
 {
+	ZoneScoped;
+
 	if(window->Monitor && window->Monitor->Window == window)
 	{
 		if(window->Monitor->Window->BorderlessFullscreen)
@@ -2936,6 +3068,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* const w
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* const window, const bool /*enabled*/)
 {
+	ZoneScoped;
+
 	int32_t width = 0, height = 0;
 
 	PlatformGetWindowSize(window, width, height);
@@ -2946,6 +3080,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* co
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWindow* const window, const bool enabled)
 {
+	ZoneScoped;
+
 	struct Hints
 	{
 		uint64_t Flags = 0;
@@ -2966,6 +3102,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindow* const window, const bool enabled)
 {
+	ZoneScoped;
+
 	if(!s_Data.NET_WM_STATE || !s_Data.NET_WM_STATE_ABOVE)
 		return;
 
@@ -3025,6 +3163,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow* const window, const float opacity)
 {
+	ZoneScoped;
+
 	const CARD32 value = static_cast<CARD32>(0xFFFFFFFFu * static_cast<double>(opacity));
 	s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.NET_WM_WINDOW_OPACITY, XA_CARDINAL, 32,
 	                           PropModeReplace, reinterpret_cast<const uint8_t*>(&value), 1);
@@ -3034,6 +3174,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWindow* const window, const bool enabled)
 {
+	ZoneScoped;
+
 	if(!s_Data.XShape.Available)
 		return;
 
@@ -3051,12 +3193,15 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow* const /*window*/)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	float opacity = 1.0f;
 
 	if(s_Data.XLIB.GetSelectionOwner(s_Data.display, s_Data.NET_WM_CM_Sx))
@@ -3079,6 +3224,8 @@ float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindo
 void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWindow* const window, int32_t& width,
                                                               int32_t& height)
 {
+	ZoneScoped;
+
 	PlatformGetWindowSize(window, width, height);
 }
 
@@ -3086,6 +3233,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow*, float& xScale, float& yScale)
 {
+	ZoneScoped;
+
 	xScale = s_Data.ContentScaleX;
 	yScale = s_Data.ContentScaleY;
 }
@@ -3095,6 +3244,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalW
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMonitor* const monitor, int32_t& xPos,
                                                               int32_t& yPos, int32_t& width, int32_t& height)
 {
+	ZoneScoped;
+
 	int32_t areaX = 0, areaY = 0, areaWidth = 0, areaHeight = 0;
 
 	if(s_Data.RandR.Available && !s_Data.RandR.MonitorBroken)
@@ -3179,6 +3330,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMoni
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisible(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	XWindowAttributes wa;
 	s_Data.XLIB.GetWindowAttributes(s_Data.display, window->Handle, &wa);
 
@@ -3189,6 +3342,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisible(const InternalWindow* c
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximized(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	Atom* states = nullptr;
 	bool maximized = false;
 
@@ -3217,6 +3372,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximized(const InternalWindow*
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	return GetWindowState(window) == IconicState;
 }
 
@@ -3224,6 +3381,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const InternalWindow*
 
 void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
+	ZoneScoped;
+
 	DrainEmptyEvents();
 
 	Input::DetectControllerConnectionLinux();
@@ -3254,6 +3413,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(double timeout)
 {
+	ZoneScoped;
+
 	if(timeout == 0.0)
 		WaitForAnyEvent(nullptr);
 	else
@@ -3266,6 +3427,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformWaitEvents(double timeout)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 {
+	ZoneScoped;
+
 	WriteEmptyEvent();
 }
 
@@ -3273,6 +3436,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPostEmptyEvent()
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	::Window focused = 0;
 	int32_t state = 0;
 
@@ -3285,6 +3450,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const InternalWindow* c
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHovered(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	::Window w = s_Data.Root;
 	while(w)
 	{
@@ -3314,6 +3481,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHovered(const InternalWindow* c
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformRawMouseMotionSupported()
 {
+	ZoneScoped;
+
 	return s_Data.XI.Available;
 }
 
@@ -3321,6 +3490,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformRawMouseMotionSupported()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindow* window, const bool enabled)
 {
+	ZoneScoped;
+
 	if(!s_Data.XI.Available)
 		return;
 
@@ -3338,6 +3509,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetRawMouseMotion(const InternalWindo
 void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* const /*window*/, const ProgressState state,
 													   const uint32_t completed)
 {
+	ZoneScoped;
+
 	if(!s_Data.DBUS.Handle || !s_Data.DBUS.Connection)
 		return;
 
@@ -3400,6 +3573,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetProgress(const InternalWindow* con
 
 int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key key)
 {
+	ZoneScoped;
+
 	return s_Data.ScanCodes[static_cast<uint32_t>(key)];
 }
 
@@ -3407,6 +3582,8 @@ int32_t TRAP::INTERNAL::WindowingAPI::PlatformGetKeyScanCode(const Input::Key ke
 
 const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t scanCode)
 {
+	ZoneScoped;
+
 	if(!s_Data.XKB.Available)
 		return nullptr;
 
@@ -3439,6 +3616,8 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string& string)
 {
+	ZoneScoped;
+
 	s_Data.ClipboardString = string;
 
 	s_Data.XLIB.SetSelectionOwner(s_Data.display, s_Data.CLIPBOARD, s_Data.HelperWindowHandle, CurrentTime);
@@ -3451,6 +3630,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 
 std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 {
+	ZoneScoped;
+
 	return GetSelectionString(s_Data.CLIPBOARD);
 }
 
@@ -3458,6 +3639,8 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions)
 {
+	ZoneScoped;
+
 	if(!s_Data.VK.KHR_Surface)
 		return;
 
@@ -3483,6 +3666,8 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 																   const VkAllocationCallbacks* const allocator,
 																   VkSurfaceKHR& surface)
 {
+	ZoneScoped;
+
 	if(s_Data.VK.KHR_XCB_Surface && s_Data.XCB.Handle)
 	{
 		xcb_connection_t* const connection = s_Data.XCB.GetXCBConnection(s_Data.display);
@@ -3542,6 +3727,8 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance in
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(!s_Data.NET_WM_STATE || !s_Data.NET_WM_STATE_MAXIMIZED_VERT || !s_Data.NET_WM_STATE_MAXIMIZED_HORZ)
 	   return;
 
@@ -3595,6 +3782,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->OverrideRedirect)
 	{
 		//Override-redirect windows cannot be minimized or restored, as those tasks are performed by the
@@ -3612,6 +3801,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const InternalWindow* 
 
 void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(!s_Data.NET_WM_STATE || !s_Data.NET_WM_STATE_DEMANDS_ATTENTION)
 		return;
 
@@ -3623,6 +3814,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(const Internal
 
 void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	s_Data.XLIB.UnmapWindow(s_Data.display, window->Handle);
 	s_Data.XLIB.Flush(s_Data.display);
 }
@@ -3631,6 +3824,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(const InternalWindow* cons
 
 void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->OverrideRedirect)
 	{
 		//Override-redirect windows cannot be minimized or restored, as those tasks are performed by
@@ -3662,6 +3857,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* c
                                                                const int32_t /*minHeight*/, const int32_t /*maxWidth*/,
                                                                const int32_t /*maxHeight*/)
 {
+	ZoneScoped;
+
 	int32_t width = 0, height = 0;
 	PlatformGetWindowSize(window, width, height);
 	UpdateNormalHints(window, width, height);
@@ -3673,6 +3870,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* c
 //Enable XI2 raw mouse motion events
 void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* const /*window*/)
 {
+	ZoneScoped;
+
 	XIEventMask em;
 	std::array<uint8_t, XIMaskLen(XI_RawMotion)> mask = {0};
 
@@ -3689,6 +3888,8 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* co
 //Disable XI2 raw mouse motion events
 void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* const /*window*/)
 {
+	ZoneScoped;
+
 	XIEventMask em;
 	std::array<uint8_t, 1> mask = {0};
 
@@ -3704,6 +3905,8 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* c
 //Reports the specified error, appending information about the last X Error
 void TRAP::INTERNAL::WindowingAPI::InputErrorX11(const Error error, const std::string& message)
 {
+	ZoneScoped;
+
 	std::vector<char> buffer{};
 	buffer.resize(1024);
 	s_Data.XLIB.GetErrorText(s_Data.display, s_Data.ErrorCode, buffer.data(), static_cast<int32_t>(buffer.size()));
@@ -3718,6 +3921,8 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(const Error error, const std::s
 //Process the specified X event
 void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 {
+	ZoneScoped;
+
 	int32_t keyCode = 0;
 	bool filtered = false;
 
@@ -4327,6 +4532,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 //Translates an X11 key code to a TRAP key token
 TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCode)
 {
+	ZoneScoped;
+
 	//Use the pre-filled LUT (see CreateKeyTables())
 	if(scanCode < 0 || scanCode > 255)
 		return Input::Key::Unknown;
@@ -4339,6 +4546,8 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const int32_t scanCo
 //Decode a Unicode code point from a UTF-8 stream
 uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** const s)
 {
+	ZoneScoped;
+
 	uint32_t ch = 0, count = 0;
 	static const std::array<uint32_t, 6> offsets =
 	{
@@ -4363,6 +4572,8 @@ uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** const s)
 //Splits and translates a text/uri-list into separate file paths
 std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text, int32_t& count)
 {
+	ZoneScoped;
+
 	const std::string prefix = "file://";
 	std::vector<std::string> paths{};
 	const char* line = nullptr;
@@ -4415,6 +4626,8 @@ std::vector<std::string> TRAP::INTERNAL::WindowingAPI::ParseUriList(char* text, 
 //Make the specified window and its video mode active on its monitor
 void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(s_Data.Saver.Count == 0)
 	{
 		//Remember old screen saver settings
@@ -4450,6 +4663,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* const window)
 //Remove the window and restore the original video mode
 void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->Monitor->Window != window)
 		return;
 
@@ -4471,6 +4686,8 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* const wi
 //Set the current video mode for the specified monitor
 void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* const monitor, const InternalVideoMode& desired)
 {
+	ZoneScoped;
+
 	if(!s_Data.RandR.Available || s_Data.RandR.MonitorBroken)
 		return;
 
@@ -4517,6 +4734,8 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* const monito
 //Restore the saved(original) video mode for the specified monitor
 void TRAP::INTERNAL::WindowingAPI::RestoreVideoModeX11(InternalMonitor* const monitor)
 {
+	ZoneScoped;
+
 	if(!s_Data.RandR.Available || s_Data.RandR.MonitorBroken)
 		return;
 
@@ -4540,6 +4759,8 @@ void TRAP::INTERNAL::WindowingAPI::RestoreVideoModeX11(InternalMonitor* const mo
 //Make the specified window active on its monitor
 void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(s_Data.Saver.Count == 0)
 	{
 		//Remember old screen saver settings
@@ -4573,6 +4794,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* cons
 //Creates a dummy window for behind-the-scenes work
 ::Window TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 {
+	ZoneScoped;
+
 	XSetWindowAttributes wa;
 	wa.event_mask = PropertyChangeMask;
 
@@ -4585,6 +4808,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* cons
 //Updates the cursor image according to its cursor mode
 void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->cursorMode == CursorMode::Normal || window->cursorMode == CursorMode::Captured)
 	{
 		if(window->Cursor)
@@ -4601,6 +4826,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* const
 //Apply disabled cursor mode to a focused window
 void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->RawMouseMotion)
 		EnableRawMouseMotion(window);
 
@@ -4616,6 +4843,8 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* const window)
 //Exit disabled cursor mode for the specified window
 void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	if(window->RawMouseMotion)
 		DisableRawMouseMotion(window);
 
@@ -4630,6 +4859,8 @@ void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* const window)
 //Clear its handle when the input context has been destroyed
 void TRAP::INTERNAL::WindowingAPI::InputContextDestroyCallback(XIC, XPointer clientData, XPointer)
 {
+	ZoneScoped;
+
 	InternalWindow* const window = reinterpret_cast<InternalWindow*>(clientData);
 
 	window->IC = nullptr;
@@ -4640,6 +4871,8 @@ void TRAP::INTERNAL::WindowingAPI::InputContextDestroyCallback(XIC, XPointer cli
 //Allocates and returns a monitor object with the specified name and dimensions
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::WindowingAPI::CreateMonitor(std::string name)
 {
+	ZoneScoped;
+
 	Scope<InternalMonitor> monitor = MakeScope<InternalMonitor>();
 	if(!name.empty())
 		monitor->Name = std::move(name);
@@ -4652,6 +4885,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 //Create key code translation tables
 void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 {
+	ZoneScoped;
+
 	int32_t scanCode = 0, scanCodeMin = 0, scanCodeMax = 0;
 
 	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
@@ -4812,6 +5047,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 //Grabs the cursor and confines it to the window
 void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow* const window)
 {
+	ZoneScoped;
+
 	s_Data.XLIB.GrabPointer(s_Data.display, window->Handle, 1,
 				            ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
 				            GrabModeAsync, GrabModeAsync,
@@ -4825,6 +5062,8 @@ void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow* const window)
 //Ungrabs the cursor
 void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 {
+	ZoneScoped;
+
 	s_Data.XLIB.UngrabPointer(s_Data.display, CurrentTime);
 }
 
@@ -4835,6 +5074,8 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 //      It is layout-dependent and will fail partially on most non-US layouts
 TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const KeySym* const keySyms, const int32_t width)
 {
+	ZoneScoped;
+
 	if(width > 1)
 	{
 		switch(keySyms[1])
@@ -5266,6 +5507,8 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const KeySym* co
 
 std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 {
+	ZoneScoped;
+
 	if (!s_Data.XKB.Available)
 	{
 		InputError(Error::API_Unavailable, "[Input][X11] XKB extension required for keyboard layout names");
@@ -5299,6 +5542,8 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* const window, const bool value)
 {
+	ZoneScoped;
+
 	if(value)
 	{
 		//Announce support for Xdnd (drag and drop)

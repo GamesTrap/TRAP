@@ -3,6 +3,8 @@
 
 TRAP::Utils::Timer::Timer()
 {
+	ZoneScoped;
+
 	Reset();
 }
 
@@ -10,6 +12,8 @@ TRAP::Utils::Timer::Timer()
 
 void TRAP::Utils::Timer::Reset()
 {
+	ZoneScoped;
+
 	m_start = std::chrono::high_resolution_clock::now();
 }
 
@@ -17,6 +21,8 @@ void TRAP::Utils::Timer::Reset()
 
 float TRAP::Utils::Timer::Elapsed() const
 {
+	ZoneScoped;
+
 	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
 		(
 			std::chrono::high_resolution_clock::now() - m_start
@@ -27,6 +33,8 @@ float TRAP::Utils::Timer::Elapsed() const
 
 float TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
+	ZoneScoped;
+
 	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
 		(
 			std::chrono::high_resolution_clock::now() - m_start

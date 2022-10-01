@@ -24,6 +24,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceFragmentShaderInterlockFeatures(),
 	  m_deviceUUID()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(instance, "instance is nullptr");
 
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
@@ -198,6 +200,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_physicalDevice);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -210,6 +214,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 
 VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice() const
 {
+	ZoneScoped;
+
 	return m_physicalDevice;
 }
 
@@ -217,6 +223,8 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevice(
 
 VkFormatProperties TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFormatProperties(const VkFormat format) const
 {
+	ZoneScoped;
+
 	VkFormatProperties formatProps{};
 
 	vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &formatProps);
@@ -228,6 +236,8 @@ VkFormatProperties TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDevic
 
 const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceProperties() const
 {
+	ZoneScoped;
+
 	return m_physicalDeviceProperties;
 }
 
@@ -235,6 +245,8 @@ const VkPhysicalDeviceProperties &TRAP::Graphics::API::VulkanPhysicalDevice::Get
 
 const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceSubgroupProperties() const
 {
+	ZoneScoped;
+
 	return m_physicalDeviceSubgroupProperties;
 }
 
@@ -242,6 +254,8 @@ const VkPhysicalDeviceSubgroupProperties &TRAP::Graphics::API::VulkanPhysicalDev
 
 const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const
 {
+	ZoneScoped;
+
 	return m_physicalDeviceIDProperties;
 }
 
@@ -249,6 +263,8 @@ const VkPhysicalDeviceIDProperties &TRAP::Graphics::API::VulkanPhysicalDevice::G
 
 const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceMemoryProperties() const
 {
+	ZoneScoped;
+
 	return m_physicalDeviceMemoryProperties;
 }
 
@@ -256,6 +272,8 @@ const VkPhysicalDeviceMemoryProperties &TRAP::Graphics::API::VulkanPhysicalDevic
 
 const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFeatures() const
 {
+	ZoneScoped;
+
 	return m_physicalDeviceFeatures;
 }
 
@@ -263,6 +281,8 @@ const VkPhysicalDeviceFeatures &TRAP::Graphics::API::VulkanPhysicalDevice::GetVk
 
 const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const
 {
+	ZoneScoped;
+
 	return m_physicalDeviceFragmentShaderInterlockFeatures;
 }
 
@@ -270,6 +290,8 @@ const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT &TRAP::Graphics::API::V
 
 const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const
 {
+	ZoneScoped;
+
 	return m_queueFamilyProperties;
 }
 
@@ -277,6 +299,8 @@ const std::vector<VkQueueFamilyProperties> &TRAP::Graphics::API::VulkanPhysicalD
 
 bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::string_view extension)
 {
+	ZoneScoped;
+
 	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
 
@@ -305,6 +329,8 @@ bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::
 
 const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
 {
+	ZoneScoped;
+
 	if (m_availablePhysicalDeviceExtensions.empty())
 		LoadAllPhysicalDeviceExtensions();
 
@@ -315,6 +341,8 @@ const std::vector<VkExtensionProperties> &TRAP::Graphics::API::VulkanPhysicalDev
 
 const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhysicalDeviceUUID() const
 {
+	ZoneScoped;
+
 	return m_deviceUUID;
 }
 
@@ -322,6 +350,8 @@ const std::array<uint8_t, 16> &TRAP::Graphics::API::VulkanPhysicalDevice::GetPhy
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
 {
+	ZoneScoped;
+
 	if(VulkanRenderer::s_fragmentShaderInterlockExtension)
 	{
 		VkPhysicalDeviceFeatures2 features2;
@@ -340,6 +370,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice::GetVendor() const
 {
+	ZoneScoped;
+
 	switch(m_physicalDeviceProperties.vendorID)
 	{
 	case 0x1002:
@@ -378,6 +410,8 @@ TRAP::Graphics::RendererAPI::GPUVendor TRAP::Graphics::API::VulkanPhysicalDevice
 
 const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const TRAP::Ref<VulkanInstance> &instance)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(instance, "instance is nullptr");
 
 	if (!s_availablePhysicalDeviceUUIDs.empty())
@@ -406,6 +440,8 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance> &instance,
 																					  const std::array<uint8_t, 16> &physicalDeviceUUID)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(instance, "instance is nullptr");
 
 	const auto physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
@@ -446,6 +482,8 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 
 const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(const VkInstance &instance)
 {
+	ZoneScoped;
+
 	if (!s_availablePhysicalDeviceUUIDs.empty())
 		return s_availablePhysicalDeviceUUIDs;
 
@@ -471,6 +509,8 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 
 std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllVkPhysicalDevices(const VkInstance &instance)
 {
+	ZoneScoped;
+
 	uint32_t physicalDeviceCount = 0;
 	VkCall(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr));
 
@@ -484,6 +524,8 @@ std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllV
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice> &physicalDevices, VkInstance instance)
 {
+	ZoneScoped;
+
 	// Score each Physical Device and insert into multimap
 	uint32_t score = 0;
 	for (VkPhysicalDevice dev : physicalDevices)
@@ -846,6 +888,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions()
 {
+	ZoneScoped;
+
 	uint32_t extensionsCount = 0;
 	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionsCount, nullptr));
 	m_availablePhysicalDeviceExtensions.resize(extensionsCount);
@@ -857,6 +901,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::LoadAllPhysicalDeviceExtensions(
 
 uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMaxUsableMSAASampleCount() const
 {
+	ZoneScoped;
+
 	VkSampleCountFlags sampleCounts = TRAP::Math::Min(m_physicalDeviceProperties.limits.framebufferColorSampleCounts,
 	                                                  m_physicalDeviceProperties.limits.framebufferDepthSampleCounts);
 	sampleCounts = TRAP::Math::Min(sampleCounts, m_physicalDeviceProperties.limits.framebufferStencilSampleCounts);

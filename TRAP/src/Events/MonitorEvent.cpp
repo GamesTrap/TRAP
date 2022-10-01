@@ -3,6 +3,8 @@
 
 TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
 {
+	ZoneScoped;
+
 	return m_monitor;
 }
 
@@ -10,6 +12,8 @@ TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
 
 TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -17,7 +21,9 @@ TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 
 TRAP::Events::MonitorEvent::MonitorEvent(Monitor monitor)
 	: m_monitor(std::move(monitor))
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -25,12 +31,16 @@ TRAP::Events::MonitorEvent::MonitorEvent(Monitor monitor)
 
 TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor)
 	: MonitorEvent(monitor)
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::MonitorConnectEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "MonitorConnectEvent: " + m_monitor.GetName() + " (" + std::to_string(m_monitor.GetID()) + ')';
 }
 
@@ -38,6 +48,8 @@ std::string TRAP::Events::MonitorConnectEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -45,6 +57,8 @@ TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const
 
 std::string TRAP::Events::MonitorConnectEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MonitorConnect";
 }
 
@@ -52,12 +66,16 @@ std::string TRAP::Events::MonitorConnectEvent::GetName() const
 
 TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monitor)
 	: MonitorEvent(monitor)
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "MonitorDisconnectEvent: " + m_monitor.GetName() + " (" + std::to_string(m_monitor.GetID()) + ')';
 }
 
@@ -65,6 +83,8 @@ std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -72,5 +92,7 @@ TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() con
 
 std::string TRAP::Events::MonitorDisconnectEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "MonitorDisconnect";
 }

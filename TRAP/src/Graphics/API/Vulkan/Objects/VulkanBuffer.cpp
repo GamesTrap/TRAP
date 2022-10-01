@@ -18,6 +18,8 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	  m_allocation(VK_NULL_HANDLE),
 	  m_offset()
 {
+	ZoneScoped;
+
 	m_CPUMappedAddress = nullptr;
 	m_size = desc.Size;
 	m_descriptors = desc.Descriptors;
@@ -120,6 +122,8 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 
 TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_vkBuffer);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -146,6 +150,8 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const
 {
+	ZoneScoped;
+
 	return m_vkBuffer;
 }
 
@@ -153,6 +159,8 @@ VkBuffer TRAP::Graphics::API::VulkanBuffer::GetVkBuffer() const
 
 VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const
 {
+	ZoneScoped;
+
 	return m_vkStorageTexelView;
 }
 
@@ -160,6 +168,8 @@ VkBufferView TRAP::Graphics::API::VulkanBuffer::GetStorageTexelView() const
 
 VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const
 {
+	ZoneScoped;
+
 	return m_vkUniformTexelView;
 }
 
@@ -167,6 +177,8 @@ VkBufferView TRAP::Graphics::API::VulkanBuffer::GetUniformTexelView() const
 
 uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const
 {
+	ZoneScoped;
+
 	return m_offset;
 }
 
@@ -174,6 +186,8 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const
 
 VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 {
+	ZoneScoped;
+
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
 
@@ -184,6 +198,8 @@ VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 
 uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 {
+	ZoneScoped;
+
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
 
@@ -194,6 +210,8 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 
 uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const
 {
+	ZoneScoped;
+
 	return m_size;
 }
 
@@ -201,6 +219,8 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const
 
 TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::GetDescriptors() const
 {
+	ZoneScoped;
+
 	return m_descriptors;
 }
 
@@ -208,6 +228,8 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::G
 
 TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuffer::GetMemoryUsage() const
 {
+	ZoneScoped;
+
 	return m_memoryUsage;
 }
 
@@ -215,6 +237,8 @@ TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuff
 
 void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const
 {
+	ZoneScoped;
+
 	return m_CPUMappedAddress;
 }
 
@@ -222,6 +246,8 @@ void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const
 
 void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* const range)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "Trying to unmap non-CPU accessible resource");
 
@@ -236,6 +262,8 @@ void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* 
 
 void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
 	            "Trying to unmap non-CPU accessible resource");
 
@@ -248,6 +276,8 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 
 void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
 {
+	ZoneScoped;
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 

@@ -620,6 +620,8 @@ constexpr TRAP::Math::Vec<2, T>& TRAP::Math::Vec<2, T>::operator>>=(const Vec<2,
 template<typename T>
 std::string TRAP::Math::Vec<2, T>::ToString() const
 {
+	ZoneScoped;
+
 	if constexpr(std::is_same_v<T, float>)
 		return "Vec2f(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 	else if constexpr(std::is_same_v<T, double>)

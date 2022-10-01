@@ -39,6 +39,8 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 	const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {
+	ZoneScoped;
+
 	if(stageCount == 0)
 	{
 		TP_ERROR(Log::ShaderPrefix, "Parameter 'stageCount' is 0");

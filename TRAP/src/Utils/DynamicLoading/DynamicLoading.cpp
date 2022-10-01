@@ -3,6 +3,8 @@
 
 void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 {
+	ZoneScoped;
+
 #ifdef TRAP_PLATFORM_WINDOWS
     return LoadLibraryA(path.data());
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -16,6 +18,8 @@ void* TRAP::Utils::DynamicLoading::LoadLibrary(const std::string_view path)
 
 void TRAP::Utils::DynamicLoading::FreeLibrary(void* const module)
 {
+	ZoneScoped;
+
 #ifdef TRAP_PLATFORM_WINDOWS
 	FreeLibrary(static_cast<HMODULE>(module));
 #elif defined(TRAP_PLATFORM_LINUX)

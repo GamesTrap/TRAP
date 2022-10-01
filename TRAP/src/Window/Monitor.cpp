@@ -3,6 +3,8 @@
 
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
+	ZoneScoped;
+
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	m_handle = monitors[monitor];
 }
@@ -11,6 +13,8 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 
 std::string TRAP::Monitor::GetName() const
 {
+	ZoneScoped;
+
 	return m_handle->Name;
 }
 
@@ -18,6 +22,8 @@ std::string TRAP::Monitor::GetName() const
 
 std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {
+	ZoneScoped;
+
 	std::vector<VideoMode> modes{};
 	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(m_handle);
 
@@ -31,6 +37,8 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 
 TRAP::Math::Vec2 TRAP::Monitor::GetContentScale() const
 {
+	ZoneScoped;
+
 	TRAP::Math::Vec2 scale{};
 	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, scale.x, scale.y);
 
@@ -41,6 +49,8 @@ TRAP::Math::Vec2 TRAP::Monitor::GetContentScale() const
 
 float TRAP::Monitor::GetContentScaleX() const
 {
+	ZoneScoped;
+
 	return GetContentScale().x;
 }
 
@@ -48,6 +58,8 @@ float TRAP::Monitor::GetContentScaleX() const
 
 float TRAP::Monitor::GetContentScaleY() const
 {
+	ZoneScoped;
+
 	return GetContentScale().y;
 }
 
@@ -55,6 +67,8 @@ float TRAP::Monitor::GetContentScaleY() const
 
 TRAP::Math::Vec2i TRAP::Monitor::GetPosition() const
 {
+	ZoneScoped;
+
 	TRAP::Math::Vec2i pos{};
 	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, pos.x, pos.y);
 
@@ -65,6 +79,8 @@ TRAP::Math::Vec2i TRAP::Monitor::GetPosition() const
 
 int32_t TRAP::Monitor::GetPositionX() const
 {
+	ZoneScoped;
+
 	return GetPosition().x;
 }
 
@@ -72,6 +88,8 @@ int32_t TRAP::Monitor::GetPositionX() const
 
 int32_t TRAP::Monitor::GetPositionY() const
 {
+	ZoneScoped;
+
 	return GetPosition().y;
 }
 
@@ -79,6 +97,8 @@ int32_t TRAP::Monitor::GetPositionY() const
 
 TRAP::Math::Vec4i TRAP::Monitor::GetWorkArea() const
 {
+	ZoneScoped;
+
 	TRAP::Math::Vec4i workArea{};
 	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, workArea.x, workArea.y,
 	                                           workArea.z, workArea.w);
@@ -90,6 +110,8 @@ TRAP::Math::Vec4i TRAP::Monitor::GetWorkArea() const
 
 int32_t TRAP::Monitor::GetWorkAreaWidth() const
 {
+	ZoneScoped;
+
 	return GetWorkArea().z;
 }
 
@@ -97,6 +119,8 @@ int32_t TRAP::Monitor::GetWorkAreaWidth() const
 
 int32_t TRAP::Monitor::GetWorkAreaHeight() const
 {
+	ZoneScoped;
+
 	return GetWorkArea().w;
 }
 
@@ -104,6 +128,8 @@ int32_t TRAP::Monitor::GetWorkAreaHeight() const
 
 int32_t TRAP::Monitor::GetWorkAreaX() const
 {
+	ZoneScoped;
+
 	return GetWorkArea().x;
 }
 
@@ -111,6 +137,8 @@ int32_t TRAP::Monitor::GetWorkAreaX() const
 
 int32_t TRAP::Monitor::GetWorkAreaY() const
 {
+	ZoneScoped;
+
 	return GetWorkArea().y;
 }
 
@@ -118,6 +146,8 @@ int32_t TRAP::Monitor::GetWorkAreaY() const
 
 uint32_t TRAP::Monitor::GetID() const
 {
+	ZoneScoped;
+
 	const std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	for(std::size_t i = 0; i < monitors.size(); i++)
 	{
@@ -132,6 +162,8 @@ uint32_t TRAP::Monitor::GetID() const
 
 std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 {
+	ZoneScoped;
+
 	std::vector<Monitor> monitors{};
 	const uint32_t monitorSize = static_cast<uint32_t>(INTERNAL::WindowingAPI::GetMonitors().size());
 	for (uint32_t i = 0; i < monitorSize; i++)
@@ -144,5 +176,7 @@ std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 
 TRAP::Monitor TRAP::Monitor::GetPrimaryMonitor()
 {
+	ZoneScoped;
+
 	return Monitor(0);
 }

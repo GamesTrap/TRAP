@@ -5,6 +5,8 @@
 
 std::string TRAP::Events::WindowResizeEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowResizeEvent: " + std::to_string(m_width) + "x" + std::to_string(m_height);
 }
 
@@ -12,6 +14,8 @@ std::string TRAP::Events::WindowResizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -19,6 +23,8 @@ TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetEventType() const
 
 std::string TRAP::Events::WindowResizeEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowResize";
 }
 
@@ -26,6 +32,8 @@ std::string TRAP::Events::WindowResizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -35,6 +43,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() 
 
 std::string TRAP::Events::WindowMinimizeEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowMinimizeEvent";
 }
 
@@ -42,6 +52,8 @@ std::string TRAP::Events::WindowMinimizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -49,6 +61,8 @@ TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetEventType() const
 
 std::string TRAP::Events::WindowMinimizeEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowMinimize";
 }
 
@@ -56,6 +70,8 @@ std::string TRAP::Events::WindowMinimizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -65,6 +81,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags(
 
 std::string TRAP::Events::WindowMaximizeEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowMaximizeEvent";
 }
 
@@ -72,6 +90,8 @@ std::string TRAP::Events::WindowMaximizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -79,6 +99,8 @@ TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetEventType() const
 
 std::string TRAP::Events::WindowMaximizeEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowMaximize";
 }
 
@@ -86,6 +108,8 @@ std::string TRAP::Events::WindowMaximizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -95,6 +119,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags(
 
 std::string TRAP::Events::WindowRestoreEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowRestoreEvent";
 }
 
@@ -102,6 +128,8 @@ std::string TRAP::Events::WindowRestoreEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -109,6 +137,8 @@ TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const
 
 std::string TRAP::Events::WindowRestoreEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowRestore";
 }
 
@@ -116,6 +146,8 @@ std::string TRAP::Events::WindowRestoreEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -125,6 +157,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags()
 
 std::string TRAP::Events::WindowCloseEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowCloseEvent: " + m_window->GetTitle();
 }
 
@@ -132,6 +166,8 @@ std::string TRAP::Events::WindowCloseEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -139,6 +175,8 @@ TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetEventType() const
 
 std::string TRAP::Events::WindowCloseEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowClose";
 }
 
@@ -146,6 +184,8 @@ std::string TRAP::Events::WindowCloseEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -155,6 +195,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::WindowMoveEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowMoveEvent: " + std::to_string(m_x) + ", " + std::to_string(m_y);
 }
 
@@ -162,6 +204,8 @@ std::string TRAP::Events::WindowMoveEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -169,6 +213,8 @@ TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetEventType() const
 
 std::string TRAP::Events::WindowMoveEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowMove";
 }
 
@@ -176,6 +222,8 @@ std::string TRAP::Events::WindowMoveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -185,6 +233,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() co
 
 std::string TRAP::Events::WindowFocusEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowFocusEvent: " + m_window->GetTitle();
 }
 
@@ -192,6 +242,8 @@ std::string TRAP::Events::WindowFocusEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -199,6 +251,8 @@ TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetEventType() const
 
 std::string TRAP::Events::WindowFocusEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowFocus";
 }
 
@@ -206,6 +260,8 @@ std::string TRAP::Events::WindowFocusEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -215,6 +271,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowLostFocusEvent: " + m_window->GetTitle();
 }
 
@@ -222,6 +280,8 @@ std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -229,6 +289,8 @@ TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetEventType() const
 
 std::string TRAP::Events::WindowLostFocusEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowLostFocus";
 }
 
@@ -236,6 +298,8 @@ std::string TRAP::Events::WindowLostFocusEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -245,12 +309,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags
 
 TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, TRAP::Window* window)
 	: m_paths(std::move(paths)), m_window(window)
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const
 {
+	ZoneScoped;
+
 	return m_paths;
 }
 
@@ -258,6 +326,8 @@ const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const
 
 std::string TRAP::Events::WindowDropEvent::ToString() const
 {
+	ZoneScoped;
+
 	std::string result = "WindowDropEvent: ";
 	for (uint32_t i = 0; i < m_paths.size(); i++)
 		result += "Path " + std::to_string(i) + ": " + m_paths[i] + '\n';
@@ -269,6 +339,8 @@ std::string TRAP::Events::WindowDropEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -276,6 +348,8 @@ TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetEventType() const
 
 std::string TRAP::Events::WindowDropEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowDrop";
 }
 
@@ -283,6 +357,8 @@ std::string TRAP::Events::WindowDropEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window | EventCategory::Input;
 }
 
@@ -292,6 +368,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() co
 
 std::string TRAP::Events::WindowContentScaleEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "WindowContentScaleEvent: " + std::to_string(m_XScale) + "x" + std::to_string(m_YScale);
 }
 
@@ -299,6 +377,8 @@ std::string TRAP::Events::WindowContentScaleEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -306,6 +386,8 @@ TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetEventType() co
 
 std::string TRAP::Events::WindowContentScaleEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "WindowContentScale";
 }
 
@@ -313,6 +395,8 @@ std::string TRAP::Events::WindowContentScaleEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }
 
@@ -322,6 +406,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFl
 
 std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "FrameBufferResizeEvent: " + std::to_string(m_width) + "x" + std::to_string(m_height);
 }
 
@@ -329,6 +415,8 @@ std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -336,6 +424,8 @@ TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetEventType() con
 
 std::string TRAP::Events::FrameBufferResizeEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "FrameBufferResize";
 }
 
@@ -343,5 +433,7 @@ std::string TRAP::Events::FrameBufferResizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Window;
 }

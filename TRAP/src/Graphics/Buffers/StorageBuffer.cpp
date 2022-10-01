@@ -11,6 +11,8 @@
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	return Init(nullptr, size, updateFrequency);
 }
 
@@ -19,6 +21,8 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create(const void* const data, const uint64_t size,
 																				 const UpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	return Init(data, size, updateFrequency);
 }
 
@@ -26,6 +30,8 @@ TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Create
 
 TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	m_tokens.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 	m_storageBuffers.resize(updateFrequency == UpdateFrequency::Static ? 1 : RendererAPI::ImageCount);
 }
@@ -34,6 +40,8 @@ TRAP::Graphics::StorageBuffer::StorageBuffer(const RendererAPI::DescriptorUpdate
 
 TRAP::Graphics::StorageBuffer::~StorageBuffer()
 {
+	ZoneScoped;
+
 	m_storageBuffers = {};
 }
 
@@ -41,6 +49,8 @@ TRAP::Graphics::StorageBuffer::~StorageBuffer()
 
 uint64_t TRAP::Graphics::StorageBuffer::GetSize() const
 {
+	ZoneScoped;
+
 	return m_storageBuffers[0]->GetSize();
 }
 
@@ -48,6 +58,8 @@ uint64_t TRAP::Graphics::StorageBuffer::GetSize() const
 
 TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequency() const
 {
+	ZoneScoped;
+
 	return m_storageBuffers.size() == 1 ? UpdateFrequency::Static : UpdateFrequency::Dynamic;
 }
 
@@ -55,6 +67,8 @@ TRAP::Graphics::UpdateFrequency TRAP::Graphics::StorageBuffer::GetUpdateFrequenc
 
 const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuffer::GetSSBOs() const
 {
+	ZoneScoped;
+
 	return m_storageBuffers;
 }
 
@@ -62,6 +76,8 @@ const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::StorageBuf
 
 void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const uint64_t size, const uint64_t offset)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
 
@@ -81,6 +97,8 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const uint64
 
 bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 {
+	ZoneScoped;
+
 	for(std::size_t i = 0; i < m_storageBuffers.size(); ++i)
 	{
 	   if(!RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_tokens[i]))
@@ -94,6 +112,8 @@ bool TRAP::Graphics::StorageBuffer::IsLoaded() const
 
 void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 {
+	ZoneScoped;
+
 	for(std::size_t i = 0; i < m_storageBuffers.size(); ++i)
 		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
 }
@@ -102,6 +122,8 @@ void TRAP::Graphics::StorageBuffer::AwaitLoading() const
 
 uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byteSize)
 {
+	ZoneScoped;
+
 	const uint64_t minSSBOAlignment = RendererAPI::GPUSettings.StorageBufferAlignment;
 	uint64_t alignedSize = byteSize;
 
@@ -116,6 +138,8 @@ uint64_t TRAP::Graphics::StorageBuffer::CalculateAlignedSize(const uint64_t byte
 TRAP::Scope<TRAP::Graphics::StorageBuffer> TRAP::Graphics::StorageBuffer::Init(const void* const data, const uint64_t size,
 																			   const UpdateFrequency updateFrequency)
 {
+	ZoneScoped;
+
 	TRAP::Scope<StorageBuffer> buffer = TRAP::Scope<StorageBuffer>(new StorageBuffer(updateFrequency));
 
 	RendererAPI::BufferLoadDesc desc{};

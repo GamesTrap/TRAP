@@ -10,6 +10,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std:
 																			std::array<std::filesystem::path, 6> filepaths,
 																			const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	if(name.empty())
 	{
 		TRAP_ASSERT(false, "Name is empty!");
@@ -73,6 +75,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 																		   const TextureCubeFormat cubeFormat,
 																		   const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
 	if(name.empty())
@@ -136,6 +140,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 		                                                                   const TextureCubeFormat cubeFormat,
 																		   const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
 	const auto name = FileSystem::GetFileName(filepath);
@@ -200,6 +206,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 																			 const std::array<const Image*, 6>& imgs,
 																			 const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
 	            [](const Image* const img) { return img == nullptr; }), "An Image is nullptr!");
 
@@ -270,6 +278,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std:
 		                                                                    const TextureCubeFormat cubeFormat,
 																			const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(img, "Image is nullptr!");
 	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Provided cube format is invalid");
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
@@ -339,6 +349,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::str
 																		const TextureType type,
 																		const TextureCreationFlags flags)
 {
+	ZoneScoped;
+
 	TRAP::Ref<Texture> texture = nullptr;
 
 	const API::ImageFormat imageFormat = ColorFormatBitsPerPixelToImageFormat(format, bitsPerPixel);
@@ -391,6 +403,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::str
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const TRAP::Graphics::RendererAPI::TextureDesc& desc)
 {
+	ZoneScoped;
+
     TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
 
 	if(!ValidateLimits(desc))
@@ -432,6 +446,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const T
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 {
+	ZoneScoped;
+
 	const auto fallbackImg = TRAP::Image::LoadFallback();
 	TRAP::Ref<TRAP::Graphics::Texture> fallback2DTex = CreateFromImage("Fallback2D",
 																	   fallbackImg.get(),
@@ -451,6 +467,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallback2D()
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 {
+	ZoneScoped;
+
 	std::array<TRAP::Scope<TRAP::Image>, 6> imgs{};
 	std::array<const TRAP::Image*, 6> imgPtrs{};
 	for(std::size_t i = 0; i < imgs.size(); ++i)
@@ -473,6 +491,8 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFallbackCube()
 
 bool TRAP::Graphics::Texture::Reload()
 {
+	ZoneScoped;
+
 	//Can't reload if there is no filepath
 	if(m_textureType == TextureType::Texture2D && m_filepaths[0].empty())
 		return false;
@@ -514,6 +534,8 @@ bool TRAP::Graphics::Texture::Reload()
 
 std::string TRAP::Graphics::Texture::GetName() const
 {
+	ZoneScoped;
+
 	return m_name;
 }
 
@@ -521,6 +543,8 @@ std::string TRAP::Graphics::Texture::GetName() const
 
 TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
 {
+	ZoneScoped;
+
 	return m_textureType;
 }
 
@@ -528,6 +552,8 @@ TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
 
 uint32_t TRAP::Graphics::Texture::GetWidth() const
 {
+	ZoneScoped;
+
 	return m_width;
 }
 
@@ -535,6 +561,8 @@ uint32_t TRAP::Graphics::Texture::GetWidth() const
 
 uint32_t TRAP::Graphics::Texture::GetHeight() const
 {
+	ZoneScoped;
+
 	return m_height;
 }
 
@@ -542,6 +570,8 @@ uint32_t TRAP::Graphics::Texture::GetHeight() const
 
 TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const
 {
+	ZoneScoped;
+
 	return Math::Vec2ui(m_width, m_height);
 }
 
@@ -549,6 +579,8 @@ TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const
 
 uint32_t TRAP::Graphics::Texture::GetDepth() const
 {
+	ZoneScoped;
+
 	return m_depth;
 }
 
@@ -556,6 +588,8 @@ uint32_t TRAP::Graphics::Texture::GetDepth() const
 
 uint32_t TRAP::Graphics::Texture::GetArraySize() const
 {
+	ZoneScoped;
+
 	return m_arraySize;
 }
 
@@ -563,6 +597,8 @@ uint32_t TRAP::Graphics::Texture::GetArraySize() const
 
 uint32_t TRAP::Graphics::Texture::GetMipLevels() const
 {
+	ZoneScoped;
+
 	return m_mipLevels;
 }
 
@@ -570,6 +606,8 @@ uint32_t TRAP::Graphics::Texture::GetMipLevels() const
 
 uint32_t TRAP::Graphics::Texture::GetAspectMask() const
 {
+	ZoneScoped;
+
 	return m_aspectMask;
 }
 
@@ -577,6 +615,8 @@ uint32_t TRAP::Graphics::Texture::GetAspectMask() const
 
 TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const
 {
+	ZoneScoped;
+
 	return ImageFormatToColorFormat(m_imageFormat);
 }
 
@@ -584,6 +624,8 @@ TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const
 
 TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const
 {
+	ZoneScoped;
+
 	return m_imageFormat;
 }
 
@@ -591,6 +633,8 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const
 
 TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const
 {
+	ZoneScoped;
+
 	return m_descriptorTypes;
 }
 
@@ -598,6 +642,8 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescript
 
 uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const
 {
+	ZoneScoped;
+
 	return GetBitsPerChannelFromImageFormat(m_imageFormat);
 }
 
@@ -605,6 +651,8 @@ uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const
 
 uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const
 {
+	ZoneScoped;
+
 	return GetBitsPerChannel() / 8;
 }
 
@@ -612,6 +660,8 @@ uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const
 
 uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const
 {
+	ZoneScoped;
+
 	return GetBitsPerChannel() * static_cast<uint32_t>(m_colorFormat);
 }
 
@@ -619,6 +669,8 @@ uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const
 
 uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const
 {
+	ZoneScoped;
+
 	return GetBitsPerPixel() / 8;
 }
 
@@ -626,6 +678,8 @@ uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const
 
 uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
 {
+	ZoneScoped;
+
 	if(mipLevel >= m_mipLevels)
 		TP_ERROR(Log::TexturePrefix, "GetMipWidth: Invalid mip level provided!");
 
@@ -636,6 +690,8 @@ uint32_t TRAP::Graphics::Texture::GetMipWidth(const uint32_t mipLevel) const
 
 uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
 {
+	ZoneScoped;
+
 	if(mipLevel >= m_mipLevels)
 		TP_ERROR(Log::TexturePrefix, "GetMipHeight: Invalid mip level provided!");
 
@@ -646,6 +702,8 @@ uint32_t TRAP::Graphics::Texture::GetMipHeight(const uint32_t mipLevel) const
 
 TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) const
 {
+	ZoneScoped;
+
 	return TRAP::Math::Vec2ui{GetMipWidth(mipLevel), GetMipHeight(mipLevel)};
 }
 
@@ -653,6 +711,8 @@ TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) 
 
 const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const
 {
+	ZoneScoped;
+
 	return m_filepaths[0];
 }
 
@@ -660,6 +720,8 @@ const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const
 
 const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const
 {
+	ZoneScoped;
+
 	return m_filepaths;
 }
 
@@ -667,6 +729,8 @@ const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePath
 
 TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const
 {
+	ZoneScoped;
+
 	return m_textureCubeFormat;
 }
 
@@ -675,6 +739,8 @@ TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const
 void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t sizeInBytes, const uint32_t mipLevel,
                                      const uint32_t arrayLayer)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(data, "Update: Data is nullptr!");
 	TRAP_ASSERT(arrayLayer < m_arraySize, "Invalid array layer provided!");
 	TRAP_ASSERT(mipLevel < m_mipLevels, "Invalid mip level provided!");
@@ -716,6 +782,8 @@ void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t size
 
 bool TRAP::Graphics::Texture::OwnsImage() const
 {
+	ZoneScoped;
+
 	return m_ownsImage;
 }
 
@@ -723,6 +791,8 @@ bool TRAP::Graphics::Texture::OwnsImage() const
 
 bool TRAP::Graphics::Texture::IsLoaded() const
 {
+	ZoneScoped;
+
 	if(m_syncToken == std::numeric_limits<API::SyncToken>::max())
 		return true; //We don't have a valid sync token, so we assume the texture is loaded
 
@@ -733,6 +803,8 @@ bool TRAP::Graphics::Texture::IsLoaded() const
 
 void TRAP::Graphics::Texture::AwaitLoading() const
 {
+	ZoneScoped;
+
 	if(m_syncToken == std::numeric_limits<API::SyncToken>::max())
 		return; //We don't have a valid sync token, so we assume the texture is loaded
 
@@ -743,6 +815,8 @@ void TRAP::Graphics::Texture::AwaitLoading() const
 
 uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const uint32_t height)
 {
+	ZoneScoped;
+
 	return Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(width),
 					                                                            static_cast<float>(height))))) + 1);
 }
@@ -751,6 +825,8 @@ uint32_t TRAP::Graphics::Texture::CalculateMipLevels(const uint32_t width, const
 
 bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& desc)
 {
+	ZoneScoped;
+
     if(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1)
 	{
 		TP_ERROR(Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
@@ -801,6 +877,8 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
 
 TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::Image* const img)
 {
+	ZoneScoped;
+
 	if(img->GetBitsPerChannel() == 32)
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
@@ -863,6 +941,8 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90Clockwise(const TRAP::
 
 TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const TRAP::Image* const img)
 {
+	ZoneScoped;
+
 	if(img->GetBitsPerChannel() == 32)
 	{
 		std::vector<float> rotated(static_cast<std::size_t>(img->GetWidth()) * img->GetHeight() *
@@ -961,4 +1041,5 @@ TRAP::Graphics::Texture::Texture()
 	  m_ownsImage(true),
 	  m_textureCubeFormat(TextureCubeFormat::NONE)
 {
+	ZoneScoped;
 }

@@ -44,6 +44,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 bool TRAP::Input::InitController()
 {
+	ZoneScoped;
+
 	if(!s_dinput8.Instance)
 		s_dinput8.Instance = LoadLibraryA("dinput8.dll");
 	if (s_dinput8.Instance)
@@ -127,6 +129,8 @@ bool TRAP::Input::InitController()
 
 void TRAP::Input::ShutdownController()
 {
+	ZoneScoped;
+
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 			CloseController(static_cast<Controller>(cID));
 
@@ -138,6 +142,8 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::UpdateControllerGUID(std::string& guid)
 {
+	ZoneScoped;
+
 	if (std::string_view(guid.data() + 20) == "504944564944")
 	{
 		const std::string original = guid;
@@ -151,6 +157,8 @@ void TRAP::Input::UpdateControllerGUID(std::string& guid)
 
 void TRAP::Input::DetectControllerConnectionWin32()
 {
+	ZoneScoped;
+
 	if(s_xinput.Instance)
 	{
 		for(DWORD index = 0; index < TRAP_XUSER_MAX_COUNT; index++)
@@ -206,6 +214,8 @@ void TRAP::Input::DetectControllerConnectionWin32()
 
 void TRAP::Input::DetectControllerDisconnectionWin32()
 {
+	ZoneScoped;
+
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
 		if (s_controllerInternal[cID].Connected)
@@ -218,6 +228,8 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor,
                                                  const float rightMotor)
 {
+	ZoneScoped;
+
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 		return;
 
@@ -236,6 +248,8 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(const Controller controller)
 {
+	ZoneScoped;
+
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 		return ControllerBatteryStatus::Wired;
 
@@ -264,6 +278,8 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 
 bool TRAP::Input::PollController(const Controller controller, const PollMode mode)
 {
+	ZoneScoped;
+
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 	if (con->WinCon.Device)
 	{
@@ -417,6 +433,8 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 
 void TRAP::Input::CloseController(Controller controller)
 {
+	ZoneScoped;
+
 	if (s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device)
 	{
 		IDirectInputDevice8_Unacquire(s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device);
@@ -451,6 +469,8 @@ void TRAP::Input::CloseController(Controller controller)
 //DirectInput device object enumeration callback
 BOOL CALLBACK TRAP::Input::DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user)
 {
+	ZoneScoped;
+
 	ObjectEnum* data = static_cast<ObjectEnum*>(user);
 	Object* object = &data->Objects[data->ObjectCount];
 
@@ -518,6 +538,8 @@ BOOL CALLBACK TRAP::Input::DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* d
 //Checks whether the specified device supports XInput
 bool TRAP::Input::SupportsXInput(const GUID* guid)
 {
+	ZoneScoped;
+
 	uint32_t count = 0;
 	std::vector<RAWINPUTDEVICELIST> ridl{};
 	bool result = false;
@@ -573,6 +595,8 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 //Returns a description fitting the specified XInput capabilities
 std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 {
+	ZoneScoped;
+
 	switch (xic->SubType)
 	{
 		case TRAP_XINPUT_DEVSUBTYPE_WHEEL:
@@ -605,6 +629,8 @@ std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 //Lexically compare device objects
 int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 {
+	ZoneScoped;
+
 	const Object* fo = static_cast<const Object*>(first);
 	const Object* so = static_cast<const Object*>(second);
 
@@ -619,6 +645,8 @@ int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 //DirectInput device enumeration callback
 BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void*)
 {
+	ZoneScoped;
+
 	DIDEVCAPS dc{};
 	DIPROPDWORD dipd{};
 	IDirectInputDevice8* device = nullptr;
@@ -787,6 +815,8 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 std::string TRAP::Input::GetKeyboardLayoutName()
 {
+	ZoneScoped;
+
 	std::array<WCHAR, KL_NAMELENGTH> keyboardLayoutID{};
 
 	if(!GetKeyboardLayoutNameW(keyboardLayoutID.data()))

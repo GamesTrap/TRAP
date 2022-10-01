@@ -23,6 +23,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	  m_computeQueueIndex(),
 	  m_device()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_physicalDevice, "physicalDevice is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -223,6 +225,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_device);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -247,6 +251,8 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
 {
+	ZoneScoped;
+
 	return m_device;
 }
 
@@ -254,6 +260,8 @@ VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
 
 TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const
 {
+	ZoneScoped;
+
 	return m_physicalDevice.get();
 }
 
@@ -261,6 +269,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::Ge
 
 const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const
 {
+	ZoneScoped;
+
 	return m_deviceExtensions;
 }
 
@@ -268,6 +278,8 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysic
 
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 {
+	ZoneScoped;
+
 	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ",
@@ -289,6 +301,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 
 void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 {
+	ZoneScoped;
+
 	VkCall(vkDeviceWaitIdle(m_device));
 }
 
@@ -297,6 +311,8 @@ void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType,
                                                              uint8_t& queueFamilyIndex, uint8_t& queueIndex)
 {
+	ZoneScoped;
+
 	uint32_t qfi = std::numeric_limits<uint32_t>::max();
 	uint32_t qi = std::numeric_limits<uint32_t>::max();
 	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
@@ -373,6 +389,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
                                                              VkQueueFamilyProperties& queueFamilyProperties,
 															 uint8_t& queueFamilyIndex, uint8_t& queueIndex)
 {
+	ZoneScoped;
+
 	uint32_t qfi = std::numeric_limits<uint32_t>::max();
 	uint32_t qi = std::numeric_limits<uint32_t>::max();
 	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
@@ -448,6 +466,8 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const
 {
+	ZoneScoped;
+
 	return m_graphicsQueueFamilyIndex;
 }
 
@@ -455,6 +475,8 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const
 
 uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
 {
+	ZoneScoped;
+
 	return m_transferQueueFamilyIndex;
 }
 
@@ -462,6 +484,8 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
 
 uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
 {
+	ZoneScoped;
+
 	return m_computeQueueFamilyIndex;
 }
 
@@ -469,6 +493,8 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
 
 std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const
 {
+	ZoneScoped;
+
 	return { m_graphicsQueueFamilyIndex, m_transferQueueFamilyIndex, m_computeQueueFamilyIndex };
 }
 
@@ -476,6 +502,8 @@ std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices(
 
 uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const
 {
+	ZoneScoped;
+
 	return m_graphicsQueueIndex;
 }
 
@@ -483,6 +511,8 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const
 
 uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
 {
+	ZoneScoped;
+
 	return m_transferQueueIndex;
 }
 
@@ -490,6 +520,8 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
 
 uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 {
+	ZoneScoped;
+
 	return m_computeQueueIndex;
 }
 
@@ -498,6 +530,8 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 #ifdef NVIDIA_REFLEX_AVAILABLE
 VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore()
 {
+	ZoneScoped;
+
 	return m_reflexSemaphore;
 }
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
@@ -506,6 +540,8 @@ VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore()
 
 void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view name) const
 {
+	ZoneScoped;
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 
@@ -520,6 +556,8 @@ void TRAP::Graphics::API::VulkanDevice::SetDeviceName(const std::string_view nam
 
 void TRAP::Graphics::API::VulkanDevice::LoadShadingRateCaps(const VkPhysicalDeviceFragmentShadingRateFeaturesKHR& shadingRateFeatures) const
 {
+	ZoneScoped;
+
 	if(!VulkanRenderer::s_shadingRate)
 		return;
 

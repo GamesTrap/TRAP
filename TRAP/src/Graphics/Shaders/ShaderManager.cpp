@@ -13,6 +13,8 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
     																      const std::vector<Shader::Macro>* const userMacros)
 {
+	ZoneScoped;
+
 	Ref<Shader> shader = Shader::CreateFromFile(filepath, userMacros);
 
 	if(!shader)
@@ -31,6 +33,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 																          const std::filesystem::path& filepath,
 																          const std::vector<Shader::Macro>* const userMacros)
 {
+	ZoneScoped;
+
 	Ref<Shader> shader = Shader::CreateFromFile(name, filepath, userMacros);
 
 	if(!shader)
@@ -47,6 +51,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 														              		const std::string& glslSource,
 																      		const std::vector<Shader::Macro>* const userMacros)
 {
+	ZoneScoped;
+
 	Ref<Shader> shader = Shader::CreateFromSource(name, glslSource, userMacros);
 
 	if(!shader)
@@ -61,6 +67,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 
 void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 
 	if(!Exists(shader->GetName()))
@@ -73,6 +81,8 @@ void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shader> shader)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 
 	if (Exists(shader->GetName()))
@@ -91,6 +101,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shad
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 {
+	ZoneScoped;
+
 	if (Exists(name))
 	{
 		Ref<Shader> shader = std::move(Shaders[name]);
@@ -107,6 +119,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
+	ZoneScoped;
+
 	if(Exists(name))
 		return Shaders[name];
 
@@ -121,6 +135,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::
 
 const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
 {
+	ZoneScoped;
+
 	return Shaders;
 }
 
@@ -128,6 +144,8 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::
 
 void TRAP::Graphics::ShaderManager::Clean()
 {
+	ZoneScoped;
+
 	Shaders.clear();
 
 	//Make sure that fallback shaders are always available
@@ -139,6 +157,8 @@ void TRAP::Graphics::ShaderManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrPath)
 {
+	ZoneScoped;
+
 	if(!std::filesystem::exists(nameOrPath))
 	{
 		//Name
@@ -177,6 +197,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shader> shader)
 {
+	ZoneScoped;
+
 	if(!Exists(shader->GetName()))
 	{
 		TP_WARN(Log::ShaderManagerPrefix, "Couldn't find shader: \"", shader->GetName(), "\" to reload.");
@@ -193,6 +215,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shad
 
 void TRAP::Graphics::ShaderManager::ReloadAll()
 {
+	ZoneScoped;
+
 	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, shader] : Shaders)
 		Reload(shader);
@@ -202,6 +226,8 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 {
+	ZoneScoped;
+
 	return Shaders.find(name) != Shaders.end();
 }
 
@@ -209,6 +235,8 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
 {
+	ZoneScoped;
+
 	for(const auto& [name, shader] : Shaders)
 	{
 		if (FileSystem::IsPathEquivalent(shader->GetFilePath(), path))

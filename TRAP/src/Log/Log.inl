@@ -8,6 +8,8 @@
 template <typename ... Args>
 void TRAP::Log::Trace(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -37,6 +39,8 @@ void TRAP::Log::Trace(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -66,6 +70,8 @@ void TRAP::Log::Debug(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Info(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -95,6 +101,8 @@ void TRAP::Log::Info(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Warn(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -124,6 +132,8 @@ void TRAP::Log::Warn(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Error(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -153,6 +163,8 @@ void TRAP::Log::Error(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Critical(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -184,6 +196,8 @@ void TRAP::Log::Critical(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Trace(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -211,6 +225,8 @@ void TRAP::Log::Trace(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -238,6 +254,8 @@ void TRAP::Log::Debug(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Info(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -265,6 +283,8 @@ void TRAP::Log::Info(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Warn(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -292,6 +312,8 @@ void TRAP::Log::Warn(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Error(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -319,6 +341,8 @@ void TRAP::Log::Error(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Critical(Args&& ... args)
 {
+	ZoneScoped;
+
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
 	(void)std::initializer_list<int32_t>{((void)(stream << args), 0)...}; //In place variadic unfolding "hack"
@@ -349,6 +373,8 @@ void TRAP::Log::Critical(Args&& ... args)
 template<typename OStream, uint32_t L, typename T>
 inline OStream& operator<<(OStream& os, const TRAP::Math::Vec<L, T>& vec)
 {
+	ZoneScoped;
+
 	return os << vec.ToString();
 }
 
@@ -356,6 +382,8 @@ inline OStream& operator<<(OStream& os, const TRAP::Math::Vec<L, T>& vec)
 template<typename OStream, uint32_t L, typename T>
 inline OStream& operator<<(OStream& os, const TRAP::Math::Mat<L, L, T>& mat)
 {
+	ZoneScoped;
+
 	return os << mat.ToString();
 }
 
@@ -363,6 +391,8 @@ inline OStream& operator<<(OStream& os, const TRAP::Math::Mat<L, L, T>& mat)
 template<typename OStream, typename T>
 inline OStream& operator<<(OStream& os, const TRAP::Math::tQuat<T>& quat)
 {
+	ZoneScoped;
+
 	return os << quat.ToString();
 }
 

@@ -9,6 +9,8 @@
 
 std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
+	ZoneScoped;
+
 	std::stringstream s;
 
 	s << std::hex << std::setfill('0')
@@ -40,6 +42,8 @@ std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 
 std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
+	ZoneScoped;
+
 	uint8_t digit = 0;
 	bool firstDigit = true;
 	std::size_t index = 0;
@@ -96,6 +100,8 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 
 TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
+	ZoneScoped;
+
 	//Check if machine is using little-endian or big-endian
 	const int32_t intVal = 1;
 	const uint8_t* const uVal = reinterpret_cast<const uint8_t*>(&intVal);
@@ -112,6 +118,8 @@ TRAP::Utils::Endian TRAP::Utils::GetEndian()
 
 const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 {
+	ZoneScoped;
+
 	static CPUInfo cpu{};
 
 	if(!cpu.Model.empty())
@@ -265,6 +273,8 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 
 TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
+	ZoneScoped;
+
 	static LinuxWindowManager windowManager{};
 
 	#ifdef TRAP_PLATFORM_LINUX
@@ -321,6 +331,8 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
 {
+	ZoneScoped;
+
 	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 	{
 		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
@@ -348,6 +360,8 @@ BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD mi
 
 BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 {
+	ZoneScoped;
+
 	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 	{
 		s_ntdll.Instance = static_cast<HINSTANCE>(DynamicLoading::LoadLibrary("ntdll.dll"));
@@ -375,6 +389,8 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 
 BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 {
+	ZoneScoped;
+
 	return IsWindows10BuildOrGreaterWin32(build); //Windows 11 shares 10.0.XXXXX format with Windows 10
 }
 
@@ -382,6 +398,8 @@ BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 
 BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
+	ZoneScoped;
+
 	return IsWindows10BuildOrGreaterWin32(14393);
 }
 
@@ -389,6 +407,8 @@ BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 {
+	ZoneScoped;
+
 	return IsWindows10BuildOrGreaterWin32(15063);
 }
 
@@ -396,6 +416,8 @@ BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 {
+	ZoneScoped;
+
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINBLUE),
 		                                  LOBYTE(_WIN32_WINNT_WINBLUE), 0);
 }
@@ -404,6 +426,8 @@ BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 {
+	ZoneScoped;
+
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN8),
 		                                  LOBYTE(_WIN32_WINNT_WIN8), 0);
 }
@@ -412,6 +436,8 @@ BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
 {
+	ZoneScoped;
+
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN7),
 		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);
 }

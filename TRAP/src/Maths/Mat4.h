@@ -538,6 +538,8 @@ constexpr TRAP::Math::Mat<4, 4, T> TRAP::Math::Mat<4, 4, T>::operator--(int)
 template<typename T>
 std::string TRAP::Math::Mat<4, 4, T>::ToString() const
 {
+	ZoneScoped;
+
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)
 		postfix = "f";

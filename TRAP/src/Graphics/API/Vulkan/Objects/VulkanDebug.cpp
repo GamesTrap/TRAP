@@ -9,6 +9,8 @@
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	: m_debugReport(nullptr), m_instance(std::move(instance))
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_instance, "instance is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -38,6 +40,8 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 
 TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 {
+	ZoneScoped;
+
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
 #endif
@@ -60,6 +64,8 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebu
                                                                     const VkDebugUtilsMessengerCallbackDataEXT* const callbackData,
                                                                     void*)
 {
+	ZoneScoped;
+
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
@@ -86,6 +92,8 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 																	 const std::string_view layerPrefix,
 																	 const std::string_view message, void* const /*userData*/)
 {
+	ZoneScoped;
+
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 

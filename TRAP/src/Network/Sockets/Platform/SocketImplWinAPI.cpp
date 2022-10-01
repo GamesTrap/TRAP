@@ -38,6 +38,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
+	ZoneScoped;
+
 	sockaddr_in addr{};
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
@@ -58,6 +60,8 @@ sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address,
 sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address,
                                                                 uint16_t port)
 {
+	ZoneScoped;
+
 	sockaddr_in6 addr{};
 	std::copy(address.begin(), address.end(), addr.sin6_addr.u.Byte);
 	addr.sin6_family = AF_INET6;
@@ -74,6 +78,8 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 
 TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
 {
+	ZoneScoped;
+
 	return INVALID_SOCKET;
 }
 
@@ -81,6 +87,8 @@ TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
 
 void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandle sock)
 {
+	ZoneScoped;
+
 	closesocket(sock);
 }
 
@@ -88,6 +96,8 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(const TRAP::Network::SocketHandl
 
 void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::SocketHandle sock, const bool block)
 {
+	ZoneScoped;
+
 	u_long blocking = block ? 0 : 1;
 	ioctlsocket(sock, FIONBIO, &blocking);
 }
@@ -96,6 +106,8 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 
 TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatus()
 {
+	ZoneScoped;
+
 	switch(WSAGetLastError())
 	{
 	case WSAEWOULDBLOCK:
@@ -133,12 +145,16 @@ struct SocketInitializer
 {
 	SocketInitializer()
 	{
+		ZoneScoped;
+
 		WSADATA init;
 		WSAStartup(MAKEWORD(2, 2), &init);
 	}
 
 	~SocketInitializer()
 	{
+		ZoneScoped;
+
 		WSACleanup();
 	}
 

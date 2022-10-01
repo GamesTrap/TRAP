@@ -34,6 +34,8 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	  m_usedDescriptorSetCount(0),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
+	ZoneScoped;
+
 	m_numDescriptorSets = numDescriptorSets;
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -59,6 +61,8 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 
 TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(!m_descriptorPools.empty());
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -73,6 +77,8 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 
 void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 {
+	ZoneScoped;
+
 	VkCall(vkResetDescriptorPool(m_device->GetVkDevice(), m_currentPool, 0));
 	m_usedDescriptorSetCount = 0;
 }
@@ -81,6 +87,8 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 
 VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const
 {
+	ZoneScoped;
+
 	return m_currentPool;
 }
 
@@ -88,6 +96,8 @@ VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescript
 
 const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const
 {
+	ZoneScoped;
+
 	return m_descriptorPoolSizes;
 }
 
@@ -95,6 +105,8 @@ const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPo
 
 uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const
 {
+	ZoneScoped;
+
 	return m_usedDescriptorSetCount;
 }
 
@@ -102,6 +114,8 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
+	ZoneScoped;
+
 	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>
 		(
 			desc.RootSignature
@@ -149,6 +163,8 @@ TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptor
 
 VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
 {
+	ZoneScoped;
+
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time
 	std::lock_guard lockGuard(m_mutex);

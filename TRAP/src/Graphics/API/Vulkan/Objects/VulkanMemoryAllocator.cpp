@@ -22,6 +22,8 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
                                                                   const TRAP::Ref<VulkanInstance>& instance)
 	: m_allocator(nullptr)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(device, "device is nullptr");
 	TRAP_ASSERT(instance, "instance is nullptr");
 
@@ -86,6 +88,8 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 
 TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_allocator);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -99,5 +103,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 
 VmaAllocator TRAP::Graphics::API::VulkanMemoryAllocator::GetVMAAllocator() const
 {
+	ZoneScoped;
+
 	return m_allocator;
 }

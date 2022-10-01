@@ -14,6 +14,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
                                                                                         const TRAP::Math::Vec2& cellSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
 {
+	ZoneScoped;
+
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
     TRAP_ASSERT(!name.empty(), "Name is empty!");
@@ -39,6 +41,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
                                                                                         const TRAP::Math::Vec2& pixelSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
 {
+	ZoneScoped;
+
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
     TRAP_ASSERT(!name.empty(), "Name is empty!");
@@ -60,6 +64,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 
 void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 {
+	ZoneScoped;
+
     if(!sprite)
         return;
 
@@ -74,6 +80,8 @@ void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Ref<SubTexture2D> sprite)
 {
+	ZoneScoped;
+
     if(!sprite)
         return nullptr;
 
@@ -93,6 +101,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Re
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(const std::string& name)
 {
+	ZoneScoped;
+
 	if (Exists(name))
 	{
 		Ref<SubTexture2D> spr = std::move(Sprites[name]);
@@ -109,6 +119,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string& name)
 {
+	ZoneScoped;
+
 	if(Exists(name))
 	{
         return Sprites[name];
@@ -122,6 +134,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const
 
 const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites()
 {
+	ZoneScoped;
+
 	return Sprites;
 }
 
@@ -129,6 +143,8 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& 
 
 void TRAP::Graphics::SpriteManager::Clean()
 {
+	ZoneScoped;
+
 	Sprites.clear();
 }
 
@@ -136,6 +152,8 @@ void TRAP::Graphics::SpriteManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(const std::string& nameOrPath)
 {
+	ZoneScoped;
+
 	if(!std::filesystem::exists(nameOrPath))
 	{
 		//Name
@@ -174,6 +192,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(co
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Ref<SubTexture2D> sprite)
 {
+	ZoneScoped;
+
 	if(!Exists(sprite->GetName()))
 	{
 		TP_WARN(Log::SpriteManagerPrefix, "Couldn't find sprite: \"", sprite->GetName(), "\" to reload.");
@@ -190,6 +210,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Re
 
 void TRAP::Graphics::SpriteManager::ReloadAll()
 {
+	ZoneScoped;
+
 	TP_INFO(Log::SpriteManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, sprite] : Sprites)
 		Reload(sprite);
@@ -199,6 +221,8 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 
 bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
 {
+	ZoneScoped;
+
 	return Sprites.find(name) != Sprites.end();
 }
 
@@ -206,6 +230,8 @@ bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::SpriteManager::ExistsPath(const std::filesystem::path& path)
 {
+	ZoneScoped;
+
 	for (const auto& [name, sprite] : Sprites)
 	{
         if (FileSystem::IsPathEquivalent(sprite->GetTexture()->GetFilePath(), path))

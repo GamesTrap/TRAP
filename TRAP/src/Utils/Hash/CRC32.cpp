@@ -558,6 +558,8 @@ constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* const data, uint64_t length)
 {
+    ZoneScoped;
+
 	uint32_t crc = std::numeric_limits<uint32_t>::max(); //Same as previousCRC32 ^ 0xFFFFFFFF
 	const uint32_t* current = static_cast<const uint32_t*>(data);
 
@@ -639,5 +641,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* const data, uint64_t
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const std::string_view str)
 {
+    ZoneScoped;
+
 	return CRC32(str.data(), str.length());
 }

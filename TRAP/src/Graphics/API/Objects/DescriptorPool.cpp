@@ -5,6 +5,8 @@
 
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -24,6 +26,8 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 TRAP::Graphics::DescriptorPool::DescriptorPool()
 	: m_numDescriptorSets()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif
@@ -33,6 +37,8 @@ TRAP::Graphics::DescriptorPool::DescriptorPool()
 
 TRAP::Graphics::DescriptorPool::~DescriptorPool()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
 #endif
@@ -42,5 +48,7 @@ TRAP::Graphics::DescriptorPool::~DescriptorPool()
 
 uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const
 {
+	ZoneScoped;
+
 	return m_numDescriptorSets;
 }

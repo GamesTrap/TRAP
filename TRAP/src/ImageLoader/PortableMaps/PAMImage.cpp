@@ -8,6 +8,8 @@
 
 TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 {
+	ZoneScoped;
+
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePAMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
@@ -165,6 +167,8 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PAMImage::GetPixelData() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -175,6 +179,8 @@ const void* TRAP::INTERNAL::PAMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PAMImage::GetPixelDataSize() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 

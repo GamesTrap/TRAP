@@ -12,6 +12,8 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
                                                   const TRAP::Window* const window)
 	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_instance, "instance is nullptr");
 	TRAP_ASSERT(device, "device is nullptr");
 	TRAP_ASSERT(window, "window is nullptr");
@@ -46,6 +48,8 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 
 TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_surface);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -60,6 +64,8 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const
 {
+	ZoneScoped;
+
 	return m_surface;
 }
 
@@ -67,6 +73,8 @@ VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const
 
 VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const
 {
+	ZoneScoped;
+
 	return m_surfaceCapabilities;
 }
 
@@ -74,6 +82,8 @@ VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabil
 
 const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const
 {
+	ZoneScoped;
+
 	return m_surfaceFormats;
 }
 
@@ -81,5 +91,7 @@ const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVk
 
 const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const
 {
+	ZoneScoped;
+
 	return m_surfacePresentModes;
 }

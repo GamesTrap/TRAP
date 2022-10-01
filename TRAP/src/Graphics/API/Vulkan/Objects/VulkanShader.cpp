@@ -28,6 +28,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 	  m_cleanedDescriptorSets(),
 	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
 {
+	ZoneScoped;
+
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
 	m_valid = valid;
@@ -57,6 +59,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 	  m_cleanedDescriptorSets(),
 	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
 {
+	ZoneScoped;
+
 	m_name = std::move(name);
 	m_valid = valid;
 	m_shaderStages = desc.Stages;
@@ -86,6 +90,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 	  m_cleanedDescriptorSets(),
 	  m_lastImageIndex(std::numeric_limits<uint32_t>::max())
 {
+	ZoneScoped;
+
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
 	m_valid = false;
@@ -103,6 +109,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
+	ZoneScoped;
+
 	Shutdown();
 }
 
@@ -110,6 +118,8 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 
 const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const
 {
+	ZoneScoped;
+
 	return m_shaderModules;
 }
 
@@ -117,6 +127,8 @@ const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShade
 
 TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::VulkanShader::GetReflection() const
 {
+	ZoneScoped;
+
 	return m_reflection;
 }
 
@@ -124,6 +136,8 @@ TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graph
 
 const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const
 {
+	ZoneScoped;
+
 	return m_entryNames;
 }
 
@@ -131,6 +145,8 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames
 
 void TRAP::Graphics::API::VulkanShader::Use(const Window* window)
 {
+	ZoneScoped;
+
 	if(!window)
 		window = Application::GetWindow();
 
@@ -186,6 +202,8 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* window)
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
                                                    Ref<TRAP::Graphics::Texture> const texture, const Window* window) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(texture, "Texture is nullptr!");
 
 	if(!m_valid)
@@ -228,6 +246,8 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
 													const Window* window) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
 
 	if(!m_valid)
@@ -271,6 +291,8 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
 	                                               TRAP::Graphics::Sampler* const sampler, const Window* window) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(sampler, "Sampler is nullptr!");
 
 	if(!m_valid)
@@ -306,6 +328,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
 													const Window* window) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
 
 	if(!m_valid)
@@ -343,6 +367,8 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
 											   const uint64_t size,  const uint64_t offset, const Window* window) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(uniformBuffer, "UniformBuffer is nullptr!");
 
 	if(!m_valid)
@@ -363,6 +389,8 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
 											    const uint64_t size, const Window* window) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
 
 	if(!m_valid)
@@ -381,6 +409,8 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 
 const std::array<uint32_t, 3>& TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const
 {
+	ZoneScoped;
+
 	return m_numThreadsPerGroup;
 }
 
@@ -388,6 +418,8 @@ const std::array<uint32_t, 3>& TRAP::Graphics::API::VulkanShader::GetNumThreadsP
 
 void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc& desc)
 {
+	ZoneScoped;
+
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader: \"", m_name, "\"");
 #endif
@@ -552,6 +584,8 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 
 void TRAP::Graphics::API::VulkanShader::Shutdown()
 {
+	ZoneScoped;
+
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Destroying Shader: \"", m_name, "\"");
 #endif
@@ -594,6 +628,8 @@ void TRAP::Graphics::API::VulkanShader::Shutdown()
 
 void TRAP::Graphics::API::VulkanShader::SetShaderStageName(const std::string_view name, VkShaderModule stage) const
 {
+	ZoneScoped;
+
 	if(!m_valid)
 		return;
 
@@ -613,6 +649,8 @@ void TRAP::Graphics::API::VulkanShader::UseBuffer(const uint32_t set, const uint
 												  TRAP::Graphics::Buffer* const buffer, uint64_t size, uint64_t offset,
 												  const Window* const window) const
 {
+	ZoneScoped;
+
 	//OPTIMIZE Use index into root signature instead of name
 	std::string name = RetrieveDescriptorName(set, binding,
 	                                          buffer->GetDescriptors(),
@@ -667,6 +705,8 @@ std::string TRAP::Graphics::API::VulkanShader::RetrieveDescriptorName(const uint
 																	  bool* const outUAV,
 																	  const uint64_t size) const
 {
+	ZoneScoped;
+
 	for(const auto& resource : m_reflection->ShaderResources)
 	{
 		if(static_cast<bool>(resource.Type & type) && resource.Set == set && resource.Reg == binding && resource.Size == size)

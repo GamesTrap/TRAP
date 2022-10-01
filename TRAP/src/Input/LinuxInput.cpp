@@ -44,6 +44,8 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 bool TRAP::Input::InitController()
 {
+	ZoneScoped;
+
 	constexpr std::string_view dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
@@ -93,6 +95,8 @@ bool TRAP::Input::InitController()
 
 void TRAP::Input::ShutdownController()
 {
+	ZoneScoped;
+
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
 		if(s_controllerInternal[cID].LinuxCon.CurrentVibration != -1)
@@ -118,6 +122,8 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor, const float rightMotor)
 {
+	ZoneScoped;
+
 	if(!PollController(controller, PollMode::Presence))
 		return;
 
@@ -179,6 +185,8 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
 {
+	ZoneScoped;
+
 	return ControllerBatteryStatus::Wired;
 }
 
@@ -187,6 +195,8 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 //Attempt to open the specified controller device
 bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 {
+	ZoneScoped;
+
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
 		if (!s_controllerInternal[cID].Connected)
@@ -322,6 +332,8 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 //Frees all resources associated with the specified controller
 void TRAP::Input::CloseController(Controller controller)
 {
+	ZoneScoped;
+
 	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
 	close(con->LinuxCon.FD);
@@ -353,6 +365,8 @@ void TRAP::Input::CloseController(Controller controller)
 
 void TRAP::Input::DetectControllerConnectionLinux()
 {
+	ZoneScoped;
+
 	if (s_linuxController.INotify <= 0)
 		return;
 
@@ -392,6 +406,8 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 bool TRAP::Input::PollController(Controller controller, PollMode)
 {
+	ZoneScoped;
+
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
 		ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
@@ -440,6 +456,8 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 //Poll state of absolute axes
 void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 {
+	ZoneScoped;
+
 	for (int32_t code = 0; code < ABS_CNT; code++)
 	{
 		if (con->LinuxCon.ABSMap[code] < 0)
@@ -459,6 +477,8 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 //Apply an EV_ABS event to the specified controller
 void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
+	ZoneScoped;
+
 	const int32_t index = con->LinuxCon.ABSMap[code];
 
 	if (code >= ABS_HAT0X && code <= ABS_HAT3Y)
@@ -521,6 +541,8 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 
 void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
+	ZoneScoped;
+
 	if(code - BTN_MISC >= 0)
 		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value);
 }
@@ -529,12 +551,15 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t cod
 
 void TRAP::Input::UpdateControllerGUID(std::string&)
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Input::GetKeyboardLayoutName()
 {
+	ZoneScoped;
+
 	return TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName();
 }
 

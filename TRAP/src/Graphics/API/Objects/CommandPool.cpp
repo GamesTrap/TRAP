@@ -6,6 +6,8 @@
 
 TRAP::Graphics::CommandPool::CommandPool()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Creating CommandPool");
 #endif
@@ -15,6 +17,8 @@ TRAP::Graphics::CommandPool::CommandPool()
 
 TRAP::Graphics::CommandPool::~CommandPool()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandPoolPrefix, "Destroying CommandPool");
 #endif
@@ -24,6 +28,8 @@ TRAP::Graphics::CommandPool::~CommandPool()
 
 TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const RendererAPI::CommandPoolDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

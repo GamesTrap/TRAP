@@ -6,6 +6,8 @@
 TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
+	ZoneScoped;
+
 	if (m_maxThreadsCount == 0)
 	{
 		m_maxThreadsCount = 3; //Fallback to 3 threads
@@ -41,6 +43,8 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 
 TRAP::ThreadPool::~ThreadPool() noexcept
 {
+	ZoneScoped;
+
 	for (Queue& queue : m_queues)
 		queue.Done();
 

@@ -6,6 +6,8 @@
 TRAP::Graphics::RootSignature::RootSignature()
 	: m_pipelineType(), m_descriptorNameToIndexMap()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRootSignaturePrefix, "Creating RootSignature");
 #endif
@@ -15,6 +17,8 @@ TRAP::Graphics::RootSignature::RootSignature()
 
 TRAP::Graphics::RootSignature::~RootSignature()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRootSignaturePrefix, "Destroying RootSignature");
 #endif
@@ -24,6 +28,8 @@ TRAP::Graphics::RootSignature::~RootSignature()
 
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RootSignature::Create(const RendererAPI::RootSignatureDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

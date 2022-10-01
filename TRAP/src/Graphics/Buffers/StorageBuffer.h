@@ -130,6 +130,8 @@ namespace TRAP::Graphics
 template<typename T>
 inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* window)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
 
 	if(!window)

@@ -5,6 +5,8 @@
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64_t length)
 {
+	ZoneScoped;
+
 	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 
 	uint32_t s1 = 1u & 0xFFFFu;
@@ -37,5 +39,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* const data, uint64
 
 std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
 {
+	ZoneScoped;
+
 	return Adler32(str.data(), str.length());
 }

@@ -10,6 +10,8 @@
 TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc)
 	: m_cache(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_device);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -25,6 +27,8 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 
 TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_cache);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -38,6 +42,8 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 
 void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t* const size, void* const data) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_device);
 
 	if(m_cache)
@@ -48,6 +54,8 @@ void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t*
 
 void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path& path)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> data{};
 	std::size_t dataSize = 0;
 
@@ -66,5 +74,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path&
 
 VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const
 {
+	ZoneScoped;
+
 	return m_cache;
 }

@@ -21,6 +21,8 @@ namespace TRAP::Utils
         /// <returns>Seed sequence.</returns>
         std::seed_seq& operator()()
         {
+	        ZoneScoped;
+
             return SeedSeq;
         }
 
@@ -130,6 +132,8 @@ namespace TRAP::Utils
         /// <param name="z">How many times to advance.</param>
         static void Discard(const uint64_t z)
     	{
+	        ZoneScoped;
+
             EngineInstance().discard(z);
         }
 
@@ -138,6 +142,8 @@ namespace TRAP::Utils
         /// </summary>
         static void Reseed()
     	{
+	        ZoneScoped;
+
             const Seeder seeder;
             Seed(seeder());
         }
@@ -149,6 +155,8 @@ namespace TRAP::Utils
         static void Seed(const typename engine::result_type value =
             engine::default_seed)
     	{
+	        ZoneScoped;
+
             EngineInstance().seed(value);
         }
 
@@ -160,6 +168,8 @@ namespace TRAP::Utils
         template<typename SSeq>
         static void Seed(SSeq& seq)
     	{
+	        ZoneScoped;
+
             EngineInstance().seed(seq);
         }
 
@@ -169,6 +179,8 @@ namespace TRAP::Utils
         /// <returns>Random number.</returns>
         static typename engine::result_type Get()
     	{
+	        ZoneScoped;
+
             return EngineInstance()();
         }
 
@@ -181,6 +193,8 @@ namespace TRAP::Utils
         /// <returns>True, if other and internal engine are equal.</returns>
         static bool IsEqual(const engine& other)
     	{
+	        ZoneScoped;
+
             return EngineInstance() == other;
         }
 
@@ -193,6 +207,8 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
+	        ZoneScoped;
+
             ost << EngineInstance();
         }
 
@@ -206,6 +222,8 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
+	        ZoneScoped;
+
             ist >> EngineInstance();
         }
 
@@ -219,6 +237,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
 
@@ -235,6 +255,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
 
@@ -251,6 +273,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
                                                       int16_t, uint16_t>::type;
@@ -279,6 +303,8 @@ namespace TRAP::Utils
     	Get(A from = std::numeric_limits<A>::min(),
             B to = std::numeric_limits<B>::max())
     	{
+	        ZoneScoped;
+
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
 
@@ -292,6 +318,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
                                                                  static_cast<std::int64_t>(to) }(EngineInstance()));
@@ -311,6 +339,8 @@ namespace TRAP::Utils
         static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
     	Get(const double probability = 0.5)
     	{
+	        ZoneScoped;
+
             TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
@@ -325,6 +355,8 @@ namespace TRAP::Utils
         template<typename T>
         static T Get(std::initializer_list<T> init_list)
     	{
+	        ZoneScoped;
+
             TRAP_ASSERT(0u != init_list.size());
             return *Get(init_list.begin(), init_list.end());
         }
@@ -339,6 +371,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
     	Get(InputIt first, InputIt last)
     	{
+	        ZoneScoped;
+
             const auto size = std::distance(first, last);
             if (0 == size)
                 return last;
@@ -357,6 +391,8 @@ namespace TRAP::Utils
             decltype(std::begin(container))>::value,
     		decltype(std::begin(container))>::type
         {
+	        ZoneScoped;
+
             return Get(std::begin(container), std::end(container));
         }
 
@@ -368,6 +404,8 @@ namespace TRAP::Utils
         template<typename T, std::size_t N>
         static T* Get(T(&array)[N])
     	{
+	        ZoneScoped;
+
             return std::addressof(array[Get<std::size_t>(0, N - 1)]);
         }
 
@@ -380,6 +418,8 @@ namespace TRAP::Utils
         template<typename Dist, typename... Args>
         static typename Dist::result_type Get(Args&&... args)
     	{
+	        ZoneScoped;
+
             return Dist{ std::forward<Args>(args)... }(EngineInstance());
         }
 
@@ -391,6 +431,8 @@ namespace TRAP::Utils
         template<typename Dist>
         static typename Dist::result_type Get(Dist& dist)
     	{
+	        ZoneScoped;
+
             return dist(EngineInstance());
         }
 
@@ -403,6 +445,8 @@ namespace TRAP::Utils
         template<typename RandomIt>
         static void Shuffle(RandomIt first, RandomIt last)
     	{
+	        ZoneScoped;
+
             std::shuffle(first, last, EngineInstance());
         }
 
@@ -414,6 +458,8 @@ namespace TRAP::Utils
         template<typename Container>
         static void Shuffle(Container& container)
     	{
+	        ZoneScoped;
+
             Shuffle(std::begin(container), std::end(container));
         }
 
@@ -423,6 +469,8 @@ namespace TRAP::Utils
         /// <returns>Internal engine.</returns>
         static engine GetEngine()
     	{
+	        ZoneScoped;
+
             return EngineInstance();
         }
 
@@ -432,6 +480,8 @@ namespace TRAP::Utils
         /// <returns>Internal engine.</returns>
         static engine& Engine()
     	{
+	        ZoneScoped;
+
             return EngineInstance();
         }
 
@@ -442,6 +492,8 @@ namespace TRAP::Utils
         /// <returns>Static engine instance.</returns>
         static engine& EngineInstance()
     	{
+	        ZoneScoped;
+
             static engine Engine{ Seeder{ }() };
             return Engine;
         }
@@ -543,6 +595,8 @@ namespace TRAP::Utils
         /// <param name="z">How many times to advance.</param>
         static void Discard(const uint64_t z)
     	{
+	        ZoneScoped;
+
             EngineInstance().discard(z);
         }
 
@@ -551,6 +605,8 @@ namespace TRAP::Utils
         /// </summary>
         static void Reseed()
         {
+	        ZoneScoped;
+
             const Seeder seeder;
             Seed(seeder());
         }
@@ -561,6 +617,8 @@ namespace TRAP::Utils
         /// <param name="value">Seed value to use in the initialization of the internal state.</param>
         static void Seed(const typename engine::result_type value = engine::default_seed)
     	{
+	        ZoneScoped;
+
             EngineInstance().seed(value);
         }
 
@@ -571,6 +629,8 @@ namespace TRAP::Utils
         template<typename SSeq>
         static void Seed(SSeq& seq)
     	{
+	        ZoneScoped;
+
             EngineInstance().seed(seq);
         }
 
@@ -580,6 +640,8 @@ namespace TRAP::Utils
         /// <returns>Random number.</returns>
         static typename engine::result_type Get()
     	{
+	        ZoneScoped;
+
             return EngineInstance()();
         }
 
@@ -592,6 +654,8 @@ namespace TRAP::Utils
         /// <returns>True if other and internal engine are equal, false otherwise</returns>
         static bool IsEqual(const engine& other)
     	{
+	        ZoneScoped;
+
             return EngineInstance() == other;
         }
 
@@ -604,6 +668,8 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
+	        ZoneScoped;
+
             ost << EngineInstance();
         }
 
@@ -617,6 +683,8 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         static void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
+	        ZoneScoped;
+
             ist >> EngineInstance();
         }
 
@@ -630,6 +698,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
 
@@ -646,6 +716,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
 
@@ -662,6 +734,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
                 int16_t, uint16_t>::type;
@@ -689,6 +763,8 @@ namespace TRAP::Utils
 			                           std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
     	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
+	        ZoneScoped;
+
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
 
@@ -702,6 +778,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
                                                                  static_cast<std::int64_t>(to) }(EngineInstance()));
@@ -721,6 +799,8 @@ namespace TRAP::Utils
         static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
     	Get(const double probability = 0.5)
     	{
+	        ZoneScoped;
+
             TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
@@ -733,6 +813,8 @@ namespace TRAP::Utils
         template<typename T>
         static T Get(std::initializer_list<T> init_list)
     	{
+	        ZoneScoped;
+
             TRAP_ASSERT(0u != init_list.size());
             return *Get(init_list.begin(), init_list.end());
         }
@@ -747,6 +829,8 @@ namespace TRAP::Utils
         static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
     	Get(InputIt first, InputIt last)
     	{
+	        ZoneScoped;
+
             const auto size = std::distance(first, last);
             if (0 == size)
                 return last;
@@ -764,6 +848,8 @@ namespace TRAP::Utils
             typename std::enable_if<INTERNAL::IsIterator<decltype(std::begin(container))>::value,
     		decltype(std::begin(container))>::type
     	{
+	        ZoneScoped;
+
             return Get(std::begin(container), std::end(container));
         }
 
@@ -775,6 +861,8 @@ namespace TRAP::Utils
         template<typename T, std::size_t N>
         static T* Get(T(&array)[N])
     	{
+	        ZoneScoped;
+
             return std::addressof(array[Get<std::size_t>(0, N - 1)]);
         }
 
@@ -787,6 +875,8 @@ namespace TRAP::Utils
         template<typename Dist, typename... Args>
         static typename Dist::result_type Get(Args&&... args)
     	{
+	        ZoneScoped;
+
             return Dist{ std::forward<Args>(args)... }(EngineInstance());
         }
 
@@ -799,6 +889,8 @@ namespace TRAP::Utils
         template<typename Dist>
         static typename Dist::result_type Get(Dist& dist)
     	{
+	        ZoneScoped;
+
             return dist(EngineInstance());
         }
 
@@ -811,6 +903,8 @@ namespace TRAP::Utils
         template<typename RandomIt>
         static void Shuffle(RandomIt first, RandomIt last)
     	{
+	        ZoneScoped;
+
             std::shuffle(first, last, EngineInstance());
         }
 
@@ -823,6 +917,8 @@ namespace TRAP::Utils
         template<typename Container>
         static void Shuffle(Container& container)
     	{
+	        ZoneScoped;
+
             Shuffle(std::begin(container), std::end(container));
         }
 
@@ -832,6 +928,8 @@ namespace TRAP::Utils
         /// <returns>Internal engine.</returns>
         static engine GetEngine()
     	{
+	        ZoneScoped;
+
             return EngineInstance();
         }
 
@@ -841,6 +939,8 @@ namespace TRAP::Utils
         /// <returns>Internal engine.</returns>
         static engine& Engine()
     	{
+	        ZoneScoped;
+
             return EngineInstance();
         }
     protected:
@@ -850,6 +950,8 @@ namespace TRAP::Utils
         /// <returns>Thread local engine reference.</returns>
         static engine& EngineInstance()
     	{
+	        ZoneScoped;
+
             thread_local engine Engine{ Seeder{ }() };
             return Engine;
         }
@@ -925,6 +1027,8 @@ namespace TRAP::Utils
         /// <param name="z">How many times to advance.</param>
         void Discard(const uint64_t z)
         {
+	        ZoneScoped;
+
             m_engine.discard(z);
         }
 
@@ -933,6 +1037,8 @@ namespace TRAP::Utils
         /// </summary>
         void Reseed()
     	{
+	        ZoneScoped;
+
             const Seeder seeder;
             Seed(seeder());
         }
@@ -943,6 +1049,8 @@ namespace TRAP::Utils
         /// <param name="value">Seed value to use in the initialization of the internal state</param>
         void Seed(const typename engine::result_type value = engine::default_seed)
     	{
+	        ZoneScoped;
+
             m_engine.seed(value);
         }
 
@@ -953,6 +1061,8 @@ namespace TRAP::Utils
         template<typename SSeq>
         void Seed(SSeq& seq)
     	{
+	        ZoneScoped;
+
             m_engine.seed(seq);
         }
 
@@ -962,6 +1072,8 @@ namespace TRAP::Utils
         /// <returns>Random number.</returns>
         typename engine::result_type Get()
     	{
+	        ZoneScoped;
+
             return m_engine();
         }
 
@@ -974,6 +1086,8 @@ namespace TRAP::Utils
         /// <returns>True if other and internal engine are equal, false otherwise.</returns>
         bool IsEqual(const engine& other)
     	{
+	        ZoneScoped;
+
             return m_engine == other;
         }
 
@@ -986,6 +1100,8 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
+	        ZoneScoped;
+
             ost << m_engine;
         }
 
@@ -999,6 +1115,8 @@ namespace TRAP::Utils
         template<typename CharT, typename Traits>
         void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
+	        ZoneScoped;
+
             ist >> m_engine;
         }
 
@@ -1012,6 +1130,8 @@ namespace TRAP::Utils
         typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(m_engine);
 
@@ -1028,6 +1148,8 @@ namespace TRAP::Utils
         typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(m_engine);
 
@@ -1044,6 +1166,8 @@ namespace TRAP::Utils
         typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
                 int16_t, uint16_t>::type;
@@ -1071,6 +1195,8 @@ namespace TRAP::Utils
 			                    std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
     	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
+	        ZoneScoped;
+
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
 
@@ -1084,6 +1210,8 @@ namespace TRAP::Utils
         typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
     	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
+	        ZoneScoped;
+
             //Allow range from higher to lower
             if (from < to)
                 return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from),
@@ -1104,6 +1232,8 @@ namespace TRAP::Utils
         typename std::enable_if<std::is_same<T, bool>::value, bool>::type
     	Get(const double probability = 0.5)
     	{
+	        ZoneScoped;
+
             TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(m_engine);
         }
@@ -1116,6 +1246,8 @@ namespace TRAP::Utils
         template<typename T>
         T Get(std::initializer_list<T> init_list)
     	{
+	        ZoneScoped;
+
             TRAP_ASSERT(0u != init_list.size());
             return *Get(init_list.begin(), init_list.end());
         }
@@ -1130,6 +1262,8 @@ namespace TRAP::Utils
         typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
     	Get(InputIt first, InputIt last)
     	{
+	        ZoneScoped;
+
             const auto size = std::distance(first, last);
             if (0 == size)
                 return last;
@@ -1148,6 +1282,8 @@ namespace TRAP::Utils
             typename std::enable_if<INTERNAL::IsIterator<decltype(std::begin(container))>::value,
     		decltype(std::begin(container))>::type
     	{
+	        ZoneScoped;
+
             return Get(std::begin(container), std::end(container));
         }
 
@@ -1159,6 +1295,8 @@ namespace TRAP::Utils
         template<typename T, std::size_t N>
         T* Get(T(&array)[N])
     	{
+	        ZoneScoped;
+
             return std::addressof(array[Get<std::size_t>(0, N - 1)]);
         }
 
@@ -1171,6 +1309,8 @@ namespace TRAP::Utils
         template<typename Dist, typename... Args>
         typename Dist::result_type Get(Args&&... args)
     	{
+	        ZoneScoped;
+
             return Dist{ std::forward<Args>(args)... }(m_engine);
         }
 
@@ -1183,6 +1323,8 @@ namespace TRAP::Utils
         template<typename Dist>
         typename Dist::result_type Get(Dist& dist)
     	{
+	        ZoneScoped;
+
             return dist(m_engine);
         }
 
@@ -1195,6 +1337,8 @@ namespace TRAP::Utils
         template<typename RandomIt>
         void Shuffle(RandomIt first, RandomIt last)
     	{
+	        ZoneScoped;
+
             std::shuffle(first, last, m_engine);
         }
 
@@ -1207,6 +1351,8 @@ namespace TRAP::Utils
         template<typename Container>
         void Shuffle(Container& container)
     	{
+	        ZoneScoped;
+
             Shuffle(std::begin(container), std::end(container));
         }
 
@@ -1216,6 +1362,8 @@ namespace TRAP::Utils
         /// <returns>Internal engine.</returns>
         engine GetEngine() const
     	{
+	        ZoneScoped;
+
             return m_engine;
         }
 
@@ -1225,6 +1373,8 @@ namespace TRAP::Utils
         /// <returns>Internal engine-</returns>
         engine& Engine()
     	{
+	        ZoneScoped;
+
             return m_engine;
         }
 
@@ -1235,6 +1385,8 @@ namespace TRAP::Utils
         /// <returns>Seeded engine.</returns>
         static engine MakeSeededEngine()
     	{
+	        ZoneScoped;
+
             //Make seeder instance for seed return by reference like std::seed_seq
             return engine{ Seeder{ }() };
         }

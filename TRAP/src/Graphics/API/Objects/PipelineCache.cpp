@@ -6,6 +6,8 @@
 
 TRAP::Graphics::PipelineCache::PipelineCache()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelineCachePrefix, "Creating PipelineCache");
 #endif
@@ -15,6 +17,8 @@ TRAP::Graphics::PipelineCache::PipelineCache()
 
 TRAP::Graphics::PipelineCache::~PipelineCache()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelineCachePrefix, "Destroying PipelineCache");
 #endif
@@ -24,6 +28,8 @@ TRAP::Graphics::PipelineCache::~PipelineCache()
 
 TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -42,6 +48,8 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 
 TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheLoadDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

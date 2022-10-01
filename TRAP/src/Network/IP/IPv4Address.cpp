@@ -44,6 +44,8 @@ const TRAP::Network::IPv4Address TRAP::Network::IPv4Address::Broadcast(255, 255,
 TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	: m_address(0), m_valid(false)
 {
+	ZoneScoped;
+
 	Resolve(address);
 }
 
@@ -53,6 +55,8 @@ TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1
                                         const uint8_t byte3)
 	: m_address(static_cast<uint32_t>((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
 {
+	ZoneScoped;
+
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
 }
@@ -62,6 +66,8 @@ TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1
 TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 	: m_address(address), m_valid(true)
 {
+	ZoneScoped;
+
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
 		TRAP::Utils::Memory::SwapBytes(m_address);
 }
@@ -70,6 +76,8 @@ TRAP::Network::IPv4Address::IPv4Address(const uint32_t address)
 
 std::string TRAP::Network::IPv4Address::ToString() const
 {
+	ZoneScoped;
+
 	in_addr address{};
 	address.s_addr = m_address;
 
@@ -83,6 +91,8 @@ std::string TRAP::Network::IPv4Address::ToString() const
 
 uint32_t TRAP::Network::IPv4Address::ToInteger() const
 {
+	ZoneScoped;
+
 	uint32_t address = m_address;
 
 	if(TRAP::Utils::GetEndian() != TRAP::Utils::Endian::Big)
@@ -95,6 +105,8 @@ uint32_t TRAP::Network::IPv4Address::ToInteger() const
 
 TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 {
+	ZoneScoped;
+
 	//The method here is to connect a UDP socket to anyone (here to localhost),
 	//and get the local socket address with the getsockname function.
 	//UDP connection will not send anything to the network, so this function won't cause any overhead.
@@ -142,6 +154,8 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 
 TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
+	ZoneScoped;
+
 	//The trick here is more complicated, because the only way
 	//to get our public IPv4 address is to get it from a distant computer.
 	//Here we get the web page from http://www.sfml-dev.org/ip-provider.php
@@ -162,6 +176,8 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Ut
 
 void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 {
+	ZoneScoped;
+
 	m_address = 0;
 	m_valid = false;
 
@@ -210,6 +226,8 @@ void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 
 bool TRAP::Network::operator==(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneScoped;
+
 	return !(left < right) && !(right < left);
 }
 
@@ -217,6 +235,8 @@ bool TRAP::Network::operator==(const IPv4Address& left, const IPv4Address& right
 
 bool TRAP::Network::operator!=(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneScoped;
+
 	return !(left == right);
 }
 
@@ -224,6 +244,8 @@ bool TRAP::Network::operator!=(const IPv4Address& left, const IPv4Address& right
 
 bool TRAP::Network::operator<(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneScoped;
+
 	return std::make_pair(left.m_valid, left.m_address) < std::make_pair(right.m_valid, right.m_address);
 }
 
@@ -231,6 +253,8 @@ bool TRAP::Network::operator<(const IPv4Address& left, const IPv4Address& right)
 
 bool TRAP::Network::operator>(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneScoped;
+
 	return right < left;
 }
 
@@ -238,6 +262,8 @@ bool TRAP::Network::operator>(const IPv4Address& left, const IPv4Address& right)
 
 bool TRAP::Network::operator<=(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneScoped;
+
 	return !(right < left);
 }
 
@@ -245,6 +271,8 @@ bool TRAP::Network::operator<=(const IPv4Address& left, const IPv4Address& right
 
 bool TRAP::Network::operator>=(const IPv4Address& left, const IPv4Address& right)
 {
+	ZoneScoped;
+
 	return !(left < right);
 }
 
@@ -252,6 +280,8 @@ bool TRAP::Network::operator>=(const IPv4Address& left, const IPv4Address& right
 
 std::istream& TRAP::Network::operator>>(std::istream& stream, IPv4Address& address)
 {
+	ZoneScoped;
+
 	std::string str;
 	stream >> str;
 	address = IPv4Address(str);
@@ -263,5 +293,7 @@ std::istream& TRAP::Network::operator>>(std::istream& stream, IPv4Address& addre
 
 std::ostream& TRAP::Network::operator<<(std::ostream& stream, const IPv4Address& address)
 {
+	ZoneScoped;
+
 	return stream << address.ToString();
 }

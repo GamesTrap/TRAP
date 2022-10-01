@@ -20,6 +20,8 @@ namespace YAML
 	{
 		static Node encode(const TRAP::Math::Vec2& rhs)
 		{
+			ZoneScoped;
+
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
@@ -29,6 +31,8 @@ namespace YAML
 
 		static bool decode(const Node& node, TRAP::Math::Vec2& rhs)
 		{
+			ZoneScoped;
+
 			if (!node.IsSequence() || node.size() != 2)
 				return false;
 
@@ -43,6 +47,8 @@ namespace YAML
 	{
 		static Node encode(const TRAP::Math::Vec3& rhs)
 		{
+			ZoneScoped;
+
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
@@ -53,6 +59,8 @@ namespace YAML
 
 		static bool decode(const Node& node, TRAP::Math::Vec3& rhs)
 		{
+			ZoneScoped;
+
 			if (!node.IsSequence() || node.size() != 3)
 				return false;
 
@@ -68,6 +76,8 @@ namespace YAML
 	{
 		static Node encode(const TRAP::Math::Vec4& rhs)
 		{
+			ZoneScoped;
+
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
@@ -79,6 +89,8 @@ namespace YAML
 
 		static bool decode(const Node& node, TRAP::Math::Vec4& rhs)
 		{
+			ZoneScoped;
+
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
 
@@ -95,6 +107,8 @@ namespace TRAP
 {
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec2& v)
 	{
+		ZoneScoped;
+
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
 		return out;
@@ -102,6 +116,8 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec3& v)
 	{
+		ZoneScoped;
+
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
 		return out;
@@ -109,6 +125,8 @@ namespace TRAP
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Math::Vec4& v)
 	{
+		ZoneScoped;
+
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
 		return out;
@@ -116,6 +134,8 @@ namespace TRAP
 
 	static std::string Rigidbody2DBodyTypeToString(Rigidbody2DComponent::BodyType type)
 	{
+		ZoneScoped;
+
 		switch(type)
 		{
 		case Rigidbody2DComponent::BodyType::Static:
@@ -135,6 +155,8 @@ namespace TRAP
 
 	static Rigidbody2DComponent::BodyType Rigidbody2DBodyTypeFromString(const std::string& bodyTypeString)
 	{
+		ZoneScoped;
+
 		if(bodyTypeString == "Static")
 			return Rigidbody2DComponent::BodyType::Static;
 		if(bodyTypeString == "Dynamic")
@@ -148,6 +170,8 @@ namespace TRAP
 
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
+		ZoneScoped;
+
 		TRAP_ASSERT(entity.HasComponent<UIDComponent>());
 
 		out << YAML::BeginMap; //Entity
@@ -277,12 +301,16 @@ namespace TRAP
 
 TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene)
 	: m_scene(std::move(scene))
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 {
+	ZoneScoped;
+
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene" << YAML::Value << "Untitled";
@@ -306,6 +334,8 @@ void TRAP::SceneSerializer::Serialize(const std::filesystem::path& filepath)
 
 void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(false, "Not implemented yet!");
 }
 
@@ -313,6 +343,8 @@ void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 
 bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
+	ZoneScoped;
+
 	if (!FileSystem::FileOrFolderExists(filepath))
 	{
 		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.u8string(), "\" doesn't exists!");
@@ -440,6 +472,8 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 
 bool TRAP::SceneSerializer::DeserializeRuntime(const std::filesystem::path&)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(false, "Not implemented yet!");
 	return false;
 }

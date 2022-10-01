@@ -19,6 +19,8 @@ namespace TRAP::Utils::Memory
 	template<typename T>
 	inline static void SwapBytes(T& t)
 	{
+		ZoneScoped;
+
 		if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>)
 		{
 		    uint8_t* const ptr = reinterpret_cast<uint8_t*>(&t);
@@ -45,6 +47,8 @@ namespace TRAP::Utils::Memory
 	template<typename Iter>
 	inline static void SwapBytes(Iter begin, Iter end)
 	{
+		ZoneScoped;
+
 		for(; begin != end; ++begin)
 			SwapBytes(*begin);
 	}
@@ -60,6 +64,8 @@ namespace TRAP::Utils::Memory
 	template<typename T>
 	inline static T ConvertByte(const uint8_t* const source)
 	{
+		ZoneScoped;
+
 		if constexpr(std::is_unsigned_v<T> && (std::is_same_v<T, uint16_t> ||
 		             std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>))
 		{
@@ -102,6 +108,8 @@ namespace TRAP::Utils::Memory
 	template<typename InputIt, typename OutputIt>
 	inline static void ConvertBytes(InputIt begin, InputIt end, OutputIt output)
 	{
+		ZoneScoped;
+
 		using input_type = typename std::iterator_traits<InputIt>::value_type;
 		using output_type = typename std::iterator_traits<OutputIt>::value_type;
 

@@ -25,6 +25,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	  m_vkEmptyDescriptorSets(),
 	  m_vkPushConstantCount()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -462,6 +464,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_pipelineLayout);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -486,6 +490,8 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 
 TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanRootSignature::GetPipelineType() const
 {
+	ZoneScoped;
+
 	return m_pipelineType;
 }
 
@@ -493,6 +499,8 @@ TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanRootSignatu
 
 VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout() const
 {
+	ZoneScoped;
+
 	return m_pipelineLayout;
 }
 
@@ -501,6 +509,8 @@ VkPipelineLayout TRAP::Graphics::API::VulkanRootSignature::GetVkPipelineLayout()
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorSetLayouts() const ->
 const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_vkDescriptorSetLayouts;
 }
 
@@ -509,6 +519,8 @@ const std::array<VkDescriptorSetLayout, TRAP::Graphics::RendererAPI::MaxDescript
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts() const ->
 	const std::array<uint32_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_vkCumulativeDescriptorsCounts;
 }
 
@@ -517,6 +529,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkCumulativeDescriptorCounts()
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
 	const std::array<uint16_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_vkDescriptorCounts;
 }
 
@@ -525,6 +539,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDescriptorCounts() const ->
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() const ->
 	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_vkDynamicDescriptorCounts;
 }
 
@@ -533,6 +549,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkDynamicDescriptorCounts() co
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts() const ->
 	const std::array<uint8_t, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_vkRayTracingDescriptorCounts;
 }
 
@@ -541,6 +559,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetVkRayTracingDescriptorCounts()
 auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
 	const std::array<VkDescriptorUpdateTemplate, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_updateTemplates;
 }
 
@@ -549,6 +569,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplates() const ->
 auto TRAP::Graphics::API::VulkanRootSignature::GetVkEmptyDescriptorSets() const ->
 	const std::array<VkDescriptorSet, TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_vkEmptyDescriptorSets;
 }
 
@@ -558,6 +580,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
 	const std::array<std::vector<TRAP::Graphics::API::VulkanRenderer::DescriptorUpdateData>,
 	                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>&
 {
+	ZoneScoped;
+
 	return m_updateTemplateData;
 }
 
@@ -565,6 +589,8 @@ auto TRAP::Graphics::API::VulkanRootSignature::GetUpdateTemplateData() const ->
 
 TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName)
 {
+	ZoneScoped;
+
 	const auto it = m_descriptorNameToIndexMap.find(resName);
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
@@ -576,6 +602,8 @@ TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSign
 
 const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSignature::GetDescriptor(const char* const resName) const
 {
+	ZoneScoped;
+
 	const auto it = m_descriptorNameToIndexMap.find(resName);
 	if (it != m_descriptorNameToIndexMap.end())
 		return &m_descriptors[it->second];
@@ -587,6 +615,8 @@ const TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRo
 
 uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const
 {
+	ZoneScoped;
+
 	return static_cast<uint32_t>(m_descriptors.size());
 }
 
@@ -594,6 +624,8 @@ uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const
 
 const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptors() const
 {
+	ZoneScoped;
+
 	return m_descriptors;
 }
 
@@ -601,5 +633,7 @@ const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::
 
 const TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const
 {
+	ZoneScoped;
+
 	return m_descriptorNameToIndexMap;
 }

@@ -7,12 +7,16 @@
 TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
                                                std::filesystem::path oldName)
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
 {
+	ZoneScoped;
+
     return m_path;
 }
 
@@ -20,6 +24,8 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
 
 std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
 {
+	ZoneScoped;
+
     return m_oldName;
 }
 
@@ -27,6 +33,8 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
 
 std::string TRAP::Events::FileChangeEvent::ToString() const
 {
+	ZoneScoped;
+
     return "FileChangeEvent: Path: " + m_path.u8string() + " Status: " +
            FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.u8string());
 }
@@ -35,6 +43,8 @@ std::string TRAP::Events::FileChangeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -42,6 +52,8 @@ TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 
 std::string TRAP::Events::FileChangeEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "FileChange";
 }
 
@@ -49,6 +61,8 @@ std::string TRAP::Events::FileChangeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::FileChange;
 }
 
@@ -56,6 +70,8 @@ TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() co
 
 std::string TRAP::Events::FileChangeEvent::FileStatusToString(const TRAP::FileSystem::FileStatus status)
 {
+	ZoneScoped;
+
     switch(status)
     {
     case TRAP::FileSystem::FileStatus::Created:

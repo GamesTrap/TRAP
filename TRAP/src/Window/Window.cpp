@@ -39,6 +39,8 @@ std::unordered_map<std::size_t, TRAP::INTERNAL::WindowingAPI::InternalVideoMode>
 TRAP::Window::Window(const WindowProps &props)
 	: m_window(nullptr), m_useMonitor(nullptr)
 {
+	ZoneScoped;
+
 	TP_INFO
 	(
 	    Log::WindowPrefix, "Initializing window: \"", props.Title, "\" ", props.Width, 'x', props.Height, '@',
@@ -60,6 +62,8 @@ TRAP::Window::Window(const WindowProps &props)
 
 TRAP::Window::~Window()
 {
+	ZoneScoped;
+
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::NONE)
 		TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
 
@@ -73,6 +77,8 @@ TRAP::Window::~Window()
 
 void TRAP::Window::OnUpdate()
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::PollEvents();
 }
 
@@ -80,6 +86,8 @@ void TRAP::Window::OnUpdate()
 
 uint32_t TRAP::Window::GetActiveWindows() noexcept
 {
+	ZoneScoped;
+
 	return s_windows;
 }
 
@@ -87,6 +95,8 @@ uint32_t TRAP::Window::GetActiveWindows() noexcept
 
 std::string TRAP::Window::GetTitle() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.Title;
 }
 
@@ -94,6 +104,8 @@ std::string TRAP::Window::GetTitle() const noexcept
 
 uint32_t TRAP::Window::GetWidth() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.Width;
 }
 
@@ -101,6 +113,8 @@ uint32_t TRAP::Window::GetWidth() const noexcept
 
 uint32_t TRAP::Window::GetHeight() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.Height;
 }
 
@@ -108,6 +122,8 @@ uint32_t TRAP::Window::GetHeight() const noexcept
 
 TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 {
+	ZoneScoped;
+
 	return { m_data.Width, m_data.Height };
 }
 
@@ -115,6 +131,8 @@ TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 
 TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const noexcept
 {
+	ZoneScoped;
+
 	int32_t width = 0, height = 0;
 	INTERNAL::WindowingAPI::GetFrameBufferSize(m_window.get(), width, height);
 
@@ -125,6 +143,8 @@ TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const noexcept
 
 TRAP::Math::Vec2i TRAP::Window::GetPosition() const noexcept
 {
+	ZoneScoped;
+
 	TRAP::Math::Vec2i pos{};
 
 	INTERNAL::WindowingAPI::GetWindowPos(m_window.get(), pos[0], pos[1]);
@@ -136,6 +156,8 @@ TRAP::Math::Vec2i TRAP::Window::GetPosition() const noexcept
 
 uint32_t TRAP::Window::GetRefreshRate() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.RefreshRate;
 }
 
@@ -143,6 +165,8 @@ uint32_t TRAP::Window::GetRefreshRate() const noexcept
 
 TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.displayMode;
 }
 
@@ -150,6 +174,8 @@ TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const noexcept
 
 TRAP::Monitor TRAP::Window::GetMonitor() const
 {
+	ZoneScoped;
+
 	return Monitor(m_data.Monitor);
 }
 
@@ -157,6 +183,8 @@ TRAP::Monitor TRAP::Window::GetMonitor() const
 
 TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.cursorMode;
 }
 
@@ -164,6 +192,8 @@ TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const noexcept
 
 bool TRAP::Window::GetRawMouseInput() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.RawMouseInput;
 }
 
@@ -171,6 +201,8 @@ bool TRAP::Window::GetRawMouseInput() const noexcept
 
 TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 {
+	ZoneScoped;
+
 	Math::Vec2 contentScale{};
 	INTERNAL::WindowingAPI::GetWindowContentScale(m_window.get(), contentScale.x, contentScale.y);
 
@@ -181,6 +213,8 @@ TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 
 float TRAP::Window::GetOpacity() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowOpacity(m_window.get());
 }
 
@@ -188,6 +222,8 @@ float TRAP::Window::GetOpacity() const
 
 bool TRAP::Window::GetVSync() const noexcept
 {
+	ZoneScoped;
+
 	return m_data.VSync;
 }
 
@@ -195,6 +231,8 @@ bool TRAP::Window::GetVSync() const noexcept
 
 void* TRAP::Window::GetInternalWindow() const
 {
+	ZoneScoped;
+
 	return m_window.get();
 }
 
@@ -202,6 +240,8 @@ void* TRAP::Window::GetInternalWindow() const
 
 void TRAP::Window::SetTitle(const std::string& title)
 {
+	ZoneScoped;
+
 	if (!title.empty())
 		m_data.Title = title;
 	else
@@ -227,6 +267,8 @@ void TRAP::Window::SetTitle(const std::string& title)
 
 void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint32_t height, uint32_t refreshRate)
 {
+	ZoneScoped;
+
 	if(mode == DisplayMode::Windowed) //Check if new mode will also be windowed
 	{
 		if(m_data.displayMode == DisplayMode::Windowed)
@@ -431,6 +473,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 
 void TRAP::Window::SetMonitor(Monitor& monitor)
 {
+	ZoneScoped;
+
 	const uint32_t oldMonitor = m_data.Monitor;
 
 	TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set monitor: ", monitor.GetName(), " (", monitor.GetID(), ")");
@@ -457,6 +501,8 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 
 void TRAP::Window::SetCursorMode(const CursorMode& mode)
 {
+	ZoneScoped;
+
 #ifndef TRAP_RELEASE
 	if (mode == CursorMode::Normal)
 		TP_DEBUG(Log::WindowPrefix, "\"", m_data.Title, "\" set cursor mode: Normal");
@@ -476,6 +522,8 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 
 void TRAP::Window::SetCursorType(const CursorType& cursor) const
 {
+	ZoneScoped;
+
 	Scope<INTERNAL::WindowingAPI::InternalCursor> internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
 	INTERNAL::WindowingAPI::SetCursor(m_window.get(), internalCursor.get());
 	INTERNAL::ImGuiWindowing::SetCustomCursor(internalCursor); //Make ImGui the owner of the cursor
@@ -485,6 +533,8 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspot, const int32_t yHotspot) const
 {
+	ZoneScoped;
+
 	Scope<INTERNAL::WindowingAPI::InternalCursor> cursor = INTERNAL::WindowingAPI::CreateCursor
 		(
 			image, xHotspot, yHotspot
@@ -497,6 +547,8 @@ void TRAP::Window::SetCursorIcon(const Image* const image, const int32_t xHotspo
 
 void TRAP::Window::SetRawMouseInput(const bool enabled)
 {
+	ZoneScoped;
+
 	if(Input::IsRawMouseInputSupported())
 	{
 		m_data.RawMouseInput = enabled;
@@ -514,6 +566,8 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progress) const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetProgress(m_window.get(), state, progress);
 }
 
@@ -521,6 +575,8 @@ void TRAP::Window::SetProgress(const ProgressState state, const uint32_t progres
 
 void TRAP::Window::SetIcon() const
 {
+	ZoneScoped;
+
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
 	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, Image::ColorFormat::RGBA,
 	                                                                            TRAPLogo).get());
@@ -530,6 +586,8 @@ void TRAP::Window::SetIcon() const
 
 void TRAP::Window::SetIcon(const Image* const image) const
 {
+	ZoneScoped;
+
 	if (!image)
 	{
 		SetIcon();
@@ -565,6 +623,8 @@ void TRAP::Window::SetIcon(const Image* const image) const
 
 void TRAP::Window::SetEventCallback(const EventCallbackFn& callback) noexcept
 {
+	ZoneScoped;
+
 	m_data.EventCallback = callback;
 }
 
@@ -572,6 +632,8 @@ void TRAP::Window::SetEventCallback(const EventCallbackFn& callback) noexcept
 
 void TRAP::Window::SetResizable(const bool enabled) const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable, enabled);
 }
 
@@ -579,6 +641,8 @@ void TRAP::Window::SetResizable(const bool enabled) const
 
 void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHeight)
 {
+	ZoneScoped;
+
 	m_data.MinWidth = static_cast<int32_t>(minWidth);
 	m_data.MinHeight = static_cast<int32_t>(minHeight);
 
@@ -615,6 +679,8 @@ void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHei
 
 void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHeight)
 {
+	ZoneScoped;
+
 	m_data.MaxWidth = static_cast<int32_t>(maxWidth);
 	m_data.MaxHeight = static_cast<int32_t>(maxHeight);
 
@@ -646,6 +712,8 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 
 void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetWindowPos(m_window.get(), x, y);
 
 	m_data.windowModeParams.XPos = x;
@@ -656,6 +724,8 @@ void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
 
 void TRAP::Window::SetOpacity(const float opacity) const
 {
+	ZoneScoped;
+
 	if(opacity >= 0.0f || opacity <= 1.0f)
 		INTERNAL::WindowingAPI::SetWindowOpacity(m_window.get(), opacity);
 	else
@@ -666,6 +736,8 @@ void TRAP::Window::SetOpacity(const float opacity) const
 
 void TRAP::Window::SetDragAndDrop(const bool enabled) const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetDragAndDrop(m_window.get(), enabled);
 }
 
@@ -673,6 +745,8 @@ void TRAP::Window::SetDragAndDrop(const bool enabled) const
 
 void TRAP::Window::SetVSync(const bool enabled)
 {
+	ZoneScoped;
+
 	m_data.VSync = enabled;
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(enabled, this);
 }
@@ -681,6 +755,8 @@ void TRAP::Window::SetVSync(const bool enabled)
 
 bool TRAP::Window::IsMaximized() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
 }
 
@@ -688,6 +764,8 @@ bool TRAP::Window::IsMaximized() const
 
 bool TRAP::Window::IsMinimized() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Minimized);
 }
 
@@ -695,6 +773,8 @@ bool TRAP::Window::IsMinimized() const
 
 bool TRAP::Window::IsResizable() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable);
 }
 
@@ -702,6 +782,8 @@ bool TRAP::Window::IsResizable() const
 
 bool TRAP::Window::IsVisible() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Visible);
 }
 
@@ -709,6 +791,8 @@ bool TRAP::Window::IsVisible() const
 
 bool TRAP::Window::IsFocused() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Focused);
 }
 
@@ -716,6 +800,8 @@ bool TRAP::Window::IsFocused() const
 
 bool TRAP::Window::IsDecorated() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Decorated);
 }
 
@@ -723,6 +809,8 @@ bool TRAP::Window::IsDecorated() const
 
 bool TRAP::Window::IsHovered() const
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Hovered);
 }
 
@@ -730,6 +818,8 @@ bool TRAP::Window::IsHovered() const
 
 void TRAP::Window::Maximize() const
 {
+	ZoneScoped;
+
 	if(m_data.displayMode == DisplayMode::Windowed)
 		INTERNAL::WindowingAPI::MaximizeWindow(m_window.get());
 }
@@ -738,6 +828,8 @@ void TRAP::Window::Maximize() const
 
 void TRAP::Window::Minimize() const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::MinimizeWindow(m_window.get());
 }
 
@@ -745,6 +837,8 @@ void TRAP::Window::Minimize() const
 
 void TRAP::Window::RequestAttention() const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::RequestWindowAttention(m_window.get());
 }
 
@@ -752,6 +846,8 @@ void TRAP::Window::RequestAttention() const
 
 void TRAP::Window::Focus() const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::FocusWindow(m_window.get());
 }
 
@@ -759,6 +855,8 @@ void TRAP::Window::Focus() const
 
 void TRAP::Window::Hide() const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::HideWindow(m_window.get());
 }
 
@@ -766,6 +864,8 @@ void TRAP::Window::Hide() const
 
 void TRAP::Window::Show() const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::ShowWindow(m_window.get());
 }
 
@@ -773,6 +873,8 @@ void TRAP::Window::Show() const
 
 void TRAP::Window::Restore() const
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::RestoreWindow(m_window.get());
 }
 
@@ -780,6 +882,8 @@ void TRAP::Window::Restore() const
 
 void TRAP::Window::Init(const WindowProps& props)
 {
+	ZoneScoped;
+
 	m_data.Title = props.Title;
 	m_data.Width = static_cast<int32_t>(props.Width);
 	m_data.Height = static_cast<int32_t>(props.Height);
@@ -956,6 +1060,8 @@ void TRAP::Window::Init(const WindowProps& props)
 
 void TRAP::Window::Shutdown()
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::DestroyWindow(std::move(m_window));
 	m_window = nullptr;
 	if (!s_windows)
@@ -969,6 +1075,8 @@ void TRAP::Window::Shutdown()
 
 void TRAP::Window::SetupEventCallbacks()
 {
+	ZoneScoped;
+
 	//Set WindowingAPI callbacks
 	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window.get(),
 		[](const INTERNAL::WindowingAPI::InternalWindow* const window, const int32_t w, const int32_t h)
@@ -1326,6 +1434,7 @@ TRAP::WindowProps::WindowProps(std::string title,
 	  Monitor(monitor),
 	  Advanced{advanced}
 {
+	ZoneScoped;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1347,4 +1456,5 @@ TRAP::WindowProps::AdvancedProps::AdvancedProps(const bool resizable,
 	  RawMouseInput(rawMouseInput),
 	  CursorMode(cursorMode)
 {
+	ZoneScoped;
 }

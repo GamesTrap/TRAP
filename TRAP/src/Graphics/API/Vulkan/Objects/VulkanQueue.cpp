@@ -20,6 +20,8 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	  m_flags(),
 	  m_timestampPeriod(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -59,6 +61,8 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 
 TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_vkQueue);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -72,6 +76,8 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 
 VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const
 {
+	ZoneScoped;
+
 	return m_vkQueue;
 }
 
@@ -79,6 +85,8 @@ VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const
 
 uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const
 {
+	ZoneScoped;
+
 	return m_vkQueueFamilyIndex;
 }
 
@@ -86,6 +94,8 @@ uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const
 
 uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const
 {
+	ZoneScoped;
+
 	return m_vkQueueIndex;
 }
 
@@ -93,6 +103,8 @@ uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const
 
 TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueueType() const
 {
+	ZoneScoped;
+
 	return m_type;
 }
 
@@ -100,6 +112,8 @@ TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueu
 
 uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const
 {
+	ZoneScoped;
+
 	return m_flags;
 }
 
@@ -107,6 +121,8 @@ uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const
 
 float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const
 {
+	ZoneScoped;
+
 	return m_timestampPeriod;
 }
 
@@ -114,6 +130,8 @@ float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const
 
 double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const
 {
+	ZoneScoped;
+
 	//The engine is using ticks per sec as frequency.
 	//Vulkan is nano sec per tick.
 	//Handle the conversion logic here.
@@ -125,6 +143,8 @@ double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const
 
 void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
 {
+	ZoneScoped;
+
 	VkCall(vkQueueWaitIdle(m_vkQueue));
 }
 
@@ -132,6 +152,8 @@ void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
 
 void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(!desc.Cmds.empty());
 	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
 
@@ -191,6 +213,8 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
+	ZoneScoped;
+
 #ifdef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(RendererAPI::GPUSettings.PresentSupported, "Present is not supported by the system!");
 #endif
@@ -244,6 +268,8 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name) const
 {
+	ZoneScoped;
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 

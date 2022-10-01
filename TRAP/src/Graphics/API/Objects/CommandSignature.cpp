@@ -5,6 +5,8 @@
 
 TRAP::Graphics::CommandSignature::CommandSignature()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Creating CommandSignature");
 #endif
@@ -14,6 +16,8 @@ TRAP::Graphics::CommandSignature::CommandSignature()
 
 TRAP::Graphics::CommandSignature::~CommandSignature()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandSignaturePrefix, "Destroying CommandSignature");
 #endif
@@ -23,6 +27,8 @@ TRAP::Graphics::CommandSignature::~CommandSignature()
 
 TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Create(const RendererAPI::CommandSignatureDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

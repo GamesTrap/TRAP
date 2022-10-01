@@ -10,6 +10,8 @@ TRAP::Log TRAP::TRAPLog{};
 TRAP::Log::Log()
 	: m_path("trap.log"), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
+	ZoneScoped;
+
 	m_buffer.reserve(256);
 }
 
@@ -18,6 +20,8 @@ TRAP::Log::Log()
 TRAP::Log::Log(std::filesystem::path filePath)
 	: m_path(std::move(filePath)), m_importance(Level::Trace | Level::Debug | Level::Info | Level::Warn | Level::Error | Level::Critical)
 {
+	ZoneScoped;
+
 	m_buffer.reserve(256);
 }
 
@@ -25,6 +29,8 @@ TRAP::Log::Log(std::filesystem::path filePath)
 
 TRAP::Log::~Log()
 {
+	ZoneScoped;
+
 	Save();
 }
 
@@ -32,6 +38,8 @@ TRAP::Log::~Log()
 
 const std::filesystem::path& TRAP::Log::GetFilePath() const
 {
+	ZoneScoped;
+
 	return m_path;
 }
 
@@ -39,6 +47,8 @@ const std::filesystem::path& TRAP::Log::GetFilePath() const
 
 void TRAP::Log::SetFilePath(const std::filesystem::path& filePath)
 {
+	ZoneScoped;
+
 	m_path = std::move(filePath);
 }
 
@@ -46,6 +56,8 @@ void TRAP::Log::SetFilePath(const std::filesystem::path& filePath)
 
 void TRAP::Log::SetImportance(const Level level)
 {
+	ZoneScoped;
+
 	m_importance = level;
 }
 
@@ -53,6 +65,8 @@ void TRAP::Log::SetImportance(const Level level)
 
 const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const
 {
+	ZoneScoped;
+
 	return m_buffer;
 }
 
@@ -60,6 +74,8 @@ const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffe
 
 void TRAP::Log::Save() const
 {
+	ZoneScoped;
+
 	//Build final path and filename
 	const auto folderPath = FileSystem::GetFolderPath(m_path);
 	const auto fileName = FileSystem::GetFileName(m_path);
@@ -85,6 +101,8 @@ void TRAP::Log::Save() const
 
 void TRAP::Log::Clear()
 {
+	ZoneScoped;
+
 	m_buffer.clear();
 	m_buffer.reserve(256);
 }
@@ -93,6 +111,8 @@ void TRAP::Log::Clear()
 
 std::string TRAP::Log::GetTimeStamp()
 {
+	ZoneScoped;
+
 	const std::string timeStamp = TRAP::Utils::String::GetTimeStamp(std::chrono::system_clock::now());
 	return "[" + timeStamp + ']';
 }
@@ -101,6 +121,8 @@ std::string TRAP::Log::GetTimeStamp()
 
 std::string TRAP::Log::GetDateTimeStamp()
 {
+	ZoneScoped;
+
 	std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
 	//Make the date-time-stamp usable as file-name
 	std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');

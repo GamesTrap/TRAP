@@ -8,6 +8,8 @@
 
 TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 {
+	ZoneScoped;
+
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::GrayScale;
 
@@ -107,6 +109,8 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PGMImage::GetPixelData() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -117,6 +121,8 @@ const void* TRAP::INTERNAL::PGMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PGMImage::GetPixelDataSize() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 

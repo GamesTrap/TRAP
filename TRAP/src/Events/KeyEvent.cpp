@@ -5,6 +5,8 @@
 
 TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Keyboard | EventCategory::Input;
 }
 
@@ -14,6 +16,8 @@ TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const
 
 std::string TRAP::Events::KeyPressEvent::ToString() const
 {
+	ZoneScoped;
+
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
 	return "KeyPressEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ") (" +
@@ -24,6 +28,8 @@ std::string TRAP::Events::KeyPressEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -31,6 +37,8 @@ TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const
 
 std::string TRAP::Events::KeyPressEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "KeyPress";
 }
 
@@ -40,6 +48,8 @@ std::string TRAP::Events::KeyPressEvent::GetName() const
 
 std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
+	ZoneScoped;
+
 	const std::string name = TRAP::Input::GetKeyName(m_key);
 
 	return "KeyReleaseEvent: " + name + "(" + std::to_string(static_cast<int32_t>(m_key)) + ")";
@@ -49,6 +59,8 @@ std::string TRAP::Events::KeyReleaseEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -56,6 +68,8 @@ TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const
 
 std::string TRAP::Events::KeyReleaseEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "KeyRelease";
 }
 
@@ -65,6 +79,8 @@ std::string TRAP::Events::KeyReleaseEvent::GetName() const
 
 std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "KeyTypeEvent: " + EncodeUTF8(m_codePoint) + "(" + std::to_string(m_codePoint) + ")";
 }
 
@@ -72,6 +88,8 @@ std::string TRAP::Events::KeyTypeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -79,6 +97,8 @@ TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const
 
 std::string TRAP::Events::KeyTypeEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "KeyType";
 }
 
@@ -86,6 +106,8 @@ std::string TRAP::Events::KeyTypeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Keyboard | EventCategory::Input;
 }
 
@@ -93,6 +115,8 @@ TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
 
 std::string TRAP::Events::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
 {
+	ZoneScoped;
+
 	std::string result{};
 	result.reserve(4);
 
@@ -124,12 +148,16 @@ std::string TRAP::Events::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
 
 TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout)
 	: m_layout(std::move(layout))
-{}
+{
+	ZoneScoped;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
 {
+	ZoneScoped;
+
 	return m_layout;
 }
 
@@ -137,6 +165,8 @@ std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
 
 std::string TRAP::Events::KeyLayoutEvent::ToString() const
 {
+	ZoneScoped;
+
 	return "KeyLayoutEvent: " + m_layout;
 }
 
@@ -144,6 +174,8 @@ std::string TRAP::Events::KeyLayoutEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const
 {
+	ZoneScoped;
+
 	return GetStaticType();
 }
 
@@ -151,6 +183,8 @@ TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const
 
 std::string TRAP::Events::KeyLayoutEvent::GetName() const
 {
+	ZoneScoped;
+
 	return "KeyLayout";
 }
 
@@ -158,5 +192,7 @@ std::string TRAP::Events::KeyLayoutEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const
 {
+	ZoneScoped;
+
 	return EventCategory::Keyboard | EventCategory::Input;
 }

@@ -10,6 +10,8 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 	: m_semaphore(VK_NULL_HANDLE),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -24,6 +26,8 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 
 TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(m_semaphore);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -38,5 +42,7 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 
 VkSemaphore TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore() const
 {
+	ZoneScoped;
+
 	return m_semaphore;
 }

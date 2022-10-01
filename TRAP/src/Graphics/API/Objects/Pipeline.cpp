@@ -5,6 +5,8 @@
 
 TRAP::Graphics::Pipeline::Pipeline()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Creating Pipeline");
 #endif
@@ -14,6 +16,8 @@ TRAP::Graphics::Pipeline::Pipeline()
 
 TRAP::Graphics::Pipeline::~Pipeline()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
 #endif
@@ -23,6 +27,8 @@ TRAP::Graphics::Pipeline::~Pipeline()
 
 TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const RendererAPI::PipelineDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

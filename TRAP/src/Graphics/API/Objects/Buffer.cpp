@@ -6,6 +6,8 @@
 TRAP::Graphics::Buffer::Buffer()
 	: m_CPUMappedAddress(nullptr), m_size(), m_descriptors(), m_memoryUsage()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Creating Buffer");
 #endif
@@ -15,6 +17,8 @@ TRAP::Graphics::Buffer::Buffer()
 
 TRAP::Graphics::Buffer::~Buffer()
 {
+	ZoneScoped;
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Destroying Buffer");
 #endif
@@ -24,6 +28,8 @@ TRAP::Graphics::Buffer::~Buffer()
 
 TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const RendererAPI::BufferDesc& desc)
 {
+	ZoneScoped;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

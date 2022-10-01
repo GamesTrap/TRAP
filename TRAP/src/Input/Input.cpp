@@ -50,6 +50,8 @@ std::vector<TRAP::Input::Mapping> TRAP::Input::s_mappings{};
 
 void TRAP::Input::Init()
 {
+	ZoneScoped;
+
 	TP_DEBUG(Log::InputPrefix, "Initializing");
 
 	InitControllerMappings();
@@ -62,6 +64,8 @@ void TRAP::Input::Init()
 
 void TRAP::Input::Shutdown()
 {
+	ZoneScoped;
+
 	TP_DEBUG(Log::InputPrefix, "Shutting down input");
 
 	ShutdownController();
@@ -71,6 +75,8 @@ void TRAP::Input::Shutdown()
 
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
+	ZoneScoped;
+
 	if (key == Key::Unknown)
 	{
 		TP_WARN(Log::InputPrefix, "Invalid key provided!");
@@ -87,6 +93,8 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 {
+	ZoneScoped;
+
 	if (key == Key::Unknown)
 	{
 		TP_WARN(Log::InputPrefix, "Invalid key provided!");
@@ -108,6 +116,8 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
+	ZoneScoped;
+
 	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (Application::GetWindow()->GetInternalWindow()),
 															  button);
@@ -119,6 +129,8 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* const window)
 {
+	ZoneScoped;
+
 	if (!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsMouseButtonPressed!");
@@ -135,6 +147,8 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* c
 
 bool TRAP::Input::IsRawMouseInputSupported()
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::RawMouseMotionSupported();
 }
 
@@ -142,6 +156,8 @@ bool TRAP::Input::IsRawMouseInputSupported()
 
 bool TRAP::Input::IsControllerConnected(const Controller controller)
 {
+	ZoneScoped;
+
 	return s_controllerInternal[static_cast<uint32_t>(controller)].Connected;
 }
 
@@ -149,6 +165,8 @@ bool TRAP::Input::IsControllerConnected(const Controller controller)
 
 bool TRAP::Input::IsControllerGamepad(const Controller controller)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
 
@@ -162,6 +180,8 @@ bool TRAP::Input::IsControllerGamepad(const Controller controller)
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
+	ZoneScoped;
+
 	double xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), xPos, yPos);
@@ -173,6 +193,8 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 {
+	ZoneScoped;
+
 	if(!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to GetMousePosition!");
@@ -190,6 +212,8 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 
 float TRAP::Input::GetMouseX()
 {
+	ZoneScoped;
+
 	return GetMousePosition().x;
 }
 
@@ -197,6 +221,8 @@ float TRAP::Input::GetMouseX()
 
 float TRAP::Input::GetMouseY()
 {
+	ZoneScoped;
+
 	return GetMousePosition().y;
 }
 
@@ -204,6 +230,8 @@ float TRAP::Input::GetMouseY()
 
 float TRAP::Input::GetMouseX(const Window* const window)
 {
+	ZoneScoped;
+
 	return GetMousePosition(window).x;
 }
 
@@ -211,6 +239,8 @@ float TRAP::Input::GetMouseX(const Window* const window)
 
 float TRAP::Input::GetMouseY(const Window* const window)
 {
+	ZoneScoped;
+
 	return GetMousePosition(window).y;
 }
 
@@ -223,6 +253,8 @@ float TRAP::Input::GetMouseY(const Window* const window)
 /// <returns>String representation.</returns>
 std::string NonPrintableKeyToString(const TRAP::Input::Key key)
 {
+	ZoneScoped;
+
 	switch(key)
 	{
 	case TRAP::Input::Key::Unknown:
@@ -403,6 +435,8 @@ std::string NonPrintableKeyToString(const TRAP::Input::Key key)
 
 std::string TRAP::Input::GetKeyName(const Key key)
 {
+	ZoneScoped;
+
 	const char* const name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
 
 	if (!name)
@@ -415,6 +449,8 @@ std::string TRAP::Input::GetKeyName(const Key key)
 
 float TRAP::Input::GetControllerAxis(const Controller controller, const ControllerAxis axis)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return 0.0f;
 
@@ -425,6 +461,8 @@ float TRAP::Input::GetControllerAxis(const Controller controller, const Controll
 
 TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller controller, const uint32_t dpad)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerDPad::Centered;
 
@@ -435,6 +473,8 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller cont
 
 bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const ControllerButton button)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
 
@@ -445,6 +485,8 @@ bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const C
 
 std::string TRAP::Input::GetControllerName(const Controller controller)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
 
@@ -461,6 +503,8 @@ std::string TRAP::Input::GetControllerName(const Controller controller)
 
 std::string TRAP::Input::GetControllerGUID(const Controller controller)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
 
@@ -474,6 +518,8 @@ std::string TRAP::Input::GetControllerGUID(const Controller controller)
 
 std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
@@ -487,6 +533,8 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller
 
 std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controller)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
@@ -500,6 +548,8 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controll
 
 std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(const Controller controller)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
@@ -513,6 +563,8 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(cons
 
 void TRAP::Input::SetControllerVibration(const Controller controller, const float leftMotor, const float rightMotor)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
 
@@ -532,6 +584,8 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 
 void TRAP::Input::SetControllerVibration(const Controller controller, const Math::Vec2& intensity)
 {
+	ZoneScoped;
+
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
 
@@ -551,6 +605,8 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Controller controller)
 {
+	ZoneScoped;
+
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerBatteryStatus::Wired;
 
@@ -564,6 +620,8 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Con
 
 void TRAP::Input::SetMousePosition(const float x, const float y)
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), x, y);
 }
@@ -572,6 +630,8 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 
 void TRAP::Input::SetMousePosition(const float x, const float y, const Window* const window)
 {
+	ZoneScoped;
+
 	if (!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
@@ -586,6 +646,8 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Window* c
 
 void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), position.x, position.y);
 }
@@ -594,6 +656,8 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 
 void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* const window)
 {
+	ZoneScoped;
+
 	if (!window)
 	{
 		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
@@ -608,6 +672,8 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* con
 
 void TRAP::Input::SetClipboard(const std::string& str)
 {
+	ZoneScoped;
+
 	INTERNAL::WindowingAPI::SetClipboardString(str);
 }
 
@@ -615,6 +681,8 @@ void TRAP::Input::SetClipboard(const std::string& str)
 
 std::string TRAP::Input::GetClipboard()
 {
+	ZoneScoped;
+
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
@@ -622,6 +690,8 @@ std::string TRAP::Input::GetClipboard()
 
 void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 {
+	ZoneScoped;
+
 	s_eventCallback = callback;
 }
 
@@ -629,6 +699,8 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 
 void TRAP::Input::UpdateControllerMappings(const std::string& map)
 {
+	ZoneScoped;
+
 	Mapping mapping{};
 
 	if(ParseMapping(mapping, map))
@@ -652,6 +724,8 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 
 TRAP::Input::EventCallbackFn TRAP::Input::GetEventCallback()
 {
+	ZoneScoped;
+
 	return s_eventCallback;
 }
 
@@ -663,6 +737,8 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 																	const int32_t buttonCount,
 																	const int32_t dpadCount)
 {
+	ZoneScoped;
+
 	uint32_t cID = 0;
 	for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
@@ -694,6 +770,8 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 //Notifies shared code of the new value of a controller DPad
 void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const int32_t dpad, const uint8_t value)
 {
+	ZoneScoped;
+
 	const int32_t base = con->ButtonCount + dpad * 4;
 
 	con->Buttons[base + 0] = (value & BIT(0)); //Up
@@ -726,6 +804,8 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, con
 //Notifies shared code of the new value of a controller axis
 void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const int32_t axis, const float value)
 {
+	ZoneScoped;
+
 	con->Axes[axis] = value;
 }
 
@@ -734,6 +814,8 @@ void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, con
 //Notifies shared code of the new value of a controller button
 void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const int32_t button, const bool pressed)
 {
+	ZoneScoped;
+
 	con->Buttons[button] = pressed;
 }
 
@@ -742,6 +824,8 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, c
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
 bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 {
+	ZoneScoped;
+
 	struct Fields
 	{
 		std::string Name;
@@ -922,6 +1006,8 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 void TRAP::Input::InitControllerMappings()
 {
+	ZoneScoped;
+
 	s_mappings.resize(Embed::ControllerMappings.size());
 
 	for(std::size_t i = 0; i < Embed::ControllerMappings.size(); ++i)
@@ -933,6 +1019,8 @@ void TRAP::Input::InitControllerMappings()
 //Find a mapping based on controller GUID
 TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 {
+	ZoneScoped;
+
 	for (auto& Mapping : s_mappings)
 	{
 		if(Mapping.guid == guid)
@@ -947,6 +1035,8 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 //Finds a mapping based on controller GUID and verifies element indices
 TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* const con)
 {
+	ZoneScoped;
+
 	Mapping* const mapping = FindMapping(con->guid);
 
 	if(!mapping)
@@ -982,6 +1072,8 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 //Checks whether a controller mapping element is present in the hardware
 bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
 {
+	ZoneScoped;
+
 	if(e->Type == 3 && (e->Index >> 4) >= static_cast<int32_t>(con->DPads.size() + 1))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
@@ -996,6 +1088,8 @@ bool TRAP::Input::IsValidElementForController(const MapElement* const e, const C
 
 bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerButton button)
 {
+	ZoneScoped;
+
 	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
@@ -1038,6 +1132,8 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 
 float TRAP::Input::GetMappedControllerAxis(const Controller controller, const ControllerAxis axis)
 {
+	ZoneScoped;
+
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 
@@ -1070,6 +1166,8 @@ float TRAP::Input::GetMappedControllerAxis(const Controller controller, const Co
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(const Controller controller, const uint32_t dpad)
 {
+	ZoneScoped;
+
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 

@@ -45,6 +45,8 @@ bool TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport = false;
 void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const RenderAPI renderAPI,
                                        const AntiAliasing antiAliasing , SampleCount antiAliasingSamples)
 {
+	ZoneScoped;
+
 	if(s_Renderer)
 		return;
 
@@ -102,6 +104,8 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 
 void TRAP::Graphics::RendererAPI::Shutdown()
 {
+	ZoneScoped;
+
 	s_perWindowDataMap.clear();
 
 	TRAP::Graphics::Sampler::ClearCache();
@@ -121,6 +125,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 
 TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 {
+	ZoneScoped;
+
 #ifdef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
 #endif
@@ -132,6 +138,8 @@ TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 
 TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader()
 {
+	ZoneScoped;
+
 	return s_ResourceLoader.get();
 }
 
@@ -139,6 +147,8 @@ TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoa
 
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 {
+	ZoneScoped;
+
 	TP_INFO(Log::RendererPrefix, "Auto selecting RenderAPI");
 
 	//Check if Vulkan capable
@@ -166,6 +176,8 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 
 bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 {
+	ZoneScoped;
+
 	if (api == RenderAPI::Vulkan)
 		return s_Renderer->IsVulkanCapable();
 
@@ -176,6 +188,8 @@ bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 {
+	ZoneScoped;
+
 	return s_RenderAPI;
 }
 
@@ -183,6 +197,8 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
 {
+	ZoneScoped;
+
 	return s_descriptorPool;
 }
 
@@ -190,6 +206,8 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescri
 
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
 {
+	ZoneScoped;
+
 	return s_graphicQueue;
 }
 
@@ -197,6 +215,8 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
 
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 {
+	ZoneScoped;
+
 	return s_computeQueue;
 }
 
@@ -204,6 +224,8 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
 {
+	ZoneScoped;
+
 	return s_transferQueue;
 }
 
@@ -211,6 +233,8 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
 
 TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
+	ZoneScoped;
+
 	return *s_perWindowDataMap[TRAP::Application::GetWindow()];
 }
 
@@ -218,6 +242,8 @@ TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMain
 
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(const Window* window)
 {
+	ZoneScoped;
+
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
@@ -231,6 +257,8 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 {
+	ZoneScoped;
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
@@ -261,6 +289,8 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 
 void TRAP::Graphics::RendererAPI::StopRenderPass(const Window* window)
 {
+	ZoneScoped;
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
@@ -275,6 +305,8 @@ void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> textur
 											 const TRAP::Graphics::RendererAPI::ResourceState newLayout,
 											 const TRAP::Graphics::RendererAPI::QueueType queueType)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute ||
 	            queueType == QueueType::Transfer, "Invalid queue type provided!");
 
@@ -325,6 +357,8 @@ void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> textur
 
 void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount)
 {
+	ZoneScoped;
+
 	outAntiAliasing = s_currentAntiAliasing;
 	outSampleCount = s_currentSampleCount;
 }
@@ -333,6 +367,8 @@ void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing,
 
 void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasing, SampleCount sampleCount)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= sampleCount, "Sample count is higher than max supported by GPU");
 
 	if(antiAliasing == AntiAliasing::MSAA && sampleCount > GPUSettings.MaxMSAASampleCount)
@@ -352,6 +388,8 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 {
+	ZoneScoped;
+
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
@@ -362,6 +400,8 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 
 float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 {
+	ZoneScoped;
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
@@ -372,6 +412,8 @@ float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 
 float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 {
+	ZoneScoped;
+
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
@@ -382,6 +424,8 @@ float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
+	ZoneScoped;
+
 	if(!s_isVulkanCapableFirstTest)
 		return s_isVulkanCapable;
 
@@ -494,6 +538,8 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 
 TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 {
+	ZoneScoped;
+
 	SwapChain.reset();
 	ImageAcquiredSemaphore.reset();
 
@@ -529,6 +575,8 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 
 uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* const window)
 {
+	ZoneScoped;
+
 	TRAP_ASSERT(window, "Window is nullptr!");
 
 	return s_perWindowDataMap[window]->ImageIndex;

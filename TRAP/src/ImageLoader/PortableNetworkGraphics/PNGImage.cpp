@@ -13,6 +13,8 @@
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 {
+	ZoneScoped;
+
 	m_filepath = std::move(filepath);
 
 	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
@@ -300,6 +302,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -310,6 +314,8 @@ const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
 {
+	ZoneScoped;
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 
@@ -325,6 +331,8 @@ static const std::array<std::string, 11> UnusedChunks
 bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data,
                                             AlreadyLoaded& alreadyLoaded, const bool needSwap)
 {
+	ZoneScoped;
+
 	if (nextChunk.MagicNumber == "IHDR" && !alreadyLoaded.IHDR)
 	{
 		alreadyLoaded.IHDR = true;
@@ -391,6 +399,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 
 bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, const bool needSwap)
 {
+	ZoneScoped;
+
 	IHDRChunk ihdrChunk{};
 	//Read in IHDR Chunk
 	file.read(reinterpret_cast<char*>(&ihdrChunk.Width), sizeof(uint32_t));
@@ -447,6 +457,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 
 bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
 {
+	ZoneScoped;
+
 	switch (data.ColorType)
 	{
 	case 0:
@@ -484,6 +496,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 
 bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 {
+	ZoneScoped;
+
 	//TODO Treat image as sRGB
 	std::array<uint8_t, 4> CRC{};
 	const uint8_t renderingIntent = static_cast<uint8_t>(file.get());
@@ -506,6 +520,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 
 bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data)
 {
+	ZoneScoped;
+
 	switch (data.ColorType)
 	{
 	case 0:
@@ -539,6 +555,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 
 bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t length, Data& data)
 {
+	ZoneScoped;
+
 	//TODO Use this chunk!
 	switch (data.ColorType)
 	{
@@ -631,6 +649,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 
 bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, const uint32_t length)
 {
+	ZoneScoped;
+
 	if (length % 3 != 0)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "PLTE length ", length, " is not divisible by 3!");
@@ -691,6 +711,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 
 bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, const uint32_t length)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> compressedData(length);
 	std::array<uint8_t, 4> CRC{};
 	file.read(reinterpret_cast<char*>(compressedData.data()), static_cast<std::streamsize>(compressedData.size()));
@@ -721,6 +743,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 
 bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 {
+	ZoneScoped;
+
 	//Check if Width is (in)valid
 	if(!ihdrChunk.Width)
 	{
@@ -821,6 +845,8 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 bool TRAP::INTERNAL::PNGImage::DecompressData(const uint8_t* const source, const int sourceLength, uint8_t* destination,
 										      const int destinationLength)
 {
+	ZoneScoped;
+
 	if (sourceLength < 2)
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Compressed zlib data is too small!");
@@ -895,6 +921,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 	                                            const uint8_t filterType,
 	                                            const std::size_t length)
 {
+	ZoneScoped;
+
 	//For PNG Filter Method 0
 	//UnFilter a PNG Image Scanline by Scanline.
 	//When the pixels are smaller than 1 Byte, the Filter works Byte per Byte (byteWidth = 1)
@@ -1031,6 +1059,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const
 									    const uint32_t width, const uint32_t height,
                                         const uint32_t bitsPerPixel)
 {
+	ZoneScoped;
+
 	//For PNG Filter Method 0
 	//This function unFilters a single image(e.g. without interlacing this is called once, with Adam7 seven times)
 	//out must have enough bytes allocated already, in must have the scanlines + 1 filterType byte per scanline
@@ -1062,6 +1092,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* const out, const uint8_t* const
 
 uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
 {
+	ZoneScoped;
+
 	uint16_t pa = static_cast<uint16_t>(Math::Abs(b - c));
 	const uint16_t pb = static_cast<uint16_t>(Math::Abs(a - c));
 	const uint16_t pc = static_cast<uint16_t>(Math::Abs(a + b - c - c));
@@ -1081,6 +1113,8 @@ uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, u
 std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const uint32_t height,
                                                      const uint32_t bitsPerPixel)
 {
+	ZoneScoped;
+
 	//In an IDAT chunk, each scanline is a multiple of 8 bits and in addition has one extra byte per line: the filter byte.
 	//+ 1 for the filter byte, and possibly plus padding bits per line
 	const std::size_t line = (static_cast<std::size_t>(width / 8u) * bitsPerPixel) +
@@ -1094,6 +1128,8 @@ std::size_t TRAP::INTERNAL::PNGImage::GetRawSizeIDAT(const uint32_t width, const
 std::size_t TRAP::INTERNAL::PNGImage::GetRawSize(const uint32_t width, const uint32_t height,
                                                  const uint32_t bitsPerPixel)
 {
+	ZoneScoped;
+
 	const std::size_t n = static_cast<std::size_t>(width) * static_cast<std::size_t>(height);
 	return ((n / 8u) * bitsPerPixel) + ((n & 7u) * bitsPerPixel + 7u) / 8u;
 }
@@ -1104,6 +1140,8 @@ bool TRAP::INTERNAL::PNGImage::PostProcessScanlines(uint8_t* const out, uint8_t*
                                                     const uint32_t height, const uint32_t bitsPerPixel,
 													const uint8_t interlaceMethod)
 {
+	ZoneScoped;
+
 	//out must be a buffer big enough to contain full image, and in must contain the full decompressed
 	//data from the IDAT chunks(with filter bytes and possible padding bits)
 	//This function converts filtered-padded-interlaced data into pure 2D image buffer with the PNGs colorType.
@@ -1155,6 +1193,8 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 	                                              const uint32_t height,
 	                                              const uint32_t bitsPerPixel)
 {
+	ZoneScoped;
+
 	//"padded" is only relevant if bitsPerPixel is less than 8 and a scanline or image does not end at a full byte
 
 	//The passStart values have 8 values: The 8th one indicates the byte after the end of the 7th(= last) pass
@@ -1190,6 +1230,8 @@ void TRAP::INTERNAL::PNGImage::Adam7GetPassValues(std::array<uint32_t, 7>& passW
 void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_t* const in, const uint32_t width,
                                                 const uint32_t height, const uint32_t bitsPerPixel)
 {
+	ZoneScoped;
+
 	//out has the following size in bits: width * height * bitsPerPixel.
 	//in is possibly bigger due to padding bits between reduced images.
 	//out must be big enough AND must be 0 everywhere
@@ -1225,6 +1267,8 @@ void TRAP::INTERNAL::PNGImage::Adam7DeInterlace(uint8_t* const out, const uint8_
 
 std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8_t>& raw)
 {
+	ZoneScoped;
+
 	std::vector<uint16_t> result(raw.size() / 2, 0);
 	uint32_t resultIndex = 0;
 	if (Utils::GetEndian() == Utils::Endian::Big)
@@ -1255,6 +1299,8 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 std::vector<uint8_t> TRAP::INTERNAL::PNGImage::ResolveIndexed(std::vector<uint8_t>& raw, const uint32_t width,
                                                               const uint32_t height, const Data& data)
 {
+	ZoneScoped;
+
 	std::vector<uint8_t> result(static_cast<std::size_t>(width) * height * 4, 0);
 	uint32_t resultIndex = 0;
 	for (const uint8_t& element : raw)
