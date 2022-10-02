@@ -20,7 +20,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 	  m_flags(),
 	  m_timestampPeriod(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -61,7 +61,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc
 
 TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkQueue);
 
@@ -76,7 +76,7 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 
 VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkQueue;
 }
@@ -85,7 +85,7 @@ VkQueue TRAP::Graphics::API::VulkanQueue::GetVkQueue() const
 
 uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkQueueFamilyIndex;
 }
@@ -94,7 +94,7 @@ uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueFamilyIndex() const
 
 uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkQueueIndex;
 }
@@ -103,7 +103,7 @@ uint8_t TRAP::Graphics::API::VulkanQueue::GetQueueIndex() const
 
 TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueueType() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_type;
 }
@@ -112,7 +112,7 @@ TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanQueue::GetQueu
 
 uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_flags;
 }
@@ -121,7 +121,7 @@ uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const
 
 float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_timestampPeriod;
 }
@@ -130,7 +130,7 @@ float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const
 
 double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	//The engine is using ticks per sec as frequency.
 	//Vulkan is nano sec per tick.
@@ -143,7 +143,7 @@ double TRAP::Graphics::API::VulkanQueue::GetTimestampFrequency() const
 
 void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkCall(vkQueueWaitIdle(m_vkQueue));
 }
@@ -152,7 +152,7 @@ void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
 
 void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!desc.Cmds.empty());
 	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
@@ -213,7 +213,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef TRAP_HEADLESS_MODE
 	TRAP_ASSERT(RendererAPI::GPUSettings.PresentSupported, "Present is not supported by the system!");
@@ -268,7 +268,7 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 void TRAP::Graphics::API::VulkanQueue::SetQueueName(const std::string_view name) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;

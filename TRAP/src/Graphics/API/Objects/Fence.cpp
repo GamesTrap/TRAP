@@ -5,7 +5,7 @@
 
 TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -26,7 +26,7 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 TRAP::Graphics::Fence::Fence()
 	: m_submitted(false)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Creating Fence");
@@ -37,7 +37,7 @@ TRAP::Graphics::Fence::Fence()
 
 TRAP::Graphics::Fence::~Fence()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererFencePrefix, "Destroying Fence");
@@ -48,7 +48,7 @@ TRAP::Graphics::Fence::~Fence()
 
 bool TRAP::Graphics::Fence::IsSubmitted() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_submitted;
 }
@@ -57,7 +57,7 @@ bool TRAP::Graphics::Fence::IsSubmitted() const
 
 void TRAP::Graphics::Fence::WaitForFences(std::vector<Fence>& fences)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(fences.empty())
 		return;

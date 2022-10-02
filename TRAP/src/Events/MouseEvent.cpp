@@ -3,7 +3,7 @@
 
 std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseMoveEvent: " + std::to_string(m_mouseX) + ", " + std::to_string(m_mouseY);
 }
@@ -12,7 +12,7 @@ std::string TRAP::Events::MouseMoveEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -21,7 +21,7 @@ TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 
 std::string TRAP::Events::MouseMoveEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseMove";
 }
@@ -30,7 +30,7 @@ std::string TRAP::Events::MouseMoveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
@@ -41,7 +41,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() con
 
 std::string TRAP::Events::MouseScrollEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseScrollEvent: " + std::to_string(GetXOffset()) + ", " + std::to_string(GetYOffset());
 }
@@ -50,7 +50,7 @@ std::string TRAP::Events::MouseScrollEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -59,7 +59,7 @@ TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 
 std::string TRAP::Events::MouseScrollEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseScroll";
 }
@@ -68,7 +68,7 @@ std::string TRAP::Events::MouseScrollEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
@@ -79,7 +79,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() c
 
 TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Mouse | EventCategory::Input | EventCategory::MouseButton;
 }
@@ -88,7 +88,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(button)
 	{
@@ -112,7 +112,7 @@ std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::Mou
 
 std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseButtonPressEvent: " + MouseButtonToString(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
@@ -122,7 +122,7 @@ std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -131,7 +131,7 @@ TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() cons
 
 std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseButtonPress";
 }
@@ -142,7 +142,7 @@ std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 
 std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseButtonReleaseEvent: " + MouseButtonToString(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
@@ -152,7 +152,7 @@ std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -161,7 +161,7 @@ TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() co
 
 std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseButtonRelease";
 }
@@ -172,7 +172,7 @@ std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 
 TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -181,7 +181,7 @@ TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 
 std::string TRAP::Events::MouseEnterEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseEnter";
 }
@@ -190,7 +190,7 @@ std::string TRAP::Events::MouseEnterEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Mouse | EventCategory::Input;
 }
@@ -201,7 +201,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() co
 
 TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -210,7 +210,7 @@ TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 
 std::string TRAP::Events::MouseLeaveEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "MouseLeave";
 }
@@ -219,7 +219,7 @@ std::string TRAP::Events::MouseLeaveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Mouse | EventCategory::Input;
 }

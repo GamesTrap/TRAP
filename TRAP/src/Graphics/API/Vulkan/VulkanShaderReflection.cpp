@@ -68,7 +68,7 @@ constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& r
 TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode,
                                                                                                       const RendererAPI::ShaderStage shaderStage)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	SPIRVTools::CrossCompiler cc(shaderCode.data(), static_cast<uint32_t>(shaderCode.size()));
 

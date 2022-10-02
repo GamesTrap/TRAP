@@ -13,7 +13,7 @@ std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>> Shaders{};
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const std::filesystem::path& filepath,
     																      const std::vector<Shader::Macro>* const userMacros)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	Ref<Shader> shader = Shader::CreateFromFile(filepath, userMacros);
 
@@ -33,7 +33,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadFile(const 
 																          const std::filesystem::path& filepath,
 																          const std::vector<Shader::Macro>* const userMacros)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	Ref<Shader> shader = Shader::CreateFromFile(name, filepath, userMacros);
 
@@ -51,7 +51,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 														              		const std::string& glslSource,
 																      		const std::vector<Shader::Macro>* const userMacros)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	Ref<Shader> shader = Shader::CreateFromSource(name, glslSource, userMacros);
 
@@ -67,7 +67,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::LoadSource(cons
 
 void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 
@@ -81,7 +81,7 @@ void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shader> shader)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TRAP_ASSERT(shader, "Provided shader is nullptr!");
 
@@ -101,7 +101,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shad
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if (Exists(name))
 	{
@@ -119,7 +119,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(const st
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(Exists(name))
 		return Shaders[name];
@@ -135,7 +135,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::
 
 const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return Shaders;
 }
@@ -144,7 +144,7 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::
 
 void TRAP::Graphics::ShaderManager::Clean()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	Shaders.clear();
 
@@ -157,7 +157,7 @@ void TRAP::Graphics::ShaderManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrPath)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(!std::filesystem::exists(nameOrPath))
 	{
@@ -197,7 +197,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shader> shader)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(!Exists(shader->GetName()))
 	{
@@ -215,7 +215,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(Ref<Shad
 
 void TRAP::Graphics::ShaderManager::ReloadAll()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, shader] : Shaders)
@@ -226,7 +226,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	return Shaders.find(name) != Shaders.end();
 }
@@ -235,7 +235,7 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	for(const auto& [name, shader] : Shaders)
 	{

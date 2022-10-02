@@ -44,7 +44,7 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 bool TRAP::Input::InitController()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	constexpr std::string_view dirName = "/dev/input";
 
@@ -95,7 +95,7 @@ bool TRAP::Input::InitController()
 
 void TRAP::Input::ShutdownController()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
@@ -122,7 +122,7 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor, const float rightMotor)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!PollController(controller, PollMode::Presence))
 		return;
@@ -185,7 +185,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(Controller /*controller*/)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return ControllerBatteryStatus::Wired;
 }
@@ -195,7 +195,7 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 //Attempt to open the specified controller device
 bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
@@ -332,7 +332,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 //Frees all resources associated with the specified controller
 void TRAP::Input::CloseController(Controller controller)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
@@ -365,7 +365,7 @@ void TRAP::Input::CloseController(Controller controller)
 
 void TRAP::Input::DetectControllerConnectionLinux()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (s_linuxController.INotify <= 0)
 		return;
@@ -406,7 +406,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 bool TRAP::Input::PollController(Controller controller, PollMode)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
@@ -456,7 +456,7 @@ bool TRAP::Input::PollController(Controller controller, PollMode)
 //Poll state of absolute axes
 void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	for (int32_t code = 0; code < ABS_CNT; code++)
 	{
@@ -477,7 +477,7 @@ void TRAP::Input::PollABSStateLinux(ControllerInternal* const con)
 //Apply an EV_ABS event to the specified controller
 void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	const int32_t index = con->LinuxCon.ABSMap[code];
 
@@ -541,7 +541,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* const con, int32_t cod
 
 void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t code, int32_t value)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(code - BTN_MISC >= 0)
 		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value);
@@ -551,14 +551,14 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* const con, int32_t cod
 
 void TRAP::Input::UpdateControllerGUID(std::string&)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Input::GetKeyboardLayoutName()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	return TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName();
 }

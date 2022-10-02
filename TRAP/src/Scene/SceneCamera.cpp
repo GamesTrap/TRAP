@@ -3,7 +3,7 @@
 
 TRAP::SceneCamera::SceneCamera()
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	RecalculateProjection();
 }
@@ -12,7 +12,7 @@ TRAP::SceneCamera::SceneCamera()
 
 void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float nearClip)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_projectionType = ProjectionType::Perspective;
 	m_perspectiveFOV = verticalFOV;
@@ -24,7 +24,7 @@ void TRAP::SceneCamera::SetPerspective(const float verticalFOV, const float near
 
 void TRAP::SceneCamera::SetOrthographic(const float size, const float nearClip, const float farClip)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_projectionType = ProjectionType::Orthographic;
 	m_orthographicSize = size;
@@ -37,7 +37,7 @@ void TRAP::SceneCamera::SetOrthographic(const float size, const float nearClip, 
 
 void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t height)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	RecalculateProjection();
@@ -47,7 +47,7 @@ void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t hei
 
 float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_perspectiveFOV;
 }
@@ -56,7 +56,7 @@ float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const
 
 void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_perspectiveFOV = verticalFov;
 	RecalculateProjection();
@@ -66,7 +66,7 @@ void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 
 float TRAP::SceneCamera::GetPerspectiveNearClip() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_perspectiveNear;
 }
@@ -75,7 +75,7 @@ float TRAP::SceneCamera::GetPerspectiveNearClip() const
 
 void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_perspectiveNear = nearClip;
 	RecalculateProjection();
@@ -85,7 +85,7 @@ void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 
 float TRAP::SceneCamera::GetOrthographicSize() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_orthographicSize;
 }
@@ -94,7 +94,7 @@ float TRAP::SceneCamera::GetOrthographicSize() const
 
 void TRAP::SceneCamera::SetOrthographicSize(const float size)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_orthographicSize = size;
 	RecalculateProjection();
@@ -104,7 +104,7 @@ void TRAP::SceneCamera::SetOrthographicSize(const float size)
 
 TRAP::Math::Vec2 TRAP::SceneCamera::GetOrthographicClip() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return { m_orthographicNear, m_orthographicFar };
 }
@@ -113,7 +113,7 @@ TRAP::Math::Vec2 TRAP::SceneCamera::GetOrthographicClip() const
 
 void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_orthographicNear = clip.x;
 	m_orthographicFar = clip.y;
@@ -124,7 +124,7 @@ void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 
 float TRAP::SceneCamera::GetOrthographicNearClip() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_orthographicNear;
 }
@@ -133,7 +133,7 @@ float TRAP::SceneCamera::GetOrthographicNearClip() const
 
 void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_orthographicNear = nearClip;
 	RecalculateProjection();
@@ -143,7 +143,7 @@ void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
 
 float TRAP::SceneCamera::GetOrthographicFarClip() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_orthographicFar;
 }
@@ -152,7 +152,7 @@ float TRAP::SceneCamera::GetOrthographicFarClip() const
 
 void TRAP::SceneCamera::SetOrthographicFarClip(const float farClip)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_orthographicFar = farClip;
 	RecalculateProjection();
@@ -162,7 +162,7 @@ void TRAP::SceneCamera::SetOrthographicFarClip(const float farClip)
 
 TRAP::SceneCamera::ProjectionType TRAP::SceneCamera::GetProjectionType() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_projectionType;
 }
@@ -171,7 +171,7 @@ TRAP::SceneCamera::ProjectionType TRAP::SceneCamera::GetProjectionType() const
 
 void TRAP::SceneCamera::SetProjectionType(const ProjectionType type)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	m_projectionType = type;
 	RecalculateProjection();
@@ -181,7 +181,7 @@ void TRAP::SceneCamera::SetProjectionType(const ProjectionType type)
 
 void TRAP::SceneCamera::RecalculateProjection()
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
 	if(m_projectionType == ProjectionType::Perspective)
 		m_projection = Math::InfinitePerspective(m_perspectiveFOV, m_aspectRatio, m_perspectiveNear);

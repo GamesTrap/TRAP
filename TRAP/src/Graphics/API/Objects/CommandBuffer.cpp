@@ -4,7 +4,7 @@
 TRAP::Graphics::CommandBuffer::CommandBuffer()
 	: m_queue(nullptr)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandBufferPrefix, "Creating CommandBuffer");
@@ -15,7 +15,7 @@ TRAP::Graphics::CommandBuffer::CommandBuffer()
 
 TRAP::Graphics::CommandBuffer::~CommandBuffer()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererCommandBufferPrefix, "Destroying CommandBuffer");
@@ -26,7 +26,7 @@ TRAP::Graphics::CommandBuffer::~CommandBuffer()
 
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::CommandBuffer::GetQueue() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_queue;
 }

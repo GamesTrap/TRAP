@@ -5,7 +5,7 @@
 
 TRAP::Graphics::Pipeline::Pipeline()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Creating Pipeline");
@@ -16,7 +16,7 @@ TRAP::Graphics::Pipeline::Pipeline()
 
 TRAP::Graphics::Pipeline::~Pipeline()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererPipelinePrefix, "Destroying Pipeline");
@@ -27,7 +27,7 @@ TRAP::Graphics::Pipeline::~Pipeline()
 
 TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const RendererAPI::PipelineDesc& desc)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(RendererAPI::GetRenderAPI())
 	{

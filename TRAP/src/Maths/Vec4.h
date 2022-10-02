@@ -648,7 +648,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const Vec<4,
 template<typename T>
 std::string TRAP::Math::Vec<4, T>::ToString() const
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if constexpr(std::is_same_v<T, float>)
 		return "Vec4f(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +

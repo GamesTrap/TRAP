@@ -20,7 +20,7 @@
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer);
 
@@ -42,7 +42,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 	  m_activeRenderPass(VK_NULL_HANDLE),
 	  m_boundPipelineLayout(VK_NULL_HANDLE)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	m_queue = std::move(queue);
 
@@ -61,7 +61,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 
 VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkCommandBuffer;
 }
@@ -70,7 +70,7 @@ VkCommandBuffer TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer() c
 
 TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return dynamic_cast<VulkanQueue*>(m_queue.get())->GetQueueType();
 }
@@ -79,7 +79,7 @@ TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer:
 
 bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_secondary;
 }
@@ -89,7 +89,7 @@ bool TRAP::Graphics::API::VulkanCommandBuffer::IsSecondary() const
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature,
                                                                  const char* const name, const void* const constants) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(constants);
 	TRAP_ASSERT(rootSignature);
@@ -116,7 +116,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 	                                                                    const uint32_t paramIndex,
 																		const void* const constants) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(constants);
 	TRAP_ASSERT(rootSignature);
@@ -141,7 +141,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t index, DescriptorSet& descriptorSet)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VulkanDescriptorSet* const dSet = dynamic_cast<VulkanDescriptorSet*>(&descriptorSet);
 	TRAP_ASSERT(!dSet->GetVkDescriptorSets().empty());
@@ -178,7 +178,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindIndexBuffer(const TRAP::Ref<B
                                                                const RendererAPI::IndexType indexType,
 															   const uint64_t offset) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(buffer);
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
@@ -195,7 +195,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
                                                                 const std::vector<uint32_t>& strides,
                                                                 const std::vector<uint64_t>& offsets) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!buffers.empty());
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
@@ -222,7 +222,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(pipeline);
 	TRAP_ASSERT(m_vkCommandBuffer);
@@ -242,7 +242,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 																 const uint32_t depthArraySlice,
 																 const uint32_t depthMipSlice)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -457,7 +457,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 
 void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::Vec3& color, const std::string_view name) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
@@ -483,7 +483,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const TRAP::Math::
 
 void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math::Vec3& color, const std::string_view name) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
@@ -504,7 +504,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginDebugMarker(const TRAP::Math
 
 void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
 	if(!VulkanRenderer::s_debugUtilsExtension)
@@ -523,7 +523,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::EndDebugMarker() const
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Begin()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -539,7 +539,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Begin()
 
 void TRAP::Graphics::API::VulkanCommandBuffer::End()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -556,7 +556,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetViewport(const float x, const 
                                                            const float height, const float minDepth,
 														   const float maxDepth) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -579,7 +579,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetViewport(const float x, const 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width,
                                                           const uint32_t height) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -596,7 +596,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetScissor(const uint32_t x, cons
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Draw(const uint32_t vertexCount, const uint32_t firstVertex) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -609,7 +609,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawInstanced(const uint32_t vert
                                                              const uint32_t instanceCount,
                                                              const uint32_t firstInstance) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -621,7 +621,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawInstanced(const uint32_t vert
 void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex,
                                                            const uint32_t firstVertex) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -636,7 +636,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexedInstanced(const uint32
                                                                     const uint32_t firstInstance,
                                                                     const uint32_t firstVertex) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -652,7 +652,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
                                                                const TRAP::Ref<Buffer>& counterBuffer,
                                                                const uint64_t counterBufferOffset) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VulkanBuffer* const iBuffer = dynamic_cast<VulkanBuffer*>(indirectBuffer.get());
 	const VulkanCommandSignature* const cSig = dynamic_cast<VulkanCommandSignature*>(cmdSignature.get());
@@ -690,7 +690,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<C
 void TRAP::Graphics::API::VulkanCommandBuffer::Dispatch(const uint32_t groupCountX, const uint32_t groupCountY,
                                                         const uint32_t groupCountZ) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
 
@@ -704,7 +704,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
                                                             const TRAP::Ref<Buffer>& srcBuffer,
                                                             const uint64_t srcOffset, const uint64_t size) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VulkanBuffer* const sBuffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get());
 	const VulkanBuffer* const buf = dynamic_cast<VulkanBuffer*>(buffer.get());
@@ -730,7 +730,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Gra
                                                                  const TRAP::Ref<Buffer>& srcBuffer,
                                                                  const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
 	const auto* const vkTexture = dynamic_cast<const TRAP::Graphics::API::VulkanTexture*>(texture);
@@ -802,7 +802,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Gra
 void TRAP::Graphics::API::VulkanCommandBuffer::CopySubresource(const Buffer* const dstBuffer, const Texture* const texture,
                                                                const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VulkanTexture* const vkTexture = dynamic_cast<const VulkanTexture*>(texture);
 	const VulkanBuffer* const vkBuffer = dynamic_cast<const VulkanBuffer*>(dstBuffer);
@@ -868,7 +868,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<Qu
                                                               const uint32_t startQuery,
 															  const uint32_t queryCount) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdResetQueryPool(m_vkCommandBuffer, dynamic_cast<VulkanQueryPool*>(queryPool.get())->GetVkQueryPool(),
 	                    startQuery, queryCount);
@@ -879,7 +879,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<Qu
 void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryPool>& queryPool,
                                                           const RendererAPI::QueryDesc& desc) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const VulkanQueryPool* const qPool = dynamic_cast<VulkanQueryPool*>(queryPool.get());
 
@@ -905,7 +905,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<QueryP
 void TRAP::Graphics::API::VulkanCommandBuffer::EndQuery(const TRAP::Ref<QueryPool>& queryPool,
                                                         const RendererAPI::QueryDesc& desc) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	BeginQuery(queryPool, desc);
 }
@@ -917,7 +917,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveQuery(const TRAP::Ref<Quer
                                                             const uint32_t startQuery,
 															const uint32_t queryCount) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkQueryResultFlags flags = VK_QUERY_RESULT_64_BIT;
 	flags |= VK_QUERY_RESULT_WAIT_BIT;
@@ -935,7 +935,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	                                                           const std::vector<RendererAPI::TextureBarrier>* const textureBarriers,
 	                                                           const std::vector<RendererAPI::RenderTargetBarrier>* const renderTargetBarriers) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	std::vector<VkImageMemoryBarrier> iBarriers;
 	std::size_t iBarriersCount = 0;
@@ -1150,7 +1150,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 	                                                           const RendererAPI::TextureBarrier* const textureBarrier,
 	                                                           const RendererAPI::RenderTargetBarrier* const renderTargetBarrier) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	std::vector<VkImageMemoryBarrier> iBarriers;
 	std::size_t iBarriersCount = 0;
@@ -1345,7 +1345,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const RendererAPI
 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const uint32_t val) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	vkCmdSetStencilReference(m_vkCommandBuffer, VK_STENCIL_FRONT_AND_BACK, val);
 }
@@ -1357,7 +1357,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI:
 															  const RendererAPI::ShadingRateCombiner postRasterizerState,
 															  const RendererAPI::ShadingRateCombiner finalRate) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	//Texture would be used for https://www.khronos.org/registry/vulkan/specs/1.3-extensions/html/vkspec.html#primsrast-fragment-shading-rate-attachment
 
@@ -1381,7 +1381,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI:
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 color, const uint32_t width,
 													 const uint32_t height) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkClearRect rect;
 	VkRect2D r;
@@ -1406,7 +1406,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const TRAP::Math::Vec4 colo
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t stencil,
  												     const uint32_t width, const uint32_t height) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkClearRect rect;
 	VkRect2D r;
@@ -1430,7 +1430,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const uint32_t width, const uint32_t height) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkClearRect rect;
 	VkRect2D r;
@@ -1455,7 +1455,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const float depth, const ui
 void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const uint32_t stencil, const uint32_t width,
                                                      const uint32_t height) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkClearRect rect;
 	VkRect2D r;
@@ -1482,7 +1482,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(Ref<TRAP::Graphics::
 															Ref<TRAP::Graphics::API::VulkanTexture> dstImage,
 															const RendererAPI::ResourceState dstState) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkImageResolve imageResolve{};
 	imageResolve.srcSubresource = {srcImage->GetAspectMask(), 0, 0, 1};
@@ -1497,7 +1497,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResolveImage(Ref<TRAP::Graphics::
 
 VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_activeRenderPass;
 }

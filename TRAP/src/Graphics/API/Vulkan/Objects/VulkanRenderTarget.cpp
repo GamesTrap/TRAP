@@ -19,7 +19,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	  m_used(),
 	  m_ID(++s_RenderTargetIDs)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	m_width = desc.Width;
 	m_height = desc.Height;
@@ -165,7 +165,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_texture);
 	TRAP_ASSERT(m_vkDescriptor);
@@ -206,7 +206,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkDescriptor;
 }
@@ -215,7 +215,7 @@ VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
 
 const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkSliceDescriptors;
 }
@@ -224,7 +224,7 @@ const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkIm
 
 uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_ID;
 }
@@ -233,7 +233,7 @@ uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
 
 void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const std::string_view name) const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	m_texture->SetTextureName(name);
 }

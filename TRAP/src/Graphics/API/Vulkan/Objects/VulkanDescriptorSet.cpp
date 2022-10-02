@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 		  m_set(set),
 	      m_device(std::move(device))
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
 }
@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_vkDescriptorSetHandles;
 }
@@ -43,7 +43,7 @@ const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::Ge
 
 TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanDescriptorSet::GetRootSignature() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_rootSignature;
 }
@@ -52,7 +52,7 @@ TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanD
 
 TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_set > 0 ? RendererAPI::DescriptorUpdateFrequency::Dynamic :
 	                   RendererAPI::DescriptorUpdateFrequency::Static;
@@ -62,7 +62,7 @@ TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::Vulk
 
 uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_dynamicOffsetCount;
 }
@@ -71,7 +71,7 @@ uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const
 
 std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_dynamicSizeOffsets;
 }
@@ -80,7 +80,7 @@ std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API
 
 uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_maxSets;
 }
@@ -89,7 +89,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
 
 uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_set;
 }
@@ -99,7 +99,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetSet() const
 void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
                                                       const std::vector<RendererAPI::DescriptorData>& params)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 #define VALIDATE_DESCRIPTOR(descriptor, ...)                                                  \

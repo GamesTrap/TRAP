@@ -6,7 +6,7 @@
 TRAP::Graphics::Buffer::Buffer()
 	: m_CPUMappedAddress(nullptr), m_size(), m_descriptors(), m_memoryUsage()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Creating Buffer");
@@ -17,7 +17,7 @@ TRAP::Graphics::Buffer::Buffer()
 
 TRAP::Graphics::Buffer::~Buffer()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererBufferPrefix, "Destroying Buffer");
@@ -28,7 +28,7 @@ TRAP::Graphics::Buffer::~Buffer()
 
 TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const RendererAPI::BufferDesc& desc)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(RendererAPI::GetRenderAPI())
 	{

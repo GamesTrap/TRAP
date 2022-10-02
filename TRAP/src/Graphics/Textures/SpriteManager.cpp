@@ -14,7 +14,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
                                                                                         const TRAP::Math::Vec2& cellSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
@@ -41,7 +41,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
                                                                                         const TRAP::Math::Vec2& pixelSize,
                                                                                         const TRAP::Math::Vec2& spriteSize)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
     TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
     TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
@@ -64,7 +64,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 
 void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
     if(!sprite)
         return;
@@ -80,7 +80,7 @@ void TRAP::Graphics::SpriteManager::Add(Ref<SubTexture2D> sprite)
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Ref<SubTexture2D> sprite)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
     if(!sprite)
         return nullptr;
@@ -101,7 +101,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(Re
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(const std::string& name)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if (Exists(name))
 	{
@@ -119,7 +119,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Remove(co
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const std::string& name)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(Exists(name))
 	{
@@ -134,7 +134,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const
 
 const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return Sprites;
 }
@@ -143,7 +143,7 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& 
 
 void TRAP::Graphics::SpriteManager::Clean()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	Sprites.clear();
 }
@@ -152,7 +152,7 @@ void TRAP::Graphics::SpriteManager::Clean()
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(const std::string& nameOrPath)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(!std::filesystem::exists(nameOrPath))
 	{
@@ -192,7 +192,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(co
 
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Ref<SubTexture2D> sprite)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(!Exists(sprite->GetName()))
 	{
@@ -210,7 +210,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Reload(Re
 
 void TRAP::Graphics::SpriteManager::ReloadAll()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TP_INFO(Log::SpriteManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, sprite] : Sprites)
@@ -221,7 +221,7 @@ void TRAP::Graphics::SpriteManager::ReloadAll()
 
 bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	return Sprites.find(name) != Sprites.end();
 }
@@ -230,7 +230,7 @@ bool TRAP::Graphics::SpriteManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::SpriteManager::ExistsPath(const std::filesystem::path& path)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	for (const auto& [name, sprite] : Sprites)
 	{

@@ -6,7 +6,7 @@
 TRAP::Graphics::RootSignature::RootSignature()
 	: m_pipelineType(), m_descriptorNameToIndexMap()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRootSignaturePrefix, "Creating RootSignature");
@@ -17,7 +17,7 @@ TRAP::Graphics::RootSignature::RootSignature()
 
 TRAP::Graphics::RootSignature::~RootSignature()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRootSignaturePrefix, "Destroying RootSignature");
@@ -28,7 +28,7 @@ TRAP::Graphics::RootSignature::~RootSignature()
 
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RootSignature::Create(const RendererAPI::RootSignatureDesc& desc)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(RendererAPI::GetRenderAPI())
 	{

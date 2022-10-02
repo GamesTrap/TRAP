@@ -9,7 +9,7 @@
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	: m_debugReport(nullptr), m_instance(std::move(instance))
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_instance, "instance is nullptr");
 
@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 
 TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
@@ -64,8 +64,6 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugUtilsCallback(const VkDebu
                                                                     const VkDebugUtilsMessengerCallbackDataEXT* const callbackData,
                                                                     void*)
 {
-	ZoneScopedC(tracy::Color::Red);
-
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
@@ -92,8 +90,6 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugReportCallback(const VkDeb
 																	 const std::string_view layerPrefix,
 																	 const std::string_view message, void* const /*userData*/)
 {
-	ZoneScopedC(tracy::Color::Red);
-
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 

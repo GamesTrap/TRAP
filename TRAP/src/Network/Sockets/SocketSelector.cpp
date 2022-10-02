@@ -55,7 +55,7 @@ namespace TRAP::Network
 TRAP::Network::SocketSelector::SocketSelector()
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>())
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	Clear();
 }
@@ -64,7 +64,7 @@ TRAP::Network::SocketSelector::SocketSelector()
 
 TRAP::Network::SocketSelector::~SocketSelector()
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	m_impl.reset();
 }
@@ -74,7 +74,7 @@ TRAP::Network::SocketSelector::~SocketSelector()
 TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 	: m_impl(TRAP::MakeScope<SocketSelectorImpl>(*copy.m_impl))
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -82,14 +82,14 @@ TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other)
 	: m_impl(std::move(other.m_impl))
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other)
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	m_impl = std::move(other.m_impl);
 	return *this;
@@ -99,7 +99,7 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSe
 
 void TRAP::Network::SocketSelector::Add(Socket& socket)
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -136,7 +136,7 @@ void TRAP::Network::SocketSelector::Add(Socket& socket)
 
 void TRAP::Network::SocketSelector::Remove(Socket& socket) const
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -160,7 +160,7 @@ void TRAP::Network::SocketSelector::Remove(Socket& socket) const
 
 void TRAP::Network::SocketSelector::Clear() const
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	FD_ZERO(&m_impl->AllSockets);
 	FD_ZERO(&m_impl->SocketsReady);
@@ -173,7 +173,7 @@ void TRAP::Network::SocketSelector::Clear() const
 
 bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	//Setup the timeout
 	timeval time{};
@@ -195,7 +195,7 @@ bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 
 bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	const SocketHandle handle = socket.GetHandle();
 	if(handle != INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -215,7 +215,7 @@ bool TRAP::Network::SocketSelector::IsReady(Socket& socket) const
 
 TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const SocketSelector& right)
 {
-	ZoneScopedC(tracy::Color::Azure);
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	SocketSelector temp(right);
 

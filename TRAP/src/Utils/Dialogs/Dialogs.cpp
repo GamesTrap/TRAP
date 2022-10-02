@@ -6,7 +6,7 @@ std::string TRAP::Utils::Dialogs::SaveFile(const std::string& title,
                                            const std::vector<std::pair<std::string, std::string>>& filterPatterns,
                                            const bool allFiles)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::SaveFile(title, defaultPathAndFile, filterPatterns, allFiles);
 }
@@ -19,7 +19,7 @@ std::vector<std::string> TRAP::Utils::Dialogs::OpenFile(const std::string& title
                                                         const bool allowMultipleSelects,
                                                         const bool allFiles)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::OpenFile(title, defaultPathAndFile, filterPatterns, allowMultipleSelects, allFiles);
 }
@@ -31,7 +31,7 @@ std::string TRAP::Utils::Dialogs::OpenSingleFile(const std::string& title,
                                                  const std::vector<std::pair<std::string, std::string>>& filterPatterns,
                                                  const bool allFiles)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::OpenSingleFile(title, defaultPathAndFile, filterPatterns, allFiles);
 }
@@ -43,7 +43,7 @@ std::vector<std::string> TRAP::Utils::Dialogs::OpenMultipleFiles(const std::stri
                                                                  const std::vector<std::pair<std::string, std::string>>& filterPatterns,
                                                                  const bool allFiles)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::OpenMultipleFiles(title, defaultPathAndFile, filterPatterns, allFiles);
 }
@@ -52,7 +52,7 @@ std::vector<std::string> TRAP::Utils::Dialogs::OpenMultipleFiles(const std::stri
 
 std::string TRAP::Utils::Dialogs::SelectFolder(const std::string& title, const std::string& defaultPath)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::SelectFolder(title, defaultPath);
 }
@@ -63,7 +63,7 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
                                                                  const std::string& message,
     const Style style, const Buttons buttons)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::ShowMsgBox(title, message, style, buttons);
 }
@@ -74,7 +74,7 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
                                                                  const std::string& message,
     const Style style)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::ShowMsgBox(title, message, style);
 }
@@ -85,7 +85,7 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
                                                                  const std::string& message,
     const Buttons buttons)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::ShowMsgBox(title, message, buttons);
 }
@@ -95,7 +95,7 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
 TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title,
                                                                  const std::string& message)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
     return MD::ShowMsgBox(title, message);
 }

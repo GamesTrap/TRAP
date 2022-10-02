@@ -3,7 +3,7 @@
 
 TRAP::Utils::Timer::Timer()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	Reset();
 }
@@ -12,7 +12,7 @@ TRAP::Utils::Timer::Timer()
 
 void TRAP::Utils::Timer::Reset()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	m_start = std::chrono::high_resolution_clock::now();
 }
@@ -21,7 +21,7 @@ void TRAP::Utils::Timer::Reset()
 
 float TRAP::Utils::Timer::Elapsed() const
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
 		(
@@ -33,7 +33,7 @@ float TRAP::Utils::Timer::Elapsed() const
 
 float TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
 		(

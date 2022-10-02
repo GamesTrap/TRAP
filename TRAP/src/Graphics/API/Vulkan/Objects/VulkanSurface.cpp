@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
                                                   const TRAP::Window* const window)
 	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_instance, "instance is nullptr");
 	TRAP_ASSERT(device, "device is nullptr");
@@ -48,7 +48,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 
 TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_surface);
 
@@ -64,7 +64,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 
 VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_surface;
 }
@@ -73,7 +73,7 @@ VkSurfaceKHR TRAP::Graphics::API::VulkanSurface::GetVkSurface() const
 
 VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabilities() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_surfaceCapabilities;
 }
@@ -82,7 +82,7 @@ VkSurfaceCapabilitiesKHR TRAP::Graphics::API::VulkanSurface::GetVkSurfaceCapabil
 
 const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfaceFormats() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_surfaceFormats;
 }
@@ -91,7 +91,7 @@ const std::vector<VkSurfaceFormatKHR>& TRAP::Graphics::API::VulkanSurface::GetVk
 
 const std::vector<VkPresentModeKHR>& TRAP::Graphics::API::VulkanSurface::GetVkSurfacePresentModes() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_surfacePresentModes;
 }

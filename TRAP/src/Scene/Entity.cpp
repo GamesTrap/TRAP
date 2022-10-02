@@ -7,14 +7,14 @@
 TRAP::Entity::Entity(const entt::entity handle, Scene* const scene)
 	: m_entityHandle(handle), m_scene(scene)
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::UID TRAP::Entity::GetUID()
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetComponent<UIDComponent>().UID;
 }
@@ -23,7 +23,7 @@ TRAP::Utils::UID TRAP::Entity::GetUID()
 
 const std::string& TRAP::Entity::GetName()
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetComponent<TagComponent>().Tag;
 }
@@ -32,7 +32,7 @@ const std::string& TRAP::Entity::GetName()
 
 TRAP::Entity::operator bool() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_entityHandle != entt::null;
 }
@@ -41,7 +41,7 @@ TRAP::Entity::operator bool() const
 
 TRAP::Entity::operator uint32_t() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return static_cast<uint32_t>(m_entityHandle);
 }
@@ -52,7 +52,7 @@ TRAP::Entity::operator uint32_t() const
 
 TRAP::Entity::operator entt::entity() const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_entityHandle;
 }
@@ -63,7 +63,7 @@ TRAP::Entity::operator entt::entity() const
 
 bool TRAP::Entity::operator==(const Entity other) const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_entityHandle == other.m_entityHandle && m_scene == other.m_scene;
 }
@@ -72,7 +72,7 @@ bool TRAP::Entity::operator==(const Entity other) const
 
 bool TRAP::Entity::operator!=(const Entity other) const
 {
-	ZoneScopedC(tracy::Color::Turquoise);
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return !operator==(other);
 }

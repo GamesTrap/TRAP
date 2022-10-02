@@ -6,56 +6,56 @@
 TRAP::Layer::Layer(std::string debugName)
 	: m_DebugName(std::move(debugName))
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnAttach()
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnDetach()
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnUpdate(const Utils::TimeStep& /*deltaTime*/)
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnTick(const Utils::TimeStep& /*deltaTime*/)
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnImGuiRender()
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Layer::OnEvent(Events::Event& /*event*/)
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Layer::GetName() const
 {
-	ZoneScopedC(tracy::Color::Brown);
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_DebugName;
 }

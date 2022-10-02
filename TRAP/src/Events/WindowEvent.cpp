@@ -5,7 +5,7 @@
 
 std::string TRAP::Events::WindowResizeEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowResizeEvent: " + std::to_string(m_width) + "x" + std::to_string(m_height);
 }
@@ -14,7 +14,7 @@ std::string TRAP::Events::WindowResizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -23,7 +23,7 @@ TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetEventType() const
 
 std::string TRAP::Events::WindowResizeEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowResize";
 }
@@ -32,7 +32,7 @@ std::string TRAP::Events::WindowResizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -43,7 +43,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() 
 
 std::string TRAP::Events::WindowMinimizeEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowMinimizeEvent";
 }
@@ -52,7 +52,7 @@ std::string TRAP::Events::WindowMinimizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -61,7 +61,7 @@ TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetEventType() const
 
 std::string TRAP::Events::WindowMinimizeEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowMinimize";
 }
@@ -70,7 +70,7 @@ std::string TRAP::Events::WindowMinimizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -81,7 +81,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags(
 
 std::string TRAP::Events::WindowMaximizeEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowMaximizeEvent";
 }
@@ -90,7 +90,7 @@ std::string TRAP::Events::WindowMaximizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -99,7 +99,7 @@ TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetEventType() const
 
 std::string TRAP::Events::WindowMaximizeEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowMaximize";
 }
@@ -108,7 +108,7 @@ std::string TRAP::Events::WindowMaximizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -119,7 +119,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags(
 
 std::string TRAP::Events::WindowRestoreEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowRestoreEvent";
 }
@@ -128,7 +128,7 @@ std::string TRAP::Events::WindowRestoreEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -137,7 +137,7 @@ TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const
 
 std::string TRAP::Events::WindowRestoreEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowRestore";
 }
@@ -146,7 +146,7 @@ std::string TRAP::Events::WindowRestoreEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -157,7 +157,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags()
 
 std::string TRAP::Events::WindowCloseEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowCloseEvent: " + m_window->GetTitle();
 }
@@ -166,7 +166,7 @@ std::string TRAP::Events::WindowCloseEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -175,7 +175,7 @@ TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetEventType() const
 
 std::string TRAP::Events::WindowCloseEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowClose";
 }
@@ -184,7 +184,7 @@ std::string TRAP::Events::WindowCloseEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -195,7 +195,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::WindowMoveEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowMoveEvent: " + std::to_string(m_x) + ", " + std::to_string(m_y);
 }
@@ -204,7 +204,7 @@ std::string TRAP::Events::WindowMoveEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -213,7 +213,7 @@ TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetEventType() const
 
 std::string TRAP::Events::WindowMoveEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowMove";
 }
@@ -222,7 +222,7 @@ std::string TRAP::Events::WindowMoveEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -233,7 +233,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() co
 
 std::string TRAP::Events::WindowFocusEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowFocusEvent: " + m_window->GetTitle();
 }
@@ -242,7 +242,7 @@ std::string TRAP::Events::WindowFocusEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -251,7 +251,7 @@ TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetEventType() const
 
 std::string TRAP::Events::WindowFocusEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowFocus";
 }
@@ -260,7 +260,7 @@ std::string TRAP::Events::WindowFocusEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -271,7 +271,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() c
 
 std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowLostFocusEvent: " + m_window->GetTitle();
 }
@@ -280,7 +280,7 @@ std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -289,7 +289,7 @@ TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetEventType() const
 
 std::string TRAP::Events::WindowLostFocusEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowLostFocus";
 }
@@ -298,7 +298,7 @@ std::string TRAP::Events::WindowLostFocusEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -310,14 +310,14 @@ TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags
 TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, TRAP::Window* window)
 	: m_paths(std::move(paths)), m_window(window)
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_paths;
 }
@@ -326,7 +326,7 @@ const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const
 
 std::string TRAP::Events::WindowDropEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	std::string result = "WindowDropEvent: ";
 	for (uint32_t i = 0; i < m_paths.size(); i++)
@@ -339,7 +339,7 @@ std::string TRAP::Events::WindowDropEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -348,7 +348,7 @@ TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetEventType() const
 
 std::string TRAP::Events::WindowDropEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowDrop";
 }
@@ -357,7 +357,7 @@ std::string TRAP::Events::WindowDropEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window | EventCategory::Input;
 }
@@ -368,7 +368,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() co
 
 std::string TRAP::Events::WindowContentScaleEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowContentScaleEvent: " + std::to_string(m_XScale) + "x" + std::to_string(m_YScale);
 }
@@ -377,7 +377,7 @@ std::string TRAP::Events::WindowContentScaleEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -386,7 +386,7 @@ TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetEventType() co
 
 std::string TRAP::Events::WindowContentScaleEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "WindowContentScale";
 }
@@ -395,7 +395,7 @@ std::string TRAP::Events::WindowContentScaleEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }
@@ -406,7 +406,7 @@ TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFl
 
 std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "FrameBufferResizeEvent: " + std::to_string(m_width) + "x" + std::to_string(m_height);
 }
@@ -415,7 +415,7 @@ std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -424,7 +424,7 @@ TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetEventType() con
 
 std::string TRAP::Events::FrameBufferResizeEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "FrameBufferResize";
 }
@@ -433,7 +433,7 @@ std::string TRAP::Events::FrameBufferResizeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Window;
 }

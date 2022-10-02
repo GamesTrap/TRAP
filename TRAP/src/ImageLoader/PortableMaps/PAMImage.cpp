@@ -8,7 +8,7 @@
 
 TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 {
-	ZoneScopedC(tracy::Color::Green);
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 
@@ -167,7 +167,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PAMImage::GetPixelData() const
 {
-	ZoneScopedC(tracy::Color::Green);
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -179,7 +179,7 @@ const void* TRAP::INTERNAL::PAMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PAMImage::GetPixelDataSize() const
 {
-	ZoneScopedC(tracy::Color::Green);
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);

@@ -5,7 +5,7 @@
 
 const void* TRAP::INTERNAL::CustomImage::GetPixelData() const
 {
-	ZoneScopedC(tracy::Color::Green);
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(!m_dataHDR.empty())
 		return m_dataHDR.data();
@@ -20,7 +20,7 @@ const void* TRAP::INTERNAL::CustomImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::CustomImage::GetPixelDataSize() const
 {
-	ZoneScopedC(tracy::Color::Green);
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(!m_dataHDR.empty())
 		return m_dataHDR.size() * sizeof(float);

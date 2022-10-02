@@ -8,14 +8,14 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus stat
                                                std::filesystem::path oldName)
     : m_status(status), m_path(std::move(path)), m_oldName(std::move(oldName))
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     return m_path;
 }
@@ -24,7 +24,7 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
 
 std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     return m_oldName;
 }
@@ -33,7 +33,7 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetOldName() const
 
 std::string TRAP::Events::FileChangeEvent::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     return "FileChangeEvent: Path: " + m_path.u8string() + " Status: " +
            FileStatusToString(m_status) + (m_oldName.empty() ? "" : " OldName: " + m_oldName.u8string());
@@ -43,7 +43,7 @@ std::string TRAP::Events::FileChangeEvent::ToString() const
 
 TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetStaticType();
 }
@@ -52,7 +52,7 @@ TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
 
 std::string TRAP::Events::FileChangeEvent::GetName() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return "FileChange";
 }
@@ -61,7 +61,7 @@ std::string TRAP::Events::FileChangeEvent::GetName() const
 
 TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::FileChange;
 }
@@ -70,7 +70,7 @@ TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() co
 
 std::string TRAP::Events::FileChangeEvent::FileStatusToString(const TRAP::FileSystem::FileStatus status)
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     switch(status)
     {

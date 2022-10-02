@@ -9,7 +9,7 @@ TRAP::Graphics::RenderTarget::RenderTarget()
 	  m_depth(), m_width(), m_height(), m_descriptors(), m_mipLevels(), m_sampleQuality(), m_format(),
 	  m_sampleCount()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRenderTargetPrefix, "Creating RenderTarget");
@@ -20,7 +20,7 @@ TRAP::Graphics::RenderTarget::RenderTarget()
 
 TRAP::Graphics::RenderTarget::~RenderTarget()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererRenderTargetPrefix, "Destroying RenderTarget");
@@ -31,7 +31,7 @@ TRAP::Graphics::RenderTarget::~RenderTarget()
 
 TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(const RendererAPI::RenderTargetDesc& desc)
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -51,7 +51,7 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(con
 
 uint32_t TRAP::Graphics::RenderTarget::GetWidth() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_width;
 }
@@ -60,7 +60,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetWidth() const
 
 uint32_t TRAP::Graphics::RenderTarget::GetHeight() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_height;
 }
@@ -69,7 +69,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetHeight() const
 
 uint32_t TRAP::Graphics::RenderTarget::GetDepth() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_depth;
 }
@@ -78,7 +78,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetDepth() const
 
 uint32_t TRAP::Graphics::RenderTarget::GetArraySize() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_arraySize;
 }
@@ -87,7 +87,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetArraySize() const
 
 uint32_t TRAP::Graphics::RenderTarget::GetMipLevels() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_mipLevels;
 }
@@ -96,7 +96,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetMipLevels() const
 
 TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RenderTarget::GetSampleCount() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_sampleCount;
 }
@@ -105,7 +105,7 @@ TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RenderTarget::GetSample
 
 uint32_t TRAP::Graphics::RenderTarget::GetSampleQuality() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_sampleQuality;
 }
@@ -114,7 +114,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetSampleQuality() const
 
 TRAP::Graphics::API::ImageFormat TRAP::Graphics::RenderTarget::GetImageFormat() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_format;
 }
@@ -123,7 +123,7 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::RenderTarget::GetImageFormat() 
 
 TRAP::Math::Vec4 TRAP::Graphics::RenderTarget::GetClearColor() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_clearColor;
 }
@@ -132,7 +132,7 @@ TRAP::Math::Vec4 TRAP::Graphics::RenderTarget::GetClearColor() const
 
 float TRAP::Graphics::RenderTarget::GetClearDepth() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_clearDepth;
 }
@@ -141,7 +141,7 @@ float TRAP::Graphics::RenderTarget::GetClearDepth() const
 
 uint32_t TRAP::Graphics::RenderTarget::GetClearStencil() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_clearStencil;
 }
@@ -150,7 +150,7 @@ uint32_t TRAP::Graphics::RenderTarget::GetClearStencil() const
 
 TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::RenderTarget::GetDescriptorType() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_descriptors;
 }
@@ -159,7 +159,7 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::RenderTarget::GetDes
 
 TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::RenderTarget::GetTexture() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_texture;
 }

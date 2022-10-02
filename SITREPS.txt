@@ -3321,3 +3321,8 @@ SITREP 10/01/2022|22w39c2
     - Profiler Added instrumentation everywhere ~>30 mins
     - Profiler color coded instrumentation ~<20 mins
     - Premake disabled PCH for TracyClient.cpp ~<5 mins
+
+SITREP 10/02/2022|22w39c3
+    - Changed TRAP Engine version to 22w39c3(0.8.54)
+    - Base Added ability to compile-time define what to profile via TRAP_PROFILE_SYSTEMS() ~<5 mins
+    - Changed instrumentation to use TRAP_PROFILE_SYSTEMS() ~>30 mins

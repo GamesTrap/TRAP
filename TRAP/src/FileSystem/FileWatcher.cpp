@@ -8,7 +8,7 @@
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, const bool recursive)
     : m_recursive(recursive), m_run(true), m_name(std::move(name))
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(paths.empty())
         return;
@@ -22,7 +22,7 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<s
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::filesystem::path& path, const bool recursive)
     : m_recursive(recursive), m_run(true), m_name(std::move(name))
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty())
         return;
@@ -35,7 +35,7 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::filesyst
 
 TRAP::FileSystem::FileWatcher::~FileWatcher()
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     Shutdown();
 }
@@ -44,7 +44,7 @@ TRAP::FileSystem::FileWatcher::~FileWatcher()
 
 void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     m_callback = callback;
 }
@@ -53,7 +53,7 @@ void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& call
 
 TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::GetEventCallback() const
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     return m_callback;
 }
@@ -62,7 +62,7 @@ TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::Ge
 
 void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty())
         return;
@@ -85,7 +85,7 @@ void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 
 void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(paths.empty())
         return;
@@ -111,7 +111,7 @@ void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem
 
 void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     //Always use absolute paths
     const auto absPath = FileSystem::ToAbsolutePath(path);
@@ -132,7 +132,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
 
 void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(paths.empty())
         return;
@@ -157,7 +157,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
 
 std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() const
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) || (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
     return m_paths;
 }
@@ -166,7 +166,7 @@ std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() c
 
 void TRAP::FileSystem::FileWatcher::Init()
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(m_paths.empty())
         return;
@@ -185,7 +185,7 @@ void TRAP::FileSystem::FileWatcher::Init()
 
 void TRAP::FileSystem::FileWatcher::Shutdown()
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!m_run)
         return;
@@ -219,7 +219,7 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
 #ifdef TRAP_PLATFORM_WINDOWS
 void TRAP::FileSystem::FileWatcher::Watch()
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
 	//Set Thread name for profiler
     if(m_name.empty())
@@ -357,7 +357,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 #elif defined(TRAP_PLATFORM_LINUX)
 void TRAP::FileSystem::FileWatcher::Watch()
 {
-	ZoneScopedC(tracy::Color::Blue);
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
 	//Set Thread name for profiler
     if(m_name.empty())

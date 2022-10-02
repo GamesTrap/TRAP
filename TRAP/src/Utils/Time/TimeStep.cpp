@@ -6,14 +6,14 @@
 TRAP::Utils::TimeStep::TimeStep(const float time)
 	: m_time(time)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::TimeStep::operator float() const
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_time;
 }
@@ -22,7 +22,7 @@ TRAP::Utils::TimeStep::operator float() const
 
 float TRAP::Utils::TimeStep::GetSeconds() const
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_time;
 }
@@ -31,7 +31,7 @@ float TRAP::Utils::TimeStep::GetSeconds() const
 
 float TRAP::Utils::TimeStep::GetMilliseconds() const
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_time * 1000.0f;
 }

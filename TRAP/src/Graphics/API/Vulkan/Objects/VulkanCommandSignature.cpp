@@ -4,7 +4,7 @@
 TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const RendererAPI::CommandSignatureDesc& desc)
 	: m_drawType(), m_stride()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Creating CommandSignature");
@@ -44,7 +44,7 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 
 TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandSignaturePrefix, "Destroying CommandSignature");
@@ -55,7 +55,7 @@ TRAP::Graphics::API::VulkanCommandSignature::~VulkanCommandSignature()
 
 TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCommandSignature::GetDrawType() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_drawType;
 }
@@ -64,7 +64,7 @@ TRAP::Graphics::RendererAPI::IndirectArgumentType TRAP::Graphics::API::VulkanCom
 
 uint32_t TRAP::Graphics::API::VulkanCommandSignature::GetStride() const
 {
-	ZoneScopedC(tracy::Color::Red);
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_stride;
 }

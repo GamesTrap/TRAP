@@ -2,6 +2,7 @@
 #define TRAP_CORE_H
 
 #include <memory>
+#include <type_traits>
 
 #ifdef _MSC_VER
 	#pragma warning(push, 0)
@@ -77,6 +78,45 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Settings for Profiling (with Tracy)
+
+enum class ProfileSystems
+{
+	Events = 1 << 0,
+	FileSystem = 1 << 1,
+	Graphics = 1 << 2,
+	Vulkan = 1 << 3,
+	ImageLoader = 1 << 4,
+	Input = 1 << 5,
+	Layers = 1 << 6,
+	Network = 1 << 7,
+	Scene = 1 << 8,
+	ThreadPool = 1 << 9,
+	Utils = 1 << 10,
+	Window = 1 << 11,
+	WindowingAPI = 1 << 12,
+	Verbose = 1 << 13, //Toggles profiling of very trivial functions (i.e. getters, setters, etc.)
+
+	All = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
+	      Network | Scene | ThreadPool | Utils | Window | WindowingAPI,
+	AllVerbose = Events | FileSystem | Graphics | Vulkan | ImageLoader | Input | Layers |
+	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
+};
+
+constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs)
+{
+	return static_cast<bool>(static_cast<std::underlying_type_t<ProfileSystems>>(lhs) &
+			                 static_cast<std::underlying_type_t<ProfileSystems>>(rhs));
+}
+
+//Set this macro to specify which systems should be profiled.
+constexpr ProfileSystems TRAP_PROFILE_SYSTEMS()
+{
+	return ProfileSystems::All;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 /// <summary>
 /// Construct a version number.
 /// </summary>
@@ -130,7 +170,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 53);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 54);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

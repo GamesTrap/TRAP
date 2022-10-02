@@ -9,7 +9,7 @@
 
 std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	std::stringstream s;
 
@@ -42,7 +42,7 @@ std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 
 std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	uint8_t digit = 0;
 	bool firstDigit = true;
@@ -100,7 +100,7 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 
 TRAP::Utils::Endian TRAP::Utils::GetEndian()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	//Check if machine is using little-endian or big-endian
 	const int32_t intVal = 1;
@@ -118,7 +118,7 @@ TRAP::Utils::Endian TRAP::Utils::GetEndian()
 
 const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	static CPUInfo cpu{};
 
@@ -273,7 +273,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 
 TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	static LinuxWindowManager windowManager{};
 
@@ -331,7 +331,7 @@ static TRAP::Utils::NTDLL s_ntdll;
 
 BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD minor, const WORD sp)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 	{
@@ -360,7 +360,7 @@ BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD mi
 
 BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	if(!s_ntdll.Instance || !s_ntdll.RtlVerifyVersionInfo) //Init s_ntdll if not already done
 	{
@@ -389,7 +389,7 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 
 BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return IsWindows10BuildOrGreaterWin32(build); //Windows 11 shares 10.0.XXXXX format with Windows 10
 }
@@ -398,7 +398,7 @@ BOOL TRAP::Utils::IsWindows11BuildOrGreaterWin32(const WORD build)
 
 BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return IsWindows10BuildOrGreaterWin32(14393);
 }
@@ -407,7 +407,7 @@ BOOL TRAP::Utils::IsWindows10Version1607OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return IsWindows10BuildOrGreaterWin32(15063);
 }
@@ -416,7 +416,7 @@ BOOL TRAP::Utils::IsWindows10Version1703OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINBLUE),
 		                                  LOBYTE(_WIN32_WINNT_WINBLUE), 0);
@@ -426,7 +426,7 @@ BOOL TRAP::Utils::IsWindows8Point1OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN8),
 		                                  LOBYTE(_WIN32_WINNT_WIN8), 0);
@@ -436,7 +436,7 @@ BOOL TRAP::Utils::IsWindows8OrGreaterWin32()
 
 BOOL TRAP::Utils::IsWindows7OrGreaterWin32()
 {
-	ZoneScopedC(tracy::Color::Violet);
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WIN7),
 		                                  LOBYTE(_WIN32_WINNT_WIN7), 0);

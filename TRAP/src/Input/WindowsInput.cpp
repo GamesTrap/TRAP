@@ -44,7 +44,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 bool TRAP::Input::InitController()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!s_dinput8.Instance)
 		s_dinput8.Instance = LoadLibraryA("dinput8.dll");
@@ -129,7 +129,7 @@ bool TRAP::Input::InitController()
 
 void TRAP::Input::ShutdownController()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 			CloseController(static_cast<Controller>(cID));
@@ -142,7 +142,7 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::UpdateControllerGUID(std::string& guid)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (std::string_view(guid.data() + 20) == "504944564944")
 	{
@@ -157,7 +157,7 @@ void TRAP::Input::UpdateControllerGUID(std::string& guid)
 
 void TRAP::Input::DetectControllerConnectionWin32()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(s_xinput.Instance)
 	{
@@ -214,7 +214,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 
 void TRAP::Input::DetectControllerDisconnectionWin32()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
@@ -228,7 +228,7 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor,
                                                  const float rightMotor)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 		return;
@@ -248,7 +248,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInternal(const Controller controller)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 		return ControllerBatteryStatus::Wired;
@@ -278,7 +278,7 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatusInte
 
 bool TRAP::Input::PollController(const Controller controller, const PollMode mode)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 	if (con->WinCon.Device)
@@ -433,7 +433,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 
 void TRAP::Input::CloseController(Controller controller)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device)
 	{
@@ -469,7 +469,7 @@ void TRAP::Input::CloseController(Controller controller)
 //DirectInput device object enumeration callback
 BOOL CALLBACK TRAP::Input::DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	ObjectEnum* data = static_cast<ObjectEnum*>(user);
 	Object* object = &data->Objects[data->ObjectCount];
@@ -538,7 +538,7 @@ BOOL CALLBACK TRAP::Input::DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* d
 //Checks whether the specified device supports XInput
 bool TRAP::Input::SupportsXInput(const GUID* guid)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	uint32_t count = 0;
 	std::vector<RAWINPUTDEVICELIST> ridl{};
@@ -595,7 +595,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 //Returns a description fitting the specified XInput capabilities
 std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	switch (xic->SubType)
 	{
@@ -629,7 +629,7 @@ std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 //Lexically compare device objects
 int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	const Object* fo = static_cast<const Object*>(first);
 	const Object* so = static_cast<const Object*>(second);
@@ -645,7 +645,7 @@ int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 //DirectInput device enumeration callback
 BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void*)
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	DIDEVCAPS dc{};
 	DIPROPDWORD dipd{};
@@ -815,7 +815,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 std::string TRAP::Input::GetKeyboardLayoutName()
 {
-	ZoneScopedC(tracy::Color::Gold);
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	std::array<WCHAR, KL_NAMELENGTH> keyboardLayoutID{};
 

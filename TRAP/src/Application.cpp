@@ -527,7 +527,7 @@ void TRAP::Application::Run()
 
 void TRAP::Application::OnEvent(Events::Event& e)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Events::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event)
@@ -590,7 +590,7 @@ void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
 
 const TRAP::Utils::Config& TRAP::Application::GetConfig()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_config;
 }
@@ -599,7 +599,7 @@ const TRAP::Utils::Config& TRAP::Application::GetConfig()
 
 TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_layerStack;
 }
@@ -608,7 +608,7 @@ TRAP::LayerStack& TRAP::Application::GetLayerStack()
 
 TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return *(s_Instance->m_ImGuiLayer);
 }
@@ -617,7 +617,7 @@ TRAP::ImGuiLayer& TRAP::Application::GetImGuiLayer()
 
 void TRAP::Application::SetFPSLimit(const uint32_t fps)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(fps == 0)
 		s_Instance->m_fpsLimit = 0;
@@ -637,7 +637,7 @@ void TRAP::Application::SetFPSLimit(const uint32_t fps)
 
 uint32_t TRAP::Application::GetFPSLimit()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_fpsLimit;
 }
@@ -646,7 +646,7 @@ uint32_t TRAP::Application::GetFPSLimit()
 
 float TRAP::Application::GetCPUFrameTime()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_FrameTime;
 }
@@ -655,7 +655,7 @@ float TRAP::Application::GetCPUFrameTime()
 
 float TRAP::Application::GetTimeScale()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_timeScale;
 }
@@ -664,7 +664,7 @@ float TRAP::Application::GetTimeScale()
 
 uint32_t TRAP::Application::GetTickRate()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_tickRate;
 }
@@ -673,7 +673,7 @@ uint32_t TRAP::Application::GetTickRate()
 
 void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	s_Instance->m_tickRate = tickRate;
 }
@@ -682,7 +682,7 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Application::SetTimeScale(const float timeScale)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	s_Instance->m_timeScale = timeScale;
 }
@@ -691,7 +691,7 @@ void TRAP::Application::SetTimeScale(const float timeScale)
 
 void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	s_Instance->m_newRenderAPI = renderAPI;
 }
@@ -700,7 +700,7 @@ void TRAP::Application::SetNewRenderAPI(const Graphics::RenderAPI renderAPI)
 
 void TRAP::Application::Shutdown()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	s_Instance->m_running = false;
 }
@@ -709,7 +709,7 @@ void TRAP::Application::Shutdown()
 
 TRAP::Window* TRAP::Application::GetWindow()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_window.get();
 }
@@ -718,7 +718,7 @@ TRAP::Window* TRAP::Application::GetWindow()
 
 TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	const Utils::TimeStep timeStep(s_Instance->m_timer.Elapsed());
 
@@ -729,7 +729,7 @@ TRAP::Utils::TimeStep TRAP::Application::GetTime()
 
 TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_threadPool;
 }
@@ -738,7 +738,7 @@ TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
@@ -747,7 +747,7 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 std::string TRAP::Application::GetClipboardString()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
@@ -756,7 +756,7 @@ std::string TRAP::Application::GetClipboardString()
 
 std::thread::id TRAP::Application::GetMainThreadID()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_mainThreadID;
 }
@@ -765,7 +765,7 @@ std::thread::id TRAP::Application::GetMainThreadID()
 
 std::string TRAP::Application::GetGameName()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_gameName;
 }
@@ -774,7 +774,7 @@ std::string TRAP::Application::GetGameName()
 
 uint64_t TRAP::Application::GetGlobalCounter()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_globalCounter;
 }
@@ -783,7 +783,7 @@ uint64_t TRAP::Application::GetGlobalCounter()
 
 TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(s_Instance->m_hotReloadingFileWatcher)
 		return s_Instance->m_hotReloadingFileWatcher.get();
@@ -795,7 +795,7 @@ TRAP::FileSystem::FileWatcher* TRAP::Application::GetHotReloadingFileWatcher()
 
 bool TRAP::Application::IsHotReloadingEnabled()
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_Instance->m_hotReloadingEnabled;
 }
@@ -804,7 +804,7 @@ bool TRAP::Application::IsHotReloadingEnabled()
 
 void TRAP::Application::SetHotReloading(const bool enable)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	s_Instance->m_hotReloadingEnabled = enable;
 
@@ -821,7 +821,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(e.GetWindow() == m_window.get())
 		m_running = false;
@@ -833,7 +833,7 @@ bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 
 bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
 	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
@@ -845,7 +845,7 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 
 bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(Window::GetActiveWindows() != 1)
 		return false;
@@ -872,7 +872,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 
 bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	m_focused = true;
 
@@ -883,7 +883,7 @@ bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 
 bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
@@ -895,7 +895,7 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 
 bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if (Window::GetActiveWindows() == 1)
 		m_minimized = true;
@@ -907,7 +907,7 @@ bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 
 bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 {
-	ZoneScoped;
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	m_minimized = false;
 

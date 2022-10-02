@@ -420,8 +420,6 @@ void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> sour
 
 uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
 {
-	ZoneScopedC(tracy::Color::Red);
-
 	return static_cast<uint32_t>(1000.0f / Application::GetCPUFrameTime());
 }
 
@@ -429,8 +427,6 @@ uint32_t TRAP::Graphics::RenderCommand::GetCPUFPS()
 
 uint32_t TRAP::Graphics::RenderCommand::GetGPUFPS(const Window* const window)
 {
-	ZoneScopedC(tracy::Color::Red);
-
 	const float maxGPUFrameTime = TRAP::Math::Max(RendererAPI::GetGPUGraphicsFrameTime(window), RendererAPI::GetGPUComputeFrameTime(window));
 
 	return static_cast<uint32_t>(1000.0f / maxGPUFrameTime);

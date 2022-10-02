@@ -3,7 +3,7 @@
 
 std::string TRAP::Events::Event::ToString() const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetName();
 }
@@ -12,7 +12,7 @@ std::string TRAP::Events::Event::ToString() const
 
 bool TRAP::Events::Event::IsInCategory(const EventCategory category) const
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return static_cast<bool>(GetCategoryFlags() & category);
 }
@@ -21,7 +21,7 @@ bool TRAP::Events::Event::IsInCategory(const EventCategory category) const
 
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e)
 {
-	ZoneScopedC(tracy::Color::Purple);
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return os << e.ToString();
 }

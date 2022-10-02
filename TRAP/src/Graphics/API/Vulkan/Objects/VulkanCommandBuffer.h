@@ -385,7 +385,7 @@ namespace TRAP::Graphics::API
 		template<typename T>
 		static std::size_t HashAlg(const T* mem, std::size_t size, const std::size_t prev = 2166136261U)
 		{
-			ZoneScopedC(tracy::Color::Red);
+			ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 			//Intentionally uint32_t instead of std::size_t, so the behavior is the same regardless of size.
 			uint32_t result = static_cast<uint32_t>(prev);
