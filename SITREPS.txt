@@ -3326,3 +3326,7 @@ SITREP 10/02/2022|22w39c3
     - Changed TRAP Engine version to 22w39c3(0.8.54)
     - Base Added ability to compile-time define what to profile via TRAP_PROFILE_SYSTEMS() ~<5 mins
     - Changed instrumentation to use TRAP_PROFILE_SYSTEMS() ~>30 mins
+
+SITREP 10/03/2022|22w40a1
+    - Changed TRAP Engine version to 22w40a1(0.8.55)
+    - AftermathTracker Fixed Tracy macro compiler error ~<5 mins
