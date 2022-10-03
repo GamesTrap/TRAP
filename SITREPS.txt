@@ -3332,3 +3332,4 @@ SITREP 10/03/2022|22w40a1
     - AftermathTracker Fixed Tracy macro compiler error ~<5 mins
     - Network Packet replaced std::copy_n with memcpy once again ~<5 mins
     - Renderer2D lowered RAM usage by delaying buffer creation to the first draw call of each geometry type (i.e. quad, circle, line) ~<20 mins
+    - Profiler tracy::SetThreadName() now only gets called when TRACY_ENABLE is defined ~<5 mins

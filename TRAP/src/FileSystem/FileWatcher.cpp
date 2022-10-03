@@ -221,11 +221,13 @@ void TRAP::FileSystem::FileWatcher::Watch()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
+#ifdef TRACY_ENABLE
 	//Set Thread name for profiler
     if(m_name.empty())
 	    tracy::SetThreadName("FileWatcher");
     else
 	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
+#endif
 
     //Thread init
     std::vector<Events::FileChangeEvent> events;
@@ -359,11 +361,13 @@ void TRAP::FileSystem::FileWatcher::Watch()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
+#ifdef TRACY_ENABLE
 	//Set Thread name for profiler
     if(m_name.empty())
 	    tracy::SetThreadName("FileWatcher");
     else
 	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
+#endif
 
     //Thread init
     std::vector<Events::FileChangeEvent> events;

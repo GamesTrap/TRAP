@@ -131,8 +131,10 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #endif
 #endif
 
+#ifdef TRACY_ENABLE
 	//Set Main Thread name for profiler
 	tracy::SetThreadName("Main Thread");
+#endif
 
 	//Single process mode
 #ifdef ENABLE_SINGLE_PROCESS_ONLY

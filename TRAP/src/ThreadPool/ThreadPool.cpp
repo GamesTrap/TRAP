@@ -16,8 +16,10 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 
 	auto worker = [&](const uint32_t i)
 	{
+#ifdef TRACY_ENABLE
 		//Set Thread name for profiler
 	    tracy::SetThreadName((std::string("Worker ") + std::to_string(i)).c_str());
+#endif
 
 		while (true)
 		{
