@@ -10,6 +10,8 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 	                       std::size_t& currentResource,
 	                       const TRAP::Graphics::API::SPIRVTools::ResourceType SPIRVtype)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	for(const auto& input : allResources)
 	{
 		TRAP::Graphics::API::SPIRVTools::Resource& resource = resources[currentResource++];
@@ -100,12 +102,15 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 TRAP::Graphics::API::SPIRVTools::CrossCompiler::CrossCompiler(const uint32_t* const SPIRVBinary, const uint32_t binarySize)
 	: m_compiler(TRAP::MakeScope<spirv_cross::Compiler>(SPIRVBinary, binarySize))
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	m_entryPoint = m_compiler->get_entry_points_and_stages()[0].name;
 }
 
@@ -113,6 +118,8 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	//1. Get all shader resources
 	spirv_cross::ShaderResources allResources;
 	std::unordered_set<spirv_cross::VariableID> usedResources;
@@ -242,6 +249,8 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderResources()
 
 void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if (m_shaderResources.empty())
 		return; //Error code here
 
@@ -303,6 +312,8 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectShaderVariables()
 
 std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectComputeShaderWorkGroupSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	std::array<uint32_t, 3> res{};
 
 	const spirv_cross::SPIREntryPoint& entryPoint = m_compiler->get_entry_point(m_entryPoint, m_compiler->get_execution_model());
@@ -318,6 +329,8 @@ std::array<uint32_t, 3> TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectC
 
 uint32_t TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationControlShaderControlPoint() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	uint32_t controlPoints = m_compiler->get_entry_point(m_entryPoint, m_compiler->get_execution_model()).output_vertices;
 
 	if(controlPoints > RendererAPI::GPUSettings.MaxTessellationControlPoints)
@@ -335,6 +348,8 @@ uint32_t TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationCont
 
 const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_shaderResources;
 }
 
@@ -342,6 +357,8 @@ const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::AP
 
 const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_uniformVariables;
 }
 
@@ -349,5 +366,7 @@ const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::AP
 
 std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_entryPoint;
 }

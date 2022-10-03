@@ -39,6 +39,8 @@ namespace TRAP
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 			TRAP_ASSERT(!HasComponent<T>(), "Entity already has component!");
 			T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
 			m_scene->OnComponentAdded<T>(*this, component);
@@ -48,6 +50,8 @@ namespace TRAP
 		template<typename T, typename... Args>
 		T& AddOrReplaceComponent(Args&&... args)
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 			T& component = m_scene->m_registry.emplace_or_replace<T>(m_entityHandle, std::forward<Args>(args)...);
 			m_scene->OnComponentAdded<T>(*this, component);
 			return component;
@@ -56,6 +60,8 @@ namespace TRAP
 		template<typename T>
 		T& GetComponent()
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
 
 			return m_scene->m_registry.get<T>(m_entityHandle);
@@ -64,6 +70,8 @@ namespace TRAP
 		template<typename T>
 		bool HasComponent()
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 			//Renamed in EnTT v3.7.0 from registry::has<T...> to registry::all_of<T...>
 			return m_scene->m_registry.all_of<T>(m_entityHandle);
 			// return m_scene->m_registry.has<T>(m_entityHandle);
@@ -72,6 +80,8 @@ namespace TRAP
 		template<typename T>
 		void RemoveComponent()
 		{
+			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
 
 			m_scene->m_registry.remove<T>(m_entityHandle);

@@ -5,6 +5,8 @@
 
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create(const uint32_t numDescriptorSets)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
@@ -24,6 +26,8 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 TRAP::Graphics::DescriptorPool::DescriptorPool()
 	: m_numDescriptorSets()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Creating DescriptorPool");
 #endif
@@ -33,6 +37,8 @@ TRAP::Graphics::DescriptorPool::DescriptorPool()
 
 TRAP::Graphics::DescriptorPool::~DescriptorPool()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererDescriptorPoolPrefix, "Destroying DescriptorPool");
 #endif
@@ -42,5 +48,7 @@ TRAP::Graphics::DescriptorPool::~DescriptorPool()
 
 uint32_t TRAP::Graphics::DescriptorPool::GetDescriptorSetsNum() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_numDescriptorSets;
 }

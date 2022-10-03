@@ -20,7 +20,8 @@ project "TRAP"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl"
+		"src/**.inl",
+		"%{IncludeDir.TRACY}/TracyClient.cpp"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -54,7 +55,8 @@ project "TRAP"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.BOX2D}"
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links
@@ -189,6 +191,9 @@ project "TRAP"
 			defines "USE_STEAMWORKS_SDK"
 		end
 
+	filter "files:../Dependencies/Tracy/TracyClient.cpp"
+		flags {"NoPCH"}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"
@@ -203,6 +208,17 @@ project "TRAP"
 		defines "TRAP_RELWITHDEBINFO"
 		runtime "Release"
 		optimize "Debug"
+		symbols "On"
+
+	filter "configurations:Profiling"
+		editandcontinue "Off"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		runtime "Release"
+		optimize "Full"
 		symbols "On"
 
 project "TRAP-Headless"
@@ -227,7 +243,8 @@ project "TRAP-Headless"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl"
+		"src/**.inl",
+		"%{IncludeDir.TRACY}/TracyClient.cpp"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -260,7 +277,8 @@ project "TRAP-Headless"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.BOX2D}"
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links
@@ -311,6 +329,9 @@ project "TRAP-Headless"
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
 		}
 
+	filter "files:../Dependencies/Tracy/TracyClient.cpp"
+		flags {"NoPCH"}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"
@@ -325,4 +346,15 @@ project "TRAP-Headless"
 		defines "TRAP_RELWITHDEBINFO"
 		runtime "Release"
 		optimize "Debug"
+		symbols "On"
+
+	filter "configurations:Profiling"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		editandcontinue "Off"
+		runtime "Release"
+		optimize "Full"
 		symbols "On"

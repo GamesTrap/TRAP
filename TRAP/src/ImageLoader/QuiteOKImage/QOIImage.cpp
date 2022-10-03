@@ -13,7 +13,7 @@ static constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,
 
 TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 
@@ -128,6 +128,8 @@ TRAP::INTERNAL::QOIImage::QOIImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::QOIImage::GetPixelData() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.data();
 }
 
@@ -135,6 +137,8 @@ const void* TRAP::INTERNAL::QOIImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::QOIImage::GetPixelDataSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.size();
 }
 
@@ -164,6 +168,8 @@ static constexpr uint32_t QOI_COLOR_HASH(const Pixel& p)
 
 void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_t& fileSize)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
     Pixel prevPixel{0, 0, 0, 255};
     std::array<Pixel, 64> prevPixels{};
 

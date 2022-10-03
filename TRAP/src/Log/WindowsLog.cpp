@@ -10,6 +10,8 @@ CONSOLE_SCREEN_BUFFER_INFO TRAP::Log::m_csbi;
 
 void TRAP::Log::GetInfo()
 {
+	ZoneScoped;
+
 	GetConsoleScreenBufferInfo(m_handleConsole, &m_csbi);
 }
 
@@ -17,6 +19,8 @@ void TRAP::Log::GetInfo()
 
 void TRAP::Log::SetColor(const WORD wRGBI)
 {
+	ZoneScoped;
+
 	GetInfo();
 	m_csbi.wAttributes &= 0;
 	m_csbi.wAttributes |= wRGBI;
@@ -27,5 +31,7 @@ void TRAP::Log::SetColor(const WORD wRGBI)
 
 void TRAP::Log::ResetColor()
 {
+	ZoneScoped;
+
 	SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }

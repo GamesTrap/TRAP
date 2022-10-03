@@ -18,6 +18,8 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_presentQueue(), m_swapChain(), m_presentQueueFamilyIndex(), m_imageCount(), m_enableVSync()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
 
@@ -32,6 +34,8 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 
 TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_swapChain);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -45,6 +49,8 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 
 void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	//////////////////
 	//Create Surface//
 	//////////////////
@@ -312,6 +318,8 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 
 void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_device->WaitIdle();
 
 	m_renderTargetsMSAA.clear();
@@ -326,6 +334,8 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,
                                                                 const TRAP::Ref<Fence>& fence) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_device != VK_NULL_HANDLE);
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
 	TRAP_ASSERT(signalSemaphore || fence);
@@ -374,6 +384,8 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 
 void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	RendererAPI::SwapChainDesc desc = m_desc;
 	desc.EnableVSync = !desc.EnableVSync;
 
@@ -387,6 +399,8 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::SampleCount sampleCount)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	RendererAPI::SwapChainDesc desc = m_desc;
 	desc.SampleCount = sampleCount;
 
@@ -398,6 +412,8 @@ void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::Sam
 
 VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_swapChain;
 }
 
@@ -405,5 +421,7 @@ VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 
 VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_presentQueue;
 }

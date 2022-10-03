@@ -14,7 +14,8 @@ project "Headless-Tests"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"%{IncludeDir.TRACY}/TracyClient.cpp"
 	}
 
 	includedirs "%{wks.location}/TRAP/src"
@@ -31,7 +32,8 @@ project "Headless-Tests"
 		"%{IncludeDir.YAMLCPP}",
 		"%{IncludeDir.MODERNDIALOGS}",
 		"%{IncludeDir.VMA}",
-		"%{IncludeDir.BOX2D}"
+		"%{IncludeDir.BOX2D}",
+		"%{IncludeDir.TRACY}"
 	}
 
 	links "TRAP-Headless"
@@ -80,4 +82,15 @@ project "Headless-Tests"
 		defines "TRAP_RELWITHDEBINFO"
 		runtime "Release"
 		optimize "Debug"
+		symbols "On"
+
+	filter "configurations:Profiling"
+		editandcontinue "Off"
+		defines
+		{
+			"TRAP_RELEASE",
+			"TRACY_ENABLE"
+		}
+		runtime "Release"
+		optimize "Full"
 		symbols "On"

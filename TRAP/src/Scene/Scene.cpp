@@ -23,6 +23,8 @@
 
 static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::BodyType bodyType)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(bodyType)
 	{
 	case TRAP::Rigidbody2DComponent::BodyType::Static:
@@ -45,6 +47,8 @@ static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::Bod
 template<typename... Component>
 static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	([&]()
 	{
 		const auto view = src.view<Component>();
@@ -64,6 +68,8 @@ template<typename... Component>
 static void CopyComponent(TRAP::ComponentGroup<Component...>, entt::registry& dst, entt::registry& src,
                           const std::unordered_map<TRAP::Utils::UID, entt::entity>& enttMap)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	CopyComponent<Component...>(dst, src, enttMap);
 }
 
@@ -72,6 +78,8 @@ static void CopyComponent(TRAP::ComponentGroup<Component...>, entt::registry& ds
 template<typename... Component>
 static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	([&]()
 	{
 		if(src.HasComponent<Component>())
@@ -84,6 +92,8 @@ static void CopyComponentIfExists(TRAP::Entity dst, TRAP::Entity src)
 template<typename... Component>
 static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Entity dst, TRAP::Entity src)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	CopyComponentIfExists<Component...>(dst, src);
 }
 
@@ -91,6 +101,8 @@ static void CopyComponentIfExists(TRAP::ComponentGroup<Component...>, TRAP::Enti
 
 TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	TRAP::Ref<Scene> newScene = TRAP::MakeRef<Scene>();
 
 	newScene->m_viewportWidth = other->m_viewportWidth;
@@ -121,6 +133,8 @@ TRAP::Ref<TRAP::Scene> TRAP::Scene::Copy(Ref<Scene> other)
 
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	return CreateEntityWithUID(Utils::UID(), name);
 }
 
@@ -128,6 +142,8 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 
 TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string& name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	Entity entity = { m_registry.create(), this };
 	entity.AddComponent<UIDComponent>(uid);
 	entity.AddComponent<TransformComponent>();
@@ -140,6 +156,8 @@ TRAP::Entity TRAP::Scene::CreateEntityWithUID(Utils::UID uid, const std::string&
 
 void TRAP::Scene::DestroyEntity(const Entity entity)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	m_registry.destroy(entity);
 }
 
@@ -147,6 +165,8 @@ void TRAP::Scene::DestroyEntity(const Entity entity)
 
 void TRAP::Scene::OnRuntimeStart()
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	m_physicsWorld = new b2World({0.0f, -9.8f});
 
 	auto view = m_registry.view<Rigidbody2DComponent>();
@@ -204,6 +224,8 @@ void TRAP::Scene::OnRuntimeStart()
 
 void TRAP::Scene::OnRuntimeStop()
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	delete m_physicsWorld;
 	m_physicsWorld = nullptr;
 }
@@ -212,6 +234,8 @@ void TRAP::Scene::OnRuntimeStop()
 
 void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	//Physics
 	const int32_t velocityIterations = 6;
 	const int32_t positionIterations = 2;
@@ -237,6 +261,8 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 
 void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	//Update scripts
 	{
 		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
@@ -305,6 +331,8 @@ void TRAP::Scene::OnUpdateRuntime(const Utils::TimeStep deltaTime)
 
 void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::EditorCamera& camera)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	Graphics::Renderer2D::BeginScene(camera);
 
 	//Renderer sprites
@@ -333,6 +361,8 @@ void TRAP::Scene::OnUpdateEditor(const Utils::TimeStep /*deltaTime*/, Graphics::
 
 void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	//Update scripts
 	{
 		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
@@ -355,6 +385,8 @@ void TRAP::Scene::OnTick(const TRAP::Utils::TimeStep& deltaTime)
 
 void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	m_viewportWidth = width;
 	m_viewportHeight = height;
 
@@ -372,6 +404,8 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 
 void TRAP::Scene::DuplicateEntity(Entity entity)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	Entity newEntity = CreateEntity(entity.GetName());
 	CopyComponentIfExists(AllComponents{}, newEntity, entity);
 }
@@ -380,6 +414,8 @@ void TRAP::Scene::DuplicateEntity(Entity entity)
 
 TRAP::Entity TRAP::Scene::GetPrimaryCameraEntity()
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	auto view = m_registry.view<CameraComponent>();
 	for(auto entity : view)
 	{
@@ -410,6 +446,8 @@ void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity, TransformCo
 template<>
 void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity, CameraComponent& component)
 {
+	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(m_viewportWidth > 0 && m_viewportHeight > 0)
 		component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
 }

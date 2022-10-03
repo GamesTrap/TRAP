@@ -35,12 +35,15 @@ Modified by: Jan "GamesTrap" Schuerkamp
 TRAP::Network::Packet::Packet()
 	: m_readPos(0), m_sendPos(0), m_isValid(true)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Network::Packet::Append(const void* const data, const std::size_t sizeInBytes)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(!data || (sizeInBytes == 0))
 		return;
 
@@ -53,6 +56,8 @@ void TRAP::Network::Packet::Append(const void* const data, const std::size_t siz
 
 std::size_t TRAP::Network::Packet::GetReadPosition() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_readPos;
 }
 
@@ -60,6 +65,8 @@ std::size_t TRAP::Network::Packet::GetReadPosition() const
 
 void TRAP::Network::Packet::Clear()
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	m_data.clear();
 	m_readPos = 0;
 	m_isValid = true;
@@ -69,6 +76,8 @@ void TRAP::Network::Packet::Clear()
 
 const void* TRAP::Network::Packet::GetData() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !m_data.empty() ? &m_data[0] : nullptr;
 }
 
@@ -76,6 +85,8 @@ const void* TRAP::Network::Packet::GetData() const
 
 std::size_t TRAP::Network::Packet::GetDataSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.size();
 }
 
@@ -83,6 +94,8 @@ std::size_t TRAP::Network::Packet::GetDataSize() const
 
 bool TRAP::Network::Packet::EndOfPacket() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_readPos >= m_data.size();
 }
 
@@ -90,6 +103,8 @@ bool TRAP::Network::Packet::EndOfPacket() const
 
 TRAP::Network::Packet::operator bool() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_isValid;
 }
 
@@ -97,6 +112,8 @@ TRAP::Network::Packet::operator bool() const
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	uint8_t value = 0;
 	if (*this >> value)
 		data = (value != 0);
@@ -108,6 +125,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(bool& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(CheckSize(sizeof(data)))
 	{
 		data = static_cast<int8_t>(m_data[m_readPos]);
@@ -121,6 +140,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(CheckSize(sizeof(data)))
 	{
 		data = static_cast<uint8_t>(m_data[m_readPos]);
@@ -134,6 +155,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -151,6 +174,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if (CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -168,6 +193,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if (CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -185,6 +212,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if (CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -202,6 +231,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -219,6 +250,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if (CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -236,6 +269,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if(CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -249,6 +284,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	if (CheckSize(sizeof(data)))
 	{
 		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
@@ -263,6 +300,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First extract string length
 	uint32_t length = 0;
 	*this >> length;
@@ -284,6 +323,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First extract string length
 	uint32_t length = 0;
 	*this >> length;
@@ -305,6 +346,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::string& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* const data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First extract string length
 	uint32_t length = 0;
 	*this >> length;
@@ -328,6 +371,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(wchar_t* const data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::wstring& data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First extract the string length
 	uint32_t length = 0;
 	*this >> length;
@@ -351,6 +396,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(std::wstring& data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const bool data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	*this << static_cast<uint8_t>(data);
 	return *this;
 }
@@ -359,6 +406,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const bool data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int8_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Append(&data, sizeof(data));
 	return *this;
 }
@@ -367,6 +416,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int8_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint8_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Append(&data, sizeof(data));
 	return *this;
 }
@@ -375,6 +426,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint8_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	int16_t toWrite = data;
 
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
@@ -388,6 +441,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	uint16_t toWrite = data;
 
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
@@ -401,6 +456,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	int32_t toWrite = data;
 
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
@@ -414,6 +471,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	uint32_t toWrite = data;
 
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
@@ -427,6 +486,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	int64_t toWrite = data;
 
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
@@ -440,6 +501,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint64_t data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	uint64_t toWrite = data;
 
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
@@ -453,6 +516,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint64_t data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(float data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Append(&data, sizeof(data));
 	return *this;
 }
@@ -461,6 +526,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(float data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Append(&data, sizeof(data));
 	return *this;
 }
@@ -469,6 +536,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
 	*this << length;
@@ -484,6 +553,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view 
 
 TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view data)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	//First insert string length
 	const uint32_t length = static_cast<uint32_t>(data.size());
 	*this << length;
@@ -499,6 +570,8 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::wstring_view
 
 bool TRAP::Network::Packet::CheckSize(const std::size_t size)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	m_isValid = m_isValid && (m_readPos + size <= m_data.size());
 
 	return m_isValid;
@@ -508,6 +581,8 @@ bool TRAP::Network::Packet::CheckSize(const std::size_t size)
 
 const void* TRAP::Network::Packet::OnSend(std::size_t& size)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	size = GetDataSize();
 	return GetData();
 }
@@ -516,5 +591,7 @@ const void* TRAP::Network::Packet::OnSend(std::size_t& size)
 
 void TRAP::Network::Packet::OnReceive(const void* const data, const std::size_t size)
 {
+	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
+
 	Append(data, size);
 }

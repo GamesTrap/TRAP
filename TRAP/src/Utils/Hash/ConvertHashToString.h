@@ -7,6 +7,15 @@
 #include <string>
 #include <sstream>
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+//Tracy - Profiler
+#include <Tracy.hpp>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 namespace TRAP::Utils::Hash
 {
 	/// <summary>
@@ -17,6 +26,8 @@ namespace TRAP::Utils::Hash
 	template<std::size_t N>
 	std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
 	{
+    	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 		std::stringstream ss{};
 		for (const uint8_t& i : hash)
 		{

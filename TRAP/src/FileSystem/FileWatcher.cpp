@@ -5,9 +5,11 @@
 #include "Events/FileEvent.h"
 #include "Utils/Utils.h"
 
-TRAP::FileSystem::FileWatcher::FileWatcher(const std::vector<std::filesystem::path>& paths, const bool recursive)
-    : m_recursive(recursive), m_run(true)
+TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, const bool recursive)
+    : m_recursive(recursive), m_run(true), m_name(std::move(name))
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(paths.empty())
         return;
 
@@ -17,9 +19,11 @@ TRAP::FileSystem::FileWatcher::FileWatcher(const std::vector<std::filesystem::pa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileSystem::FileWatcher::FileWatcher(const std::filesystem::path& path, const bool recursive)
-    : m_recursive(recursive), m_run(true)
+TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::filesystem::path& path, const bool recursive)
+    : m_recursive(recursive), m_run(true), m_name(std::move(name))
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(path.empty())
         return;
 
@@ -31,6 +35,8 @@ TRAP::FileSystem::FileWatcher::FileWatcher(const std::filesystem::path& path, co
 
 TRAP::FileSystem::FileWatcher::~FileWatcher()
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     Shutdown();
 }
 
@@ -38,6 +44,8 @@ TRAP::FileSystem::FileWatcher::~FileWatcher()
 
 void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& callback)
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     m_callback = callback;
 }
 
@@ -45,6 +53,8 @@ void TRAP::FileSystem::FileWatcher::SetEventCallback(const EventCallbackFn& call
 
 TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::GetEventCallback() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     return m_callback;
 }
 
@@ -52,6 +62,8 @@ TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::Ge
 
 void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(path.empty())
         return;
 
@@ -73,6 +85,8 @@ void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 
 void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(paths.empty())
         return;
 
@@ -97,6 +111,8 @@ void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem
 
 void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     //Always use absolute paths
     const auto absPath = FileSystem::ToAbsolutePath(path);
     if(!absPath)
@@ -116,6 +132,8 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
 
 void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(paths.empty())
         return;
 
@@ -139,6 +157,8 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
 
 std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem) || (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     return m_paths;
 }
 
@@ -146,6 +166,8 @@ std::vector<std::filesystem::path> TRAP::FileSystem::FileWatcher::GetFolders() c
 
 void TRAP::FileSystem::FileWatcher::Init()
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(m_paths.empty())
         return;
 
@@ -163,6 +185,8 @@ void TRAP::FileSystem::FileWatcher::Init()
 
 void TRAP::FileSystem::FileWatcher::Shutdown()
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
     if(!m_run)
         return;
 
@@ -195,6 +219,14 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
 #ifdef TRAP_PLATFORM_WINDOWS
 void TRAP::FileSystem::FileWatcher::Watch()
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+	//Set Thread name for profiler
+    if(m_name.empty())
+	    tracy::SetThreadName("FileWatcher");
+    else
+	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
+
     //Thread init
     std::vector<Events::FileChangeEvent> events;
 
@@ -325,6 +357,14 @@ void TRAP::FileSystem::FileWatcher::Watch()
 #elif defined(TRAP_PLATFORM_LINUX)
 void TRAP::FileSystem::FileWatcher::Watch()
 {
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+	//Set Thread name for profiler
+    if(m_name.empty())
+	    tracy::SetThreadName("FileWatcher");
+    else
+	    tracy::SetThreadName((m_name + " (FileWatcher)").c_str());
+
     //Thread init
     std::vector<Events::FileChangeEvent> events;
 

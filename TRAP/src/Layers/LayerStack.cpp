@@ -5,7 +5,7 @@
 
 void TRAP::LayerStack::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	for(auto& layer : m_layers)
 	{
@@ -21,7 +21,7 @@ void TRAP::LayerStack::Shutdown()
 
 void TRAP::LayerStack::PushLayer(std::unique_ptr<Layer> layer)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	TP_DEBUG(Log::LayerStackPrefix, "Pushing layer: ", layer->GetName());
 	layer->OnAttach();
@@ -33,7 +33,7 @@ void TRAP::LayerStack::PushLayer(std::unique_ptr<Layer> layer)
 
 void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	TP_DEBUG(Log::LayerStackPrefix, "Pushing overlay: ", overlay->GetName());
 	overlay->OnAttach();
@@ -44,7 +44,8 @@ void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 
 void TRAP::LayerStack::PopLayer(Layer* const layer)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
 	TRAP_ASSERT(layer, "Layer is nullptr!");
 
 	const auto it = std::find_if(m_layers.begin(), m_layers.begin() + m_layerInsertIndex,
@@ -62,7 +63,8 @@ void TRAP::LayerStack::PopLayer(Layer* const layer)
 
 void TRAP::LayerStack::PopOverlay(Layer* const overlay)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
+
 	TRAP_ASSERT(overlay, "Overlay is nullptr!");
 
 	const auto it = std::find_if(m_layers.begin() + m_layerInsertIndex, m_layers.end(),
@@ -79,6 +81,8 @@ void TRAP::LayerStack::PopOverlay(Layer* const overlay)
 
 std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.begin();
 }
 
@@ -86,6 +90,8 @@ std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin()
 
 std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.end();
 }
 
@@ -93,6 +99,8 @@ std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end()
 
 std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rbegin()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.rbegin();
 }
 
@@ -100,6 +108,8 @@ std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rb
 
 std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rend()
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.rend();
 }
 
@@ -107,6 +117,8 @@ std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::re
 
 std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::begin() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.begin();
 }
 
@@ -114,6 +126,8 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::begi
 
 std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.end();
 }
 
@@ -121,6 +135,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end(
 
 std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rbegin() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_layers.rbegin();
 }
@@ -129,5 +144,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerSta
 
 std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rend() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_layers.rend();
 }

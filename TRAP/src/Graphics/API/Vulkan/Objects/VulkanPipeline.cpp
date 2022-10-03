@@ -16,6 +16,8 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	  m_type(),
 	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice())
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_device);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -57,6 +59,8 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 
 TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(m_vkPipeline);
 
@@ -73,6 +77,8 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	const auto& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
 	const VkPipelineCache psoCache = desc.Cache ?
 	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
@@ -108,6 +114,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 
 void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	const auto& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
 	const VkPipelineCache psoCache = desc.Cache ?
 	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
@@ -371,6 +379,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkPipeline;
 }
 
@@ -378,6 +388,8 @@ VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 
 TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_type;
 }
 
@@ -385,6 +397,8 @@ TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::G
 
 void TRAP::Graphics::API::VulkanPipeline::SetPipelineName(const std::string_view name) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;
 

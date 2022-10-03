@@ -32,12 +32,15 @@ const std::array<std::string, 15> TRAP::Image::SupportedImageFormatSuffixes
 TRAP::Image::Image()
 	: m_width(0), m_height(0), m_isHDR(false), m_colorFormat(ColorFormat::NONE), m_bitsPerPixel(0)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Image::GetBitsPerPixel() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_bitsPerPixel;
 }
 
@@ -45,6 +48,8 @@ uint32_t TRAP::Image::GetBitsPerPixel() const
 
 uint32_t TRAP::Image::GetBytesPerPixel() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_bitsPerPixel / 8;
 }
 
@@ -52,6 +57,8 @@ uint32_t TRAP::Image::GetBytesPerPixel() const
 
 uint32_t TRAP::Image::GetBitsPerChannel() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_bitsPerPixel / static_cast<uint32_t>(m_colorFormat);
 }
 
@@ -59,6 +66,8 @@ uint32_t TRAP::Image::GetBitsPerChannel() const
 
 uint32_t TRAP::Image::GetBytesPerChannel() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return GetBytesPerPixel() / static_cast<uint32_t>(m_colorFormat);
 }
 
@@ -66,6 +75,8 @@ uint32_t TRAP::Image::GetBytesPerChannel() const
 
 uint32_t TRAP::Image::GetWidth() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_width;
 }
 
@@ -73,6 +84,8 @@ uint32_t TRAP::Image::GetWidth() const
 
 uint32_t TRAP::Image::GetHeight() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_height;
 }
 
@@ -80,6 +93,8 @@ uint32_t TRAP::Image::GetHeight() const
 
 TRAP::Math::Vec2ui TRAP::Image::GetSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return Math::Vec2ui{ m_width, m_height };
 }
 
@@ -87,6 +102,8 @@ TRAP::Math::Vec2ui TRAP::Image::GetSize() const
 
 bool TRAP::Image::HasAlphaChannel() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_colorFormat == ColorFormat::GrayScaleAlpha || m_colorFormat == ColorFormat::RGBA;
 }
 
@@ -94,6 +111,8 @@ bool TRAP::Image::HasAlphaChannel() const
 
 bool TRAP::Image::IsImageGrayScale() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_colorFormat == ColorFormat::GrayScale || m_colorFormat == ColorFormat::GrayScaleAlpha;
 }
 
@@ -101,6 +120,8 @@ bool TRAP::Image::IsImageGrayScale() const
 
 bool TRAP::Image::IsImageColored() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_colorFormat == ColorFormat::RGB || m_colorFormat == ColorFormat::RGBA;
 }
 
@@ -108,6 +129,8 @@ bool TRAP::Image::IsImageColored() const
 
 bool TRAP::Image::IsHDR() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_isHDR;
 }
 
@@ -115,6 +138,8 @@ bool TRAP::Image::IsHDR() const
 
 bool TRAP::Image::IsLDR() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return !m_isHDR;
 }
 
@@ -122,6 +147,8 @@ bool TRAP::Image::IsLDR() const
 
 const std::filesystem::path& TRAP::Image::GetFilePath() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_filepath;
 }
 
@@ -129,6 +156,8 @@ const std::filesystem::path& TRAP::Image::GetFilePath() const
 
 TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	return m_colorFormat;
 }
 
@@ -136,7 +165,7 @@ TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const
 
 std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * 3);
@@ -156,7 +185,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& sour
 
 std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	for (uint32_t i = 0; i < width * height * 3; i += 3)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
@@ -168,7 +197,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& sour
 
 std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	for (uint32_t i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
@@ -180,7 +209,7 @@ std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& so
 
 std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	std::vector<uint8_t> data{};
 	data.resize(static_cast<std::size_t>(width) * height * channels);
@@ -220,7 +249,7 @@ std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, co
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	if(!IsSupportedImageFile(filepath))
 	{
@@ -272,7 +301,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::filesystem::path& 
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint8_t>& pixelData)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
@@ -281,7 +310,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<uint16_t>& pixelData)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
@@ -290,7 +319,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, ColorFormat format, const std::vector<float>& pixelData)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	return MakeScope<INTERNAL::CustomImage>("", width, height, format, pixelData);
 }
@@ -299,7 +328,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t he
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	return MakeScope<INTERNAL::CustomImage>("", 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 }
@@ -308,7 +337,7 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 
 bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	const auto fileEnding = FileSystem::GetFileEnding(filepath);
 	if(!fileEnding)
@@ -326,6 +355,8 @@ bool TRAP::Image::IsSupportedImageFile(const std::filesystem::path& filepath)
 
 TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if(!img)
 		return nullptr;
 
@@ -361,6 +392,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::FlipX(const Image* const img)
 
 TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if (!img)
 		return nullptr;
 
@@ -395,6 +428,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Image* const img)
 
 TRAP::Scope<TRAP::Image> TRAP::Image::ConvertRGBToRGBA(const Image* const img)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if(!img)
 		return nullptr;
 

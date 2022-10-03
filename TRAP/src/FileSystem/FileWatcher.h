@@ -40,9 +40,10 @@ namespace TRAP::FileSystem
         /// Windows: Event-based via ReadDirectoryChangesW.
         /// Linux: Event-based via inotify & eventfd.
         /// </summary>
+        /// <param name="name">Name for the file watcher.</param>
         /// <param name="paths">Folder paths to watch over.</param>
         /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
-        explicit FileWatcher(const std::vector<std::filesystem::path>& paths, bool recursive = true);
+        explicit FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, bool recursive = true);
         /// <summary>
         /// Keeps track of the statuses of all files inside the specified path.
         ///
@@ -51,9 +52,10 @@ namespace TRAP::FileSystem
         /// Windows: Event-based via ReadDirectoryChangesW.
         /// Linux: Event-based via inotify & eventfd.
         /// </summary>
+        /// <param name="name">Name for the file watcher.</param>
         /// <param name="path">Folder path to watch over.</param>
         /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
-        explicit FileWatcher(const std::filesystem::path& path, bool recursive = true);
+        explicit FileWatcher(std::string name, const std::filesystem::path& path, bool recursive = true);
 
         /// <summary>
 		/// Destructor.
@@ -127,6 +129,7 @@ namespace TRAP::FileSystem
         std::vector<std::filesystem::path> m_paths; //No synchronization needed since it's only changed when m_thread is not running.
         bool m_recursive;
         std::atomic<bool> m_run;
+        std::string m_name; //Doesn't need to be synced because it won't change after construction
 
 #ifdef TRAP_PLATFORM_WINDOWS
         HANDLE m_killEvent = nullptr;

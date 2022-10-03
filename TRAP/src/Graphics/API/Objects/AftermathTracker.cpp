@@ -7,7 +7,7 @@
 
 bool initialized = false;
 
-std::mutex mutex{};
+TracyLockable(std::mutex, aftermath_mutex);
 
 void* handle = nullptr;
 #ifdef ENABLE_NSIGHT_AFTERMATH
@@ -33,6 +33,8 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
                  void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
     const auto docsFolder = TRAP::FileSystem::GetDocumentsFolderPath();
     if(!docsFolder)
         return;
@@ -42,7 +44,8 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
 
     const std::filesystem::path folderPath = *docsFolder / "TRAP" / TRAP::Application::GetGameName() / "crash-dumps";
     const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
-    std::lock_guard lock(mutex);
+    std::lock_guard lock(aftermath_mutex);
+    LockMark(aftermath_mutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
     std::copy_n(static_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
     if(!TRAP::FileSystem::FileOrFolderExists(folderPath))
@@ -56,6 +59,8 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
 void LoadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef TRAP_PLATFORM_WINDOWS
     handle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -103,6 +108,8 @@ void LoadFunctions()
 void UnloadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
     TRAP::Utils::DynamicLoading::FreeLibrary(handle);
 
     handle = nullptr;
@@ -127,6 +134,8 @@ void UnloadFunctions()
 
 [[maybe_unused]] bool TRAP::Graphics::AftermathTracker::Initialize()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
     if(initialized)
         return true;
 
@@ -170,6 +179,8 @@ void UnloadFunctions()
 
 void TRAP::Graphics::AftermathTracker::Shutdown()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
     if(!initialized)
         return;
 
@@ -194,6 +205,8 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose);
+
     /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
     {
         AftermathCall(setEventMarker(aftermathHandle, name.data(), name.size()));
@@ -206,6 +219,8 @@ void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const
 #ifdef ENABLE_NSIGHT_AFTERMATH
 void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Result res)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
     if(res == GFSDK_Aftermath_Result_Success)
         return;
 
@@ -307,6 +322,8 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
 
 GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
     if(!initialized)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;
 

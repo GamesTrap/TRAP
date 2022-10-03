@@ -8,7 +8,7 @@
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 
@@ -149,6 +149,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -159,6 +161,8 @@ const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 

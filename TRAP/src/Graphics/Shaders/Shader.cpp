@@ -45,7 +45,7 @@ std::array<std::string, 2> TRAP::Graphics::Shader::SupportedShaderFormatSuffixes
 
 bool TRAP::Graphics::Shader::Reload()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(m_filepath.empty())
 		return false;
@@ -128,7 +128,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 std::string TRAP::Graphics::Shader::GetName() const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_name;
 }
@@ -137,7 +137,7 @@ std::string TRAP::Graphics::Shader::GetName() const
 
 std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_filepath;
 }
@@ -146,6 +146,8 @@ std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 
 TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_shaderStages;
 }
 
@@ -153,6 +155,8 @@ TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages
 
 const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_macros;
 }
 
@@ -160,6 +164,8 @@ const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMac
 
 TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_rootSignature;
 }
 
@@ -168,6 +174,8 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignatur
 const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
                  TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_descriptorSets;
 }
 
@@ -175,6 +183,8 @@ const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
 
 bool TRAP::Graphics::Shader::IsShaderValid() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_valid;
 }
 
@@ -184,7 +194,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
                                                                          const std::filesystem::path& filePath,
 																		 const std::vector<Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	if(name.empty())
 	{
@@ -228,7 +238,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::filesystem::path& filePath,
                                                                          const std::vector<Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	RendererAPI::BinaryShaderDesc desc{};
 	Ref<Shader> failShader = nullptr;
@@ -275,7 +285,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const
                                                                            const std::string& glslSource,
 																		   const std::vector<Macro>* const userMacros)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
 	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
@@ -312,6 +322,8 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const
 
 bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& filePath)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	//Check SPIRV Magic Number
 	if (!FileSystem::FileOrFolderExists(filePath))
 		return false;
@@ -349,6 +361,8 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
                                             RendererAPI::ShaderStage& shaderStages,
 											const std::vector<Macro>* const userMacros)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	RendererAPI::ShaderStage currentShaderStage = RendererAPI::ShaderStage::None;
 	const std::vector<std::string> lines = Utils::String::GetLines(glslSource);
 
@@ -475,6 +489,8 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 	                                                                              	   const RendererAPI::ShaderStage stage,
 	                                                                              	   std::string& preProcessedSource)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	TRAP::Scope<glslang::TShader> shader = TRAP::MakeScope<glslang::TShader>(StageToEShLang.at(stage));
 	shader->setStrings(&source, 1);
 	shader->setEnvInput(glslang::EShSourceGlsl, StageToEShLang.at(stage), glslang::EShClientVulkan, 460);
@@ -507,6 +523,8 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForSPIRVConv
 
 bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* const shader)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	static constexpr TBuiltInResource DefaultTBuiltInResource = GetDefaultTBuiltInResource();
 
 	if(!shader->parse(&DefaultTBuiltInResource, 460, true,
@@ -526,6 +544,8 @@ bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* const shader)
 
 bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* const shader, glslang::TProgram& program)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(shader)
 		program.addShader(shader);
 
@@ -545,6 +565,8 @@ bool TRAP::Graphics::Shader::LinkGLSLang(glslang::TShader* const shader, glslang
 
 bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage& shaderStages)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	//Check if any Shader Stage is set
 	if (RendererAPI::ShaderStage::None == shaderStages)
 	{
@@ -608,6 +630,8 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLSLToSPIRV(const std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
 	                                                                                     const RendererAPI::ShaderStage& shaderStages)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	if(!s_glslangInitialized)
 	{
 		if (!glslang::InitializeProcess())
@@ -695,6 +719,8 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::ConvertGLS
 std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::ShaderStage stage,
 															 glslang::TProgram& program)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	std::vector<uint32_t> SPIRV{};
 
 	spv::SpvBuildLogger logger{};
@@ -722,6 +748,8 @@ std::vector<uint32_t> TRAP::Graphics::Shader::ConvertToSPIRV(const RendererAPI::
 
 TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(std::vector<uint32_t>& SPIRV)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::ShaderSPIRVPrefix, "Loading SPIRV");
 #endif
@@ -796,6 +824,8 @@ TRAP::Graphics::RendererAPI::BinaryShaderDesc TRAP::Graphics::Shader::LoadSPIRV(
 
 bool TRAP::Graphics::Shader::IsFileEndingSupported(const std::filesystem::path& filePath)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const auto fileEnding = FileSystem::GetFileEnding(filePath);
 	if(!fileEnding)
 		return false;
@@ -827,6 +857,8 @@ bool TRAP::Graphics::Shader::PreInit(const std::string& name, const std::filesys
                                      const std::vector<Macro>* const userMacros,
 									 RendererAPI::BinaryShaderDesc& outShaderDesc, Ref<Shader>& outFailShader)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	std::string glslSource;
 	bool isSPIRV = false;
 	std::vector<uint32_t> SPIRVSource{};

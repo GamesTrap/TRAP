@@ -476,6 +476,8 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int)
 template<typename T>
 std::string TRAP::Math::Mat<3, 3, T>::ToString() const
 {
+	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	std::string postfix = "";
 	if constexpr(std::is_same_v<T, float>)
 		postfix = "f";

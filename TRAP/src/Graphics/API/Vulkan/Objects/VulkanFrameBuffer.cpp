@@ -14,6 +14,8 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	  m_arraySize(),
       m_device(std::move(device))
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -123,6 +125,8 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_framebuffer);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -136,6 +140,8 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 
 VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_framebuffer;
 }
 
@@ -143,6 +149,8 @@ VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
 
 uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_width;
 }
 
@@ -150,6 +158,8 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
 
 uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_height;
 }
 
@@ -157,5 +167,7 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
 
 uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_arraySize;
 }

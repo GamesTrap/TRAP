@@ -144,6 +144,8 @@ template<typename T>
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Init(const T* const indices, const uint64_t size,
                                                                            const UpdateFrequency updateFrequency)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
 	              "Trying to initialize index buffer with wrong index type!");
 
@@ -187,6 +189,8 @@ template<typename T>
 void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const uint64_t size,
                                                   const uint64_t offset)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
 	              "Trying to initialize index buffer with wrong index type!");
 

@@ -8,7 +8,7 @@
 TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 	: eMax(-127), eMin(127)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
@@ -141,6 +141,8 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::RadianceImage::GetPixelData() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.data();
 }
 
@@ -148,6 +150,8 @@ const void* TRAP::INTERNAL::RadianceImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_data.size() * sizeof(float);
 }
 
@@ -155,6 +159,8 @@ uint64_t TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const
 
 float TRAP::INTERNAL::RadianceImage::ConvertComponent(const int8_t exponent, const int32_t value)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (exponent == -128)
 		return 0.0f;
 
@@ -170,6 +176,8 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
                                              const uint32_t length,
                                              std::ifstream& file)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	if (length < MinEncodingLength || length > MaxEncodingLength)
 		return OldDecrunch(scanline, 0, length, file);
 
@@ -221,6 +229,8 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 4>>& scanline,
                                                 uint32_t scanlineIndex, uint32_t length, std::ifstream& file)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	int32_t rshift = 0;
 
 	while (length > 0)
@@ -258,6 +268,8 @@ bool TRAP::INTERNAL::RadianceImage::OldDecrunch(std::vector<std::array<uint8_t, 
 void TRAP::INTERNAL::RadianceImage::WorkOnRGBE(std::vector<std::array<uint8_t, 4>>& scanline,
                                                std::vector<float>& data, uint32_t dataIndex)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	int32_t length = static_cast<int32_t>(m_width);
 	uint32_t scanlineIndex = 0;
 

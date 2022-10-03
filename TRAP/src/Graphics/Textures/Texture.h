@@ -393,6 +393,8 @@ namespace TRAP::Graphics
 template<typename T>
 std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromCross(const TRAP::Image* const image)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 	const bool isHorizontal = image->GetWidth() > image->GetHeight();
 
 	const uint32_t stride = image->GetBytesPerPixel();

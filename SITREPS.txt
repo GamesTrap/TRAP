@@ -3307,3 +3307,22 @@ SITREP 09/29/2022|22w39b2
 SITREP 09/30/2022|22w39c1
     - Changed TRAP Engine version to 22w39c1(0.8.52)
     - Changed premake scripts optimize levels ~<5 mins
+    - Removed Instrumentor and all its macros ~<20 mins
+    - Premake scripts Added configuration for profiling ~<5 mins
+
+SITREP 10/01/2022|22w39c2
+    - Changed TRAP Engine version to 22w39c2(0.8.53)
+    - Premake scripts Added support for Tracy ~<20 mins
+    - Profiler Added names for threads ~<10 mins
+    - String Fixed double null terminator ins GetTimeStamp() and GetDateTimeStamp() ~<5 mins
+    - Profiler Added log messages ~<15 mins
+    - Base Added overloads for new and delete (only used for memory profiling) ~<5 mins
+    - Profiler Added all mutexes ~>20 mins
+    - Profiler Added instrumentation everywhere ~>30 mins
+    - Profiler color coded instrumentation ~<20 mins
+    - Premake disabled PCH for TracyClient.cpp ~<5 mins
+
+SITREP 10/02/2022|22w39c3
+    - Changed TRAP Engine version to 22w39c3(0.8.54)
+    - Base Added ability to compile-time define what to profile via TRAP_PROFILE_SYSTEMS() ~<5 mins
+    - Changed instrumentation to use TRAP_PROFILE_SYSTEMS() ~>30 mins

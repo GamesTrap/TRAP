@@ -8,7 +8,7 @@
 
 TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
 	m_filepath = std::move(filepath);
 	m_colorFormat = ColorFormat::RGB;
@@ -108,6 +108,8 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::filesystem::path filepath)
 
 const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
 
@@ -118,6 +120,8 @@ const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 
 uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if (!m_data2Byte.empty())
 		return m_data2Byte.size() * sizeof(uint16_t);
 
@@ -128,6 +132,8 @@ uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 
 void TRAP::INTERNAL::PPMImage::Save(const Image* const img, const std::filesystem::path& filepath)
 {
+	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
+
 	//NOTE Only supports 24/32BPP RGB(A) Input
 
 	std::ofstream file(filepath, std::ios::out | std::ios::binary);

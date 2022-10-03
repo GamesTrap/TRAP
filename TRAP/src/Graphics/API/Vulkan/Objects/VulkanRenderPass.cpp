@@ -17,6 +17,8 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	  m_loadActionStencil(desc.LoadActionStencil),
 	  m_device(std::move(device))
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -105,6 +107,8 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 
 TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_renderPass);
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -118,6 +122,8 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 
 VkRenderPass TRAP::Graphics::API::VulkanRenderPass::GetVkRenderPass() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_renderPass;
 }
 
@@ -125,6 +131,8 @@ VkRenderPass TRAP::Graphics::API::VulkanRenderPass::GetVkRenderPass() const
 
 const std::vector<TRAP::Graphics::API::ImageFormat>& TRAP::Graphics::API::VulkanRenderPass::GetColorFormats() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_colorFormats;
 }
 
@@ -132,6 +140,8 @@ const std::vector<TRAP::Graphics::API::ImageFormat>& TRAP::Graphics::API::Vulkan
 
 const std::vector<TRAP::Graphics::RendererAPI::LoadActionType>& TRAP::Graphics::API::VulkanRenderPass::GetLoadActionsColor() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_loadActionsColor;
 }
 
@@ -139,6 +149,8 @@ const std::vector<TRAP::Graphics::RendererAPI::LoadActionType>& TRAP::Graphics::
 
 uint32_t TRAP::Graphics::API::VulkanRenderPass::GetRenderTargetCount() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_renderTargetCount;
 }
 
@@ -146,6 +158,8 @@ uint32_t TRAP::Graphics::API::VulkanRenderPass::GetRenderTargetCount() const
 
 TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::API::VulkanRenderPass::GetSampleCount() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_sampleCount;
 }
 
@@ -153,6 +167,8 @@ TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::API::VulkanRenderPass::
 
 TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanRenderPass::GetDepthStencilFormat() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_depthStencilFormat;
 }
 
@@ -160,6 +176,8 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanRenderPass::GetDepth
 
 TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeDepth() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_loadActionDepth;
 }
 
@@ -167,5 +185,7 @@ TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPas
 
 TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPass::GetLoadActionTypeStencil() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_loadActionStencil;
 }

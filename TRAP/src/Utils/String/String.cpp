@@ -6,6 +6,8 @@
 std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                    const std::string_view delimiters)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::size_t start = 0;
 	std::size_t end = str.find_first_of(delimiters);
 
@@ -37,6 +39,8 @@ std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::st
 std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string_view str,
                                                                    const char delimiter)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SplitStringView(str, std::string_view(&delimiter, 1));
 }
 
@@ -45,6 +49,8 @@ std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::st
 std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str,
                                                           const std::string_view delimiters)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::size_t start = 0;
 	std::size_t end = str.find_first_of(delimiters);
 
@@ -71,6 +77,8 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str
 
 std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str, const char delimiter)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SplitString(str, std::string_view(&delimiter, 1));
 }
 
@@ -78,6 +86,8 @@ std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& str
 
 std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std::string_view str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SplitStringView(str, "\n");
 }
 
@@ -85,6 +95,8 @@ std::vector<std::string_view> TRAP::Utils::String::GetLinesStringView(const std:
 
 std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return SplitString(str, "\n");
 }
 
@@ -92,6 +104,8 @@ std::vector<std::string> TRAP::Utils::String::GetLines(const std::string& str)
 
 bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::string_view start)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	return str.find(start) == 0;
 }
 
@@ -99,6 +113,8 @@ bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::stri
 
 std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	const std::size_t pos = name.rfind('.');
 
 	return (pos == std::string::npos) ? std::string_view() : name.substr(pos + 1);
@@ -108,6 +124,8 @@ std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view
 
 std::string TRAP::Utils::String::GetSuffix(const std::string& name)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	const std::size_t pos = name.rfind('.');
 
 	return (pos == std::string::npos) ? "" : name.substr(pos + 1);
@@ -117,6 +135,8 @@ std::string TRAP::Utils::String::GetSuffix(const std::string& name)
 
 std::string TRAP::Utils::String::ToLower(std::string str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::transform(str.begin(), str.end(), str.begin(), [](const int32_t c) -> char
 	{
 		return static_cast<char>(::tolower(c));
@@ -129,6 +149,8 @@ std::string TRAP::Utils::String::ToLower(std::string str)
 
 std::string TRAP::Utils::String::ToUpper(std::string str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::transform(str.begin(), str.end(), str.begin(), [](const int32_t c) -> char
 	{
 		return static_cast<char>(::toupper(c));
@@ -141,6 +163,8 @@ std::string TRAP::Utils::String::ToUpper(std::string str)
 
 int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char delimiter)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	return std::count(str.begin(), str.end(), delimiter);
 }
 
@@ -148,6 +172,8 @@ int64_t TRAP::Utils::String::GetCount(const std::string_view str, const char del
 
 bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std::string_view right)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	if (left.size() != right.size())
 		return false;
 
@@ -164,6 +190,8 @@ bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std:
 
 std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	const std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
 
 	std::tm tm{};
@@ -176,13 +204,15 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 	std::array<char, 9> buffer{};
 	strftime(buffer.data(), buffer.size(), "%T", &tm);
 
-	return std::string(buffer.begin(), buffer.end());
+	return std::string(buffer.data(), buffer.size() - 1); //Copy data except the null terminator
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	const std::time_t time = std::chrono::system_clock::to_time_t(dateTimePoint);
 
 	std::tm tm{};
@@ -195,7 +225,7 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 	std::array<char, 20> buffer{};
 	strftime(buffer.data(), buffer.size(), "%F %T", &tm);
 
-	return std::string(buffer.begin(), buffer.end());
+	return std::string(buffer.data(), buffer.size() - 1); //Copy data except the null terminator
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -203,6 +233,8 @@ std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<
 #ifdef TRAP_PLATFORM_LINUX
 std::string TRAP::Utils::String::GetStrError()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
     std::string error(1024, '\0');
     #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
         strerror_r(errno, error.data(), error.size());
@@ -219,6 +251,8 @@ std::string TRAP::Utils::String::GetStrError()
 #elif defined(TRAP_PLATFORM_WINDOWS)
 std::string TRAP::Utils::String::GetStrError()
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	DWORD error = GetLastError();
 	if(!error)
 		return "";
@@ -252,6 +286,8 @@ std::string TRAP::Utils::String::GetStrError()
 #ifdef TRAP_PLATFORM_WINDOWS
 std::string TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(const std::wstring_view wStr)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::string result{};
 
 	const int32_t size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
@@ -277,6 +313,8 @@ std::string TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(const std::
 #ifdef TRAP_PLATFORM_WINDOWS
 std::wstring TRAP::Utils::String::CreateWideStringFromUTF8StringWin32(const std::string_view str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	std::wstring result{};
 
 	const int32_t count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);

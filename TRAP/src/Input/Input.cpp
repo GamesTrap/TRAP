@@ -50,7 +50,7 @@ std::vector<TRAP::Input::Mapping> TRAP::Input::s_mappings{};
 
 void TRAP::Input::Init()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	TP_DEBUG(Log::InputPrefix, "Initializing");
 
@@ -64,7 +64,7 @@ void TRAP::Input::Init()
 
 void TRAP::Input::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	TP_DEBUG(Log::InputPrefix, "Shutting down input");
 
@@ -75,7 +75,7 @@ void TRAP::Input::Shutdown()
 
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (key == Key::Unknown)
 	{
@@ -93,7 +93,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (key == Key::Unknown)
 	{
@@ -116,7 +116,7 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Window* const window)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
 	                                                          (Application::GetWindow()->GetInternalWindow()),
@@ -129,7 +129,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!window)
 	{
@@ -147,7 +147,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Window* c
 
 bool TRAP::Input::IsRawMouseInputSupported()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	return INTERNAL::WindowingAPI::RawMouseMotionSupported();
 }
@@ -156,6 +156,8 @@ bool TRAP::Input::IsRawMouseInputSupported()
 
 bool TRAP::Input::IsControllerConnected(const Controller controller)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	return s_controllerInternal[static_cast<uint32_t>(controller)].Connected;
 }
 
@@ -163,7 +165,7 @@ bool TRAP::Input::IsControllerConnected(const Controller controller)
 
 bool TRAP::Input::IsControllerGamepad(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
@@ -178,7 +180,7 @@ bool TRAP::Input::IsControllerGamepad(const Controller controller)
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	double xPos = 0.0, yPos = 0.0;
 	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
@@ -191,7 +193,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!window)
 	{
@@ -210,7 +212,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Window* const window)
 
 float TRAP::Input::GetMouseX()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetMousePosition().x;
 }
@@ -219,7 +221,7 @@ float TRAP::Input::GetMouseX()
 
 float TRAP::Input::GetMouseY()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetMousePosition().y;
 }
@@ -228,7 +230,7 @@ float TRAP::Input::GetMouseY()
 
 float TRAP::Input::GetMouseX(const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetMousePosition(window).x;
 }
@@ -237,7 +239,7 @@ float TRAP::Input::GetMouseX(const Window* const window)
 
 float TRAP::Input::GetMouseY(const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return GetMousePosition(window).y;
 }
@@ -251,6 +253,8 @@ float TRAP::Input::GetMouseY(const Window* const window)
 /// <returns>String representation.</returns>
 std::string NonPrintableKeyToString(const TRAP::Input::Key key)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(key)
 	{
 	case TRAP::Input::Key::Unknown:
@@ -431,7 +435,7 @@ std::string NonPrintableKeyToString(const TRAP::Input::Key key)
 
 std::string TRAP::Input::GetKeyName(const Key key)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	const char* const name = INTERNAL::WindowingAPI::GetKeyName(key, 0);
 
@@ -445,7 +449,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 
 float TRAP::Input::GetControllerAxis(const Controller controller, const ControllerAxis axis)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return 0.0f;
@@ -457,7 +461,7 @@ float TRAP::Input::GetControllerAxis(const Controller controller, const Controll
 
 TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller controller, const uint32_t dpad)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerDPad::Centered;
@@ -469,7 +473,7 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller cont
 
 bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const ControllerButton button)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
@@ -481,7 +485,7 @@ bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const C
 
 std::string TRAP::Input::GetControllerName(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
@@ -499,7 +503,7 @@ std::string TRAP::Input::GetControllerName(const Controller controller)
 
 std::string TRAP::Input::GetControllerGUID(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
@@ -514,7 +518,7 @@ std::string TRAP::Input::GetControllerGUID(const Controller controller)
 
 std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
@@ -529,7 +533,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller
 
 std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
@@ -544,7 +548,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controll
 
 std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(const Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
@@ -559,7 +563,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(cons
 
 void TRAP::Input::SetControllerVibration(const Controller controller, const float leftMotor, const float rightMotor)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
@@ -580,7 +584,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 
 void TRAP::Input::SetControllerVibration(const Controller controller, const Math::Vec2& intensity)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
@@ -601,7 +605,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const Math
 
 TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Controller controller)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerBatteryStatus::Wired;
@@ -616,7 +620,7 @@ TRAP::Input::ControllerBatteryStatus TRAP::Input::GetControllerBatteryStatus(Con
 
 void TRAP::Input::SetMousePosition(const float x, const float y)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), x, y);
@@ -626,7 +630,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y)
 
 void TRAP::Input::SetMousePosition(const float x, const float y, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!window)
 	{
@@ -642,7 +646,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Window* c
 
 void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>
 	                                     (Application::GetWindow()->GetInternalWindow()), position.x, position.y);
@@ -652,7 +656,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position)
 
 void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* const window)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	if (!window)
 	{
@@ -668,7 +672,7 @@ void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Window* con
 
 void TRAP::Input::SetClipboard(const std::string& str)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	INTERNAL::WindowingAPI::SetClipboardString(str);
 }
@@ -677,7 +681,7 @@ void TRAP::Input::SetClipboard(const std::string& str)
 
 std::string TRAP::Input::GetClipboard()
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
@@ -686,6 +690,8 @@ std::string TRAP::Input::GetClipboard()
 
 void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	s_eventCallback = callback;
 }
 
@@ -693,7 +699,7 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 
 void TRAP::Input::UpdateControllerMappings(const std::string& map)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
 	Mapping mapping{};
 
@@ -718,6 +724,8 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 
 TRAP::Input::EventCallbackFn TRAP::Input::GetEventCallback()
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return s_eventCallback;
 }
 
@@ -729,6 +737,8 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 																	const int32_t buttonCount,
 																	const int32_t dpadCount)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	uint32_t cID = 0;
 	for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
@@ -760,6 +770,8 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(std::string 
 //Notifies shared code of the new value of a controller DPad
 void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, const int32_t dpad, const uint8_t value)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	const int32_t base = con->ButtonCount + dpad * 4;
 
 	con->Buttons[base + 0] = (value & BIT(0)); //Up
@@ -792,6 +804,8 @@ void TRAP::Input::InternalInputControllerDPad(ControllerInternal* const con, con
 //Notifies shared code of the new value of a controller axis
 void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, const int32_t axis, const float value)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	con->Axes[axis] = value;
 }
 
@@ -800,6 +814,8 @@ void TRAP::Input::InternalInputControllerAxis(ControllerInternal* const con, con
 //Notifies shared code of the new value of a controller button
 void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, const int32_t button, const bool pressed)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	con->Buttons[button] = pressed;
 }
 
@@ -808,6 +824,8 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* const con, c
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
 bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	struct Fields
 	{
 		std::string Name;
@@ -988,6 +1006,8 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 void TRAP::Input::InitControllerMappings()
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	s_mappings.resize(Embed::ControllerMappings.size());
 
 	for(std::size_t i = 0; i < Embed::ControllerMappings.size(); ++i)
@@ -999,6 +1019,8 @@ void TRAP::Input::InitControllerMappings()
 //Find a mapping based on controller GUID
 TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	for (auto& Mapping : s_mappings)
 	{
 		if(Mapping.guid == guid)
@@ -1013,6 +1035,8 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 //Finds a mapping based on controller GUID and verifies element indices
 TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* const con)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	Mapping* const mapping = FindMapping(con->guid);
 
 	if(!mapping)
@@ -1048,6 +1072,8 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 //Checks whether a controller mapping element is present in the hardware
 bool TRAP::Input::IsValidElementForController(const MapElement* const e, const ControllerInternal* const con)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	if(e->Type == 3 && (e->Index >> 4) >= static_cast<int32_t>(con->DPads.size() + 1))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
@@ -1062,6 +1088,8 @@ bool TRAP::Input::IsValidElementForController(const MapElement* const e, const C
 
 bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerButton button)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
@@ -1104,6 +1132,8 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 
 float TRAP::Input::GetMappedControllerAxis(const Controller controller, const ControllerAxis axis)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 
@@ -1136,6 +1166,8 @@ float TRAP::Input::GetMappedControllerAxis(const Controller controller, const Co
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(const Controller controller, const uint32_t dpad)
 {
+	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
+
 	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 

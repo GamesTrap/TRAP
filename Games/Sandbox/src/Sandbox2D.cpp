@@ -12,8 +12,6 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnImGuiRender()
 {
-	TP_PROFILE_FUNCTION();
-
 	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Performance");
@@ -49,8 +47,6 @@ void Sandbox2D::OnImGuiRender()
 
 void Sandbox2D::OnAttach()
 {
-	TP_PROFILE_FUNCTION();
-
 	TRAP::Application::SetHotReloading(true);
 	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
 
@@ -72,15 +68,12 @@ void Sandbox2D::OnAttach()
 
 void Sandbox2D::OnDetach()
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-	TP_PROFILE_FUNCTION();
-
 	//Update
 	m_cameraController.OnUpdate(deltaTime);
 

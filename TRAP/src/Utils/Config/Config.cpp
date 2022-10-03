@@ -9,14 +9,14 @@
 TRAP::Utils::Config::Config()
 	: m_hasChanged(false)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	m_data.clear();
 
@@ -51,7 +51,7 @@ bool TRAP::Utils::Config::LoadFromFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	if(!m_hasChanged)
 		return true;
@@ -140,7 +140,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 
 bool TRAP::Utils::Config::HasChanged() const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_hasChanged;
 }
@@ -149,7 +149,7 @@ bool TRAP::Utils::Config::HasChanged() const
 
 void TRAP::Utils::Config::Print() const
 {
-	TP_PROFILE_FUNCTION();
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
 	for (const auto& [key, value] : m_data)
 		TP_TRACE(Log::ConfigPrefix, key, " = ", value);
@@ -164,6 +164,8 @@ void TRAP::Utils::Config::Print() const
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
 std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view line) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
 	if (!line.empty() && line[0] != '#')
 	{
 		std::size_t index = 0;

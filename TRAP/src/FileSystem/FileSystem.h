@@ -333,8 +333,6 @@ namespace TRAP
 
 constexpr void TRAP::FileSystem::Shutdown()
 {
-	TP_PROFILE_FUNCTION();
-
 	TP_DEBUG(Log::FileSystemPrefix, "Shutting down File System");
 }
 

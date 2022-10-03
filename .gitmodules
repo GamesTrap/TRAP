@@ -23,3 +23,6 @@
 [submodule "Dependencies/Box2D"]
 	path = Dependencies/Box2D
 	url = https://github.com/erincatto/box2d
+[submodule "Dependencies/Tracy"]
+	path = Dependencies/Tracy
+	url = https://github.com/wolfpld/tracy.git

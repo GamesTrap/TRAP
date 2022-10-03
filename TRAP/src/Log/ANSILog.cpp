@@ -5,6 +5,8 @@
 
 bool TRAP::Log::IsColorTerminal() noexcept
 {
+	ZoneScoped;
+
 	static constexpr std::array<const char*, 14> Terms =
 	{
 		"ansi", "color", "console", "cygwin", "gnome",

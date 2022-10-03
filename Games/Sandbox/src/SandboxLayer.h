@@ -20,8 +20,6 @@ public:
 
 	void OnImGuiRender() override
 	{
-		TP_PROFILE_FUNCTION();
-
 		ImGui::SetNextWindowBgAlpha(0.3f);
 		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
 		                                     ImGuiWindowFlags_AlwaysAutoResize);
@@ -47,8 +45,6 @@ public:
 
 	void OnAttach() override
 	{
-		TP_PROFILE_FUNCTION();
-
 		TRAP::Application::SetHotReloading(true);
 
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
@@ -141,8 +137,6 @@ public:
 
 	void OnDetach() override
 	{
-		TP_PROFILE_FUNCTION();
-
 		m_sampler.reset();
 		m_indexBuffer.reset();
 		m_indexedVertexBuffer.reset();
@@ -153,8 +147,6 @@ public:
 
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
 	{
-		TP_PROFILE_FUNCTION();
-
 		//Update
 		m_cameraController.OnUpdate(deltaTime);
 

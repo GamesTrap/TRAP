@@ -6,6 +6,8 @@
 TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	if (m_maxThreadsCount == 0)
 	{
 		m_maxThreadsCount = 3; //Fallback to 3 threads
@@ -14,6 +16,9 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 
 	auto worker = [&](const uint32_t i)
 	{
+		//Set Thread name for profiler
+	    tracy::SetThreadName((std::string("Worker ") + std::to_string(i)).c_str());
+
 		while (true)
 		{
 			Proc f;
@@ -38,6 +43,8 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 
 TRAP::ThreadPool::~ThreadPool() noexcept
 {
+	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
+
 	for (Queue& queue : m_queues)
 		queue.Done();
 

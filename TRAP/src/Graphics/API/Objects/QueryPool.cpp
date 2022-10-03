@@ -5,6 +5,8 @@
 
 TRAP::Graphics::QueryPool::QueryPool()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueryPoolPrefix, "Creating QueryPool");
 #endif
@@ -14,6 +16,8 @@ TRAP::Graphics::QueryPool::QueryPool()
 
 TRAP::Graphics::QueryPool::~QueryPool()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererQueryPoolPrefix, "Destroying QueryPool");
 #endif
@@ -23,6 +27,8 @@ TRAP::Graphics::QueryPool::~QueryPool()
 
 TRAP::Ref<TRAP::Graphics::QueryPool> TRAP::Graphics::QueryPool::Create(const RendererAPI::QueryPoolDesc& desc)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:

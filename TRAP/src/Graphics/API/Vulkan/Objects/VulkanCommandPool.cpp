@@ -11,6 +11,8 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
 	  m_vkCommandPool(VK_NULL_HANDLE)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	m_queue = desc.Queue;
 
 	TRAP_ASSERT(m_device, "device is nullptr");
@@ -34,6 +36,8 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	TRAP_ASSERT(m_vkCommandPool);
 
 	for (auto& m_commandBuffer : m_commandBuffers)
@@ -51,6 +55,8 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
 	return m_vkCommandPool;
 }
 
@@ -58,6 +64,8 @@ VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
 
 TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	return m_commandBuffers.emplace_back(TRAP::MakeScope<VulkanCommandBuffer>(m_device, m_queue, m_vkCommandPool, secondary)).get();
 }
 
@@ -65,6 +73,8 @@ TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateC
 
 void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuffer* const cmdBuffer)
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	for(std::size_t i = 0; i < m_commandBuffers.size(); i++)
 	{
 		if(m_commandBuffers[i].get() != cmdBuffer)
@@ -82,5 +92,7 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuff
 
 void TRAP::Graphics::API::VulkanCommandPool::Reset() const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	VkCall(vkResetCommandPool(m_device->GetVkDevice(), m_vkCommandPool, 0));
 }
