@@ -1,12 +1,15 @@
+#include <filesystem>
+
+#include "Version.h"
 #include "Utils.h"
 #include "Shader.h"
-#include <filesystem>
 
 using namespace std::string_view_literals;
 
 bool CheckForParameters(int argc, char* argv[], std::filesystem::path& outOutputPath,
                         std::vector<std::array<std::string, 2>>& outCustomMacros);
 void PrintUsage(const std::filesystem::path& programName);
+void PrintVersion();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -59,6 +62,16 @@ bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& out
 		if(argv[i] == "-h"sv || argv[i] == "--help"sv)
 		{
 			PrintUsage(argv[0]);
+			return false;
+		}
+	}
+
+	//Check for version flag
+	for(int32_t i = 0; i < argc; ++i)
+	{
+		if(argv[i] == "--version"sv)
+		{
+			PrintVersion();
 			return false;
 		}
 	}
@@ -118,9 +131,19 @@ bool CheckForParameters(const int argc, char* argv[], std::filesystem::path& out
 
 void PrintUsage(const std::filesystem::path& programName)
 {
-	std::cout << programName.filename().u8string() << " <file> [options]" << '\n' <<
+	std::cout << programName.filename().u8string() << " <file> [options]" << "\n\n" <<
 	             "Options:\n" <<
-				 "-h | --help          Print this help\n" <<
-				 "-o | --output <file> Set a custom output file name\n" <<
-				 "-m | --macro \"<key>\"=\"<value>\" Set custom macro(s)\n";
+				 "-h | --help                    | Print this help\n" <<
+				 "   | --version                 | Print the version number\n" <<
+				 "-o | --output <file>           | Set a custom output file name\n" <<
+				 "-m | --macro \"<key>\"=\"<value>\" | Set custom macro(s)" << std::endl;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void PrintVersion()
+{
+	std::cout << "ConvertToSPIRV " << CONVERTTOSPIRV_VERSION_MAJOR(CONVERTTOSPIRV_VERSION) << '.'
+	          << CONVERTTOSPIRV_VERSION_MINOR(CONVERTTOSPIRV_VERSION) << '.'
+			  << CONVERTTOSPIRV_VERSION_PATCH(CONVERTTOSPIRV_VERSION) << std::endl;
 }
