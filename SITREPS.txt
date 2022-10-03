@@ -3330,3 +3330,4 @@ SITREP 10/02/2022|22w39c3
 SITREP 10/03/2022|22w40a1
     - Changed TRAP Engine version to 22w40a1(0.8.55)
     - AftermathTracker Fixed Tracy macro compiler error ~<5 mins
+    - Network Packet replaced std::copy_n with memcpy once again ~<5 mins

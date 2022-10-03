@@ -49,7 +49,7 @@ void TRAP::Network::Packet::Append(const void* const data, const std::size_t siz
 
 	const std::size_t start = m_data.size();
 	m_data.resize(start + sizeInBytes);
-	std::copy_n(static_cast<const uint8_t*>(data), sizeInBytes, &m_data[start]);
+	memcpy(&m_data[start], data, sizeInBytes);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -127,10 +127,10 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int8_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(CheckSize(sizeof(data)))
+	if(CheckSize(sizeof(int8_t)))
 	{
-		data = static_cast<int8_t>(m_data[m_readPos]);
-		m_readPos += sizeof(data);
+		memcpy(&data, &m_data[m_readPos], sizeof(int8_t));
+		m_readPos += sizeof(int8_t);
 	}
 
 	return *this;
@@ -142,10 +142,10 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint8_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(CheckSize(sizeof(data)))
+	if(CheckSize(sizeof(uint8_t)))
 	{
-		data = static_cast<uint8_t>(m_data[m_readPos]);
-		m_readPos += sizeof(data);
+		memcpy(&data, &m_data[m_readPos], sizeof(uint8_t));
+		m_readPos += sizeof(uint8_t);
 	}
 
 	return *this;
@@ -157,14 +157,14 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int16_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(CheckSize(sizeof(data)))
+	if(CheckSize(sizeof(int16_t)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
+		memcpy(&data, &m_data[m_readPos], sizeof(int16_t));
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
-		m_readPos += sizeof(data);
+		m_readPos += sizeof(int16_t);
 	}
 
 	return *this;
@@ -176,14 +176,14 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint16_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if (CheckSize(sizeof(data)))
+	if (CheckSize(sizeof(uint16_t)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
+		memcpy(&data, &m_data[m_readPos], sizeof(uint16_t));
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
-		m_readPos += sizeof(data);
+		m_readPos += sizeof(uint16_t);
 	}
 
 	return *this;
@@ -195,14 +195,14 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int32_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if (CheckSize(sizeof(data)))
+	if (CheckSize(sizeof(int32_t)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
+		memcpy(&data, &m_data[m_readPos], sizeof(int32_t));
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
-		m_readPos += sizeof(data);
+		m_readPos += sizeof(int32_t);
 	}
 
 	return *this;
@@ -214,14 +214,14 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint32_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if (CheckSize(sizeof(data)))
+	if (CheckSize(sizeof(uint32_t)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
+		memcpy(&data, &m_data[m_readPos], sizeof(uint32_t));
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
-		m_readPos += sizeof(data);
+		m_readPos += sizeof(uint32_t);
 	}
 
 	return *this;
@@ -233,14 +233,14 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(int64_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(CheckSize(sizeof(data)))
+	if(CheckSize(sizeof(int64_t)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
+		memcpy(&data, &m_data[m_readPos], sizeof(int64_t));
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
-		m_readPos += sizeof(data);
+		m_readPos += sizeof(int64_t);
 	}
 
 	return *this;
@@ -252,14 +252,14 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(uint64_t& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if (CheckSize(sizeof(data)))
+	if (CheckSize(sizeof(uint64_t)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
+		memcpy(&data, &m_data[m_readPos], sizeof(uint64_t));
 
 		if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little) //Need to convert to little endian
 			TRAP::Utils::Memory::SwapBytes(data);
 
-		m_readPos += sizeof(data);
+		m_readPos += sizeof(uint64_t);
 	}
 
 	return *this;
@@ -271,10 +271,10 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(float& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(CheckSize(sizeof(data)))
+	if(CheckSize(sizeof(float)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
-		m_readPos += sizeof(data);
+		memcpy(&data, &m_data[m_readPos], sizeof(float));
+		m_readPos += sizeof(float);
 	}
 
 	return *this;
@@ -286,10 +286,10 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(double& data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if (CheckSize(sizeof(data)))
+	if (CheckSize(sizeof(double)))
 	{
-		std::copy_n(&m_data[m_readPos], sizeof(data), &data);
-		m_readPos += sizeof(data);
+		memcpy(&data, &m_data[m_readPos], sizeof(double));
+		m_readPos += sizeof(double);
 	}
 
 	return *this;
@@ -309,7 +309,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator>>(char* const data)
 	if((length > 0) && CheckSize(length))
 	{
 		//Then extract characters
-		std::copy_n(&m_data[m_readPos], length, data);
+		memcpy(data, &m_data[m_readPos], length);
 		data[length] = '\0';
 
 		//Update reading position
@@ -404,21 +404,21 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const bool data)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(int8_t data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int8_t data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	Append(&data, sizeof(data));
+	Append(&data, sizeof(int8_t));
 	return *this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Packet& TRAP::Network::Packet::operator<<(uint8_t data)
+TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint8_t data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	Append(&data, sizeof(data));
+	Append(&data, sizeof(uint8_t));
 	return *this;
 }
 
@@ -433,7 +433,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int16_t data)
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
 
-	Append(&toWrite, sizeof(toWrite));
+	Append(&toWrite, sizeof(int16_t));
 	return *this;
 }
 
@@ -448,7 +448,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint16_t data)
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
 
-	Append(&toWrite, sizeof(toWrite));
+	Append(&toWrite, sizeof(uint16_t));
 	return *this;
 }
 
@@ -463,7 +463,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int32_t data)
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
 
-	Append(&toWrite, sizeof(toWrite));
+	Append(&toWrite, sizeof(int32_t));
 	return *this;
 }
 
@@ -478,7 +478,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint32_t data)
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
 
-	Append(&toWrite, sizeof(toWrite));
+	Append(&toWrite, sizeof(uint32_t));
 	return *this;
 }
 
@@ -493,7 +493,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const int64_t data)
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
 
-	Append(&toWrite, sizeof(toWrite));
+	Append(&toWrite, sizeof(int64_t));
 	return *this;
 }
 
@@ -508,7 +508,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const uint64_t data)
 	if(TRAP::Utils::GetEndian() == TRAP::Utils::Endian::Little)
 		TRAP::Utils::Memory::SwapBytes(toWrite); //Need to convert to big endian
 
-	Append(&toWrite, sizeof(toWrite));
+	Append(&toWrite, sizeof(uint64_t));
 	return *this;
 }
 
@@ -518,7 +518,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(float data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	Append(&data, sizeof(data));
+	Append(&data, sizeof(float));
 	return *this;
 }
 
@@ -528,7 +528,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(double data)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	Append(&data, sizeof(data));
+	Append(&data, sizeof(double));
 	return *this;
 }
 
@@ -544,7 +544,7 @@ TRAP::Network::Packet& TRAP::Network::Packet::operator<<(const std::string_view 
 
 	//Then insert characters
 	if (length > 0)
-		Append(data.data(), length * sizeof(std::string::value_type));
+		Append(data.data(), length * sizeof(std::string_view::value_type));
 
 	return *this;
 }
