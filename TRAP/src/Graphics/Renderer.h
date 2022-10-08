@@ -63,11 +63,6 @@ namespace TRAP::Graphics
 	private:
 		struct SceneData
 		{
-			/// <summary>
-			/// Constructor.
-			/// </summary>
-			SceneData() noexcept;
-
 			Math::Mat4 m_projectionMatrix;
 			Math::Mat4 m_viewMatrix;
 		};

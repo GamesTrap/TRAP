@@ -73,7 +73,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Packet& operator=(Packet&&) noexcept = default ;
+		Packet& operator=(Packet&&) noexcept = default;
 
 		/// <summary>
 		/// Append data to the end of the packet.

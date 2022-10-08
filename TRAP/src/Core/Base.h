@@ -170,7 +170,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 55);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 56);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -252,9 +252,12 @@ constexpr T BIT(T x)
 
 #ifdef TRACY_ENABLE
 //Overloads for new and delete (only used for profiling)
-void* operator new(const std::size_t count);
+[[nodiscard]] void* operator new(const std::size_t count);
+[[nodiscard]] void* operator new[](const std::size_t count);
 void operator delete(void* ptr) noexcept;
+void operator delete[](void* ptr) noexcept;
 void operator delete(void* ptr, std::size_t count) noexcept;
+void operator delete[](void* ptr, std::size_t count) noexcept;
 #endif /*TRACY_ENABLE*/
 
 //-------------------------------------------------------------------------------------------------------------------//

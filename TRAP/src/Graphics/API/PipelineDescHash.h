@@ -6,7 +6,8 @@
 
 namespace std
 {
-	template<> struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
+	template<>
+    struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
 	{
 		std::size_t operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
 		{

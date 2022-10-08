@@ -43,7 +43,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ThreadPool::~ThreadPool() noexcept
+TRAP::ThreadPool::~ThreadPool()
 {
 	ZoneNamed(__tracy, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

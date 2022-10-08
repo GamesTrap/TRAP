@@ -26,23 +26,18 @@ void TRAP::FileSystem::Init()
     if(gameDocsFolder && !FileOrFolderExists(*gameDocsFolder))
         CreateFolder(*gameDocsFolder);
 
-#ifndef TRAP_HEADLESS_MODE
     //Create game log folder
     const auto gameLogFolder = GetGameLogFolderPath();
     if(gameLogFolder && !FileOrFolderExists(*gameLogFolder))
         CreateFolder(*gameLogFolder);
-#else
-    //Create log folder in current working dir
-    const std::filesystem::path gameLogFolder = "logs";
-    if(!FileOrFolderExists(gameLogFolder))
-        CreateFolder(gameLogFolder);
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(path))
@@ -57,7 +52,7 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
         return std::nullopt;
     }
 
-    std::vector<uint8_t> buffer;
+    std::vector<uint8_t> buffer{};
     if(fileSize)
         buffer.resize(*fileSize);
     else //Fallback
@@ -77,6 +72,8 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
 
 std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(path))
@@ -89,7 +86,7 @@ std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem:
         return std::nullopt;
     }
 
-    std::string line, result;
+    std::string line{}, result{};
     while (file.good() && std::getline(file, line))
     {
         if (!line.empty() && line.back() == '\r')
@@ -106,6 +103,9 @@ std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem:
 
 bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer, const WriteMode mode)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+    TRAP_ASSERT(!buffer.empty(), "Buffer is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty() || buffer.empty())
@@ -130,12 +130,15 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::v
 
 bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const std::string_view text, const WriteMode mode)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+    TRAP_ASSERT(!text.empty(), "Text is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty() || text.empty())
         return false;
 
-    std::ofstream file;
+    std::ofstream file{};
     if(mode == WriteMode::Append)
         file.open(path, std::ios::ate);
     else
@@ -156,12 +159,14 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const st
 
 bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty())
         return false;
 
-    std::error_code ec;
+    std::error_code ec{};
     const bool res = std::filesystem::create_directories(path, ec);
 
     if(ec)
@@ -177,6 +182,8 @@ bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 
 bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty())
@@ -185,7 +192,7 @@ bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
     if(!FileOrFolderExists(path))
         return false;
 
-    std::error_code ec;
+    std::error_code ec{};
     if(std::filesystem::is_directory(path, ec)) //Directory
     {
         if(ec)
@@ -221,20 +228,24 @@ bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
+bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldFolderPath,
+                                  const std::filesystem::path& newFolderPath)
 {
+    TRAP_ASSERT(!oldFolderPath.empty(), "OldFolderPath is empty!");
+    TRAP_ASSERT(!newFolderPath.empty(), "NewFolderPath is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    if(FileOrFolderExists(newPath))
+    if(FileOrFolderExists(newFolderPath))
         return false;
 
-    std::error_code ec;
-    std::filesystem::rename(oldPath, newPath, ec);
+    std::error_code ec{};
+    std::filesystem::rename(oldFolderPath, newFolderPath, ec);
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldPath.u8string(),
-                 "\" to \"", newPath.u8string(), "\"(", ec.message(), ")");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldFolderPath.u8string(),
+                 "\" to \"", newFolderPath.u8string(), "\"(", ec.message(), ")");
         return false;
     }
 
@@ -245,6 +256,9 @@ bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldPath, const st
 
 bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder)
 {
+    TRAP_ASSERT(!filePath.empty(), "FilePath is empty!");
+    TRAP_ASSERT(!destFolder.empty(), "DestFolder is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     return MoveFolder(filePath, destFolder / filePath.filename());
@@ -255,9 +269,12 @@ bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std
 bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination,
                                   const bool overwriteExisting)
 {
+    TRAP_ASSERT(!source.empty(), "Source is empty!");
+    TRAP_ASSERT(!destination.empty(), "Destination is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    std::error_code ec;
+    std::error_code ec{};
     std::filesystem::copy_options options = std::filesystem::copy_options::recursive;
     if(overwriteExisting)
         options |= std::filesystem::copy_options::overwrite_existing;
@@ -280,6 +297,9 @@ bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std
 bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::filesystem::path& destination,
                                 const bool overwriteExisting)
 {
+    TRAP_ASSERT(!source.empty(), "Source is empty!");
+    TRAP_ASSERT(!destination.empty(), "Destination is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     //Sanity checks
@@ -306,7 +326,7 @@ bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::
     if(!destination.has_filename())
         destWithFilename /= source.filename();
 
-    std::error_code ec;
+    std::error_code ec{};
     std::filesystem::copy_options cpOptions{};
     if(overwriteExisting)
         cpOptions = std::filesystem::copy_options::overwrite_existing;
@@ -329,6 +349,9 @@ bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::
 
 bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
+    TRAP_ASSERT(!oldPath.empty(), "OldPath is empty!");
+    TRAP_ASSERT(!newPath.empty(), "NewPath is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     return MoveFolder(oldPath, newPath);
@@ -338,6 +361,9 @@ bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const 
 
 bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const std::string_view newName)
 {
+    TRAP_ASSERT(!oldPath.empty(), "OldPath is empty!");
+    TRAP_ASSERT(!newName.empty(), "NewName is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     return RenameFolder(oldPath, (oldPath.parent_path() / newName / oldPath.extension()));
@@ -347,12 +373,14 @@ bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const st
 
 bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty())
         return false;
 
-    std::error_code ec;
+    std::error_code ec{};
     const bool res = std::filesystem::exists(path, ec);
 
     if(ec)
@@ -369,12 +397,14 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 
 std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path, const bool recursive)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
-    std::error_code ec;
+    std::error_code ec{};
     bool res = std::filesystem::is_directory(path, ec);
 
     if(ec)
@@ -473,12 +503,14 @@ std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesy
 
 std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(path))
         return std::nullopt;
 
-    std::error_code ec;
+    std::error_code ec{};
     const auto res = std::filesystem::last_write_time(path, ec);
     if(ec)
     {
@@ -494,6 +526,8 @@ std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTim
 
 std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty() || !path.has_filename())
@@ -506,6 +540,8 @@ std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::fi
 
 std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(!path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty() || !path.has_stem())
@@ -518,6 +554,8 @@ std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::
 
 std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem::path& path)
 {
+    TRAP_ASSERT(path.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(path.empty() || !path.has_extension())
@@ -530,6 +568,8 @@ std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem
 
 std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::filesystem::path& filePath)
 {
+    TRAP_ASSERT(!filePath.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if (filePath.empty())
@@ -544,7 +584,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetTempFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    std::error_code ec;
+    std::error_code ec{};
     const std::filesystem::path path = std::filesystem::temp_directory_path(ec);
 
     if(ec)
@@ -575,7 +615,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetCurrentFolderPath()
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    std::error_code ec;
+    std::error_code ec{};
     const std::filesystem::path path = std::filesystem::current_path(ec);
 
     if(ec)
@@ -607,11 +647,9 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetDocumentsFolderPath()
 
     return folderPath;
 #elif defined(TRAP_PLATFORM_LINUX)
-    const auto docsFolder = GetDocumentsFolderPathLinux();
-    if(!docsFolder)
-        return std::nullopt;
-    return *docsFolder;
+    return GetDocumentsFolderPathLinux();
 #else
+    assert(false, "GetDocumentsFolderPath() not implemented!");
     return std::nullopt;
 #endif
 }
@@ -650,9 +688,12 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 
 bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
 {
+    TRAP_ASSERT(!p1.empty(), "Path is empty!");
+    TRAP_ASSERT(!p2.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    std::error_code ec;
+    std::error_code ec{};
     const bool res = std::filesystem::equivalent(p1, p2, ec);
 
     if(ec)
@@ -668,6 +709,8 @@ bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const s
 
 bool TRAP::FileSystem::IsPathAbsolute(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     //is_absolute() may throw implementation-defined exception
@@ -686,6 +729,8 @@ bool TRAP::FileSystem::IsPathAbsolute(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::IsPathRelative(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     //is_relative() may throw implementation-defined exception
@@ -704,9 +749,11 @@ bool TRAP::FileSystem::IsPathRelative(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    std::error_code ec;
+    std::error_code ec{};
     const bool res = std::filesystem::is_directory(p, ec);
 
     if(ec)
@@ -722,9 +769,11 @@ bool TRAP::FileSystem::IsFolder(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    std::error_code ec;
+    std::error_code ec{};
     const bool res = std::filesystem::is_regular_file(p, ec);
 
     if(ec)
@@ -740,12 +789,14 @@ bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 
 std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(p.is_absolute())
         return p;
 
-    std::error_code ec;
+    std::error_code ec{};
     const std::filesystem::path res = std::filesystem::absolute(p, ec);
 
     if(ec)
@@ -761,12 +812,14 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std:
 
 std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    if(p.is_relative())
+    if(IsPathRelative(p))
         return p;
 
-    std::error_code ec;
+    std::error_code ec{};
     const std::filesystem::path res = std::filesystem::proximate(p, ec);
 
     if(ec)
@@ -782,6 +835,8 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std:
 
 bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(p) || !IsFolder(p))
@@ -820,6 +875,8 @@ bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(p) || !IsFile(p))
@@ -862,6 +919,8 @@ bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 
 bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 {
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     if(!FileOrFolderExists(p))

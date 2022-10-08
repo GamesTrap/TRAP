@@ -143,11 +143,3 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 	RenderCommand::DrawIndexedInstanced(indexBuffer->GetCount(), s_currentDrawCalls + 1, 0, s_currentDrawCalls);
 	++s_currentDrawCalls;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::Renderer::SceneData::SceneData() noexcept
-	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-}

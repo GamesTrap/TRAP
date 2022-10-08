@@ -208,7 +208,10 @@ void TRAP::Log::Trace(Args&& ... args)
 		{
 #if !defined(TRAP_RELEASE)
 			//Standard Magenta
-			std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
+			if(IsColorTerminal())
+				std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
+			else
+				std::cout << stream.str() << '\n';
 #endif
 		}
 
@@ -237,7 +240,10 @@ void TRAP::Log::Debug(Args&& ... args)
 		{
 #if !defined(TRAP_RELEASE)
 			//Standard Cyan
-			std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
+			if(IsColorTerminal())
+				std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
+			else
+				std::cout << stream.str() << '\n';
 #endif
 		}
 
@@ -266,7 +272,10 @@ void TRAP::Log::Info(Args&& ... args)
 		{
 #if !defined(TRAP_RELEASE)
 			//Standard Green
-			std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
+			if(IsColorTerminal())
+				std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
+			else
+				std::cout << stream.str() << '\n';
 #endif
 		}
 
@@ -295,7 +304,10 @@ void TRAP::Log::Warn(Args&& ... args)
 		{
 #if !defined(TRAP_RELEASE)
 			//Bold Yellow
-			std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			if(IsColorTerminal())
+				std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			else
+				std::cout << stream.str() << '\n';
 #endif
 		}
 
@@ -324,7 +336,10 @@ void TRAP::Log::Error(Args&& ... args)
 		{
 #if !defined(TRAP_RELEASE)
 			//Bold Red
-			std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			if(IsColorTerminal())
+				std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			else
+				std::cout << stream.str() << '\n';
 #endif
 		}
 
@@ -353,7 +368,10 @@ void TRAP::Log::Critical(Args&& ... args)
 		{
 #if !defined(TRAP_RELEASE)
 			//Bold White on Red
-			std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			if(IsColorTerminal())
+				std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
+			else
+				std::cout << stream.str() << '\n';
 #endif
 		}
 

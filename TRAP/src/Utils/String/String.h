@@ -139,13 +139,13 @@ namespace TRAP::Utils::String
 	/// </summary>
 	/// <param name="timePoint">Time-stamp to convert.</param>
 	/// <returns>Time-stamp as string.</returns>
-	std::string GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint);
+	std::string GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept;
 	/// <summary>
 	/// Retrieve the given date-time-stamp as a string with "YYYY-MM-DD HH:MM:SS" format.
 	/// </summary>
 	/// <param name="timePoint">Timestamp to convert.</param>
 	/// <returns>Timestamp as string.</returns>
-	std::string GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint);
+	std::string GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

@@ -3334,3 +3334,8 @@ SITREP 10/03/2022|22w40a1
     - Renderer2D lowered RAM usage by delaying buffer creation to the first draw call of each geometry type (i.e. quad, circle, line) ~<20 mins
     - Profiler tracy::SetThreadName() now only gets called when TRACY_ENABLE is defined ~<5 mins
     - ConvertToSPIRV Added version number (0.1.0) and added CLI parameter for it ~<5 mins
+
+SITREP 10/08/2022|22w40b1
+    - Changed TRAP Engine version to 22w40b1(0.8.56)
+    - Log now utilizes the unused IsColorTerminal() function ~<5 mins
+    - Removed noexcept from potentially throwing functions ~<15 mins

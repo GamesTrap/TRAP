@@ -129,7 +129,7 @@ TRAP::Math::Vec2ui TRAP::Window::GetSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const noexcept
+TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 
@@ -141,7 +141,7 @@ TRAP::Math::Vec2ui TRAP::Window::GetFrameBufferSize() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2i TRAP::Window::GetPosition() const noexcept
+TRAP::Math::Vec2i TRAP::Window::GetPosition() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
 

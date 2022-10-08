@@ -108,13 +108,13 @@ namespace TRAP
 		/// Get the current framebuffer width and height of the window.
 		/// </summary>
 		/// <returns>Vec2ui containing the framebuffer width and height of the window.</returns>
-		Math::Vec2ui GetFrameBufferSize() const noexcept;
+		Math::Vec2ui GetFrameBufferSize() const;
 		/// <summary>
 		/// Get the current position of the window.
 		/// Retrieves the position, in screen coordinates, of the upper-left corner of the content area.
 		/// </summary>
 		/// <returns>Vec2i containing the position of the window.</returns>
-		Math::Vec2i GetPosition() const noexcept;
+		Math::Vec2i GetPosition() const;
 		/// <summary>
 		/// Get the current refresh rate of the window.
 		/// </summary>

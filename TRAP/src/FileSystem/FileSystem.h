@@ -115,14 +115,15 @@ namespace TRAP
 		bool DeleteFileOrFolder(const std::filesystem::path& path);
 
 		/// <summary>
-		/// Move folder from oldPath to newPath.
+		/// Move folder from oldFolderPath to newFolderPath.
 		///
-		/// Note: Only moves if newPath doesnt already exist.
+		/// Note: Only moves if newFolderPath doesnt already exist.
 		/// </summary>
-		/// <param name="oldPath">Path to move from.</param>
-		/// <param name="newPath">Path to move to.</param>
+		/// <param name="oldFolderPath">Path to move from.</param>
+		/// <param name="newFolderPath">Path to move to.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool MoveFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
+		bool MoveFolder(const std::filesystem::path& oldFolderPath,
+		                const std::filesystem::path& newFolderPath);
 		/// <summary>
 		/// Move file to new folder.
 		///

@@ -54,14 +54,14 @@ namespace TRAP
 		/// Get the current used file path for saving.
 		/// </summary>
 		/// <returns>File path.</returns>
-		const std::filesystem::path& GetFilePath() const;
+		const std::filesystem::path& GetFilePath() const noexcept;
 		/// <summary>
 		/// Set the file path used for saving.
 		///
 		///	Logs files are always saved in the format: "<FileName>-YYYY-MM-DDTHH-MM-SS.<FileEnding>"
 		/// </summary>
 		/// <param name="filePath">File path.</param>
-		void SetFilePath(const std::filesystem::path& filePath);
+		void SetFilePath(const std::filesystem::path& filePath) noexcept;
 
 		/// <summary>
 		/// Importance levels.
@@ -86,7 +86,7 @@ namespace TRAP
 		///       off the importance level.
 		/// </summary>
 		/// <param name="level">Importance level to use.</param>
-		void SetImportance(Level level);
+		void SetImportance(Level level) noexcept;
 
 		/// <summary>
 		/// Log a trace message.
@@ -134,7 +134,7 @@ namespace TRAP
 		/// Get all saved log messages and their associated importance level.
 		/// </summary>
 		/// <returns>Messages with importance level.</returns>
-		const std::vector<std::pair<Level, std::string>>& GetBuffer() const;
+		const std::vector<std::pair<Level, std::string>>& GetBuffer() const noexcept;
 
 		/// <summary>
 		/// Save all collected messages to file.
@@ -143,9 +143,9 @@ namespace TRAP
 		/// <summary>
 		/// Clears all buffered messages.
 		/// </summary>
-		void Clear();
+		void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[22w40a1]";
+		inline static constexpr auto WindowVersion =                        "[22w40b1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -253,16 +253,16 @@ namespace TRAP
 		/// <summary>
 		/// Retrieves information about the specified console screen buffer.
 		/// </summary>
-		static void GetInfo();
+		static void GetInfo() noexcept;
 		/// <summary>
 		/// Set the new color for the following console output.
 		/// </summary>
 		/// <param name="wRGBI">New console color.</param>
-		static void SetColor(WORD wRGBI);
+		static void SetColor(WORD wRGBI) noexcept;
 		/// <summary>
 		/// Reset the console color to the default for the following output.
 		/// </summary>
-		static void ResetColor();
+		static void ResetColor() noexcept;
 
 		static HANDLE m_handleConsole;
 		static CONSOLE_SCREEN_BUFFER_INFO m_csbi;
@@ -271,13 +271,13 @@ namespace TRAP
 		/// <summary>
 		/// Check whether the terminal supports ANSI color codes.
 		/// </summary>
-		static bool IsColorTerminal() noexcept;
+		static bool IsColorTerminal();
 #endif
 		/// <summary>
 		/// Get a time stamp with [HH:MM:SS] format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
-		static std::string GetTimeStamp();
+		static std::string GetTimeStamp() noexcept;
 		/// <summary>
 		/// Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
 		/// </summary>

@@ -8,7 +8,7 @@ CONSOLE_SCREEN_BUFFER_INFO TRAP::Log::m_csbi;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::GetInfo()
+void TRAP::Log::GetInfo() noexcept
 {
 	ZoneScoped;
 
@@ -17,7 +17,7 @@ void TRAP::Log::GetInfo()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::SetColor(const WORD wRGBI)
+void TRAP::Log::SetColor(const WORD wRGBI) noexcept
 {
 	ZoneScoped;
 
@@ -29,7 +29,7 @@ void TRAP::Log::SetColor(const WORD wRGBI)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Log::ResetColor()
+void TRAP::Log::ResetColor() noexcept
 {
 	ZoneScoped;
 

@@ -24,7 +24,7 @@ namespace TRAP
 		/// <summary>
 		/// Destructor.
 		/// </summary>
-		~ThreadPool() noexcept;
+		~ThreadPool();
 
 		/// <summary>
 		/// Copy constructor.

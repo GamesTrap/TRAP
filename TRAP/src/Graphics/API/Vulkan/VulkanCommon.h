@@ -83,7 +83,7 @@ namespace TRAP::Graphics::API
 	/// <param name="format">ImageFormat.</param>
 	/// <param name="includeStencilBit">Whether to include the stencil bit in the aspect mask.</param>
 	/// <returns>VkImageAspectFlags.</returns>
-	constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
+	constexpr VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit) noexcept;
 	/// <summary>
 	/// Convert the RendererAPI::DescriptorType to VkImageUsageFlags.
 	/// </summary>
@@ -737,7 +737,7 @@ constexpr VkFormat TRAP::Graphics::API::ImageFormatToVkFormat(const TRAP::Graphi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit)
+constexpr VkImageAspectFlags TRAP::Graphics::API::DetermineAspectMask(const VkFormat format, const bool includeStencilBit) noexcept
 {
 	switch(format)
 	{

@@ -30,7 +30,7 @@ namespace TRAP::Utils
 	/// <param name="v">Value to hash.</param>
 	/// <param name="rest">Optional variadic for more values.</param>
 	template<typename T, typename... Rest>
-	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest)
+	constexpr void HashCombine(std::size_t& seed, const T& v, Rest... rest) noexcept
 	{
 		seed ^= std::hash<T>()(v) + 0x9E3779B9 + (seed << 6) + (seed >> 2);
     	((seed ^= std::hash<Rest>()(rest) + 0x9E3779B9 + (seed << 6) + (seed >> 2)), ...);
@@ -106,7 +106,12 @@ namespace TRAP::Utils
 																std::is_trivially_copyable<To>::value>::value, To>::type
 	BitCast(const From& from) noexcept
 	{
-		union U{U(){}; char storage[sizeof(To)]; typename std::remove_const<To>::type dest;} u; //Instead of To dest; because To doesn't require DefaultConstructible.
+		union U
+		{
+			U(){};
+			char storage[sizeof(To)];
+			typename std::remove_const<To>::type dest;
+		} u; //Instead of To dest; because To doesn't require DefaultConstructible.
 		memcpy(&u.dest, &from, sizeof(from));
 		return u.dest;
 	}

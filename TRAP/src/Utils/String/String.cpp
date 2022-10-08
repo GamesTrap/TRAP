@@ -188,7 +188,7 @@ bool TRAP::Utils::String::CompareAnyCase(const std::string_view left, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint)
+std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& timePoint) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -209,7 +209,7 @@ std::string TRAP::Utils::String::GetTimeStamp(const std::chrono::time_point<std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint)
+std::string TRAP::Utils::String::GetDateTimeStamp(const std::chrono::time_point<std::chrono::system_clock>& dateTimePoint) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
