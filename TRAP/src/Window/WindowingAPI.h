@@ -4122,13 +4122,6 @@ namespace TRAP::INTERNAL
 		};
 		static const std::array<CodePair, 828> KeySymTab;
 		/// <summary>
-		/// Encode a Unicode code point to a UTF-8 stream.
-		/// </summary>
-		/// <param name="s">UTF-8 stream.</param>
-		/// <param name="ch">Unicode code point.</param>
-		/// <returns>Number of bytes written.</returns>
-		static std::size_t EncodeUTF8(char* s, uint32_t ch);
-		/// <summary>
 		/// Return selection string from specified selection.
 		/// </summary>
 		/// <param name="selection">Selection to retrieve.</param>

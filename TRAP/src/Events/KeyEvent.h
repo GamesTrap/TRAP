@@ -264,13 +264,6 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		/// <summary>
-		/// Encode a single Unicode code point to a UTF-8 string.
-		/// </summary>
-		/// <param name="codePoint">Unicode code point</param>
-		/// <returns>UTF-8 string.</returns>
-		static std::string EncodeUTF8(uint32_t codePoint);
-
 		TRAP::Window* m_window;
 		uint32_t m_codePoint;
 	};

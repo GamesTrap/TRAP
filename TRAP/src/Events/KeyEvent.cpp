@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "KeyEvent.h"
 
+#include "Utils/String/String.h"
 #include "Window/WindowingAPI.h"
 
 TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const
@@ -81,7 +82,7 @@ std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "KeyTypeEvent: " + EncodeUTF8(m_codePoint) + "(" + std::to_string(m_codePoint) + ")";
+	return "KeyTypeEvent: " + Utils::String::EncodeUTF8(m_codePoint) + "(" + std::to_string(m_codePoint) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -109,39 +110,6 @@ TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return EventCategory::Keyboard | EventCategory::Input;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Events::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events);
-
-	std::string result{};
-	result.reserve(4);
-
-	if (codePoint < 0x80)
-		result.push_back(static_cast<char>(codePoint));
-	else if (codePoint < 0x800)
-	{
-		result.push_back(static_cast<char>((codePoint >> 6) | 0xC0u));
-		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
-	}
-	else if (codePoint < 0x10000)
-	{
-		result.push_back(static_cast<char>((codePoint >> 12) | 0xE0u));
-		result.push_back(static_cast<char>(((codePoint >> 6) & 0x3F) | 0x80));
-		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
-	}
-	else if (codePoint < 0x110000)
-	{
-		result.push_back(static_cast<char>((codePoint >> 18) | 0xF0u));
-		result.push_back(static_cast<char>(((codePoint >> 12) & 0x3F) | 0x80));
-		result.push_back(static_cast<char>(((codePoint >> 6) & 0x3F) | 0x80));
-		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
-	}
-
-	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

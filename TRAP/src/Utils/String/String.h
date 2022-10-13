@@ -159,6 +159,15 @@ namespace TRAP::Utils::String
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Encode a single Unicode code point to UTF-8 chars.
+	/// </summary>
+	/// <param name="codePoint">Unicode code point</param>
+	/// <returns>UTF-8 chars.</returns>
+	std::string EncodeUTF8(uint32_t codePoint);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef TRAP_PLATFORM_WINDOWS
 	/// <summary>
 	/// Returns an UTF-8 string version of the specified wide string.

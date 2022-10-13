@@ -1805,39 +1805,6 @@ const std::array<TRAP::INTERNAL::WindowingAPI::CodePair, 828> TRAP::INTERNAL::Wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Encode a Unicode code point to a UTF-8 stream
-std::size_t TRAP::INTERNAL::WindowingAPI::EncodeUTF8(char* const s, const uint32_t ch)
-{
-	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
-
-	std::size_t count = 0;
-
-	if(ch < 0x80)
-		s[count++] = static_cast<char>(ch);
-	else if(ch < 0x800)
-	{
-		s[count++] = static_cast<char>((ch >> 6) | 0xC0);
-		s[count++] = static_cast<char>((ch & 0x3F) | 0x80);
-	}
-	else if(ch < 0x10000)
-	{
-		s[count++] = static_cast<char>((ch >> 12) | 0xE0);
-		s[count++] = static_cast<char>(((ch >> 6) & 0x3F) | 0x80);
-		s[count++] = static_cast<char>((ch & 0x3F) | 0x80);
-	}
-	else if(ch < 0x110000)
-	{
-		s[count++] = static_cast<char>((ch >> 18) | 0xF0);
-		s[count++] = static_cast<char>(((ch >> 12) & 0x3F) | 0x80);
-		s[count++] = static_cast<char>(((ch >> 6) & 0x3F) | 0x80);
-		s[count++] = static_cast<char>((ch & 0x3F) | 0x80);
-	}
-
-	return count;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::string TRAP::INTERNAL::WindowingAPI::GetSelectionString(const Atom selection)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
@@ -2008,11 +1975,10 @@ std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const std::string_
 		size += (*sp & 0x80) ? 2 : 1;
 
 	std::string target{};
-	target.resize(size);
-	char* tp = target.data();
+	target.reserve(size);
 
 	for(sp = source.data(); *sp; sp++)
-		tp += EncodeUTF8(tp, *sp);
+		target += Utils::String::EncodeUTF8(*sp);
 
 	return target;
 }
@@ -3603,11 +3569,13 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t 
 	if(ch == 0xFFFFFFFFu)
 		return nullptr;
 
-	const std::size_t count = EncodeUTF8(s_Data.KeyNames[key].data(), ch);
-	if(count == 0)
+	const std::string utf8Str = Utils::String::EncodeUTF8(ch);
+	if(utf8Str.empty())
 		return nullptr;
+	for(std::size_t i = 0; i < utf8Str.size(); ++i)
+		s_Data.KeyNames[key][i] = utf8Str[i];
 
-	s_Data.KeyNames[key][count] = '\0';
+	s_Data.KeyNames[key][utf8Str.size()] = '\0';
 
 	return s_Data.KeyNames[key].data();
 }

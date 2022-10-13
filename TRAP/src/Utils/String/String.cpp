@@ -283,6 +283,39 @@ std::string TRAP::Utils::String::GetStrError()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string TRAP::Utils::String::EncodeUTF8(const uint32_t codePoint)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events);
+
+	std::string result{};
+	result.reserve(4);
+
+	if (codePoint < 0x80)
+		result.push_back(static_cast<char>(codePoint));
+	else if (codePoint < 0x800)
+	{
+		result.push_back(static_cast<char>((codePoint >> 6) | 0xC0u));
+		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
+	}
+	else if (codePoint < 0x10000)
+	{
+		result.push_back(static_cast<char>((codePoint >> 12) | 0xE0u));
+		result.push_back(static_cast<char>(((codePoint >> 6) & 0x3F) | 0x80));
+		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
+	}
+	else if (codePoint < 0x110000)
+	{
+		result.push_back(static_cast<char>((codePoint >> 18) | 0xF0u));
+		result.push_back(static_cast<char>(((codePoint >> 12) & 0x3F) | 0x80));
+		result.push_back(static_cast<char>(((codePoint >> 6) & 0x3F) | 0x80));
+		result.push_back(static_cast<char>((codePoint & 0x3F) | 0x80));
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #ifdef TRAP_PLATFORM_WINDOWS
 std::string TRAP::Utils::String::CreateUTF8StringFromWideStringWin32(const std::wstring_view wStr)
 {

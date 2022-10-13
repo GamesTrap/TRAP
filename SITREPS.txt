@@ -3346,3 +3346,4 @@ SITREP 10/13/2022|22w41a1
     - EntryPoint Removed OpenGL specific variables ~<5 mins
     - Network prevented leaking "far" macro to other includes ~<5 mins
     - Replaced FileStatusToString(), MouseButtonToString(), Rigidbody2DBodyTypeToString(), Rigidbody2DBodyTypeFromString() with ConvertToType() and ConvertToString() ~<15 mins
+    - Moved EncodeUTF8() to TRAP::Utils::String ~<10 mins
