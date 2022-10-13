@@ -3345,3 +3345,4 @@ SITREP 10/13/2022|22w41a1
     - Added more error checks for WinAPI/Linux specific functions ~>30 mins
     - EntryPoint Removed OpenGL specific variables ~<5 mins
     - Network prevented leaking "far" macro to other includes ~<5 mins
+    - Replaced FileStatusToString(), MouseButtonToString(), Rigidbody2DBodyTypeToString(), Rigidbody2DBodyTypeFromString() with ConvertToType() and ConvertToString() ~<15 mins

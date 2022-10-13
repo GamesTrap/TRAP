@@ -226,13 +226,6 @@ namespace TRAP::Events
 		/// </summary>
 		MouseButtonEvent& operator=(MouseButtonEvent&&) = default;
 
-		/// <summary>
-		/// Convert a mouse button to a string representation.
-		/// </summary>
-		/// <param name="button">Mouse button.</param>
-		/// <returns>String representation.</returns>
-		static std::string MouseButtonToString(Input::MouseButton button);
-
 		Input::MouseButton m_button;
 	};
 

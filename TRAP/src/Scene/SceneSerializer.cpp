@@ -1,5 +1,6 @@
 #include "TRAPPCH.h"
 #include "SceneSerializer.h"
+#include "Utils/String/String.h"
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)
@@ -132,42 +133,6 @@ namespace TRAP
 		return out;
 	}
 
-	static std::string Rigidbody2DBodyTypeToString(Rigidbody2DComponent::BodyType type)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-		switch(type)
-		{
-		case Rigidbody2DComponent::BodyType::Static:
-			return "Static";
-
-		case Rigidbody2DComponent::BodyType::Dynamic:
-			return "Dynamic";
-
-		case Rigidbody2DComponent::BodyType::Kinematic:
-			return "Kinematic";
-
-		default:
-			TRAP_ASSERT(false, "Unknown body type!");
-			return "";
-		}
-	}
-
-	static Rigidbody2DComponent::BodyType Rigidbody2DBodyTypeFromString(const std::string& bodyTypeString)
-	{
-		ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-		if(bodyTypeString == "Static")
-			return Rigidbody2DComponent::BodyType::Static;
-		if(bodyTypeString == "Dynamic")
-			return Rigidbody2DComponent::BodyType::Dynamic;
-		if(bodyTypeString == "Kinematic")
-			return Rigidbody2DComponent::BodyType::Kinematic;
-
-		TRAP_ASSERT(false, "Unknown body type!");
-		return Rigidbody2DComponent::BodyType::Static;
-	}
-
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
@@ -255,7 +220,7 @@ namespace TRAP
 			out << YAML::BeginMap; //Rigidbody2DComponent
 
 			auto& rigidbody2DComponent = entity.GetComponent<Rigidbody2DComponent>();
-			out << YAML::Key << "BodyType" << YAML::Value << Rigidbody2DBodyTypeToString(rigidbody2DComponent.Type);
+			out << YAML::Key << "BodyType" << YAML::Value << Utils::String::ConvertToString<Rigidbody2DComponent::BodyType>(rigidbody2DComponent.Type);
 			out << YAML::Key << "FixedRotation" << YAML::Value << rigidbody2DComponent.FixedRotation;
 
 			out << YAML::EndMap; //Rigidbody2DComponent
@@ -435,7 +400,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 			if (rigidbody2DComponent)
 			{
 				auto& rb2d = deserializedEntity.AddComponent<Rigidbody2DComponent>();
-				rb2d.Type = Rigidbody2DBodyTypeFromString(rigidbody2DComponent["BodyType"].as<std::string>());
+				rb2d.Type = Utils::String::ConvertToType<Rigidbody2DComponent::BodyType>(rigidbody2DComponent["BodyType"].as<std::string>());
 				rb2d.FixedRotation = rigidbody2DComponent["FixedRotation"].as<bool>();
 			}
 

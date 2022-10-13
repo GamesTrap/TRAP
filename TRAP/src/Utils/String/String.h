@@ -3,6 +3,8 @@
 
 #include "Window/Window.h"
 #include "Graphics/API/RendererAPI.h"
+#include "FileSystem/FileWatcher.h"
+#include "Scene/Components.h"
 
 namespace TRAP::Utils::String
 {

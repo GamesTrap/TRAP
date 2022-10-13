@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "MouseEvent.h"
 
+#include "Utils/String/String.h"
+
 std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -85,28 +87,6 @@ TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() c
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	switch(button)
-	{
-	case Input::MouseButton::One:
-		return "Left";
-
-	case Input::MouseButton::Two:
-		return "Right";
-
-	case Input::MouseButton::Three:
-		return "Middle";
-
-	default: //For every other value just return its numerical value as string
-		return std::to_string(static_cast<uint32_t>(button) + 1);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -114,7 +94,7 @@ std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MouseButtonPressEvent: " + MouseButtonToString(m_button) +
+	return "MouseButtonPressEvent: " + Utils::String::ConvertToString<Input::MouseButton>(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
 }
 
@@ -144,7 +124,7 @@ std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return "MouseButtonReleaseEvent: " + MouseButtonToString(m_button) +
+	return "MouseButtonReleaseEvent: " + Utils::String::ConvertToString<Input::MouseButton>(m_button) +
 	       "(" + std::to_string(static_cast<int32_t>(m_button)) + ')';
 }
 
