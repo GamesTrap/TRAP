@@ -145,7 +145,7 @@ namespace TRAP
 		/// </summary>
 		void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[22w40b1]";
+		inline static constexpr auto WindowVersion =                        "[22w41a1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -247,6 +247,7 @@ namespace TRAP
 		inline static constexpr auto SteamworksSDKPrefix =                  "[Steam] ";
 		inline static constexpr auto HotReloadingPrefix =                   "[HotReloading] ";
 		inline static constexpr auto UtilsStringPrefix =                    "[Utils][String] ";
+		inline static constexpr auto UtilsPrefix =                          "[Utils] ";
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:

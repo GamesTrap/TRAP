@@ -67,7 +67,11 @@ static bool CheckSingleProcessLinux()
 
 		socketFD = socket(AF_INET, SOCK_DGRAM, 0);
 		if(socketFD < 0)
+		{
+			TP_ERROR(Log::ApplicationPrefix, "Failed to create socket!");
+			TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
 			return false;
+		}
 
 		sockaddr_in name;
 		name.sin_family = AF_INET;
@@ -82,6 +86,11 @@ static bool CheckSingleProcessLinux()
 
 		sockaddr convertedSock = TRAP::Utils::BitCast<sockaddr_in, sockaddr>(name); //Prevent usage of reinterpret_cast
 		rc = bind(socketFD, &convertedSock, sizeof(name));
+		if(rc < 0)
+		{
+			TP_ERROR(Log::ApplicationPrefix, "Failed to bind socket!");
+			TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
+		}
 	}
 
 	return (socketFD != -1 && rc == 0);
@@ -97,7 +106,11 @@ static bool CheckSingleProcessWindows()
 
 	const HANDLE hMutex = CreateMutex(0, 0, L"TRAP-Engine");
 	if(!hMutex) //Error creating mutex
+	{
+		TP_ERROR(Log::ApplicationPrefix, "Failed to create mutex!");
+		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
 		return false;
+	}
 	if(hMutex && GetLastError() == ERROR_ALREADY_EXISTS)
 		return false;
 
@@ -125,9 +138,17 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	//Register SIGINT callback to capture CTRL+C
 #ifdef TRAP_HEADLESS_MODE
 #ifdef TRAP_PLATFORM_LINUX
-	signal(SIGINT, [](int) {TRAP::Application::Shutdown(); });
+	if(signal(SIGINT, [](int) {TRAP::Application::Shutdown(); }) == SIG_ERR)
+	{
+		TP_ERROR(Log::ApplicationPrefix, "Failed to register SIGINT callback!");
+		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
+	}
 #elif defined(TRAP_PLATFORM_WINDOWS)
-	SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE);
+	if(!SetConsoleCtrlHandler(SIGINTHandlerRoutine, TRUE))
+	{
+		TP_ERROR(Log::ApplicationPrefix, "Failed to set SIGINT handler!");
+		TP_ERROR(Log::ApplicationPrefix, Utils::String::GetStrError());
+	}
 #endif
 #endif
 

@@ -3339,3 +3339,9 @@ SITREP 10/08/2022|22w40b1
     - Changed TRAP Engine version to 22w40b1(0.8.56)
     - Log now utilizes the unused IsColorTerminal() function ~<5 mins
     - Removed noexcept from potentially throwing functions ~<15 mins
+
+SITREP 10/13/2022|22w41a1
+    - Changed TRAP Engine version to 22w41a1(0.8.57)
+    - Added more error checks for WinAPI/Linux specific functions ~>30 mins
+    - EntryPoint Removed OpenGL specific variables ~<5 mins
+    - Network prevented leaking "far" macro to other includes ~<5 mins

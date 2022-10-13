@@ -52,9 +52,19 @@ bool TRAP::Input::InitController()
 	if(s_linuxController.INotify > 0)
 	{
 		//HACK: Register for IN_ATTRIB to get notified when udev is done
-		//This works well in practice but the true way is libudev
+		//This works well in practice but the true way is sd-device
 		s_linuxController.Watch = inotify_add_watch(s_linuxController.INotify, dirName.data(),
 		                                            IN_CREATE | IN_ATTRIB | IN_DELETE);
+		if(s_linuxController.Watch < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to add watch for ", dirName, "!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
+	}
+	else
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to initialize inotify!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 	}
 
 	//Continue without device connection notifications if inotify fails
@@ -84,7 +94,16 @@ bool TRAP::Input::InitController()
 				count++;
 		}
 
-		closedir(dir);
+		if(closedir(dir) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close directory!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
+	}
+	else
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to open ", dirName, "!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 	}
 
 	//Continue with no controllers if enumeration fails
@@ -110,9 +129,19 @@ void TRAP::Input::ShutdownController()
 	if(s_linuxController.INotify > 0)
 	{
 		if (s_linuxController.Watch > 0)
-			inotify_rm_watch(s_linuxController.INotify, s_linuxController.Watch);
+		{
+			if(inotify_rm_watch(s_linuxController.INotify, s_linuxController.Watch) < 0)
+			{
+				TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to remove watch!");
+				TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+			}
+		}
 
-		close(s_linuxController.INotify);
+		if(close(s_linuxController.INotify) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close inotify!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 	}
 
 	s_controllerInternal = {};
@@ -141,14 +170,20 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		play.code = con->LinuxCon.CurrentVibration;
 		play.value = 0;
 
-		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) == -1)
+		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) < 0)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 			return;
 		}
 
 		//Delete the effect
-		ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration);
+		if(ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to delete vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+			return;
+		}
 	}
 
 	//If VibrationSupported is true, start the new effect
@@ -165,17 +200,25 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		ff.replay.delay = 0;
 
 		//Upload the effect
-		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) != -1)
+		if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) >= 0)
 			con->LinuxCon.CurrentVibration = ff.id;
+		else
+		{
+			con->LinuxCon.CurrentVibration = -1;
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to upload vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+			return;
+		}
 
 		//Play the effect
 		play.type = EV_FF;
 		play.code = con->LinuxCon.CurrentVibration;
 		play.value = 1;
 
-		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) == -1)
+		if(write(con->LinuxCon.FD, static_cast<const void*>(&play), sizeof(play)) < 0)
 		{
 			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start vibration");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 			return;
 		}
 	}
@@ -213,8 +256,12 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	if(errno == EACCES)
 		LinuxCon.FD = open(path.c_str(), O_RDONLY | O_NONBLOCK);
 
-	if (LinuxCon.FD == -1)
+	if (LinuxCon.FD < 0)
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to open controller device!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
 		return false;
+	}
 
 	const std::array<char, (EV_CNT + 7) / 8> EVBits{};
 	const std::array<char, (KEY_CNT + 7) / 8> keyBits{};
@@ -226,15 +273,24 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 		ioctl(LinuxCon.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGID, &ID) < 0)
 	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", Utils::String::GetStrError(), "!");
-		close(LinuxCon.FD);
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		if(close(LinuxCon.FD) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 		return false;
 	}
 
 	//Ensure this device supports the events expected of a controller
 	if(!(EVBits[EV_ABS / 8] & (1 << (EV_ABS % 8))))
 	{
-		close(LinuxCon.FD);
+		if(close(LinuxCon.FD) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 		return false;
 	}
 
@@ -301,7 +357,11 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::filesystem::path path)
 	ControllerInternal* const con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
 	if(!con)
 	{
-		close(LinuxCon.FD);
+		if(close(LinuxCon.FD) < 0)
+		{
+			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		}
 		return false;
 	}
 
@@ -336,7 +396,11 @@ void TRAP::Input::CloseController(Controller controller)
 
 	ControllerInternal* const con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 
-	close(con->LinuxCon.FD);
+	if(close(con->LinuxCon.FD) < 0)
+	{
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close controller device!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+	}
 
 	const bool connected = con->Connected;
 

@@ -4,6 +4,10 @@
 void* operator new(const std::size_t count)
 {
     auto ptr = malloc(count);
+
+    if(!ptr && errno == ENOMEM)
+        throw std::bad_alloc();
+
     TracyAllocS(ptr, count, 10);
     return ptr;
 }
@@ -13,6 +17,10 @@ void* operator new(const std::size_t count)
 void* operator new[](const std::size_t count)
 {
     auto ptr = malloc(count);
+
+    if(!ptr && errno == ENOMEM)
+        throw std::bad_alloc();
+
     TracyAllocS(ptr, count, 10);
     return ptr;
 }

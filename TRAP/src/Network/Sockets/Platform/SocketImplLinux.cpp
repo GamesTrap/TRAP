@@ -33,6 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <fcntl.h>
 #include <cstring>
 #include "Core/PlatformDetection.h"
+#include "Utils/String/String.h"
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
@@ -91,7 +92,11 @@ void TRAP::INTERNAL::Network::SocketImpl::Close(TRAP::Network::SocketHandle sock
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	::close(sock);
+	if(::close(sock) < 0)
+	{
+		TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to close socket!");
+		TP_ERROR(Log::NetworkSocketUnixPrefix, Utils::String::GetStrError());
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -101,15 +106,28 @@ void TRAP::INTERNAL::Network::SocketImpl::SetBlocking(const TRAP::Network::Socke
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
 	const int32_t status = fcntl(sock, F_GETFL);
+	if(status < 0)
+	{
+		TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to get socket status!");
+		TP_ERROR(Log::NetworkSocketUnixPrefix, Utils::String::GetStrError());
+		return;
+	}
+
 	if (block)
 	{
-		if (fcntl(sock, F_SETFL, status & ~O_NONBLOCK) == -1)
-			TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to set file status flags: ", errno);
+		if (fcntl(sock, F_SETFL, status & ~O_NONBLOCK) < 0)
+		{
+			TP_ERROR(Log::NetworkSocketUnixPrefix, "Failed to set file status flags");
+			TP_ERROR(Log::NetworkSocketUnixPrefix, Utils::String::GetStrError());
+		}
 	}
 	else
 	{
-		if (fcntl(sock, F_SETFL, status | O_NONBLOCK) == -1)
-			TP_ERROR(Log::NetworkSocketPrefix, "Failed to set file status flags: ", errno);
+		if (fcntl(sock, F_SETFL, status | O_NONBLOCK) < 0)
+		{
+			TP_ERROR(Log::NetworkSocketPrefix, "Failed to set file status flags");
+			TP_ERROR(Log::NetworkSocketPrefix, Utils::String::GetStrError());
+		}
 	}
 }
 

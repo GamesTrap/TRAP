@@ -223,3 +223,9 @@ TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(const So
 
 	return *this;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+#undef far
+#endif

@@ -32,11 +32,14 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std:
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -98,11 +101,15 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
+
 			}
 		}
 
@@ -165,11 +172,14 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -235,11 +245,14 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 
@@ -303,11 +316,14 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std:
 		{
 			for(const std::filesystem::path& path : texture->m_filepaths)
 			{
-				const auto folderPath = FileSystem::GetFolderPath(path);
-				if(!folderPath)
-					continue;
+				if(!path.empty())
+				{
+					const auto folderPath = FileSystem::GetFolderPath(path);
+					if(!folderPath)
+						continue;
 
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+				}
 			}
 		}
 

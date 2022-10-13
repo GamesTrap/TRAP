@@ -102,7 +102,7 @@ namespace TRAP
 		/// Create a folder at the given path.
 		/// </summary>
 		/// <param name="path">Path to folder.</param>
-		/// <returns>True on success, false otherwise.</returns>
+		/// <returns>True if folder was successfully created or already exists, false otherwise.</returns>
 		bool CreateFolder(const std::filesystem::path& path);
 
 		/// <summary>

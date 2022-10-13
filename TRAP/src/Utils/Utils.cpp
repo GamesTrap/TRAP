@@ -277,7 +277,7 @@ TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
 
 	static LinuxWindowManager windowManager{};
 
-	#ifdef TRAP_PLATFORM_LINUX
+#ifdef TRAP_PLATFORM_LINUX
 	if(windowManager != LinuxWindowManager::Unknown)
 		return windowManager;
 

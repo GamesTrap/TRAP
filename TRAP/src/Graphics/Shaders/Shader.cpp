@@ -216,9 +216,12 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
-			const auto folderPath = FileSystem::GetFolderPath(filePath);
-			if(folderPath)
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+			if(!filePath.empty())
+			{
+				const auto folderPath = FileSystem::GetFolderPath(filePath);
+				if(folderPath)
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+			}
 		}
 
 		return result;
@@ -262,9 +265,12 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 		//Hot reloading
 		if(TRAP::Application::IsHotReloadingEnabled())
 		{
-			const auto folderPath = FileSystem::GetFolderPath(filePath);
-			if(folderPath)
-				TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+			if(!filePath.empty())
+			{
+				const auto folderPath = FileSystem::GetFolderPath(filePath);
+				if(folderPath)
+					TRAP::Application::GetHotReloadingFileWatcher()->AddFolder(*folderPath);
+			}
 		}
 
 		return result;

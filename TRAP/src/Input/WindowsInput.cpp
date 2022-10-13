@@ -564,8 +564,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 		rdi.cbSize = sizeof(rdi);
 		size = sizeof(rdi);
 
-		if (static_cast<int32_t>(GetRawInputDeviceInfoA(ridl[i].hDevice,
-			RIDI_DEVICEINFO, &rdi, &size)) == -1)
+		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICEINFO, &rdi, &size) == static_cast<uint32_t>(-1))
 			continue;
 
 		if (MAKELONG(rdi.hid.dwVendorId, rdi.hid.dwProductId) != static_cast<int64_t>(guid->Data1))
@@ -573,10 +572,7 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 
 		size = static_cast<uint32_t>(name.size());
 
-		if (static_cast<int32_t>(GetRawInputDeviceInfoA(ridl[i].hDevice,
-			RIDI_DEVICENAME,
-			name.data(),
-			&size)) == -1)
+		if (GetRawInputDeviceInfoA(ridl[i].hDevice, RIDI_DEVICENAME, name.data(), &size) == static_cast<uint32_t>(-1))
 			break;
 
 		name[name.size() - 1] = '\0';
@@ -822,6 +818,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 	if(!GetKeyboardLayoutNameW(keyboardLayoutID.data()))
 	{
 		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name");
+		TP_ERROR(Log::InputWinAPIPrefix, Utils::String::GetStrError());
 		return "";
 	}
 
@@ -832,6 +829,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 	if(!size)
 	{
 		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name length");
+		TP_ERROR(Log::InputWinAPIPrefix, Utils::String::GetStrError());
 		return "";
 	}
 
@@ -840,6 +838,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 	if(!GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, language.data(), size))
 	{
 		TP_ERROR(Log::InputWinAPIPrefix, "Failed to translate keyboard layout name");
+		TP_ERROR(Log::InputWinAPIPrefix, Utils::String::GetStrError());
 		return "";
 	}
 

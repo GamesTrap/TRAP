@@ -411,3 +411,9 @@ TRAP::Network::TCPSocketIPv6::PendingPacket::PendingPacket()
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+#undef far
+#endif
