@@ -27,6 +27,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 #include "Input/Input.h"
+#include <regex>
 
 #ifdef TRAP_PLATFORM_LINUX
 
@@ -68,11 +69,7 @@ bool TRAP::Input::InitController()
 	}
 
 	//Continue without device connection notifications if inotify fails
-	if(regcomp(&s_linuxController.Regex, "^event[0-9]\\+$", 0) != 0)
-	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not compile regex!");
-		return false;
-	}
+	s_linuxController.Regex = std::regex("^event[0-9]+$", std::regex_constants::extended);
 
 	int32_t count = 0;
 
@@ -83,9 +80,7 @@ bool TRAP::Input::InitController()
 
 		while((entry = readdir(dir)))
 		{
-			regmatch_t match;
-
-			if (regexec(&s_linuxController.Regex, entry->d_name, 1, &match, 0) != 0)
+			if(!std::regex_match(entry->d_name, s_linuxController.Regex))
 				continue;
 
 			const std::filesystem::path path = std::filesystem::path(dirName) / entry->d_name;
@@ -123,8 +118,6 @@ void TRAP::Input::ShutdownController()
 		if (s_controllerInternal[cID].Connected)
 			CloseController(static_cast<Controller>(cID));
 	}
-
-	regfree(&s_linuxController.Regex);
 
 	if(s_linuxController.INotify > 0)
 	{
@@ -440,12 +433,11 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 	while(size > offset)
 	{
-		regmatch_t match;
 		const inotify_event* const e = reinterpret_cast<const inotify_event*>(&buffer[offset]); //Must use reinterpret_cast because of flexible array member
 
 		offset += static_cast<ssize_t>(sizeof(inotify_event)) + e->len;
 
-		if (regexec(&s_linuxController.Regex, e->name, 1, &match, 0) != 0)
+		if(!std::regex_match(e->name, s_linuxController.Regex))
 			continue;
 
 		const std::filesystem::path path = std::filesystem::path("/dev/input") / e->name;

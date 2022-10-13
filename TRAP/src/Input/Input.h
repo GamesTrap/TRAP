@@ -34,6 +34,7 @@ The above license only applies to some of the Controller specific parts of this 
 #include <functional>
 #include <array>
 #include <string_view>
+#include <regex>
 
 #ifdef TRAP_PLATFORM_LINUX
 #include "Utils/Linux.h"
@@ -916,7 +917,7 @@ namespace TRAP
 		{
 			int32_t INotify = 0;
 			int32_t Watch = 0;
-			regex_t Regex{};
+			std::regex Regex{};
 			bool Dropped = false;
 		};
 		static ControllerLinuxLibrary s_linuxController;

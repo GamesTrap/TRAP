@@ -36,7 +36,7 @@ public:
 	{
 		// PushLayer(std::make_unique<AntiAliasingTests>());
 		// PushLayer(std::make_unique<ClipboardTests>());
-		// PushLayer(std::make_unique<ControllerTests>());
+		PushLayer(std::make_unique<ControllerTests>());
 		// PushLayer(std::make_unique<ComputeTests>());
 		// PushLayer(std::make_unique<CursorTests>());
 		// PushLayer(std::make_unique<DragAndDropTests>());
@@ -49,7 +49,7 @@ public:
 		// PushLayer(std::make_unique<InputLagTests>());
 		// PushLayer(std::make_unique<MonitorTests>());
 		// PushLayer(std::make_unique<MultiWindowTests>());
-		PushLayer(std::make_unique<NVIDIAReflexTests>());
+		// PushLayer(std::make_unique<NVIDIAReflexTests>());
 		// PushLayer(std::make_unique<OpacityTests>());
 		// PushLayer(std::make_unique<RendererAPIInfo>());
 		// PushLayer(std::make_unique<RendererAPITests>());
