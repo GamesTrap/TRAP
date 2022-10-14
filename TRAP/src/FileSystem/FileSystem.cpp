@@ -895,17 +895,21 @@ bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
 
     const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
-    //TODO Replace with SHParseDisplayName()
-    LPITEMIDLIST pidl = ILCreateFromPath((*absPath).c_str());
-    if(!pidl)
+    const std::wstring absPathW = absPath->wstring();
+    LPITEMIDLIST pidl = nullptr;
+    if (SHParseDisplayName(absPathW.c_str(), nullptr, &pidl, 0, nullptr) != S_OK)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in File Browser: \"", p, "\"");
+        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
         return false;
+    }
+
     const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
     if(res != S_OK)
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in File Browser: \"", p, "\"");
         TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
     }
-    ILFree(pidl);
 
 	if (initRes == S_OK || initRes == S_FALSE)
 		CoUninitialize();
