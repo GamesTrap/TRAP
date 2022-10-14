@@ -71,34 +71,10 @@ bool TRAP::Input::InitController()
 	//Continue without device connection notifications if inotify fails
 	s_linuxController.Regex = std::regex("^event[0-9]+$", std::regex_constants::extended);
 
-	int32_t count = 0;
-
-	DIR* const dir = opendir(dirName.data());
-	if(dir)
+	for(const auto& entry : std::filesystem::directory_iterator(dirName))
 	{
-		const dirent* entry = nullptr;
-
-		while((entry = readdir(dir)))
-		{
-			if(!std::regex_match(entry->d_name, s_linuxController.Regex))
-				continue;
-
-			const std::filesystem::path path = std::filesystem::path(dirName) / entry->d_name;
-
-			if (OpenControllerDeviceLinux(path))
-				count++;
-		}
-
-		if(closedir(dir) < 0)
-		{
-			TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to close directory!");
-			TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
-		}
-	}
-	else
-	{
-		TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to open ", dirName, "!");
-		TP_ERROR(Log::InputControllerLinuxPrefix, Utils::String::GetStrError());
+		if(std::regex_match(entry.path().filename().string(), s_linuxController.Regex))
+			OpenControllerDeviceLinux(entry);
 	}
 
 	//Continue with no controllers if enumeration fails

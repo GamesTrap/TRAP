@@ -6,7 +6,7 @@
 #include "Utils/Utils.h"
 
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, const bool recursive)
-    : m_recursive(recursive), m_run(true), m_name(std::move(name))
+    : m_recursive(recursive), m_run(false), m_name(std::move(name))
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -20,7 +20,7 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<s
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::filesystem::path& path, const bool recursive)
-    : m_recursive(recursive), m_run(true), m_name(std::move(name))
+    : m_recursive(recursive), m_run(false), m_name(std::move(name))
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -207,7 +207,6 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
     {
         TP_ERROR(Log::FileWatcherWindowsPrefix, "Failed to set kill event!");
         TP_ERROR(Log::FileWatcherWindowsPrefix, Utils::String::GetStrError());
-        m_thread.detach();
         return;
     }
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -220,7 +219,6 @@ void TRAP::FileSystem::FileWatcher::Shutdown()
         {
             TP_ERROR(Log::FileWatcherLinuxPrefix, "Error writing to eventfd");
             TP_ERROR(Log::FileWatcherWindowsPrefix, Utils::String::GetStrError());
-            m_thread.detach();
             return;
         }
         toSend -= res;
@@ -295,7 +293,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
                 TP_ERROR(Log::FileWatcherWindowsPrefix, Utils::String::GetStrError());
                 for(uintptr_t& handle : dirHandles)
                 {
-                    if(!CloseHandle(reinterpret_cast<HANDLE>(handle))
+                    if(!CloseHandle(reinterpret_cast<HANDLE>(handle)))
                     {
                         TP_ERROR(Log::FileWatcherWindowsPrefix, "Failed to close directory handle");
                         TP_ERROR(Log::FileWatcherWindowsPrefix, Utils::String::GetStrError());

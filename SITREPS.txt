@@ -3348,3 +3348,8 @@ SITREP 10/13/2022|22w41a1
     - Replaced FileStatusToString(), MouseButtonToString(), Rigidbody2DBodyTypeToString(), Rigidbody2DBodyTypeFromString() with ConvertToType() and ConvertToString() ~<15 mins
     - Moved EncodeUTF8() to TRAP::Utils::String ~<10 mins
     - LinuxInput Replaced POSIX regex with std::regex ~<15 mins
+
+SITREP 10/14/2022|22w41a2
+    - Changed TRAP Engine version to 22w41a2(0.8.58)
+    - LinuxInput Replaced opendir(), readdir() & closedir() in InitController() with std::filesystem equivalents ~<10 mins
+    - FileWatcher Fixed MSVC compilation errors ~<5 mins
