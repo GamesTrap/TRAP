@@ -79,7 +79,7 @@ void TRAP::Log::Save() const
 
 	//Build final path and filename
 	const auto folderPath = FileSystem::GetFolderPath(m_path);
-	const auto fileName = FileSystem::GetFileName(m_path);
+	const auto fileName = FileSystem::GetFileNameWithoutEnding(m_path);
 	const auto fileEnding = FileSystem::GetFileEnding(m_path);
 	if(!folderPath || !fileName || !fileEnding)
 	{

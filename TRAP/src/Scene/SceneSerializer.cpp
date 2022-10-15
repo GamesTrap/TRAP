@@ -310,7 +310,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	if (!FileSystem::FileOrFolderExists(filepath))
+	if (!FileSystem::Exists(filepath))
 	{
 		TP_ERROR(Log::SceneSerializerPrefix, "File: \"", filepath.u8string(), "\" doesn't exists!");
 		return false;

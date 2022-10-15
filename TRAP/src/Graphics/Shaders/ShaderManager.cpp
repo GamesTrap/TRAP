@@ -177,7 +177,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Reload(const st
 	{
 		for (const auto& [name, shader] : Shaders)
 		{
-			if (FileSystem::IsPathEquivalent(nameOrPath, shader->GetFilePath()))
+			if (FileSystem::IsEquivalent(nameOrPath, shader->GetFilePath()))
 			{
 				if(shader->Reload())
 					TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -239,7 +239,7 @@ bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path
 
 	for(const auto& [name, shader] : Shaders)
 	{
-		if (FileSystem::IsPathEquivalent(shader->GetFilePath(), path))
+		if (FileSystem::IsEquivalent(shader->GetFilePath(), path))
 			return true;
 	}
 

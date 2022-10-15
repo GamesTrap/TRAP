@@ -15,7 +15,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::filesystem::path filepath)
 
 	TP_DEBUG(Log::ImagePFMPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);

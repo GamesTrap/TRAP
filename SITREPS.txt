@@ -3359,3 +3359,20 @@ SITREP 10/15/2022|22w41a3
     - Changed TRAP Engine version to 22w41a3(0.8.59)
     - FileChangeEvent Changed oldName to be of type std::optional<std::filesystem::path> ~<5 mins
     - FileSystem Added and changed error message ~<30 mins
+
+SITREP 10/20/2022|22w42a1
+    - Changed TRAP Engine version to 22w42a1(0.8.60)
+    - FileSystem unified OpenFileInFileBrower() and OpenFolderInFileBrowser() into OpenInFileBrowser() ~<5 mins
+    - FileSystem unified MoveFile() and MoveFolder() into Move() ~<5 mins
+    - FileSystem unified CopyFile() and CopyFolder() into Copy() ~<5 mins
+    - FileSystem unified RenameFile() and RenameFolder() into Rename() ~<5 mins
+    - FileSystem renamed GetFileName() to GetFileNameWithoutEnding() ~<5 mins
+    - FileSystem renamed DeleteFileOrFolder() to Delete() ~<5 mins
+    - FileSystem renamed FileOrFolderExists() to Exists() ~<5 mins
+    - FileSystem renamed GetFileOrFolderSize() to GetSize() ~<5 mins
+    - FileSystem renamed IsPathEquivalent() to IsEquivalent() ~<5 mins
+    - FileSystem added IsEmpty() to check for empty files and folders ~<5 mins
+    - FileSystem added SetCurrentFolderPath() to set the current working directory ~<5 mins
+    - FileSystem made ReadTextFile() faster ~<10 mins
+    - FileSystem Fixed WriteFile() and WriteTextFile() append mode ~<5 mins
+    - HeadlessTests Addded FileSystemTests ~>60 mins

@@ -239,9 +239,9 @@ void TRAPEditorLayer::OnAttach()
 	if(gameDocsFolder)
 	{
 		imguiIniPath = *gameDocsFolder / "imgui.ini";
-		if(!TRAP::FileSystem::FileOrFolderExists(imguiIniPath))
+		if(!TRAP::FileSystem::Exists(imguiIniPath))
 		{
-			if(TRAP::FileSystem::CopyFile("./Resources/Layouts/Default.ini", imguiIniPath))
+			if(TRAP::FileSystem::Copy("./Resources/Layouts/Default.ini", imguiIniPath))
 				ImGui::LoadIniSettingsFromDisk(imguiIniPath.u8string().c_str());
 		}
 	}

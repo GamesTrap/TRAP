@@ -336,7 +336,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::filesystem:
 			}
 
 			//Create missing directories if any
-			if(!TRAP::FileSystem::FileOrFolderExists(path) && !TRAP::FileSystem::CreateFolder(path))
+			if(!TRAP::FileSystem::Exists(path) && !TRAP::FileSystem::CreateFolder(path))
 				return Response(Response::Status::InvalidFile);
 
 			//Create the file and truncate it if necessary
@@ -374,7 +374,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::filesystem::p
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 
-	if(!FileSystem::FileOrFolderExists(localFile))
+	if(!FileSystem::Exists(localFile))
 		return Response(Response::Status::InvalidFile);
 
 	//Get the contents of the file to send

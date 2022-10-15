@@ -1048,7 +1048,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingTexturePaths)
 		{
-			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
+			if(FileSystem::IsEquivalent(p, event.GetPath()))
 				return false;
 		}
 
@@ -1062,7 +1062,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingShaderPaths)
 		{
-			if(FileSystem::IsPathEquivalent(p, event.GetPath()))
+			if(FileSystem::IsEquivalent(p, event.GetPath()))
 				return false;
 		}
 

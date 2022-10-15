@@ -25,8 +25,8 @@
 
 //Modified by Jan "GamesTrap" Schuerkamp
 
-#ifndef TRAP_FS_H
-#define TRAP_FS_H
+#ifndef TRAP_FILESYSTEM_H
+#define TRAP_FILESYSTEM_H
 
 #include <cstdint>
 #include <optional>
@@ -50,6 +50,11 @@ namespace TRAP
 
 		/// <summary>
 		/// Initializes the File System.
+		///
+		/// This functions creates the following folders if they don't exist:
+		/// - Temp/TRAP/<GameName>
+		/// - Documents/TRAP/<GameName>
+		/// - Documents/TRAP/<GameName>/logs (only when not using Headless mode)
 		/// </summary>
 		void Init();
 		/// <summary>
@@ -60,25 +65,18 @@ namespace TRAP
         /// <summary>
 		/// Read the given binary file.
 		///
-		/// Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.
+		/// Note: This will read the whole file into memory.
 		/// </summary>
 		/// <param name="path">File path.</param>
-		/// <returns>
-		/// Vector with file content on success.
-		/// Empty optional if an error has occurred.
-		/// </returns>
+		/// <returns>File content as std::vector<uint8_t> on success, empty std::optional otherwise.</returns>
 		std::optional<std::vector<uint8_t>> ReadFile(const std::filesystem::path& path);
         /// <summary>
 		/// Read the given text file.
-		/// Line endings are automatically converted to LF ('\n').
 		///
-		/// Prints an error if path is empty.
+		/// Note: CRLF line endings are automatically converted to LF (i.e. '\n').
 		/// </summary>
 		/// <param name="path">File path.</param>
-		/// <returns>
-		/// String with file content on success.
-		/// Empty optional if an error has occurred.
-		/// </returns>
+		/// <returns>File content as std::string on success, empty std::optional otherwise.</returns>
 		std::optional<std::string> ReadTextFile(const std::filesystem::path& path);
 
         /// <summary>
@@ -86,8 +84,8 @@ namespace TRAP
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <param name="buffer">Data to be written.</param>
-		/// <param name="mode">Write mode to use.</param>
-		/// <returns>True if path could be resolved and data has been written, false otherwise.</returns>
+		/// <param name="mode">Write mode to use. Default: WriteMode::Overwrite.</param>
+		/// <returns>True if file has been written successfully, false otherwise.</returns>
 		bool WriteFile(const std::filesystem::path& path, const std::vector<uint8_t>& buffer,
 		               WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
@@ -95,80 +93,59 @@ namespace TRAP
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <param name="text">Text to be written.</param>
-		/// <param name="mode">Write mode to use.</param>
-		/// <returns>True if path could be resolved and text has been written, false otherwise.</returns>
+		/// <param name="mode">Write mode to use. Default: WriteMode::Overwrite.</param>
+		/// <returns>True if file has been written successfully, false otherwise.</returns>
 		bool WriteTextFile(const std::filesystem::path& path, const std::string_view text,
 		                   WriteMode mode = WriteMode::Overwrite);
 
 		/// <summary>
 		/// Create a folder at the given path.
+		///
+		/// Note: This will also create all parent folders if they don't exist already.
 		/// </summary>
 		/// <param name="path">Path to folder.</param>
-		/// <returns>True if folder was successfully created or already exists, false otherwise.</returns>
+		/// <returns>True if folder has been created successfully or already exists, false otherwise.</returns>
 		bool CreateFolder(const std::filesystem::path& path);
 
 		/// <summary>
-		/// Delete the file or folder at the given path.
+		/// Delete the given file or folder.
 		///
 		/// Note: Folder deletion is recursive.
 		/// </summary>
 		/// <param name="path">File or folder to delete.</param>
-		/// <returns>True on success, false otherwise.</returns>
-		bool DeleteFileOrFolder(const std::filesystem::path& path);
+		/// <returns>True on successfull deletion, false otherwise.</returns>
+		bool Delete(const std::filesystem::path& path);
 
 		/// <summary>
-		/// Move folder from oldFolderPath to newFolderPath.
+		/// Move file or folder from oldPath to newPath.
 		///
-		/// Note: Only moves if newFolderPath doesnt already exist.
+		/// Note: Only moves if newPath doesnt already exist.
 		/// </summary>
-		/// <param name="oldFolderPath">Path to move from.</param>
-		/// <param name="newFolderPath">Path to move to.</param>
-		/// <returns>True on success, false otherwise.</returns>
-		bool MoveFolder(const std::filesystem::path& oldFolderPath,
-		                const std::filesystem::path& newFolderPath);
-		/// <summary>
-		/// Move file to new folder.
-		///
-		/// Note: This doesn't move if file with the same filename already exists in destFolder.
-		/// </summary>
-		/// <param name="filePath">File to move.</param>
-		/// <param name="destFolder">Folder to move file to.</param>
-		/// <returns>True on success, false otherwise.</returns>
-		bool MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder);
+		/// <param name="oldPath">Path to move from.</param>
+		/// <param name="newPath">Path to move to.</param>
+		/// <returns>True on successfull move or if oldPath and newPath are the same, false otherwise.</returns>
+		bool Move(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
 
 		/// <summary>
-		/// Copy folder from source to destination.
+		/// Copy file or folder from source to destination.
 		///
-		/// Note: If destination already exists, contents will be merged.
+		/// Note: If destination is an already existing folder, then contents will be merged.
 		/// </summary>
-		/// <param name="source">Source folder to copy from.</param>
-		/// <param name="destination">Target folder to copy into.</param>
+		/// <param name="source">Source to copy from.</param>
+		/// <param name="destination">Target to copy into.</param>
 		/// <param name="overwriteExisting">Whether to overwrite already existing files or not.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination, bool overwriteExisting = false);
-		/// <summary>
-		/// Copy file from source to destination.
-		/// </summary>
-		/// <param name="source">Source file to copy.</param>
-		/// <param name="destination">Target to copy into.</param>
-		/// <param name="overwriteExisting">Whether to overwrite existing file or not.</param>
-		/// <returns>True on success, false otherwise.</returns>
-		bool CopyFile(const std::filesystem::path& source, const std::filesystem::path& destination, bool overwriteExisting = false);
+		bool Copy(const std::filesystem::path& source, const std::filesystem::path& destination, bool overwriteExisting = false);
 
 		/// <summary>
-		/// Rename folder from oldPath to newPath.
+		/// Rename file or folder.
+		///
+		/// Note: Only renames if the resulting folder doesn't already exist.
 		/// </summary>
-		/// <param name="oldPath">Folder path to rename.</param>
-		/// <param name="newPath">Path to New folder name.</param>
+		/// <param name="oldPath">File or folder to rename.</param>
+		/// <param name="newName">New name for file or folder.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
-		/// <summary>
-		/// Rename file excluding file extension.
-		/// </summary>
-		/// <param name="oldPath">File path to rename.</param>
-		/// <param name="newName">New filename.</param>
-		/// <returns>True on success, false otherwise.</returns>
-		bool RenameFile(const std::filesystem::path& oldPath, const std::string_view newName);
+		bool Rename(const std::filesystem::path& oldPath, const std::string_view newName);
 
         /// <summary>
 		/// Check if a file or folder exists.
@@ -180,16 +157,17 @@ namespace TRAP
 		/// True if file or folder exists.
 		/// False if file or folder doesn't exist or an error has occurred.
 		/// </returns>
-		bool FileOrFolderExists(const std::filesystem::path& path);
+		bool Exists(const std::filesystem::path& path);
 		/// <summary>
 		/// Get the size of an file or folder in bytes.
 		/// </summary>
 		/// <param name="path">Path to a file or folder.</param>
+		/// <param name="recursive">Recursively count file sizes. This only has an effect if path leads to a folder.</param>
 		/// <returns>
 		/// File or folder size in bytes.
 		/// Empty optional if an error has occurred.
 		/// </returns>
-		std::optional<uintmax_t> GetFileOrFolderSize(const std::filesystem::path& path, bool recursive = true);
+		std::optional<uintmax_t> GetSize(const std::filesystem::path& path, bool recursive = true);
         /// <summary>
 		/// Get the last write time of a file or folder.
 		/// </summary>
@@ -211,7 +189,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="path">File path.</param>
 		/// <returns>String only containing the filename without its folders and file ending on success, empty optional otherwise.</returns>
-		std::optional<std::string> GetFileName(const std::filesystem::path& path);
+		std::optional<std::string> GetFileNameWithoutEnding(const std::filesystem::path& path);
         /// <summary>
 		/// Get only the file ending without its name from a file path.
 		/// </summary>
@@ -263,19 +241,7 @@ namespace TRAP
 		/// <param name="p1">File/folder path.</param>
 		/// <param name="p2">File/folder path</param>
 		/// <returns>True if p1 and p2 refer to the same file or folder, false otherwise.</returns>
-		bool IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
-		/// <summary>
-		/// Get whether the path p is an absolute path or not.
-		/// </summary>
-		/// <param name="p">Path to check.</param>
-		/// <returns>True if path is absolute, false otherwise.</returns>
-		bool IsPathAbsolute(const std::filesystem::path& p);
-		/// <summary>
-		/// Get whether the path p is a relative path or not.
-		/// </summary>
-		/// <param name="p">Path to check.</param>
-		/// <returns>True if path is relative, false otherwise.</returns>
-		bool IsPathRelative(const std::filesystem::path& p);
+		bool IsEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2);
 		/// <summary>
 		/// Get whether the path p leads to a folder or not.
 		/// </summary>
@@ -290,6 +256,24 @@ namespace TRAP
 		/// <param name="p">Path to check.</param>
 		/// <returns>True if path leads to regular file, false otherwise.</returns>
 		bool IsFile(const std::filesystem::path& p);
+		/// <summary>
+		/// Get whether the path p leads to an empty file or folder.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path leads to an empty file or folder, false otherwise.</returns>
+		bool IsEmpty(const std::filesystem::path& p);
+		/// <summary>
+		/// Get whether the path is absolute or relative.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path is absolute, false otherwise.</returns>
+		bool IsAbsolute(const std::filesystem::path& p);
+		/// <summary>
+		/// Get whether the path is relative or absolute.
+		/// </summary>
+		/// <param name="p">Path to check.</param>
+		/// <returns>True if path is relative, false otherwise.</returns>
+		bool IsRelative(const std::filesystem::path& p);
 
 		/// <summary>
 		/// Converts a path to an absolute path.
@@ -305,22 +289,22 @@ namespace TRAP
 		std::optional<std::filesystem::path> ToRelativePath(const std::filesystem::path& p);
 
 		/// <summary>
-		/// Opens the file browser at the given path.
-		///
-		/// Note: Linux uses xdg-open.
+		/// Change the current folder to the given path.
 		/// </summary>
-		/// <param name="p">Folder to open.</param>
+		/// <param name="p">Folder path to change to.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool OpenFolderInFileBrowser(const std::filesystem::path& p);
+		bool SetCurrentFolderPath(const std::filesystem::path& p);
+
 		/// <summary>
-		/// Opens the file browser and selects the given file.
+		/// Opens the file browser at the given path.
+		/// If p leads to a file, the file browser will select/hightlight the file.
 		///
 		/// Note: On Linux this function doesn't select/highlight the file.
 		/// Note: Linux uses xdg-open.
 		/// </summary>
-		/// <param name="p">File to open.</param>
+		/// <param name="p">Path to a file or folder to open.</param>
 		/// <returns>True on success, false otherwise.</returns>
-		bool OpenFileInFileBrowser(const std::filesystem::path& p);
+		bool OpenInFileBrowser(const std::filesystem::path& p);
 		/// <summary>
 		/// Opens a file or folder with the default application.
 		///
@@ -339,4 +323,4 @@ constexpr void TRAP::FileSystem::Shutdown()
 	TP_DEBUG(Log::FileSystemPrefix, "Shutting down File System");
 }
 
-#endif /*TRAP_FS_H*/
+#endif /*TRAP_FILESYSTEM_H*/

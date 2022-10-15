@@ -245,7 +245,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 
 	RendererAPI::BinaryShaderDesc desc{};
 	Ref<Shader> failShader = nullptr;
-	const auto name = FileSystem::GetFileName(filePath);
+	const auto name = FileSystem::GetFileNameWithoutEnding(filePath);
 	if(!name)
 	{
 		TRAP_ASSERT(false, "Name is empty!");
@@ -331,7 +331,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::filesystem::path& 
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	//Check SPIRV Magic Number
-	if (!FileSystem::FileOrFolderExists(filePath))
+	if (!FileSystem::Exists(filePath))
 		return false;
 
 	std::ifstream file(filePath, std::ios::binary);

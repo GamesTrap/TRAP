@@ -151,7 +151,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 
 	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
 
-	const auto name = FileSystem::GetFileName(filepath);
+	const auto name = FileSystem::GetFileNameWithoutEnding(filepath);
 	if(!name)
 	{
 		TRAP_ASSERT(false, "Name is empty!");

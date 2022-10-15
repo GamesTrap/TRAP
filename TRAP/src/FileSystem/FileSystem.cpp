@@ -6,6 +6,9 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool OpenFolderInFileBrowser(const std::filesystem::path& p);
+bool OpenFileInFileBrowser(const std::filesystem::path& p);
+
 #ifdef TRAP_PLATFORM_LINUX
 std::optional<std::filesystem::path> GetHomeFolderPathLinux();
 std::optional<std::filesystem::path> GetDocumentsFolderPathLinux();
@@ -21,7 +24,7 @@ void TRAP::FileSystem::Init()
 
     //Create game temp folder
     const auto gameTempFolder = GetGameTempFolderPath();
-    if(gameTempFolder && !FileOrFolderExists(*gameTempFolder))
+    if(gameTempFolder && !Exists(*gameTempFolder))
     {
         if(!CreateFolder(*gameTempFolder))
             TP_ERROR(Log::FileSystemPrefix, "Failed to create game temp folder: \"", gameTempFolder->u8string(), "\"!");
@@ -29,7 +32,7 @@ void TRAP::FileSystem::Init()
 
     //Create game document folder
     const auto gameDocsFolder = GetGameDocumentsFolderPath();
-    if(gameDocsFolder && !FileOrFolderExists(*gameDocsFolder))
+    if(gameDocsFolder && !Exists(*gameDocsFolder))
     {
         if(!CreateFolder(*gameDocsFolder))
             TP_ERROR(Log::FileSystemPrefix, "Failed to create game documents folder: \"", gameDocsFolder->u8string(), "\"!");
@@ -37,7 +40,7 @@ void TRAP::FileSystem::Init()
 
     //Create game log folder
     const auto gameLogFolder = GetGameLogFolderPath();
-    if(gameLogFolder && !FileOrFolderExists(*gameLogFolder))
+    if(gameLogFolder && !Exists(*gameLogFolder))
     {
         if(!CreateFolder(*gameLogFolder))
             TP_ERROR(Log::FileSystemPrefix, "Failed to create game log folder: \"", gameLogFolder->u8string(), "\"!");
@@ -52,13 +55,7 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(path))
-    {
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: \"", path.u8string(), "\" (file doesn't exist or path is invalid)!");
-        return std::nullopt;
-    }
-
-    const auto fileSize = TRAP::FileSystem::GetFileOrFolderSize(path);
+    auto fileSize = GetSize(path);
 
     std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
@@ -67,15 +64,14 @@ std::optional<std::vector<uint8_t>> TRAP::FileSystem::ReadFile(const std::filesy
         return std::nullopt;
     }
 
-    std::vector<uint8_t> buffer{};
-    if(fileSize)
-        buffer.resize(*fileSize);
-    else //Fallback
+    if(!fileSize) //Fallback
     {
         file.seekg(0, std::ios::end);
-        buffer.resize(file.tellg());
+        fileSize = file.tellg();
         file.seekg(0);
     }
+
+    std::vector<uint8_t> buffer(*fileSize);
 
     file.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
     file.close();
@@ -91,28 +87,28 @@ std::optional<std::string> TRAP::FileSystem::ReadTextFile(const std::filesystem:
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(path))
-    {
-		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: \"", path.u8string(), "\" (file doesn't exist or path is invalid)!");
-        return std::nullopt;
-    }
+    auto fileSize = GetSize(path);
 
-    std::ifstream file(path);
+    std::ifstream file(path, std::ios::binary);
     if(!file.is_open() || !file.good())
     {
 		TP_ERROR(Log::FileSystemPrefix, "Couldn't read file: \"", path.u8string(), "\" (failed to open file)!");
         return std::nullopt;
     }
 
-    std::string line{}, result{};
-    while (file.good() && std::getline(file, line))
+    if(!fileSize)
     {
-        if (!line.empty() && line.back() == '\r')
-            line.pop_back();
-
-        result += line + '\n';
+        file.seekg(0, std::ios::end);
+        fileSize = file.tellg();
+        file.seekg(0);
     }
+
+    std::string result(*fileSize, '\0');
+
+    file.read(result.data(), *fileSize);
     file.close();
+
+    result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
 
     return result;
 }
@@ -124,10 +120,9 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& path, const std::v
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
-    TRAP_ASSERT(!buffer.empty(), "Buffer is empty!");
 
     const std::ios_base::openmode modeFlags = (mode == WriteMode::Overwrite) ? (std::ios::binary | std::ios::trunc) :
-	                                                                           (std::ios::binary | std::ios::ate);
+	                                                                           (std::ios::binary | std::ios::app);
     std::ofstream file(path, modeFlags);
     if(!file.is_open() || !file.good())
     {
@@ -148,13 +143,9 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& path, const st
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
-    TRAP_ASSERT(!text.empty(), "Text is empty!");
 
-    std::ofstream file{};
-    if(mode == WriteMode::Append)
-        file.open(path, std::ios::ate);
-    else
-        file.open(path, std::ios::trunc);
+    const std::ios_base::openmode modeFlags = (mode == WriteMode::Overwrite) ? (std::ios::trunc) : (std::ios::app);
+    std::ofstream file(path, modeFlags);
     if(!file.is_open() || !file.good())
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't write file: \"", path.u8string(), "\" (failed to open file)!");
@@ -175,7 +166,7 @@ bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(FileOrFolderExists(path)) //Return true if folder already exists
+    if(Exists(path)) //Return true if folder already exists
         return true;
 
     std::error_code ec{};
@@ -192,46 +183,18 @@ bool TRAP::FileSystem::CreateFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
+bool TRAP::FileSystem::Delete(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(path))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.u8string(), "\" (path doesn't exist)!");
-        return false;
-    }
-
     std::error_code ec{};
-    if(std::filesystem::is_directory(path, ec)) //Directory
-    {
-        if(ec)
-        {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.u8string(),
-                     "\" (", ec.message(), ")!");
-            return false;
-        }
-
-        const bool res = std::filesystem::remove_all(path, ec) > 1;
-
-        if(ec)
-        {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.u8string(),
-                     "\" (", ec.message(), ")!");
-            return false;
-        }
-
-        return res;
-    }
-
-    //File
-    const bool res = std::filesystem::remove(path, ec);
+    const bool res = std::filesystem::remove_all(path, ec) >= 1;
     if(ec)
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't delete file or folder: \"", path.u8string(),
-                 "\" (", ec.message(), ")!");
+                    "\" (", ec.message(), ")!");
         return false;
     }
 
@@ -240,28 +203,20 @@ bool TRAP::FileSystem::DeleteFileOrFolder(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldFolderPath,
-                                  const std::filesystem::path& newFolderPath)
+bool TRAP::FileSystem::Move(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!oldFolderPath.empty(), "OldFolderPath is empty!");
-    TRAP_ASSERT(!newFolderPath.empty(), "NewFolderPath is empty!");
-
-    if(FileOrFolderExists(newFolderPath))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldFolderPath.u8string(),
-                 "\" to \"", newFolderPath.u8string(), "\" (target already exists)!");
-        return false;
-    }
+    TRAP_ASSERT(!oldPath.empty(), "OldPath is empty!");
+    TRAP_ASSERT(!newPath.empty(), "NewPath is empty!");
 
     std::error_code ec{};
-    std::filesystem::rename(oldFolderPath, newFolderPath, ec);
+    std::filesystem::rename(oldPath, newPath, ec);
 
     if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldFolderPath.u8string(),
-                 "\" to \"", newFolderPath.u8string(), "\"(", ec.message(), ")!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't move from: \"", oldPath.u8string(),
+                 "\" to \"", newPath.u8string(), "\" (", ec.message(), ")!");
         return false;
     }
 
@@ -270,32 +225,13 @@ bool TRAP::FileSystem::MoveFolder(const std::filesystem::path& oldFolderPath,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::MoveFile(const std::filesystem::path& filePath, const std::filesystem::path& destFolder)
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    TRAP_ASSERT(!filePath.empty(), "FilePath is empty!");
-    TRAP_ASSERT(!destFolder.empty(), "DestFolder is empty!");
-
-    return MoveFolder(filePath, destFolder / filePath.filename());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std::filesystem::path& destination,
-                                  const bool overwriteExisting)
+bool TRAP::FileSystem::Copy(const std::filesystem::path& source, const std::filesystem::path& destination,
+                            const bool overwriteExisting)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!source.empty(), "Source is empty!");
     TRAP_ASSERT(!destination.empty(), "Destination is empty!");
-
-    if(!FileOrFolderExists(source))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy folder: \"", source.u8string(), "\" to \"", destination.u8string(),
-                 "\" (source path doesn't exist)!");
-        return false;
-    }
 
     std::error_code ec{};
     std::filesystem::copy_options options = std::filesystem::copy_options::recursive;
@@ -317,88 +253,31 @@ bool TRAP::FileSystem::CopyFolder(const std::filesystem::path& source, const std
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::CopyFile(const std::filesystem::path& source, const std::filesystem::path& destination,
-                                const bool overwriteExisting)
+bool TRAP::FileSystem::Rename(const std::filesystem::path& oldPath, const std::string_view newName)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!source.empty(), "Source is empty!");
-    TRAP_ASSERT(!destination.empty(), "Destination is empty!");
-
-    //Sanity checks
-    if(!FileOrFolderExists(source))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(), "\" to \"", destination.u8string(),
-                 "\" (source file doesn't exist or path is invalid)!");
-        return false;
-    }
-    if(!source.has_filename())
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(), "\" to \"", destination.u8string(),
-                 "\" (missing filename)!");
-        return false;
-    }
-
-    if(destination.has_parent_path() && !FileOrFolderExists(destination.parent_path()))
-    {
-        if(!CreateFolder(destination.parent_path()))
-        {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(), "\" to \"", destination.u8string(),
-                     "\" (failed to create destination folder)!");
-            return false;
-        }
-    }
-
-    std::filesystem::path destWithFilename = destination;
-    if(!destination.has_filename())
-        destWithFilename /= source.filename();
-
-    std::error_code ec{};
-    std::filesystem::copy_options cpOptions{};
-    if(overwriteExisting)
-        cpOptions = std::filesystem::copy_options::overwrite_existing;
-    else
-        cpOptions = std::filesystem::copy_options::skip_existing;
-
-    const bool res = std::filesystem::copy_file(source, destWithFilename, cpOptions);
-
-    if(ec)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't copy file: \"", source.u8string(), "\" to \"", destWithFilename.u8string(),
-                 "\"(", ec.message(), ")!");
-        return false;
-    }
-
-    return res;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::FileSystem::RenameFolder(const std::filesystem::path& oldPath, const std::filesystem::path& newPath)
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    TRAP_ASSERT(!oldPath.empty(), "OldPath is empty!");
-    TRAP_ASSERT(!newPath.empty(), "NewPath is empty!");
-
-    return MoveFolder(oldPath, newPath);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::FileSystem::RenameFile(const std::filesystem::path& oldPath, const std::string_view newName)
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    TRAP_ASSERT(!oldPath.empty(), "OldPath is empty!");
+    TRAP_ASSERT(!oldPath.empty(), "OldFolderPath is empty!");
     TRAP_ASSERT(!newName.empty(), "NewName is empty!");
 
-    return RenameFolder(oldPath, (oldPath.parent_path() / newName / oldPath.extension()));
+    std::filesystem::path newPath = oldPath;
+    try
+    {
+        newPath.replace_filename(newName);
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't rename file or folder: \"", oldPath.u8string(), "\" to \"", newName,
+                 "\" (", e.what(), ")!");
+        return false;
+    }
+
+    return Move(oldPath, newPath);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
+bool TRAP::FileSystem::Exists(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -419,32 +298,16 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path, const bool recursive)
+std::optional<uintmax_t> TRAP::FileSystem::GetSize(const std::filesystem::path& path, const bool recursive)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(path))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                 "\" (file or folder doesn't exist)!");
-        return std::nullopt;
-    }
-
-    std::error_code ec{};
-    bool res = std::filesystem::is_directory(path, ec);
-
-    if(ec)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                 "\" (", ec.message(), ")!");
-        return std::nullopt;
-    }
-
     //File
-    if(!res)
+    if(IsFile(path))
     {
+        std::error_code ec{};
         const uintmax_t size = std::filesystem::file_size(path, ec);
 
         if(ec)
@@ -453,78 +316,103 @@ std::optional<uintmax_t> TRAP::FileSystem::GetFileOrFolderSize(const std::filesy
                      "\" (", ec.message(), ")!");
             return std::nullopt;
         }
+        else if(size == static_cast<uintmax_t>(-1))
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
+                     "\" (size is -1)!");
+            return std::nullopt;
+        }
 
         return size;
     }
 
     //Folder
-    uintmax_t size = 0;
-    if(recursive)
+    if(IsFolder(path))
     {
-        const std::filesystem::recursive_directory_iterator rDIt(path, ec);
-        if(ec)
+        std::error_code ec{};
+        uintmax_t size = 0;
+        bool res = false;
+        if(recursive)
         {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                     "\" (", ec.message(), ")!");
-            return std::nullopt;
-        }
-
-        for(const auto& entry : rDIt)
-        {
-            res = entry.is_regular_file(ec);
+            const std::filesystem::recursive_directory_iterator rDIt(path, ec);
             if(ec)
             {
-                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                         "\" (", ec.message(), ")!");
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
+                        "\" (", ec.message(), ")!");
                 return std::nullopt;
             }
-            if(res)
+
+            for(const auto& entry : rDIt)
             {
-                const uintmax_t fileSize = entry.file_size(ec);
+                res = entry.is_regular_file(ec);
                 if(ec)
                 {
                     TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                             "\" (", ec.message(), ")!");
+                            "\" (", ec.message(), ")!");
                     return std::nullopt;
                 }
-                size += fileSize;
+                if(res)
+                {
+                    const uintmax_t fileSize = entry.file_size(ec);
+                    if(ec)
+                    {
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
+                                "\" (", ec.message(), ")!");
+                        return std::nullopt;
+                    }
+                    else if(fileSize == static_cast<uintmax_t>(-1))
+                    {
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
+                                "\" (size is -1)!");
+                        return std::nullopt;
+                    }
+                    size += fileSize;
+                }
             }
         }
-    }
-    else /*if(!recursive)*/
-    {
-        const std::filesystem::directory_iterator dIt(path, ec);
-        if(ec)
+        else /*if(!recursive)*/
         {
-            TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
-                     "\" (", ec.message(), ")!");
-            return std::nullopt;
-        }
-
-        for(const auto& entry : dIt)
-        {
-            res = entry.is_regular_file(ec);
+            const std::filesystem::directory_iterator dIt(path, ec);
             if(ec)
             {
-                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                         "\" (", ec.message(), ")!");
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", path.u8string(),
+                        "\" (", ec.message(), ")!");
                 return std::nullopt;
             }
-            if(res)
+
+            for(const auto& entry : dIt)
             {
-                const uintmax_t fileSize = entry.file_size(ec);
+                res = entry.is_regular_file(ec);
                 if(ec)
                 {
                     TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
-                             "\" (", ec.message(), ")!");
+                            "\" (", ec.message(), ")!");
                     return std::nullopt;
                 }
-                size += fileSize;
+                if(res)
+                {
+                    const uintmax_t fileSize = entry.file_size(ec);
+                    if(ec)
+                    {
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
+                                "\" (", ec.message(), ")!");
+                        return std::nullopt;
+                    }
+                    else if(fileSize == static_cast<uintmax_t>(-1))
+                    {
+                        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file size of: \"", entry.path().u8string(),
+                                "\" (size is -1)!");
+                        return std::nullopt;
+                    }
+                    size += fileSize;
+                }
             }
         }
+
+        return size;
     }
 
-    return size;
+    return std::nullopt;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -535,19 +423,18 @@ std::optional<std::filesystem::file_time_type> TRAP::FileSystem::GetLastWriteTim
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(path))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.u8string(),
-                 "\" (file/folder doesn't exist or path is invalid)!");
-        return std::nullopt;
-    }
-
     std::error_code ec{};
     const auto res = std::filesystem::last_write_time(path, ec);
     if(ec)
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.u8string(),
                  "\" (", ec.message(), ")!");
+        return std::nullopt;
+    }
+    else if(res == std::filesystem::file_time_type::min())
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get last write time: \"", path.u8string(),
+                 "\" (time is min)!");
         return std::nullopt;
     }
 
@@ -562,24 +449,48 @@ std::optional<std::string> TRAP::FileSystem::GetFileNameWithEnding(const std::fi
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!path.has_filename())
+    std::string res{};
+    try //filename() may throw implementation defined exceptions
+    {
+        res = path.filename().u8string();
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file name with ending: \"", path.u8string(),
+                 "\" (", e.what(), ")!");
+        return std::nullopt;
+    }
+
+    if(res.empty())
         return std::nullopt;
 
-    return path.filename().u8string();
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::string> TRAP::FileSystem::GetFileName(const std::filesystem::path& path)
+std::optional<std::string> TRAP::FileSystem::GetFileNameWithoutEnding(const std::filesystem::path& path)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!path.has_stem())
+    std::string res{};
+    try //stem() may throw implementation defined exceptions
+    {
+        res = path.stem().u8string();
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file name: \"", path.u8string(),
+                 "\" (", e.what(), ")!");
+        return std::nullopt;
+    }
+
+    if(res.empty())
         return std::nullopt;
 
-    return path.stem().u8string();
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -590,10 +501,22 @@ std::optional<std::string> TRAP::FileSystem::GetFileEnding(const std::filesystem
 
     TRAP_ASSERT(!path.empty(), "Path is empty!");
 
-    if(!path.has_extension())
+    std::string res{};
+    try //extension() may throw implementation defined exceptions
+    {
+        res = path.extension().u8string();
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get file ending: \"", path.u8string(),
+                 "\" (", e.what(), ")!");
+        return std::nullopt;
+    }
+
+    if(res.empty())
         return std::nullopt;
 
-    return path.extension().u8string();
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -604,10 +527,22 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetFolderPath(const std::
 
     TRAP_ASSERT(!filePath.empty(), "Path is empty!");
 
-    if (!filePath.has_relative_path())
+    std::filesystem::path res{};
+    try //parent_path() may throw implementation defined exceptions
+    {
+        res = filePath.parent_path();
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't get folder path: \"", filePath.u8string(),
+                 "\" (", e.what(), ")!");
+        return std::nullopt;
+    }
+
+    if(res.empty())
         return std::nullopt;
 
-    return filePath.parent_path();
+    return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -726,7 +661,7 @@ std::optional<std::filesystem::path> TRAP::FileSystem::GetGameLogFolderPath()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
+bool TRAP::FileSystem::IsEquivalent(const std::filesystem::path& p1, const std::filesystem::path& p2)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
@@ -744,46 +679,6 @@ bool TRAP::FileSystem::IsPathEquivalent(const std::filesystem::path& p1, const s
     }
 
     return res;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::FileSystem::IsPathAbsolute(const std::filesystem::path& p)
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    TRAP_ASSERT(!p.empty(), "Path is empty!");
-
-    //is_absolute() may throw implementation-defined exception
-    try
-    {
-        return p.is_absolute();
-    }
-    catch(const std::exception& e)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is absolute: \"", p.u8string(), "\" (", e.what(), ")!");
-        return false;
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::FileSystem::IsPathRelative(const std::filesystem::path& p)
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    TRAP_ASSERT(!p.empty(), "Path is empty!");
-
-    //is_relative() may throw implementation-defined exception
-    try
-    {
-        return p.is_relative();
-    }
-    catch(const std::exception& e)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Error while checking if path is relative: \"", p.u8string(), "\" (", e.what(), ")!");
-        return false;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -828,14 +723,77 @@ bool TRAP::FileSystem::IsFile(const std::filesystem::path& p)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
+bool TRAP::FileSystem::IsEmpty(const std::filesystem::path& p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!p.empty(), "Path is empty!");
 
-    if(IsPathAbsolute(p))
-        return p;
+    std::error_code ec{};
+    const bool res = std::filesystem::is_empty(p, ec);
+
+    if(ec)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path leads to an empty file or folder: \"", p.u8string(), "\" (", ec.message(), ")!");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FileSystem::IsAbsolute(const std::filesystem::path& p)
+{
+    ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
+    bool res = false;
+
+    try
+    {
+        res = p.is_absolute();
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is absolute: \"", p.u8string(), "\" (", e.what(), ")!");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::FileSystem::IsRelative(const std::filesystem::path& p)
+{
+    ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
+    bool res = false;
+
+    try
+    {
+        res = p.is_relative();
+    }
+    catch(const std::exception& e)
+    {
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't check if path is relative: \"", p.u8string(), "\" (", e.what(), ")!");
+        return false;
+    }
+
+    return res;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std::filesystem::path& p)
+{
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
 
     std::error_code ec{};
     const std::filesystem::path res = std::filesystem::absolute(p, ec);
@@ -845,6 +803,9 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToAbsolutePath(const std:
         TP_ERROR(Log::FileSystemPrefix, "Error while converting path to absolute: \"", p.u8string(), "\" (", ec.message(), ")!");
         return std::nullopt;
     }
+
+    if(res.empty())
+        return std::nullopt;
 
     return res;
 }
@@ -857,9 +818,6 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std:
 
     TRAP_ASSERT(!p.empty(), "Path is empty!");
 
-    if(IsPathRelative(p))
-        return p;
-
     std::error_code ec{};
     const std::filesystem::path res = std::filesystem::proximate(p, ec);
 
@@ -869,138 +827,52 @@ std::optional<std::filesystem::path> TRAP::FileSystem::ToRelativePath(const std:
         return std::nullopt;
     }
 
+    if(res.empty())
+        return std::nullopt;
+
     return res;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::OpenFolderInFileBrowser(const std::filesystem::path& p)
+bool TRAP::FileSystem::SetCurrentFolderPath(const std::filesystem::path &p)
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
     TRAP_ASSERT(!p.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(p))
+    std::error_code ec{};
+    std::filesystem::current_path(p, ec);
+
+    if(ec)
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (folder doesn't exist)!");
+        TP_ERROR(Log::FileSystemPrefix, "Error while settings current path: \"", p.u8string(), "\" (", ec.message(), ")!");
         return false;
     }
-    if(!IsFolder(p))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (path doesn't lead to a folder)!");
-        return false;
-    }
-
-    auto absPath = ToAbsolutePath(p);
-    if(!absPath)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
-        return false;
-    }
-
-#ifdef TRAP_PLATFORM_WINDOWS
-    absPath = (*absPath).make_preferred(); //Replaces all "/" with "\"
-
-    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-
-    const HINSTANCE res = ShellExecute(nullptr, L"explore", (*absPath).c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-    if(reinterpret_cast<const INT_PTR>(res) <= 32)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
-    }
-
-	if (initRes == S_OK || initRes == S_FALSE)
-		CoUninitialize();
-
-    return reinterpret_cast<const INT_PTR>(res) > 32;
-#elif defined(TRAP_PLATFORM_LINUX)
-    std::string cmd = "xdg-open ";
-    cmd += (*absPath).u8string();
-    FILE* const xdg = popen(cmd.c_str(), "r");
-    if(!xdg)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
-        return false;
-    }
-    pclose(xdg);
 
     return true;
-#else
-    assert(false, "OpenFolderInFileBrowser() not implemented!");
-    return false;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::OpenFileInFileBrowser(const std::filesystem::path& p)
+bool TRAP::FileSystem::OpenInFileBrowser(const std::filesystem::path& p)
 {
     TRAP_ASSERT(!p.empty(), "Path is empty!");
 
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    if(!FileOrFolderExists(p))
+    if(!Exists(p))
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (file doesn't exist)!");
+        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: \"", p.u8string(), "\" (file/folder doesn't exist)!");
         return false;
     }
-    if(!IsFile(p))
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (path doesn't lead to a file)!");
-        return false;
-    }
+    if(IsFile(p))
+        return OpenFileInFileBrowser(p);
+    if(IsFolder(p))
+        return OpenFolderInFileBrowser(p);
 
-    auto absPath = ToAbsolutePath(p);
-    if(!absPath)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
-        return false;
-    }
-
-#ifdef TRAP_PLATFORM_WINDOWS
-    absPath = (*absPath).make_preferred(); //Replaces all "/" with "\"
-
-    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
-    const std::wstring absPathW = absPath->wstring();
-    LPITEMIDLIST pidl = nullptr;
-    if (SHParseDisplayName(absPathW.c_str(), nullptr, &pidl, 0, nullptr) != S_OK)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
-        return false;
-    }
-
-    const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
-    if(res != S_OK)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
-    }
-
-	if (initRes == S_OK || initRes == S_FALSE)
-		CoUninitialize();
-
-    return res == S_OK;
-#elif defined(TRAP_PLATFORM_LINUX)
-    std::string cmd = "xdg-open ";
-    cmd += (*absPath).parent_path().u8string();
-    FILE* const xdg = popen(cmd.c_str(), "r");
-    if(!xdg)
-    {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
-        return false;
-    }
-    pclose(xdg);
-
-    return true;
-#else
-    assert(false, "OpenFileInFileBrowser() not implemented!");
+    TP_ERROR(Log::FileSystemPrefix, "Couldn't open file/folder in file browser: \"", p.u8string(), "\" (path doesn't lead to a file/folder)!");
     return false;
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1011,7 +883,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 
     TRAP_ASSERT(!p.empty(), "Path is empty!");
 
-    if(!FileOrFolderExists(p))
+    if(!Exists(p))
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\" (file/folder doesn't exist)!");
         return false;
@@ -1025,11 +897,11 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
     }
 
 #ifdef TRAP_PLATFORM_WINDOWS
-    absPath = (*absPath).make_preferred(); //Replaces all "/" with "\"
+    absPath = absPath->make_preferred(); //Replaces all "/" with "\"
 
     const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
-    const HINSTANCE res = ShellExecute(nullptr, L"open", (*absPath).c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    const HINSTANCE res = ShellExecuteW(nullptr, L"open", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
     if(reinterpret_cast<const INT_PTR>(res) <= 32)
     {
         TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
@@ -1042,7 +914,7 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
     return reinterpret_cast<const INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
     std::string cmd = "xdg-open ";
-    cmd += (*absPath).u8string();
+    cmd += absPath->native();
     FILE* const xdg = popen(cmd.c_str(), "r");
     if(!xdg)
     {
@@ -1055,6 +927,131 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
     return true;
 #else
     assert(false, "OpenExternally() not implemented!");
+    return false;
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//INTERNAL-----------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+/// <summary>
+/// Opens the file browser at the given path.
+///
+/// Note: Linux uses xdg-open.
+/// </summary>
+/// <param name="p">Path to folder to open in file browser.</param>
+/// <returns>True on success, false otherwise.</returns>
+bool OpenFolderInFileBrowser(const std::filesystem::path& p)
+{
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
+    auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
+    if(!absPath)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
+        return false;
+    }
+
+#ifdef TRAP_PLATFORM_WINDOWS
+    absPath = absPath->make_preferred(); //Replaces all "/" with "\"
+
+    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+    const HINSTANCE res = ShellExecuteW(nullptr, L"explore", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    if(reinterpret_cast<const INT_PTR>(res) <= 32)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+    }
+
+	if (initRes == S_OK || initRes == S_FALSE)
+		CoUninitialize();
+
+    return reinterpret_cast<const INT_PTR>(res) > 32;
+#elif defined(TRAP_PLATFORM_LINUX)
+    std::string cmd = "xdg-open ";
+    cmd += (*absPath).u8string();
+    FILE* const xdg = popen(cmd.c_str(), "r");
+    if(!xdg)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+        return false;
+    }
+    pclose(xdg);
+
+    return true;
+#else
+    assert(false, "OpenFolderInFileBrowser() not implemented!");
+    return false;
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+/// <summary>
+/// Opens the file browser and selects the given file.
+///
+/// Note: On Linux this function does't select the given file.
+/// Note: Linux uses xdg-open.
+/// </summary>
+/// <param name="p">Path to file to open in file browser.</param>
+/// <returns>True on success, false otherwise.</returns>
+bool OpenFileInFileBrowser(const std::filesystem::path& p)
+{
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
+
+	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
+    if(!absPath)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (failed to convert path to absolute format)!");
+        return false;
+    }
+
+#ifdef TRAP_PLATFORM_WINDOWS
+    const std::wstring openPath = absPath->wstring();
+
+    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+    LPITEMIDLIST pidl = nullptr;
+    if (SHParseDisplayName(openPath.c_str(), nullptr, &pidl, 0, nullptr) != S_OK)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+        return false;
+    }
+
+    const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
+    if(res != S_OK)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+    }
+
+	if (initRes == S_OK || initRes == S_FALSE)
+		CoUninitialize();
+
+    return res == S_OK;
+#elif defined(TRAP_PLATFORM_LINUX)
+    std::string cmd = "xdg-open ";
+    cmd += absPath->parent_path().u8string();
+    FILE* const xdg = popen(cmd.c_str(), "r");
+    if(!xdg)
+    {
+        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+        return false;
+    }
+    pclose(xdg);
+
+    return true;
+#else
+    assert(false, "OpenFileInFileBrowser() not implemented!");
     return false;
 #endif
 }

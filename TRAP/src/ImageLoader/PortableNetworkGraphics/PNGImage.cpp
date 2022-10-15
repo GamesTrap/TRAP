@@ -19,7 +19,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::filesystem::path filepath)
 
 	TP_DEBUG(Log::ImagePNGPrefix, "Loading image: \"", m_filepath.u8string(), "\"");
 
-	if (!FileSystem::FileOrFolderExists(m_filepath))
+	if (!FileSystem::Exists(m_filepath))
 		return;
 
 	std::ifstream file(m_filepath, std::ios::binary);

@@ -1230,7 +1230,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		//Use normal file loading
 		for(const std::filesystem::path& str : textureLoadDesc.Filepaths)
 		{
-			if(str.empty() || !TRAP::FileSystem::FileOrFolderExists(str) || !TRAP::Image::IsSupportedImageFile(str))
+			if(str.empty() || !TRAP::FileSystem::Exists(str) || !TRAP::Image::IsSupportedImageFile(str))
 			{
 				validMultiFileCubemap = false;
 				break;
@@ -1260,7 +1260,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	if(!textureLoadDesc.Images[0] && supported)
 	{
 		if((textureLoadDesc.Filepaths[0].empty() ||
-			!TRAP::FileSystem::FileOrFolderExists(textureLoadDesc.Filepaths[0]) ||
+			!TRAP::FileSystem::Exists(textureLoadDesc.Filepaths[0]) ||
 			!TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
 		{
 			supported = false;

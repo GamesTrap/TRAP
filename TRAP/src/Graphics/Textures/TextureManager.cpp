@@ -292,7 +292,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 		{
 			if (texture->GetType() == TextureType::Texture2D)
 			{
-				if (FileSystem::IsPathEquivalent(nameOrPath, texture->GetFilePath()))
+				if (FileSystem::IsEquivalent(nameOrPath, texture->GetFilePath()))
 				{
 					if(texture->Reload())
 						TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -307,7 +307,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::Reload(const 
 					if (texture->GetFilePaths()[i].empty())
 						continue;
 
-					if (FileSystem::IsPathEquivalent(nameOrPath, texture->GetFilePaths()[i]))
+					if (FileSystem::IsEquivalent(nameOrPath, texture->GetFilePaths()[i]))
 					{
 						if(texture->Reload())
 							TP_INFO(Log::TextureManagerPrefix, "Reloaded: \"", nameOrPath, "\"");
@@ -373,7 +373,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 	{
 		if (texture->GetType() == TextureType::Texture2D)
 		{
-			if (FileSystem::IsPathEquivalent(texture->GetFilePath(), path))
+			if (FileSystem::IsEquivalent(texture->GetFilePath(), path))
 				return true;
 		}
 		else if(texture->GetType() == TextureType::TextureCube)
@@ -381,7 +381,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 			const std::array<std::filesystem::path, 6> imageFilePaths = texture->GetFilePaths();
 			for(const auto& filePath : imageFilePaths)
 			{
-				if (FileSystem::IsPathEquivalent(filePath, path))
+				if (FileSystem::IsEquivalent(filePath, path))
 					return true;
 			}
 		}
