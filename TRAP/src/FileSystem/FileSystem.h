@@ -28,10 +28,12 @@
 #ifndef TRAP_FS_H
 #define TRAP_FS_H
 
+#include <cstdint>
 #include <optional>
+#include <vector>
+#include <filesystem>
 
-#include "Application.h"
-#include "FileWatcher.h"
+#include "Log/Log.h"
 
 namespace TRAP
 {

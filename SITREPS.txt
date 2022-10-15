@@ -3354,3 +3354,8 @@ SITREP 10/14/2022|22w41a2
     - LinuxInput Replaced opendir(), readdir() & closedir() in InitController() with std::filesystem equivalents ~<10 mins
     - FileWatcher Fixed MSVC compilation errors ~<5 mins
     - FileSystem OpenFileInFileBrowser() Replaced ILCreateFromPath() with SHParseDisplayName() ~<5 mins
+
+SITREP 10/15/2022|22w41a3
+    - Changed TRAP Engine version to 22w41a3(0.8.59)
+    - FileChangeEvent Changed oldName to be of type std::optional<std::filesystem::path> ~<5 mins
+    - FileSystem Added and changed error message ~<30 mins

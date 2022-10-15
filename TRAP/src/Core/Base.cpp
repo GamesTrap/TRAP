@@ -1,4 +1,5 @@
 #include "TRAPPCH.h"
+#include "Base.h"
 
 #ifdef TRACY_ENABLE
 void* operator new(const std::size_t count)

@@ -3,6 +3,7 @@
 
 #include "FileSystem.h"
 #include "Events/FileEvent.h"
+#include "Utils/String/String.h"
 #include "Utils/Utils.h"
 
 TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, const bool recursive)
@@ -333,7 +334,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
                 const std::filesystem::path filePath = (m_paths[i] / std::filesystem::path(std::wstring(notify->FileName, filenameLength)));
                 FileStatus status;
-                std::filesystem::path oldFileName = "";
+                std::optional<std::filesystem::path> oldFileName = std::nullopt;
 
                 switch(notify->Action)
                 {
@@ -571,7 +572,7 @@ void TRAP::FileSystem::FileWatcher::Watch()
             FileStatus status = FileStatus::Created;
             const std::filesystem::path filePath = watchDescriptors[event->wd] / std::filesystem::path(event->name);
             const bool isDir = std::filesystem::is_directory(filePath);
-            std::filesystem::path oldFileName = "";
+            std::optional<std::filesystem::path> oldFileName = std::nullopt;
 
             if(event->mask & IN_CREATE)
             {

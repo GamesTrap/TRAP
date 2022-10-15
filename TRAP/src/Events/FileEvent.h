@@ -1,6 +1,8 @@
 #ifndef TRAP_FILEEVENT_H
 #define TRAP_FILEEVENT_H
 
+#include <optional>
+
 #include "Event.h"
 #include "FileSystem/FileWatcher.h"
 
@@ -17,9 +19,9 @@ namespace TRAP::Events
 		/// </summary>
         /// <param name="status">Status of the provided file or folder.</param>
         /// <param name="path">Path to a file or folder.</param>
-        /// <param name="oldName">Old name of the file or folder. Only if FileStatus::Renamed.</param>
+        /// <param name="oldName">Optional: Old name of the file or folder. Only set if status is FileStatus::Renamed.</param>
 		FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
-                        std::filesystem::path oldName = "");
+                        std::optional<std::filesystem::path> oldName = std::nullopt);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -56,7 +58,7 @@ namespace TRAP::Events
         /// Only set when FileStatus::Renamed.
         /// </summary>
         /// <returns>The old name of the file.</returns>
-        std::filesystem::path GetOldName() const;
+        std::optional<std::filesystem::path> GetOldName() const;
 
 		/// <summary>
 		/// Get a string representation of the FileEvent.
@@ -88,7 +90,7 @@ namespace TRAP::Events
 	private:
         TRAP::FileSystem::FileStatus m_status;
         std::filesystem::path m_path;
-        std::filesystem::path m_oldName;
+        std::optional<std::filesystem::path> m_oldName;
 	};
 }
 

@@ -2,6 +2,7 @@
 #include "Log.h"
 
 #include "FileSystem/FileSystem.h"
+#include "Utils/String/String.h"
 
 TRAP::Log TRAP::TRAPLog{};
 
