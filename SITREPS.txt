@@ -3380,3 +3380,4 @@ SITREP 10/20/2022|22w42a1
 SITREP 10/21/2022|22w42a2
     - Changed TRAP Engine version to 22w42a2(0.8.61)
     - Docs Added Steamworks SDK to buildingtrap.md ~<5 mins
+    - RendererAPI Changed GetMainWindowData() into a generic GetWindowData() function ~<5 mins

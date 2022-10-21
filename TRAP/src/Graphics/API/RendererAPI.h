@@ -761,10 +761,10 @@ namespace TRAP::Graphics
 
 	//protected:
 		/// <summary>
-		/// Retrieve the main windows internal rendering data.
+		/// Retrieve windows internal rendering data.
 		/// </summary>
-		/// <returns>Main windows internal rendering data.</returns>
-		static PerWindowData& GetMainWindowData();
+		/// <returns>Windows internal rendering data.</returns>
+		static PerWindowData& GetWindowData(const Window* window = nullptr);
 
 	public:
 		/// <summary>

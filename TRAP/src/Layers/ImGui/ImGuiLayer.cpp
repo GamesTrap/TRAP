@@ -97,7 +97,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	);
 
 	//Setup Platform/Renderer bindings
-	const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData();
 
 	TP_TRACE(Log::ImGuiPrefix, "Init...");
 	TRAP::INTERNAL::ImGuiWindowing::Init(window, true, Graphics::RendererAPI::GetRenderAPI());
@@ -228,7 +228,7 @@ void TRAP::ImGuiLayer::Begin()
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		//Bind SwapChain RenderTarget if no RenderPass is active
-		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+		const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData();
 		const auto* const vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			winData.GraphicCommandBuffers[winData.ImageIndex]
@@ -267,7 +267,7 @@ void TRAP::ImGuiLayer::End()
 	ImGui::Render();
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		const auto& winData = TRAP::Graphics::RendererAPI::GetMainWindowData();
+		const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData();
 		if(!Application::GetWindow()->IsMinimized())
 		{
 			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),

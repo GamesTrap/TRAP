@@ -231,11 +231,14 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetMainWindowData()
+TRAP::Graphics::RendererAPI::PerWindowData& TRAP::Graphics::RendererAPI::GetWindowData(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return *s_perWindowDataMap[TRAP::Application::GetWindow()];
+	if (!window)
+		window = TRAP::Application::GetWindow();
+
+	return *s_perWindowDataMap.at(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -249,7 +252,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>
 	(
-		s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline
+		s_perWindowDataMap.at(window)->GraphicsPipelineDesc.Pipeline
 	).RootSignature;
 }
 
@@ -262,7 +265,7 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	const auto* const winData = s_perWindowDataMap[window].get();
+	const auto* const winData = s_perWindowDataMap.at(window).get();
 
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 #ifndef TRAP_HEADLESS_MODE
@@ -393,7 +396,7 @@ void TRAP::Graphics::RendererAPI::ResizeSwapChain(const Window* window)
 	if (!window)
 		window = TRAP::Application::GetWindow();
 
-	s_perWindowDataMap[window]->ResizeSwapChain = true;
+	s_perWindowDataMap.at(window)->ResizeSwapChain = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -405,7 +408,7 @@ float TRAP::Graphics::RendererAPI::GetGPUGraphicsFrameTime(const Window* window)
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	return s_perWindowDataMap[window]->GraphicsFrameTime;
+	return s_perWindowDataMap.at(window)->GraphicsFrameTime;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -417,7 +420,7 @@ float TRAP::Graphics::RendererAPI::GetGPUComputeFrameTime(const Window* window)
 	if(!window)
 		window = TRAP::Application::GetWindow();
 
-	return s_perWindowDataMap[window]->ComputeFrameTime;
+	return s_perWindowDataMap.at(window)->ComputeFrameTime;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -579,5 +582,5 @@ uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* c
 
 	TRAP_ASSERT(window, "Window is nullptr!");
 
-	return s_perWindowDataMap[window]->ImageIndex;
+	return s_perWindowDataMap.at(window)->ImageIndex;
 }
