@@ -3376,3 +3376,7 @@ SITREP 10/20/2022|22w42a1
     - FileSystem made ReadTextFile() faster ~<10 mins
     - FileSystem Fixed WriteFile() and WriteTextFile() append mode ~<5 mins
     - HeadlessTests Addded FileSystemTests ~>60 mins
+
+SITREP 10/21/2022|22w42a2
+    - Changed TRAP Engine version to 22w42a2(0.8.61)
+    - Docs Added Steamworks SDK to buildingtrap.md ~<5 mins

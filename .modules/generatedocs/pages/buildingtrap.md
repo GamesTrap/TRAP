@@ -99,3 +99,14 @@ TRAP™ will then automatically detect if the NVIDIA® Nsight™ Aftermath SDK i
 
 If everything went right, feel free to use the `ENABLE_NSIGHT_AFTERMATH` macro in Base.h to enable Nsight-Aftermath in debug builds.
 :::
+:::{tab} Steamworks SDK
+To install the Steamworks SDK do the following:
+
+1. Create an account on the [Steamworks website](https://partner.steamgames.com/).
+2. Download the [Steamworks SDK](https://partner.steamgames.com/doc/sdk).
+3. Extract the contents of the downloaded SDK to the `Dependencies/SteamworksSDK` folder.
+
+TRAP™ will then automatically detect if the Steamworks SDK is installed properly on the next run of any of the GenerateProject scripts inside the `GeneratorScripts` folder.
+
+If everything went right, feel free to use the TRAP::Utils::Steam namespace.
+:::
