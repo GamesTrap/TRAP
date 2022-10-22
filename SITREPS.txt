@@ -3385,3 +3385,5 @@ SITREP 10/21/2022|22w42a2
 SITREP 10/22/2022|22w42b1
     - Changed TRAP Engine version to 22w42b1(0.8.62)
     - Changed includes ~>20 mins
+    - RendererAPI Removed the default window = nullptr stuff, RenderCommand now defaults to TRAP::Application::GetWindow() ~>10 mins
+    - Fixed MSVC linker error ~<5 mins

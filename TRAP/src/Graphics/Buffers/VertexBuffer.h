@@ -1,6 +1,7 @@
 #ifndef TRAP_VERTEXBUFFER_H
 #define TRAP_VERTEXBUFFER_H
 
+#include "Application.h"
 #include "VertexBufferLayout.h"
 #include "Graphics/API/ResourceLoader.h"
 
@@ -75,8 +76,8 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
-		/// <param name="window">Window to use vertex buffer on.</param>
-		void Use(const Window* window = nullptr) const;
+		/// <param name="window">Window to use vertex buffer on. Default: Main Window.</param>
+		void Use(const Window* const window = TRAP::Application::GetWindow()) const;
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.

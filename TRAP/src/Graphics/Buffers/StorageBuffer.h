@@ -74,10 +74,10 @@ namespace TRAP::Graphics
 		/// <param name="data">Pointer to store data in.</param>
 		/// <param name="size">Byte size for data storage.</param>
 		/// <param name="offset">Offset into the currently used data.</param>
-		/// <param name="window">Window to use for the data retrieval.</param>
+		/// <param name="window">Window to use for the data retrieval. Default: Main Window.</param>
 		template<typename T>
 		void GetData(const T* data, uint64_t size, const uint64_t offset = 0,
-		             const Window* window = nullptr);
+		             const Window* const window = TRAP::Application::GetWindow());
 
 		/// <summary>
 		/// Check whether uploading data to the GPU has finished.
@@ -128,14 +128,12 @@ namespace TRAP::Graphics
 }
 
 template<typename T>
-inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* window)
+inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const uint64_t size, const uint64_t offset, const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	const uint32_t imageIndex = GetUpdateFrequency() ==

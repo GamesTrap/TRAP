@@ -1,6 +1,7 @@
 #ifndef TRAP_INDEXBUFFER_H
 #define TRAP_INDEXBUFFER_H
 
+#include "Application.h"
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/Buffer.h"
 
@@ -58,8 +59,8 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Use this buffer for rendering on the given window.
 		/// </summary>
-		/// <param name="window">Window to use index buffer on.</param>
-		void Use(const Window* window = nullptr) const;
+		/// <param name="window">Window to use index buffer on. Default: Main Window.</param>
+		void Use(const Window* const window = TRAP::Application::GetWindow()) const;
 
 		/// <summary>
 		/// Update the buffers index data.

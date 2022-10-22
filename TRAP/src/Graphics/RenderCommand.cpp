@@ -3,7 +3,7 @@
 
 #include "Application.h"
 
-void TRAP::Graphics::RenderCommand::Flush(const Window* window)
+void TRAP::Graphics::RenderCommand::Flush(const Window* const window)
 {
 	RendererAPI::GetRenderer()->Flush(window);
 }
@@ -462,14 +462,14 @@ std::string TRAP::Graphics::RenderCommand::GetGPUName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, Window* const window)
+void TRAP::Graphics::RenderCommand::SetLatencyMode(const LatencyMode mode, const Window* const window)
 {
 	RendererAPI::GetRenderer()->SetLatencyMode(mode, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(Window* const window)
+TRAP::Graphics::LatencyMode TRAP::Graphics::RenderCommand::GetLatencyMode(const Window* const window)
 {
 	return RendererAPI::GetRenderer()->GetLatencyMode(window);
 }

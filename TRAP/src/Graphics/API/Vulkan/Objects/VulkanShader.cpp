@@ -145,12 +145,11 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::Use(const Window* window)
+void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	if(!window)
-		window = Application::GetWindow();
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this, window);
 
@@ -202,17 +201,15 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uint32_t binding,
-                                                   Ref<TRAP::Graphics::Texture> const texture, const Window* window) const
+                                                   Ref<TRAP::Graphics::Texture> const texture, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(texture, "Texture is nullptr!");
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	if(!m_valid)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	//OPTIMIZE Use index into root signature instead of name
 	bool shaderUAV = false;
@@ -246,17 +243,15 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 
 void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const uint32_t binding,
 													const std::vector<Ref<TRAP::Graphics::Texture>>& textures,
-													const Window* window) const
+													const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	if(!m_valid)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	//OPTIMIZE Use index into root signature instead of name
 	bool shaderUAV = false;
@@ -291,17 +286,15 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
-	                                               TRAP::Graphics::Sampler* const sampler, const Window* window) const
+	                                               TRAP::Graphics::Sampler* const sampler, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(sampler, "Sampler is nullptr!");
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	if(!m_valid)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	//OPTIMIZE Use index into root signature instead of name
 	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler);
@@ -328,17 +321,15 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 
 void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
 	                                                const std::vector<TRAP::Graphics::Sampler*>& samplers,
-													const Window* window) const
+													const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	if(!m_valid)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	//OPTIMIZE Use index into root signature instead of name
 	const std::string name = RetrieveDescriptorName(set, binding, RendererAPI::DescriptorType::Sampler,
@@ -367,17 +358,15 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 
 void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_t binding,
                                                const TRAP::Graphics::UniformBuffer* const uniformBuffer,
-											   const uint64_t size,  const uint64_t offset, const Window* window) const
+											   const uint64_t size,  const uint64_t offset, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(uniformBuffer, "UniformBuffer is nullptr!");
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	if(!m_valid)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	const uint32_t UBOIndex = (uniformBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                          0 : RendererAPI::GetCurrentImageIndex(window);
@@ -389,17 +378,15 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 
 void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32_t binding,
                                                 const TRAP::Graphics::StorageBuffer* const storageBuffer,
-											    const uint64_t size, const Window* window) const
+											    const uint64_t size, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
+	TRAP_ASSERT(window, "Window is nullptr");
 
 	if(!m_valid)
 		return;
-
-	if(!window)
-		window = TRAP::Application::GetWindow();
 
 	const uint32_t SSBOIndex = (storageBuffer->GetUpdateFrequency() == RendererAPI::DescriptorUpdateFrequency::Static) ?
 		                           0 : RendererAPI::GetCurrentImageIndex(window);

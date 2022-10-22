@@ -3,14 +3,11 @@
 
 #include <string>
 
+#include "Utils/Time/TimeStep.h"
+
 namespace TRAP::Events
 {
 	class Event;
-}
-
-namespace TRAP::Utils
-{
-	struct TimeStep;
 }
 
 namespace TRAP

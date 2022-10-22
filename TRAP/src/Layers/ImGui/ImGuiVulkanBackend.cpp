@@ -27,6 +27,7 @@ Modified by Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "ImGuiVulkanBackend.h"
 
+#include "Application.h"
 #include "Maths/Math.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
@@ -758,7 +759,7 @@ void ImGui_ImplVulkan_UploadFontsTexture()
     //Destroy old font
     ImGui_ImplVulkan_DestroyFontsTexture();
 
-    const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData();
+    const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
     //Execute a GPU command to upload ImGui font textures
     TRAP::Graphics::CommandBuffer* cmd = winData.GraphicCommandPools[winData.ImageIndex]->AllocateCommandBuffer(false);
     cmd->Begin();
@@ -1803,7 +1804,7 @@ void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData();
+	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 

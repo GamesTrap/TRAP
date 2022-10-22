@@ -341,12 +341,12 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     if(m_wireFrame)
     {
         TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Line);
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::None);
+        TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::None);
     }
     else
     {
         TRAP::Graphics::RenderCommand::SetFillMode(TRAP::Graphics::FillMode::Solid);
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetCullMode(TRAP::Graphics::RendererAPI::CullMode::Back);
+        TRAP::Graphics::RenderCommand::SetCullMode(TRAP::Graphics::CullMode::Back);
     }
 
     TRAP::Graphics::Renderer::BeginScene(m_camera, m_cameraTransform.GetTransform());
@@ -507,7 +507,7 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
     if(event.GetRepeatCount() != 0)
         return false;
 
-	if(event.GetKey() == TRAP::Input::Key::F1)
+    if(event.GetKey() == TRAP::Input::Key::F1)
 	{
         m_currentShader = (m_currentShader + 1) % m_shaderNames.size();
         return true;
