@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "SpriteAnimation.h"
 
+#include "Utils/Time/TimeStep.h"
+
 TRAP::Ref<TRAP::Graphics::SpriteAnimation> TRAP::Graphics::SpriteAnimation::Create(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

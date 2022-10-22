@@ -2,6 +2,7 @@
 #include "SpriteManager.h"
 
 #include "SubTexture2D.h"
+#include "Texture.h"
 #include "FileSystem/FileSystem.h"
 
 std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>> Sprites;

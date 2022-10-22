@@ -36,6 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Application.h"
 #include "Utils/Utils.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
+#include "Utils/Time/TimeStep.h"
 
 //Action for EWMH client messages
 static constexpr int32_t _NET_WM_STATE_REMOVE = 0;

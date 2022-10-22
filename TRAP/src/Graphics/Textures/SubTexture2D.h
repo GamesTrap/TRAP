@@ -3,11 +3,12 @@
 
 #include <array>
 
-#include "Graphics/Textures/Texture.h"
-#include "Maths/Types.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics
 {
+    class Texture;
+
     class SubTexture2D
     {
     public:

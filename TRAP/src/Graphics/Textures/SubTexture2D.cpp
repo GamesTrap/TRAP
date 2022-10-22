@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "SubTexture2D.h"
 
+#include "Texture.h"
+
 TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFromCoords(std::string name,
                                                                                        Ref<TRAP::Graphics::Texture> texture,
                                                                                        const TRAP::Math::Vec2& coords,

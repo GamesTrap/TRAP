@@ -2,7 +2,6 @@
 #define TRAP_MONITOR_H
 
 #include "Window.h"
-#include "WindowingAPI.h"
 
 namespace TRAP
 {

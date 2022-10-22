@@ -6,7 +6,6 @@
 #include <thread>
 
 #include "RendererAPI.h"
-#include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {

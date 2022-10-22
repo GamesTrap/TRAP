@@ -3,8 +3,6 @@
 
 #include <thread>
 
-#include "Layers/ImGui/ImGuiLayer.h"
-
 #include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
@@ -16,6 +14,8 @@ int main(int32_t argc, char** argv);
 
 namespace TRAP
 {
+	class ImGuiLayer;
+
 	namespace Events
 	{
 		class WindowRestoreEvent;
@@ -31,6 +31,11 @@ namespace TRAP
 	namespace FileSystem
 	{
 		class FileWatcher;
+	}
+
+	namespace Utils
+	{
+		class TimeStep;
 	}
 
 	class Application

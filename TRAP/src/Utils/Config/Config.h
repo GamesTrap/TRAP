@@ -1,7 +1,6 @@
 #ifndef TRAP_CONFIG_H
 #define TRAP_CONFIG_H
 
-#include "Window/Window.h"
 #include "Utils/String/String.h"
 
 namespace TRAP::Utils

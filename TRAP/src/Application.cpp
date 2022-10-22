@@ -25,6 +25,8 @@
 #include "Utils/Discord/DiscordGameSDK.h"
 #include "Utils/Steam/SteamworksSDK.h"
 #include "Utils/Memory.h"
+#include "Utils/Time/TimeStep.h"
+#include "Layers/ImGui/ImGuiLayer.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 

@@ -28,7 +28,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define TRAP_IMGUIWINDOWING_H
 
 #include "Core/PlatformDetection.h"
-#include "Window/WindowingAPI.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::INTERNAL

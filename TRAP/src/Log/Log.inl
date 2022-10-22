@@ -1,8 +1,6 @@
 #ifndef TRAP_LOG_INL
 #define TRAP_LOG_INL
 
-#include "Maths/Types.h"
-
 #ifdef TRAP_PLATFORM_WINDOWS
 
 template <typename ... Args>

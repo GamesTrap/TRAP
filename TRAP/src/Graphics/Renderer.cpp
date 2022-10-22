@@ -4,6 +4,7 @@
 #include "Buffers/VertexBufferLayout.h"
 #include "Buffers/VertexBuffer.h"
 #include "Buffers/IndexBuffer.h"
+#include "Buffers/StorageBuffer.h"
 #include "Cameras/Camera.h"
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"

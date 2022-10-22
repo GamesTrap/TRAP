@@ -32,9 +32,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <map>
 
 #include "Network/IP/IPv4Address.h"
+#include "Network/IP/IPv6Address.h"
 #include "Network/Sockets/TCPSocket.h"
 #include "Network/Sockets/TCPSocketIPv6.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {

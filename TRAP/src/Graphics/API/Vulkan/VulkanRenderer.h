@@ -3,9 +3,6 @@
 
 #include <thread>
 
-#include "Graphics/API/RendererAPI.h"
-#include "Maths/Math.h"
-#include "Window/WindowingAPI.h"
 #include "Graphics/API/ShaderReflection.h"
 
 namespace TRAP::Graphics

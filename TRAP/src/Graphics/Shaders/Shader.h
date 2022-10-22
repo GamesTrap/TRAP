@@ -14,13 +14,12 @@
 #endif
 
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/Buffers/UniformBuffer.h"
-#include "Graphics/Buffers/StorageBuffer.h"
-#include "Graphics/Textures/Texture.h"
-#include "Graphics/API/Objects/DescriptorSet.h"
 
 namespace TRAP::Graphics
 {
+	class UniformBuffer;
+	class StorageBuffer;
+
 	class Shader
 	{
 	public:
@@ -42,11 +41,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Shader(const Shader&) = default;
+		Shader(const Shader&) = delete;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Shader& operator=(const Shader&) = default;
+		Shader& operator=(const Shader&) = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>

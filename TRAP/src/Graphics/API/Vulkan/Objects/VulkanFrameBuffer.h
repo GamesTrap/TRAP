@@ -1,7 +1,6 @@
 #ifndef TRAP_VULKANFRAMEBUFFER_H
 #define TRAP_VULKANFRAMEBUFFER_H
 
-#include "VulkanRenderPass.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API

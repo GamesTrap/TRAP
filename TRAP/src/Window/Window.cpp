@@ -17,6 +17,7 @@
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 #include "Utils/Utils.h"
+#include "Application.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 

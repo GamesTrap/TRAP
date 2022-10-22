@@ -4,6 +4,7 @@
 #include "VulkanRenderTarget.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
+#include "VulkanRenderPass.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device,

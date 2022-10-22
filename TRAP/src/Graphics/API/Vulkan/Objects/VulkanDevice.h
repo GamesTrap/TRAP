@@ -1,13 +1,13 @@
 #ifndef TRAP_VULKANDEVICE_H
 #define TRAP_VULKANDEVICE_H
 
-#include "VulkanQueue.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanInstance;
 	class VulkanPhysicalDevice;
+	class VulkanQueue;
 
 	class VulkanDevice
 	{

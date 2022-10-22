@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Maths/Vec2.h"
+#include "Maths/Math.h"
 
 namespace TRAP
 {

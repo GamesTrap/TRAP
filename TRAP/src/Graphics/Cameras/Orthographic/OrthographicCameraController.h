@@ -4,7 +4,7 @@
 #include "OrthographicCamera.h"
 #include "Utils/Time/TimeStep.h"
 #include "Events/MouseEvent.h"
-#include "Application.h"
+#include "Events/WindowEvent.h"
 
 namespace TRAP::Graphics
 {

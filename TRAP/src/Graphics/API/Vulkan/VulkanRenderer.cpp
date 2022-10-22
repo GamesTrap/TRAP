@@ -9,6 +9,7 @@
 #include "FileSystem/FileSystem.h"
 #include "VulkanCommon.h"
 #include "Embed.h"
+#include "Layers/ImGui/ImGuiLayer.h"
 
 #include "Objects/VulkanSemaphore.h"
 #include "Objects/VulkanFence.h"

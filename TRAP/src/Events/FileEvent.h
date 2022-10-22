@@ -4,7 +4,11 @@
 #include <optional>
 
 #include "Event.h"
-#include "FileSystem/FileWatcher.h"
+
+namespace TRAP::FileSystem
+{
+	enum class FileStatus;
+}
 
 namespace TRAP::Events
 {

@@ -2,7 +2,6 @@
 #define TRAP_CUSTOMIMAGE_H
 
 #include "Image.h"
-#include "Embed.h"
 
 namespace TRAP::INTERNAL
 {

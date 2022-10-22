@@ -1,8 +1,17 @@
 #ifndef TRAP_LAYER_H
 #define TRAP_LAYER_H
 
-#include "Utils/Time/TimeStep.h"
-#include "Events/Event.h"
+#include <string>
+
+namespace TRAP::Events
+{
+	class Event;
+}
+
+namespace TRAP::Utils
+{
+	struct TimeStep;
+}
 
 namespace TRAP
 {

@@ -1,10 +1,7 @@
 #ifndef TRAP_RENDERER2D_H
 #define TRAP_RENDERER2D_H
 
-#include "Cameras/Orthographic/OrthographicCamera.h"
-#include "Graphics/Cameras/Editor/EditorCamera.h"
-#include "Textures/Texture.h"
-#include "Textures/SubTexture2D.h"
+#include "Maths/Math.h"
 
 namespace TRAP
 {
@@ -13,6 +10,10 @@ namespace TRAP
 namespace TRAP::Graphics
 {
 	class Camera;
+	class OrthographicCamera;
+	class EditorCamera;
+	class Texture;
+	class SubTexture2D;
 	struct Renderer2DData;
 
 	class Renderer2D

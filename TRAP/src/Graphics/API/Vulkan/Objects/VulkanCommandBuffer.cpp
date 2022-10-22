@@ -7,6 +7,7 @@
 #include "VulkanCommandSignature.h"
 #include "VulkanQueryPool.h"
 #include "VulkanPhysicalDevice.h"
+#include "VulkanRenderPass.h"
 #include "VulkanBuffer.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/Textures/Texture.h"

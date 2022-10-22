@@ -11,6 +11,7 @@
 #endif
 
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
+#include "Core/Base.h"
 #include "Layers/Layer.h"
 
 namespace TRAP

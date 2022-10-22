@@ -1,7 +1,16 @@
 #ifndef TRAP_SPRITEMANAGER_H
 #define TRAP_SPRITEMANAGER_H
 
-#include "SubTexture2D.h"
+#include <unordered_map>
+
+#include "Core/Base.h"
+#include "Maths/Math.h"
+
+namespace TRAP::Graphics
+{
+	class SubTexture2D;
+	class Texture;
+}
 
 namespace TRAP::Graphics::SpriteManager
 {

@@ -3,7 +3,6 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
-#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {

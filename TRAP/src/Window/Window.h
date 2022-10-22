@@ -1,8 +1,6 @@
 #ifndef TRAP_WINDOW_H
 #define TRAP_WINDOW_H
 
-#include "Events/Event.h"
-#include "ImageLoader/Image.h"
 #include "WindowingAPI.h"
 
 namespace TRAP

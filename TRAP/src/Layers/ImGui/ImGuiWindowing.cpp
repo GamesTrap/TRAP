@@ -28,6 +28,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "ImGuiWindowing.h"
 #include "Application.h"
 #include "Maths/Math.h"
+#include "Utils/Time/TimeStep.h"
 
 std::string TRAP::INTERNAL::ImGuiWindowing::s_clipboardText{};
 

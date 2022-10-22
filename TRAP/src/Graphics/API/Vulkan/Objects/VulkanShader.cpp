@@ -14,6 +14,8 @@
 #include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "Graphics/Textures/Texture.h"
+#include "Graphics/Buffers/UniformBuffer.h"
+#include "Graphics/Buffers/StorageBuffer.h"
 #include "Application.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesystem::path filepath,

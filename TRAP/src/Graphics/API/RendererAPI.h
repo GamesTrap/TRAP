@@ -3,10 +3,7 @@
 
 #include <variant>
 
-#include "Maths/Math.h"
 #include "Window/Window.h"
-
-#include "Layers/ImGui/ImGuiLayer.h"
 #include "ImageFormat.h"
 
 #ifdef NVIDIA_REFLEX_AVAILABLE

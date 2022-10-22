@@ -32,6 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Dialogs/Dialogs.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 #include "Application.h"
+#include "Utils/Time/TimeStep.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 

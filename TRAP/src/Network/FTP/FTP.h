@@ -33,7 +33,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <string>
 
 #include "Network/Sockets/TCPSocket.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {

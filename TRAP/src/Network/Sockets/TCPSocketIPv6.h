@@ -4,11 +4,11 @@
 #include <vector>
 
 #include "Socket.h"
-#include "Network/IP/IPv6Address.h"
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {
+	class IPv6Address;
 	class TCPListenerIPv6;
 	class Packet;
 

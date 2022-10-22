@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
+#include "Application.h"
 #include "FileSystem/FileSystem.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"

@@ -4,10 +4,16 @@
 #include <vector>
 
 #include "Core/Base.h"
-#include "Graphics/Textures/SubTexture2D.h"
+
+namespace TRAP::Utils
+{
+	struct TimeStep;
+}
 
 namespace TRAP::Graphics
 {
+	class SubTexture2D;
+
 	class SpriteAnimation
 	{
 	public:

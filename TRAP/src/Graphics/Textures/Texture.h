@@ -1,7 +1,6 @@
 #ifndef TRAP_TEXTURE_H
 #define TRAP_TEXTURE_H
 
-#include "Graphics/Buffers/VertexBufferLayout.h"
 #include "Graphics/API/ResourceLoader.h"
 
 namespace TRAP

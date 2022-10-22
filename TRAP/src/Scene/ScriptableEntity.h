@@ -2,7 +2,6 @@
 #define TRAP_SCRIPTABLEENTITY_H
 
 #include "Entity.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP
 {
