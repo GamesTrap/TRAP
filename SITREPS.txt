@@ -3387,3 +3387,8 @@ SITREP 10/22/2022|22w42b1
     - Changed includes ~>20 mins
     - RendererAPI Removed the default window = nullptr stuff, RenderCommand now defaults to TRAP::Application::GetWindow() ~>10 mins
     - Fixed MSVC linker error ~<5 mins
+
+SITREP 10/23/2022|22w42c1
+    - Changed TRAP Engine version to 22w42c1(0.8.63)
+    - Integrated NVIDIAReflexTest into InputLagTest ~<10 mins
+    - Removed NVIDIAReflexTests ~<5 mins
