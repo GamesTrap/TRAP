@@ -899,17 +899,24 @@ bool TRAP::FileSystem::OpenExternally(const std::filesystem::path& p)
 #ifdef TRAP_PLATFORM_WINDOWS
     absPath = absPath->make_preferred(); //Replaces all "/" with "\"
 
-    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-
-    const HINSTANCE res = ShellExecuteW(nullptr, L"open", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-    if(reinterpret_cast<const INT_PTR>(res) <= 32)
+    HINSTANCE res{};
     {
-        TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
-        TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
+        TRAP::Utils::Windows::COMInitializer comInitializer{};
+        if(comInitializer.IsInitialized())
+        {
+            res = ShellExecuteW(nullptr, L"open", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+            if(reinterpret_cast<const INT_PTR>(res) <= 32)
+            {
+                TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\"!");
+                TP_ERROR(Log::FileSystemPrefix, Utils::String::GetStrError());
+            }
+        }
+        else
+        {
+            TP_ERROR(Log::FileSystemPrefix, "Couldn't open externally: \"", p.u8string(), "\" (COM initialization failed)!");
+            return false;
+        }
     }
-
-	if (initRes == S_OK || initRes == S_FALSE)
-		CoUninitialize();
 
     return reinterpret_cast<const INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -958,17 +965,24 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
 #ifdef TRAP_PLATFORM_WINDOWS
     absPath = absPath->make_preferred(); //Replaces all "/" with "\"
 
-    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-
-    const HINSTANCE res = ShellExecuteW(nullptr, L"explore", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-    if(reinterpret_cast<const INT_PTR>(res) <= 32)
+    HINSTANCE res{};
     {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+        TRAP::Utils::Windows::COMInitializer comInitializer{};
+        if(comInitializer.IsInitialized())
+        {
+            res = ShellExecuteW(nullptr, L"explore", absPath->c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+            if(reinterpret_cast<const INT_PTR>(res) <= 32)
+            {
+                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\"!");
+                TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+            }
+        }
+        else
+        {
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open folder in file browser: \"", p.u8string(), "\" (COM initialization failed)!");
+            return false;
+        }
     }
-
-	if (initRes == S_OK || initRes == S_FALSE)
-		CoUninitialize();
 
     return reinterpret_cast<const INT_PTR>(res) > 32;
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -1016,25 +1030,32 @@ bool OpenFileInFileBrowser(const std::filesystem::path& p)
 #ifdef TRAP_PLATFORM_WINDOWS
     const std::wstring openPath = absPath->wstring();
 
-    const HRESULT initRes = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
-    LPITEMIDLIST pidl = nullptr;
-    if (SHParseDisplayName(openPath.c_str(), nullptr, &pidl, 0, nullptr) != S_OK)
+    HRESULT res{};
     {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
-        return false;
-    }
+        TRAP::Utils::Windows::COMInitializer comInitializer{};
+        if(comInitializer.IsInitialized())
+        {
+            LPITEMIDLIST pidl = nullptr;
+            if (SHParseDisplayName(openPath.c_str(), nullptr, &pidl, 0, nullptr) != S_OK)
+            {
+                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+                TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+                return false;
+            }
 
-    const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
-    if(res != S_OK)
-    {
-        TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
-        TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+            const HRESULT res = SHOpenFolderAndSelectItems(pidl, 0, nullptr, 0);
+            if(res != S_OK)
+            {
+                TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\"!");
+                TP_ERROR(TRAP::Log::FileSystemPrefix, TRAP::Utils::String::GetStrError());
+            }
+        }
+        else
+        {
+            TP_ERROR(TRAP::Log::FileSystemPrefix, "Couldn't open file in file browser: \"", p.u8string(), "\" (COM initialization failed)!");
+            return false;
+        }
     }
-
-	if (initRes == S_OK || initRes == S_FALSE)
-		CoUninitialize();
 
     return res == S_OK;
 #elif defined(TRAP_PLATFORM_LINUX)

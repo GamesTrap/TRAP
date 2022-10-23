@@ -157,4 +157,67 @@
 	#undef LoadLibrary
 #endif
 
+namespace TRAP::Utils::Windows
+{
+	/// <summary>
+	/// An exception safe RAII wrapper class that manages the
+	/// lifetime of the COM library in a given scope.
+	///
+	/// Source: https://learn.microsoft.com/en-us/cpp/parallel/concrt/walkthrough-using-the-concurrency-runtime-in-a-com-enabled-application?view=msvc-170#code-try-2
+	/// </summary>
+	class COMInitializer final
+	{
+	public:
+		/// <summary>
+		/// This constructs a new COMInitializer instance which directly
+		/// initializes the COM library for the current thread.
+		///
+		/// The COM library will be uninitialized when the destructor gets called.
+		/// </summary>
+		/// <param name="dwCoInit">
+		/// The concurrency model and initialization options for the thread.
+		/// Default: COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE.
+		/// </param>
+		explicit COMInitializer(DWORD dwCoInit = COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
+			: m_COMInitialized(false)
+		{
+			//Initialize the COM library on the current thread
+			HRESULT hr = CoInitializeEx(nullptr, dwCoInit);
+			if(hr == S_OK)
+				m_COMInitialized = true;
+		}
+
+		/// <summary>
+		/// Destructors.
+		/// This uninitializes the COM library.
+		/// </summary>
+		~COMInitializer()
+		{
+			//Free COM library
+			if(m_COMInitialized)
+				CoUninitialize();
+		}
+
+		/// <summary>
+		/// Retrieve whether the COM library was successfully initialized or not.
+		/// </summary>
+		/// <returns>True on successful COM library initialization, false otherwise.</returns>
+		bool IsInitialized() const
+		{
+			return m_COMInitialized;
+		}
+
+		//Explicitly delete the copy constructor and copy assignment operator
+		COMInitializer(const COMInitializer&) = delete;
+		COMInitializer& operator=(const COMInitializer&) = delete;
+
+		COMInitializer(COMInitializer&&) = default;
+		COMInitializer& operator=(COMInitializer&&) = default;
+
+	private:
+		//Flags whether COM was properly initialized or not
+		bool m_COMInitialized;
+	};
+}
+
 #endif /*TRAP_WIN_H*/

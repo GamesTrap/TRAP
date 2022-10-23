@@ -873,10 +873,14 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 
 	if(uMsg == windowPtr->TaskbarListMsgID)
 	{
-		HRESULT res = CoInitializeEx(nullptr, 0);
-		res = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3,
-			                   reinterpret_cast<LPVOID*>(&windowPtr->TaskbarList));
-		CoUninitialize();
+		TRAP::Utils::Windows::COMInitializer comInitializer{};
+		if(comInitializer.IsInitialized())
+		{
+			const HRESULT res = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskbarList3,
+								                 reinterpret_cast<LPVOID*>(&windowPtr->TaskbarList));
+		}
+		else
+			InputError(Error::Platform_Error, "[Window] Failed to initialize COM library");
 	}
 
 	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
