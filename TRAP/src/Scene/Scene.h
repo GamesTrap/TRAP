@@ -65,9 +65,6 @@ namespace TRAP
 		}
 
 	private:
-		template<typename T>
-		void OnComponentAdded(Entity entity, T& component);
-
 		friend class Entity;
 		friend class SceneSerializer;
 		friend class SceneGraphPanel;

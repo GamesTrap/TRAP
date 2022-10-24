@@ -3393,3 +3393,7 @@ SITREP 10/23/2022|22w42c1
     - Integrated NVIDIAReflexTest into InputLagTest ~<10 mins
     - Removed NVIDIAReflexTests ~<5 mins
     - Windows Added COMInitializer an exception-safe RAII wrapper for COM initialization ~<10 mins
+
+SITREP 10/24/2022|22w43a1
+    - Changed TRAP Engine version to 22w43a1(0.8.64)
+    - Scene Removed OnComponentAdded() template ~<5 mins
