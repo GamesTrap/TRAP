@@ -3397,3 +3397,5 @@ SITREP 10/23/2022|22w42c1
 SITREP 10/24/2022|22w43a1
     - Changed TRAP Engine version to 22w43a1(0.8.64)
     - Scene Removed OnComponentAdded() template ~<5 mins
+    - Application OnTick() may now be called multiple times per frame if devices FPS are lower than the set tick rate ~>15 mins
+    - Application limited number of OnTick() calls to a maximum of 8 per frame ~<5 mins

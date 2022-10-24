@@ -124,12 +124,12 @@ namespace TRAP
 		/// <returns>Current time scale.</returns>
 		static float GetTimeScale();
 		/// <summary>
-		/// Get the current tick rate (Default: 100).
+		/// Get the current tick rate (Default: 64).
 		/// </summary>
 		/// <returns>Current tick rate.</returns>
 		static uint32_t GetTickRate();
 		/// <summary>
-		/// Set the tick rate.
+		/// Set the tick rate (fixed update interval for OnTick()).
 		/// </summary>
 		/// <param name="tickRate">New Tick rate.</param>
 		static void SetTickRate(uint32_t tickRate);

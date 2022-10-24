@@ -459,7 +459,7 @@ void TRAP::Application::Run()
 
 	float lastFrameTime = 0.0f;
 	auto nextFrame = std::chrono::steady_clock::now();
-	Utils::Timer tickTimer;
+	float tickTimerSeconds = 0.0f;
 
 	while (m_running)
 	{
@@ -470,9 +470,10 @@ void TRAP::Application::Run()
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
 #endif
 
-		const Utils::Timer FrameTimeTimer;
+		const Utils::Timer FrameTimeTimer{};
 		const float time = m_timer.Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
+		tickTimerSeconds += time - lastFrameTime;
 		lastFrameTime = time;
 
 		//FPSLimiter
@@ -507,12 +508,28 @@ void TRAP::Application::Run()
 			for (const auto& layer : m_layerStack)
 				layer->OnUpdate(deltaTime);
 
-			if (tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
+			//Timestep of a single tick
+			const Utils::TimeStep tickRateTimeStep{1000.0f / static_cast<float>(m_tickRate) / 1000.0f};
+			//If we reached at least one fixed time step update
+			if (tickTimerSeconds >= tickRateTimeStep)
 			{
-				for (const auto& layer : m_layerStack)
-					layer->OnTick(Utils::TimeStep(tickTimer.Elapsed()));
+				static constexpr uint32_t MAX_TICKS_PER_FRAME = 8;
 
-				tickTimer.Reset();
+				//Count how many ticks we need to run (this is limited to a maximum of MAX_TICKS_PER_FRAME)
+				const uint32_t fixedTimeSteps = TRAP::Math::Min(static_cast<uint32_t>(tickTimerSeconds / tickRateTimeStep), MAX_TICKS_PER_FRAME);
+				// TP_TRACE("Ticks: ", fixedTimeSteps);
+
+				// TP_TRACE("Before: ", tickTimerSeconds, "s of tick time remaining");
+				//Call OnTick() fixedTimeSteps times.
+				for(uint32_t i = 0; i < fixedTimeSteps; ++i)
+				{
+					for (const auto& layer : m_layerStack)
+						layer->OnTick(tickRateTimeStep);
+
+					//Instead of resetting the timer, we just subtract the current tick from the counted time.
+					tickTimerSeconds -= tickRateTimeStep;
+				}
+				// TP_TRACE("After: ", tickTimerSeconds, "s of tick time remaining");
 			}
 
 #ifndef TRAP_HEADLESS_MODE
