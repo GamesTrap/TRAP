@@ -7,9 +7,9 @@ namespace FuncCommon
     void TestConstexpr()
     {
         static_assert(TRAP::Math::Abs(1.0f) > 0.0f, "Math: Failed constexpr");
-        constexpr TRAP::Math::Vec2 a = TRAP::Math::Abs(TRAP::Math::Vec2(1.0f));
-        constexpr TRAP::Math::Vec3 b = TRAP::Math::Abs(TRAP::Math::Vec3(1.0f));
-        constexpr TRAP::Math::Vec4 c = TRAP::Math::Abs(TRAP::Math::Vec4(1.0f));
+        static constexpr TRAP::Math::Vec2 a = TRAP::Math::Abs(TRAP::Math::Vec2(1.0f));
+        static constexpr TRAP::Math::Vec3 b = TRAP::Math::Abs(TRAP::Math::Vec3(1.0f));
+        static constexpr TRAP::Math::Vec4 c = TRAP::Math::Abs(TRAP::Math::Vec4(1.0f));
     }
 
 //-------------------------------------------------------------------------------------------------------------------//

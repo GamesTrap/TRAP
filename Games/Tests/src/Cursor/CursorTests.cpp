@@ -2,7 +2,7 @@
 
 float CursorTests::Star(const int32_t x, const int32_t y, const float t)
 {
-	constexpr float c = 64.0f / 2.0f;
+	static constexpr float c = 64.0f / 2.0f;
 
 	const float i = (0.25f * TRAP::Math::Sin(2.0f * TRAP::Math::PI<float>() * t) + 0.75f);
 	const float k = 64.0f * 0.046875f * i;

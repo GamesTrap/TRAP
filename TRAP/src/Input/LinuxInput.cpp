@@ -47,7 +47,7 @@ bool TRAP::Input::InitController()
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input);
 
-	constexpr std::string_view dirName = "/dev/input";
+	static constexpr std::string_view dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
 	if(s_linuxController.INotify > 0)

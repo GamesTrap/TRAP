@@ -110,10 +110,7 @@ constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs)
 }
 
 //Set this macro to specify which systems should be profiled.
-constexpr ProfileSystems TRAP_PROFILE_SYSTEMS()
-{
-	return ProfileSystems::All;
-}
+inline constexpr ProfileSystems TRAP_PROFILE_SYSTEMS = ProfileSystems::All;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -170,24 +167,24 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 64);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 65);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	static constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) \
+	constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
 		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) \
+	constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
 									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	static constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a | b); }\
-	static constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a & b); }
+	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a | b); }\
+	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a & b); }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

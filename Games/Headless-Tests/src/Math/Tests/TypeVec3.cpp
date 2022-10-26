@@ -251,7 +251,7 @@ namespace TypeVec3
         error += TRAP::Math::Vec3::Length() == 3 ? 0 : 1;
         error += TRAP::Math::Vec3d::Length() == 3 ? 0 : 1;
 
-        constexpr std::size_t length = TRAP::Math::Vec3::Length();
+        static constexpr std::size_t length = TRAP::Math::Vec3::Length();
         error += length == 3 ? 0 : 1;
 
         return error;

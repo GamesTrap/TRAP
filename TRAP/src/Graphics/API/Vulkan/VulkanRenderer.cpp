@@ -1867,9 +1867,9 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 	const bool flipRedBlue = rT->GetImageFormat() != ImageFormat::R8G8B8A8_UNORM;
 
 #ifdef TRAP_HEADLESS_MODE
-	constexpr ResourceState resState = ResourceState::RenderTarget;
+	static constexpr ResourceState resState = ResourceState::RenderTarget;
 #else
-	constexpr ResourceState resState = ResourceState::Present;
+	static constexpr ResourceState resState = ResourceState::Present;
 #endif
 
 	std::vector<uint8_t> pixelDatau8{};

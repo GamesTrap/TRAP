@@ -62,7 +62,7 @@ void AntiAliasingTests::OnImGuiRender()
 
 	bool updateAA = false;
 
-	constexpr std::array<const char*, 2> antiAliasingMethods{"Off", "MSAA"};
+	static constexpr std::array<const char*, 2> antiAliasingMethods{"Off", "MSAA"};
 	static int32_t currentAA = static_cast<uint32_t>(m_antiAliasing);
 	if(ImGui::Combo("Anti aliasing", &currentAA, antiAliasingMethods.data(), static_cast<int32_t>(antiAliasingMethods.size())))
 	{
@@ -77,7 +77,7 @@ void AntiAliasingTests::OnImGuiRender()
 	if(currentAA != 0)
 	{
 		static int32_t maxSupportedQualitySize = static_cast<int32_t>((TRAP::Math::Log(static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)) / TRAP::Math::Log(2.0f)));
-		constexpr std::array<const char*, 4> sampleCounts{"x2", "x4", "x8", "x16"};
+		static constexpr std::array<const char*, 4> sampleCounts{"x2", "x4", "x8", "x16"};
 		static int32_t currentAAQuality = TRAP::Math::Log(static_cast<float>(m_sampleCount)) / TRAP::Math::Log(2.0f) - 1;
 		if(currentAAQuality == -1)
 			currentAAQuality = 0;

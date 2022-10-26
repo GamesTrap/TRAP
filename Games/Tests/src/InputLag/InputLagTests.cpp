@@ -69,7 +69,7 @@ void InputLagTests::OnImGuiRender()
 	{
 		ImGui::Text("Current Latency Mode: %s", TRAP::Utils::String::ConvertToString(m_latencyMode).c_str());
 
-		constexpr std::array<const char*, 3> latencyModes{"Disabled", "Enabled", "Enabled+Boost"};
+		static constexpr std::array<const char*, 3> latencyModes{"Disabled", "Enabled", "Enabled+Boost"};
 		static int32_t currentLatencyMode = static_cast<int32_t>(m_latencyMode);
 		if(ImGui::Combo("Latency Mode", &currentLatencyMode, latencyModes.data(), latencyModes.size()))
 		{

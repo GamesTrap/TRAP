@@ -3,7 +3,7 @@
 
 #include "Utils/Memory.h"
 
-constexpr std::array<uint32_t, 64> SHA256_K =
+static constexpr std::array<uint32_t, 64> SHA256_K =
 {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
 	0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -17,7 +17,7 @@ constexpr std::array<uint32_t, 64> SHA256_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr std::array<uint64_t, 80> SHA512_K =
+static constexpr std::array<uint64_t, 80> SHA512_K =
 {
 	0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
 	0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,

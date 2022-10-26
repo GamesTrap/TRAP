@@ -279,7 +279,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has only depth, false otherwise.</returns>
-    static constexpr bool ImageFormatIsDepthOnly(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsDepthOnly(const ImageFormat fmt)
     {
         switch (fmt)
         {
@@ -301,7 +301,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has depth and stencil, false otherwise.</returns>
-    static constexpr bool ImageFormatIsDepthAndStencil(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsDepthAndStencil(const ImageFormat fmt)
     {
         switch (fmt)
         {
@@ -323,7 +323,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has only stencil, false otherwise.</returns>
-    static constexpr bool ImageFormatIsStencilOnly(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsStencilOnly(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -339,7 +339,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format has stencil, false otherwise.</returns>
-    static constexpr bool ImageFormatHasStencil(const ImageFormat fmt)
+    inline constexpr bool ImageFormatHasStencil(const ImageFormat fmt)
     {
         return ImageFormatIsStencilOnly(fmt) || ImageFormatIsDepthAndStencil(fmt);
     }
@@ -348,7 +348,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Bit size of a single block.</returns>
-    static constexpr uint32_t ImageFormatBitSizeOfBlock(const ImageFormat fmt)
+    inline constexpr uint32_t ImageFormatBitSizeOfBlock(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -527,7 +527,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Pixel count.</returns>
-    static constexpr uint32_t ImageFormatWidthOfBlock(const ImageFormat fmt)
+    inline constexpr uint32_t ImageFormatWidthOfBlock(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -606,7 +606,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Pixel count.</returns>
-    static constexpr uint32_t ImageFormatHeightOfBlock(const ImageFormat fmt)
+    inline constexpr uint32_t ImageFormatHeightOfBlock(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -681,7 +681,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if planar, false otherwise.</returns>
-    static constexpr bool ImageFormatIsPlanar(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsPlanar(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -735,7 +735,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Number of planes.</returns>
-    static constexpr uint32_t ImageFormatNumOfPlanes(const ImageFormat fmt)
+    inline constexpr uint32_t ImageFormatNumOfPlanes(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -790,7 +790,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if single plane, false otherwise.</returns>
-    static constexpr bool ImageFormatIsSinglePlane(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsSinglePlane(const ImageFormat fmt)
     {
         return !ImageFormatIsPlanar(fmt) || ImageFormatNumOfPlanes(fmt) < 2;
     }
@@ -801,7 +801,7 @@ namespace TRAP::Graphics::API
     /// <param name="plane">Plane index.</param>
     /// <param name="width">Width of the image (plane 0).</param>
     /// <returns>Width of the plane.</returns>
-    static constexpr uint32_t ImageFormatPlaneWidth(const ImageFormat fmt, const uint32_t plane,
+    inline constexpr uint32_t ImageFormatPlaneWidth(const ImageFormat fmt, const uint32_t plane,
                                                     const uint32_t width)
     {
         if (plane == 0)
@@ -851,7 +851,7 @@ namespace TRAP::Graphics::API
     /// <param name="plane">Plane index.</param>
     /// <param name="height">Height of the image (plane 0).</param>
     /// <returns>Height of the plane.</returns>
-    static constexpr uint32_t ImageFormatPlaneHeight(const ImageFormat fmt, const uint32_t plane,
+    inline constexpr uint32_t ImageFormatPlaneHeight(const ImageFormat fmt, const uint32_t plane,
                                                      const uint32_t height)
     {
         if (plane == 0)
@@ -886,7 +886,7 @@ namespace TRAP::Graphics::API
     /// <param name="fmt">Image format.</param>
     /// <param name="plane">Plane index.</param>
     /// <returns>Plane size of a single block.</returns>
-    static constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const uint32_t plane)
+    inline constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const uint32_t plane)
     {
         switch(fmt)
         {
@@ -943,7 +943,7 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the image format is a compressed format.</returns>
-    static constexpr bool ImageFormatIsCompressed(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsCompressed(const ImageFormat fmt)
     {
         switch(fmt)
         {
@@ -1082,107 +1082,107 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>Number of channels.</returns>
-    static constexpr uint32_t ImageFormatChannelCount(const ImageFormat fmt)
+    inline constexpr uint32_t ImageFormatChannelCount(const ImageFormat fmt)
     {
         switch(fmt)
         {
-            case ImageFormat::Undefined: return 0;
-            case ImageFormat::R1_UNORM: return 1;
-            case ImageFormat::R2_UNORM: return 1;
-            case ImageFormat::R4_UNORM: return 1;
-            case ImageFormat::R4G4_UNORM: return 2;
-            case ImageFormat::G4R4_UNORM: return 2;
-            case ImageFormat::A8_UNORM: return 1;
-            case ImageFormat::R8_UNORM: return 1;
-            case ImageFormat::R8_SNORM: return 1;
-            case ImageFormat::R8_UINT: return 1;
-            case ImageFormat::R8_SINT: return 1;
-            case ImageFormat::R8_SRGB: return 1;
-            case ImageFormat::B2G3R3_UNORM: return 3;
-            case ImageFormat::R5G6B5_UNORM: return 3;
-            case ImageFormat::B5G6R5_UNORM: return 3;
-            case ImageFormat::R8G8_UNORM: return 2;
-            case ImageFormat::R8G8_SNORM: return 2;
-            case ImageFormat::G8R8_UNORM: return 2;
-            case ImageFormat::G8R8_SNORM: return 2;
-            case ImageFormat::R8G8_UINT: return 2;
-            case ImageFormat::R8G8_SINT: return 2;
-            case ImageFormat::R8G8_SRGB: return 2;
-            case ImageFormat::R16_UNORM: return 1;
-            case ImageFormat::R16_SNORM: return 1;
-            case ImageFormat::R16_UINT: return 1;
-            case ImageFormat::R16_SINT: return 1;
-            case ImageFormat::R16_SFLOAT: return 1;
-            case ImageFormat::R16_SBFLOAT: return 1;
-            case ImageFormat::R8G8B8_UNORM: return 3;
-            case ImageFormat::R8G8B8_SNORM: return 3;
-            case ImageFormat::R8G8B8_UINT: return 3;
-            case ImageFormat::R8G8B8_SINT: return 3;
-            case ImageFormat::R8G8B8_SRGB: return 3;
-            case ImageFormat::B8G8R8_UNORM: return 3;
-            case ImageFormat::B8G8R8_SNORM: return 3;
-            case ImageFormat::B8G8R8_UINT: return 3;
-            case ImageFormat::B8G8R8_SINT: return 3;
-            case ImageFormat::B8G8R8_SRGB: return 3;
-            case ImageFormat::R16G16_UNORM: return 2;
-            case ImageFormat::G16R16_UNORM: return 2;
-            case ImageFormat::R16G16_SNORM: return 2;
-            case ImageFormat::G16R16_SNORM: return 2;
-            case ImageFormat::R16G16_UINT: return 2;
-            case ImageFormat::R16G16_SINT: return 2;
-            case ImageFormat::R16G16_SFLOAT: return 2;
-            case ImageFormat::R16G16_SBFLOAT: return 2;
-            case ImageFormat::R32_UINT: return 1;
-            case ImageFormat::R32_SINT: return 1;
-            case ImageFormat::R32_SFLOAT: return 1;
-            case ImageFormat::B10G11R11_UFLOAT: return 3;
-            case ImageFormat::R16G16B16_UNORM: return 3;
-            case ImageFormat::R16G16B16_SNORM: return 3;
-            case ImageFormat::R16G16B16_UINT: return 3;
-            case ImageFormat::R16G16B16_SINT: return 3;
-            case ImageFormat::R16G16B16_SFLOAT: return 3;
-            case ImageFormat::R16G16B16_SBFLOAT: return 3;
-            case ImageFormat::R32G32_UINT: return 2;
-            case ImageFormat::R32G32_SINT: return 2;
-            case ImageFormat::R32G32_SFLOAT: return 2;
-            case ImageFormat::R32G32B32_UINT: return 3;
-            case ImageFormat::R32G32B32_SINT: return 3;
-            case ImageFormat::R32G32B32_SFLOAT: return 3;
-            case ImageFormat::R64_UINT: return 1;
-            case ImageFormat::R64_SINT: return 1;
-            case ImageFormat::R64_SFLOAT: return 1;
-            case ImageFormat::R64G64_UINT: return 2;
-            case ImageFormat::R64G64_SINT: return 2;
-            case ImageFormat::R64G64_SFLOAT: return 2;
-            case ImageFormat::R64G64B64_UINT: return 3;
-            case ImageFormat::R64G64B64_SINT: return 3;
-            case ImageFormat::R64G64B64_SFLOAT: return 3;
-            case ImageFormat::D16_UNORM: return 1;
-            case ImageFormat::X8_D24_UNORM: return 2;
-            case ImageFormat::D32_SFLOAT: return 1;
-            case ImageFormat::S8_UINT: return 1;
-            case ImageFormat::D16_UNORM_S8_UINT: return 2;
-            case ImageFormat::D24_UNORM_S8_UINT: return 2;
-            case ImageFormat::D32_SFLOAT_S8_UINT: return 2;
-            case ImageFormat::DXBC1_RGB_UNORM: return 3;
-            case ImageFormat::DXBC1_RGB_SRGB: return 3;
-            case ImageFormat::DXBC4_UNORM: return 1;
-            case ImageFormat::DXBC4_SNORM: return 1;
-            case ImageFormat::DXBC5_UNORM: return 2;
-            case ImageFormat::DXBC5_SNORM: return 2;
-            case ImageFormat::DXBC6H_UFLOAT: return 3;
-            case ImageFormat::DXBC6H_SFLOAT: return 3;
-            case ImageFormat::ETC2_R8G8B8_UNORM: return 3;
-            case ImageFormat::ETC2_R8G8B8_SRGB: return 3;
-            case ImageFormat::ETC2_EAC_R11_UNORM: return 1;
-            case ImageFormat::ETC2_EAC_R11_SNORM: return 1;
-            case ImageFormat::ETC2_EAC_R11G11_UNORM: return 2;
-            case ImageFormat::ETC2_EAC_R11G11_SNORM: return 2;
-            case ImageFormat::CLUT_P4: return 1;
-            case ImageFormat::CLUT_P4A4: return 2;
-            case ImageFormat::CLUT_P8: return 1;
-            case ImageFormat::CLUT_P8A8: return 2;
-            default: return 4;
+        case ImageFormat::Undefined: return 0;
+        case ImageFormat::R1_UNORM: return 1;
+        case ImageFormat::R2_UNORM: return 1;
+        case ImageFormat::R4_UNORM: return 1;
+        case ImageFormat::R4G4_UNORM: return 2;
+        case ImageFormat::G4R4_UNORM: return 2;
+        case ImageFormat::A8_UNORM: return 1;
+        case ImageFormat::R8_UNORM: return 1;
+        case ImageFormat::R8_SNORM: return 1;
+        case ImageFormat::R8_UINT: return 1;
+        case ImageFormat::R8_SINT: return 1;
+        case ImageFormat::R8_SRGB: return 1;
+        case ImageFormat::B2G3R3_UNORM: return 3;
+        case ImageFormat::R5G6B5_UNORM: return 3;
+        case ImageFormat::B5G6R5_UNORM: return 3;
+        case ImageFormat::R8G8_UNORM: return 2;
+        case ImageFormat::R8G8_SNORM: return 2;
+        case ImageFormat::G8R8_UNORM: return 2;
+        case ImageFormat::G8R8_SNORM: return 2;
+        case ImageFormat::R8G8_UINT: return 2;
+        case ImageFormat::R8G8_SINT: return 2;
+        case ImageFormat::R8G8_SRGB: return 2;
+        case ImageFormat::R16_UNORM: return 1;
+        case ImageFormat::R16_SNORM: return 1;
+        case ImageFormat::R16_UINT: return 1;
+        case ImageFormat::R16_SINT: return 1;
+        case ImageFormat::R16_SFLOAT: return 1;
+        case ImageFormat::R16_SBFLOAT: return 1;
+        case ImageFormat::R8G8B8_UNORM: return 3;
+        case ImageFormat::R8G8B8_SNORM: return 3;
+        case ImageFormat::R8G8B8_UINT: return 3;
+        case ImageFormat::R8G8B8_SINT: return 3;
+        case ImageFormat::R8G8B8_SRGB: return 3;
+        case ImageFormat::B8G8R8_UNORM: return 3;
+        case ImageFormat::B8G8R8_SNORM: return 3;
+        case ImageFormat::B8G8R8_UINT: return 3;
+        case ImageFormat::B8G8R8_SINT: return 3;
+        case ImageFormat::B8G8R8_SRGB: return 3;
+        case ImageFormat::R16G16_UNORM: return 2;
+        case ImageFormat::G16R16_UNORM: return 2;
+        case ImageFormat::R16G16_SNORM: return 2;
+        case ImageFormat::G16R16_SNORM: return 2;
+        case ImageFormat::R16G16_UINT: return 2;
+        case ImageFormat::R16G16_SINT: return 2;
+        case ImageFormat::R16G16_SFLOAT: return 2;
+        case ImageFormat::R16G16_SBFLOAT: return 2;
+        case ImageFormat::R32_UINT: return 1;
+        case ImageFormat::R32_SINT: return 1;
+        case ImageFormat::R32_SFLOAT: return 1;
+        case ImageFormat::B10G11R11_UFLOAT: return 3;
+        case ImageFormat::R16G16B16_UNORM: return 3;
+        case ImageFormat::R16G16B16_SNORM: return 3;
+        case ImageFormat::R16G16B16_UINT: return 3;
+        case ImageFormat::R16G16B16_SINT: return 3;
+        case ImageFormat::R16G16B16_SFLOAT: return 3;
+        case ImageFormat::R16G16B16_SBFLOAT: return 3;
+        case ImageFormat::R32G32_UINT: return 2;
+        case ImageFormat::R32G32_SINT: return 2;
+        case ImageFormat::R32G32_SFLOAT: return 2;
+        case ImageFormat::R32G32B32_UINT: return 3;
+        case ImageFormat::R32G32B32_SINT: return 3;
+        case ImageFormat::R32G32B32_SFLOAT: return 3;
+        case ImageFormat::R64_UINT: return 1;
+        case ImageFormat::R64_SINT: return 1;
+        case ImageFormat::R64_SFLOAT: return 1;
+        case ImageFormat::R64G64_UINT: return 2;
+        case ImageFormat::R64G64_SINT: return 2;
+        case ImageFormat::R64G64_SFLOAT: return 2;
+        case ImageFormat::R64G64B64_UINT: return 3;
+        case ImageFormat::R64G64B64_SINT: return 3;
+        case ImageFormat::R64G64B64_SFLOAT: return 3;
+        case ImageFormat::D16_UNORM: return 1;
+        case ImageFormat::X8_D24_UNORM: return 2;
+        case ImageFormat::D32_SFLOAT: return 1;
+        case ImageFormat::S8_UINT: return 1;
+        case ImageFormat::D16_UNORM_S8_UINT: return 2;
+        case ImageFormat::D24_UNORM_S8_UINT: return 2;
+        case ImageFormat::D32_SFLOAT_S8_UINT: return 2;
+        case ImageFormat::DXBC1_RGB_UNORM: return 3;
+        case ImageFormat::DXBC1_RGB_SRGB: return 3;
+        case ImageFormat::DXBC4_UNORM: return 1;
+        case ImageFormat::DXBC4_SNORM: return 1;
+        case ImageFormat::DXBC5_UNORM: return 2;
+        case ImageFormat::DXBC5_SNORM: return 2;
+        case ImageFormat::DXBC6H_UFLOAT: return 3;
+        case ImageFormat::DXBC6H_SFLOAT: return 3;
+        case ImageFormat::ETC2_R8G8B8_UNORM: return 3;
+        case ImageFormat::ETC2_R8G8B8_SRGB: return 3;
+        case ImageFormat::ETC2_EAC_R11_UNORM: return 1;
+        case ImageFormat::ETC2_EAC_R11_SNORM: return 1;
+        case ImageFormat::ETC2_EAC_R11G11_UNORM: return 2;
+        case ImageFormat::ETC2_EAC_R11G11_SNORM: return 2;
+        case ImageFormat::CLUT_P4: return 1;
+        case ImageFormat::CLUT_P4A4: return 2;
+        case ImageFormat::CLUT_P8: return 1;
+        case ImageFormat::CLUT_P8A8: return 2;
+        default: return 4;
         }
     }
     /// <summary>
@@ -1190,32 +1190,33 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format stores floating point data.</returns>
-    static constexpr bool ImageFormatIsFloat(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsFloat(const ImageFormat fmt)
     {
-        switch(fmt) {
-            case ImageFormat::R16_SFLOAT: return true;
-            case ImageFormat::R16_SBFLOAT: return true;
-            case ImageFormat::R16G16_SFLOAT: return true;
-            case ImageFormat::R16G16_SBFLOAT: return true;
-            case ImageFormat::R32_SFLOAT: return true;
-            case ImageFormat::B10G11R11_UFLOAT: return true;
-            case ImageFormat::E5B9G9R9_UFLOAT: return true;
-            case ImageFormat::R16G16B16_SFLOAT: return true;
-            case ImageFormat::R16G16B16_SBFLOAT: return true;
-            case ImageFormat::R16G16B16A16_SFLOAT: return true;
-            case ImageFormat::R16G16B16A16_SBFLOAT: return true;
-            case ImageFormat::R32G32_SFLOAT: return true;
-            case ImageFormat::R32G32B32_SFLOAT: return true;
-            case ImageFormat::R32G32B32A32_SFLOAT: return true;
-            case ImageFormat::R64_SFLOAT: return true;
-            case ImageFormat::R64G64_SFLOAT: return true;
-            case ImageFormat::R64G64B64_SFLOAT: return true;
-            case ImageFormat::R64G64B64A64_SFLOAT: return true;
-            case ImageFormat::D32_SFLOAT: return true;
-            case ImageFormat::D32_SFLOAT_S8_UINT: return true;
-            case ImageFormat::DXBC6H_UFLOAT: return true;
-            case ImageFormat::DXBC6H_SFLOAT: return true;
-            default: return false;
+        switch(fmt)
+        {
+        case ImageFormat::R16_SFLOAT: return true;
+        case ImageFormat::R16_SBFLOAT: return true;
+        case ImageFormat::R16G16_SFLOAT: return true;
+        case ImageFormat::R16G16_SBFLOAT: return true;
+        case ImageFormat::R32_SFLOAT: return true;
+        case ImageFormat::B10G11R11_UFLOAT: return true;
+        case ImageFormat::E5B9G9R9_UFLOAT: return true;
+        case ImageFormat::R16G16B16_SFLOAT: return true;
+        case ImageFormat::R16G16B16_SBFLOAT: return true;
+        case ImageFormat::R16G16B16A16_SFLOAT: return true;
+        case ImageFormat::R16G16B16A16_SBFLOAT: return true;
+        case ImageFormat::R32G32_SFLOAT: return true;
+        case ImageFormat::R32G32B32_SFLOAT: return true;
+        case ImageFormat::R32G32B32A32_SFLOAT: return true;
+        case ImageFormat::R64_SFLOAT: return true;
+        case ImageFormat::R64G64_SFLOAT: return true;
+        case ImageFormat::R64G64B64_SFLOAT: return true;
+        case ImageFormat::R64G64B64A64_SFLOAT: return true;
+        case ImageFormat::D32_SFLOAT: return true;
+        case ImageFormat::D32_SFLOAT_S8_UINT: return true;
+        case ImageFormat::DXBC6H_UFLOAT: return true;
+        case ImageFormat::DXBC6H_SFLOAT: return true;
+        default: return false;
         }
     }
     /// <summary>
@@ -1223,31 +1224,31 @@ namespace TRAP::Graphics::API
     /// </summary>
     /// <param name="fmt">Image format.</param>
     /// <returns>True if the format stores uint16_t data.</returns>
-    static constexpr bool ImageFormatIsU16(const ImageFormat fmt)
+    inline constexpr bool ImageFormatIsU16(const ImageFormat fmt)
     {
         switch(fmt)
         {
-            case ImageFormat::R16_UNORM: return true;
-            case ImageFormat::R16_SNORM: return true;
-            case ImageFormat::R16_UINT: return true;
-            case ImageFormat::R16_SINT: return true;
-            case ImageFormat::R16G16_UNORM: return true;
-            case ImageFormat::G16R16_UNORM: return true;
-            case ImageFormat::R16G16_SNORM: return true;
-            case ImageFormat::G16R16_SNORM: return true;
-            case ImageFormat::R16G16_UINT: return true;
-            case ImageFormat::R16G16_SINT: return true;
-            case ImageFormat::R16G16B16_UNORM: return true;
-            case ImageFormat::R16G16B16_SNORM: return true;
-            case ImageFormat::R16G16B16_UINT: return true;
-            case ImageFormat::R16G16B16_SINT: return true;
-            case ImageFormat::R16G16B16A16_UNORM: return true;
-            case ImageFormat::R16G16B16A16_SNORM: return true;
-            case ImageFormat::R16G16B16A16_UINT: return true;
-            case ImageFormat::R16G16B16A16_SINT: return true;
-            case ImageFormat::D16_UNORM: return true;
-            case ImageFormat::D16_UNORM_S8_UINT: return true;
-            default: return false;
+        case ImageFormat::R16_UNORM: return true;
+        case ImageFormat::R16_SNORM: return true;
+        case ImageFormat::R16_UINT: return true;
+        case ImageFormat::R16_SINT: return true;
+        case ImageFormat::R16G16_UNORM: return true;
+        case ImageFormat::G16R16_UNORM: return true;
+        case ImageFormat::R16G16_SNORM: return true;
+        case ImageFormat::G16R16_SNORM: return true;
+        case ImageFormat::R16G16_UINT: return true;
+        case ImageFormat::R16G16_SINT: return true;
+        case ImageFormat::R16G16B16_UNORM: return true;
+        case ImageFormat::R16G16B16_SNORM: return true;
+        case ImageFormat::R16G16B16_UINT: return true;
+        case ImageFormat::R16G16B16_SINT: return true;
+        case ImageFormat::R16G16B16A16_UNORM: return true;
+        case ImageFormat::R16G16B16A16_SNORM: return true;
+        case ImageFormat::R16G16B16A16_UINT: return true;
+        case ImageFormat::R16G16B16A16_SINT: return true;
+        case ImageFormat::D16_UNORM: return true;
+        case ImageFormat::D16_UNORM_S8_UINT: return true;
+        default: return false;
         }
     }
 }

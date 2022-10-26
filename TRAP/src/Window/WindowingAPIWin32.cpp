@@ -163,7 +163,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 		if (key >= static_cast<uint32_t>(Input::Key::KP_0) && key <= static_cast<uint32_t>(Input::Key::KP_Add))
 		{
-			constexpr std::array<uint32_t, 15> virtualKeys =
+			static constexpr std::array<uint32_t, 15> virtualKeys =
 			{
 				VK_NUMPAD0,  VK_NUMPAD1,  VK_NUMPAD2, VK_NUMPAD3,
 				VK_NUMPAD4,  VK_NUMPAD5,  VK_NUMPAD6, VK_NUMPAD7,

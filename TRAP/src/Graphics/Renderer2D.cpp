@@ -919,8 +919,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	constexpr uint64_t quadVertexCount = 4;
-	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
+	static constexpr uint64_t quadVertexCount = 4;
+	static constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}} };
 
 	if(texture && texture->GetType() != TextureType::Texture2D)
 		return;
@@ -964,7 +964,7 @@ void TRAP::Graphics::Renderer2D::DrawCircle(const Math::Mat4& transform, const M
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	constexpr uint64_t circleVertexCount = 4;
+	static constexpr uint64_t circleVertexCount = 4;
 
 	auto& currData = s_data[s_dataIndex];
 

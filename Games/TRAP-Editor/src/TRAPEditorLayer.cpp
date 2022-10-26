@@ -600,7 +600,7 @@ void TRAPEditorLayer::SaveSceneAs()
 
 void TRAPEditorLayer::OnOverlayRender()
 {
-	constexpr float zIndex = 0.001f;
+	static constexpr float zIndex = 0.001f;
 	float colliderProjectionZ = 0.0f;
 	if(m_sceneState == SceneState::Play && m_activeScene->GetPrimaryCameraEntity() != TRAP::Entity())
 	{

@@ -193,7 +193,7 @@ static const std::unordered_map<ShaderStage, std::string> ShaderStageToString
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline static constexpr std::array<ShaderStage, 7> IndexToShaderStage
+inline constexpr std::array<ShaderStage, 7> IndexToShaderStage
 {
     ShaderStage::Vertex,
     ShaderStage::TessellationControl,

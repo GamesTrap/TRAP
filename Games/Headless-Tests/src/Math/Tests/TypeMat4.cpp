@@ -152,9 +152,9 @@ namespace TypeMat4
     void TestConstexpr()
     {
         static_assert(TRAP::Math::Mat4::Length() == 4, "MathTests: Failed constexpr");
-        constexpr TRAP::Math::Mat4 a(1.0f);
-        constexpr TRAP::Math::Mat4 b(1.0f);
-        constexpr TRAP::Math::Vec4b c = TRAP::Math::Equal(a, b, 0.01f);
+        static constexpr TRAP::Math::Mat4 a(1.0f);
+        static constexpr TRAP::Math::Mat4 b(1.0f);
+        static constexpr TRAP::Math::Vec4b c = TRAP::Math::Equal(a, b, 0.01f);
         static_assert(TRAP::Math::All(c), "MathTests: Failed constexpr");
     }
 }

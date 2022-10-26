@@ -180,7 +180,7 @@ static void DrawVec3Control(const std::string& label, //TODO can be replaced wit
 template <typename T, typename UIFunction>
 void DrawComponent(const std::string& name, TRAP::Entity& entity, UIFunction func) //TODO name can be replaced by std::string_view
 {
-	constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
+	static constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
 		ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
 
 	if (entity.HasComponent<T>())
@@ -286,7 +286,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 		ImGui::Checkbox("Primary", &component.Primary);
 
-		constexpr std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
+		static constexpr std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
 		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())];
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{
@@ -349,7 +349,7 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 
 	DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
 	{
-		constexpr std::array<const char*, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
+		static constexpr std::array<const char*, 3> bodyTypeStrings{"Static", "Dynamic", "Kinematic"};
 		const char* currentBodyTypeString = bodyTypeStrings[static_cast<std::size_t>(component.Type)];
 		if(ImGui::BeginCombo("Body Type", currentBodyTypeString))
 		{

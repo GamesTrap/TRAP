@@ -150,9 +150,9 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 
 	const std::string upVendorID = Utils::String::ToUpper(vendorID);
 	//Get Number of cores
-	constexpr int32_t MAX_INTEL_TOP_LVL = 4;
-	constexpr uint32_t LVL_TYPE = 0x0000FF00;
-	constexpr uint32_t LVL_CORES = 0x0000FFFF;
+	static constexpr int32_t MAX_INTEL_TOP_LVL = 4;
+	static constexpr uint32_t LVL_TYPE = 0x0000FF00;
+	static constexpr uint32_t LVL_CORES = 0x0000FFFF;
 	if (upVendorID.find("INTEL") != std::string::npos)
 	{
 		if (HFS >= 11)

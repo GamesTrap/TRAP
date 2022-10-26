@@ -28,7 +28,7 @@ void TRAP::Graphics::EditorCamera::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    constexpr TRAP::Math::Vec3 position{0.0f, 0.0f, -10.0f};
+    static constexpr TRAP::Math::Vec3 position{0.0f, 0.0f, -10.0f};
     m_distance = TRAP::Math::Distance(position, m_focalPoint);
 
     m_yaw = 0.0f;
@@ -91,7 +91,7 @@ void TRAP::Graphics::EditorCamera::OnUpdate(const Utils::TimeStep& deltaTime)
         if(Input::IsKeyPressed(Input::Key::D))
             m_positionDelta += deltaTime.GetMilliseconds() * speed * m_rightDirection;
 
-        constexpr float maxRate = 0.12f;
+        static constexpr float maxRate = 0.12f;
         m_yawDelta += TRAP::Math::Clamp(yawSign * delta.x * RotationSpeed(), -maxRate, maxRate);
         m_pitchDelta += TRAP::Math::Clamp(delta.y * RotationSpeed(), -maxRate, maxRate);
 

@@ -37,9 +37,9 @@ void SpriteSheetTests::OnAttach()
 	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha, TRAP::Graphics::BlendConstant::OneMinusSrcAlpha);
 
-    constexpr TRAP::Math::Vec2 foregroundSpriteSize{18.0f, 18.0f};
-    constexpr TRAP::Math::Vec2 backgroundSpriteSize{24.0f, 24.0f};
-    constexpr TRAP::Math::Vec2 characterSpriteSize{24.0f, 24.0f};
+    static constexpr TRAP::Math::Vec2 foregroundSpriteSize{18.0f, 18.0f};
+    static constexpr TRAP::Math::Vec2 backgroundSpriteSize{24.0f, 24.0f};
+    static constexpr TRAP::Math::Vec2 characterSpriteSize{24.0f, 24.0f};
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EarthBorderLeft", m_foregroundSheet, {1.0f, 6.0f}, foregroundSpriteSize);
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EarthBorderLeftBottom", m_foregroundSheet, {1.0f, 7.0f}, foregroundSpriteSize);
 	TRAP::Graphics::SpriteManager::CreateFromCoords("EarthBorderBottom", m_foregroundSheet, {2.0f, 7.0f}, foregroundSpriteSize);

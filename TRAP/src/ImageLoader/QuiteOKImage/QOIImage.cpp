@@ -7,7 +7,7 @@
 #include "Utils/Utils.h"
 #include "ImageLoader/Image.h"
 
-static constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
+constexpr std::array<uint8_t, 8> EndMarker{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -152,16 +152,16 @@ struct Pixel
     uint8_t Alpha;
 };
 
-static constexpr uint8_t QOI_OP_INDEX = 0x00;
-static constexpr uint8_t QOI_OP_DIFF  = 0x40;
-static constexpr uint8_t QOI_OP_LUMA  = 0x80;
-static constexpr uint8_t QOI_OP_RUN   = 0xC0;
-static constexpr uint8_t QOI_OP_RGB   = 0xFE;
-static constexpr uint8_t QOI_OP_RGBA  = 0xFF;
+constexpr uint8_t QOI_OP_INDEX = 0x00;
+constexpr uint8_t QOI_OP_DIFF  = 0x40;
+constexpr uint8_t QOI_OP_LUMA  = 0x80;
+constexpr uint8_t QOI_OP_RUN   = 0xC0;
+constexpr uint8_t QOI_OP_RGB   = 0xFE;
+constexpr uint8_t QOI_OP_RGBA  = 0xFF;
 
-static constexpr uint8_t QOI_MASK_2   = 0xC0;
+constexpr uint8_t QOI_MASK_2   = 0xC0;
 
-static constexpr uint32_t QOI_COLOR_HASH(const Pixel& p)
+constexpr uint32_t QOI_COLOR_HASH(const Pixel& p)
 {
     return p.Red * 3 + p.Green * 5 + p.Blue * 7 + p.Alpha * 11;
 }

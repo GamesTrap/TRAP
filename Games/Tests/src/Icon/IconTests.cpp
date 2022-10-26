@@ -1,7 +1,7 @@
 #include "IconTests.h"
 
 //Simple TRAP Logo
-static constexpr std::array<std::array<char, 17>, 16> IconStrings
+inline constexpr std::array<std::array<char, 17>, 16> IconStrings
 {
 	 "................",
 	 "................",
@@ -23,7 +23,7 @@ static constexpr std::array<std::array<char, 17>, 16> IconStrings
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr std::array<std::array<uint8_t, 4>, 5> IconColors
+inline constexpr std::array<std::array<uint8_t, 4>, 5> IconColors
 {
 	{
 		{  0,   0,   0, 255}, //Black

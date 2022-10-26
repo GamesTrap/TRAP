@@ -250,7 +250,7 @@ namespace TRAP::Graphics::API
 	                     [[maybe_unused]] VkDebugReportObjectTypeEXT type, [[maybe_unused]] const std::string_view name);
 #endif
 
-	inline static constexpr std::array<VkAttachmentLoadOp,
+	inline constexpr std::array<VkAttachmentLoadOp,
 	                                   static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
 	{
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -258,7 +258,7 @@ namespace TRAP::Graphics::API
 		VK_ATTACHMENT_LOAD_OP_CLEAR
 	};
 
-	inline static constexpr std::array<VkAttachmentStoreOp,
+	inline constexpr std::array<VkAttachmentStoreOp,
 	                                   static_cast<uint32_t>(RendererAPI::StoreActionType::MAX_STORE_ACTION_TYPE)> VkAttachmentStoreOpTranslator =
 	{
 		VK_ATTACHMENT_STORE_OP_STORE,
@@ -267,7 +267,7 @@ namespace TRAP::Graphics::API
 		VK_ATTACHMENT_STORE_OP_DONT_CARE
 	};
 
-	inline static constexpr std::array<VkCompareOp,
+	inline constexpr std::array<VkCompareOp,
 	                                   static_cast<uint32_t>(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
 	{
 		VK_COMPARE_OP_NEVER,
@@ -280,7 +280,7 @@ namespace TRAP::Graphics::API
 		VK_COMPARE_OP_ALWAYS
 	};
 
-	inline static constexpr std::array<VkPipelineBindPoint,
+	inline constexpr std::array<VkPipelineBindPoint,
 	                                   static_cast<uint32_t>(RendererAPI::PipelineType::PIPELINE_TYPE_COUNT)> VkPipelineBindPointTranslator =
 	{
 		VK_PIPELINE_BIND_POINT_MAX_ENUM,
@@ -289,7 +289,7 @@ namespace TRAP::Graphics::API
 		VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
 	};
 
-	inline static constexpr std::array<VkBlendFactor,
+	inline constexpr std::array<VkBlendFactor,
 	                                   static_cast<uint32_t>(RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS)> VkBlendConstantTranslator =
 	{
 		VK_BLEND_FACTOR_ZERO,
@@ -307,7 +307,7 @@ namespace TRAP::Graphics::API
 		VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR
 	};
 
-	inline static constexpr std::array<VkBlendOp,
+	inline constexpr std::array<VkBlendOp,
 	                                   static_cast<uint32_t>(RendererAPI::BlendMode::MAX_BLEND_MODES)> VkBlendOpTranslator =
 	{
 		VK_BLEND_OP_ADD,
@@ -317,7 +317,7 @@ namespace TRAP::Graphics::API
 		VK_BLEND_OP_MAX
 	};
 
-	inline static constexpr std::array<VkStencilOp,
+	inline constexpr std::array<VkStencilOp,
 	                                   static_cast<uint32_t>(RendererAPI::StencilOp::MAX_STENCIL_OPS)> VkStencilOpTranslator =
 	{
 		VK_STENCIL_OP_KEEP,
@@ -330,7 +330,7 @@ namespace TRAP::Graphics::API
 		VK_STENCIL_OP_DECREMENT_AND_CLAMP
 	};
 
-	inline static constexpr std::array<VkCullModeFlagBits,
+	inline constexpr std::array<VkCullModeFlagBits,
 	                                   static_cast<uint32_t>(RendererAPI::CullMode::MAX_CULL_MODES)> VkCullModeTranslator =
 	{
 		VK_CULL_MODE_NONE,
@@ -338,14 +338,14 @@ namespace TRAP::Graphics::API
 		VK_CULL_MODE_FRONT_BIT
 	};
 
-	inline static constexpr std::array<VkPolygonMode,
+	inline constexpr std::array<VkPolygonMode,
 	                                   static_cast<uint32_t>(RendererAPI::FillMode::MAX_FILL_MODES)> VkFillModeTranslator =
 	{
 		VK_POLYGON_MODE_FILL,
 		VK_POLYGON_MODE_LINE
 	};
 
-	inline static constexpr std::array<VkFrontFace, 2> VkFrontFaceTranslator =
+	inline constexpr std::array<VkFrontFace, 2> VkFrontFaceTranslator =
 	{
 		VK_FRONT_FACE_COUNTER_CLOCKWISE,
 		VK_FRONT_FACE_CLOCKWISE

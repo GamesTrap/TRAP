@@ -10,7 +10,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Fallback Graphics shader
 	/// </summary>
-	inline static constexpr std::string_view FallbackGraphicsShader
+	inline constexpr std::string_view FallbackGraphicsShader
 	{
 		R"(
 #shader vertex
@@ -44,7 +44,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Fallback Compute shader
 	/// </summary>
-	inline static constexpr std::string_view FallbackComputeShader
+	inline constexpr std::string_view FallbackComputeShader
 	{
 		R"(
 #shader compute
@@ -61,7 +61,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// 2D Renderer quad shader
 	/// </summary>
-	inline static constexpr std::string_view Renderer2DQuadShader
+	inline constexpr std::string_view Renderer2DQuadShader
 	{
 		R"(
 #shader vertex
@@ -218,7 +218,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// 2D Renderer line shader
 	/// </summary>
-	inline static constexpr std::string_view Renderer2DLineShader
+	inline constexpr std::string_view Renderer2DLineShader
 	{
 		R"(
 #shader vertex
@@ -262,7 +262,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// 2D Renderer circle shader
 	/// </summary>
-	inline static constexpr std::string_view Renderer2DCircleShader
+	inline constexpr std::string_view Renderer2DCircleShader
 	{
 		R"(
 #shader vertex
@@ -328,7 +328,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Default debug image pixel data RGBA 32BPP
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 4096> DefaultImageData =
+	inline constexpr std::array<uint8_t, 4096> DefaultImageData =
 	{
 		13, 13, 13, 255,
 		13, 13, 13, 255,
@@ -1359,7 +1359,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// TRAP Engine Logo Pixel Data RGBA 32BPP
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 4096> TRAPLogo
+	inline constexpr std::array<uint8_t, 4096> TRAPLogo
 	{
 		255, 255, 255, 0,
 		255, 255, 255, 0,
@@ -2390,7 +2390,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// OpenSans TTF Font data.
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 96932> OpenSansTTFData =
+	inline constexpr std::array<uint8_t, 96932> OpenSansTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x77, 0x74,
@@ -10475,7 +10475,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// OpenSans Bold TTF Font data
 	/// </summary>
-	inline static constexpr std::array<uint8_t, 104120> OpenSansBoldTTFData =
+	inline constexpr std::array<uint8_t, 104120> OpenSansBoldTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x93, 0x88,

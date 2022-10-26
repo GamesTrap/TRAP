@@ -331,7 +331,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 
 			case TRAP_TYPE_DPAD:
 			{
-				constexpr std::array<uint8_t, 9> states =
+				static constexpr std::array<uint8_t, 9> states =
 				{
 					static_cast<uint8_t>(ControllerDPad::Up),
 					static_cast<uint8_t>(ControllerDPad::Right_Up),
@@ -363,7 +363,7 @@ bool TRAP::Input::PollController(const Controller controller, const PollMode mod
 	{
 		uint32_t dpad = 0;
 		XINPUT_STATE xis;
-		constexpr std::array<WORD, 10> buttons =
+		static constexpr std::array<WORD, 10> buttons =
 		{
 			TRAP_XINPUT_GAMEPAD_A,
 			TRAP_XINPUT_GAMEPAD_B,

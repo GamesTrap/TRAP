@@ -21,7 +21,7 @@ TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip)
+constexpr uint32_t MIP_REDUCE(const uint32_t size, const uint32_t mip)
 {
 	return TRAP::Math::Max(1u, size >> mip);
 }
@@ -864,7 +864,7 @@ void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 	                                   RendererAPI::QueuePriority::Normal };
 	m_copyEngine.Queue = Queue::Create(desc);
 
-	constexpr uint64_t maxBlockSize = 32;
+	static constexpr uint64_t maxBlockSize = 32;
 	const uint64_t size = Math::Max(m_desc.BufferSize, maxBlockSize);
 
 	m_copyEngine.ResourceSets.reserve(m_desc.BufferCount);

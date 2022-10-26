@@ -4,7 +4,7 @@
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
+static constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 {
 	{
 		{

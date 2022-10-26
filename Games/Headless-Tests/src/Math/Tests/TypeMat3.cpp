@@ -148,7 +148,7 @@ namespace TypeMat3
     {
         static_assert(TRAP::Math::Mat3::Length() == 3, "Math: Failed constexpr");
 
-        constexpr TRAP::Math::Mat3 z(0.0f);
+        static constexpr TRAP::Math::Mat3 z(0.0f);
     }
 }
 
