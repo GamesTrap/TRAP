@@ -458,18 +458,11 @@ void TRAP::Application::Run()
 	ZoneScoped;
 
 	float lastFrameTime = 0.0f;
-	auto nextFrame = std::chrono::steady_clock::now();
 	float tickTimerSeconds = 0.0f;
+	Utils::Timer limiterTimer{};
 
 	while (m_running)
 	{
-		if (m_fpsLimit)
-			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
-#ifndef TRACY_ENABLE /*Disable this when profiling*/
-		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
-			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
-#endif
-
 		const Utils::Timer FrameTimeTimer{};
 		const float time = m_timer.Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
@@ -484,7 +477,11 @@ void TRAP::Application::Run()
 #else
 		else if (m_fpsLimit)
 #endif
-			std::this_thread::sleep_until(nextFrame);
+		{
+			const auto limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
+			std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
+			limiterTimer.Reset();
+		}
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_START);
@@ -549,9 +546,6 @@ void TRAP::Application::Run()
 
 		UpdateHotReloading();
 
-		if (!m_minimized)
-			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-
 		//Needed by Discord Game SDK
 		TRAP::Utils::Discord::RunCallbacks();
 		//Needed by Steamworks SDK
@@ -560,6 +554,9 @@ void TRAP::Application::Run()
 #ifdef NVIDIA_REFLEX_AVAILABLE
 		Graphics::RendererAPI::GetRenderer()->ReflexMarker(m_globalCounter, VK_SIMULATION_END);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
+
+		if (!m_minimized)
+			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
 
 		++m_globalCounter;
 	}

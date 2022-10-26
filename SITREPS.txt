@@ -3403,3 +3403,4 @@ SITREP 10/24/2022|22w43a1
 SITREP 10/26/2022|22w43a2
     - Changed TRAP Engine version to 22w43a2(0.8.65)
     - Changed usage of constexpr in combination with static and inline keywords ~<20 mins
+    - Fixed FPS limiter inaccuracy ~>20 mins
