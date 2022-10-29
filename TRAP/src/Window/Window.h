@@ -154,6 +154,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>True if VSync is enabled, false otherwise.</returns>
 		bool GetVSync() const noexcept;
+		/// <summary>
+		/// Get the aspect ratio of the window.
+		/// </summary>
+		/// <returns>Aspect ratio of window framebuffer.</returns>
+		float GetAspectRatio() const;
 
 		/// <summary>
 		/// Get the internal handle of the window.

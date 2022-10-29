@@ -10,7 +10,7 @@ class ParticleSystem2DLayer : public TRAP::Layer
 public:
 	ParticleSystem2DLayer()
 		: Layer("ParticleSystem2D"),
-		  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) / static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y)),
+		  m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio()),
 		  m_particle(),
 		  m_maxParticles(1000),
 		  m_frameTimeHistory()

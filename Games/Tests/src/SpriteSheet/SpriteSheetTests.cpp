@@ -3,7 +3,7 @@
 
 SpriteSheetTests::SpriteSheetTests()
 	: Layer("Sprite Sheet Tests"),
-	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) / static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y), true)
+	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true)
 {
 }
 

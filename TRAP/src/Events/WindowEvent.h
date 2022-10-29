@@ -807,6 +807,11 @@ namespace TRAP::Events
 		/// <returns>Framebuffer size.</returns>
 		constexpr Math::Vec2ui GetSize() const;
 		/// <summary>
+		/// Retrieve the aspect ratio of the framebuffer.
+		/// </summary>
+		/// <returns>Aspect ratio.</returns>
+		constexpr float GetAspectRatio() const;
+		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
@@ -1145,6 +1150,13 @@ constexpr uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const
 constexpr TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const
 {
 	return {m_width, m_height};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr float TRAP::Events::FrameBufferResizeEvent::GetAspectRatio() const
+{
+	return static_cast<float>(m_width) / static_cast<float>(m_height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

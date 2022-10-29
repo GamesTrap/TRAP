@@ -5,10 +5,8 @@
 
 AntiAliasingTests::AntiAliasingTests()
 	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(),
-	  m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) /
-	             static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y)),
-	           static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) /
-			   static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y),
+	  m_camera(-TRAP::Application::GetWindow()->GetAspectRatio(),
+	           TRAP::Application::GetWindow()->GetAspectRatio(),
 	           -1.0f, 1.0f, -1.0f, 1.0f)
 {
 }
@@ -138,8 +136,8 @@ bool AntiAliasingTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 
 bool AntiAliasingTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& e)
 {
-	m_camera.SetProjection(-(static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight())),
-		                   static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight()),
+	m_camera.SetProjection(-e.GetAspectRatio(),
+		                   e.GetAspectRatio(),
 		                   -1.0f, 1.0f, -1.0f, 1.0f);
 
 	return false;

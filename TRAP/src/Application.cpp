@@ -317,12 +317,8 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
 
 	//Update Viewport
-	int32_t w = 0, h = 0;
-	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>
-		(
-			m_window->GetInternalWindow()
-		), w, h);
-	Graphics::RenderCommand::SetViewport(0, 0, static_cast<uint32_t>(w), static_cast<uint32_t>(h));
+	const auto frameBufferSize = m_window->GetFrameBufferSize();
+	Graphics::RenderCommand::SetViewport(0, 0, frameBufferSize.x, frameBufferSize.y);
 #endif
 
 	if(renderAPI != Graphics::RenderAPI::NONE)

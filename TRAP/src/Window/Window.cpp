@@ -230,6 +230,17 @@ bool TRAP::Window::GetVSync() const noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+float TRAP::Window::GetAspectRatio() const
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	const auto frameBufferSize = GetFrameBufferSize();
+
+	return static_cast<float>(frameBufferSize.x) / static_cast<float>(frameBufferSize.y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void* TRAP::Window::GetInternalWindow() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

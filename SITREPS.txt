@@ -3409,3 +3409,5 @@ SITREP 10/29/2022|22w43b1
     - Changed TRAP Engine version to 22w43b1(0.8.66)
     - Fixed TRAP_PROFILE_SYSTEMS() compiler errors ~<5 mins
     - Games now use Framebuffer size instead of window size ~<5 mins
+    - Window/FrameBufferResizeEvent Added GetAspectRatio() ~<5 mins
+    - Games now use GetAspectRatio() instead of manually calculating it ~<5 mins

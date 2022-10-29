@@ -17,7 +17,6 @@ public:
 
 private:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
-	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& e);
 
     TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
     TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
