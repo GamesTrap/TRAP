@@ -1801,23 +1801,24 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Pl
 	switch(dm.dmDisplayFrequency)
 	{
 	case 23:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 29:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 47:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 59:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 71:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 89:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 95:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 119:
-		[[fallthrough]]
+		[[fallthrough]];
 	case 143:
 		refreshRate = static_cast<double>(refreshRate + 1) / 1.001;
+		break;
 
 	default:
 		break;
