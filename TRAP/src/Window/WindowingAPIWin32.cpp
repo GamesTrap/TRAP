@@ -1871,7 +1871,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* wi
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 	                                                        const int32_t xPos, const int32_t yPos,
-	                                                        const int32_t width, const int32_t height, const int32_t)
+	                                                        const int32_t width, const int32_t height, const double)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -2031,21 +2031,21 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 		switch(dm.dmDisplayFrequency)
 		{
 		case 23:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 29:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 47:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 59:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 71:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 89:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 95:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 119:
-			[[fallthrough]]
+			[[fallthrough]];
 		case 143:
 			refreshRate = static_cast<double>(refreshRate + 1) / 1.001;
 
