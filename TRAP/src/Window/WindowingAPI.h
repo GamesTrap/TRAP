@@ -1089,7 +1089,7 @@ namespace TRAP::INTERNAL
 			//The bit depth of the blue channel of the video mode.
 			int32_t BlueBits = 0;
 			//The refresh rate, in Hz, of the video mode.
-			int32_t RefreshRate = 0;
+			double RefreshRate = 0;
 		};
 
 		/// <summary>
@@ -1722,7 +1722,7 @@ namespace TRAP::INTERNAL
 		                             int32_t yPos,
 		                             int32_t width,
 		                             int32_t height,
-		                             int32_t refreshRate);
+		                             double refreshRate);
 		/// <summary>
 		/// This function sets the monitor that the window uses for borderless full screen mode.
 		///
@@ -2698,7 +2698,7 @@ namespace TRAP::INTERNAL
 		/// <param name="refreshRate">New refresh rate for the window.</param>
 		static void PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height,
-											 int32_t refreshRate);
+											 double refreshRate);
 		/// <summary>
 		/// This function sets the monitor that the window uses for borderless full screen mode.
 		///
@@ -3887,7 +3887,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="mi">RandR mode info.</param>
 		/// <returns>Refresh rate.</returns>
-		static int32_t CalculateRefreshRate(const XRRModeInfo* mi);
+		static double CalculateRefreshRate(const XRRModeInfo* mi);
 		/// <summary>
 		/// Create InternalVideoMode from RandR mode info.
 		/// </summary>

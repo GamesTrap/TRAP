@@ -1173,7 +1173,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor* monitor, c
 	dm.dmPelsWidth = best->Width;
 	dm.dmPelsHeight = best->Height;
 	dm.dmBitsPerPel = best->RedBits + best->GreenBits + best->BlueBits;
-	dm.dmDisplayFrequency = best->RefreshRate;
+	dm.dmDisplayFrequency = static_cast<DWORD>(best->RefreshRate);
 
 	if (dm.dmBitsPerPel < 15 || dm.dmBitsPerPel >= 24)
 		dm.dmBitsPerPel = 32;
@@ -1794,10 +1794,39 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Pl
 
 	EnumDisplaySettingsW(monitor->AdapterName.data(), ENUM_CURRENT_SETTINGS, &dm);
 
+	//dm.dmDisplayFrequency is an integer which is rounded down, so it's
+	//highly likely that 23 represents 24/1.001 Hz, 59 represents 60/1.001 Hz, etc.
+	//A caller can always reproduce the original value by using floor.
+	double refreshRate = static_cast<double>(dm.dmDisplayFrequency);
+	switch(dm.dmDisplayFrequency)
+	{
+	case 23:
+		[[fallthrough]]
+	case 29:
+		[[fallthrough]]
+	case 47:
+		[[fallthrough]]
+	case 59:
+		[[fallthrough]]
+	case 71:
+		[[fallthrough]]
+	case 89:
+		[[fallthrough]]
+	case 95:
+		[[fallthrough]]
+	case 119:
+		[[fallthrough]]
+	case 143:
+		refreshRate = static_cast<double>(refreshRate + 1) / 1.001;
+
+	default:
+		break;
+	}
+
 	InternalVideoMode mode{};
 	mode.Width = dm.dmPelsWidth;
 	mode.Height = dm.dmPelsHeight;
-	mode.RefreshRate = dm.dmDisplayFrequency;
+	mode.RefreshRate = refreshRate;
 	SplitBPP(dm.dmBitsPerPel, mode.RedBits, mode.GreenBits, mode.BlueBits);
 
 	return mode;
@@ -1994,9 +2023,38 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 		if (dm.dmBitsPerPel < 15)
 			continue;
 
+		//dm.dmDisplayFrequency is an integer which is rounded down, so it's
+		//highly likely that 23 represents 24/1.001 Hz, 59 represents 60/1.001 Hz, etc.
+		//A caller can always reproduce the original value by using floor.
+		double refreshRate = static_cast<double>(dm.dmDisplayFrequency);
+		switch(dm.dmDisplayFrequency)
+		{
+		case 23:
+			[[fallthrough]]
+		case 29:
+			[[fallthrough]]
+		case 47:
+			[[fallthrough]]
+		case 59:
+			[[fallthrough]]
+		case 71:
+			[[fallthrough]]
+		case 89:
+			[[fallthrough]]
+		case 95:
+			[[fallthrough]]
+		case 119:
+			[[fallthrough]]
+		case 143:
+			refreshRate = static_cast<double>(refreshRate + 1) / 1.001;
+
+		default:
+			break;
+		}
+
 		mode.Width = dm.dmPelsWidth;
 		mode.Height = dm.dmPelsHeight;
-		mode.RefreshRate = dm.dmDisplayFrequency;
+		mode.RefreshRate = refreshRate;
 		SplitBPP(dm.dmBitsPerPel, mode.RedBits, mode.GreenBits, mode.BlueBits);
 
 		for (i = 0; i < count; i++)

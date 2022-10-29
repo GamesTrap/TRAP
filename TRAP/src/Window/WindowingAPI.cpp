@@ -348,7 +348,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	window->videoMode.RedBits = 8;
 	window->videoMode.GreenBits = 8;
 	window->videoMode.BlueBits = 8;
-	window->videoMode.RefreshRate = -1;
+	window->videoMode.RefreshRate = -1.0;
 
 	window->Monitor = monitor;
 	window->Resizable = WNDConfig.Resizable;
@@ -1008,7 +1008,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* const window
                                                     const int32_t yPos,
                                                     const int32_t width,
                                                     const int32_t height,
-                                                    const int32_t refreshRate)
+                                                    const double refreshRate)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
@@ -1031,7 +1031,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* const window
 		return;
 	}
 
-	if (refreshRate < 0 && refreshRate != -1)
+	if (refreshRate < 0.0 && refreshRate != -1.0)
 	{
 		InputError(Error::Invalid_Value, " Invalid refresh rate " + std::to_string(refreshRate));
 		return;
@@ -2801,7 +2801,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 			(current->Height - desired.Height) *
 			(current->Height - desired.Height));
 
-		if (desired.RefreshRate != -1)
+		if (desired.RefreshRate != -1.0)
 			rateDiff = abs(current->RefreshRate - desired.RefreshRate);
 		else
 			rateDiff = std::numeric_limits<uint32_t>::max() - current->RefreshRate;

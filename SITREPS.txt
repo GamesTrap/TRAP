@@ -3411,3 +3411,4 @@ SITREP 10/29/2022|22w43b1
     - Games now use Framebuffer size instead of window size ~<5 mins
     - Window/FrameBufferResizeEvent Added GetAspectRatio() ~<5 mins
     - Games now use GetAspectRatio() instead of manually calculating it ~<5 mins
+    - WindowingAPI refresh rate is now a double, removed rounding ~<10 mins

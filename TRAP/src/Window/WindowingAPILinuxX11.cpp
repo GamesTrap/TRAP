@@ -61,18 +61,14 @@ static constexpr int32_t KeyRelease = 3;
 static constexpr uint32_t InvalidCodepoint = 0xFFFFFFFFu;
 
 //Calculates the refresh rate, in Hz, from the specified RandR mode info
-int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* const mi)
+double TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* const mi)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	if(mi->hTotal && mi->vTotal)
-	{
-		return static_cast<int32_t>(TRAP::Math::Round(static_cast<double>(mi->dotClock) /
-		                                              (static_cast<double>(mi->hTotal) *
-													  static_cast<double>(mi->vTotal))));
-	}
+		return static_cast<double>(mi->dotClock) / (static_cast<double>(mi->hTotal) * static_cast<double>(mi->vTotal));
 
-	return 0;
+	return 0.0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2012,7 +2008,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Pl
 	{
 		mode.Width = DisplayWidth(s_Data.display, s_Data.Screen);
 		mode.Height = DisplayHeight(s_Data.display, s_Data.Screen);
-		mode.RefreshRate = 0;
+		mode.RefreshRate = 0.0;
 
 		SplitBPP(DefaultDepth(s_Data.display, s_Data.Screen), mode.RedBits, mode.GreenBits, mode.BlueBits);
 	}
@@ -2066,7 +2062,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowPos(const InternalWindow* co
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* const window, InternalMonitor* const monitor,
 														    const int32_t xPos, const int32_t yPos, const int32_t width,
-															const int32_t height, const int32_t /*refreshRate*/)
+															const int32_t height, const double /*refreshRate*/)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 

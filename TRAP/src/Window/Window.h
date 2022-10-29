@@ -117,7 +117,7 @@ namespace TRAP
 		/// Get the current refresh rate of the window.
 		/// </summary>
 		/// <returns>Refresh rate of the window.</returns>
-		uint32_t GetRefreshRate() const noexcept;
+		double GetRefreshRate() const noexcept;
 		/// <summary>
 		/// Get the current display mode of the window.
 		/// </summary>
@@ -183,7 +183,7 @@ namespace TRAP
 		void SetDisplayMode(const DisplayMode& mode,
 			                uint32_t width = 0,
 			                uint32_t height = 0,
-			                uint32_t refreshRate = 0);
+			                double refreshRate = 0);
 		/// <summary>
 		/// Set a new monitor for the window.
 		/// </summary>
@@ -368,14 +368,16 @@ namespace TRAP
 		/// </summary>
 		struct WindowedModeParams
 		{
-			int32_t Width = 800, Height = 600, RefreshRate;
+			int32_t Width = 800, Height = 600;
+			double RefreshRate;
 			int32_t XPos, YPos;
 		};
 
 		struct WindowData
 		{
 			std::string Title;
-			int32_t Width{}, Height{}, RefreshRate{};
+			int32_t Width{}, Height{};
+			double RefreshRate{};
 			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
 			bool VSync{};
@@ -407,7 +409,7 @@ namespace TRAP
 		std::string Title;
 		uint32_t Width;
 		uint32_t Height;
-		uint32_t RefreshRate;
+		double RefreshRate;
 		bool VSync;
 		Window::DisplayMode DisplayMode;
 		uint32_t Monitor;
@@ -461,7 +463,7 @@ namespace TRAP
 		explicit WindowProps(std::string title = "TRAP™",
 							 uint32_t width = 1280,
 							 uint32_t height = 720,
-							 uint32_t refreshRate = 60,
+							 double refreshRate = 60.0,
 							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
 							 AdvancedProps advanced = AdvancedProps{},

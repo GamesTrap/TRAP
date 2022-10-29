@@ -22,11 +22,11 @@ namespace TRAP
 			/// <param name="width">Width.</param>
 			/// <param name="height">Height.</param>
 			/// <param name="refreshRate">Refresh rate.</param>
-			constexpr VideoMode(int32_t width, int32_t height, int32_t refreshRate);
+			constexpr VideoMode(int32_t width, int32_t height, double refreshRate);
 
 			int32_t Width = 0;
 			int32_t Height = 0;
-			int32_t RefreshRate = 0;
+			double RefreshRate = 0;
 		};
 
 
@@ -168,7 +168,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const int32_t refreshRate)
+constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const double refreshRate)
 	: Width(width), Height(height), RefreshRate(refreshRate)
 {}
 
