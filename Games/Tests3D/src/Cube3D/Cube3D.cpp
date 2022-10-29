@@ -175,8 +175,8 @@ void Cube3D::OnAttach()
 
 	//Camera setup
     m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f);
-    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(),
-                             TRAP::Application::GetWindow()->GetHeight());
+    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetFrameBufferSize().x,
+                             TRAP::Application::GetWindow()->GetFrameBufferSize().y);
 
     //Load diffuse reflection UniformBuffer
     const TRAP::Math::Mat4 inverseView = TRAP::Math::Inverse(m_cameraTransform.GetTransform());

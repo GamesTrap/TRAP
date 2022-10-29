@@ -110,7 +110,10 @@ constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs)
 }
 
 //Set this macro to specify which systems should be profiled.
-inline constexpr ProfileSystems TRAP_PROFILE_SYSTEMS = ProfileSystems::All;
+constexpr ProfileSystems TRAP_PROFILE_SYSTEMS()
+{
+	return ProfileSystems::All;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -167,7 +170,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 65);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 66);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

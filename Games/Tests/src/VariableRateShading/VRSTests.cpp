@@ -2,7 +2,7 @@
 
 VRSTests::VRSTests()
 	: Layer("Variable Rate Shading"),
-	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), true),
+	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) / static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y), true),
     m_shadingRate(), m_supportedShadingRates(), m_supportedShadingRatesStrings()
 {
 }

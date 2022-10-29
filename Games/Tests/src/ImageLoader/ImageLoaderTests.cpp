@@ -2,10 +2,10 @@
 
 ImageLoaderTests::ImageLoaderTests()
 	: Layer("ImageLoader"),
-      m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
-	             static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
-	           static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
-			   static_cast<float>(TRAP::Application::GetWindow()->GetHeight()),
+      m_camera(-(static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) /
+	             static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y)),
+	           static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) /
+			   static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y),
 	           -1.0f, 1.0f, -1.0f, 1.0f),
       m_png(false),
       m_tga(true),

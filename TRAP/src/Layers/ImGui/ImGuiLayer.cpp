@@ -260,8 +260,8 @@ void TRAP::ImGuiLayer::End()
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(static_cast<float>(Application::GetWindow()->GetWidth()),
-	                        static_cast<float>(Application::GetWindow()->GetHeight()));
+	io.DisplaySize = ImVec2(static_cast<float>(Application::GetWindow()->GetFrameBufferSize().x),
+	                        static_cast<float>(Application::GetWindow()->GetFrameBufferSize().y));
 
 	//Rendering
 	ImGui::Render();

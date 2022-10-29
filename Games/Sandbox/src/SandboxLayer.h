@@ -11,8 +11,8 @@ public:
 		m_frameTimeHistory(),
 		m_wireFrame(false),
 		m_indexedDrawing(true),
-		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) /
-		                   static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))
+		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().x) /
+		                   static_cast<float>(TRAP::Application::GetWindow()->GetFrameBufferSize().y))
 	{
 	}
 
