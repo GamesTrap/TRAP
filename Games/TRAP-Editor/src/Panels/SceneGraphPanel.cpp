@@ -1,6 +1,6 @@
 #include "SceneGraphPanel.h"
 
-#include <Scene/Components.h>
+#include <TRAP.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -232,17 +232,9 @@ void TRAP::SceneGraphPanel::DrawComponents(Entity entity)
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 		const Utils::UID uid = entity.GetUID();
 
-		//TODO Replace array with real string?!
-		std::array<char, 256> buffer{};
-#ifdef TRAP_PLATFORM_WINDOWS
-		strcpy_s(buffer.data(), buffer.size() * sizeof(char), tag.c_str());
-#else
-		strcpy(buffer.data(), tag.c_str());
-#endif
-		if(ImGui::InputText("##Tag", buffer.data(), buffer.size() * sizeof(char)))
-		{
-			tag = std::string(buffer.data());
-		}
+		std::string buffer = tag;
+		if(ImGui::InputText("##Tag", &buffer))
+			tag = buffer;
 		if(ImGui::IsItemHovered(/*ImGuiHoveredFlags_DelayShort*/)) //TODO
 		{
 			ImGui::BeginTooltip();

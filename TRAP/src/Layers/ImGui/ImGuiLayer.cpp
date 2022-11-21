@@ -28,7 +28,41 @@
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "FileSystem/FileSystem.h"
 
+#include <imgui.h>
 #include <imgui_internal.h>
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+struct InputTextCallbackUserData
+{
+	std::string* Str;
+	ImGuiInputTextCallback ChainCallback;
+	void* ChainCallbackUserData;
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+static int32_t InputTextCallback(ImGuiInputTextCallbackData* const data)
+{
+	const InputTextCallbackUserData* const userData = static_cast<InputTextCallbackUserData*>(data->UserData);
+	if(data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+	{
+		//Resize string callback
+		//If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
+		std::string* str = userData->Str;
+		IM_ASSERT(data->Buf == str->c_str());
+		str->resize(data->BufTextLen);
+		data->Buf = &(*str)[0];
+	}
+	else if(userData->ChainCallback)
+	{
+		//Forward to user callback, if any
+		data->UserData = userData->ChainCallbackUserData;
+		return userData->ChainCallback(data);
+	}
+
+	return 0;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -397,6 +431,45 @@ bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& 
 	}
 
 	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool ImGui::InputText(const std::string_view label, std::string* str, ImGuiInputTextFlags flags,
+                      const ImGuiInputTextCallback callback, void* userData)
+{
+	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+	flags |= ImGuiInputTextFlags_CallbackResize;
+
+	InputTextCallbackUserData cbUserData{str, callback, userData};
+
+	return InputText(label.data(), &(*str)[0], str->capacity() + 1, flags, InputTextCallback, &cbUserData);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool ImGui::InputTextMultiline(const std::string_view label, std::string* str, const ImVec2& size,
+                               ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* userData)
+{
+	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+	flags |= ImGuiInputTextFlags_CallbackResize;
+
+	InputTextCallbackUserData cbUserData{str, callback, userData};
+
+	return InputTextMultiline(label.data(), &(*str)[0], str->capacity() + 1, size, flags, InputTextCallback, &cbUserData);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool ImGui::InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* str,
+                              ImGuiInputTextFlags flags, const ImGuiInputTextCallback callback, void* userData)
+{
+	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+	flags |= ImGuiInputTextFlags_CallbackResize;
+
+	InputTextCallbackUserData cbUserData{str, callback, userData};
+
+	return InputTextWithHint(label.data(), hint.data(), &(*str)[0], str->capacity() + 1, flags, InputTextCallback, &cbUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

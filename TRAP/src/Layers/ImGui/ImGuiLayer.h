@@ -128,7 +128,7 @@ namespace ImGui
 			   const ImVec4& border_col = ImVec4(0, 0, 0, 0));
 
 	/// <summary>
-	/// Draw an image button with ImGui
+	/// Draw an image button with ImGui.
 	/// </summary>
 	/// <param name="image">Image to draw.</param>
 	/// <param name="size">Size for the image.</param>
@@ -142,6 +142,39 @@ namespace ImGui
 	                 const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
 					 int frame_padding = -1, const ImVec4& bg_col = ImVec4(0,0,0,0),
 					 const ImVec4& tint_col = ImVec4(1,1,1,1));
+
+	/// <summary>
+	/// Draw an input text field with ImGui.
+	/// </summary>
+	/// <param name="label">Label for the text field.</param>
+	/// <param name="str">String to store input to.</param>
+	/// <param name="flags">Additional flags for the input field.</param>
+	/// <param name="callback">Callback to implement additional functionality.</param>
+	/// <param name="userData">Pointer to provide user data.</param>
+	/// <returns>True if input text changed, false otherwise.</returns>
+	bool InputText(const std::string_view label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	/// <summary>
+	/// Draw an multi-line input text field with ImGui.
+	/// </summary>
+	/// <param name="label">Label for the text field.</param>
+	/// <param name="str">String to store input to.</param>
+	/// <param name="size">Size for the text field.</param>
+	/// <param name="flags">Additional flags for the input field.</param>
+	/// <param name="callback">Callback to implement additional functionality.</param>
+	/// <param name="userData">Pointer to provide user data.</param>
+	/// <returns>True if input text changed, false otherwise.</returns>
+	bool InputTextMultiline(const std::string_view label, std::string* str, const ImVec2& size = ImVec2(0.0f, 0.0f), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
+	/// <summary>
+	/// Draw an input text field with an additional hint with ImGui.
+	/// </summary>
+	/// <param name="label">Label for the text field.</param>
+	/// <param name="hint">Hint to display.</param>
+	/// <param name="str">String to store input to.</param>
+	/// <param name="flags">Additional flags for the input field.</param>
+	/// <param name="callback">Callback to implement additional functionality.</param>
+	/// <param name="userData">Pointer to provide user data.</param>
+	/// <returns>True if input text changed, false otherwise.</returns>
+	bool InputTextWithHint(const std::string_view label, const std::string_view hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* userData = nullptr);
 
 	/// <summary>
 	/// Add a TTF font to ImGui from file.

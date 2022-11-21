@@ -3418,3 +3418,4 @@ SITREP 11/21/2022|22w47a1
     - Updated Codestyle.md ~<10 mins
     - Added missing ModernDialogs License ~<5 mins
     - Fixed bug in compile_commands.json generator ~<5 mins
+    - ImGuiLayer Added std::string overloads for InputText(), InputTextMultiline() & InputTextWithHint() ~<10 mins
