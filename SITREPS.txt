@@ -3412,3 +3412,9 @@ SITREP 10/29/2022|22w43b1
     - Window/FrameBufferResizeEvent Added GetAspectRatio() ~<5 mins
     - Games now use GetAspectRatio() instead of manually calculating it ~<5 mins
     - WindowingAPI refresh rate is now a double, removed rounding ~<10 mins
+
+SITREP 11/21/2022|22w47a1
+    - Changed TRAP Engine version to 22w47a1(0.8.67)
+    - Updated Codestyle.md ~<10 mins
+    - Added missing ModernDialogs License ~<5 mins
+    - Fixed bug in compile_commands.json generator ~<5 mins

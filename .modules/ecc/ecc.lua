@@ -119,9 +119,12 @@ function m.getProjectCommands(prj, cfg)
 end
 
 function m.onExecute()
+	print("Exporting compile_commands.json...")
 	for wks in p.global.eachWorkspace() do
-		local cfgCmds
+		print("Workspace " .. wks.name .. ":")
+		local cfgCmds = {}
 		for prj in workspace.eachproject(wks) do
+			print("    " .. prj.name)
 			local cfg = project.getconfig(prj, "Debug")
 			if not cfg then
 				error("No debug configuration for project '" .. prj.name .. "'")

@@ -1,4 +1,4 @@
-# TRAP
+# TRAP™
 
 ![TRAP](Branding/TRAP.gif?raw=true "TRAP")
 
