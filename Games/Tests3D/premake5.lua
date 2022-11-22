@@ -181,6 +181,12 @@ project "Tests3D"
 			defines "NVIDIA_REFLEX_AVAILABLE"
 		end
 
+	filter { "action:gmake*", "toolset:gcc" }
+		buildoptions
+		{
+			"-Wpedantic"
+		}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"

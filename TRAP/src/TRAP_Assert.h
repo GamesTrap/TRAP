@@ -11,28 +11,23 @@
 
 #ifdef TRAP_ENABLE_ASSERTS
 
-#define TRAP_INTERNAL_ASSERT_IMPL(check, msg, ...) { if(!(check)) { TP_CRITICAL(msg, __VA_ARGS__);                   \
-                                                                    TRAP_DEBUG_BREAK(); } }
+template<typename... Args>
+void TRAP_ASSERT_IMPL_LOG(const std::string_view expressionStr, const std::string_view file, const uint64_t line, [[maybe_unused]] const Args... args)
+{
+	if constexpr(sizeof...(Args) > 1)
+	{
+		TP_CRITICAL("Assertion '", expressionStr, "' failed: ", args..., " @ ", std::filesystem::absolute(file).u8string(), ':', line);
+	}
+	else
+	{
+		TP_CRITICAL("Assertion '", expressionStr, "' failed @ ", std::filesystem::absolute(file).u8string(), ':', line);
+	}
+}
 
-#define TRAP_INTERNAL_ASSERT_WITH_MSG(check, ...) TRAP_INTERNAL_ASSERT_IMPL                                          \
-	(                                                                                                                \
-		check, " Assertion '", TRAP_STRINGIFY_MACRO(check), "' failed: ", __VA_ARGS__, " @ ",                        \
-		std::filesystem::absolute(std::filesystem::path(__FILE__)).u8string(), ':', __LINE__                         \
-	)
-#define TRAP_INTERNAL_ASSERT_NO_MSG(check) TRAP_INTERNAL_ASSERT_IMPL                                                 \
-	(                                                                                                                \
-		check, " Assertion '", TRAP_STRINGIFY_MACRO(check)"' failed @ ",                                             \
-		std::filesystem::absolute(std::filesystem::path(__FILE__)).u8string(), ':', __LINE__                         \
-	)
-
-#define TRAP_INTERNAL_ASSERT_GET_MACRO_NAME(arg1, arg2, macro, ...) macro
-#define TRAP_INTERNAL_ASSERT_GET_MACRO(...) TRAP_EXPAND_MACRO                                                        \
-	(                                                                                                                \
-		TRAP_INTERNAL_ASSERT_GET_MACRO_NAME(__VA_ARGS__, TRAP_INTERNAL_ASSERT_WITH_MSG, TRAP_INTERNAL_ASSERT_NO_MSG) \
-	)
+#define TRAP_ASSERT_IMPL(check, ...) { if(!(check)) { TRAP_ASSERT_IMPL_LOG(TRAP_STRINGIFY_MACRO(check), __FILE__, __LINE__, __VA_ARGS__); TRAP_DEBUG_BREAK(); } }
 
 //Currently accepts at least the condition and one additional parameter (the message) being optional
-#define TRAP_ASSERT(...) TRAP_EXPAND_MACRO(TRAP_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(__VA_ARGS__))
+#define TRAP_ASSERT(...) TRAP_EXPAND_MACRO(TRAP_ASSERT_IMPL(__VA_ARGS__, ""))
 #else
 template<typename... Args>
 constexpr void TRAP_ASSERT(const Args&...) {}

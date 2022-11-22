@@ -7,7 +7,7 @@
 
 bool initialized = false;
 
-TracyLockable(std::mutex, aftermath_mutex);
+TracyLockable(std::mutex, aftermath_mutex)
 
 void* handle = nullptr;
 #ifdef ENABLE_NSIGHT_AFTERMATH

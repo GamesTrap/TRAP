@@ -107,7 +107,7 @@ namespace TRAP
 
 	private:
 		std::queue<T> m_queue{};
-		mutable TracyLockable(std::mutex, m_mutex);
+		mutable TracyLockable(std::mutex, m_mutex)
 		std::condition_variable_any m_ready;
 		bool m_done = false;
 	};

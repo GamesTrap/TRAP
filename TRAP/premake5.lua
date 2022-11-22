@@ -194,6 +194,12 @@ project "TRAP"
 	filter "files:../Dependencies/Tracy/TracyClient.cpp"
 		flags {"NoPCH"}
 
+	filter { "action:gmake*", "toolset:gcc" }
+		buildoptions
+		{
+			"-Wpedantic"
+		}
+
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"
@@ -331,6 +337,12 @@ project "TRAP-Headless"
 
 	filter "files:../Dependencies/Tracy/TracyClient.cpp"
 		flags {"NoPCH"}
+
+	filter { "action:gmake*", "toolset:gcc" }
+		buildoptions
+		{
+			"-Wpedantic"
+		}
 
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"

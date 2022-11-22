@@ -37,6 +37,12 @@ project "ConvertToSPIRV"
 			"pthread"
 		}
 
+	filter { "action:gmake*", "toolset:gcc" }
+		buildoptions
+		{
+			"-Wpedantic"
+		}
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"
