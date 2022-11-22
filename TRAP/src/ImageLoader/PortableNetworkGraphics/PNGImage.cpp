@@ -942,10 +942,11 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 
 	case 1:
 	{
+		std::size_t j = 0;
 		for (i = 0; i != byteWidth; ++i)
 			recon[i] = scanline[i];
-		for (i = byteWidth; i < length; ++i)
-			recon[i] = scanline[i] + recon[i - byteWidth];
+		for (i = byteWidth; i != length; ++i, ++j)
+			recon[i] = scanline[i] + recon[j];
 		break;
 	}
 
@@ -964,17 +965,64 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 	{
 		if (precon)
 		{
+			std::size_t j = 0;
+
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = scanline[i] + (precon[i] >> 1u);
-			for (i = byteWidth; i < length; ++i)
-				recon[i] = scanline[i] + ((recon[i - byteWidth] + precon[i]) >> 1u);
+
+			//Unroll independent paths of the Paeth predictor.
+			//A 6x and 8x version is also possible but that adds too much code.
+			//Whether this speeds up anything at all depends on compiler and settings.
+			if(byteWidth >= 4)
+			{
+				for(; i + 3 < length; i += 4, j += 4)
+				{
+					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
+					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
+					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
+					uint8_t s3 = scanline[i + 3], r3 = recon[j + 3], p3 = precon[i + 3];
+
+					recon[i + 0] = s0 + ((r0 + p0) >> 1u);
+					recon[i + 1] = s1 + ((r1 + p1) >> 1u);
+					recon[i + 2] = s2 + ((r2 + p2) >> 1u);
+					recon[i + 3] = s3 + ((r3 + p3) >> 1u);
+				}
+			}
+			else if(byteWidth >= 3)
+			{
+				for(; i + 2 < length; i += 3, j += 3)
+				{
+					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
+					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
+					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
+
+					recon[i + 0] = s0 + ((r0 + p0) >> 1u);
+					recon[i + 1] = s1 + ((r1 + p1) >> 1u);
+					recon[i + 2] = s2 + ((r2 + p2) >> 1u);
+				}
+			}
+			else if(byteWidth >= 2)
+			{
+				for(; i + 1 < length; i += 2, j += 2)
+				{
+					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
+					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
+
+					recon[i + 0] = s0 + ((r0 + p0) >> 1u);
+					recon[i + 1] = s1 + ((r1 + p1) >> 1u);
+				}
+			}
+
+			for(; i != length; ++i, ++j)
+				recon[i] = scanline[i] + ((recon[j] + precon[i]) >> 1u);
 		}
 		else
 		{
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = scanline[i];
-			for (i = byteWidth; i < length; ++i)
-				recon[i] = scanline[i] + (recon[i - byteWidth] >> 1u);
+			std::size_t j = 0;
+			for (i = byteWidth; i != length; ++i, ++j)
+				recon[i] = scanline[i] + (recon[j] >> 1u);
 		}
 		break;
 	}
@@ -983,17 +1031,18 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 	{
 		if (precon)
 		{
+			std::size_t j = 0;
+
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = (scanline[i] + precon[i]);
 
 			//Unroll independent paths of the Paeth predictor.
-			//A 6x and 8x version would also be possible but that adds too much code.
-			//Whether this actually speeds anything up at all depends on compiler and settings.
+			//A 6x and 8x version is also possible but that adds too much code.
+			//Whether this speeds up anything at all depends on compiler and settings.
 			if (byteWidth >= 4)
 			{
-				for (; i + 3 < length; i += 4)
+				for (; i + 3 < length; i += 4, j += 4)
 				{
-					const std::size_t j = i - byteWidth;
 					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1];
 					const uint8_t s2 = scanline[i + 2], s3 = scanline[i + 3];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1], r2 = recon[j + 2], r3 = recon[j + 3];
@@ -1007,9 +1056,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 			}
 			else if (byteWidth >= 3)
 			{
-				for (; i + 2 < length; i += 3)
+				for (; i + 2 < length; i += 3, j += 3)
 				{
-					const std::size_t j = i - byteWidth;
 					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1], s2 = scanline[i + 2];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1], r2 = recon[j + 2];
 					const uint8_t p0 = precon[i + 0], p1 = precon[i + 1], p2 = precon[i + 2];
@@ -1021,9 +1069,8 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 			}
 			else if (byteWidth >= 2)
 			{
-				for (; i + 1 < length; i += 2)
+				for (; i + 1 < length; i += 2, j += 2)
 				{
-					const std::size_t j = i - byteWidth;
 					const uint8_t s0 = scanline[i + 0], s1 = scanline[i + 1];
 					const uint8_t r0 = recon[j + 0], r1 = recon[j + 1];
 					const uint8_t p0 = precon[i + 0], p1 = precon[i + 1];
@@ -1033,15 +1080,16 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 				}
 			}
 
-			for (; i != length; ++i)
-				recon[i] = (scanline[i] + PaethPredictor(recon[i - byteWidth], precon[i], precon[i - byteWidth]));
+			for (; i != length; ++i, ++j)
+				recon[i] = (scanline[i] + PaethPredictor(recon[i - byteWidth], precon[i], precon[j]));
 		}
 		else
 		{
 			for (i = 0; i != byteWidth; ++i)
 				recon[i] = scanline[i];
-			for (i = byteWidth; i < length; ++i)
-				recon[i] = (scanline[i] + recon[i - byteWidth]);
+			std::size_t j = 0;
+			for (i = byteWidth; i != length; ++i, ++j)
+				recon[i] = (scanline[i] + recon[j]);
 		}
 		break;
 	}

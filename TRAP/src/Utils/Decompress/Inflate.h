@@ -1,5 +1,5 @@
 /*
-LodePNG version 20220109
+LodePNG version 20221108
 Copyright (c) 2005-2022 Lode Vandevenne
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -51,30 +51,22 @@ namespace TRAP::Utils::Decompress
 			/// Ensure the reader can at least read 9 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
 			/// </summary>
-			/// <param name="nBits">How many bits up to 9.</param>
-			/// <returns>True if there are enough bits available, false otherwise.</returns>
-			bool EnsureBits9(std::size_t nBits);
+			void EnsureBits9();
 			/// <summary>
 			/// Ensure the reader can at least read 17 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
 			/// </summary>
-			/// <param name="nBits">How many bits up to 17.</param>
-			/// <returns>True if there are enough bits available, false otherwise.</returns>
-			bool EnsureBits17(std::size_t nBits);
+			void EnsureBits17();
 			/// <summary>
 			/// Ensure the reader can at least read 25 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
 			/// </summary>
-			/// <param name="nBits">How many bits up to 25.</param>
-			/// <returns>True if there are enough bits available, false otherwise.</returns>
-			bool EnsureBits25(std::size_t nBits);
+			void EnsureBits25();
 			/// <summary>
 			/// Ensure the reader can at least read 32 bits in one or more ReadBits calls,
 			/// safely even if not enough bits are available.
 			/// </summary>
-			/// <param name="nBits">How many bits up to 32.</param>
-			/// <returns>True if there are enough bits available, false otherwise.</returns>
-			bool EnsureBits32(std::size_t nBits);
+			void EnsureBits32();
 			/// <summary>
 			/// Read n amount of bits.
 			/// Note: Must have enough bits available with EnsureBits.
