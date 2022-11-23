@@ -19,7 +19,7 @@ void VRSTests::OnImGuiRender()
     {
         ImGui::Text("Per Draw Shading Rate");
         static int32_t selectedShadingRate = 0;
-        if(ImGui::Combo("##Shading rate", &selectedShadingRate, m_supportedShadingRatesStrings.data(), m_supportedShadingRatesStrings.size()))
+        if(ImGui::Combo("##Shading rate", &selectedShadingRate, m_supportedShadingRatesStrings.data(), static_cast<int32_t>(m_supportedShadingRatesStrings.size())))
         {
             if(m_supportedShadingRates[selectedShadingRate] != m_shadingRate)
                 m_shadingRate = m_supportedShadingRates[selectedShadingRate];

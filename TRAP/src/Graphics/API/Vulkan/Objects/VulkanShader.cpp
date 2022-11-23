@@ -181,7 +181,7 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 			if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
 			{
 				setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
-				setDesc.Set = i;
+				setDesc.Set = static_cast<uint32_t>(i);
 				m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 			}
 		}
@@ -563,7 +563,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 			RendererAPI::DescriptorSetDesc setDesc{};
 			setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
 			setDesc.RootSignature = m_rootSignature;
-			setDesc.Set = i;
+			setDesc.Set = static_cast<uint32_t>(i);
 			m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 		}
 	}

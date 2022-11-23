@@ -184,7 +184,7 @@ project "Tests3D"
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
-			"-Wpedantic"
+			"-Wpedantic", "-Wconversion"
 		}
 
 	filter "configurations:Debug"

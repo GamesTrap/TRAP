@@ -17,6 +17,7 @@
 #include "Graphics/Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Cameras/Editor/EditorCamera.h"
 #include "Graphics/Textures/SubTexture2D.h"
+#include <cstdint>
 
 namespace TRAP::Graphics
 {
@@ -92,7 +93,7 @@ namespace TRAP::Graphics
 			void ExtendBuffers(); //Extend buffers to allow for an additional draw call
 			uint32_t DrawBuffers(UniformBuffer* camera);
 
-			float GetTextureIndex(Ref<Texture> texture);
+			uint32_t GetTextureIndex(Ref<Texture> texture);
 		} QuadData;
 
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -401,7 +402,7 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> texture)
+uint32_t TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> texture)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -419,7 +420,7 @@ float TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> tex
 		return TextureSlotIndex - 1;
 	}
 
-	return std::distance(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(), res);
+	return static_cast<uint32_t>(std::distance(DataBuffers[imageIndex][DataBufferIndex].TextureSlots.begin(), res));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -940,14 +941,14 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	}
 
 	Ref<Texture> tex = texture ? texture : Renderer2DData::QuadData::WhiteTexture;
-	const float textureIndex = currData.QuadData.GetTextureIndex(std::move(tex));
+	const uint32_t textureIndex = currData.QuadData.GetTextureIndex(std::move(tex));
 
 	for (uint64_t i = 0; i < quadVertexCount; i++)
 	{
 		currData.QuadData.VertexBufferPtr->Position = Math::Vec3(transform * Renderer2DData::QuadData::VertexPositions[i]);
 		currData.QuadData.VertexBufferPtr->Color = color;
 		currData.QuadData.VertexBufferPtr->TexCoord = texCoords ? (*texCoords)[i] : textureCoords[i];
-		currData.QuadData.VertexBufferPtr->TexIndex = textureIndex;
+		currData.QuadData.VertexBufferPtr->TexIndex = static_cast<float>(textureIndex);
 		currData.QuadData.VertexBufferPtr->EntityID = entityID;
 		currData.QuadData.VertexBufferPtr++;
 	}

@@ -152,7 +152,7 @@ uint32_t TRAP::Monitor::GetID() const
 	for(std::size_t i = 0; i < monitors.size(); i++)
 	{
 		if (monitors[i] == m_handle)
-			return i;
+			return static_cast<uint32_t>(i);
 	}
 
 	return 0; //Primary Monitor as fallback

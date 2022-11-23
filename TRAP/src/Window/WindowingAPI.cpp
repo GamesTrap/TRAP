@@ -2641,7 +2641,7 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* const moni
 	if (modes.empty())
 		return false;
 
-	std::qsort(modes.data(), modes.size(), sizeof(InternalVideoMode), CompareVideoModes);
+	std::sort(modes.begin(), modes.end(), CompareVideoModes);
 
 	monitor->Modes = {};
 	monitor->Modes = modes;
@@ -2718,16 +2718,14 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Lexically compare video modes, used by qsort
-int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* const fp, const void* const sp)
+int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const InternalVideoMode* const fm = static_cast<const InternalVideoMode*>(fp);
-	const InternalVideoMode* const sm = static_cast<const InternalVideoMode*>(sp);
-	const int32_t fbpp = fm->RedBits + fm->GreenBits + fm->BlueBits;
-	const int32_t sbpp = sm->RedBits + sm->GreenBits + sm->BlueBits;
-	const int32_t farea = fm->Width * fm->Height;
-	const int32_t sarea = sm->Width * sm->Height;
+	const int32_t fbpp = fm.RedBits + fm.GreenBits + fm.BlueBits;
+	const int32_t sbpp = sm.RedBits + sm.GreenBits + sm.BlueBits;
+	const int32_t farea = fm.Width * fm.Height;
+	const int32_t sarea = sm.Width * sm.Height;
 
 	//First sort on color bits per pixel
 	if (fbpp != sbpp)
@@ -2738,11 +2736,11 @@ int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* const fp, co
 		return farea - sarea;
 
 	//Then sort on width
-	if (fm->Width != sm->Width)
-		return fm->Width - sm->Width;
+	if (fm.Width != sm.Width)
+		return fm.Width - sm.Width;
 
 	//Lastly sort on refresh rate
-	return fm->RefreshRate - sm->RefreshRate;
+	return static_cast<int32_t>(fm.RefreshRate - sm.RefreshRate);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2776,7 +2774,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	uint32_t leastSizeDiff = std::numeric_limits<uint32_t>::max();
-	uint32_t rateDiff = 0, leastRateDiff = std::numeric_limits<uint32_t>::max();
+	double rateDiff = 0.0, leastRateDiff = std::numeric_limits<double>::max();
 	uint32_t leastColorDiff = std::numeric_limits<uint32_t>::max();
 	InternalVideoMode* closest = nullptr;
 
@@ -2804,7 +2802,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 		if (desired.RefreshRate != -1.0)
 			rateDiff = abs(current->RefreshRate - desired.RefreshRate);
 		else
-			rateDiff = std::numeric_limits<uint32_t>::max() - current->RefreshRate;
+			rateDiff = std::numeric_limits<double>::max() - current->RefreshRate;
 
 		if ((colorDiff < leastColorDiff) ||
 			(colorDiff == leastColorDiff && sizeDiff < leastSizeDiff) ||

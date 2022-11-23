@@ -93,8 +93,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 
 		//On tile textures do not support SRV/UAV as there is no backing memory
 		//You can only read these textures as input attachments inside same render pass
-		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<uint32_t>(RendererAPI::DescriptorType::Texture));
-		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<uint32_t>(RendererAPI::DescriptorType::RWTexture));
+		textureDesc.Descriptors &= static_cast<RendererAPI::DescriptorType>(~static_cast<int32_t>(RendererAPI::DescriptorType::Texture | RendererAPI::DescriptorType::RWTexture));
 	}
 
 	if(isDepth)

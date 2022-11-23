@@ -3425,3 +3425,7 @@ SITREP 11/22/2022|22w47a2
     - Improved PNG loader ~<15 mins
     - Reworked TRAP_ASSERT ~<30 mins
     - Fixed GCC Wpedantic warnings ~<5 mins
+
+SITREP 11/23/2022|22w47b1
+    - Changed TRAP Engine version to 22w47b1(0.8.69)
+    - Fixed GCC Wconversion warnings ~>30 mins

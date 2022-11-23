@@ -70,7 +70,7 @@ project "Headless-Tests"
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
-			"-Wpedantic"
+			"-Wpedantic", "-Wconversion"
 		}
 
 	filter "configurations:Debug"

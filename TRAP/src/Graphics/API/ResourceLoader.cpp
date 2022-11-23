@@ -1569,8 +1569,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		const uint64_t rowAlignment = UtilGetTextureRowAlignment();
 		const uint64_t subRowPitch = ((rowBytes + rowAlignment - 1) / rowAlignment) * rowAlignment;
 		const uint64_t subSlicePitch = (((subRowPitch * numRows) + sliceAlignment - 1) / sliceAlignment) * sliceAlignment;
-		subresourceDesc.RowPitch = subRowPitch;
-		subresourceDesc.SlicePitch = subSlicePitch;
+		subresourceDesc.RowPitch = static_cast<uint32_t>(subRowPitch);
+		subresourceDesc.SlicePitch = static_cast<uint32_t>(subSlicePitch);
 	}
 
 	cmd->CopySubresource(textureCopy.Buffer.get(), textureCopy.Texture.get(), subresourceDesc);

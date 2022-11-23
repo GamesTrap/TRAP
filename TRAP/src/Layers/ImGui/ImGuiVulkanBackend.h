@@ -162,7 +162,7 @@ struct ImGui_ImplVulkanH_Window
 
     ImGui_ImplVulkanH_Window()
         : Width(), Height(), Swapchain(VK_NULL_HANDLE), Surface(VK_NULL_HANDLE), SurfaceFormat(),
-          PresentMode(static_cast<VkPresentModeKHR>(~0)), RenderPass(VK_NULL_HANDLE),
+          PresentMode(VK_PRESENT_MODE_MAX_ENUM_KHR), RenderPass(VK_NULL_HANDLE),
           Pipeline(VK_NULL_HANDLE), ClearEnable(true), ClearValue(), FrameIndex(), ImageCount(),
           SemaphoreIndex(), Frames(nullptr), FrameSemaphores(nullptr)
     {

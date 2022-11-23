@@ -209,9 +209,9 @@ void TRAP::INTERNAL::QOIImage::DecodeImage(std::ifstream& file, const std::size_
                 {
                     const uint8_t data = static_cast<uint8_t>(file.get());
                     const uint8_t vg = static_cast<uint8_t>((tag & 0x3Fu) - 32);
-                    prevPixel.Red   += (vg - 8 + static_cast<uint8_t>((data >> 4u) & 0xFu));
+                    prevPixel.Red   += static_cast<uint8_t>(vg - 8 + ((data >> 4) & 0xF));
                     prevPixel.Green += vg;
-                    prevPixel.Blue  += (vg - 8 + static_cast<uint8_t>((data >> 0u) & 0xFu));
+                    prevPixel.Blue  += static_cast<uint8_t>(vg - 8 + ((data >> 0) & 0xF));
                 }
                 else if((tag & QOI_MASK_2) == QOI_OP_RUN)
                 {

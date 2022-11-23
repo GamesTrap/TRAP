@@ -2169,7 +2169,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 			for(j = 0; j < count; j++)
 			{
-				if(CompareVideoModes(&result[j], &mode) == 0)
+				if(CompareVideoModes(result[j], mode) == 0)
 					break;
 			}
 
@@ -3557,12 +3557,12 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t 
 	}
 
 	const int32_t key = static_cast<int32_t>(s_Data.KeyCodes[scanCode]);
-	const KeySym keySym = s_Data.XKB.KeycodeToKeysym(s_Data.display, scanCode,
+	const KeySym keySym = s_Data.XKB.KeycodeToKeysym(s_Data.display, static_cast<KeyCode>(scanCode),
 											         static_cast<int32_t>(s_Data.XKB.Group), 0);
 	if(keySym == NoSymbol)
 		return nullptr;
 
-	const uint32_t ch = KeySymToUnicode(keySym);
+	const uint32_t ch = KeySymToUnicode(static_cast<uint32_t>(keySym));
 	if(ch == 0xFFFFFFFFu)
 		return nullptr;
 
@@ -4033,7 +4033,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 
 			InputKey(window, static_cast<Input::Key>(key), keyCode, Input::KeyState::Pressed);
 
-			const uint32_t character = KeySymToUnicode(keySym);
+			const uint32_t character = KeySymToUnicode(static_cast<uint32_t>(keySym));
 			if(character != InvalidCodepoint)
 				InputChar(window, character);
 		}
@@ -4673,7 +4673,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* const monito
 			continue;
 
 		const InternalVideoMode mode = VideoModeFromModeInfo(mi, ci);
-		if(CompareVideoModes(best, &mode) == 0)
+		if(CompareVideoModes(*best, mode) == 0)
 		{
 			native = mi->id;
 			break;
@@ -4987,8 +4987,8 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 		s_Data.XLIB.DisplayKeycodes(s_Data.display, &scanCodeMin, &scanCodeMax);
 
 	int32_t width = 0;
-	KeySym* const keySyms = s_Data.XLIB.GetKeyboardMapping(s_Data.display, scanCodeMin, scanCodeMax - scanCodeMin + 1,
-	                                                 &width);
+	KeySym* const keySyms = s_Data.XLIB.GetKeyboardMapping(s_Data.display, static_cast<uint8_t>(scanCodeMin), scanCodeMax - scanCodeMin + 1,
+	                                                       &width);
 
 	for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
 	{

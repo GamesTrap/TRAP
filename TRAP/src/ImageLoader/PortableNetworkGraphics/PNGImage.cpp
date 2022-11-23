@@ -982,10 +982,10 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
 					uint8_t s3 = scanline[i + 3], r3 = recon[j + 3], p3 = precon[i + 3];
 
-					recon[i + 0] = s0 + ((r0 + p0) >> 1u);
-					recon[i + 1] = s1 + ((r1 + p1) >> 1u);
-					recon[i + 2] = s2 + ((r2 + p2) >> 1u);
-					recon[i + 3] = s3 + ((r3 + p3) >> 1u);
+					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 2] = static_cast<uint8_t>(s2 + ((r2 + p2) >> 1u));
+					recon[i + 3] = static_cast<uint8_t>(s3 + ((r3 + p3) >> 1u));
 				}
 			}
 			else if(byteWidth >= 3)
@@ -996,9 +996,9 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
 					uint8_t s2 = scanline[i + 2], r2 = recon[j + 2], p2 = precon[i + 2];
 
-					recon[i + 0] = s0 + ((r0 + p0) >> 1u);
-					recon[i + 1] = s1 + ((r1 + p1) >> 1u);
-					recon[i + 2] = s2 + ((r2 + p2) >> 1u);
+					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
+					recon[i + 2] = static_cast<uint8_t>(s2 + ((r2 + p2) >> 1u));
 				}
 			}
 			else if(byteWidth >= 2)
@@ -1008,13 +1008,13 @@ bool TRAP::INTERNAL::PNGImage::UnFilterScanline(uint8_t* const recon,
 					uint8_t s0 = scanline[i + 0], r0 = recon[j + 0], p0 = precon[i + 0];
 					uint8_t s1 = scanline[i + 1], r1 = recon[j + 1], p1 = precon[i + 1];
 
-					recon[i + 0] = s0 + ((r0 + p0) >> 1u);
-					recon[i + 1] = s1 + ((r1 + p1) >> 1u);
+					recon[i + 0] = static_cast<uint8_t>(s0 + ((r0 + p0) >> 1u));
+					recon[i + 1] = static_cast<uint8_t>(s1 + ((r1 + p1) >> 1u));
 				}
 			}
 
 			for(; i != length; ++i, ++j)
-				recon[i] = scanline[i] + ((recon[j] + precon[i]) >> 1u);
+				recon[i] = static_cast<uint8_t>(scanline[i] + ((recon[j] + precon[i]) >> 1u));
 		}
 		else
 		{

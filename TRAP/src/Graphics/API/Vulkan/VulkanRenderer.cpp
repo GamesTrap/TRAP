@@ -655,7 +655,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 
 	//Calculate used work group sizes
 	for(std::size_t i = 0; i < workGroupElements.size(); ++i)
-		workGroupElements[i] = static_cast<uint32_t>(TRAP::Math::Round(workGroupElements[i] / p->CurrentComputeWorkGroupSize[i]));
+		workGroupElements[i] = static_cast<uint32_t>(TRAP::Math::Round(static_cast<float>(workGroupElements[i]) / p->CurrentComputeWorkGroupSize[static_cast<int32_t>(i)]));
 
 	p->ComputeCommandBuffers[p->ImageIndex]->Dispatch(workGroupElements[0], workGroupElements[1], workGroupElements[2]);
 }
@@ -1362,7 +1362,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 	for(std::size_t i = 0; i < elements.size(); ++i)
 	{
 		lay->Attributes[i].Binding = 0;
-		lay->Attributes[i].Location = i;
+		lay->Attributes[i].Location = static_cast<uint32_t>(i);
 		lay->Attributes[i].Format = ShaderDataTypeToImageFormat(elements[i].Type);
 		lay->Attributes[i].Rate = VertexAttributeRate::Vertex;
 		lay->Attributes[i].Offset = elements[i].Offset;
@@ -1518,7 +1518,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 	if(!colorTargets.empty())
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-		gpd.RenderTargetCount = colorTargets.size();
+		gpd.RenderTargetCount = static_cast<uint32_t>(colorTargets.size());
 		gpd.ColorFormats.resize(colorTargets.size());
 		for(std::size_t i = 0; i < colorTargets.size(); ++i)
 			gpd.ColorFormats[i] = colorTargets[i]->GetImageFormat();
@@ -2906,12 +2906,12 @@ float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueTyp
 			if(type == QueueType::Graphics)
 			{
 				const VulkanQueue* const graphicsQueue = dynamic_cast<VulkanQueue*>(s_graphicQueue.get());
-				time = static_cast<float>((nsTime / graphicsQueue->GetTimestampFrequency())) * 1000.0f;
+				time = static_cast<float>((static_cast<double>(nsTime) / graphicsQueue->GetTimestampFrequency())) * 1000.0f;
 			}
 			else if(type == QueueType::Compute)
 			{
 				const VulkanQueue* const computeQueue = dynamic_cast<VulkanQueue*>(s_computeQueue.get());
-				time = static_cast<float>((nsTime / computeQueue->GetTimestampFrequency())) * 1000.0f;
+				time = static_cast<float>((static_cast<double>(nsTime) / computeQueue->GetTimestampFrequency())) * 1000.0f;
 			}
 		}
 

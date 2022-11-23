@@ -158,7 +158,7 @@ project "TestsNetwork"
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
-			"-Wpedantic"
+			"-Wpedantic", "-Wconversion"
 		}
 
 	filter "configurations:Debug"

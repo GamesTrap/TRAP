@@ -5166,7 +5166,7 @@ TRAP::Math::tQuat<T> TRAP::Math::SLerp(const tQuat<T>& x, const tQuat<T>& y, con
 	{
 		//Graphics Gems III, page 96
 		const T angle = ACos(cosTheta);
-		const T phi = angle + k * PI<T>();
+		const T phi = angle + static_cast<T>(k) * PI<T>();
 		return (Sin(angle - a * phi) * x + Sin(a * phi) * z) / Sin(angle);
 	}
 }

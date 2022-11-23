@@ -26,8 +26,8 @@ void TRAP::Graphics::Renderer::Init()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	s_maxDrawCalls = RendererAPI::GPUSettings.MaxStorageBufferRange /
-	                 static_cast<uint32_t>(StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
+	s_maxDrawCalls = static_cast<uint32_t>(RendererAPI::GPUSettings.MaxStorageBufferRange /
+	                 StorageBuffer::CalculateAlignedSize(sizeof(Math::Mat4)));
 	s_maxDrawCalls = TRAP::Math::Min(s_maxDrawCalls, 1000000u); //Max 1 million draw calls (so we don't exceed heap sizes)
 
 	s_sceneStorageBuffer = TRAP::Graphics::StorageBuffer::Create(s_sceneData.get(), sizeof(SceneData),

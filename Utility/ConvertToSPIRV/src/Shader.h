@@ -173,7 +173,7 @@ struct Shader
     struct SubShader
     {
         std::string Source;
-        std::vector<uint32_t> SPIRV{};;
+        std::vector<uint32_t> SPIRV{};
     };
 
 	std::array<SubShader, static_cast<uint32_t>(ShaderStage::SHADER_STAGE_COUNT)> SubShaderSources{};

@@ -255,7 +255,7 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 		cpu.Model += std::string(reinterpret_cast<char*>(&regs1[3]), sizeof(uint32_t));
 	}
 
-	int32_t lastAlphaChar = 0;
+	std::size_t lastAlphaChar = 0;
 	for(auto it = cpu.Model.rbegin(); it != cpu.Model.rend(); ++it)
 	{
 		if (isalnum(*it))
