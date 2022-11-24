@@ -2,10 +2,10 @@
 <svg
    id="svg"
    version="1.1"
-   width="400"
-   height="400"
-   viewBox="0, 0, 400,400"
-   sodipodi:docname="TRAPWhite+.svg"
+   width="292.97256"
+   height="158.65285"
+   viewBox="0 0 292.97256 158.65285"
+   sodipodi:docname="TRAPWhiteLogoMedia.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,8 +23,8 @@
      inkscape:pagecheckerboard="0"
      showgrid="false"
      inkscape:zoom="2"
-     inkscape:cx="294.75"
-     inkscape:cy="151"
+     inkscape:cx="237.75"
+     inkscape:cy="30.5"
      inkscape:window-width="2560"
      inkscape:window-height="1356"
      inkscape:window-x="0"
@@ -33,7 +33,7 @@
      inkscape:current-layer="svg" />
   <g
      id="svgg"
-     transform="translate(0.4862793,-29.326431)"
+     transform="translate(-53.027441,-150)"
      style="fill:#ffffff;fill-opacity:1">
     <path
        id="path0"
@@ -46,25 +46,25 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:70px;line-height:1.25;font-family:sans-serif;letter-spacing:-4.62px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
-     x="53.86372"
-     y="279.32642"
+     x="0.34999999"
+     y="158.65285"
      id="text5532"><tspan
        sodipodi:role="line"
        id="tspan5530"
-       x="53.86372"
-       y="279.32642"
+       x="0.34999999"
+       y="158.65285"
        style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:70px;font-family:'HK Grotesk';-inkscape-font-specification:'HK Grotesk Heavy';fill:#ffffff;fill-opacity:1"
        dx="0"
        dy="0">TRAP</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:20px;line-height:1.25;font-family:sans-serif;fill:#ffffff;fill-opacity:1;stroke:none"
-     x="205.73651"
-     y="241.49174"
+     x="152.22279"
+     y="120.81818"
      id="text118780"><tspan
        sodipodi:role="line"
        id="tspan118778"
-       x="205.73651"
-       y="241.49174"
+       x="152.22279"
+       y="120.81818"
        style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:20px;font-family:'HK Grotesk';-inkscape-font-specification:'HK Grotesk Heavy';fill:#ffffff;fill-opacity:1">™</tspan></text>
 </svg>
