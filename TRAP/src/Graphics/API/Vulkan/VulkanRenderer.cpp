@@ -200,8 +200,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //Also transition the non-MSAA render target
 	{
 		const TRAP::Ref<RenderTarget> nonMSAARenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
-		RenderTargetBarrier barrier{nonMSAARenderTarget, ResourceState::Present, ResourceState::RenderTarget};
-		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+		RenderTargetBarrier MSAABarrier{nonMSAARenderTarget, ResourceState::Present, ResourceState::RenderTarget};
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &MSAABarrier);
 	}
 #endif
 

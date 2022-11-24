@@ -1741,8 +1741,8 @@ namespace TRAP::INTERNAL
 		/// Thread safety: This function may be called from any thread. Access is not synchronized.
 		/// </summary>
 		/// <param name="window">Internal window to set the user pointer for.</param>
-		/// <param name="pointer">Data to be stored with the window.</param>
-		static void SetWindowUserPointer(InternalWindow* window, void* pointer);
+		/// <param name="ptr">Data to be stored with the window.</param>
+		static void SetWindowUserPointer(InternalWindow* window, void* ptr);
 		/// <summary>
 		/// This function returns the current value of the user-defined pointer
 		/// of the specified window. The initial value is nullptr.

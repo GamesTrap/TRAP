@@ -78,6 +78,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
+
 //Settings for Profiling (with Tracy)
 
 enum class ProfileSystems
@@ -114,6 +119,10 @@ constexpr ProfileSystems TRAP_PROFILE_SYSTEMS()
 {
 	return ProfileSystems::All;
 }
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -170,7 +179,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 69);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 70);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -82,7 +82,7 @@ namespace TRAP::Math
 		/// <summary>
 		/// Explicit basic constructor.
 		/// </summary>
-		constexpr tQuat(T w, T x, T y, T z);
+		constexpr tQuat(T w_, T x_, T y_, T z_);
 
 		//Conversion constructors
 
@@ -215,8 +215,8 @@ constexpr TRAP::Math::tQuat<T>::tQuat(const T s, const Vec<3, T>& v)
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuat<T>::tQuat(const T w, const T x, const T y, const T z)
-	: x(x), y(y), z(z), w(w)
+constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const T z_)
+	: x(x_), y(y_), z(z_), w(w_)
 {
 }
 

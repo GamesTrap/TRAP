@@ -3429,3 +3429,7 @@ SITREP 11/22/2022|22w47a2
 SITREP 11/23/2022|22w47b1
     - Changed TRAP Engine version to 22w47b1(0.8.69)
     - Fixed GCC Wconversion warnings ~>30 mins
+
+SITREP 11/24/2022|22w47b2
+    - Changed TRAP Engine version to 22w47b2(0.8.70)
+    - Fixed GCC Wshadow warnings ~>30 mins

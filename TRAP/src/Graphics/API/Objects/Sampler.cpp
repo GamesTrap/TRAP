@@ -162,11 +162,11 @@ void TRAP::Graphics::Sampler::ClearCache()
 
 std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
 {
-	std::size_t hash = 0;
+	std::size_t res = 0;
 
 	TRAP::Utils::HashCombine
 	(
-		hash,
+		res,
 		desc.MinFilter,
 		desc.MagFilter,
 		desc.MipMapMode,
@@ -180,7 +180,7 @@ std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(cons
 
 	TRAP::Utils::HashCombine
 	(
-		hash,
+		res,
 		desc.SamplerConversionDesc.Format,
 		desc.SamplerConversionDesc.Model,
 		desc.SamplerConversionDesc.Range,
@@ -190,5 +190,5 @@ std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(cons
 		desc.SamplerConversionDesc.ForceExplicitReconstruction
 	);
 
-	return hash;
+	return res;
 }

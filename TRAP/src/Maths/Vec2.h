@@ -59,11 +59,11 @@ namespace TRAP::Math
 
 		//Explicit basic constructors
 		explicit constexpr Vec(T scalar);
-		constexpr Vec(T x, T y);
+		constexpr Vec(T x_, T y_);
 
 		//Explicit conversions
 		template<typename A, typename B>
-		constexpr Vec(A x, B y);
+		constexpr Vec(A x_, B y_);
 
 		//Conversion vector constructors
 
@@ -299,8 +299,8 @@ constexpr TRAP::Math::Vec<2, T>::Vec(const T scalar)
 {}
 
 template<typename T>
-constexpr TRAP::Math::Vec<2, T>::Vec(const T x, const T y)
-	: x(x), y(y)
+constexpr TRAP::Math::Vec<2, T>::Vec(const T x_, const T y_)
+	: x(x_), y(y_)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -308,8 +308,8 @@ constexpr TRAP::Math::Vec<2, T>::Vec(const T x, const T y)
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<2, T>::Vec(const A x, const B y)
-	: x(static_cast<T>(x)), y(static_cast<T>(y))
+constexpr TRAP::Math::Vec<2, T>::Vec(const A x_, const B y_)
+	: x(static_cast<T>(x_)), y(static_cast<T>(y_))
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//

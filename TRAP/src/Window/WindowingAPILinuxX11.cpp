@@ -123,11 +123,11 @@ void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* const win
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
-bool TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(const Display* const, const XEvent* const event, XPointer pointer)
+bool TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(const Display* const, const XEvent* const event, XPointer ptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const InternalWindow* const window = reinterpret_cast<InternalWindow*>(pointer);
+	const InternalWindow* const window = reinterpret_cast<InternalWindow*>(ptr);
 
 	return event->type             == PropertyNotify   &&
 	       event->xproperty.state  == PropertyNewValue &&
@@ -1946,11 +1946,11 @@ uint32_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(const uint32_t keySym)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether it is a property event for the specified selection transfer
-int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display* const, XEvent* const event, XPointer pointer)
+int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display* const, XEvent* const event, XPointer ptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	const XEvent* const notification = reinterpret_cast<XEvent*>(pointer);
+	const XEvent* const notification = reinterpret_cast<XEvent*>(ptr);
 
 	return event->type == PropertyNotify &&
 	       event->xproperty.state == PropertyNewValue &&

@@ -1067,7 +1067,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* co
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the user pointer of the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* const window, void* const pointer)
+void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* const window, void* const ptr)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1079,7 +1079,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* const wi
 		return;
 	}
 
-	window->UserPointer = pointer;
+	window->UserPointer = ptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

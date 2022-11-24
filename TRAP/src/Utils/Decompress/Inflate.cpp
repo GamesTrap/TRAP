@@ -571,15 +571,15 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	TableValue.resize(size);
 
 	//Fill in the first table for long symbols: Max prefix size and pointer to secondary tables
-	std::size_t pointer = headSize;
+	std::size_t ptr = headSize;
 	for(i = 0; i < headSize; ++i)
 	{
 		const uint32_t l = maxLengths[i];
 		if (l <= FirstBits)
 			continue;
 		TableLength[i] = static_cast<uint8_t>(l);
-		TableValue[i] = static_cast<uint16_t>(pointer);
-		pointer += static_cast<std::size_t>(1u) << (l - FirstBits);
+		TableValue[i] = static_cast<uint16_t>(ptr);
+		ptr += static_cast<std::size_t>(1u) << (l - FirstBits);
 	}
 
 	//Fill in the first table for short symbols, or secondary table for long symbols

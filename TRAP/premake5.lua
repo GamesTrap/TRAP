@@ -197,7 +197,7 @@ project "TRAP"
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
-			"-Wpedantic", "-Wconversion"
+			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
 	filter "configurations:Debug"
@@ -341,7 +341,7 @@ project "TRAP-Headless"
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
-			"-Wpedantic", "-Wconversion"
+			"-Wpedantic", "-Wconversion", "-Wshadow"
 		}
 
 	filter "configurations:Debug"

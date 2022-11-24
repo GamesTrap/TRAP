@@ -481,17 +481,17 @@ void TRAP::FileSystem::FileWatcher::Watch()
 
             for(const auto& p : it)
             {
-                const int32_t wd = inotify_add_watch(fileDescriptors[0].fd, p.path().u8string().c_str(),
-                                                    IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
+                const int32_t wd1 = inotify_add_watch(fileDescriptors[0].fd, p.path().u8string().c_str(),
+                                                      IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
 
-                if(wd < 0)
+                if(wd1 < 0)
                 {
                     TP_ERROR(Log::FileWatcherLinuxPrefix, "Failed to add watch");
                     TP_ERROR(Log::FileWatcherLinuxPrefix, Utils::String::GetStrError());
                     continue; //Skip failed entry
                 }
 
-                watchDescriptors[wd] = p.path();
+                watchDescriptors[wd1] = p.path();
             }
         }
     }

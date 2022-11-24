@@ -59,20 +59,20 @@ namespace TRAP::Math
 
 		//Explicit basic constructors
 		explicit constexpr Vec(T scalar);
-		constexpr Vec(T x, T y, T z);
+		constexpr Vec(T x_, T y_, T z_);
 
 		//Explicit conversions
 		template<typename X, typename Y, typename Z>
-		constexpr Vec(X x, Y y, Z z);
+		constexpr Vec(X x_, Y y_, Z z_);
 
 		//Conversion vector constructors
 
 		//Explicit conversions
 		template<typename A, typename B>
-		constexpr Vec(const Vec<2, A> & xy, B z);
+		constexpr Vec(const Vec<2, A> & xy, B z_);
 		//Explicit conversions
 		template<typename A, typename B>
-		constexpr Vec(A x, const Vec<2, B> & yz);
+		constexpr Vec(A x_, const Vec<2, B> & yz);
 		//Explicit conversions
 		template<typename U>
 		explicit constexpr Vec(const Vec<4, U> & v);
@@ -295,8 +295,8 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const T scalar)
 {}
 
 template<typename T>
-constexpr TRAP::Math::Vec<3, T>::Vec(T x, T y, T z)
-	: x(x), y(y), z(z)
+constexpr TRAP::Math::Vec<3, T>::Vec(T x_, T y_, T z_)
+	: x(x_), y(y_), z(z_)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -304,10 +304,10 @@ constexpr TRAP::Math::Vec<3, T>::Vec(T x, T y, T z)
 
 template<typename T>
 template<typename X, typename Y, typename Z>
-constexpr TRAP::Math::Vec<3, T>::Vec(const X x, const Y y, const Z z)
-	: x(static_cast<T>(x)),
-	  y(static_cast<T>(y)),
-	  z(static_cast<T>(z))
+constexpr TRAP::Math::Vec<3, T>::Vec(const X x_, const Y y_, const Z z_)
+	: x(static_cast<T>(x_)),
+	  y(static_cast<T>(y_)),
+	  z(static_cast<T>(z_))
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -315,16 +315,16 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const X x, const Y y, const Z z)
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z)
+constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z_)
 	: x(static_cast<T>(xy.x)),
 	  y(static_cast<T>(xy.y)),
-	  z(static_cast<T>(z))
+	  z(static_cast<T>(z_))
 {}
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<3, T>::Vec(const A x, const Vec<2, B>& yz)
-	: x(static_cast<T>(x)),
+constexpr TRAP::Math::Vec<3, T>::Vec(const A x_, const Vec<2, B>& yz)
+	: x(static_cast<T>(x_)),
 	  y(static_cast<T>(yz.x)),
 	  z(static_cast<T>(yz.y))
 {}

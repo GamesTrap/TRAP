@@ -89,9 +89,9 @@ void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 
 	if(opened)
 	{
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-		const bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(9817239), flags, "%s", tag.c_str());
-		if(opened)
+		ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		const bool treeOpened = ImGui::TreeNodeEx(reinterpret_cast<void*>(9817239), treeFlags, "%s", tag.c_str());
+		if(treeOpened)
 			ImGui::TreePop();
 		ImGui::TreePop();
 	}
