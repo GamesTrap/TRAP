@@ -14,8 +14,7 @@ project "Tests"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp",
-		"%{IncludeDir.TRACY}/TracyClient.cpp"
+		"src/**.cpp"
 	}
 
 	includedirs "%{wks.location}/TRAP/src"
@@ -49,6 +48,7 @@ project "Tests"
 			"SPIRV",
 			"GLSLang-Default-Resource-Limits",
 			"Box2D",
+			"TracyClient",
 
 			"dl",
 			"pthread",

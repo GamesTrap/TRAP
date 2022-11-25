@@ -3444,3 +3444,4 @@ SITREP 11/25/2022|22w47c1
     - Made TimeStep constexpr ~<5 mins
     - Window/WindowingAPI Added SetAspectRatio() to restrict windows to a specific aspect ratio ~<30 mins
     - Updated Tracy profiler to v0.9 ~<15 mins
+    - Moved Tracy into own static lib ~<15 mins

@@ -20,8 +20,7 @@ project "TRAP"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl",
-		"%{IncludeDir.TRACY}/TracyClient.cpp"
+		"src/**.inl"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -70,7 +69,8 @@ project "TRAP"
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
 		"SPIRV-Cross-HLSL",
-		"Box2D"
+		"Box2D",
+		"TracyClient"
 	}
 
 	defines "YAML_CPP_STATIC_DEFINE"
@@ -191,9 +191,6 @@ project "TRAP"
 			defines "USE_STEAMWORKS_SDK"
 		end
 
-	filter "files:../Dependencies/Tracy/public/TracyClient.cpp"
-		flags {"NoPCH"}
-
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
 		{
@@ -249,8 +246,7 @@ project "TRAP-Headless"
 		"src/**.h",
 		"src/**.hpp",
 		"src/**.cpp",
-		"src/**.inl",
-		"%{IncludeDir.TRACY}/TracyClient.cpp"
+		"src/**.inl"
 	}
 
 	--Exclude all folders in Platform, since not all platforms need all of these
@@ -298,7 +294,8 @@ project "TRAP-Headless"
 		"SPIRV-Cross-Core",
 		"SPIRV-Cross-GLSL",
 		"SPIRV-Cross-HLSL",
-		"Box2D"
+		"Box2D",
+		"TracyClient"
 	}
 
 	defines
@@ -334,9 +331,6 @@ project "TRAP-Headless"
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
 		}
-
-	filter "files:../Dependencies/Tracy/public/TracyClient.cpp"
-		flags {"NoPCH"}
 
 	filter { "action:gmake*", "toolset:gcc" }
 		buildoptions
