@@ -3438,3 +3438,5 @@ SITREP 11/24/2022|22w47b2
 SITREP 11/25/2022|22w47c1
     - Changed TRAP Engine version to 22w47c1(0.8.71)
     - DiscordGameSDK Create() now only sets default activity if provided appID is TRAPs ~<5 mins
+    - Monitor Removed Window::GetMonitor() friend ~<5 mins
+    - Window Added SetDisplayMode() overload for Monitor::VideoMode ~<5 mins

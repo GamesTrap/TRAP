@@ -1,7 +1,13 @@
 #ifndef TRAP_MONITOR_H
 #define TRAP_MONITOR_H
 
-#include "Window.h"
+// #include "Window.h"
+
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <Maths/Math.h>
+#include <Window/WindowingAPI.h>
 
 namespace TRAP
 {
@@ -161,8 +167,6 @@ namespace TRAP
 		explicit Monitor(uint32_t monitor);
 
 		INTERNAL::WindowingAPI::InternalMonitor* m_handle{};
-
-		friend TRAP::Monitor TRAP::Window::GetMonitor() const;
 	};
 }
 

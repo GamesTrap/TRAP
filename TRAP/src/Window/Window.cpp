@@ -177,7 +177,7 @@ TRAP::Monitor TRAP::Window::GetMonitor() const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return Monitor(m_data.Monitor);
+	return Monitor::GetAllMonitors()[m_data.Monitor];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -479,6 +479,13 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode, uint32_t width, uint3
 
 	//Save new display mode
 	m_data.displayMode = mode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetDisplayMode(const DisplayMode displayMode, const Monitor::VideoMode& videoMode)
+{
+	SetDisplayMode(displayMode, videoMode.Width, videoMode.Height, videoMode.RefreshRate);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

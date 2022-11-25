@@ -1,6 +1,7 @@
 #ifndef TRAP_WINDOW_H
 #define TRAP_WINDOW_H
 
+#include "Window/Monitor.h"
 #include "WindowingAPI.h"
 
 namespace TRAP
@@ -184,6 +185,14 @@ namespace TRAP
 			                uint32_t width = 0,
 			                uint32_t height = 0,
 			                double refreshRate = 0);
+		/// <summary>
+		/// Set a new display mode and or a new video mode for the window.
+		///
+		/// See also: SetDisplayMode(const DisplayMode&, uint32_t, uint32_t, double).
+		/// </summary>
+		/// <param name="displayMode">New display mode for the window.</param>
+		/// <param name="videoMode">New video mode for the window.</param>
+		void SetDisplayMode(DisplayMode displayMode, const Monitor::VideoMode& videoMode);
 		/// <summary>
 		/// Set a new monitor for the window.
 		/// </summary>
