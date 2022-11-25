@@ -3434,3 +3434,7 @@ SITREP 11/24/2022|22w47b2
     - Changed TRAP Engine version to 22w47b2(0.8.70)
     - Fixed GCC Wshadow warnings ~>30 mins
     - Updated Readme ~<5 mins
+
+SITREP 11/25/2022|22w47c1
+    - Changed TRAP Engine version to 22w47c1(0.8.71)
+    - DiscordGameSDK Create() now only sets default activity if provided appID is TRAPs ~<5 mins

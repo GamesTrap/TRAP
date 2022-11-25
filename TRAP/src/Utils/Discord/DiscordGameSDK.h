@@ -10,6 +10,8 @@ namespace discord
 
 namespace TRAP::Utils::Discord
 {
+    static constexpr int64_t TRAPDiscordAppID = 639903785971613728;
+
     /// <summary>
     /// Activity used by Discord Game SDK.
     /// </summary>
@@ -30,7 +32,7 @@ namespace TRAP::Utils::Discord
     /// </summary>
     /// <param name="appID">Discord App ID. Default TRAP™'s App ID.</param>
     /// <returns>True on success, false otherwise</returns>
-    bool Create(int64_t appID = 639903785971613728);
+    bool Create(int64_t appID = TRAPDiscordAppID);
     /// <summary>
     /// Destroy/Shutdown Discord Game SDK.
     /// </summary>
