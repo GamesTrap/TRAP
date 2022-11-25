@@ -337,6 +337,15 @@ void TRAP::INTERNAL::WindowingAPI::UpdateNormalHints(const InternalWindow* const
 				hints->max_width = window->MaxWidth;
 				hints->max_height = window->MaxHeight;
 			}
+
+			if(window->Numerator != -1 && window->Denominator != -1)
+			{
+				hints->flags |= PAspect;
+				hints->min_aspect.x = window->Numerator;
+				hints->max_aspect.x = window->Numerator;
+				hints->min_aspect.y = window->Denominator;
+				hints->max_aspect.y = window->Denominator;
+			}
 		}
 		else
 		{
@@ -3821,6 +3830,19 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* const w
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* const window, const int32_t /*minWidth*/,
                                                                const int32_t /*minHeight*/, const int32_t /*maxWidth*/,
                                                                const int32_t /*maxHeight*/)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	int32_t width = 0, height = 0;
+	PlatformGetWindowSize(window, width, height);
+	UpdateNormalHints(window, width, height);
+	s_Data.XLIB.Flush(s_Data.display);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* window, const int32_t /*numerator*/,
+                                                                const int32_t /*denominator*/)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 

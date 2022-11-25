@@ -729,6 +729,18 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetAspectRatio(const uint32_t numerator, const uint32_t denominator)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);
+
+	if(numerator == 0 && denominator == 0) //Disable aspect ratio
+		INTERNAL::WindowingAPI::SetWindowAspectRatio(m_window.get(), -1, -1);
+	else //Enable aspect ratio
+		INTERNAL::WindowingAPI::SetWindowAspectRatio(m_window.get(), numerator, denominator);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Window::SetPosition(const uint32_t x, const uint32_t y)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window);

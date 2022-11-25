@@ -1156,6 +1156,7 @@ namespace TRAP::INTERNAL
 
 			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
+			int32_t Numerator = -1, Denominator = -1;
 
 			CursorMode cursorMode = CursorMode::Normal;
 			std::array<TRAP::Input::KeyState, static_cast<uint32_t>(TRAP::Input::MouseButton::Eight) + 1> MouseButtons{};
@@ -2472,7 +2473,7 @@ namespace TRAP::INTERNAL
 		/// Use -1 to disable to minimum and/or maximum size constraints.
 		///
 		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value and
-		/// Error::Platform_Error.
+		///         Error::Platform_Error.
 		/// Thread safety: This function must only be called from the main thread.
 		/// </summary>
 		/// <param name="window">Internal window to set size limits for.</param>
@@ -2482,6 +2483,33 @@ namespace TRAP::INTERNAL
 		/// <param name="maxHeight">New maximum window height.</param>
 		static void SetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight,
 		                                int32_t maxWidth, int32_t maxHeight);
+		/// <summary>
+		/// Sets the aspect ratio of the specified window.
+		///
+		/// Wayland: The aspect ratio will not be applied until the window is actually resized, either
+		///          by the user or by the compositor.
+		///
+		/// This function sets the required aspect ratio of the content area of the specified window.
+		/// If the window if full screen, the aspect ratio only takes effect once it is made windowed.
+		/// If the window is not resizable, this function does nothing.
+		///
+		/// The aspect ratio is specified as a numerator and a denominator and both values must be
+		/// greater than 0. For example, the common 16:9 aspect ratio is specified as 16 and 9, respectively.
+		///
+		/// If the numerator and denominator are set to -1 then the aspect ratio limit gets disabled.
+		///
+		/// The aspect ratio is applied immediately to a windowed mode window and may cause it to be resized.
+		///
+		/// Note: If you set the size limits and an aspect ratio that conflict, the results are undefined.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value and
+		///         Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set aspect ratio for.</param>
+		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
+		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
+		static void SetWindowAspectRatio(InternalWindow* window, int32_t numerator, int32_t denominator);
 		/// <summary>
 		/// This function sets the system clipboard to the specified, UTF-8 encoded string.
 		///
@@ -3520,6 +3548,33 @@ namespace TRAP::INTERNAL
 		static void PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight,
 		                                        int32_t maxWidth, int32_t maxHeight);
 		/// <summary>
+		/// Sets the aspect ratio of the specified window.
+		///
+		/// Wayland: The aspect ratio will not be applied until the window is actually resized, either
+		///          by the user or by the compositor.
+		///
+		/// This function sets the required aspect ratio of the content area of the specified window.
+		/// If the window if full screen, the aspect ratio only takes effect once it is made windowed.
+		/// If the window is not resizable, this function does nothing.
+		///
+		/// The aspect ratio is specified as a numerator and a denominator and both values must be
+		/// greater than 0. For example, the common 16:9 aspect ratio is specified as 16 and 9, respectively.
+		///
+		/// If the numerator and denominator are set to -1 then the aspect ratio limit gets disabled.
+		///
+		/// The aspect ratio is applied immediately to a windowed mode window and may cause it to be resized.
+		///
+		/// Note: If you set the size limits and an aspect ratio that conflict, the results are undefined.
+		///
+		/// Errors: Possible errors include Error::Not_Initialized, Error::Invalid_Value and
+		///         Error::Platform_Error.
+		/// Thread safety: This function must only be called from the main thread.
+		/// </summary>
+		/// <param name="window">Internal window to set aspect ratio for.</param>
+		/// <param name="numerator">Numerator of the desired aspect ratio, or -1.</param>
+		/// <param name="denominator">Denominator of the desired aspect ratio, or -1.</param>
+		static void PlatformSetWindowAspectRatio(InternalWindow* window, int32_t numerator, int32_t denominator);
+		/// <summary>
 		/// Enable/Disable drag and drop feature for the specified window.
 		/// </summary>
 		/// <param name="window">Internal window for which to set drag and drop.</param>
@@ -3848,6 +3903,13 @@ namespace TRAP::INTERNAL
 		/// <param name="icon">Whether it is an icon or a cursor.</param>
 		/// <returns>Handle to the icon.</returns>
 		static HICON CreateIcon(const Image* const image, int32_t xHot, int32_t yHot, bool icon);
+		/// <summary>
+		/// Enfore the content area aspect ratio based on which edge is being dragged.
+		/// </summary>
+		/// <param name="window">Internal window to enforce aspect ratio for.</param>
+		/// <param name="edge">Window edge being dragged.</param>
+		/// <param name="area">Content area.</param>
+		static void ApplyAspectRatio(InternalWindow* window, int32_t edge, RECT* area);
 		/// <summary>
 		/// Update native window styles to match attributes.
 		/// </summary>

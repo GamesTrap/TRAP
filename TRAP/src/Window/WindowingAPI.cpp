@@ -2135,6 +2135,37 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* const win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow* window, const int32_t numerator,
+                                                        const int32_t denominator)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
+	            "WindowingAPI::SetWindowAspectRatio() must only be called from main thread");
+	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(numerator > 0 && denominator > 0, "[Window] Invalid window aspect ratio!");
+
+	if(numerator != -1 && denominator != -1)
+	{
+		if(numerator < 0 || denominator < 0)
+		{
+			InputError(Error::Invalid_Value, " Invalid window aspect ratio " +
+			           std::to_string(numerator) + ":" + std::to_string(denominator) + "!");
+			return;
+		}
+	}
+
+	window->Numerator = numerator;
+	window->Denominator = denominator;
+
+	if(window->Monitor || !window->Resizable)
+		return;
+
+	PlatformSetWindowAspectRatio(window, numerator, denominator);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Sets the clipboard to the specified string.
 void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 {

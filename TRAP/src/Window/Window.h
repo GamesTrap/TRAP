@@ -264,6 +264,20 @@ namespace TRAP
 		/// <param name="maxHeight">Max height.</param>
 		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight);
 		/// <summary>
+		/// Set the aspect ratio of the window.
+		/// This makes sure that the window size always matches the specified aspect ratio.
+		///
+		/// Set both parameters to 0 to disable the aspect ratio restriction.
+		///
+		/// Note: This only takes effect in windowed mode.
+		///       This function does nothing if the window is not resizable.
+		///       If you set size limits and an aspect ratio that conflict, the results are undefined.
+		//        The aspect ratio is applied immediately to a windowed mode window and may cause it to be resized.
+		/// </summary>
+		/// <param name="numerator">Numerator of the desired aspect ratio, or 0.</param>
+		/// <param name="denominator">Denominator of the desired aspect ratio, or 0.</param>
+		void SetAspectRatio(uint32_t numerator, uint32_t denominator);
+		/// <summary>
 		/// Set the position of the window.
 		/// </summary>
 		/// <param name="x">New x position.</param>

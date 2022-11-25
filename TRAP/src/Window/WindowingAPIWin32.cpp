@@ -719,6 +719,15 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT 
 		return 0;
 	}
 
+	case WM_SIZING:
+	{
+		if(windowPtr->Numerator == -1 || windowPtr->Denominator == -1)
+			break;
+
+		ApplyAspectRatio(windowPtr, static_cast<int32_t>(wParam), reinterpret_cast<RECT*>(lParam));
+		return TRUE;
+	}
+
 	case WM_GETMINMAXINFO:
 	{
 		RECT frame{};
@@ -1686,6 +1695,32 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Image* const image, const i
 	}
 
 	return handle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Enforce the content area aspect ratio based on which edge is being dragged
+void TRAP::INTERNAL::WindowingAPI::ApplyAspectRatio(InternalWindow* window, int32_t edge, RECT* area)
+{
+	RECT frame{};
+	const float ratio = static_cast<float>(window->Numerator) / static_cast<float>(window->Denominator);
+	const DWORD style = GetWindowStyle(window);
+	const DWORD exStyle = GetWindowExStyle(window);
+
+	if(Utils::IsWindows10Version1607OrGreaterWin32())
+	{
+		s_Data.User32.AdjustWindowRectExForDPI(&frame, style, FALSE, exStyle,
+		                                       s_Data.User32.GetDPIForWindow(window->Handle));
+	}
+	else
+		AdjustWindowRectEx(&frame, style, FALSE, exStyle);
+
+	if(edge == WMSZ_LEFT || edge == WMSZ_BOTTOMLEFT || edge == WMSZ_RIGHT || edge == WMSZ_BOTTOMRIGHT)
+		area->bottom = area->top + (frame.bottom - frame.top) + static_cast<int32_t>(((area->right - area->left) - (frame.right - frame.left)) / ratio);
+	else if(edge == WMSZ_TOPLEFT || edge == WMSZ_TOPRIGHT)
+		area->top = area->bottom - (frame.bottom - frame.top) - static_cast<int32_t>(((area->right - area->left) - (frame.right - frame.left)) / ratio);
+	else if(edge == WMSZ_TOP || edge == WMSZ_BOTTOM)
+		area->right = area->left + (frame.right - frame.left) + static_cast<int32_t>(((area->bottom - area->top) - (frame.bottom - frame.top)) * ratio);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3092,6 +3127,23 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 		return;
 
 	GetWindowRect(window->Handle, &area);
+	MoveWindow(window->Handle, area.left, area.top, area.right - area.left, area.bottom - area.top, TRUE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowAspectRatio(InternalWindow* window, const int32_t numerator,
+                                                                const int32_t denominator)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
+
+	RECT area{};
+
+	if(numerator == -1 || denominator == -1)
+		return;
+
+	GetWindowRect(window->Handle, &area);
+	ApplyAspectRatio(window, WMSZ_BOTTOMRIGHT, &area);
 	MoveWindow(window->Handle, area.left, area.top, area.right - area.left, area.bottom - area.top, TRUE);
 }
 
