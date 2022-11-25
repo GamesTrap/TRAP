@@ -17,9 +17,9 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
-    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
-    TRAP_ASSERT(!name.empty(), "Name is empty!");
+    TRAP_ASSERT(texture != nullptr, "SpriteManager::CreateFromCoords(): Texture is nullptr!");
+    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "SpriteManager::CreateFromCoords(): Texture is not a 2D texture!");
+    TRAP_ASSERT(!name.empty(), "SpriteManager::CreateFromCoords(): Name is empty!");
 
 	Ref<SubTexture2D> sprite = SubTexture2D::CreateFromCoords(name, texture, coords, cellSize, spriteSize);
 
@@ -44,9 +44,9 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::CreateFro
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
-    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
-    TRAP_ASSERT(!name.empty(), "Name is empty!");
+    TRAP_ASSERT(texture != nullptr, "SpriteManager::CreateFromPixels(): Texture is nullptr!");
+    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "SpriteManager::CreateFromPixels(): Texture is not a 2D texture!");
+    TRAP_ASSERT(!name.empty(), "SpriteManager::CreateFromPixels(): Name is empty!");
 
 	Ref<SubTexture2D> sprite = SubTexture2D::CreateFromPixels(name, texture, pixelPos, pixelSize, spriteSize);
 

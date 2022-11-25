@@ -38,7 +38,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::Queue::Create(const RendererAPI
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Queue::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

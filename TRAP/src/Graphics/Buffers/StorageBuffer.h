@@ -132,8 +132,8 @@ inline void TRAP::Graphics::StorageBuffer::GetData(const T* const data, const ui
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::GetData(): Out of bounds!");
+	TRAP_ASSERT(window, "StorageBuffer::GetData(): Window is nullptr");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	const uint32_t imageIndex = GetUpdateFrequency() ==

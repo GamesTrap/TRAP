@@ -21,8 +21,8 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device);
-	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
+	TRAP_ASSERT(m_device, "VulkanSwapChain(): Vulkan Device is nullptr!");
+	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount, "VulkanSwapChain(): ImageCount is too low!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
@@ -37,7 +37,7 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_swapChain);
+	TRAP_ASSERT(m_swapChain, "~VulkanSwapChain(): Vulkan SwapChain is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
@@ -119,7 +119,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		}
 	}
 
-	TRAP_ASSERT(surfaceFormat.format != VK_FORMAT_UNDEFINED);
+	TRAP_ASSERT(surfaceFormat.format != VK_FORMAT_UNDEFINED, "VulkanSwapChain::InitSwapchain(): No suitable surface format found!");
 
 	//The VK_PRESENT_MODE_FIFO_KHR mode must always be present as per spec
 	//This mode waits for the vertical blank ("VSync")
@@ -203,7 +203,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 				}
 
 				//No present queue family available. Something goes wrong.
-				TRAP_ASSERT(false);
+				TRAP_ASSERT(false, "VulkanSwapChain::InitSwapchain(): No present queue family available!");
 			}
 		}
 	}
@@ -248,7 +248,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		}
 	}
 
-	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR);
+	TRAP_ASSERT(compositeAlpha != VK_COMPOSITE_ALPHA_FLAG_BITS_MAX_ENUM_KHR, "VulkanSwapChain::InitSwapchain(): No composite alpha flag available!");
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	const VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
@@ -270,7 +270,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	uint32_t imageCount = 0;
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, nullptr));
 
-	TRAP_ASSERT(desc.ImageCount == imageCount);
+	TRAP_ASSERT(desc.ImageCount == imageCount, "VulkanSwapChain::InitSwapchain(): ImageCount does not match!");
 
 	std::vector<VkImage> images(imageCount);
 	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, images.data()));
@@ -337,9 +337,9 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device != VK_NULL_HANDLE);
-	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
-	TRAP_ASSERT(signalSemaphore || fence);
+	TRAP_ASSERT(m_device != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan Device is nullptr!");
+	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
+	TRAP_ASSERT(signalSemaphore || fence, "VulkanSwapChain::AcquireNextImage(): Semaphore and Fence are nullptr!");
 
 	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
 	VkResult res{};

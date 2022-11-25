@@ -69,7 +69,7 @@ void TRAP::Graphics::ShaderManager::Add(Ref<Shader> shader)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(shader, "Provided shader is nullptr!");
+	TRAP_ASSERT(shader, "ShaderManager::Add(): Provided shader is nullptr!");
 
 	if(!Exists(shader->GetName()))
 		Shaders[shader->GetName()] = std::move(shader);
@@ -83,7 +83,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Remove(Ref<Shad
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(shader, "Provided shader is nullptr!");
+	TRAP_ASSERT(shader, "ShaderManager::Remove(): Provided shader is nullptr!");
 
 	if (Exists(shader->GetName()))
 	{

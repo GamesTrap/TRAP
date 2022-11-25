@@ -24,8 +24,8 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(device, "device is nullptr");
-	TRAP_ASSERT(instance, "instance is nullptr");
+	TRAP_ASSERT(device, "VulkanMemoryAllocator(): Vulkan Device is nullptr");
+	TRAP_ASSERT(instance, "VulkanMemoryAllocator(): Vulkan Instance is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
@@ -90,7 +90,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_allocator);
+	TRAP_ASSERT(m_allocator, "~VulkanMemoryAllocator(): Vulkan Allocator is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Destroying Allocator");

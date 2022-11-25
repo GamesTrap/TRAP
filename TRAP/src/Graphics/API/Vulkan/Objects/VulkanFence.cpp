@@ -13,7 +13,7 @@ TRAP::Graphics::API::VulkanFence::VulkanFence()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanFence()(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFencePrefix, "Creating Fence");
@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_fence);
+	TRAP_ASSERT(m_fence, "~VulkanFence(): Vulkan Fence is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFencePrefix, "Destroying Fence");

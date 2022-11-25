@@ -16,7 +16,7 @@ TRAP::Ref<TRAP::Graphics::Fence> TRAP::Graphics::Fence::Create()
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Fence::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -59,7 +59,7 @@ void TRAP::Graphics::Fence::WaitForFences(std::vector<Fence>& fences)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(!fences.empty(), "WaitForFences(): Fences count can not be 0!");
+	TRAP_ASSERT(!fences.empty(), "Fence::WaitForFences(): Fences count can not be 0!");
 
 	for(Fence& f : fences)
 		f.Wait();

@@ -927,7 +927,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!s_WindowingAPIInitialized)
 	{
 		const int32_t success = INTERNAL::WindowingAPI::Init();
-		TRAP_ASSERT(success, "Couldn't initialize WindowingAPI!");
+		TRAP_ASSERT(success, "Window::Init(): Couldn't initialize WindowingAPI!");
 		if (!success)
 			Utils::Dialogs::ShowMsgBox("WindowingAPI Error",
 									   "Couldn't initialize WindowingAPI!\nError code: 0x0011",

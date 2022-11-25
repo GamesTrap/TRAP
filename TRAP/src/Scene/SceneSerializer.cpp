@@ -137,7 +137,7 @@ namespace TRAP
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-		TRAP_ASSERT(entity.HasComponent<UIDComponent>());
+		TRAP_ASSERT(entity.HasComponent<UIDComponent>(), "SerializeEntity(): Entity has no UIDComponent!");
 
 		out << YAML::BeginMap; //Entity
 		out << YAML::Key << "Entity" << YAML::Value << entity.GetUID(); //Entity UID
@@ -301,7 +301,7 @@ void TRAP::SceneSerializer::SerializeRuntime(const std::filesystem::path&)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(false, "Not implemented yet!");
+	TRAP_ASSERT(false, "SceneSerializer::SerializeRuntime(): Not implemented yet!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -439,6 +439,6 @@ bool TRAP::SceneSerializer::DeserializeRuntime(const std::filesystem::path&)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(false, "Not implemented yet!");
+	TRAP_ASSERT(false, "SceneSerializer::DeserializeRuntime(): Not implemented yet!");
 	return false;
 }

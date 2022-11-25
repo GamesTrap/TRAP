@@ -38,7 +38,7 @@ TRAP::Ref<TRAP::Graphics::QueryPool> TRAP::Graphics::QueryPool::Create(const Ren
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "QueryPool::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

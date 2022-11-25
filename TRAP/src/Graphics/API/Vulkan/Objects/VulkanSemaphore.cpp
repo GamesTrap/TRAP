@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanSemaphore(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Creating Semaphore");
@@ -28,7 +28,7 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_semaphore);
+	TRAP_ASSERT(m_semaphore, "~VulkanSemaphore(): Vulkan Semaphore is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");

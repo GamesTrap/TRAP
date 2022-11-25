@@ -20,7 +20,7 @@ template<class T> T Rotatel64(const T x, const int64_t y)
 
 	static const uint32_t thisSize = sizeof(T) * 8;
 	static const uint32_t mask = thisSize - 1;
-	TRAP_ASSERT(y < thisSize);
+	TRAP_ASSERT(y < thisSize, "Rotatel64(): y must be less than the size of the type!");
 
 	return T((x << y) | (x >> (-y & mask)));
 }

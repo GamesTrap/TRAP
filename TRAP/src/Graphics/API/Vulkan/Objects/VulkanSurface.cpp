@@ -14,9 +14,9 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_instance, "instance is nullptr");
-	TRAP_ASSERT(device, "device is nullptr");
-	TRAP_ASSERT(window, "window is nullptr");
+	TRAP_ASSERT(m_instance, "VulkanSurface(): Vulkan Instance is nullptr");
+	TRAP_ASSERT(device, "VulkanSurface(): Vulkan Device is nullptr");
+	TRAP_ASSERT(window, "VulkanSurface(): Window is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
@@ -50,7 +50,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_surface);
+	TRAP_ASSERT(m_surface, "~VulkanSurface(): Vulkan Surface is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");

@@ -78,8 +78,8 @@ void TRAP::Graphics::StorageBuffer::SetData(const void* const data, const uint64
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(data);
-	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize());
+	TRAP_ASSERT(data, "StorageBuffer::SetData(): Data is nullptr!");
+	TRAP_ASSERT(size + offset <= m_storageBuffers[0]->GetSize(), "StorageBuffer::SetData(): Out of bounds!");
 
 	for(std::size_t i = 0; i < m_storageBuffers.size(); ++i)
 	{

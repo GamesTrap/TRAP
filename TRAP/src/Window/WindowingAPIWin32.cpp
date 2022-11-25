@@ -204,11 +204,11 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xScale > 0.0f);
-	TRAP_ASSERT(xScale < std::numeric_limits<float>::max());
-	TRAP_ASSERT(yScale > 0.0f);
-	TRAP_ASSERT(yScale < std::numeric_limits<float>::max());
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowContentScale(): Window is nullptr!");
+	TRAP_ASSERT(xScale > 0.0f, "WindowingAPI::InputWindowContentScale(): XScale is 0.0f!");
+	TRAP_ASSERT(xScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): XScale is too big!");
+	TRAP_ASSERT(yScale > 0.0f, "WindowingAPI::InputWindowContentScale(): YScale is 0.0f!");
+	TRAP_ASSERT(yScale < std::numeric_limits<float>::max(), "WindowingAPI::InputWindowContentScale(): YScale is too big!");
 
 	if (window->Callbacks.Scale)
 		window->Callbacks.Scale(window, xScale, yScale);

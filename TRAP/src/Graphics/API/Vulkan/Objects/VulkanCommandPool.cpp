@@ -16,8 +16,8 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 	m_queue = desc.Queue;
 
-	TRAP_ASSERT(m_device, "device is nullptr");
-	TRAP_ASSERT(m_queue, "queue is nullptr");
+	TRAP_ASSERT(m_device, "VulkanCommandPool(): Vulkan Device is nullptr");
+	TRAP_ASSERT(m_queue, "VulkanCommandPool(): Queue is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");
@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_vkCommandPool);
+	TRAP_ASSERT(m_vkCommandPool, "~VulkanCommandPool(): Vulkan CommandPool is nullptr");
 
 	for (auto& m_commandBuffer : m_commandBuffers)
 		m_commandBuffer.reset();

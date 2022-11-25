@@ -386,6 +386,9 @@ namespace TRAP::Graphics::API
 		{
 			ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+			TRAP_ASSERT(mem, "VulkanCommandBuffer::HashAlg(): mem is nullptr!");
+			TRAP_ASSERT(size, "VulkanCommandBuffer::HashAlg(): size is 0!");
+
 			//Intentionally uint32_t instead of std::size_t, so the behavior is the same regardless of size.
 			uint32_t result = static_cast<uint32_t>(prev);
 

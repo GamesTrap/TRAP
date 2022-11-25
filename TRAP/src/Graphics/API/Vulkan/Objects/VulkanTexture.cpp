@@ -103,8 +103,8 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Invalid resolution");
-	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1), "Multi-Sampled texture cannot have mip maps");
+	TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "VulkanTexture::Init(): Invalid resolution");
+	TRAP_ASSERT(!(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1), "VulkanTexture::Init(): Multi-Sampled texture cannot have mip maps");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanTexturePrefix, "Creating Texture");
@@ -131,7 +131,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	VkImageType imageType = VK_IMAGE_TYPE_MAX_ENUM;
 	if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force2D))
 	{
-		TRAP_ASSERT(desc.Depth == 1);
+		TRAP_ASSERT(desc.Depth == 1, "VulkanTexture::Init(): 2D Texture cannot have depth");
 		imageType = VK_IMAGE_TYPE_2D;
 	}
 	else if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force3D))
@@ -157,7 +157,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	const uint32_t numOfPlanes = TRAP::Graphics::API::ImageFormatNumOfPlanes(desc.Format);
 	const bool isSinglePlane = TRAP::Graphics::API::ImageFormatIsSinglePlane(desc.Format);
 	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)),
-				"Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
+				"VulkanTexture::Init(): Number of planes for multi-planar formats must be 2 or 3 and for single-planar "
 				"formats it must be 1");
 
 	if (imageType == VK_IMAGE_TYPE_3D)
@@ -188,7 +188,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		// Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
 		if (isPlanarFormat)
 		{
-			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DISJOINT_BIT);
+			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DISJOINT_BIT, "VulkanTexture::Init(): Format does not support disjoint planes");
 			info.flags |= VK_IMAGE_CREATE_DISJOINT_BIT;
 		}
 
@@ -199,12 +199,12 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		}
 
 		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)],
-					"GPU shader can't read from this format");
+					"VulkanTexture::Init(): GPU shader can't read from this format");
 
 		const VkFormatFeatureFlags formatFeatures = VkImageUsageToFormatFeatures(info.usage);
 
 		const VkFormatFeatureFlags flags = formatProps.optimalTilingFeatures & formatFeatures;
-		TRAP_ASSERT(0 != flags, "Format is not suported for GPU local images (i.e. not host visible images)");
+		TRAP_ASSERT(0 != flags, "VulkanTexture::Init(): Format is not suported for GPU local images (i.e. not host visible images)");
 
 		VmaAllocationCreateInfo memReqs{};
 		if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory))
@@ -363,17 +363,17 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		if (desc.ArraySize > 1)
 		{
 			TP_ERROR(Log::RendererVulkanTexturePrefix, "Cannot support 3D Texture Array in Vulkan");
-			TRAP_ASSERT(false);
+			TRAP_ASSERT(false, "VulkanTexture::Init(): Cannot support 3D Texture Array in Vulkan");
 		}
 		viewType = VK_IMAGE_VIEW_TYPE_3D;
 		break;
 
 	default:
-		TRAP_ASSERT(false, "Image Format not supported!");
+		TRAP_ASSERT(false, "VulkanTexture::Init(): Image Format not supported!");
 		break;
 	}
 
-	TRAP_ASSERT(viewType != VK_IMAGE_VIEW_TYPE_MAX_ENUM, "Invalid Image View");
+	TRAP_ASSERT(viewType != VK_IMAGE_VIEW_TYPE_MAX_ENUM, "VulkanTexture::Init(): Invalid Image View");
 
 	// SRV
 	VkImageViewCreateInfo srvDesc = VulkanInits::ImageViewCreateInfo(m_vkImage, viewType,
@@ -488,7 +488,7 @@ void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string_view n
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(!name.empty());
+	TRAP_ASSERT(!name.empty(), "VulkanTexture::SetTextureName(): Name is empty!");
 
 	if (!VulkanRenderer::s_debugMarkerSupport)
 		return;
@@ -555,8 +555,8 @@ void TRAP::Graphics::API::VulkanTexture::PreInit()
 	m_device = vkRenderer->GetDevice();
 	m_vma = vkRenderer->GetVMA();
 
-	TRAP_ASSERT(m_device, "Device is nullptr");
-	TRAP_ASSERT(m_vma, "VMA is nullptr");
+	TRAP_ASSERT(m_device, "VulkanTexture::PreInit(): Vulkan Device is nullptr");
+	TRAP_ASSERT(m_vma, "VulkanTexture::PreInit(): VMA is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -588,7 +588,7 @@ uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
 		return 0;
 	}
 
-	TP_ERROR(Log::RendererVulkanTexturePrefix, "Could not find a matching memory type");
+	TP_ERROR(Log::RendererVulkanTexturePrefix, "VulkanTexture::GetMemoryType(): Could not find a matching memory type");
 	TRAP_ASSERT(false);
 	return 0;
 }

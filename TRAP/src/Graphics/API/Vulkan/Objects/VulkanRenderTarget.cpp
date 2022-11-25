@@ -35,7 +35,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	m_clearStencil = desc.ClearStencil;
 	m_descriptors = desc.Descriptors;
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanRenderTarget(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Creating RenderTarget");
@@ -45,7 +45,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	                     TRAP::Graphics::API::ImageFormatIsDepthAndStencil(desc.Format);
 
 	TRAP_ASSERT(!((isDepth) && static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture)),
-	            "Cannot use depth stencil as UAV");
+	            "VulkanRenderTarget(): Cannot use depth stencil as UAV");
 
 	const uint32_t depthOrArraySize = desc.ArraySize * desc.Depth;
 	uint32_t numRTVs = m_mipLevels;
@@ -167,8 +167,8 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_texture);
-	TRAP_ASSERT(m_vkDescriptor);
+	TRAP_ASSERT(m_texture, "~VulkanRenderTarget(): Texture is nullptr!");
+	TRAP_ASSERT(m_vkDescriptor, "~VulkanRenderTarget(): Vulkan Descriptor is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Destroying RenderTarget");

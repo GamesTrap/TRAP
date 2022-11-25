@@ -39,7 +39,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RootSignature::Create(c
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "RootSignature::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

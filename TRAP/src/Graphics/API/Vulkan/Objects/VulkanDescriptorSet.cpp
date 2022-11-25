@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
+	TRAP_ASSERT(m_rootSignature, "VulkanDescriptorSet(): Vulkan RootSignature is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -114,8 +114,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 #define VALIDATE_DESCRIPTOR(descriptor, ...)
 #endif
 
-	TRAP_ASSERT(!m_vkDescriptorSetHandles.empty());
-	TRAP_ASSERT(index < m_maxSets);
+	TRAP_ASSERT(!m_vkDescriptorSetHandles.empty(), "VulkanDescriptorSet::Update(): No Vulkan DescriptorSets available!");
+	TRAP_ASSERT(index < m_maxSets, "VulkanDescriptorSet::Update(): Index out of range!");
 
 	const TRAP::Ref<VulkanRootSignature>& rootSignature = m_rootSignature;
 	std::vector<VulkanRenderer::DescriptorUpdateData>& updateData = m_updateData[index];
@@ -194,7 +194,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 			if(it == m_rootSignature->GetDescriptorNameToIndexMap().end())
 			{
 				TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "No Static Sampler called (", desc->Name, ")");
-				TRAP_ASSERT(false);
+				TRAP_ASSERT(false, "VulkanDescriptorSet::Update(): No Static Sampler called (" + desc->Name + ")");
 			}
 
 			for(uint32_t arr = 0; arr < arrayCount; ++arr)

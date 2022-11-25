@@ -15,7 +15,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanSampler(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");
@@ -64,16 +64,16 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 	//Check format props
 	{
-		TRAP_ASSERT(VulkanRenderer::s_samplerYcbcrConversionExtension);
+		TRAP_ASSERT(VulkanRenderer::s_samplerYcbcrConversionExtension, "VulkanSampler(): Sampler YCbCr Conversion Extension is not supported by this device!");
 
 		const VkFormatProperties formatProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFormatProperties(format);
 		if(conversionDesc.ChromaOffsetX == RendererAPI::SampleLocation::Midpoint)
 		{
-			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT);
+			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_MIDPOINT_CHROMA_SAMPLES_BIT, "VulkanSampler(): Format does not support Midpoint Chroma Sampling!");
 		}
 		else if(conversionDesc.ChromaOffsetX == RendererAPI::SampleLocation::Cosited)
 		{
-			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT);
+			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COSITED_CHROMA_SAMPLES_BIT, "VulkanSampler(): Format does not support Cosited Chroma Sampling!");
 		}
 	}
 
@@ -107,7 +107,7 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_vkSampler);
+	TRAP_ASSERT(m_vkSampler, "~VulkanSampler(): Vulkan Sampler is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Destroying Sampler");

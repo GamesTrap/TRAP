@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(instance, "instance is nullptr");
+	TRAP_ASSERT(instance, "VulkanPhysicalDevice(): Vulkan Instance is nullptr");
 
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
 
@@ -202,7 +202,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_physicalDevice);
+	TRAP_ASSERT(m_physicalDevice, "~VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");
@@ -412,7 +412,7 @@ const std::multimap<uint32_t, std::array<uint8_t, 16>> &TRAP::Graphics::API::Vul
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(instance, "instance is nullptr");
+	TRAP_ASSERT(instance, "VulkanPhysicalDevice::GetAllRatedPhysicalDevices(): Vulkan Instance is nullptr");
 
 	if (!s_availablePhysicalDeviceUUIDs.empty())
 		return s_availablePhysicalDeviceUUIDs;
@@ -442,7 +442,7 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(instance, "instance is nullptr");
+	TRAP_ASSERT(instance, "VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(): Vulkan Instance is nullptr");
 
 	const auto physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
 

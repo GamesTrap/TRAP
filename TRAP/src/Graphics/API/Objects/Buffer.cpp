@@ -39,7 +39,7 @@ TRAP::Ref<TRAP::Graphics::Buffer> TRAP::Graphics::Buffer::Create(const RendererA
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Buffer::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

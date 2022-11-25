@@ -94,7 +94,7 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
+	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
 
 	if(s_currentDrawCalls >= s_maxDrawCalls)
 		return;
@@ -122,8 +122,8 @@ void TRAP::Graphics::Renderer::Submit(Ref<Shader> shader, const VertexBuffer* co
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(vertexBuffer, "VertexBuffer is nullptr!");
-	TRAP_ASSERT(indexBuffer, "IndexBuffer is nullptr!");
+	TRAP_ASSERT(vertexBuffer, "Renderer::Submit(): VertexBuffer is nullptr!");
+	TRAP_ASSERT(indexBuffer, "Renderer::Submit(): IndexBuffer is nullptr!");
 
 	if(s_currentDrawCalls >= s_maxDrawCalls)
 		return;

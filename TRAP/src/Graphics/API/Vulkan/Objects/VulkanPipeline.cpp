@@ -18,7 +18,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device);
+	TRAP_ASSERT(m_device, "VulkanPipeline(): Vulkan Device is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Creating Pipeline");
@@ -45,7 +45,7 @@ TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineD
 	}
 
 	default:
-		TRAP_ASSERT(false);
+		TRAP_ASSERT(false, "VulkanPipeline(): Unknown Pipeline Type!");
 		break;
 	}
 
@@ -61,8 +61,8 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device);
-	TRAP_ASSERT(m_vkPipeline);
+	TRAP_ASSERT(m_device, "~VulkanPipeline(): Vulkan Device is nullptr!");
+	TRAP_ASSERT(m_vkPipeline, "~VulkanPipeline(): Vulkan Pipeline is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
@@ -84,10 +84,10 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
 							         VK_NULL_HANDLE;
 
-	TRAP_ASSERT(computeDesc.ShaderProgram);
-	TRAP_ASSERT(computeDesc.RootSignature);
+	TRAP_ASSERT(computeDesc.ShaderProgram, "VulkanPipeline::InitComputePipeline(): ShaderProgram is nullptr!");
+	TRAP_ASSERT(computeDesc.RootSignature, "VulkanPipeline::InitComputePipeline(): RootSignature is nullptr!");
 	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
-	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE);
+	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE, "VulkanPipeline::InitComputePipeline(): ShaderModule is nullptr!");
 
 	m_type = RendererAPI::PipelineType::Compute;
 
@@ -121,8 +121,8 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	                                 dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() :
 							         VK_NULL_HANDLE;
 
-	TRAP_ASSERT(graphicsDesc.ShaderProgram);
-	TRAP_ASSERT(graphicsDesc.RootSignature);
+	TRAP_ASSERT(graphicsDesc.ShaderProgram, "VulkanPipeline::InitGraphicsPipeline(): ShaderProgram is nullptr!");
+	TRAP_ASSERT(graphicsDesc.RootSignature, "VulkanPipeline::InitGraphicsPipeline(): RootSignature is nullptr!");
 
 	const auto& shaderProgram = graphicsDesc.ShaderProgram;
 	const auto& vertexLayout = graphicsDesc.VertexLayout;
@@ -140,7 +140,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(shaderProgram);
 	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflectionCount; ++i)
 	{
-		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE);
+		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE, "VulkanPipeline::InitGraphicsPipeline(): ShaderModule is nullptr!");
 	}
 
 	//Pipeline
@@ -199,7 +199,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 				}
 
 				default:
-					TRAP_ASSERT(false, "Shader Stage is not supported!");
+					TRAP_ASSERT(false, "VulkanPipeline::InitGraphicsPipeline(): Shader Stage is not supported!");
 					break;
 				}
 				++stageCount;
@@ -207,7 +207,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 		}
 
 		//Make sure there's a shader
-		TRAP_ASSERT(stageCount != 0);
+		TRAP_ASSERT(stageCount != 0, "VulkanPipeline::InitGraphicsPipeline(): No Shader stage found!");
 
 		uint32_t inputBindingCount = 0;
 		std::vector<VkVertexInputBindingDescription> inputBindings(RendererAPI::GPUSettings.MaxVertexInputBindings);
@@ -280,7 +280,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			break;
 
 		default:
-			TRAP_ASSERT(false, "Primitive Topology not supported!");
+			TRAP_ASSERT(false, "VulkanPipeline::InitGraphicsPipeline(): Primitive Topology not supported!");
 			break;
 		}
 

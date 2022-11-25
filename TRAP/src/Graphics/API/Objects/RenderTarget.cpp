@@ -42,7 +42,7 @@ TRAP::Ref<TRAP::Graphics::RenderTarget> TRAP::Graphics::RenderTarget::Create(con
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "RenderTarget::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

@@ -533,7 +533,7 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatB
 		if(bpp == 32)
 			return API::ImageFormat::R32_SFLOAT;
 
-		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
+		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
 		return API::ImageFormat::Undefined;
 	}
 	if(colorFormat == Image::ColorFormat::GrayScaleAlpha)
@@ -545,12 +545,12 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatB
 		if(bpp == 64)
 		    return API::ImageFormat::R32G32_SFLOAT;
 
-		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
+		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
 		return API::ImageFormat::Undefined;
 	}
 	if(colorFormat == Image::ColorFormat::RGB)
 	{
-		TRAP_ASSERT(false, "Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
+		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Color format RGB is not allowed on empty textures as GPU needs an alpha channel!");
 		return API::ImageFormat::Undefined;
 	}
 	if(colorFormat == Image::ColorFormat::RGBA)
@@ -562,11 +562,11 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatB
 		if(bpp == 128)
 			return API::ImageFormat::R32G32B32A32_SFLOAT;
 
-		TRAP_ASSERT(false, "Invalid bits per pixel & color format combination provided!");
+		TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid bits per pixel & color format combination provided!");
 		return API::ImageFormat::Undefined;
 	}
 
-	TRAP_ASSERT(false, "Invalid color format provided!");
+	TRAP_ASSERT(false, "Texture::ColorFormatBitsPerPixelToImageFormat(): Invalid color format provided!");
 	return API::ImageFormat::Undefined;
 }
 

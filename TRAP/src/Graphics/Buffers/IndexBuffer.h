@@ -195,8 +195,8 @@ void TRAP::Graphics::IndexBuffer::SetDataInternal(const T* const indices, const 
 	static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>,
 	              "Trying to initialize index buffer with wrong index type!");
 
-	TRAP_ASSERT(indices);
-	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
+	TRAP_ASSERT(indices, "IndexBuffer::SetDataInternal(): Indices is nullptr!");
+	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize(), "IndexBuffer::SetDataInternal(): Out of bounds!");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	desc.Buffer = m_indexBuffer;

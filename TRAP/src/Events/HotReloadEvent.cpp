@@ -9,7 +9,7 @@ TRAP::Events::TextureReloadEvent::TextureReloadEvent(TRAP::Ref<TRAP::Graphics::T
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(m_texture, "Texture is nullptr!");
+	TRAP_ASSERT(m_texture, "TextureReloadEvent(): Texture is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -27,7 +27,7 @@ std::string TRAP::Events::TextureReloadEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(m_texture, "Texture is nullptr!");
+	TRAP_ASSERT(m_texture, "TextureReloadEvent::ToString(): Texture is nullptr!");
 
     return "TextureReloadEvent: " + m_texture->GetName();
 }
@@ -68,7 +68,7 @@ TRAP::Events::ShaderReloadEvent::ShaderReloadEvent(TRAP::Ref<TRAP::Graphics::Sha
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(m_shader, "Shader is nullptr!");
+	TRAP_ASSERT(m_shader, "ShaderReloadEvent(): Shader is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -86,7 +86,7 @@ std::string TRAP::Events::ShaderReloadEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(m_shader, "Shader is nullptr!");
+	TRAP_ASSERT(m_shader, "ShaderReloadEvent::ToString(): Shader is nullptr!");
 
     return "ShaderReloadEvent: " + m_shader->GetName();
 }

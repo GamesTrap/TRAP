@@ -40,7 +40,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 	if(userMacros)
 		m_macros = *userMacros;
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
 	if(!m_valid)
 		return;
@@ -70,7 +70,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 	if(userMacros)
 		m_macros = *userMacros;
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
 	if(!m_valid)
 		return;
@@ -102,7 +102,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 	if(userMacros)
 		m_macros = *userMacros;
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
 	//Intentionally not calling InitShader() as this is always an invalid shader
 }
@@ -149,7 +149,7 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(window, "VulkanShader::Use(): Window is nullptr");
 
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this, window);
 
@@ -205,8 +205,8 @@ void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t set, const uin
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(texture, "Texture is nullptr!");
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(texture, "VulkanShader::UseTexture(): Texture is nullptr!");
+	TRAP_ASSERT(window, "VulkanShader::UseTexture(): Window is nullptr");
 
 	if(!m_valid)
 		return;
@@ -247,8 +247,8 @@ void TRAP::Graphics::API::VulkanShader::UseTextures(const uint32_t set, const ui
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(!textures.empty(), "Textures are empty!");
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(!textures.empty(), "VulkanShader::UseTextures(): Textures are empty!");
+	TRAP_ASSERT(window, "VulkanShader::UseTextures(): Window is nullptr");
 
 	if(!m_valid)
 		return;
@@ -290,8 +290,8 @@ void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uin
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(sampler, "Sampler is nullptr!");
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(sampler, "VulkanShader::UseSampler(): Sampler is nullptr!");
+	TRAP_ASSERT(window, "VulkanShader::UseSampler(): Window is nullptr");
 
 	if(!m_valid)
 		return;
@@ -325,8 +325,8 @@ void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const ui
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(!samplers.empty(), "VulkanShader::UseSamplers(): Samplers are empty!");
+	TRAP_ASSERT(window, "VulkanShader::UseSamplers(): Window is nullptr");
 
 	if(!m_valid)
 		return;
@@ -362,8 +362,8 @@ void TRAP::Graphics::API::VulkanShader::UseUBO(const uint32_t set, const uint32_
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(uniformBuffer, "UniformBuffer is nullptr!");
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(uniformBuffer, "VulkanShader::UseUBO(): UniformBuffer is nullptr!");
+	TRAP_ASSERT(window, "VulkanShader::UseUBO(): Window is nullptr");
 
 	if(!m_valid)
 		return;
@@ -382,8 +382,8 @@ void TRAP::Graphics::API::VulkanShader::UseSSBO(const uint32_t set, const uint32
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(storageBuffer, "StorageBuffer is nullptr!");
-	TRAP_ASSERT(window, "Window is nullptr");
+	TRAP_ASSERT(storageBuffer, "VulkanShader::UseSSBO(): StorageBuffer is nullptr!");
+	TRAP_ASSERT(window, "VulkanShader::UseSSBO(): Window is nullptr");
 
 	if(!m_valid)
 		return;
@@ -534,7 +534,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 				}
 
 				default:
-					TRAP_ASSERT(false, "Shader Stage not supported!");
+					TRAP_ASSERT(false, "VulkanShader::Init(): Shader Stage not supported!");
 					break;
 			}
 			m_entryNames[counter] = stageDesc->EntryPoint;

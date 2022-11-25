@@ -323,7 +323,7 @@ constexpr int TRAP::Math::Mat<3, 3, T>::Length()
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const int32_t i)
 {
-	TRAP_ASSERT(i < this->Length());
+	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
 
 	return this->value[i];
 }
@@ -331,7 +331,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::
 template<typename T>
 constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3, T>::operator[](const int32_t i) const
 {
-	TRAP_ASSERT(i < this->Length());
+	TRAP_ASSERT(i < this->Length(), "Math::Mat<3, 3, T>::operator[]: index out of range");
 
 	return this->value[i];
 }

@@ -232,7 +232,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Shader::CreateFromFile(): Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -249,7 +249,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 	const auto name = FileSystem::GetFileNameWithoutEnding(filePath);
 	if(!name)
 	{
-		TRAP_ASSERT(false, "Name is empty!");
+		TRAP_ASSERT(false, "Shader::CreateFromFile(): Name is empty!");
 		TP_ERROR(Log::ShaderPrefix, "Name is empty!");
 		return nullptr;
 	}
@@ -281,7 +281,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const s
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Shader::CreateFromFile(): Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -320,7 +320,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Shader::CreateFromSource(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

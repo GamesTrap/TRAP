@@ -3489,7 +3489,7 @@ int32_t TRAP::Math::IRound(const genType& x)
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
-	TRAP_ASSERT(static_cast<genType>(0.0) <= x);
+	TRAP_ASSERT(static_cast<genType>(0.0) <= x, "Math::IRound(): x must be positive!");
 
 	return static_cast<int32_t>(x + static_cast<genType>(0.5));
 }
@@ -3500,7 +3500,7 @@ TRAP::Math::Vec<L, uint32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
-	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)));
+	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)), "Math::IRound(): x must be positive!");
 
 	return Vec<L, int32_t>(x + static_cast<T>(0.5));
 }
@@ -3513,7 +3513,7 @@ uint32_t TRAP::Math::URound(const genType& x)
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
-	TRAP_ASSERT(static_cast<genType>(0.0) <= x);
+	TRAP_ASSERT(static_cast<genType>(0.0) <= x, "Math::URound(): x must be positive!");
 
 	return static_cast<uint32_t>(x + static_cast<genType>(0.5));
 }
@@ -3524,7 +3524,7 @@ TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
-	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)));
+	TRAP_ASSERT(All(LessThanEqual(Vec<L, T>(0), x)), "Math::URound(): x must be positive!");
 
 	return Vec<L, uint32_t>(x + static_cast<T>(0.5));
 }
@@ -3940,8 +3940,8 @@ constexpr TRAP::Math::tQuat<T> TRAP::Math::Lerp(const tQuat<T>& x, const tQuat<T
 	static_assert(std::numeric_limits<T>::is_iec559, "'lerp' only accepts floating-point inputs");
 
 	//Lerp is only defined in [0, 1]
-	TRAP_ASSERT(a >= static_cast<T>(0));
-	TRAP_ASSERT(a <= static_cast<T>(1));
+	TRAP_ASSERT(a >= static_cast<T>(0), "Math::Lerp(): 'a' must be greater or equal to 0!");
+	TRAP_ASSERT(a <= static_cast<T>(1), "Math::Lerp(): 'a' must be less or equal to 1!");
 
 	return x * (static_cast<T>(1) - 1) + (y * a);
 }
@@ -4724,7 +4724,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(const T fovY, const T aspect, c
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+	TRAP_ASSERT(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0), "Math::Perspective(): Division by zero!");
 
 	const T tanHalfFoVY = std::tan(fovY / static_cast<T>(2));
 
@@ -4747,9 +4747,9 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(const T fov, const T width, 
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(width > static_cast<T>(0));
-	TRAP_ASSERT(height > static_cast<T>(0));
-	TRAP_ASSERT(fov > static_cast<T>(0));
+	TRAP_ASSERT(width > static_cast<T>(0), "Math::PerspectiveFoV(): Width must be greater than zero!");
+	TRAP_ASSERT(height > static_cast<T>(0), "Math::PerspectiveFoV(): Height must be greater than zero!");
+	TRAP_ASSERT(fov > static_cast<T>(0), "Math::PerspectiveFoV(): FOV must be greater than zero!");
 
 	const T rad = fov;
 	const T h = Cos(static_cast<T>(0.5) * rad) / Sin(static_cast<T>(0.5) * rad);
@@ -4972,7 +4972,7 @@ T TRAP::Math::Row(const T& m, const int32_t index, const typename T::rowType& x)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m[0].Length());
+	TRAP_ASSERT(index >= 0 && index < m[0].Length(), "Math::Row(): Index out of range!");
 
 	T result = m;
 
@@ -4989,7 +4989,7 @@ typename T::rowType TRAP::Math::Row(const T& m, const int32_t index)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m[0].Length());
+	TRAP_ASSERT(index >= 0 && index < m[0].Length(), "Math::Row(): Index out of range!");
 
 	typename T::rowType result(0);
 
@@ -5006,7 +5006,7 @@ T TRAP::Math::Column(const T& m, const int32_t index, const typename T::colType&
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m.Length());
+	TRAP_ASSERT(index >= 0 && index < m.Length(), "Math::Column(): Index out of range!");
 
 	T result = m;
 	result[index] = x;
@@ -5021,7 +5021,7 @@ typename T::colType TRAP::Math::Column(const T& m, const int32_t index)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(index >= 0 && index < m.Length());
+	TRAP_ASSERT(index >= 0 && index < m.Length(), "Math::Column(): Index out of range!");
 
 	return m[index];
 }
@@ -5330,7 +5330,7 @@ TRAP::Math::tQuat<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 		                biggestVal);
 
 	default:
-		TRAP_ASSERT(false);
+		TRAP_ASSERT(false, "Math::QuaternionCast(): Invalid Index!");
 		return tQuat<T>(1, 0, 0, 0);
 	}
 }

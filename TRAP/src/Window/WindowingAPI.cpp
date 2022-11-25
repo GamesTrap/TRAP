@@ -46,7 +46,7 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::Init() must only be called from main thread");
+	            "WindowingAPI::Init(): must only be called from main thread");
 
 	if (s_Data.Initialized)
 		return true;
@@ -72,7 +72,7 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::Shutdown() must only be called from main thread");
+	            "WindowingAPI::Shutdown(): must only be called from main thread");
 
 	if (!s_Data.Initialized)
 		return;
@@ -101,7 +101,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::DestroyWindow() must only be called from main thread");
+	            "WindowingAPI::DestroyWindow(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -130,7 +130,7 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::DefaultWindowHints() must only be called from main thread");
+	            "WindowingAPI::DefaultWindowHints(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -155,7 +155,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::WindowHint() must only be called from main thread");
+	            "WindowingAPI::WindowHint(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -212,7 +212,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetMonitorName() must only be called from main thread");
+	            "WindowingAPI::GetMonitorName(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -230,7 +230,7 @@ TRAP::INTERNAL::WindowingAPI::InternalMonitor* TRAP::INTERNAL::WindowingAPI::Get
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetPrimaryMonitor() must only be called from main thread");
+	            "WindowingAPI::GetPrimaryMonitor(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -248,7 +248,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetMonitors() must only be called from main thread");
+	            "WindowingAPI::GetMonitors(): must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -270,7 +270,7 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::Ge
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetVideoMode() must only be called from main thread");
+	            "WindowingAPI::GetVideoMode(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -289,7 +289,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetVideoModes() must only be called from main thread");
+	            "WindowingAPI::GetVideoModes(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -315,10 +315,10 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::CreateWindow() must only be called from main thread");
-	TRAP_ASSERT(!title.empty(), "[Window] Empty title provided!");
-	TRAP_ASSERT(width > 0, "[Window] Invalid width provided!");
-	TRAP_ASSERT(height > 0, "[Window] Invalid height provided!");
+	            "WindowingAPI::CreateWindow(): must only be called from main thread");
+	TRAP_ASSERT(!title.empty(), "WindowingAPI::CreateWindow(): Empty title provided!");
+	TRAP_ASSERT(width > 0, "WindowingAPI::CreateWindow(): Invalid width provided!");
+	TRAP_ASSERT(height > 0, "WindowingAPI::CreateWindow(): Invalid height provided!");
 
 	if(!s_Data.Initialized)
 	{
@@ -381,8 +381,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(InternalWindow* const wi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowShouldClose() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowShouldClose(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowShouldClose(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -400,8 +400,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const InternalWindow* const wi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowTitle() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowTitle(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowTitle(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -420,8 +420,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const InternalMonitor*
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetMonitorContentScale() must only be called from main thread");
-	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
+	            "WindowingAPI::GetMonitorContentScale(): must only be called from main thread");
+	TRAP_ASSERT(monitor, "WindowingAPI::GetMonitorContentScale(): Monitor is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -488,7 +488,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::DestroyCursor() must only be called from main thread");
+	            "WindowingAPI::DestroyCursor(): must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -523,7 +523,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::CreateCursor() must only be called from main thread");
+	            "WindowingAPI::CreateCursor(): must only be called from main thread");
 	Scope<InternalCursor> cursor;
 
 	if(!image)
@@ -600,7 +600,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::CreateStandardCursor() must only be called from main thread");
+	            "WindowingAPI::CreateStandardCursor(): must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -627,8 +627,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(InternalWindow* const window, Inter
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursor() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetCursor(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetCursor(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -648,8 +648,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* const window, c
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowIcon() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowIcon(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowIcon(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -705,8 +705,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const InternalWindow* const wind
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowPos() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowPos(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowPos(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -728,8 +728,8 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const InternalWindow* const wind
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetWindowPos() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetWindowPos(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowPos(): Window is nullptr!");
 
 	xPos = 0;
 	yPos = 0;
@@ -751,10 +751,10 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* const window, c
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowSize() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
-	TRAP_ASSERT(width > 0, "[Window] Width is smaller than or equal to 0!");
-	TRAP_ASSERT(height > 0, "[Window] Height is smaller than or equal to 0!");
+	            "WindowingAPI::SetWindowSize(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowSize(): Window is nullptr!");
+	TRAP_ASSERT(width > 0, "WindowingAPI::SetWindowSize(): Width is smaller than or equal to 0!");
+	TRAP_ASSERT(height > 0, "WindowingAPI::SetWindowSize(): Height is smaller than or equal to 0!");
 
 	if(!s_Data.Initialized)
 	{
@@ -776,8 +776,8 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const InternalWindow* const win
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetWindowSize() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetWindowSize(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowSize(): Window is nullptr!");
 
 	width = 0;
 	height = 0;
@@ -799,8 +799,8 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const InternalWindow* cons
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetFrameBufferSize() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetFrameBufferSize(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetFrameBufferSize(): Window is nullptr!");
 
 	width = 0;
 	height = 0;
@@ -822,8 +822,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const InternalWindow* const 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowOpacity() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowOpacity(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowOpacity(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -848,8 +848,8 @@ float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const InternalWindow* const
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetWindowOpacity() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetWindowOpacity(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowOpacity(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -868,8 +868,8 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetWindowContentScale() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetWindowContentScale(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowContentScale(): Window is nullptr!");
 
 	xScale = 0.0f;
 	yScale = 0.0f;
@@ -891,8 +891,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* const window, c
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowHint() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowHint(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowHint(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -953,8 +953,8 @@ bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* const win
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetWindowHint() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetWindowHint(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowHint(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1013,10 +1013,10 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* const window
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowMonitor() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
-	TRAP_ASSERT(width > 0, "[Window] Width is smaller than or equal to 0!");
-	TRAP_ASSERT(height > 0, "[Window] Height is smaller than or equal to 0!");
+	            "WindowingAPI::SetWindowMonitor(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowMonitor(): Window is nullptr!");
+	TRAP_ASSERT(width > 0, "WindowingAPI::SetWindowMonitor(): Width is smaller than or equal to 0!");
+	TRAP_ASSERT(height > 0, "WindowingAPI::SetWindowMonitor(): Height is smaller than or equal to 0!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1051,8 +1051,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* co
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
-	TRAP_ASSERT(monitor, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowMonitorBorderless(): Window is nullptr!");
+	TRAP_ASSERT(monitor, "WindowingAPI::SetWindowMonitorBorderless(): Monitor is nullptr!");
 
 	window->videoMode.Width = monitor->CurrentMode.Width;
 	window->videoMode.Height = monitor->CurrentMode.Height;
@@ -1071,7 +1071,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(InternalWindow* const wi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowUserPointer(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1089,7 +1089,7 @@ void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* c
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowUserPointer(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1107,7 +1107,7 @@ void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetMonitorCallback() must only be called from main thread");
+	            "WindowingAPI::SetMonitorCallback(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -1126,8 +1126,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(InternalWindow* const wi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowPosCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowPosCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowPosCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1146,8 +1146,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* const w
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowSizeCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowSizeCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowSizeCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1167,8 +1167,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* con
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowMinimizeCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowMinimizeCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowMinimizeCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1188,8 +1188,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* con
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowMaximizeCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowMaximizeCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowMaximizeCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1208,8 +1208,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* const 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowCloseCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowCloseCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowCloseCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1228,8 +1228,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(InternalWindow* const 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowFocusCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowFocusCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowFocusCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1249,8 +1249,8 @@ void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* co
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetFrameBufferSizeCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetFrameBufferSizeCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetFrameBufferSizeCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1269,7 +1269,7 @@ void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* windo
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::SetContentScaleCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1288,8 +1288,8 @@ void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(InternalWindow* const window, 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetKeyCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetKeyCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetKeyCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1308,8 +1308,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(InternalWindow* const window,
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCharCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetCharCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetCharCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1328,8 +1328,8 @@ void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(InternalWindow* const 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetMouseButtonCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetMouseButtonCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetMouseButtonCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1348,8 +1348,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* const wi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursorPosCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetCursorPosCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetCursorPosCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1368,8 +1368,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* const 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursorEnterCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetCursorEnterCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetCursorEnterCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1388,8 +1388,8 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* const windo
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetScrollCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetScrollCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetScrollCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1408,8 +1408,8 @@ void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* const window,
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetDropCallback() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetDropCallback(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetDropCallback(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1436,7 +1436,7 @@ TRAP::INTERNAL::WindowingAPI::WindowPositionFunc TRAP::INTERNAL::WindowingAPI::G
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowPosCallback(): Window is nullptr!");
 
 	return window->Callbacks.Pos;
 }
@@ -1448,7 +1448,7 @@ TRAP::INTERNAL::WindowingAPI::WindowSizeFunc TRAP::INTERNAL::WindowingAPI::GetWi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowSizeCallback(): Window is nullptr!");
 
 	return window->Callbacks.Size;
 }
@@ -1460,7 +1460,7 @@ TRAP::INTERNAL::WindowingAPI::WindowCloseFunc TRAP::INTERNAL::WindowingAPI::GetW
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowCloseCallback(): Window is nullptr!");
 
 	return window->Callbacks.Close;
 }
@@ -1472,7 +1472,7 @@ TRAP::INTERNAL::WindowingAPI::WindowFocusFunc TRAP::INTERNAL::WindowingAPI::GetW
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowFocusCallback(): Window is nullptr!");
 
 	return window->Callbacks.Focus;
 }
@@ -1484,7 +1484,7 @@ TRAP::INTERNAL::WindowingAPI::FrameBufferSizeFunc TRAP::INTERNAL::WindowingAPI::
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetFrameBufferSizeCallback(): Window is nullptr!");
 
 	return window->Callbacks.FBSize;
 }
@@ -1496,7 +1496,7 @@ TRAP::INTERNAL::WindowingAPI::WindowContentScaleFunc TRAP::INTERNAL::WindowingAP
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetWindowContentScaleCallback(): Window is nullptr!");
 
 	return window->Callbacks.Scale;
 }
@@ -1508,7 +1508,7 @@ TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::WindowingAPI::GetKeyCallba
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetKeyCallback(): Window is nullptr!");
 
 	return window->Callbacks.Key;
 }
@@ -1520,7 +1520,7 @@ TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::WindowingAPI::GetCharCall
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetCharCallback(): Window is nullptr!");
 
 	return window->Callbacks.Character;
 }
@@ -1532,7 +1532,7 @@ TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::WindowingAPI::GetM
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetMouseButtonCallback(): Window is nullptr!");
 
 	return window->Callbacks.MouseButton;
 }
@@ -1544,7 +1544,7 @@ TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::G
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetCursorPosCallback(): Window is nullptr!");
 
 	return window->Callbacks.CursorPos;
 }
@@ -1556,7 +1556,7 @@ TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetC
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetCursorEnterCallback(): Window is nullptr!");
 
 	return window->Callbacks.CursorEnter;
 }
@@ -1568,7 +1568,7 @@ TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::WindowingAPI::GetScroll
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetScrollCallback(): Window is nullptr!");
 
 	return window->Callbacks.Scroll;
 }
@@ -1580,7 +1580,7 @@ TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCall
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::GetDropCallback(): Window is nullptr!");
 
 	return window->Callbacks.Drop;
 }
@@ -1593,7 +1593,7 @@ void TRAP::INTERNAL::WindowingAPI::PollEvents()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::PollEvents() must only be called from main thread");
+	            "WindowingAPI::PollEvents(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -1616,8 +1616,8 @@ void TRAP::INTERNAL::WindowingAPI::WaitEvents(const double timeout)
 		return;
 	}
 
-	TRAP_ASSERT(timeout >= 0.0, "[Window] Timeout must be positive");
-	TRAP_ASSERT(timeout <= std::numeric_limits<double>::max());
+	TRAP_ASSERT(timeout >= 0.0, "WindowingAPI::WaitEvents(): Timeout must be positive");
+	TRAP_ASSERT(timeout <= std::numeric_limits<double>::max(), "WindowingAPI::WaitEvents(): Timeout must be less than or equal to DBL_MAX");
 
 	if(timeout < 0.0 || timeout > std::numeric_limits<double>::max())
 	{
@@ -1651,8 +1651,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* const window, c
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursorMode() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetCursorMode(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetCursorMode(): Window is nullptr!");
 
 	if (window->cursorMode == mode)
 		return;
@@ -1671,8 +1671,8 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetCursorMode() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetCursorMode(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetCursorMode(): Window is nullptr!");
 
 	return window->cursorMode;
 }
@@ -1685,7 +1685,7 @@ bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursorMode() must only be called from main thread");
+	            "WindowingAPI::RawMouseMotionSupported(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -1703,7 +1703,7 @@ void TRAP::INTERNAL::WindowingAPI::SetRawMouseMotionMode(InternalWindow* const w
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetRawMouseMotionMode() must only be called from main thread");
+	            "WindowingAPI::SetRawMouseMotionMode(): must only be called from main thread");
 
 	if (!PlatformRawMouseMotionSupported())
 	{
@@ -1726,8 +1726,8 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* c
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursorMode() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetRawMouseMotionMode(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetRawMouseMotionMode(): Window is nullptr!");
 
 	return window->RawMouseMotion;
 }
@@ -1739,10 +1739,10 @@ void TRAP::INTERNAL::WindowingAPI::SetProgress(const InternalWindow* const windo
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::SetProgress(): Window is nullptr!");
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetProgress() must only be called from main thread");
-	TRAP_ASSERT(progress <= 100, "[Window] Progress must be between 0 and 100");
+	            "WindowingAPI::SetProgress(): must only be called from main thread");
+	TRAP_ASSERT(progress <= 100, "WindowingAPI::SetProgress(): Progress must be between 0 and 100");
 
 	PlatformSetProgress(window, state, progress);
 }
@@ -1755,7 +1755,7 @@ const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetKeyName() must only be called from main thread");
+	            "WindowingAPI::GetKeyName(): must only be called from main thread");
 
 	if(!s_Data.Initialized)
 	{
@@ -1784,8 +1784,8 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetKey(const InternalWindow*
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetKey() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetKey(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetKey(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1810,8 +1810,8 @@ TRAP::Input::KeyState TRAP::INTERNAL::WindowingAPI::GetMouseButton(const Interna
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetMouseButton() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetMouseButton(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetMouseButton(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1830,8 +1830,8 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* const window, co
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetCursorPos() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetCursorPos(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetCursorPos(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1869,8 +1869,8 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* const wind
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetCursorPos() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::GetCursorPos(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::GetCursorPos(): Window is nullptr!");
 
 	xPos = 0.0;
 	yPos = 0.0;
@@ -1898,8 +1898,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const InternalMonitor* const mo
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetMonitorPos() must only be called from main thread");
-	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
+	            "WindowingAPI::GetMonitorPos(): must only be called from main thread");
+	TRAP_ASSERT(monitor, "WindowingAPI::GetMonitorPos(): Monitor is nullptr!");
 
 	xPos = 0;
 	yPos = 0;
@@ -1921,8 +1921,8 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* con
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetMonitorWorkArea() must only be called from main thread");
-	TRAP_ASSERT(monitor, "[Window] Monitor is nullptr!");
+	            "WindowingAPI::GetMonitorWorkArea(): must only be called from main thread");
+	TRAP_ASSERT(monitor, "WindowingAPI::GetMonitorWorkArea(): Monitor is nullptr!");
 
 	xPos = 0;
 	yPos = 0;
@@ -1946,8 +1946,8 @@ void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* const window)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::ShowWindow() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::ShowWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::ShowWindow(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1972,8 +1972,8 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* const windo
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::FocusWindow() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::FocusWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::FocusWindow(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -1992,8 +1992,8 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* const wi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::MaximizeWindow() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::MaximizeWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::MaximizeWindow(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2015,8 +2015,8 @@ void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* const wi
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::MinimizeWindow() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::MinimizeWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::MinimizeWindow(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2035,8 +2035,8 @@ void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::RequestWindowAttention() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::RequestWindowAttention(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::RequestWindowAttention(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2055,8 +2055,8 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::HideWindow() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::HideWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::HideWindow(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2077,8 +2077,8 @@ void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* const window)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::RestoreWindow() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::RestoreWindow(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::RestoreWindow(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2100,8 +2100,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* const win
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowSizeLimits() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	            "WindowingAPI::SetWindowSizeLimits(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowSizeLimits(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2141,9 +2141,9 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAspectRatio(InternalWindow* window, 
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetWindowAspectRatio() must only be called from main thread");
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
-	TRAP_ASSERT(numerator > 0 && denominator > 0, "[Window] Invalid window aspect ratio!");
+	            "WindowingAPI::SetWindowAspectRatio(): must only be called from main thread");
+	TRAP_ASSERT(window, "WindowingAPI::SetWindowAspectRatio(): Window is nullptr!");
+	TRAP_ASSERT(numerator > 0 && denominator > 0, "WindowingAPI::SetWindowAspectRatio(): Invalid window aspect ratio!");
 
 	if(numerator != -1 && denominator != -1)
 	{
@@ -2172,7 +2172,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::SetClipboardString() must only be called from main thread");
+	            "WindowingAPI::SetClipboardString(): must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -2190,7 +2190,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
 	TRAP_ASSERT(std::this_thread::get_id() == TRAP::Application::GetMainThreadID(),
-	            "WindowingAPI::GetClipboardString() must only be called from main thread");
+	            "WindowingAPI::GetClipboardString(): must only be called from main thread");
 	if(!s_Data.Initialized)
 	{
 		InputError(Error::Not_Initialized, "[Window] WindowingAPI is not initialized!");
@@ -2248,8 +2248,8 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(instance, "[Vulkan] Instance is nullptr!");
-	TRAP_ASSERT(window, " Window is nullptr!");
+	TRAP_ASSERT(instance, "WindowingAPI::CreateWindowSurface(): Instance is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::CreateWindowSurface(): Window is nullptr!");
 
 	if(!s_Data.Initialized)
 	{
@@ -2392,11 +2392,11 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* const window, 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xPos > -std::numeric_limits<float>::max());
-	TRAP_ASSERT(xPos <  std::numeric_limits<float>::max());
-	TRAP_ASSERT(yPos > -std::numeric_limits<float>::max());
-	TRAP_ASSERT(yPos <  std::numeric_limits<float>::max());
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputCursorPos(): Window is nullptr!");
+	TRAP_ASSERT(xPos > -std::numeric_limits<float>::max(), "WindowingAPI::InputCursorPos(): xPos is NaN!");
+	TRAP_ASSERT(xPos <  std::numeric_limits<float>::max(), "WindowingAPI::InputCursorPos(): xPos is NaN!");
+	TRAP_ASSERT(yPos > -std::numeric_limits<float>::max(), "WindowingAPI::InputCursorPos(): yPos is NaN!");
+	TRAP_ASSERT(yPos <  std::numeric_limits<float>::max(), "WindowingAPI::InputCursorPos(): yPos is NaN!");
 
 	if (Math::Abs(window->VirtualCursorPosX - xPos) < Math::Epsilon<double>() &&
 		Math::Abs(window->VirtualCursorPosY - yPos) < Math::Epsilon<double>())
@@ -2417,9 +2417,9 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* const window, Input:
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(key != Input::Key::Unknown);
-	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputKey(): Window is nullptr!");
+	TRAP_ASSERT(key != Input::Key::Unknown, "WindowingAPI::InputKey(): Key is unknown!");
+	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released, "WindowingAPI::InputKey(): KeyState is invalid!");
 
 	if(key != Input::Key::Unknown)
 	{
@@ -2449,7 +2449,7 @@ void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* const window,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputChar(): Window is nullptr!");
 
 	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
 		return;
@@ -2466,9 +2466,9 @@ void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* const window,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(static_cast<int32_t>(button) >= 0);
-	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputMouseClick(): Window is nullptr!");
+	TRAP_ASSERT(static_cast<int32_t>(button) >= 0, "WindowingAPI::InputMouseClick(): Button is invalid!");
+	TRAP_ASSERT(state == Input::KeyState::Pressed || state == Input::KeyState::Released, "WindowingAPI::InputMouseClick(): KeyState is invalid!");
 
 	if(static_cast<int32_t>(button) < 0 || button > Input::MouseButton::Eight)
 		return;
@@ -2487,11 +2487,11 @@ void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* const windo
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(xOffset > -std::numeric_limits<float>::max());
-	TRAP_ASSERT(xOffset <  std::numeric_limits<float>::max());
-	TRAP_ASSERT(yOffset > -std::numeric_limits<float>::max());
-	TRAP_ASSERT(yOffset <  std::numeric_limits<float>::max());
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputScroll(): Window is nullptr!");
+	TRAP_ASSERT(xOffset > -std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): xOffset is NaN!");
+	TRAP_ASSERT(xOffset <  std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): xOffset is NaN!");
+	TRAP_ASSERT(yOffset > -std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): yOffset is NaN!");
+	TRAP_ASSERT(yOffset <  std::numeric_limits<float>::max(), "WindowingAPI::InputScroll(): yOffset is NaN!");
 
 	if (window->Callbacks.Scroll)
 		window->Callbacks.Scroll(window, xOffset, yOffset);
@@ -2504,7 +2504,7 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(const InternalWindow* const 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputCursorEnter(): Window is nullptr!");
 
 	if (window->Callbacks.CursorEnter)
 		window->Callbacks.CursorEnter(window, entered);
@@ -2519,9 +2519,9 @@ void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* co
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(width >= 0);
-	TRAP_ASSERT(height >= 0);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputFrameBufferSize(): Window is nullptr!");
+	TRAP_ASSERT(width >= 0, "WindowingAPI::InputFrameBufferSize(): Width is invalid!");
+	TRAP_ASSERT(height >= 0, "WindowingAPI::InputFrameBufferSize(): Height is invalid!");
 
 	if (window->Callbacks.FBSize)
 		window->Callbacks.FBSize(window, width, height);
@@ -2536,9 +2536,9 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* const w
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
-	TRAP_ASSERT(width >= 0);
-	TRAP_ASSERT(height >= 0);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowSize(): Window is nullptr!");
+	TRAP_ASSERT(width >= 0, "WindowingAPI::InputWindowSize(): Width is invalid!");
+	TRAP_ASSERT(height >= 0, "WindowingAPI::InputWindowSize(): Height is invalid!");
 
 	if (window->Callbacks.Size)
 		window->Callbacks.Size(window, width, height);
@@ -2551,7 +2551,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* con
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowMinimize(): Window is nullptr!");
 
 	if (window->Callbacks.Minimize)
 		window->Callbacks.Minimize(window, !restored);
@@ -2563,6 +2563,8 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* con
 void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* const window, const bool restored)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowMaximize(): Window is nullptr!");
 
 	if (window->Callbacks.Maximize)
 		window->Callbacks.Maximize(window, !restored);
@@ -2576,7 +2578,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* const wi
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowPos(): Window is nullptr!");
 
 	if (window->Callbacks.Pos)
 		window->Callbacks.Pos(window, x, y);
@@ -2589,7 +2591,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* const
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowCloseRequest(): Window is nullptr!");
 
 	window->ShouldClose = true;
 
@@ -2604,7 +2606,7 @@ void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* const window,
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputDrop(): Window is nullptr!");
 
 	if (window->Callbacks.Drop)
 		window->Callbacks.Drop(window, paths);
@@ -2617,7 +2619,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* const window
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window != nullptr);
+	TRAP_ASSERT(window != nullptr, "WindowingAPI::InputWindowFocus(): Window is nullptr!");
 
 	if (window->Callbacks.Focus)
 		window->Callbacks.Focus(window, focused);
@@ -2857,7 +2859,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(monitor != nullptr);
+	TRAP_ASSERT(monitor != nullptr, "WindowingAPI::InputMonitor(): Monitor is nullptr!");
 
 	if (connected)
 	{
@@ -2921,7 +2923,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* const w
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::HideWindowFromTaskbar(): Window is nullptr!");
 
 	PlatformHideWindowFromTaskbar(window);
 }
@@ -2932,7 +2934,7 @@ void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* const window, 
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(window, "[Window] Window is nullptr!");
+	TRAP_ASSERT(window, "WindowingAPI::SetDragAndDrop(): Window is nullptr!");
 
 	PlatformSetDragAndDrop(window, value);
 }

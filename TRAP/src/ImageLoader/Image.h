@@ -328,12 +328,12 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid color format!");
+		TRAP_ASSERT(false, "Image::FlipX(): Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)
 	{
-		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::FlipX(): Raw pixel data is nullptr!");
 		return std::vector<T>();
 	}
 
@@ -371,12 +371,12 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid color format!");
+		TRAP_ASSERT(false, "Image::FlipY(): Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)
 	{
-		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::FlipY(): Raw pixel data is nullptr!");
 		return std::vector<T>();
 	}
 
@@ -414,12 +414,12 @@ std::vector<T> TRAP::Image::ConvertRGBToRGBA(const uint32_t width, const uint32_
 
 	if(format != ColorFormat::RGB)
 	{
-		TRAP_ASSERT(false, "Invalid color format!");
+		TRAP_ASSERT(false, "Image::ConvertRGBToRGBA(): Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)
 	{
-		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::ConvertRGBToRGBA(): Raw pixel data is nullptr!");
 		return std::vector<T>();
 	}
 
@@ -457,12 +457,12 @@ std::vector<T> TRAP::Image::ConvertRGBAToRGB(const uint32_t width, const uint32_
 
 	if(format != ColorFormat::RGBA)
 	{
-		TRAP_ASSERT(false, "Invalid color format!");
+		TRAP_ASSERT(false, "Image::ConvertRGBAToRGB(): Invalid color format!");
 		return std::vector<T>();
 	}
 	if(!data)
 	{
-		TRAP_ASSERT(false, "Raw pixel data is nullptr!");
+		TRAP_ASSERT(false, "Image::ConvertRGBAToRGB(): Raw pixel data is nullptr!");
 		return std::vector<T>();
 	}
 

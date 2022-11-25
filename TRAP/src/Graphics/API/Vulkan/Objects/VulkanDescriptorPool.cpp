@@ -37,7 +37,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	m_numDescriptorSets = numDescriptorSets;
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanDescriptorPool(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Creating DescriptorPool");
@@ -63,7 +63,7 @@ TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(!m_descriptorPools.empty());
+	TRAP_ASSERT(!m_descriptorPools.empty(), "~VulkanDescriptorPool(): No DescriptorPools to destroy");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
@@ -147,12 +147,12 @@ TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptor
 	{
 		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "nullptr Descriptor Set Layout for update frequency ",
 		         updateFreq, ". Cannot allocate descriptor set");
-		TRAP_ASSERT(false, "nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
+		TRAP_ASSERT(false, "VulkanDescriptorPool::RetrieveDescriptorSet(): nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
 	}
 
 	if(dynamicOffsetCount)
 	{
-		TRAP_ASSERT(dynamicOffsetCount == 1);
+		TRAP_ASSERT(dynamicOffsetCount == 1, "VulkanDescriptorPool::RetrieveDescriptorSet(): Only 1 dynamic descriptor per set is supported");
 	}
 
 	return TRAP::MakeScope<VulkanDescriptorSet>(m_device, handles, rootSignature, updateData, maxSets,
@@ -193,7 +193,7 @@ VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorS
 		res = vkAllocateDescriptorSets(m_device->GetVkDevice(), &info, &descriptorSet);
 	}
 
-	TRAP_ASSERT(res == VK_SUCCESS);
+	TRAP_ASSERT(res == VK_SUCCESS, "VulkanDescriptorPool::RetrieveVkDescriptorSet(): Failed to allocate Descriptor Set");
 
 	m_usedDescriptorSetCount++;
 

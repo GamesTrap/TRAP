@@ -16,7 +16,7 @@ TRAP::Ref<TRAP::Graphics::Semaphore> TRAP::Graphics::Semaphore::Create()
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Semaphore::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

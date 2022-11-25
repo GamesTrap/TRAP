@@ -30,8 +30,8 @@ TRAP::Graphics::API::VulkanCommandSignature::VulkanCommandSignature(const Render
 			break;
 
 		default:
-			TRAP_ASSERT(false, "Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
-			         "at this point!");
+			TRAP_ASSERT(false, "VulkanCommandSignature(): Vulkan runtime only supports IndirectDraw, IndirectDrawIndex and IndirectDispatch "
+			                   "at this point!");
 			break;
 		}
 	}

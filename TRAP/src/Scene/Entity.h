@@ -41,7 +41,7 @@ namespace TRAP
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-			TRAP_ASSERT(!HasComponent<T>(), "Entity already has component!");
+			TRAP_ASSERT(!HasComponent<T>(), "Entity::AddComponent(): Entity already has component!");
 			T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
 			return component;
 		}
@@ -60,7 +60,7 @@ namespace TRAP
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			TRAP_ASSERT(HasComponent<T>(), "Entity::GetComponent(): Entity does not have component!");
 
 			return m_scene->m_registry.get<T>(m_entityHandle);
 		}
@@ -80,7 +80,7 @@ namespace TRAP
 		{
 			ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-			TRAP_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			TRAP_ASSERT(HasComponent<T>(), "Entity::RemoveComponent(): Entity does not have component!");
 
 			m_scene->m_registry.remove<T>(m_entityHandle);
 		}

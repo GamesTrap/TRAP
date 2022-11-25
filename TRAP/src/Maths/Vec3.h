@@ -359,7 +359,7 @@ constexpr int TRAP::Math::Vec<3, T>::Length()
 template<typename T>
 constexpr T& TRAP::Math::Vec<3, T>::operator[](const int i)
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::Vec<3, T>::operator[]: Index out of range!");
 
 	switch (i)
 	{
@@ -379,7 +379,7 @@ constexpr T& TRAP::Math::Vec<3, T>::operator[](const int i)
 template<typename T>
 constexpr const T& TRAP::Math::Vec<3, T>::operator[](const int i) const
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::Vec<3, T>::operator[]: Index out of range!");
 
 	switch (i)
 	{

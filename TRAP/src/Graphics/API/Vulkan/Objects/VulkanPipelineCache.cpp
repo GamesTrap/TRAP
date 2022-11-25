@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device);
+	TRAP_ASSERT(m_device, "VulkanPipelineCache(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_cache);
+	TRAP_ASSERT(m_cache, "~VulkanPipelineCache(): PipelineCache is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Destroying PipelineCache");
@@ -44,7 +44,7 @@ void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t*
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device);
+	TRAP_ASSERT(m_device, "VulkanPipelineCache::GetPipelineCacheData(): Vulkan Device is nullptr");
 
 	if(m_cache)
 		VkCall(vkGetPipelineCacheData(m_device->GetVkDevice(), m_cache, size, data));

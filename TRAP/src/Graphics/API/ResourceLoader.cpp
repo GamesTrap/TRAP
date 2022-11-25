@@ -32,7 +32,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(loader);
+	TRAP_ASSERT(loader, "ResourceLoader::StreamerThreadFunc(): ResourceLoader is nullptr!");
 
 #ifdef TRACY_ENABLE
 	//Set Thread name for profiler
@@ -156,11 +156,11 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* con
 
 			if(updateState.WaitIndex && completed)
 			{
-				TRAP_ASSERT(maxToken < updateState.WaitIndex);
+				TRAP_ASSERT(maxToken < updateState.WaitIndex, "ResourceLoader::StreamerThreadFunc(): Max sync token is smaller than current sync token!");
 				maxToken = updateState.WaitIndex;
 			}
 
-			TRAP_ASSERT(result != UploadFunctionResult::StagingBufferFull);
+			TRAP_ASSERT(result != UploadFunctionResult::StagingBufferFull, "ResourceLoader::StreamerThreadFunc() Staging buffer is full!");
 		}
 
 		if(completionMask != 0)
@@ -362,7 +362,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 	const uint64_t stagingBufferSize = m_copyEngine.BufferSize;
 	const bool update = desc.Data || desc.ForceReset;
 
-	TRAP_ASSERT(stagingBufferSize > 0);
+	TRAP_ASSERT(stagingBufferSize > 0, "ResourceLoader::AddResource(): Staging buffer size is 0!");
 	if(desc.Desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::GPUOnly &&
 	   !static_cast<uint32_t>(desc.Desc.StartState) && !update)
 	{
@@ -398,7 +398,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 					std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), chunkSize, static_cast<uint8_t>(0u));
 				else
 				{
-					TRAP_ASSERT(data);
+					TRAP_ASSERT(data, "ResourceLoader::AddResource(): Data is nullptr!");
 					std::copy_n(static_cast<const uint8_t*>(data) + offset, chunkSize, static_cast<uint8_t*>(updateDesc.MappedData));
 				}
 				EndUpdateResource(updateDesc, token);
@@ -413,7 +413,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::BufferLoadDes
 				std::fill_n(static_cast<uint8_t*>(updateDesc.MappedData), desc.Desc.Size, static_cast<uint8_t>(0u));
 			else
 			{
-				TRAP_ASSERT(!desc.Desc.Size || desc.Data);
+				TRAP_ASSERT(!desc.Desc.Size || desc.Data, "ResourceLoader::AddResource(): Data is nullptr!");
 				if(desc.Data)
 					std::copy_n(static_cast<const uint8_t*>(desc.Data), desc.Desc.Size, static_cast<uint8_t*>(updateDesc.MappedData));
 			}
@@ -438,12 +438,12 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(textureDesc.Texture);
+	TRAP_ASSERT(textureDesc.Texture, "ResourceLoader::AddResource(): Texture is nullptr!");
 
 	if(textureDesc.Filepaths[0].empty() && !textureDesc.Images[0] && textureDesc.Desc)
 	{
-		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState));
-		TRAP_ASSERT(textureDesc.Texture != nullptr, "Texture must be constructed before loading");
+		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState), "ResourceLoader::AddResource(): Texture start state is undefined!");
+		TRAP_ASSERT(textureDesc.Texture != nullptr, "ResourceLoader::AddResource(): Texture must be constructed before loading");
 
 		//If texture is supposed to be filled later (UAV / Update later / ...) proceed with the StartState provided
 		//by the user in the texture description
@@ -472,10 +472,10 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Buffe
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	const TRAP::Ref<Buffer>& buffer = desc.Buffer;
-	TRAP_ASSERT(buffer);
+	TRAP_ASSERT(buffer, "ResourceLoader::BeginUpdateResource(): Buffer is nullptr!");
 
 	const uint64_t size = desc.Size > 0 ? desc.Size : (desc.Buffer->GetSize() - desc.DstOffset);
-	TRAP_ASSERT(desc.DstOffset + size <= buffer->GetSize());
+	TRAP_ASSERT(desc.DstOffset + size <= buffer->GetSize(), "ResourceLoader::BeginUpdateResource(): Update size is larger than buffer size!");
 
 	const RendererAPI::ResourceMemoryUsage memoryUsage = desc.Buffer->GetMemoryUsage();
 	if(memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly)
@@ -513,7 +513,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	const bool success = UtilGetSurfaceInfo(MIP_REDUCE(texture->GetWidth(), desc.MipLevel),
 	                                        MIP_REDUCE(texture->GetHeight(), desc.MipLevel),
 	                                        fmt, &desc.SrcSliceStride, &desc.SrcRowStride, &desc.RowCount);
-	TRAP_ASSERT(success);
+	TRAP_ASSERT(success, "ResourceLoader::BeginUpdateResource(): Failed to retrieve texture surface info!");
 
 	const uint64_t rowAlignment = UtilGetTextureRowAlignment();
 	desc.DstRowStride = ((desc.SrcRowStride + rowAlignment - 1) / rowAlignment) * rowAlignment;
@@ -729,7 +729,7 @@ void TRAP::Graphics::API::ResourceLoader::QueueTextureUpdate(const TextureUpdate
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(textureUpdate.Range.Buffer);
+	TRAP_ASSERT(textureUpdate.Range.Buffer, "ResourceLoader::QueueTextureUpdate(): Texture update buffer is nullptr!");
 
 	SyncToken t{};
 	{
@@ -819,7 +819,7 @@ TRAP::Graphics::RendererAPI::MappedMemoryRange TRAP::Graphics::API::ResourceLoad
 	if(memoryAvailable && resSet.Buffer->GetCPUMappedAddress())
 	{
 		const TRAP::Ref<Buffer> buffer = resSet.Buffer;
-		TRAP_ASSERT(buffer->GetCPUMappedAddress());
+		TRAP_ASSERT(buffer->GetCPUMappedAddress(), "ResourceLoader::AllocateStagingMemory(): CPU mapped address of buffer is nullptr!");
 		uint8_t* const dstData = static_cast<uint8_t*>(buffer->GetCPUMappedAddress()) + offset;
 		m_copyEngine.ResourceSets[m_nextSet].AllocatedSpace = offset + memoryRequirement;
 		return { dstData, std::move(buffer), offset, memoryRequirement };
@@ -922,7 +922,7 @@ void TRAP::Graphics::API::ResourceLoader::WaitCopyEngineSet(const std::size_t ac
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(!m_copyEngine.IsRecording);
+	TRAP_ASSERT(!m_copyEngine.IsRecording, "ResourceLoader::WaitCopyEngineSet(): Copy Engine is still recording!");
 	const CopyEngine::CopyResourceSet& resSet = m_copyEngine.ResourceSets[activeSet];
 
 	if (resSet.Fence->GetStatus() == RendererAPI::FenceStatus::Incomplete)
@@ -935,7 +935,7 @@ void TRAP::Graphics::API::ResourceLoader::ResetCopyEngineSet(const std::size_t a
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(!m_copyEngine.IsRecording);
+	TRAP_ASSERT(!m_copyEngine.IsRecording, "ResourceLoader::ResetCopyEngineSet(): Copy Engine is still recording!");
 	m_copyEngine.ResourceSets[activeSet].AllocatedSpace = 0;
 	m_copyEngine.IsRecording = false;
 
@@ -1076,7 +1076,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	const TRAP::Ref<Buffer>& buffer = bufferUpdateDesc.Buffer;
 	TRAP_ASSERT(buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly ||
-		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU);
+		        buffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUToCPU, "ResourceLoader::UpdateBuffer(): Buffer must have memory usage GPUOnly or GPUToCPU!");
 
 	const CommandBuffer* const cmd = AcquireCmd(activeSet);
 

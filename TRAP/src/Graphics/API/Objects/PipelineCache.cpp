@@ -39,7 +39,7 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "PipelineCache::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }
@@ -72,7 +72,7 @@ TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(c
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "PipelineCache::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

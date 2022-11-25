@@ -19,7 +19,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanRenderPass(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Creating RenderPass");
@@ -37,12 +37,12 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	//Fill out attachment descriptions and references
 	{
 		attachments.resize(colorAttachmentCount + depthAttachmentCount);
-		TRAP_ASSERT(!attachments.empty());
+		TRAP_ASSERT(!attachments.empty(), "VulkanRenderPass(): No color or depth attachments");
 
 		if(colorAttachmentCount > 0)
 		{
 			colorAttachmentRefs.resize(colorAttachmentCount);
-			TRAP_ASSERT(!colorAttachmentRefs.empty());
+			TRAP_ASSERT(!colorAttachmentRefs.empty(), "VulkanRenderPass(): No color attachments");
 		}
 		if(depthAttachmentCount > 0)
 			depthStencilAttachmentRefs.resize(1);
@@ -109,7 +109,7 @@ TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_renderPass);
+	TRAP_ASSERT(m_renderPass, "~VulkanRenderPass(): Vulkan RenderPass is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");

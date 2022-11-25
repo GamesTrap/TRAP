@@ -11,7 +11,7 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursiv
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!m_name.empty(), "Name can not be empty!");
+    TRAP_ASSERT(!m_name.empty(), "FileWatcher(): Name can not be empty!");
 
     if(m_name.empty())
     {
@@ -56,7 +56,7 @@ void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
     //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!path.empty(), "Path can not be empty!");
+    TRAP_ASSERT(!path.empty(), "FileWatcher::AddFolder(): Path can not be empty!");
 
     if(path.empty())
     {
@@ -85,7 +85,7 @@ void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem
     //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!paths.empty(), "Paths can not be empty!");
+    TRAP_ASSERT(!paths.empty(), "FileWatcher::AddFolders(): Paths can not be empty!");
 
     if(paths.empty())
     {
@@ -117,7 +117,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
     //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!path.empty(), "Path can not be empty!");
+    TRAP_ASSERT(!path.empty(), "FileWatcher::RemoveFolder(): Path can not be empty!");
 
     if(path.empty())
     {
@@ -147,7 +147,7 @@ void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesys
     //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    TRAP_ASSERT(!paths.empty(), "Paths can not be empty!");
+    TRAP_ASSERT(!paths.empty(), "FileWatcher::RemoveFolders(): Paths can not be empty!");
 
     if(paths.empty())
     {

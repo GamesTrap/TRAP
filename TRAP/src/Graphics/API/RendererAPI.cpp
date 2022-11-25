@@ -87,13 +87,13 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 
 	//Anti aliasing setup
 
-	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= antiAliasingSamples, "Sample count is higher than max supported by GPU");
+	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= antiAliasingSamples, "RendererAPI::Init(): Sample count is higher than max supported by GPU");
 
 	if(antiAliasing == AntiAliasing::MSAA && antiAliasingSamples > GPUSettings.MaxMSAASampleCount)
 		antiAliasingSamples = GPUSettings.MaxMSAASampleCount;
 	else if(antiAliasing != AntiAliasing::Off && antiAliasingSamples == SampleCount::One)
 	{
-		TRAP_ASSERT(false, "Sample count must be greater than one when anti aliasing is enabled");
+		TRAP_ASSERT(false, "RendererAPI::Init(): Sample count must be greater than one when anti aliasing is enabled");
 	}
 	else if(antiAliasing == AntiAliasing::Off)
 		antiAliasingSamples = SampleCount::One;
@@ -130,7 +130,7 @@ TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 #ifdef TRAP_HEADLESS_MODE
-	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
+	TRAP_ASSERT(s_RenderAPI != RenderAPI::NONE , "RendererAPI::GetRenderer(): RendererAPI is not available because RenderAPI::NONE is set (or EnableGPU=False)!");
 #endif
 
 	return s_Renderer.get();
@@ -327,7 +327,7 @@ void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> textur
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute ||
-	            queueType == QueueType::Transfer, "Invalid queue type provided!");
+	            queueType == QueueType::Transfer, "RendererAPI::Transition(): Invalid queue type provided!");
 
 	TRAP::Ref<TRAP::Graphics::Queue> queue = nullptr;
 	if(queueType == QueueType::Graphics)
@@ -388,13 +388,13 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= sampleCount, "Sample count is higher than max supported by GPU");
+	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= sampleCount, "RendererAPI::SetAntiAliasing(): Sample count is higher than max supported by GPU");
 
 	if(antiAliasing == AntiAliasing::MSAA && sampleCount > GPUSettings.MaxMSAASampleCount)
 		sampleCount = GPUSettings.MaxMSAASampleCount;
 	else if(antiAliasing != AntiAliasing::Off && sampleCount == SampleCount::One)
 	{
-		TRAP_ASSERT(false, "Sample count must be greater than one when anti aliasing is enabled");
+		TRAP_ASSERT(false, "RendererAPI::SetAntiAliasing(): Sample count must be greater than one when anti aliasing is enabled");
 	}
 	else if(antiAliasing == AntiAliasing::Off)
 		sampleCount = SampleCount::One;
@@ -596,7 +596,7 @@ uint32_t TRAP::Graphics::RendererAPI::GetCurrentImageIndex(const TRAP::Window* c
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "RendererAPI::GetCurrentImageIndex(): Window is nullptr!");
 
 	return s_perWindowDataMap.at(window)->ImageIndex;
 }

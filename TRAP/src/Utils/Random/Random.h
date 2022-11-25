@@ -341,7 +341,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
+            TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomStatic::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
 
@@ -357,7 +357,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            TRAP_ASSERT(0u != init_list.size());
+            TRAP_ASSERT(0u != init_list.size(), "BasicRandomStatic::Get(): Empty initializer_list!"); //Empty initializer_list
             return *Get(init_list.begin(), init_list.end());
         }
 
@@ -801,7 +801,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
+            TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomThreadLocal::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
 
@@ -815,7 +815,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            TRAP_ASSERT(0u != init_list.size());
+            TRAP_ASSERT(0u != init_list.size(), "BasicRandomThreadLocal::Get(): Empty initializer_list!"); //Empty initializer_list
             return *Get(init_list.begin(), init_list.end());
         }
 
@@ -1234,7 +1234,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
+            TRAP_ASSERT(0 <= probability && 1 >= probability, "BasicRandomLocal::Get(): Out of range!"); //Out of [0; 1] range
             return BoolDist{ probability }(m_engine);
         }
 
@@ -1248,7 +1248,7 @@ namespace TRAP::Utils
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-            TRAP_ASSERT(0u != init_list.size());
+            TRAP_ASSERT(0u != init_list.size(), "BasicRandomLocal::Get(): Empty initializer_list!"); //Empty initializer_list
             return *Get(init_list.begin(), init_list.end());
         }
 

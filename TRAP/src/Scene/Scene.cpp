@@ -37,7 +37,7 @@ static b2BodyType TRAPRigidbody2DTypeToBox2DBody(TRAP::Rigidbody2DComponent::Bod
 		return b2_kinematicBody;
 
 	default:
-		TRAP_ASSERT(false, "Unknown body type!");
+		TRAP_ASSERT(false, "TRAPRigidbody2DTypeToBox2DBody(): Unknown body type!");
 		return b2_staticBody;
 	}
 }

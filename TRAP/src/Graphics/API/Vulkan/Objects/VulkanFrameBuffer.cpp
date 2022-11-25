@@ -17,7 +17,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanFrameBuffer(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");
@@ -47,7 +47,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	}
 	else
 	{
-		TRAP_ASSERT(false, "No color or depth attachments");
+		TRAP_ASSERT(false, "VulkanFrameBuffer(): No color or depth attachments");
 	}
 
 	if (colorAttachmentCount && desc.RenderTargets[0]->GetDepth() > 1)
@@ -128,7 +128,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_framebuffer);
+	TRAP_ASSERT(m_framebuffer, "~VulkanFrameBuffer(): Vulkan FrameBuffer is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Destroying FrameBuffer");

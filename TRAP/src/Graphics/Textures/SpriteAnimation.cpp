@@ -7,8 +7,8 @@ TRAP::Ref<TRAP::Graphics::SpriteAnimation> TRAP::Graphics::SpriteAnimation::Crea
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(speed >= 0.0f, "Speed must be positive!");
-	TRAP_ASSERT(!sprites.empty(), "Missing sprites!");
+	TRAP_ASSERT(speed >= 0.0f, "SpriteAnimation::Create(): Speed must be positive!");
+	TRAP_ASSERT(!sprites.empty(), "SpriteAnimation::Create(): Missing sprites!");
 
 	if (sprites.empty())
 	{

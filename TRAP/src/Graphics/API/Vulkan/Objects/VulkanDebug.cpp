@@ -11,7 +11,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_instance, "instance is nullptr");
+	TRAP_ASSERT(m_instance, "VulkanDebug(): Instance is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
@@ -47,11 +47,11 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 #endif
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	TRAP_ASSERT(m_debugUtils);
+	TRAP_ASSERT(m_debugUtils, "~VulkanDebug(): Debug Utils Messenger is nullptr");
 	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
 	m_debugUtils = nullptr;
 #else
-	TRAP_ASSERT(m_debugReport);
+	TRAP_ASSERT(m_debugReport, "~VulkanDebug(): Debug Report Messenger is nullptr");
 	vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
 	m_debugReport = nullptr;
 #endif

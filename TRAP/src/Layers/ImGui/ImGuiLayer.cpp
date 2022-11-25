@@ -372,8 +372,8 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const TRAP::Graphics
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
-	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
+	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
+	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
@@ -392,8 +392,8 @@ void ImGui::Image(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& size, 
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
-	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
+	TRAP_ASSERT(image != nullptr, "ImGui::Image(): Image is nullptr!");
+	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::Image(): Image is not a Texture2D!");
 
 	if (TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{
@@ -412,8 +412,8 @@ bool ImGui::ImageButton(TRAP::Ref<TRAP::Graphics::Texture> image, const ImVec2& 
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 
-	TRAP_ASSERT(image != nullptr, "Image is nullptr!");
-	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "Image is not a Texture2D!");
+	TRAP_ASSERT(image != nullptr, "ImGui::ImageButton(): Image is nullptr!");
+	TRAP_ASSERT(image->GetType() == TRAP::Graphics::TextureType::Texture2D, "ImGui::ImageButton(): Image is not a Texture2D!");
 
 	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 	{

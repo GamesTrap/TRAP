@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_device, "VulkanRootSignature(): Vulkan Device is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Creating RootSignature");
@@ -43,7 +43,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 	for(std::size_t i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
-		TRAP_ASSERT(desc.StaticSamplers[i]);
+		TRAP_ASSERT(desc.StaticSamplers[i], "VulkanRootSignature(): Static Sampler is nullptr");
 		staticSamplerMap.insert({ {desc.StaticSamplerNames[i],
 		                           std::dynamic_pointer_cast<VulkanSampler>(desc.StaticSamplers[i])} });
 	}
@@ -86,7 +86,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				}
 				else
 				{
-					TRAP_ASSERT(res.Type == resIt->Type);
+					TRAP_ASSERT(res.Type == resIt->Type, "VulkanRootSignature(): Resource Type mismatch");
 					if(res.Type != resIt->Type)
 					{
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
@@ -177,7 +177,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				}
 				else
 				{
-					TRAP_ASSERT(false, "Descriptor (" + descInfo.Name +
+					TRAP_ASSERT(false, "VulkanRootSignature(): Descriptor (" + descInfo.Name +
 					            "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
 					TP_WARN("Descriptor (", descInfo.Name,
 					        "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
@@ -466,7 +466,7 @@ TRAP::Graphics::API::VulkanRootSignature::~VulkanRootSignature()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_pipelineLayout);
+	TRAP_ASSERT(m_pipelineLayout, "~VulkanRootSignature(): Vulkan PipelineLayout is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Destroying RootSignature");

@@ -277,7 +277,7 @@ GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(G
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP_ASSERT(outStatus, "GetCrashDumpStatus(): outStatus is nullptr!");
+    TRAP_ASSERT(outStatus, "AftermathTracker::GetGPUCrashDumpStatus(): outStatus is nullptr!");
 
     if(!AftermathInitialized)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;

@@ -38,7 +38,7 @@ TRAP::Ref<TRAP::Graphics::Pipeline> TRAP::Graphics::Pipeline::Create(const Rende
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Pipeline::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

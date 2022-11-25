@@ -17,7 +17,7 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "SwapChain::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

@@ -79,8 +79,8 @@ void TRAP::Graphics::UniformBuffer::SetData(const void* const data, const uint64
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(data);
-	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize());
+	TRAP_ASSERT(data, "UniformBuffer::SetData(): Data is nullptr!");
+	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize(), "UniformBuffer::SetData(): Out of bounds!");
 
 	for(std::size_t i = 0; i < m_uniformBuffers.size(); ++i)
 	{

@@ -38,7 +38,7 @@ TRAP::Ref<TRAP::Graphics::CommandSignature> TRAP::Graphics::CommandSignature::Cr
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "CommandSignature::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

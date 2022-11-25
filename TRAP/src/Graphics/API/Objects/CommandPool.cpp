@@ -39,7 +39,7 @@ TRAP::Ref<TRAP::Graphics::CommandPool> TRAP::Graphics::CommandPool::Create(const
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "CommandPool::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

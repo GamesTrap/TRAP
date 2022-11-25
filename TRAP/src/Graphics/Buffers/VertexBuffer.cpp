@@ -101,8 +101,8 @@ void TRAP::Graphics::VertexBuffer::SetData(const float* const data, const uint64
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(data);
-	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize());
+	TRAP_ASSERT(data, "VertexBuffer::SetData(): Data is nullptr!");
+	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize(), "VertexBuffer::SetData(): Out of bounds!");
 
 	RendererAPI::BufferUpdateDesc desc{};
 	desc.Buffer = m_vertexBuffer;

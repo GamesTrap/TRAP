@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_physicalDevice, "physicalDevice is nullptr");
+	TRAP_ASSERT(m_physicalDevice, "VulkanDevice(): Vulkan PhysicalDevice is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
@@ -227,7 +227,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device);
+	TRAP_ASSERT(m_device, "~VulkanDevice(): No Vulkan device!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");

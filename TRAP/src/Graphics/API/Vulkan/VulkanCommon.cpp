@@ -137,12 +137,12 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 	{
 		if(static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
 		{
-			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.SrcAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.DstAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
-			TRAP_ASSERT(desc.BlendModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES);
-			TRAP_ASSERT(desc.BlendAlphaModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES);
+			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid SrcFactor!");
+			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid DstFactor!");
+			TRAP_ASSERT(desc.SrcAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid SrcAlphaFactor!");
+			TRAP_ASSERT(desc.DstAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS, "UtilToBlendDesc(): Invalid DstAlphaFactor!");
+			TRAP_ASSERT(desc.BlendModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES, "UtilToBlendDesc(): Invalid BlendMode!");
+			TRAP_ASSERT(desc.BlendAlphaModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES, "UtilToBlendDesc(): Invalid BlendAlphaMode!");
 		}
 
 		if (desc.IndependentBlend)
@@ -184,15 +184,15 @@ VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
-	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
-	TRAP_ASSERT(desc.StencilFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.DepthFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.StencilFrontPass < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.StencilBackFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
-	TRAP_ASSERT(desc.StencilBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.DepthBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
-	TRAP_ASSERT(desc.StencilBackPass < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid DepthFunc!");
+	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid StencilFrontFunc!");
+	TRAP_ASSERT(desc.StencilFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilFrontFail!");
+	TRAP_ASSERT(desc.DepthFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid DepthFrontFail!");
+	TRAP_ASSERT(desc.StencilFrontPass < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilFrontPass!");
+	TRAP_ASSERT(desc.StencilBackFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES, "UtilToDepthDesc(): Invalid StencilBackFunc!");
+	TRAP_ASSERT(desc.StencilBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilBackFail!");
+	TRAP_ASSERT(desc.DepthBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid DepthBackFail!");
+	TRAP_ASSERT(desc.StencilBackPass < RendererAPI::StencilOp::MAX_STENCIL_OPS, "UtilToDepthDesc(): Invalid StencilBackPass!");
 
 	VkPipelineDepthStencilStateCreateInfo ds{};
 	ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -232,10 +232,10 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES);
-	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES);
+	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES, "UtilToRasterizerDesc(): Invalid FillMode!");
+	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES, "UtilToRasterizerDesc(): Invalid CullMode!");
 	TRAP_ASSERT(desc.FrontFace == RendererAPI::FrontFace::CounterClockwise ||
-	            desc.FrontFace == RendererAPI::FrontFace::Clockwise);
+	            desc.FrontFace == RendererAPI::FrontFace::Clockwise, "UtilToRasterizerDesc(): Invalid FrontFace!");
 
 	VkPipelineRasterizationStateCreateInfo rs{};
 	rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;

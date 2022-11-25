@@ -159,7 +159,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(p);
+	TRAP_ASSERT(p, "VulkanRenderer::StartGraphicRecording(): PerWindowData is nullptr!");
 
 	if(p->Recording)
 		return;
@@ -303,7 +303,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* c
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(p);
+	TRAP_ASSERT(p, "VulkanRenderer::StartComputeRecording(): PerWindowData is nullptr!");
 
 	if(p->RecordingCompute)
 		return;
@@ -556,7 +556,7 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::Flush(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -639,7 +639,7 @@ void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workG
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::Dispatch(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -666,7 +666,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, const Windo
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetVSync(): Window is nullptr!");
 
 	s_perWindowDataMap.at(window)->NewVSync = vsync;
 }
@@ -704,7 +704,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color,
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetClearColor(): Window is nullptr!");
 
 	s_perWindowDataMap.at(window)->ClearColor = color;
 }
@@ -715,7 +715,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearDepth(const float depth, const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetClearDepth(): Window is nullptr!");
 
 	s_perWindowDataMap.at(window)->ClearDepth = depth;
 }
@@ -726,7 +726,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearStencil(const uint32_t stencil
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetClearStencil(): Window is nullptr!");
 
 	s_perWindowDataMap.at(window)->ClearStencil = stencil;
 }
@@ -739,8 +739,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetResolution(const uint32_t width, co
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(width > 0 && height > 0, "Invalid render target resolution!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(width > 0 && height > 0, "VulkanRenderer::SetResolution(): Invalid render target resolution!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetResolution(): Window is nullptr!");
 
 	auto* const p = s_perWindowDataMap.at(window).get();
 	p->Resize = true;
@@ -755,7 +755,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, co
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetDepthTesting(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -769,7 +769,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, co
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetDepthWriting(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -783,7 +783,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode fun
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetDepthFunction(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -797,7 +797,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, co
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetDepthFail(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
@@ -814,7 +814,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetDepthBias(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -828,7 +828,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float fa
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetDepthBiasSlopeFactor(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -842,7 +842,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetStencilTesting(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -857,7 +857,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetStencilFail(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
@@ -874,7 +874,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetStencilPass(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
@@ -892,7 +892,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode f
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetStencilFunction(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
@@ -909,7 +909,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, con
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetStencilMask(): Window is nullptr!");
 
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>
 	(
@@ -926,7 +926,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetCullMode(): Window is nullptr!");
 
 	std::get<GraphicsPipelineDesc>
 	(
@@ -940,7 +940,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetFillMode(): Window is nullptr!");
 
 	if(mode != FillMode::Solid && !GPUSettings.FillModeNonSolid)
 		return;
@@ -956,7 +956,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTo
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetPrimitiveTopology(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -969,7 +969,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, con
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetFrontFace(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -983,7 +983,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetBlendMode(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1002,7 +1002,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetBlendConstant(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1023,8 +1023,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "Shading rate is not supported!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetShadingRate(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1032,8 +1032,8 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 
 	if(gpd.DepthState->DepthWrite)
 	{
-		TRAP_ASSERT(false, "Depth write is enabled, shading rate cannot be set");
-		TP_ERROR(Log::RendererVulkanPrefix, "Depth write is enabled, shading rate cannot be set");
+		TRAP_ASSERT(false, "VulkanRenderer::SetShadingRate(): Depth write is enabled, shading rate cannot be set");
+		TP_ERROR(Log::RendererVulkanPrefix, "VulkanRenderer::SetShadingRate(): Depth write is enabled, shading rate cannot be set");
 		return;
 	}
 
@@ -1073,7 +1073,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::Clear(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1125,7 +1125,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const ui
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetViewport(): Window is nullptr!");
 
 	if (width == 0 || height == 0)
 		return;
@@ -1144,7 +1144,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uin
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetScissor(): VulkanRenderer::SetScissor(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1158,7 +1158,7 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::Draw(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1172,7 +1172,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::DrawIndexed(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1187,7 +1187,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawInstanced(const uint32_t vertexCou
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::DrawInstanced(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1203,7 +1203,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexedInstanced(const uint32_t in
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::DrawIndexedInstanced(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1217,7 +1217,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, const Windo
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindShader(): Window is nullptr!");
 
 	PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
@@ -1350,7 +1350,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindVertexBuffer(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1377,7 +1377,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindIndexBuffer(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1391,8 +1391,8 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindDescriptorSet(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindDescriptorSet(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1409,8 +1409,8 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* const na
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindPushConstants(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindPushConstants(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1441,8 +1441,8 @@ void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::BindPushConstantsByIndex(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindPushConstantsByIndex(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1476,7 +1476,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindRenderTarget(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1510,7 +1510,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::BindRenderTargets(): Window is nullptr!");
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1538,8 +1538,8 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarrier(const RendererAP
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceBufferBarrier(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::ResourceBufferBarrier(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1556,8 +1556,8 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceBufferBarriers(const std::vect
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceBufferBarriers(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::ResourceBufferBarriers(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1574,8 +1574,8 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarrier(const RendererA
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceTextureBarrier(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::ResourceTextureBarrier(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1592,8 +1592,8 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceTextureBarriers(const std::vec
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "Invalid QueueType provided!");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(queueType == QueueType::Graphics || queueType == QueueType::Compute, "VulkanRenderer::ResourceTextureBarriers(): Invalid QueueType provided!");
+	TRAP_ASSERT(window, "VulkanRenderer::ResourceTextureBarriers(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1610,7 +1610,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarrier(const Rend
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::ResourceRenderTargetBarrier(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1624,7 +1624,7 @@ void TRAP::Graphics::API::VulkanRenderer::ResourceRenderTargetBarriers(const std
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::ResourceRenderTargetBarriers(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1704,7 +1704,7 @@ bool TRAP::Graphics::API::VulkanRenderer::GetVSync(const Window* const window) c
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::GetVSync(): Window is nullptr!");
 
 	return s_perWindowDataMap.at(window)->CurrentVSync;
 }
@@ -1846,7 +1846,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::API::VulkanRenderer::CaptureScreenshot(
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::CaptureScreenshot(): Window is nullptr!");
 
 	const auto* const winData = s_perWindowDataMap.at(window).get();
 	const uint32_t lastFrame = (winData->ImageIndex - 1) % RendererAPI::ImageCount;
@@ -1954,8 +1954,8 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(s_currentAntiAliasing == AntiAliasing::MSAA, "Renderer is not using MSAA");
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(s_currentAntiAliasing == AntiAliasing::MSAA, "VulkanRenderer::MSAAResolvePass(): Renderer is not using MSAA");
+	TRAP_ASSERT(window, "VulkanRenderer::MSAAResolvePass(): Window is nullptr!");
 
 	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
@@ -1992,7 +1992,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetLatencyMode(): Window is nullptr!");
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	if(!GPUSettings.ReflexSupported)
@@ -2013,7 +2013,7 @@ TRAP::Graphics::RendererAPI::LatencyMode TRAP::Graphics::API::VulkanRenderer::Ge
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::GetLatencyMode(): Window is nullptr!");
 
 	if(!GPUSettings.ReflexSupported)
 		return LatencyMode::Disabled;

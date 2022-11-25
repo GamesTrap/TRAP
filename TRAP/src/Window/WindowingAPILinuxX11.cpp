@@ -883,7 +883,7 @@ void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI);
 
-	TRAP_ASSERT(s_Data.PrevErrorHandler == nullptr);
+	TRAP_ASSERT(s_Data.PrevErrorHandler == nullptr, "WindowingAPI::GrabErrorHandlerX11(): Previous error handler is not nullptr!");
 
 	s_Data.ErrorCode = 0; //0 = Success
 	s_Data.PrevErrorHandler = s_Data.XLIB.SetErrorHandler(ErrorHandler);
@@ -4549,7 +4549,7 @@ uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** const s)
 		count++;
 	} while((**s & 0xC0) == 0x80);
 
-	TRAP_ASSERT(count <= 6, "");
+	TRAP_ASSERT(count <= 6, "WindowingAPI::DecodeUTF8(): Invalid UTF-8 sequence!");
 
 	return ch - offsets[count - 1];
 }

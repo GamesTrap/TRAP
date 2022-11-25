@@ -342,7 +342,7 @@ BOOL TRAP::Utils::IsWindowsVersionOrGreaterWin32(const WORD major, const WORD mi
 																									  "RtlVerifyVersionInfo");
 		}
 
-		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "[Utils][Win32] Failed to load ntdll.dll");
+		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::IsWindowsVersionOrGreaterWin32(): Failed to load ntdll.dll");
 	}
 
 	OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, {0}, sp };
@@ -371,7 +371,7 @@ BOOL TRAP::Utils::IsWindows10BuildOrGreaterWin32(const WORD build)
 																									  "RtlVerifyVersionInfo");
 		}
 
-		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "[Utils][Win32] Failed to load ntdll.dll");
+		TRAP_ASSERT(s_ntdll.Instance && s_ntdll.RtlVerifyVersionInfo, "Utils::IsWindows10BuildOrGreaterWin32(): Failed to load ntdll.dll");
 	}
 
 	OSVERSIONINFOEXW osvi = { sizeof(osvi), 10, 0, build };

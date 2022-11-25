@@ -70,12 +70,12 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::filesystem::path filepath, const u
 
 	if (format == ColorFormat::NONE)
 	{
-		TRAP_ASSERT(false, "Invalid color format!");
+		TRAP_ASSERT(false, "CustomImage(): Invalid color format!");
 		return;
 	}
 	if (pixelData.empty())
 	{
-		TRAP_ASSERT(false, "Invalid pixel data provided!");
+		TRAP_ASSERT(false, "CustomImage(): Invalid pixel data provided!");
 		return;
 	}
 

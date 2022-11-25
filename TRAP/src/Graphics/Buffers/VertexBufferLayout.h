@@ -123,7 +123,7 @@ constexpr uint32_t TRAP::Graphics::ShaderDataTypeSize(const ShaderDataType type)
 	case ShaderDataType::Bool:   return 1;
 
 	default:
-		TRAP_ASSERT(false, "Unknown shader data type!");
+		TRAP_ASSERT(false, "ShaderDataTypeSize(): Unknown shader data type!");
 		return 0;
 	}
 }

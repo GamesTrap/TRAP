@@ -14,7 +14,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std:
 
 	if(name.empty())
 	{
-		TRAP_ASSERT(false, "Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateFromFiles(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
@@ -50,7 +50,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFiles(std:
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromFiles(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -80,7 +80,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromFile(): Provided cube format is invalid");
 
 	if(name.empty())
 	{
@@ -120,7 +120,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromFile(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -149,12 +149,12 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromFile(): Provided cube format is invalid");
 
 	const auto name = FileSystem::GetFileNameWithoutEnding(filepath);
 	if(!name)
 	{
-		TRAP_ASSERT(false, "Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateFromFile(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
@@ -190,7 +190,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromFile(std::
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromFile(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -219,11 +219,11 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 	TRAP_ASSERT(std::none_of(imgs.cbegin(), imgs.cend(),
-	            [](const Image* const img) { return img == nullptr; }), "An Image is nullptr!");
+	            [](const Image* const img) { return img == nullptr; }), "Texture::CreateFromImages(): An Image is nullptr!");
 
 	if(name.empty())
 	{
-		TRAP_ASSERT(false, "Name is empty!");
+		TRAP_ASSERT(false, "Texture::CreateFromImages(): Name is empty!");
 		TP_ERROR(Log::TexturePrefix, "Name is empty!");
 		return nullptr;
 	}
@@ -263,7 +263,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImages(std
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromImages(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -293,9 +293,9 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std:
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(img, "Image is nullptr!");
-	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Provided cube format is invalid");
-	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Provided cube format is invalid");
+	TRAP_ASSERT(img, "Texture::CreateFromImage(): Image is nullptr!");
+	TRAP_ASSERT(cubeFormat != TextureCubeFormat::MultiFile, "Texture::CreateFromImage(): Provided cube format is invalid");
+	TRAP_ASSERT(!(type == TextureType::TextureCube && cubeFormat == TextureCubeFormat::NONE), "Texture::CreateFromImage(): Provided cube format is invalid");
 
 	if(name.empty() && !img->GetFilePath().empty())
 	{
@@ -334,7 +334,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateFromImage(std:
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateFromImage(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -386,7 +386,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateEmpty(std::str
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateEmpty(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -421,7 +421,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const T
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize));
+    TRAP_ASSERT(desc.Width && desc.Height && (desc.Depth || desc.ArraySize), "Texture::CreateCustom(): Invalid TextureDesc!");
 
 	if(!ValidateLimits(desc))
 		return nullptr;
@@ -440,7 +440,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::Texture::CreateCustom(const T
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "Texture::CreateCustom(): Unknown RenderAPI");
 		return nullptr;
 	}
 
@@ -757,11 +757,11 @@ void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t size
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(data, "Update: Data is nullptr!");
-	TRAP_ASSERT(arrayLayer < m_arraySize, "Invalid array layer provided!");
-	TRAP_ASSERT(mipLevel < m_mipLevels, "Invalid mip level provided!");
+	TRAP_ASSERT(data, "Texture::Update(): Data is nullptr!");
+	TRAP_ASSERT(arrayLayer < m_arraySize, "Texture::Update(): Invalid array layer provided!");
+	TRAP_ASSERT(mipLevel < m_mipLevels, "Texture::Update(): Invalid mip level provided!");
 	TRAP_ASSERT(sizeInBytes >= (m_width >> mipLevel) * (m_height >> mipLevel) * GetBytesPerPixel(),
-	            "Texture update size is too small");
+	            "Texture::Update(): Texture update size is too small");
 
 	if(mipLevel >= m_mipLevels)
 	{
@@ -846,7 +846,7 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
     if(desc.SampleCount > RendererAPI::SampleCount::One && desc.MipLevels > 1)
 	{
 		TP_ERROR(Log::TexturePrefix, "Multi-Sampled textures cannot have mip maps!");
-		TRAP_ASSERT(false);
+		TRAP_ASSERT(false, "Texture::ValidateLimits(): Multi-Sampled textures cannot have mip maps!");
 		return false;
 	}
     const bool cubeMapRequired = (desc.Descriptors & RendererAPI::DescriptorType::TextureCube) ==
@@ -857,14 +857,14 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
         {
             TP_ERROR(Log::TexturePrefix, "Texture width: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
             return false;
         }
         if(desc.Height > RendererAPI::GPUSettings.MaxImageDimension2D)
         {
             TP_ERROR(Log::TexturePrefix, "Texture height: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimension2D, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
             return false;
         }
     }
@@ -874,14 +874,14 @@ bool TRAP::Graphics::Texture::ValidateLimits(const RendererAPI::TextureDesc& des
         {
             TP_ERROR(Log::TexturePrefix, "Texture width: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture width is bigger than max allowed size!");
             return false;
         }
         if(desc.Height > RendererAPI::GPUSettings.MaxImageDimensionCube)
         {
             TP_ERROR(Log::TexturePrefix, "Texture height: ", desc.Width,
                      " is bigger than max allowed size: ", RendererAPI::GPUSettings.MaxImageDimensionCube, "!");
-            TRAP_ASSERT(false);
+            TRAP_ASSERT(false, "Texture::ValidateLimits(): Texture height is bigger than max allowed size!");
             return false;
         }
     }

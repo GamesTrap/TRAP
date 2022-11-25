@@ -11,8 +11,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
-    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
+    TRAP_ASSERT(texture != nullptr, "SubTexture2D::CreateFromCoords(): Texture is nullptr!");
+    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "SubTexture2D::CreateFromCoords(): Texture is not a 2D texture!");
 
     const TRAP::Math::Vec2 min
     {
@@ -38,8 +38,8 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SubTexture2D::CreateFrom
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP_ASSERT(texture != nullptr, "Texture is nullptr!");
-    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a 2D texture!");
+    TRAP_ASSERT(texture != nullptr, "SubTexture2D::CreateFromPixels(): Texture is nullptr!");
+    TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "SubTexture2D::CreateFromPixels(): Texture is not a 2D texture!");
 
     const TRAP::Math::Vec2 min
     {

@@ -7,7 +7,7 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(numDescriptorSets, "DescriptorSets count can not be 0!");
+	TRAP_ASSERT(numDescriptorSets, "DescriptorPool::Create(): DescriptorSets count can not be 0!");
 
 	switch(RendererAPI::GetRenderAPI())
 	{
@@ -18,7 +18,7 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::DescriptorPool::Create
 		return nullptr;
 
 	default:
-		TRAP_ASSERT(false, "Unknown RenderAPI");
+		TRAP_ASSERT(false, "DescriptorPool::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
 }

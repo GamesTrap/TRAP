@@ -358,7 +358,7 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::DrawBuffers(UniformBuffer* ca
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(camera, "Invalid UniformBuffer!");
+	TRAP_ASSERT(camera, "Renderer2DData::QuadData::DrawBuffers(): Invalid UniformBuffer!");
 
 	uint32_t drawcalls = 0;
 
@@ -406,8 +406,8 @@ uint32_t TRAP::Graphics::Renderer2DData::QuadData::GetTextureIndex(Ref<Texture> 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(texture, "Texture is nullptr!");
-	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Texture is not a Texture2D!");
+	TRAP_ASSERT(texture, "Renderer2DData::QuadData::GetTextureIndex(): Texture is nullptr!");
+	TRAP_ASSERT(texture->GetType() == TextureType::Texture2D, "Renderer2DData::QuadData::GetTextureIndex(): Texture is not a Texture2D!");
 
 	const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
 
@@ -527,7 +527,7 @@ uint32_t TRAP::Graphics::Renderer2DData::CircleData::DrawBuffers(UniformBuffer* 
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(camera, "Invalid UniformBuffer!");
+	TRAP_ASSERT(camera, "Renderer2DData::CircleData::DrawBuffers(): Invalid UniformBuffer!");
 
 	uint32_t drawcalls = 0;
 
@@ -647,7 +647,7 @@ uint32_t TRAP::Graphics::Renderer2DData::LineData::DrawBuffers(UniformBuffer* ca
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	TRAP_ASSERT(camera, "Invalid UniformBuffer!");
+	TRAP_ASSERT(camera, "Renderer2DData::LineData::DrawBuffers(): Invalid UniformBuffer!");
 
 	uint32_t drawcalls = 0;
 

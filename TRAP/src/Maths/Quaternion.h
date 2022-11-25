@@ -381,7 +381,7 @@ constexpr int TRAP::Math::tQuat<T>::Length()
 template <typename T>
 constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
 	return (&x)[i];
 }
@@ -391,7 +391,7 @@ constexpr T& TRAP::Math::tQuat<T>::operator[](const int i)
 template <typename T>
 constexpr const T& TRAP::Math::tQuat<T>::operator[](const int i) const
 {
-	TRAP_ASSERT(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length(), "Math::tQuat<T>::operator[]: Index out of range!");
 
 	return (&x)[i];
 }

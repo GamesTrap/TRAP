@@ -20,17 +20,17 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	m_CPUMappedAddress = nullptr;
-	m_size = desc.Size;
-	m_descriptors = desc.Descriptors;
-	m_memoryUsage = desc.MemoryUsage;
-
-	TRAP_ASSERT(m_device, "device is nullptr");
-	TRAP_ASSERT(m_VMA, "VMA is nullptr");
+	TRAP_ASSERT(m_device, "VulkanBuffer(): Vulkan Device is nullptr");
+	TRAP_ASSERT(m_VMA, "VulkanBuffer(): VMA is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");
 #endif
+
+	m_CPUMappedAddress = nullptr;
+	m_size = desc.Size;
+	m_descriptors = desc.Descriptors;
+	m_memoryUsage = desc.MemoryUsage;
 
 	uint64_t allocationSize = desc.Size;
 	//Align the buffer size to multiples of the dynamic uniform buffer minimum size
@@ -124,7 +124,7 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_vkBuffer);
+	TRAP_ASSERT(m_vkBuffer, "~VulkanBuffer(): Vulkan Buffer is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Destroying Buffer");
@@ -188,6 +188,8 @@ VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	TRAP_ASSERT(m_allocation, "VulkanBuffer::GetVkDeviceMemory(): VMA allocation is nullptr!");
+
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
 
@@ -199,6 +201,8 @@ VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
 uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_allocation, "VulkanBuffer::GetVkDeviceMemoryOffset(): VMA allocation is nullptr!");
 
 	VmaAllocationInfo allocInfo{};
 	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
@@ -249,7 +253,8 @@ void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* 
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
-	            "Trying to unmap non-CPU accessible resource");
+	            "VulkanBuffer::MapBuffer(): Trying to map non-CPU accessible resource");
+	TRAP_ASSERT(m_allocation, "VulkanBuffer::MapBuffer(): VMA allocation is nullptr!");
 
 	const VkResult res = vmaMapMemory(m_VMA->GetVMAAllocator(), m_allocation, &m_CPUMappedAddress);
 	TRAP_ASSERT(res == VK_SUCCESS);
@@ -265,7 +270,9 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(m_memoryUsage != RendererAPI::ResourceMemoryUsage::GPUOnly,
-	            "Trying to unmap non-CPU accessible resource");
+	            "VulkanBuffer::UnMapBuffer(): Trying to unmap non-CPU accessible resource");
+	TRAP_ASSERT(m_VMA, "VulkanBuffer::UnMapBuffer(): VMA is nullptr!");
+	TRAP_ASSERT(m_allocation, "VulkanBuffer::UnMapBuffer(): VMA allocation is nullptr!");
 
 	if (m_VMA && m_allocation)
 		vmaUnmapMemory(m_VMA->GetVMAAllocator(), m_allocation);
@@ -277,6 +284,10 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const std::string_view name) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(!name.empty(), "VulkanBuffer::SetBufferName(): Name is empty!");
+	TRAP_ASSERT(m_device, "VulkanBuffer::SetBufferName(): Vulkan Device is nullptr!");
+	TRAP_ASSERT(m_vkBuffer, "VulkanBuffer::SetBufferName(): Vulkan Buffer is nullptr!");
 
 	if(!VulkanRenderer::s_debugMarkerSupport)
 		return;

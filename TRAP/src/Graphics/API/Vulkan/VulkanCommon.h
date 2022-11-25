@@ -529,7 +529,7 @@ constexpr VkQueueFlags TRAP::Graphics::API::QueueTypeToVkQueueFlags(const Render
 		return VK_QUEUE_COMPUTE_BIT;
 
 	default:
-		// TRAP_ASSERT(false, "Invalid Queue Type");
+		// TRAP_ASSERT(false, "QueueTypeToVkQueueFlags(): Invalid Queue Type");
 		return VK_QUEUE_FLAG_BITS_MAX_ENUM;
 	}
 }
@@ -875,7 +875,7 @@ constexpr VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(cons
 		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 	default:
-		// TRAP_ASSERT(false, "Invalid Mip Map Mode");
+		// TRAP_ASSERT(false, "MipMapModeToVkMipMapMode(): Invalid Mip Map Mode");
 		return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
 	}
 }
@@ -910,7 +910,7 @@ constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType
 	switch(type)
 	{
 	case RendererAPI::DescriptorType::Undefined:
-		// TRAP_ASSERT("Invalid DescriptorInfo Type");
+		// TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
 		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 
 	case RendererAPI::DescriptorType::Sampler:
@@ -946,7 +946,7 @@ constexpr VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType
 		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 
 	default:
-		// TRAP_ASSERT("Invalid DescriptorInfo Type");
+		// TRAP_ASSERT(false, "DescriptorTypeToVkDescriptorType(): Invalid DescriptorInfo Type");
 		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 	}
 }
@@ -978,7 +978,7 @@ constexpr VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlag
 			    VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
 			    VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
 
-	// TRAP_ASSERT(res != 0);
+	// TRAP_ASSERT(res != 0, "ShaderStageToVkShaderStageFlags(): Invalid ShaderStage combination");
 	return res;
 }
 
@@ -1075,7 +1075,7 @@ constexpr VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const Renderer
 		return VK_QUERY_TYPE_OCCLUSION;
 
 	default:
-		// TRAP_ASSERT(false, "Invalid query heap type");
+		// TRAP_ASSERT(false, "QueryTypeToVkQueryType(): Invalid query heap type");
 		return VK_QUERY_TYPE_MAX_ENUM;
 	}
 }
@@ -1352,7 +1352,7 @@ constexpr VkFragmentShadingRateCombinerOpKHR TRAP::Graphics::API::ShadingRateCom
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR;
 
 	default:
-		TRAP_ASSERT(false, "Invalid shading rate combiner type");
+		TRAP_ASSERT(false, "ShadingRateCombinerToVkFragmentShadingRateCombinerOpKHR(): Invalid shading rate combiner type");
 		return VK_FRAGMENT_SHADING_RATE_COMBINER_OP_KEEP_KHR;
 	}
 }
@@ -1381,7 +1381,7 @@ constexpr VkExtent2D TRAP::Graphics::API::ShadingRateToVkExtent2D(const Renderer
 		return VkExtent2D{ 4, 2 };
 
 	default:
-		TRAP_ASSERT(false, "Invalid shading rate");
+		TRAP_ASSERT(false, "ShadingRateToVkExtent2D(): Invalid shading rate");
 		return VkExtent2D{ 1, 1 };
 	}
 }

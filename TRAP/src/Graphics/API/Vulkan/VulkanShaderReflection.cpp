@@ -96,7 +96,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		if(resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::PushConstant &&
 		   resource.Size > TRAP::Graphics::RendererAPI::GPUSettings.MaxPushConstantSize)
 		{
-			TRAP_ASSERT(false);
+			TRAP_ASSERT(false, "VkCreateShaderReflection(): PushConstant size is bigger than device supports!");
 			TP_ERROR(Log::ShaderSPIRVPrefix, "Found PushConstants with invalid size: ", resource.Size,
 				     " max allowed size: ", RendererAPI::GPUSettings.MaxPushConstantSize, "!");
 		}

@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	const TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice();
-	TRAP_ASSERT(device);
+	TRAP_ASSERT(device, "VulkanQueryPool(): Vulkan Device is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Creating QueryPool");
@@ -32,7 +32,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_vkQueryPool);
+	TRAP_ASSERT(m_vkQueryPool, "~VulkanQueryPool(): Vulkan QueryPool is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Destroying QueryPool");
