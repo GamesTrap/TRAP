@@ -12,29 +12,56 @@ namespace TRAP::Utils
 		/// Constructor for a single step in time.
 		/// </summary>
 		/// <param name="time">Time for the time step in seconds.</param>
-		explicit TimeStep(float time);
+		constexpr explicit TimeStep(float time);
 
 		/// <summary>
 		/// Convenience operator.
 		/// Same as GetSeconds();
 		/// </summary>
 		/// <returns>Time of the time step in seconds.</returns>
-		operator float() const;
+		constexpr operator float() const;
 
 		/// <summary>
 		/// Get time of the time step in seconds.
 		/// </summary>
 		/// <returns>Time in seconds.</returns>
-		float GetSeconds() const;
+		constexpr float GetSeconds() const;
 		/// <summary>
 		/// Get time of the time step in milliseconds.
 		/// </summary>
 		/// <returns>Time in milliseconds.</returns>
-		float GetMilliseconds() const;
+		constexpr float GetMilliseconds() const;
 
 	private:
 		float m_time;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Utils::TimeStep::TimeStep(const float time)
+	: m_time(time)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Utils::TimeStep::operator float() const
+{
+	return m_time;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr float TRAP::Utils::TimeStep::GetSeconds() const
+{
+	return m_time;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr float TRAP::Utils::TimeStep::GetMilliseconds() const
+{
+	return m_time * 1000.0f;
 }
 
 #endif /*TRAP_TIMESTEP_H*/
