@@ -3447,3 +3447,5 @@ SITREP 11/25/2022|22w47c1
     - Moved Tracy into own static lib ~<15 mins
     - FileWatcher constructor removed path(s) parameter ~<5 mins
     - Added TRAP_ASSERTs to Application, HotReloadEvent, WindowEvent, FileSystem and FileWatcher ~<10 mins
+    - Added TRAP_ASSERTs to DescriptorPool, Fence and Sampler ~<10 mins
+    - AftermathTracker Changed some variable and function names ~<5 mins

@@ -13,7 +13,7 @@ TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursiv
 
     TRAP_ASSERT(!m_name.empty(), "Name can not be empty!");
 
-    if(name.empty())
+    if(m_name.empty())
     {
         TP_ERROR(Log::FileWatcherPrefix, "Name can not be empty!");
         return;

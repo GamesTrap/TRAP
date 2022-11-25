@@ -84,7 +84,7 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 				//Device lost notification is async to the NVIDIA display driver's GPU crash handling.
 
 				GFSDK_Aftermath_CrashDump_Status status = GFSDK_Aftermath_CrashDump_Status_Unknown;
-				TRAP::Graphics::AftermathTracker::AftermathCall(TRAP::Graphics::AftermathTracker::GetCrashDumpStatus(&status));
+				TRAP::Graphics::AftermathTracker::AftermathCall(TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(&status));
 
 				auto tStart = std::chrono::steady_clock::now();
 				auto tElapsed = std::chrono::milliseconds::zero();
@@ -97,7 +97,7 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 				{
 					// Sleep a couple of milliseconds and poll the status again.
 					std::this_thread::sleep_for(std::chrono::milliseconds(50));
-					TRAP::Graphics::AftermathTracker::AftermathCall(TRAP::Graphics::AftermathTracker::GetCrashDumpStatus(&status));
+					TRAP::Graphics::AftermathTracker::AftermathCall(TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(&status));
 
 					tElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - tStart);
 				}

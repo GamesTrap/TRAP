@@ -59,8 +59,7 @@ void TRAP::Graphics::Fence::WaitForFences(std::vector<Fence>& fences)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	if(fences.empty())
-		return;
+	TRAP_ASSERT(!fences.empty(), "WaitForFences(): Fences count can not be 0!");
 
 	for(Fence& f : fences)
 		f.Wait();

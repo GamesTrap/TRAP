@@ -5,35 +5,30 @@
 #include "Application.h"
 #include "Utils/DynamicLoading/DynamicLoading.h"
 
-bool initialized = false;
+bool AftermathInitialized = false;
 
-TracyLockable(std::mutex, aftermath_mutex);
+TracyLockable(std::mutex, AftermathMutex);
 
-void* handle = nullptr;
+void* AftermathHandle = nullptr;
 #ifdef ENABLE_NSIGHT_AFTERMATH
-#if defined(__d3d11_h__) || defined(__d3d12_h__)
-GFSDK_Aftermath_ContextHandle aftermathHandle;
-bool context = false;
-PFN_GFSDK_Aftermath_DX12_Initialize dx12Initialize = nullptr;
-PFN_GFSDK_Aftermath_DX12_CreateContextHandle dx12CreateContextHandle = nullptr;
-PFN_GFSDK_Aftermath_ReleaseContextHandle releaseContextHandle = nullptr;
-PFN_GFSDK_Aftermath_SetEventMarker setEventMarker = nullptr;
-#endif
-PFN_GFSDK_Aftermath_EnableGpuCrashDumps enableGPUCrashDumps = nullptr;
-PFN_GFSDK_Aftermath_DisableGpuCrashDumps disableGPUCrashDumps = nullptr;
-PFN_GFSDK_Aftermath_GetCrashDumpStatus getGPUCrashDumpStatus = nullptr;
+PFN_GFSDK_Aftermath_EnableGpuCrashDumps AftermathEnableGPUCrashDumps = nullptr;
+PFN_GFSDK_Aftermath_DisableGpuCrashDumps AftermathDisableGPUCrashDumps = nullptr;
+PFN_GFSDK_Aftermath_GetCrashDumpStatus AftermathGetGPUCrashDumpStatus = nullptr;
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
-                 [[maybe_unused]] const uint32_t gpuCrashDumpSize,
-                 void* /*userData*/)
+void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
+                    [[maybe_unused]] const uint32_t gpuCrashDumpSize,
+                    void* /*userData*/)
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+    TRAP_ASSERT(gpuCrashDump, "OnGPUCrashDump(): gpuCrashDump is nullptr!");
+    TRAP_ASSERT(gpuCrashDumpSize, "OnGPUCrashDump(): gpuCrashDumpSize is 0!");
 
     const auto docsFolder = TRAP::FileSystem::GetDocumentsFolderPath();
     if(!docsFolder)
@@ -44,8 +39,8 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
 
     const std::filesystem::path folderPath = *docsFolder / "TRAP" / TRAP::Application::GetGameName() / "crash-dumps";
     const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
-    std::lock_guard lock(aftermath_mutex);
-    LockMark(aftermath_mutex);
+    std::lock_guard lock(AftermathMutex);
+    LockMark(AftermathMutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);
     std::copy_n(static_cast<const uint8_t*>(gpuCrashDump), gpuCrashDumpSize, buffer.begin());
     if(!TRAP::FileSystem::Exists(folderPath))
@@ -56,51 +51,40 @@ void OnCrashDump([[maybe_unused]] const void* gpuCrashDump,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void LoadFunctions()
+bool LoadFunctions()
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
 #ifdef TRAP_PLATFORM_WINDOWS
-    handle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
+    AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("GFSDK_Aftermath_Lib.x64.dll");
 #elif defined(TRAP_PLATFORM_LINUX)
-    handle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
+    AftermathHandle = TRAP::Utils::DynamicLoading::LoadLibrary("libGFSDK_Aftermath_Lib.x64.so");
 #endif
 
-    enableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
+    if(!AftermathHandle)
+        return false;
+
+    AftermathEnableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_EnableGpuCrashDumps>
     (
-        handle, "GFSDK_Aftermath_EnableGpuCrashDumps"
+        AftermathHandle, "GFSDK_Aftermath_EnableGpuCrashDumps"
     );
-    disableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
+    AftermathDisableGPUCrashDumps = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DisableGpuCrashDumps>
     (
-        handle, "GFSDK_Aftermath_DisableGpuCrashDumps"
+        AftermathHandle, "GFSDK_Aftermath_DisableGpuCrashDumps"
     );
-    getGPUCrashDumpStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
+    AftermathGetGPUCrashDumpStatus = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_GetCrashDumpStatus>
     (
-        handle, "GFSDK_Aftermath_GetCrashDumpStatus"
+        AftermathHandle, "GFSDK_Aftermath_GetCrashDumpStatus"
     );
 
-    //DirectX 12 stuff
-#if defined(__d3d11_h__) || defined(__d3d12_h__)
-    dx12Initialize = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DX12_Initialize>
-    (
-        handle, "GFSDK_Aftermath_DX12_Initialize"
-    );
-    dx12CreateContextHandle = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_DX12_CreateContextHandle>
-    (
-        handle, "GFSDK_Aftermath_DX12_CreateContextHandle"
-    );
-    releaseContextHandle = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_ReleaseContextHandle>
-    (
-        handle, "GFSDK_Aftermath_ReleaseContextHandle"
-    );
-    setEventMarker = TRAP::Utils::DynamicLoading::GetLibrarySymbol<PFN_GFSDK_Aftermath_SetEventMarker>
-    (
-        handle, "GFSDK_Aftermath_SetEventMarker"
-    );
+    if(!AftermathEnableGPUCrashDumps || !AftermathDisableGPUCrashDumps || !AftermathGetGPUCrashDumpStatus)
+        return false;
+
+    return true;
 #endif
 
-#endif
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -110,21 +94,13 @@ void UnloadFunctions()
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    TRAP::Utils::DynamicLoading::FreeLibrary(handle);
+    if(AftermathHandle)
+        TRAP::Utils::DynamicLoading::FreeLibrary(AftermathHandle);
 
-    handle = nullptr;
-    enableGPUCrashDumps = nullptr;
-    disableGPUCrashDumps = nullptr;
-    getGPUCrashDumpStatus = nullptr;
-
-    //DirectX 12 stuff
-#if defined(__d3d11_h__) || defined(__d3d12_h__)
-    dx12Initialize = nullptr;
-    dx12CreateContextHandle = nullptr;
-    releaseContextHandle = nullptr;
-    setEventMarker = nullptr;
-#endif
-
+    AftermathHandle = nullptr;
+    AftermathEnableGPUCrashDumps = nullptr;
+    AftermathDisableGPUCrashDumps = nullptr;
+    AftermathGetGPUCrashDumpStatus = nullptr;
 #endif
 }
 
@@ -136,7 +112,7 @@ void UnloadFunctions()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    if(initialized)
+    if(AftermathInitialized)
         return true;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -144,35 +120,22 @@ void UnloadFunctions()
 #endif
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
-    LoadFunctions();
+    if(!LoadFunctions())
+        return false;
 
-    /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12)
+    if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
     {
-        GFSDK_Aftermath_Result res = dx12Initialize(GFSDK_Aftermath_Version_API,
-                                                    GFSDK_Aftermath_FeatureFlags_Minimum |
-                                                    GFSDK_Aftermath_FeatureFlags_EnableMarkers,
-                                                    d3d12Device);
-        if(res == GFSDK_Aftermath_Result_Success)
-            enabled = true;
-        else
-            TP_WARN(Log::RendererAftermathTrackerPrefix, "Failed to initialize AftermathTracker");
+        AftermathInitialized = true;
 
-        res = dx12CreateContextHandle(d3d12Device, &aftermathHandle);
-        if(res == GFSDK_Aftermath_Result_Success)
-            initialized = true;
-        else
-            TP_WARN(Log::RendererAftermathTrackerPrefix, "Failed to create AftermathTracker context");
+        AftermathCall(AftermathEnableGPUCrashDumps(GFSDK_Aftermath_Version_API,
+                                                        GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_Vulkan,
+                                                        GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default,
+                                                        OnGPUCrashDump, nullptr, nullptr, nullptr));
     }
-    else*/ if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
-        initialized = true;
 
-    AftermathCall(enableGPUCrashDumps(GFSDK_Aftermath_Version_API,
-                                      GFSDK_Aftermath_GpuCrashDumpWatchedApiFlags_Vulkan,
-                                      GFSDK_Aftermath_GpuCrashDumpFeatureFlags_Default,
-                                      OnCrashDump, nullptr, nullptr, nullptr));
 #endif
 
-    return initialized;
+    return AftermathInitialized;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -181,7 +144,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    if(!initialized)
+    if(!AftermathInitialized)
         return;
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -189,12 +152,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 #endif
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
-    AftermathCall(disableGPUCrashDumps());
-
-    /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
-    {
-        AftermathCall(releaseContextHandle(aftermathHandle));
-    }*/
+    AftermathCall(AftermathDisableGPUCrashDumps());
 
     UnloadFunctions();
 #endif
@@ -206,11 +164,6 @@ void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-    /*if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::D3D12 && context)
-    {
-        AftermathCall(setEventMarker(aftermathHandle, name.data(), name.size()));
-    }*/
 #endif
 }
 
@@ -320,13 +273,15 @@ void TRAP::Graphics::AftermathTracker::AftermathCall(const GFSDK_Aftermath_Resul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
+GFSDK_Aftermath_Result TRAP::Graphics::AftermathTracker::GetGPUCrashDumpStatus(GFSDK_Aftermath_CrashDump_Status* outStatus)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-    if(!initialized)
+    TRAP_ASSERT(outStatus, "GetCrashDumpStatus(): outStatus is nullptr!");
+
+    if(!AftermathInitialized)
         return GFSDK_Aftermath_Result_FAIL_NotInitialized;
 
-    return getGPUCrashDumpStatus(outStatus);
+    return AftermathGetGPUCrashDumpStatus(outStatus);
 }
 #endif
