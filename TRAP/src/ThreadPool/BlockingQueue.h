@@ -9,7 +9,7 @@
 	#pragma warning(push, 0)
 #endif
 //Tracy - Profiler
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
@@ -107,7 +107,7 @@ namespace TRAP
 
 	private:
 		std::queue<T> m_queue{};
-		mutable TracyLockable(std::mutex, m_mutex)
+		mutable TracyLockable(std::mutex, m_mutex);
 		std::condition_variable_any m_ready;
 		bool m_done = false;
 	};

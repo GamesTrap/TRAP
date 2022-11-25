@@ -3443,3 +3443,4 @@ SITREP 11/25/2022|22w47c1
     - RendererAPI Added SetNewGPU() and GetNewGPU() to allow setting a different GPU to use on the next engine run ~<10 mins
     - Made TimeStep constexpr ~<5 mins
     - Window/WindowingAPI Added SetAspectRatio() to restrict windows to a specific aspect ratio ~<30 mins
+    - Updated Tracy profiler to v0.9 ~<15 mins

@@ -392,9 +392,9 @@ namespace TRAP::Graphics::API
 		std::atomic<bool> m_run;
 		std::thread m_thread;
 
-		TracyLockable(std::mutex, m_queueMutex)
+		TracyLockable(std::mutex, m_queueMutex);
 		std::condition_variable_any m_queueCond;
-		TracyLockable(std::mutex, m_tokenMutex)
+		TracyLockable(std::mutex, m_tokenMutex);
 		std::condition_variable_any m_tokenCond;
 		enum class UpdateRequestType
 		{

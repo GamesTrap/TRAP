@@ -964,7 +964,7 @@ void TRAP::Application::UpdateHotReloading()
 	//Hot code
 	{
 		std::lock_guard lock(m_hotReloadingMutex);
-		LockMark(m_hotReloadingMutex)
+		LockMark(m_hotReloadingMutex);
 
 		//Shader
 		shaderPaths = m_hotReloadingShaderPaths;
@@ -1058,7 +1058,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	if(texture)
 	{
 		std::lock_guard lock(m_hotReloadingMutex); //Hot code
-		LockMark(m_hotReloadingMutex)
+		LockMark(m_hotReloadingMutex);
 
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingTexturePaths)
@@ -1072,7 +1072,7 @@ bool TRAP::Application::OnFileChangeEvent(const Events::FileChangeEvent& event)
 	else if(shader)
 	{
 		std::lock_guard lock(m_hotReloadingMutex); //Hot code
-		LockMark(m_hotReloadingMutex)
+		LockMark(m_hotReloadingMutex);
 
 		//Don't add duplicates!
 		for(const auto& p : m_hotReloadingShaderPaths)

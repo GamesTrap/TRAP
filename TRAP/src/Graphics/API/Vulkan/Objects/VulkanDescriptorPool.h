@@ -85,7 +85,7 @@ namespace TRAP::Graphics::API
 		std::vector<VkDescriptorPool> m_descriptorPools;
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
 		uint32_t m_usedDescriptorSetCount;
-		TracyLockable(std::mutex, m_mutex)
+		TracyLockable(std::mutex, m_mutex);
 
 		TRAP::Ref<VulkanDevice> m_device;
 

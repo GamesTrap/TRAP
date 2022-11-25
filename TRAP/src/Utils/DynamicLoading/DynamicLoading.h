@@ -7,7 +7,7 @@
 	#pragma warning(push, 0)
 #endif
 //Tracy - Profiler
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
