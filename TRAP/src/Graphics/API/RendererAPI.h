@@ -160,6 +160,21 @@ namespace TRAP::Graphics
 		static RenderAPI GetRenderAPI();
 
 		/// <summary>
+		/// Set a new GPU to use.
+		///
+		/// Note: This only takes effect after a restart of the engine.
+		/// </summary>
+		/// <param name="GPUUUID">UUID of the GPU to use.</param>
+		static void SetNewGPU(std::array<uint8_t, 16> GPUUUID);
+		/// <summary>
+		/// Get the UUID of the new GPU to use.
+		///
+		/// Note: This will return an empty UUID if no new GPU was set.
+		/// </summary>
+		/// <returns>UUID of the new GPU to use.</returns>
+		static std::array<uint8_t, 16> GetNewGPU();
+
+		/// <summary>
 		/// Initialize the internal renderer.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
@@ -2560,6 +2575,8 @@ namespace TRAP::Graphics
 		static RendererAPI::AntiAliasing s_currentAntiAliasing;
 		static RendererAPI::SampleCount s_newSampleCount;
 		static RendererAPI::AntiAliasing s_newAntiAliasing;
+
+		static std::array<uint8_t, 16> s_newGPUUUID;
 
 	public:
 		/// <summary>

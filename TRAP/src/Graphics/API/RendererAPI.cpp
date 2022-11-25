@@ -34,6 +34,8 @@ TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_current
 TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_newSampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
 TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_newAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
 
+std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::s_newGPUUUID{};
+
 #ifdef ENABLE_NSIGHT_AFTERMATH
 bool TRAP::Graphics::RendererAPI::s_aftermathSupport = false;
 bool TRAP::Graphics::RendererAPI::s_diagnosticsConfigSupport = false;
@@ -191,6 +193,20 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return s_RenderAPI;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::SetNewGPU(std::array<uint8_t, 16> GPUUUID)
+{
+	s_newGPUUUID = std::move(GPUUUID);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU()
+{
+	return s_newGPUUUID;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

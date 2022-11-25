@@ -394,14 +394,17 @@ TRAP::Application::~Application()
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("RenderAPI", (m_newRenderAPI != Graphics::RenderAPI::NONE) ? m_newRenderAPI :
 	                                                                          Graphics::RendererAPI::GetRenderAPI());
-	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-	{
-		const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
-		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
-	}
 
 	if (Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
 	{
+		//GPU UUID
+		std::array<uint8_t, 16> GPUUUID{};
+		if(Graphics::RendererAPI::GetRenderer()->GetNewGPU() != std::array<uint8_t, 16>{}) //Only if UUID is not empty
+			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetNewGPU();
+		else
+			GPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+		m_config.Set("VulkanGPU", Utils::UUIDToString(GPUUUID));
+
 		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
 		Graphics::SampleCount sampleCount = Graphics::SampleCount::One;
 		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, sampleCount);

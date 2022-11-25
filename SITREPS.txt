@@ -3440,3 +3440,4 @@ SITREP 11/25/2022|22w47c1
     - DiscordGameSDK Create() now only sets default activity if provided appID is TRAPs ~<5 mins
     - Monitor Removed Window::GetMonitor() friend ~<5 mins
     - Window Added SetDisplayMode() overload for Monitor::VideoMode ~<5 mins
+    - RendererAPI Added SetNewGPU() and GetNewGPU() to allow setting a different GPU to use on the next engine run ~<10 mins
