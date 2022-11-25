@@ -6,29 +6,19 @@
 #include "Utils/String/String.h"
 #include "Utils/Utils.h"
 
-TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, const bool recursive)
+TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const bool recursive)
     : m_recursive(recursive), m_run(false), m_name(std::move(name))
 {
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
-    if(paths.empty())
+    TRAP_ASSERT(!m_name.empty(), "Name can not be empty!");
+
+    if(name.empty())
+    {
+        TP_ERROR(Log::FileWatcherPrefix, "Name can not be empty!");
         return;
+    }
 
-    AddFolders(paths);
-    Init();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::FileSystem::FileWatcher::FileWatcher(std::string name, const std::filesystem::path& path, const bool recursive)
-    : m_recursive(recursive), m_run(false), m_name(std::move(name))
-{
-	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
-
-    if(path.empty())
-        return;
-
-    AddFolder(path);
     Init();
 }
 
@@ -63,10 +53,16 @@ TRAP::FileSystem::FileWatcher::EventCallbackFn TRAP::FileSystem::FileWatcher::Ge
 
 void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 {
+    //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
+    TRAP_ASSERT(!path.empty(), "Path can not be empty!");
+
     if(path.empty())
+    {
+        TP_ERROR(Log::FileWatcherPrefix, "AddFolder(): Path can not be empty!");
         return;
+    }
 
     //Always use absolute paths
     const auto absPath = FileSystem::ToAbsolutePath(path);
@@ -86,10 +82,16 @@ void TRAP::FileSystem::FileWatcher::AddFolder(const std::filesystem::path& path)
 
 void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem::path>& paths)
 {
+    //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
+    TRAP_ASSERT(!paths.empty(), "Paths can not be empty!");
+
     if(paths.empty())
+    {
+        TP_ERROR(Log::FileWatcherPrefix, "AddFolders(): Paths can not be empty!");
         return;
+    }
 
     Shutdown();
 
@@ -112,7 +114,16 @@ void TRAP::FileSystem::FileWatcher::AddFolders(const std::vector<std::filesystem
 
 void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& path)
 {
+    //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!path.empty(), "Path can not be empty!");
+
+    if(path.empty())
+    {
+        TP_ERROR(Log::FileWatcherPrefix, "RemoveFolder(): Path can not be empty!");
+        return;
+    }
 
     //Always use absolute paths
     const auto absPath = FileSystem::ToAbsolutePath(path);
@@ -133,10 +144,16 @@ void TRAP::FileSystem::FileWatcher::RemoveFolder(const std::filesystem::path& pa
 
 void TRAP::FileSystem::FileWatcher::RemoveFolders(const std::vector<std::filesystem::path>& paths)
 {
+    //TODO Make this work without stopping the watcher thread
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
 
+    TRAP_ASSERT(!paths.empty(), "Paths can not be empty!");
+
     if(paths.empty())
+    {
+        TP_ERROR(Log::FileWatcherPrefix, "RemoveFolders(): Paths can not be empty!");
         return;
+    }
 
     Shutdown();
 

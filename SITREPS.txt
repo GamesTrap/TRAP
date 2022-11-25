@@ -3445,3 +3445,5 @@ SITREP 11/25/2022|22w47c1
     - Window/WindowingAPI Added SetAspectRatio() to restrict windows to a specific aspect ratio ~<30 mins
     - Updated Tracy profiler to v0.9 ~<15 mins
     - Moved Tracy into own static lib ~<15 mins
+    - FileWatcher constructor removed path(s) parameter ~<5 mins
+    - Added TRAP_ASSERTs to Application, HotReloadEvent, WindowEvent, FileSystem and FileWatcher ~<10 mins

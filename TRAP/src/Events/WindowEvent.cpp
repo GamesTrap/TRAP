@@ -159,6 +159,8 @@ std::string TRAP::Events::WindowCloseEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(m_window, "Window is nullptr!");
+
 	return "WindowCloseEvent: " + m_window->GetTitle();
 }
 
@@ -235,6 +237,8 @@ std::string TRAP::Events::WindowFocusEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
+	TRAP_ASSERT(m_window, "Window is nullptr!");
+
 	return "WindowFocusEvent: " + m_window->GetTitle();
 }
 
@@ -272,6 +276,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() c
 std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(m_window, "Window is nullptr!");
 
 	return "WindowLostFocusEvent: " + m_window->GetTitle();
 }
@@ -311,6 +317,8 @@ TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, T
 	: m_paths(std::move(paths)), m_window(window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(m_window, "Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

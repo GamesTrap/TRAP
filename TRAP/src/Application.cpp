@@ -848,7 +848,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 	if(enable && !s_Instance->m_hotReloadingFileWatcher)
 	{
-		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", "", false);
+		s_Instance->m_hotReloadingFileWatcher = std::make_unique<FileSystem::FileWatcher>("HotReloading", false);
 		s_Instance->m_hotReloadingFileWatcher->SetEventCallback([](Events::Event& e) {s_Instance->OnEvent(e); });
 	}
 	else if(s_Instance->m_hotReloadingFileWatcher)

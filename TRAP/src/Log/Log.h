@@ -169,6 +169,7 @@ namespace TRAP
 		inline static constexpr auto FileSystemPrefix =                     "[FileSystem] ";
 		inline static constexpr auto FileWatcherWindowsPrefix =             "[FileWatcher][Windows] ";
 		inline static constexpr auto FileWatcherLinuxPrefix =               "[FileWatcher][Linux] ";
+		inline static constexpr auto FileWatcherPrefix =                    "[FileWatcher] ";
 		inline static constexpr auto InstrumentorPrefix =                   "[Instrumentor] ";
 		inline static constexpr auto LoggerPrefix =                         "[Logger] ";
 		inline static constexpr auto LayerStackPrefix =                     "[LayerStack] ";

@@ -1016,9 +1016,9 @@ bool OpenFolderInFileBrowser(const std::filesystem::path& p)
 /// <returns>True on success, false otherwise.</returns>
 bool OpenFileInFileBrowser(const std::filesystem::path& p)
 {
-    TRAP_ASSERT(!p.empty(), "Path is empty!");
-
 	ZoneNamedC(__tracy, tracy::Color::Blue, TRAP_PROFILE_SYSTEMS() & ProfileSystems::FileSystem);
+
+    TRAP_ASSERT(!p.empty(), "Path is empty!");
 
     auto absPath = TRAP::FileSystem::ToAbsolutePath(p);
     if(!absPath)

@@ -33,7 +33,7 @@ namespace TRAP::FileSystem
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
         /// <summary>
-        /// Keeps track of the statuses of all files inside the specified paths.
+        /// Keeps track of the status of all files inside the added folders.
         ///
         /// Note: This class starts a new thread.
         ///
@@ -41,21 +41,8 @@ namespace TRAP::FileSystem
         /// Linux: Event-based via inotify & eventfd.
         /// </summary>
         /// <param name="name">Name for the file watcher.</param>
-        /// <param name="paths">Folder paths to watch over.</param>
-        /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
-        explicit FileWatcher(std::string name, const std::vector<std::filesystem::path>& paths, bool recursive = true);
-        /// <summary>
-        /// Keeps track of the statuses of all files inside the specified path.
-        ///
-        /// Note: This class starts a new thread.
-        ///
-        /// Windows: Event-based via ReadDirectoryChangesW.
-        /// Linux: Event-based via inotify & eventfd.
-        /// </summary>
-        /// <param name="name">Name for the file watcher.</param>
-        /// <param name="path">Folder path to watch over.</param>
-        /// <param name="recursive">Whether to also include sub-folders inside the given paths.</param>
-        explicit FileWatcher(std::string name, const std::filesystem::path& path, bool recursive = true);
+        /// <param name="recursive">Whether to also include sub-folders.</param>
+        explicit FileWatcher(std::string name, bool recursive = true);
 
         /// <summary>
 		/// Destructor.
