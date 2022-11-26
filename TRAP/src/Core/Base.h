@@ -271,6 +271,16 @@ void operator delete[](void* ptr, std::size_t count) noexcept;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//TODO Temporary, remove after Tracy fixed this
+#ifndef TRACY_ENABLE
+#ifdef TracyLockable
+#undef TracyLockable
+#endif /*TracyLockable*/
+#define TracyLockable( type, varname ) type varname
+#endif /*TRACY_ENABLE*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 namespace TRAP
 {
 	/// <summary>

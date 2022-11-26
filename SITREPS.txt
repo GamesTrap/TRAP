@@ -3454,3 +3454,4 @@ SITREP 11/25/2022|22w47c1
 SITREP 11/26/2022|22w47c2
     - Changed TRAP Engine version to 22w47c2(0.8.72)
     - Replaced dynamic_cast with std::dynamic_pointer_cast where smart pointers are used ~<15 mins
+    - Silenced TracyLockable warnings for now ~<5 mins
