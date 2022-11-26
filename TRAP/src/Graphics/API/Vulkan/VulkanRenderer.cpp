@@ -1809,7 +1809,7 @@ void TRAP::Graphics::API::VulkanRenderer::MapRenderTarget(const TRAP::Ref<Render
 
 	const VulkanCommandBuffer* const vkCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
 	const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(renderTarget->GetTexture());
-	const VulkanBuffer* const vkBuf = dynamic_cast<VulkanBuffer*>(buffer.get());
+	const Ref<VulkanBuffer> vkBuf = std::dynamic_pointer_cast<VulkanBuffer>(buffer);
 
 	vkCmdCopyImageToBuffer(vkCmd->GetVkCommandBuffer(), vkTex->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkBuf->GetVkBuffer(), 1, &copy);
 
@@ -2905,12 +2905,12 @@ float TRAP::Graphics::API::VulkanRenderer::ResolveGPUFrameProfile(const QueueTyp
 			const uint64_t nsTime = endTime - startTime;
 			if(type == QueueType::Graphics)
 			{
-				const VulkanQueue* const graphicsQueue = dynamic_cast<VulkanQueue*>(s_graphicQueue.get());
+				const Ref<VulkanQueue> graphicsQueue = std::dynamic_pointer_cast<VulkanQueue>(s_graphicQueue);
 				time = static_cast<float>((static_cast<double>(nsTime) / graphicsQueue->GetTimestampFrequency())) * 1000.0f;
 			}
 			else if(type == QueueType::Compute)
 			{
-				const VulkanQueue* const computeQueue = dynamic_cast<VulkanQueue*>(s_computeQueue.get());
+				const Ref<VulkanQueue> computeQueue = std::dynamic_pointer_cast<VulkanQueue>(s_computeQueue);
 				time = static_cast<float>((static_cast<double>(nsTime) / computeQueue->GetTimestampFrequency())) * 1000.0f;
 			}
 		}

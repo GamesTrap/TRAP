@@ -173,7 +173,7 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 	   m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
 	{
 		//Descriptor sets are now dirty, so we need new ones
-		const VulkanRootSignature* const root = dynamic_cast<VulkanRootSignature*>(m_rootSignature.get());
+		const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
 		RendererAPI::DescriptorSetDesc setDesc{};
 		setDesc.RootSignature = m_rootSignature;
 		for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
@@ -555,10 +555,7 @@ void TRAP::Graphics::API::VulkanShader::Init(const RendererAPI::BinaryShaderDesc
 	//Create DescriptorSets
 	for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
 	{
-		if(dynamic_cast<VulkanRootSignature*>
-		(
-			m_rootSignature.get()
-		)->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
+		if(std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature)->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
 		{
 			RendererAPI::DescriptorSetDesc setDesc{};
 			setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;

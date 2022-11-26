@@ -373,7 +373,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetSRVVkImageView(),
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(descInfo->Dimension)])->GetSRVVkImageView(),
 							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 						};
 					}
@@ -385,7 +385,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						updateData[descInfo->HandleIndex + static_cast<std::size_t>(arr)].ImageInfo =
 						{
 							VK_NULL_HANDLE,
-							dynamic_cast<TRAP::Graphics::API::VulkanTexture*>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)].get())->GetUAVVkImageViews()[0],
+							std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanTexture>(VulkanRenderer::s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(descInfo->Dimension)])->GetUAVVkImageViews()[0],
 							VK_IMAGE_LAYOUT_GENERAL
 						};
 					}
@@ -452,9 +452,9 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		else if(m_vkDescriptorSetLayouts[setIndex] != VK_NULL_HANDLE)
 		{
 			//Consume empty descriptor sets from empty descriptor set pool
-			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<TRAP::Graphics::API::VulkanDescriptorPool*>
+			m_vkEmptyDescriptorSets[setIndex] = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanDescriptorPool>
 			(
-				RendererAPI::GetDescriptorPool().get()
+				RendererAPI::GetDescriptorPool()
 			)->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
 		}
 	}

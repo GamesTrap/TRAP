@@ -25,7 +25,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 
 	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo
 		(
-			dynamic_cast<VulkanQueue*>(m_queue.get())->GetQueueFamilyIndex()
+			std::dynamic_pointer_cast<VulkanQueue>(m_queue)->GetQueueFamilyIndex()
 		);
 	if (desc.Transient)
 		info.flags |= VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;

@@ -163,7 +163,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 	uint32_t queueFamilyIndexCount = 0;
 	std::array<uint32_t, 2> queueFamilyIndices =
 	{
-		static_cast<uint32_t>(dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex()),
+		static_cast<uint32_t>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex()),
 		0
 	};
 	uint32_t presentQueueFamilyIndex = std::numeric_limits<uint32_t>::max();
@@ -180,7 +180,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 			                                                          index, surface->GetVkSurface(),
 																	  &supportsPresent);
 			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) &&
-			    dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex() != index)
+			    std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex() != index)
 			{
 				presentQueueFamilyIndex = index;
 				break;
@@ -346,7 +346,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 
 	if(fence != nullptr)
 	{
-		VulkanFence* const fen = dynamic_cast<VulkanFence*>(fence.get());
+		Ref<VulkanFence> fen = std::dynamic_pointer_cast<VulkanFence>(fence);
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
@@ -363,7 +363,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	}
 	else
 	{
-		VulkanSemaphore* const sema = dynamic_cast<VulkanSemaphore*>(signalSemaphore.get());
+		Ref<VulkanSemaphore> sema = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore);
 		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(),
 		                            sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 

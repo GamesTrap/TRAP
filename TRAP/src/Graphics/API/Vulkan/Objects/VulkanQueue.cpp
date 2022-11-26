@@ -9,6 +9,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include <memory>
 
 TRAP::Graphics::API::VulkanQueue::VulkanQueue(const RendererAPI::QueueDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->GetDevice()),
@@ -169,7 +170,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		if(!waitSemaphore->IsSignaled())
 			continue;
 
-		waitSemaphores[waitCount] = dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore();
+		waitSemaphores[waitCount] = std::dynamic_pointer_cast<VulkanSemaphore>(waitSemaphore)->GetVkSemaphore();
 		waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 		++waitCount;
 
@@ -184,10 +185,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		if(signalSemaphore->IsSignaled())
 			continue;
 
-		signalSemaphores[signalCount] = dynamic_cast<VulkanSemaphore*>
-		(
-			signalSemaphore.get()
-		)->GetVkSemaphore();
+		signalSemaphores[signalCount] = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore)->GetVkSemaphore();
 		signalSemaphore->m_signaled = true;
 		++signalCount;
 	}
@@ -202,7 +200,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	std::lock_guard lock(m_submitMutex);
 	LockMark(m_submitMutex);
 	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ?
-	                                                dynamic_cast<VulkanFence*>(desc.SignalFence.get())->GetVkFence() :
+	                                                std::dynamic_pointer_cast<VulkanFence>(desc.SignalFence)->GetVkFence() :
 													VK_NULL_HANDLE));
 
 	if (desc.SignalFence)
@@ -234,14 +232,14 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 	{
 		if(waitSemaphore->IsSignaled())
 		{
-			wSemaphores.push_back(dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore());
+			wSemaphores.push_back(std::dynamic_pointer_cast<VulkanSemaphore>(waitSemaphore)->GetVkSemaphore());
 			waitSemaphore->m_signaled = false;
 		}
 	}
 
 	uint32_t presentIndex = desc.Index;
 
-	const VulkanSwapChain* const sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
+	const Ref<VulkanSwapChain> sChain = std::dynamic_pointer_cast<VulkanSwapChain>(desc.SwapChain);
 	const VkSwapchainKHR sc = sChain->GetVkSwapChain();
 	const VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sc, presentIndex);
 

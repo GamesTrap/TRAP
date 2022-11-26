@@ -167,13 +167,13 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice();
 		initInfo.Device = renderer->GetDevice()->GetVkDevice();
 		initInfo.QueueFamily = renderer->GetDevice()->GetGraphicsQueueFamilyIndex();
-		initInfo.Queue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>
+		initInfo.Queue = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanQueue>
 		(
-			TRAP::Graphics::RendererAPI::GetGraphicsQueue().get()
+			TRAP::Graphics::RendererAPI::GetGraphicsQueue()
 		)->GetVkQueue();
-		initInfo.PipelineCache = dynamic_cast<TRAP::Graphics::API::VulkanPipelineCache*>
+		initInfo.PipelineCache = std::dynamic_pointer_cast<TRAP::Graphics::API::VulkanPipelineCache>
 		(
-			m_imguiPipelineCache.get()
+			m_imguiPipelineCache
 		)->GetVkPipelineCache();
 		initInfo.DescriptorPool = m_imguiDescriptorPool;
 		initInfo.Subpass = 0;
