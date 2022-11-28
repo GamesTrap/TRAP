@@ -1,6 +1,15 @@
 #ifndef TRAP_COMPONENTS_H
 #define TRAP_COMPONENTS_H
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <box2d/b2_body.h>
+#include <box2d/b2_fixture.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
+
 #include "SceneCamera.h"
 #include "Maths/Math.h"
 #include "Utils/Hash/UID.h"
@@ -142,7 +151,7 @@ namespace TRAP
 		bool FixedRotation = false;
 
 		//Storage for runtime data
-		void* RuntimeBody = nullptr;
+		b2Body* RuntimeBody = nullptr;
 
 		Rigidbody2DComponent() = default;
 	};
@@ -159,7 +168,7 @@ namespace TRAP
 		float RestitutionThreshold = 0.5f;
 
 		//Storage for runtime data
-		void* RuntimeFixture = nullptr;
+		b2Fixture* RuntimeFixture = nullptr;
 
 		BoxCollider2DComponent() = default;
 	};
@@ -176,7 +185,7 @@ namespace TRAP
 		float RestitutionThreshold = 0.5f;
 
 		//Storage for runtime data
-		void* RuntimeFixture = nullptr;
+		b2Fixture* RuntimeFixture = nullptr;
 
 		CircleCollider2DComponent() = default;
 	};

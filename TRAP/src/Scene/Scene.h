@@ -11,7 +11,13 @@
 	#pragma warning(pop)
 #endif
 
-class b2World;
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
+#include <box2d/b2_world.h>
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 namespace TRAP
 {
@@ -69,7 +75,7 @@ namespace TRAP
 		friend class SceneSerializer;
 		friend class SceneGraphPanel;
 
-		b2World* m_physicsWorld = nullptr;
+		TRAP::Scope<b2World> m_physicsWorld = nullptr;
 
 		entt::registry m_registry;
 		uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

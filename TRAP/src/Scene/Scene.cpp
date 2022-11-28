@@ -167,7 +167,7 @@ void TRAP::Scene::OnRuntimeStart()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	m_physicsWorld = new b2World({0.0f, -9.8f});
+	m_physicsWorld = TRAP::MakeScope<b2World>(b2Vec2{0.0f, -9.8f});
 
 	auto view = m_registry.view<Rigidbody2DComponent>();
 	for(auto e : view)
@@ -226,7 +226,42 @@ void TRAP::Scene::OnRuntimeStop()
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 
-	delete m_physicsWorld;
+	auto view = m_registry.view<Rigidbody2DComponent>();
+	for(auto e : view)
+	{
+		Entity entity{e, this};
+		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
+
+		if(entity.HasComponent<BoxCollider2DComponent>())
+		{
+			auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
+
+			if(rigidbody2D.RuntimeBody && boxCollider2D.RuntimeFixture)
+			{
+				rigidbody2D.RuntimeBody->DestroyFixture(boxCollider2D.RuntimeFixture);
+				boxCollider2D.RuntimeFixture = nullptr;
+			}
+		}
+
+		if(entity.HasComponent<CircleCollider2DComponent>())
+		{
+			auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
+
+			if(rigidbody2D.RuntimeBody && circleCollider2D.RuntimeFixture)
+			{
+				rigidbody2D.RuntimeBody->DestroyFixture(circleCollider2D.RuntimeFixture);
+				circleCollider2D.RuntimeFixture = nullptr;
+			}
+		}
+
+		if(rigidbody2D.RuntimeBody)
+		{
+			m_physicsWorld->DestroyBody(rigidbody2D.RuntimeBody);
+			rigidbody2D.RuntimeBody = nullptr;
+		}
+	}
+
+	m_physicsWorld.reset();
 	m_physicsWorld = nullptr;
 }
 
@@ -249,7 +284,7 @@ void TRAP::Scene::OnTickRuntime(const Utils::TimeStep& deltaTime)
 		auto& transform = entity.GetComponent<TransformComponent>();
 		auto& rigidbody2D = entity.GetComponent<Rigidbody2DComponent>();
 
-		b2Body* body = static_cast<b2Body*>(rigidbody2D.RuntimeBody);
+		b2Body* body = rigidbody2D.RuntimeBody;
 		const auto& position = body->GetPosition();
 		transform.Position.x = position.x;
 		transform.Position.y = position.y;
