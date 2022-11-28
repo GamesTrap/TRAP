@@ -82,6 +82,9 @@ namespace TRAP::Graphics::API
 		RendererAPI::LoadActionType GetLoadActionTypeStencil() const;
 
 	private:
+		static VkRenderPass CreateRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
+		static VkRenderPass CreateRenderPass2(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
+
 		VkRenderPass m_renderPass;
 
 		std::vector<TRAP::Graphics::API::ImageFormat> m_colorFormats;

@@ -4,6 +4,7 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include <vulkan/vulkan_core.h>
 
 TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device,
                                                         const VulkanRenderer::RenderPassDesc& desc)
@@ -25,82 +26,10 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Creating RenderPass");
 #endif
 
-	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
-	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
-
-	std::vector<VkAttachmentDescription> attachments{};
-	std::vector<VkAttachmentReference> colorAttachmentRefs{};
-	std::vector<VkAttachmentReference> depthStencilAttachmentRefs{};
-
-	const VkSampleCountFlagBits sampleCount = SampleCountToVkSampleCount(desc.SampleCount);
-
-	//Fill out attachment descriptions and references
-	{
-		attachments.resize(colorAttachmentCount + depthAttachmentCount);
-		TRAP_ASSERT(!attachments.empty(), "VulkanRenderPass(): No color or depth attachments");
-
-		if(colorAttachmentCount > 0)
-		{
-			colorAttachmentRefs.resize(colorAttachmentCount);
-			TRAP_ASSERT(!colorAttachmentRefs.empty(), "VulkanRenderPass(): No color attachments");
-		}
-		if(depthAttachmentCount > 0)
-			depthStencilAttachmentRefs.resize(1);
-
-		//Color
-		for(uint32_t i = 0; i < colorAttachmentCount; ++i)
-		{
-			const uint32_t ssidx = i;
-
-			//Descriptions
-			attachments[ssidx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
-				                                                    sampleCount,
-				                                                    !desc.LoadActionsColor.empty() ?
-																	VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
-																	VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-				                                                    !desc.StoreActionsColor.empty() ?
-																	VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionsColor[i])] :
-																	VK_ATTACHMENT_STORE_OP_STORE,
-				                                                    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-				                                                    VK_ATTACHMENT_STORE_OP_STORE,
-				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-			);
-
-			//References
-			colorAttachmentRefs[i].attachment = ssidx;
-			colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		}
-	}
-
-	//Depth stencil
-	if(depthAttachmentCount > 0)
-	{
-		const uint32_t idx = colorAttachmentCount;
-		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
-															  sampleCount,
-															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
-															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionDepth)],
-															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
-															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionStencil)],
-															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
-		);
-
-		depthStencilAttachmentRefs[0].attachment = idx;
-		depthStencilAttachmentRefs[0].layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	}
-
-	VkSubpassDescription subpass;
-	if(depthAttachmentCount > 0)
-		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs,
-		                                          depthStencilAttachmentRefs[0]);
+	if(VulkanRenderer::s_renderPass2)
+		m_renderPass = CreateRenderPass2(m_device, desc);
 	else
-		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
-
-	const VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
-
-	VkCall(vkCreateRenderPass(m_device->GetVkDevice(), &info, nullptr, &m_renderPass));
+		m_renderPass = CreateRenderPass(m_device, desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -188,4 +117,180 @@ TRAP::Graphics::RendererAPI::LoadActionType TRAP::Graphics::API::VulkanRenderPas
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_loadActionStencil;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPass TRAP::Graphics::API::VulkanRenderPass::CreateRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc)
+{
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+
+	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
+	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
+
+	std::vector<VkAttachmentDescription> attachments{};
+	std::vector<VkAttachmentReference> colorAttachmentRefs{};
+	std::vector<VkAttachmentReference> depthStencilAttachmentRefs{};
+
+	const VkSampleCountFlagBits sampleCount = SampleCountToVkSampleCount(desc.SampleCount);
+
+	//Fill out attachment descriptions and references
+	{
+		attachments.resize(colorAttachmentCount + depthAttachmentCount);
+		TRAP_ASSERT(!attachments.empty(), "VulkanRenderPass(): No color or depth attachments");
+
+		if(colorAttachmentCount > 0)
+		{
+			colorAttachmentRefs.resize(colorAttachmentCount);
+			TRAP_ASSERT(!colorAttachmentRefs.empty(), "VulkanRenderPass(): No color attachments");
+		}
+		if(depthAttachmentCount > 0)
+			depthStencilAttachmentRefs.resize(1);
+
+		//Color
+		for(uint32_t i = 0; i < colorAttachmentCount; ++i)
+		{
+			const uint32_t ssidx = i;
+
+			//Descriptions
+			attachments[ssidx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.ColorFormats[i]),
+				                                                    sampleCount,
+				                                                    !desc.LoadActionsColor.empty() ?
+																	VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
+																	VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+				                                                    !desc.StoreActionsColor.empty() ?
+																	VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionsColor[i])] :
+																	VK_ATTACHMENT_STORE_OP_STORE,
+				                                                    VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+				                                                    VK_ATTACHMENT_STORE_OP_STORE,
+				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+				                                                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+			);
+
+			//References
+			colorAttachmentRefs[i].attachment = ssidx;
+			colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		}
+	}
+
+	//Depth stencil
+	if(depthAttachmentCount > 0)
+	{
+		const uint32_t idx = colorAttachmentCount;
+		attachments[idx] = VulkanInits::AttachmentDescription(ImageFormatToVkFormat(desc.DepthStencilFormat),
+															  sampleCount,
+															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
+															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionDepth)],
+															  VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
+															  VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionStencil)],
+															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+															  VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+		);
+
+		depthStencilAttachmentRefs[0].attachment = idx;
+		depthStencilAttachmentRefs[0].layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	}
+
+	VkSubpassDescription subpass;
+	if(depthAttachmentCount > 0)
+		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs,
+												depthStencilAttachmentRefs[0]);
+	else
+		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
+
+	const VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
+
+	VkCall(vkCreateRenderPass(device->GetVkDevice(), &info, nullptr, &renderPass));
+
+	return renderPass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPass TRAP::Graphics::API::VulkanRenderPass::CreateRenderPass2(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc)
+{
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+
+	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
+	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
+
+	std::vector<VkAttachmentDescription2KHR> attachments{};
+	std::vector<VkAttachmentReference2KHR> colorAttachmentRefs{};
+	std::vector<VkAttachmentReference2KHR> depthStencilAttachmentRefs{};
+
+	const VkSampleCountFlagBits sampleCount = SampleCountToVkSampleCount(desc.SampleCount);
+
+	//Fill out attachment descriptions and references
+	{
+		attachments.resize(colorAttachmentCount + depthAttachmentCount);
+		TRAP_ASSERT(!attachments.empty(), "VulkanRenderPass(): No color or depth attachments");
+
+		if(colorAttachmentCount > 0)
+		{
+			colorAttachmentRefs.resize(colorAttachmentCount);
+			TRAP_ASSERT(!colorAttachmentRefs.empty(), "VulkanRenderPass(): No color attachments");
+		}
+		if(depthAttachmentCount > 0)
+			depthStencilAttachmentRefs.resize(1);
+
+		//Color
+		for(uint32_t i = 0; i < colorAttachmentCount; ++i)
+		{
+			const uint32_t ssidx = i;
+
+			//Descriptions
+			attachments[ssidx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ColorFormats[i]),
+				                                                     sampleCount,
+				                                                     !desc.LoadActionsColor.empty() ?
+																	 VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionsColor[i])] :
+																	 VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+				                                                     !desc.StoreActionsColor.empty() ?
+																	 VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionsColor[i])] :
+																	 VK_ATTACHMENT_STORE_OP_STORE,
+				                                                     VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+				                                                     VK_ATTACHMENT_STORE_OP_STORE,
+				                                                     VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+				                                                     VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+			);
+
+			//References
+			colorAttachmentRefs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR;
+			colorAttachmentRefs[i].pNext = nullptr;
+			colorAttachmentRefs[i].attachment = ssidx;
+			colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		}
+	}
+
+	//Depth stencil
+	if(depthAttachmentCount > 0)
+	{
+		const uint32_t idx = colorAttachmentCount;
+		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.DepthStencilFormat),
+															   sampleCount,
+															   VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionDepth)],
+															   VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionDepth)],
+															   VkAttachmentLoadOpTranslator[static_cast<uint32_t>(desc.LoadActionStencil)],
+															   VkAttachmentStoreOpTranslator[static_cast<uint32_t>(desc.StoreActionStencil)],
+															   VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+															   VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+		);
+
+		depthStencilAttachmentRefs[0].sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR;
+		depthStencilAttachmentRefs[0].pNext = nullptr;
+		depthStencilAttachmentRefs[0].attachment = idx;
+		depthStencilAttachmentRefs[0].layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	}
+
+	VkSubpassDescription2KHR subpass;
+	if(depthAttachmentCount > 0)
+		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs,
+												depthStencilAttachmentRefs[0]);
+	else
+		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
+
+	const VkRenderPassCreateInfo2KHR info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
+
+	VkCall(vkCreateRenderPass2KHR(device->GetVkDevice(), &info, nullptr, &renderPass));
+
+	return renderPass;
 }

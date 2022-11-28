@@ -3,6 +3,7 @@
 
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include <vulkan/vulkan_core.h>
 
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string_view appName) noexcept
 {
@@ -408,6 +409,40 @@ VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkAttachmentDescription2KHR TRAP::Graphics::API::VulkanInits::AttachmentDescription2(const VkFormat format,
+	                                                                                 const VkSampleCountFlagBits sampleCount,
+	                                                                                 const VkAttachmentLoadOp loadOp,
+	                                                                                 const VkAttachmentStoreOp storeOp,
+	                                                                                 const VkAttachmentLoadOp stencilLoadOp,
+	                                                                                 const VkAttachmentStoreOp stencilStoreOp,
+	                                                                                 const VkImageLayout layout,
+	                                                                                 const VkImageLayout finalLayout) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(format != VK_FORMAT_UNDEFINED, "VulkanInits::AttachmentDescription2(): Format can't be VK_FORMAT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_UNDEFINED, "VulkanInits::AttachmentDescription2(): FinalLayout can't be VK_IMAGE_LAYOUT_UNDEFINED!");
+	TRAP_ASSERT(finalLayout != VK_IMAGE_LAYOUT_PREINITIALIZED, "VulkanInits::AttachmentDescription2(): FinalLayout can't be VK_IMAGE_LAYOUT_PREINITIALIZED!");
+
+	VkAttachmentDescription2KHR desc{};
+
+	desc.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR;
+	desc.pNext = nullptr;
+	desc.flags = 0;
+	desc.format = format;
+	desc.samples = sampleCount;
+	desc.loadOp = loadOp;
+	desc.storeOp = storeOp;
+	desc.stencilLoadOp = stencilLoadOp;
+	desc.stencilStoreOp = stencilStoreOp;
+	desc.initialLayout = layout;
+	desc.finalLayout = finalLayout;
+
+	return desc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
 	                                                                      const std::vector<VkAttachmentReference>& inputAttachments,
 	                                                                      const std::vector<VkAttachmentReference>& colorAttachments,
@@ -443,6 +478,61 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
+	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.pInputAttachments = inputAttachments.data();
+	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.pColorAttachments = colorAttachments.data();
+	subpass.pResolveAttachments = nullptr;
+	subpass.pDepthStencilAttachment = nullptr;
+	subpass.preserveAttachmentCount = 0;
+	subpass.pPreserveAttachments = nullptr;
+
+	return subpass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	                                                                          const std::vector<VkAttachmentReference2KHR>& inputAttachments,
+	                                                                          const std::vector<VkAttachmentReference2KHR>& colorAttachments,
+	                                                                          VkAttachmentReference2KHR& depthStencilAttachment) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubpassDescription2KHR subpass{};
+
+	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
+	subpass.pNext = nullptr;
+	subpass.flags = 0;
+	subpass.pipelineBindPoint = bindPoint;
+	subpass.viewMask = 0;
+	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.pInputAttachments = inputAttachments.data();
+	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.pColorAttachments = colorAttachments.data();
+	subpass.pResolveAttachments = nullptr;
+	subpass.pDepthStencilAttachment = &depthStencilAttachment;
+	subpass.preserveAttachmentCount = 0;
+	subpass.pPreserveAttachments = nullptr;
+
+	return subpass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	                                                                          const std::vector<VkAttachmentReference2KHR>& inputAttachments,
+	                                                                          const std::vector<VkAttachmentReference2KHR>& colorAttachments) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkSubpassDescription2KHR subpass{};
+
+	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
+	subpass.pNext = nullptr;
+	subpass.flags = 0;
+	subpass.pipelineBindPoint = bindPoint;
+	subpass.viewMask = 0;
 	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
 	subpass.pInputAttachments = inputAttachments.data();
 	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
@@ -494,6 +584,53 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 	info.pSubpasses = nullptr;
 	info.dependencyCount = 0;
 	info.pDependencies = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions,
+	                                                                              const VkSubpassDescription2KHR& subpassDescription) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkRenderPassCreateInfo2KHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.pAttachments = attachmentDescriptions.data();
+	info.subpassCount = 1;
+	info.pSubpasses = &subpassDescription;
+	info.dependencyCount = 0;
+	info.pDependencies = nullptr;
+	info.correlatedViewMaskCount = 0;
+	info.pCorrelatedViewMasks = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPassCreateInfo2KHR TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions) noexcept
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	VkRenderPassCreateInfo2KHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.pAttachments = attachmentDescriptions.data();
+	info.subpassCount = 0;
+	info.pSubpasses = nullptr;
+	info.dependencyCount = 0;
+	info.pDependencies = nullptr;
+	info.correlatedViewMaskCount = 0;
+	info.pCorrelatedViewMasks = nullptr;
 
 	return info;
 }

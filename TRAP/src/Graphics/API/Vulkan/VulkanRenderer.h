@@ -590,6 +590,8 @@ namespace TRAP::Graphics::API
 		static bool s_externalMemory;
 		static bool s_shadingRate;
 		static bool s_timelineSemaphore;
+		static bool s_multiView;
+		static bool s_renderPass2;
 
 		static bool s_debugMarkerSupport;
 

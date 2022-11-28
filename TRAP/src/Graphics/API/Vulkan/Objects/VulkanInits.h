@@ -2,6 +2,7 @@
 #define TRAP_VULKANINITS_H
 
 #include "VulkanMemoryAllocator.h"
+#include <vulkan/vulkan_core.h>
 
 namespace TRAP::Graphics::API::VulkanInits
 {
@@ -192,6 +193,24 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                              VkImageLayout layout, VkImageLayout finalLayout) noexcept;
 
 	/// <summary>
+	/// Create a Vulkan attachment description.
+	/// </summary>
+	/// <param name="format">Vulkan format.</param>
+	/// <param name="sampleCount">Number of samples.</param>
+	/// <param name="loadOp">Vulkan Attachment load operation.</param>
+	/// <param name="storeOp">Vulkan Attachment store operation.</param>
+	/// <param name="stencilLoadOp">Vulkan Attachment stencil load operation.</param>
+	/// <param name="stencilStoreOp">Vulkan Attachment stencil store operation.</param>
+	/// <param name="layout">Initial Vulkan image layout used when render pass starts.</param>
+	/// <param name="finalLayout">Final Vulkan image layout to transition to when render pass ends.</param>
+	/// <returns>VkAttachmentDescription2KHR.</returns>
+	VkAttachmentDescription2KHR AttachmentDescription2(VkFormat format, VkSampleCountFlagBits sampleCount,
+	                                                   VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
+	                                                   VkAttachmentLoadOp stencilLoadOp,
+												       VkAttachmentStoreOp stencilStoreOp,
+	                                                   VkImageLayout layout, VkImageLayout finalLayout) noexcept;
+
+	/// <summary>
 	/// Create a Vulkan subpass description.
 	/// </summary>
 	/// <param name="bindPoint">Vulkan pipeline bind point.</param>
@@ -215,6 +234,30 @@ namespace TRAP::Graphics::API::VulkanInits
 		                                    const std::vector<VkAttachmentReference>& inputAttachments,
 		                                    const std::vector<VkAttachmentReference>& colorAttachments) noexcept;
 
+	/// <summary>
+	/// Create a Vulkan subpass description.
+	/// </summary>
+	/// <param name="bindPoint">Vulkan pipeline bind point.</param>
+	/// <param name="inputAttachments">Vulkan input attachments.</param>
+	/// <param name="colorAttachments">Vulkan color attachments.</param>
+	/// <param name="depthStencilAttachments">Vulkan depth stencil attachments.</param>
+	/// <returns>VkSubpassDescription2KHR.</returns>
+	VkSubpassDescription2KHR SubPassDescription(VkPipelineBindPoint bindPoint,
+	                                            const std::vector<VkAttachmentReference2KHR>& inputAttachments,
+		                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
+		                                        VkAttachmentReference2KHR& depthStencilAttachment) noexcept;
+
+	/// <summary>
+	/// Create a Vulkan subpass description.
+	/// </summary>
+	/// <param name="bindPoint">Vulkan pipeline bind point.</param>
+	/// <param name="inputAttachments">Vulkan input attachments.</param>
+	/// <param name="colorAttachments">Vulkan color attachments.</param>
+	/// <returns>VkSubpassDescription2KHR.</returns>
+	VkSubpassDescription2KHR SubPassDescription(VkPipelineBindPoint bindPoint,
+		                                        const std::vector<VkAttachmentReference2KHR>& inputAttachments,
+		                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments) noexcept;
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
@@ -232,6 +275,22 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="attachmentDescriptions">List of Vulkan attachment descriptions.</param>
 	/// <returns>VkRenderPassCreateInfo.</returns>
 	VkRenderPassCreateInfo RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions) noexcept;
+
+	/// <summary>
+	/// Create a Vulkan render pass create info.
+	/// </summary>
+	/// <param name="attachmentDescriptions">List of Vulkan attachment descriptions.</param>
+	/// <param name="subpassDescription">Vulkan subpass description.</param>
+	/// <returns>VkRenderPassCreateInfo2KHR.</returns>
+	VkRenderPassCreateInfo2KHR RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions,
+		                                            const VkSubpassDescription2KHR& subpassDescription) noexcept;
+
+	/// <summary>
+	/// Create a Vulkan render pass create info.
+	/// </summary>
+	/// <param name="attachmentDescriptions">List of Vulkan attachment descriptions.</param>
+	/// <returns>VkRenderPassCreateInfo2KHR.</returns>
+	VkRenderPassCreateInfo2KHR RenderPassCreateInfo(const std::vector<VkAttachmentDescription2KHR>& attachmentDescriptions) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan render pass begin info.

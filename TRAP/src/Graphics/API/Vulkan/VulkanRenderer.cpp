@@ -42,6 +42,7 @@
 #include "Graphics/Textures/Texture.h"
 #include "Utils/Dialogs/Dialogs.h"
 #include <memory>
+#include <vulkan/vulkan_core.h>
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -62,6 +63,8 @@ bool TRAP::Graphics::API::VulkanRenderer::s_maintenance4Extension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_externalMemory = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_shadingRate = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_timelineSemaphore = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_multiView = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_renderPass2 = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
@@ -1949,6 +1952,8 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 
 bool TRAP::Graphics::API::VulkanRenderer::UpdateAntiAliasingRenderTargets(PerWindowData* const winData) const
 {
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
 	if (s_newAntiAliasing != s_currentAntiAliasing ||
 	    s_newSampleCount != s_currentSampleCount) //Change sample count only between frames!
 	{
@@ -2442,6 +2447,18 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 	{
 		extensions.emplace_back(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
 		s_timelineSemaphore = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_MULTIVIEW_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_MULTIVIEW_EXTENSION_NAME);
+		s_multiView = true;
+	}
+
+	if (s_multiView && physicalDevice->IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_MULTIVIEW_EXTENSION_NAME);
+		s_renderPass2 = true;
 	}
 
 #ifdef TRAP_PLATFORM_WINDOWS
