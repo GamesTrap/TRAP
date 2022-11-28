@@ -533,6 +533,12 @@ namespace TRAP::Graphics::API
 		/// <param name="window">Window to do the resolve pass on.</param>
 		void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
 		                     const Window* const window) const override;
+		/// <summary>
+		/// Update the RenderTargets on anti aliasing changes.
+		/// </summary>
+		/// <param name="winData">PerWindowData to update.</param>
+		/// <returns>True if RenderTargets got updated, false otherwise.</returns>
+		bool UpdateAntiAliasingRenderTargets(PerWindowData* const winData) const;
 
 		/// <summary>
 		/// Set the latency mode.

@@ -580,49 +580,9 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 			p->SwapChain->ToggleVSync();
 		p->CurrentVSync = p->NewVSync;
 	}
-	bool updateImGui = false;
 #endif
-	if (s_newAntiAliasing != s_currentAntiAliasing ||
-	    s_newSampleCount != s_currentSampleCount) //Change sample count only between frames!
-	{
-		s_currentAntiAliasing = s_newAntiAliasing;
-		s_currentSampleCount = s_newSampleCount;
 
-		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
-#ifndef TRAP_HEADLESS_MODE
-		updateImGui = true;
-
-		if(p->SwapChain)
-		{
-			if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA || s_currentAntiAliasing == RendererAPI::AntiAliasing::Off)
-				p->SwapChain->SetSampleCount(s_currentSampleCount);
-			else //Every other anti aliasing doesn't set the swapchains sample count
-				p->SwapChain->SetSampleCount(RendererAPI::SampleCount::One);
-		}
-#else
-		RendererAPI::RenderTargetDesc rTDesc{};
-		rTDesc.Width = p->NewWidth;
-		rTDesc.Height = p->NewHeight;
-		rTDesc.Depth = 1;
-		rTDesc.ArraySize = 1;
-		rTDesc.MipLevels = 1;
-		rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
-		rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
-		rTDesc.SampleCount = SampleCount::One;
-		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-		{
-			p->RenderTargetsMSAA[i].reset();
-			p->RenderTargets[i].reset();
-			p->RenderTargets[i] = RenderTarget::Create(rTDesc);
-		}
-		if(s_currentAntiAliasing == AntiAliasing::MSAA)
-		{
-			rTDesc.SampleCount = s_currentSampleCount;
-			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
-				p->RenderTargetsMSAA[i] = RenderTarget::Create(rTDesc);
-		}
-#endif
-	}
+	[[maybe_unused]] const bool updateImGui = UpdateAntiAliasingRenderTargets(p);
 
 	StartComputeRecording(p);
 	StartGraphicRecording(p);
@@ -1983,6 +1943,55 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 	//Transition source from CopySource to RenderTarget
 	barrier = {source, ResourceState::CopySource, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanRenderer::UpdateAntiAliasingRenderTargets(PerWindowData* const winData) const
+{
+	if (s_newAntiAliasing != s_currentAntiAliasing ||
+	    s_newSampleCount != s_currentSampleCount) //Change sample count only between frames!
+	{
+		s_currentAntiAliasing = s_newAntiAliasing;
+		s_currentSampleCount = s_newSampleCount;
+
+		std::get<GraphicsPipelineDesc>(winData->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
+#ifndef TRAP_HEADLESS_MODE
+		if(winData->SwapChain)
+		{
+			if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA || s_currentAntiAliasing == RendererAPI::AntiAliasing::Off)
+				winData->SwapChain->SetSampleCount(s_currentSampleCount);
+			else //Every other anti aliasing doesn't set the swapchains sample count
+				winData->SwapChain->SetSampleCount(RendererAPI::SampleCount::One);
+		}
+#else
+		RendererAPI::RenderTargetDesc rTDesc{};
+		rTDesc.Width = winData->NewWidth;
+		rTDesc.Height = winData->NewHeight;
+		rTDesc.Depth = 1;
+		rTDesc.ArraySize = 1;
+		rTDesc.MipLevels = 1;
+		rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+		rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+		rTDesc.SampleCount = SampleCount::One;
+		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+		{
+			winData->RenderTargetsMSAA[i].reset();
+			winData->RenderTargets[i].reset();
+			winData->RenderTargets[i] = RenderTarget::Create(rTDesc);
+		}
+		if(s_currentAntiAliasing == AntiAliasing::MSAA)
+		{
+			rTDesc.SampleCount = s_currentSampleCount;
+			for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+				winData->RenderTargetsMSAA[i] = RenderTarget::Create(rTDesc);
+		}
+#endif
+
+		return true;
+	}
+
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
