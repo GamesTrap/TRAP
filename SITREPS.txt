@@ -3461,3 +3461,7 @@ SITREP 11/28/2022|22w48a1
     - Scene Added destructors of Box2D on OnRuntimeStop() ~<15 mins
     - VulkanRenderer Added support for VK_KHR_create_renderpass2 ~<20 mins
     - VulkanRenderer now uses VK_KHR_create_renderpass2 as default when device supports it ~<5 mins
+
+SITREP 11/29/2022|22w48a2
+    - Changed TRAP Engine version to 22w48a2(0.8.74)
+    - VulkanRenderPass Added support for VkFragmentShadingRateAttachmentInfoKHR ~<15 mins

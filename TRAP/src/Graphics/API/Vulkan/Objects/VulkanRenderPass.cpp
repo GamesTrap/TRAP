@@ -213,6 +213,7 @@ VkRenderPass TRAP::Graphics::API::VulkanRenderPass::CreateRenderPass2(TRAP::Ref<
 
 	const uint32_t colorAttachmentCount = desc.RenderTargetCount;
 	const uint32_t depthAttachmentCount = desc.DepthStencilFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
+	const uint32_t shadingRateAttachmentCount = desc.ShadingRateFormat != TRAP::Graphics::API::ImageFormat::Undefined ? 1 : 0;
 
 	std::vector<VkAttachmentDescription2KHR> attachments{};
 	std::vector<VkAttachmentReference2KHR> colorAttachmentRefs{};
@@ -281,12 +282,25 @@ VkRenderPass TRAP::Graphics::API::VulkanRenderPass::CreateRenderPass2(TRAP::Ref<
 		depthStencilAttachmentRefs[0].layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 	}
 
+	VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
+	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) && shadingRateAttachmentCount)
+	{
+		VkAttachmentReference2KHR shadingRateAttachmentRef{};
+		shadingRateAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR;
+		shadingRateAttachmentRef.pNext = nullptr;
+		shadingRateAttachmentRef.attachment = colorAttachmentCount + depthAttachmentCount;
+		shadingRateAttachmentRef.layout = VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
+		shadingRateAttachmentInfo = VulkanInits::FragmentShadingRateAttachmentInfo(shadingRateAttachmentRef,
+		                                                                           {RendererAPI::GPUSettings.ShadingRateTexelWidth, RendererAPI::GPUSettings.ShadingRateTexelHeight});
+	}
+
 	VkSubpassDescription2KHR subpass;
 	if(depthAttachmentCount > 0)
 		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs,
-												depthStencilAttachmentRefs[0]);
+												  depthStencilAttachmentRefs[0], shadingRateAttachmentCount ? &shadingRateAttachmentInfo : nullptr);
 	else
-		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
+		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs,
+		                                          shadingRateAttachmentCount ? &shadingRateAttachmentInfo : nullptr);
 
 	const VkRenderPassCreateInfo2KHR info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
 

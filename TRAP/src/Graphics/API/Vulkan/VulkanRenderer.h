@@ -651,6 +651,7 @@ namespace TRAP::Graphics::API
 			uint32_t RenderTargetCount;
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount;
 			ImageFormat DepthStencilFormat;
+			ImageFormat ShadingRateFormat;
 			LoadActionType LoadActionDepth;
 			LoadActionType LoadActionStencil;
 			StoreActionType StoreActionDepth;

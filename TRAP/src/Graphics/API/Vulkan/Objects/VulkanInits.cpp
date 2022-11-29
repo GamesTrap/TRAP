@@ -377,6 +377,29 @@ VkSemaphoreWaitInfoKHR TRAP::Graphics::API::VulkanInits::SemaphoreWaitInfo(VkSem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+
+VkFragmentShadingRateAttachmentInfoKHR TRAP::Graphics::API::VulkanInits::FragmentShadingRateAttachmentInfo(VkAttachmentReference2KHR& shadingRateAttachment,
+	                                                                                                       VkExtent2D texelSize)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(shadingRateAttachment.attachment != VK_ATTACHMENT_UNUSED, "VulkanInits::FragmentShadingRateAttachmentInfo(): ShadingRateAttachment can't be VK_ATTACHMENT_UNUSED!");
+	TRAP_ASSERT(shadingRateAttachment.layout == VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR || shadingRateAttachment.layout == VK_IMAGE_LAYOUT_GENERAL, "VulkanInits::FragmentShadingRateAttachmentInfo(): ShadingRateAttachment Layout must be VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR or VK_IMAGE_LAYOUT_GENERAL!");
+	TRAP_ASSERT(Math::IsPowerOfTwo(texelSize.width) && Math::IsPowerOfTwo(texelSize.height), "VulkanInits::FragmentShadingRateAttachmentInfo(): TexelSize must be a power of two!");
+	TRAP_ASSERT(texelSize.width <= RendererAPI::GPUSettings.ShadingRateTexelWidth && texelSize.height <= RendererAPI::GPUSettings.ShadingRateTexelHeight, "VulkanInits::FragmentShadingRateAttachmentInfo(): TexelSize must be smaller than or equal to RendererAPI::GPUSettings.ShadingRateTexelWidth and RendererAPI::GPUSettings.ShadingRateTexelHeight!");
+
+	VkFragmentShadingRateAttachmentInfoKHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR;
+	info.pNext = nullptr;
+	info.pFragmentShadingRateAttachment = &shadingRateAttachment;
+	info.shadingRateAttachmentTexelSize = texelSize;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(const VkFormat format,
 	                                                                            const VkSampleCountFlagBits sampleCount,
 	                                                                            const VkAttachmentLoadOp loadOp,
@@ -495,14 +518,15 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
 	                                                                          const std::vector<VkAttachmentReference2KHR>& inputAttachments,
 	                                                                          const std::vector<VkAttachmentReference2KHR>& colorAttachments,
-	                                                                          VkAttachmentReference2KHR& depthStencilAttachment) noexcept
+	                                                                          VkAttachmentReference2KHR& depthStencilAttachment,
+												                              const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkSubpassDescription2KHR subpass{};
 
 	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
-	subpass.pNext = nullptr;
+	subpass.pNext = shadingRateAttachment ? shadingRateAttachment : nullptr;
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
 	subpass.viewMask = 0;
@@ -522,14 +546,15 @@ VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(co
 
 VkSubpassDescription2KHR TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
 	                                                                          const std::vector<VkAttachmentReference2KHR>& inputAttachments,
-	                                                                          const std::vector<VkAttachmentReference2KHR>& colorAttachments) noexcept
+	                                                                          const std::vector<VkAttachmentReference2KHR>& colorAttachments,
+																			  const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	VkSubpassDescription2KHR subpass{};
 
 	subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2_KHR;
-	subpass.pNext = nullptr;
+	subpass.pNext = shadingRateAttachment ? shadingRateAttachment : nullptr;
 	subpass.flags = 0;
 	subpass.pipelineBindPoint = bindPoint;
 	subpass.viewMask = 0;

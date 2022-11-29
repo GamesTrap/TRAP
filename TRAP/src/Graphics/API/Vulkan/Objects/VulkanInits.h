@@ -175,6 +175,17 @@ namespace TRAP::Graphics::API::VulkanInits
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
+	/// Create a Vulkan fragment shading rate attachment info.
+	/// </summary>
+	/// <param name="shadingRateAttachment">Shading rate attachment.</param>
+	/// <param name="texelSize">Size of the portion of the framebuffer corresponding to each texel.</param>
+	/// <returns>VkFragmentShadingRateAttachmentInfoKHR.</returns>
+	VkFragmentShadingRateAttachmentInfoKHR FragmentShadingRateAttachmentInfo(VkAttachmentReference2KHR& shadingRateAttachment,
+	                                                                         VkExtent2D texelSize);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
 	/// Create a Vulkan attachment description.
 	/// </summary>
 	/// <param name="format">Vulkan format.</param>
@@ -245,7 +256,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkSubpassDescription2KHR SubPassDescription(VkPipelineBindPoint bindPoint,
 	                                            const std::vector<VkAttachmentReference2KHR>& inputAttachments,
 		                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
-		                                        VkAttachmentReference2KHR& depthStencilAttachment) noexcept;
+		                                        VkAttachmentReference2KHR& depthStencilAttachment,
+												const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan subpass description.
@@ -256,7 +268,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkSubpassDescription2KHR.</returns>
 	VkSubpassDescription2KHR SubPassDescription(VkPipelineBindPoint bindPoint,
 		                                        const std::vector<VkAttachmentReference2KHR>& inputAttachments,
-		                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments) noexcept;
+		                                        const std::vector<VkAttachmentReference2KHR>& colorAttachments,
+												const VkFragmentShadingRateAttachmentInfoKHR* const shadingRateAttachment) noexcept;
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
