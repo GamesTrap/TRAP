@@ -3,7 +3,10 @@
 VRSTests::VRSTests()
 	: Layer("Variable Rate Shading"),
 	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true),
-    m_shadingRate(), m_supportedShadingRates(), m_supportedShadingRatesStrings()
+    m_shadingRateTexture(nullptr), m_shadingRate(), m_supportedShadingRates(), m_supportedShadingRatesStrings(),
+    m_supportsPerDrawVRS(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw)),
+    m_supportsPerTileVRS(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile)),
+    m_perDrawActive(true)
 {
 }
 
@@ -15,17 +18,38 @@ void VRSTests::OnImGuiRender()
 	                                               ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Press ESC to close");
     ImGui::Separator();
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw))
+
+    if(ImGui::BeginCombo("Shading Rate Mode", m_perDrawActive ? "Per Draw" : "Per Tile"))
     {
-        ImGui::Text("Per Draw Shading Rate");
-        static int32_t selectedShadingRate = 0;
-        if(ImGui::Combo("##Shading rate", &selectedShadingRate, m_supportedShadingRatesStrings.data(), static_cast<int32_t>(m_supportedShadingRatesStrings.size())))
+        if(m_supportsPerDrawVRS)
         {
-            if(m_supportedShadingRates[selectedShadingRate] != m_shadingRate)
-                m_shadingRate = m_supportedShadingRates[selectedShadingRate];
+            if(ImGui::Selectable("Per Draw", m_perDrawActive))
+                m_perDrawActive = true;
+        }
+        if(m_supportsPerTileVRS)
+        {
+            if(ImGui::Selectable("Per Tile", !m_perDrawActive))
+            {
+                m_perDrawActive = false;
+
+                TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    if(m_supportsPerDrawVRS && m_perDrawActive)
+    {
+        static int32_t selectedPerDrawShadingRate = 0;
+        if(ImGui::Combo("##Shading rate", &selectedPerDrawShadingRate, m_supportedShadingRatesStrings.data(), static_cast<int32_t>(m_supportedShadingRatesStrings.size())))
+        {
+            if(m_supportedShadingRates[selectedPerDrawShadingRate] != m_shadingRate)
+                m_shadingRate = m_supportedShadingRates[selectedPerDrawShadingRate];
         }
     }
-    else
+
+    if(!m_supportsPerDrawVRS && !m_supportsPerTileVRS)
         ImGui::Text("Variable Rate Shading is not supported on this GPU");
 
     ImGui::End();
@@ -36,6 +60,41 @@ void VRSTests::OnImGuiRender()
 void VRSTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Variable Rate Shading");
+
+    //TODO Texture needs resizing on viewport/framebuffer resize
+    //Create empty texture for shading rate
+    const auto window = TRAP::Application::GetWindow();
+	TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
+	texDesc.Width = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(window->GetFrameBufferSize().x) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth)));
+	texDesc.Height = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(window->GetFrameBufferSize().y) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight)));
+	texDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
+	texDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
+	texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+	texDesc.Name = "Shading Rate Texture";
+	m_shadingRateTexture = TRAP::Graphics::Texture::CreateCustom(texDesc);
+	m_shadingRateTexture->AwaitLoading();
+
+    //Fill texture with lowest supported shading rate
+	uint8_t lowestShadingRate = 0;
+	if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Eighth))
+		lowestShadingRate = (8 >> 1) | (8 << 1);
+	else if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Quarter))
+		lowestShadingRate =	(4 >> 1) | (4 << 1);
+	else if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Half))
+		lowestShadingRate = (2 >> 1) | (2 << 1);
+	else if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXFour))
+		lowestShadingRate = (2 >> 1) | (4 << 1);
+	else if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::FourXTwo))
+		lowestShadingRate = (4 >> 1) | (2 << 1);
+	else if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::OneXTwo))
+		lowestShadingRate = (1 >> 1) | (2 << 1);
+	else if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXOne))
+		lowestShadingRate = (2 >> 1) | (1 << 1);
+
+	std::vector<uint8_t> pixels(texDesc.Width * texDesc.Height, lowestShadingRate);
+	m_shadingRateTexture->Update(pixels.data(), static_cast<uint32_t>(pixels.size()) * sizeof(uint8_t));
+	m_shadingRateTexture->AwaitLoading();
+	TRAP::Graphics::RenderCommand::Transition(m_shadingRateTexture, TRAP::Graphics::ResourceState::ShaderResource, TRAP::Graphics::ResourceState::ShadingRateSource);
 
     if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full))
     {
@@ -96,9 +155,10 @@ void VRSTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	//Render
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
-    if(m_shadingRate != TRAP::Graphics::ShadingRate::NotSupported)
+
+    if(m_perDrawActive)
     {
-        TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRate, nullptr,
+        TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRate,
                                                       TRAP::Graphics::ShadingRateCombiner::Max,
                                                       TRAP::Graphics::ShadingRateCombiner::Max);
     }

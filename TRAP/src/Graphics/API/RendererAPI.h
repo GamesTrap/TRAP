@@ -375,14 +375,21 @@ namespace TRAP::Graphics
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		/// <param name="window">Window to set the shading rate for.</param>
 		virtual void SetShadingRate(ShadingRate shadingRate,
-						            Ref<TRAP::Graphics::Texture> texture,
 		                            ShadingRateCombiner postRasterizerRate,
 							        ShadingRateCombiner finalRate, const Window* const window) const = 0;
+		/// <summary>
+		/// Set the pipeline fragment shading rate via texture.
+		/// </summary>
+		/// <param name="texture">
+		/// Shading rate texture to use.
+		/// Note: The texture must be in ResourceState::ShadingRateSource.
+		/// </param>
+		/// <param name="window">Window to set shading rate for.</param>
+		virtual void SetShadingRate(Ref<Texture> texture, const Window* const window) const = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -1474,11 +1481,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		enum class ShadingRateCombiner
 		{
-			Passthrough = 0x0,
-			Override = BIT(0),
-			Min = BIT(1),
-			Max = BIT(2),
-			Sum = BIT(3)
+			Passthrough = BIT(0),
+			Override = BIT(1),
+			Min = BIT(2),
+			Max = BIT(3),
+			Sum = BIT(4)
 		};
 
 		/// <summary>
@@ -2025,6 +2032,8 @@ namespace TRAP::Graphics
 			TRAP::Graphics::RendererAPI::ShadingRate ShadingRate{};
 			//Shading rate combiners to use (only if supported)
 			std::array<TRAP::Graphics::RendererAPI::ShadingRateCombiner, 2> ShadingRateCombiners{};
+			//Shading rate texture to use (only if ShadingRateCaps::PerTile is supported, disables fixed ShadingRate)
+			TRAP::Ref<TRAP::Graphics::Texture> ShadingRateTexture{};
 		};
 
 		/// <summary>
@@ -2605,6 +2614,7 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 			float GraphicsFrameTime;
 			bool Recording;
+			TRAP::Ref<Texture> NewShadingRateTexture;
 
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;

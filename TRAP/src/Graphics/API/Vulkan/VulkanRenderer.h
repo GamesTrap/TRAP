@@ -243,19 +243,26 @@ namespace TRAP::Graphics::API
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
 							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
 							  const Window* const window) const override;
-		//TODO EXPERIMENTAL
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		/// <param name="window">Window to set the shading rate for.</param>
 		void SetShadingRate(ShadingRate shadingRate,
-							Ref<TRAP::Graphics::Texture> texture,
 							ShadingRateCombiner postRasterizerRate,
 							ShadingRateCombiner finalRate, const Window* const window) const override;
+		//TODO EXPERIMENTAL
+		/// <summary>
+		/// Set the pipeline fragment shading rate via texture.
+		/// </summary>
+		/// <param name="texture">
+		/// Shading rate texture to use.
+		/// Note: The texture must be in ResourceState::ShadingRateSource.
+		/// </param>
+		/// <param name="window">Window to set shading rate for.</param>
+		void SetShadingRate(Ref<Texture> texture, const Window* const window) const override;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -630,6 +637,8 @@ namespace TRAP::Graphics::API
 			std::vector<TRAP::Ref<RenderTarget>> RenderTargets;
 			//Depth/Stencil render target to use
 			TRAP::Ref<RenderTarget> DepthStencil;
+			//Shading rate texture to use
+			TRAP::Ref<Texture> ShadingRateTexture;
 			//Array layer to use from color render targets
 			std::vector<uint32_t> ColorArraySlices;
 			//Mip level to use from color render targets

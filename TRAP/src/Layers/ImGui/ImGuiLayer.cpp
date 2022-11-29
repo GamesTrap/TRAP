@@ -261,23 +261,27 @@ void TRAP::ImGuiLayer::Begin()
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		//Bind SwapChain RenderTarget if no RenderPass is active
+		//Bind SwapChain RenderTarget (this also updates the used RenderPass)
 		const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(TRAP::Application::GetWindow());
-		const auto* const vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
+		auto* const vkCmdBuffer = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(
 			winData.GraphicCommandBuffers[winData.ImageIndex]
 		);
-		if(vkCmdBuffer->GetActiveVkRenderPass() == VK_NULL_HANDLE)
-		{
-			TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
-			TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
-			TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
+		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
+		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
 
-			if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
-				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargetsMSAA()[winData.ImageIndex]);
-			else //No MSAA
-				TRAP::Graphics::RenderCommand::BindRenderTarget(winData.SwapChain->GetRenderTargets()[winData.ImageIndex]);
-		}
+		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
+
+		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
+			rT = winData.SwapChain->GetRenderTargetsMSAA()[winData.CurrentSwapChainImageIndex];
+		else //No MSAA
+			rT = winData.SwapChain->GetRenderTargets()[winData.CurrentSwapChainImageIndex];
+
+		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
+		vkCmdBuffer->BindRenderTargets({ rT }, nullptr, nullptr, nullptr, nullptr,
+																				std::numeric_limits<uint32_t>::max(),
+																				std::numeric_limits<uint32_t>::max());
 		ImGui_ImplVulkan_NewFrame();
 	}
 

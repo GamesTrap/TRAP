@@ -1056,6 +1056,9 @@ constexpr VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const 
 	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Common))
 		return VK_IMAGE_LAYOUT_GENERAL;
 
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShadingRateSource))
+		return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
+
 	return VK_IMAGE_LAYOUT_UNDEFINED;
 }
 

@@ -135,6 +135,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 	renderPassDesc.ColorFormats = graphicsDesc.ColorFormats;
 	renderPassDesc.SampleCount = graphicsDesc.SampleCount;
 	renderPassDesc.DepthStencilFormat = graphicsDesc.DepthStencilFormat;
+	renderPassDesc.ShadingRateFormat = graphicsDesc.ShadingRateTexture ? graphicsDesc.ShadingRateTexture->GetImageFormat() : Graphics::API::ImageFormat::Undefined;
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
 	const VulkanShader* const vShader = dynamic_cast<VulkanShader*>(shaderProgram);

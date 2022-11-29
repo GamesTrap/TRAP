@@ -6,6 +6,7 @@
 #include "VulkanInits.h"
 #include "VulkanRenderPass.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device,
                                                           const VulkanRenderer::FrameBufferDesc& desc)
@@ -25,6 +26,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 	const uint32_t colorAttachmentCount = static_cast<uint32_t>(desc.RenderTargets.size());
 	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
+	const uint32_t shadingRateAttachmentCount = desc.ShadingRateTexture ? 1 : 0;
 
 	if(colorAttachmentCount)
 	{
@@ -53,7 +55,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	if (colorAttachmentCount && desc.RenderTargets[0]->GetDepth() > 1)
 		m_arraySize = desc.RenderTargets[0]->GetDepth();
 
-	const uint32_t attachmentCount = colorAttachmentCount + depthAttachmentCount;
+	const uint32_t attachmentCount = colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount;
 
 	std::vector<VkImageView> imageViews(attachmentCount);
 	auto iterAttachments = imageViews.begin();
@@ -93,7 +95,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		if(desc.DepthMipSlice == std::numeric_limits<uint32_t>::max() &&
 		   desc.DepthArraySlice == std::numeric_limits<uint32_t>::max())
 		{
-			*iterAttachments = rTarget ->GetVkImageView();
+			*iterAttachments = rTarget->GetVkImageView();
 			++iterAttachments;
 		}
 		else
@@ -112,6 +114,15 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 			*iterAttachments = rTarget->GetVkImageViewSlices()[handle];
 			++iterAttachments;
 		}
+	}
+
+	//Shading rate
+	if(desc.ShadingRateTexture)
+	{
+		const Ref<VulkanTexture> tex = std::dynamic_pointer_cast<VulkanTexture>(desc.ShadingRateTexture);
+
+		*iterAttachments = tex->GetSRVVkImageView();
+		++iterAttachments;
 	}
 
 	const VkFramebufferCreateInfo info = VulkanInits::FramebufferCreateInfo(desc.RenderPass->GetVkRenderPass(),

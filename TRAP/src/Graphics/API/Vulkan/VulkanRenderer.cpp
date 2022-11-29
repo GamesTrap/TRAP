@@ -208,6 +208,9 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	}
 #endif
 
+	//Set Shading rate texture
+	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = p->NewShadingRateTexture;
+
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
 	loadActions.ClearColorValues[0] = p->ClearColor;
@@ -215,7 +218,7 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	loadActions.ClearStencil = p->ClearStencil;
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, nullptr, nullptr,
 	                                                           std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
+															   std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 
 	//Set Default Dynamic Viewport & Scissor
 	uint32_t width = 0, height = 0;
@@ -261,7 +264,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 	//Transition RenderTarget to Present
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
 																std::numeric_limits<uint32_t>::max(),
-																std::numeric_limits<uint32_t>::max());
+																std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 	const TRAP::Ref<RenderTarget> presentRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 	RenderTargetBarrier barrier{presentRenderTarget, ResourceState::RenderTarget, ResourceState::Present};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
@@ -275,7 +278,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(PerWindowData* con
 #else
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
 																std::numeric_limits<uint32_t>::max(),
-																std::numeric_limits<uint32_t>::max());
+																std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 
 #endif
 
@@ -980,7 +983,6 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadingRate,
-						            					 Ref<TRAP::Graphics::Texture> texture,
 		                            					 ShadingRateCombiner postRasterizerRate,
 							        					 ShadingRateCombiner finalRate, const Window* const window) const
 {
@@ -1002,6 +1004,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 
 	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
 		return;
+
+	if(gpd.ShadingRateTexture)
+		p->NewShadingRateTexture = nullptr;
 
 	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerDraw))
 	{
@@ -1026,7 +1031,43 @@ void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(const ShadingRate shadi
 		gpd.ShadingRate = shadingRate;
 		gpd.ShadingRateCombiners = {postRasterizerRate, finalRate};
 
-		p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(shadingRate, texture, postRasterizerRate, finalRate);
+		p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(shadingRate, postRasterizerRate, finalRate);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetShadingRate(TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex,
+                                                         const Window* const window) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanRenderer::SetShadingRate(): Shading rate is not supported by this device!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetShadingRate(): Window is nullptr!");
+
+	PerWindowData* const p = s_perWindowDataMap.at(window).get();
+
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+
+	if(gpd.DepthState->DepthWrite)
+	{
+		TRAP_ASSERT(false, "VulkanRenderer::SetShadingRate(): Depth write is enabled, shading rate cannot be set");
+		TP_ERROR(Log::RendererVulkanPrefix, "VulkanRenderer::SetShadingRate(): Depth write is enabled, shading rate cannot be set");
+		return;
+	}
+
+	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported
+		return;
+
+	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile))
+	{
+		gpd.ShadingRate = ShadingRate::Full;
+		gpd.ShadingRateCombiners = {ShadingRateCombiner::Passthrough, ShadingRateCombiner::Override};
+		p->NewShadingRateTexture = shadingRateTex;
+
+		p->GraphicCommandBuffers[p->ImageIndex]->SetShadingRate(gpd.ShadingRate,
+																gpd.ShadingRateCombiners[0],
+																gpd.ShadingRateCombiners[1]);
 	}
 }
 
@@ -1043,14 +1084,14 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-		renderTarget = data->SwapChain->GetRenderTargetsMSAA()[data->ImageIndex];
+		renderTarget = data->SwapChain->GetRenderTargetsMSAA()[data->CurrentSwapChainImageIndex];
 	else
-		renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
+		renderTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
 #else
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-		renderTarget = data->RenderTargetsMSAA[data->ImageIndex];
+		renderTarget = data->RenderTargetsMSAA[data->CurrentSwapChainImageIndex];
 	else
-		renderTarget = data->RenderTargets[data->ImageIndex];
+		renderTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];
 #endif
 
 	if(static_cast<uint32_t>(clearType & ClearBufferType::Color) != 0)
@@ -1443,10 +1484,14 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
+	TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex = nullptr;
+
 	//We may needs to change the graphics pipeline if RenderTargetCount or ColorFormats don't match
 	if(colorTarget)
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+		shadingRateTex = gpd.ShadingRateTexture;
+
 		gpd.RenderTargetCount = 1;
 		gpd.ColorFormats = {colorTarget->GetImageFormat()};
 		BindShader(gpd.ShaderProgram, window);
@@ -1457,7 +1502,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTarget(const TRAP::Ref<Graph
 		targets.push_back(colorTarget);
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets
 	(
-		targets, depthStencil, loadActions, colorArraySlices, colorMipSlices, depthArraySlice, depthMipSlice
+		targets, depthStencil, loadActions, colorArraySlices, colorMipSlices, depthArraySlice, depthMipSlice, shadingRateTex
 	);
 }
 
@@ -1477,10 +1522,14 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 
 	PerWindowData* const p = s_perWindowDataMap.at(window).get();
 
+	TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex = nullptr;
+
 	//We may needs to change the graphics pipeline if RenderTargetCount or ColorFormats don't match
 	if(!colorTargets.empty())
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+		shadingRateTex = gpd.ShadingRateTexture;
+
 		gpd.RenderTargetCount = static_cast<uint32_t>(colorTargets.size());
 		gpd.ColorFormats.resize(colorTargets.size());
 		for(std::size_t i = 0; i < colorTargets.size(); ++i)
@@ -1490,7 +1539,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindRenderTargets(const std::vector<TR
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets
 	(
-		colorTargets, depthStencil, loadActions, colorArraySlices, colorMipSlices, depthArraySlice, depthMipSlice
+		colorTargets, depthStencil, loadActions, colorArraySlices, colorMipSlices, depthArraySlice, depthMipSlice, shadingRateTex
 	);
 }
 
@@ -1928,7 +1977,7 @@ void TRAP::Graphics::API::VulkanRenderer::MSAAResolvePass(const TRAP::Ref<Render
 	//Stop running render pass
 	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
 															   std::numeric_limits<uint32_t>::max(),
-															   std::numeric_limits<uint32_t>::max());
+															   std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 
 	//Transition source from RenderTarget to CopySource
 	RenderTargetBarrier barrier = {source, ResourceState::RenderTarget, ResourceState::CopySource};
@@ -2122,35 +2171,28 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	p->ImageAcquiredSemaphore = Semaphore::Create();
 
 #ifndef TRAP_HEADLESS_MODE
-	if (!p->Window->IsMinimized())
-	{
-		//Create Swapchain
-		p->CurrentVSync = p->NewVSync = window->GetVSync();
-		SwapChainDesc swapChainDesc{};
-		swapChainDesc.Window = window;
-		swapChainDesc.PresentQueues = { s_graphicQueue };
-		swapChainDesc.Width = window->GetWidth();
-		swapChainDesc.Height = window->GetHeight();
-		swapChainDesc.ImageCount = RendererAPI::ImageCount;
-		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
-		swapChainDesc.EnableVSync = p->CurrentVSync;
-		swapChainDesc.ClearColor = p->ClearColor;
-		swapChainDesc.ClearDepth = p->ClearDepth;
-		swapChainDesc.ClearStencil = p->ClearStencil;
-		if(s_currentAntiAliasing == AntiAliasing::Off || s_currentAntiAliasing == AntiAliasing::MSAA)
-			swapChainDesc.SampleCount = s_currentSampleCount;
-		else
-			swapChainDesc.SampleCount = SampleCount::One;
-		p->SwapChain = SwapChain::Create(swapChainDesc);
+	//Create Swapchain
+	p->CurrentVSync = p->NewVSync = window->GetVSync();
+	SwapChainDesc swapChainDesc{};
+	swapChainDesc.Window = window;
+	swapChainDesc.PresentQueues = { s_graphicQueue };
+	swapChainDesc.Width = window->GetWidth();
+	swapChainDesc.Height = window->GetHeight();
+	swapChainDesc.ImageCount = RendererAPI::ImageCount;
+	swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true, false);
+	swapChainDesc.EnableVSync = p->CurrentVSync;
+	swapChainDesc.ClearColor = p->ClearColor;
+	swapChainDesc.ClearDepth = p->ClearDepth;
+	swapChainDesc.ClearStencil = p->ClearStencil;
+	if(s_currentAntiAliasing == AntiAliasing::Off || s_currentAntiAliasing == AntiAliasing::MSAA)
+		swapChainDesc.SampleCount = s_currentSampleCount;
+	else
+		swapChainDesc.SampleCount = SampleCount::One;
+	p->SwapChain = SwapChain::Create(swapChainDesc);
 
-		if (!p->SwapChain)
-			TRAP::Application::Shutdown();
-
-		StartComputeRecording(p.get());
-		StartGraphicRecording(p.get());
-	}
+	if (!p->SwapChain)
+		TRAP::Application::Shutdown();
 #else
-
 	RendererAPI::RenderTargetDesc rTDesc{};
 	rTDesc.Width = p->NewWidth;
 	rTDesc.Height = p->NewHeight;
@@ -2168,9 +2210,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 		for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 			p->RenderTargetsMSAA[i] = RenderTarget::Create(rTDesc);
 	}
-
-	StartComputeRecording(p.get());
-	StartGraphicRecording(p.get());
 #endif
 
 	//Graphics Pipeline
@@ -2192,7 +2231,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	gpd.SampleCount = rT[0]->GetSampleCount();
 	gpd.SampleQuality = rT[0]->GetSampleQuality();
 	gpd.ShadingRate = RendererAPI::ShadingRate::Full;
-	gpd.ShadingRateCombiners = {};
+	gpd.ShadingRateCombiners = {ShadingRateCombiner::Passthrough, ShadingRateCombiner::Passthrough};
 
 	gpd.DepthState = TRAP::MakeRef<DepthStateDesc>();
 	gpd.DepthState->DepthTest = false;
@@ -2244,6 +2283,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	p->CurrentComputeWorkGroupSize = {1, 1, 1};
 
 	s_perWindowDataMap[window] = std::move(p);
+
+#ifndef TRAP_HEADLESS_MODE
+	StartComputeRecording(s_perWindowDataMap.at(window).get());
+	StartGraphicRecording(s_perWindowDataMap.at(window).get());
+#else
+	StartComputeRecording(s_perWindowDataMap.at(window).get());
+	StartGraphicRecording(s_perWindowDataMap.at(window).get());
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

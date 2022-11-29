@@ -223,7 +223,7 @@ VkRenderPass TRAP::Graphics::API::VulkanRenderPass::CreateRenderPass2(TRAP::Ref<
 
 	//Fill out attachment descriptions and references
 	{
-		attachments.resize(colorAttachmentCount + depthAttachmentCount);
+		attachments.resize(colorAttachmentCount + depthAttachmentCount + shadingRateAttachmentCount);
 		TRAP_ASSERT(!attachments.empty(), "VulkanRenderPass(): No color or depth attachments");
 
 		if(colorAttachmentCount > 0)
@@ -283,10 +283,21 @@ VkRenderPass TRAP::Graphics::API::VulkanRenderPass::CreateRenderPass2(TRAP::Ref<
 	}
 
 	VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
+	VkAttachmentReference2KHR shadingRateAttachmentRef{};
 	if(static_cast<bool>(RendererAPI::GPUSettings.ShadingRateCaps & RendererAPI::ShadingRateCaps::PerTile) && shadingRateAttachmentCount)
 	{
-		VkAttachmentReference2KHR shadingRateAttachmentRef{};
-		shadingRateAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR;
+		const uint32_t idx = colorAttachmentCount + depthAttachmentCount;
+		attachments[idx] = VulkanInits::AttachmentDescription2(ImageFormatToVkFormat(desc.ShadingRateFormat),
+															   VK_SAMPLE_COUNT_1_BIT,
+															   VK_ATTACHMENT_LOAD_OP_LOAD,
+															   VK_ATTACHMENT_STORE_OP_DONT_CARE,
+															   VK_ATTACHMENT_LOAD_OP_CLEAR,
+															   VK_ATTACHMENT_STORE_OP_DONT_CARE,
+															   VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR,
+															   VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR
+		);
+
+		shadingRateAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 		shadingRateAttachmentRef.pNext = nullptr;
 		shadingRateAttachmentRef.attachment = colorAttachmentCount + depthAttachmentCount;
 		shadingRateAttachmentRef.layout = VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;

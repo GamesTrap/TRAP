@@ -108,7 +108,8 @@ namespace TRAP::Graphics
 			                           const RendererAPI::LoadActionsDesc* loadActions,
 			                           const std::vector<uint32_t>* colorArraySlices,
 			                           const std::vector<uint32_t>* colorMipSlices,
-			                           uint32_t depthArraySlice, uint32_t depthMipSlice) = 0;
+			                           uint32_t depthArraySlice, uint32_t depthMipSlice,
+									   const TRAP::Ref<Texture>& shadingRate = nullptr) = 0;
 
 		/// <summary>
 		/// Add a debug marker to the command buffer.
@@ -301,11 +302,9 @@ namespace TRAP::Graphics
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		virtual void SetShadingRate(RendererAPI::ShadingRate shadingRate,
-						            Ref<TRAP::Graphics::Texture> texture,
 		                            RendererAPI::ShadingRateCombiner postRasterizerRate,
 							        RendererAPI::ShadingRateCombiner finalRate) const = 0;
 

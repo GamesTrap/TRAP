@@ -48,7 +48,8 @@ namespace std
 					g.PrimitiveTopology,
                     g.ShadingRate,
                     g.ShadingRateCombiners[0],
-                    g.ShadingRateCombiners[1]
+                    g.ShadingRateCombiners[1],
+                    g.ShadingRateTexture
                 );
 
 				if (g.VertexLayout)

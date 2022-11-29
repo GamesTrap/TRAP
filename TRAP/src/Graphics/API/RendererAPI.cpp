@@ -287,9 +287,9 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 #ifndef TRAP_HEADLESS_MODE
 	//Get correct RenderTarget
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
-		renderTarget = winData->SwapChain->GetRenderTargetsMSAA()[winData->ImageIndex];
+		renderTarget = winData->SwapChain->GetRenderTargetsMSAA()[winData->CurrentSwapChainImageIndex];
 	else //No MSAA
-		renderTarget = winData->SwapChain->GetRenderTargets()[winData->ImageIndex];
+		renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);

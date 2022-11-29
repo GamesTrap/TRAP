@@ -248,7 +248,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 																 const std::vector<uint32_t>* const colorArraySlices,
 																 const std::vector<uint32_t>* const colorMipSlices,
 																 const uint32_t depthArraySlice,
-																 const uint32_t depthMipSlice)
+																 const uint32_t depthMipSlice,
+																 const TRAP::Ref<Texture>& shadingRate)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -324,7 +325,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 6, renderPassHash);
 		const uint32_t ID = dStencil->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
-
 	}
 	if (colorArraySlices)
 		frameBufferHash = HashAlg<uint32_t>(colorArraySlices->data(), renderTargets.size(), frameBufferHash);
@@ -334,6 +334,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		frameBufferHash = HashAlg<uint32_t>(&depthArraySlice, 1, frameBufferHash);
 	if (depthMipSlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthMipSlice, 1, frameBufferHash);
+	if(shadingRate)
+	{
+		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(shadingRate);
+
+		const uint32_t hashValue = static_cast<uint32_t>(shadingRate->GetImageFormat());
+		renderPassHash = HashAlg<uint32_t>(&hashValue, 1, renderPassHash);
+		const uint32_t ID = static_cast<uint32_t>(RendererAPI::ResourceState::ShadingRateSource);
+		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+	}
 
 	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::One;
 
@@ -353,6 +362,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		std::array<TRAP::Graphics::API::ImageFormat, 8> colorFormats{};
 		TRAP::Graphics::API::ImageFormat depthStencilFormat = TRAP::Graphics::API::ImageFormat::Undefined;
+		TRAP::Graphics::API::ImageFormat shadingRateFormat = TRAP::Graphics::API::ImageFormat::Undefined;
 		for (uint32_t i = 0; i < renderTargets.size(); ++i)
 			colorFormats[i] = renderTargets[i]->GetImageFormat();
 		if (depthStencil)
@@ -362,12 +372,15 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		}
 		else if (!renderTargets.empty())
 			sampleCount = renderTargets[0]->GetSampleCount();
+		if(shadingRate)
+			shadingRateFormat = shadingRate->GetImageFormat();
 
 		VulkanRenderer::RenderPassDesc desc{};
 		desc.RenderTargetCount = static_cast<uint32_t>(renderTargets.size());
 		desc.SampleCount = sampleCount;
 		desc.ColorFormats = std::vector<TRAP::Graphics::API::ImageFormat>(colorFormats.begin(), colorFormats.end());
 		desc.DepthStencilFormat = depthStencilFormat;
+		desc.ShadingRateFormat = shadingRateFormat;
 		desc.LoadActionsColor = loadActions ?
 		                        std::vector<RendererAPI::LoadActionType>(loadActions->LoadActionsColor.begin(),
 								                                         loadActions->LoadActionsColor.end()) :
@@ -392,6 +405,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		VulkanRenderer::FrameBufferDesc desc{};
 		desc.RenderTargets = renderTargets;
 		desc.DepthStencil = depthStencil;
+		desc.ShadingRateTexture = shadingRate;
 		desc.RenderPass = renderPass;
 		if(colorArraySlices)
 			desc.ColorArraySlices = *colorArraySlices;
@@ -1361,13 +1375,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::SetShadingRate(const RendererAPI::ShadingRate rate,
-															  Ref<Texture> /*texture*/,
 															  const RendererAPI::ShadingRateCombiner postRasterizerState,
 															  const RendererAPI::ShadingRateCombiner finalRate) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	//Texture would be used for https://www.khronos.org/registry/vulkan/specs/1.3-extensions/html/vkspec.html#primsrast-fragment-shading-rate-attachment
 
 	TRAP_ASSERT(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps), "VulkanCommandBuffer::SetShadingRate(): Shading rate is not supported by this device!");
 	if(static_cast<uint32_t>(RendererAPI::GPUSettings.ShadingRateCaps) == 0) //VRS is not supported

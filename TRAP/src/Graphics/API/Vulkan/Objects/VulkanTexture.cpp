@@ -127,6 +127,8 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 		additionalFlags |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 	else if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::DepthWrite))
 		additionalFlags |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+	else if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::ShadingRateSource))
+		additionalFlags |= VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 
 	VkImageType imageType = VK_IMAGE_TYPE_MAX_ENUM;
 	if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::Force2D))
@@ -417,6 +419,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 	m_mipLevels = desc.MipLevels;
 	m_arraySize = desc.ArraySize;
 	m_imageFormat = desc.Format;
+	m_colorFormat = ImageFormatToColorFormat(m_imageFormat);
 	m_descriptorTypes = desc.Descriptors;
 
 	if (m_name.empty() && !desc.Name.empty())

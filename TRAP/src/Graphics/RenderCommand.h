@@ -238,19 +238,26 @@ namespace TRAP::Graphics
 		/// <param name="face">Front face.</param>
 		/// <param name="window">Window to set front face for. Default: Main Window.</param>
 		static void SetFrontFace(FrontFace face, const Window* const window = TRAP::Application::GetWindow());
-		//TODO EXPERIMENTAL
 		/// <summary>
 		/// Set the pipeline fragment shading rate and combiner operation for the command buffer.
 		/// </summary>
 		/// <param name="shadingRate">Shading rate to use.</param>
-		/// <param name="texture">Unused by Vulkan.</param>
 		/// <param name="postRasterizerRate">Shading rate combiner to use.</param>
 		/// <param name="finalRate">Shading rate combiner to use.</param>
 		/// <param name="window">Window to set shading rate for. Default: Main Window.</param>
 		static void SetShadingRate(ShadingRate shadingRate,
-						           Ref<Texture> texture,
 		                           ShadingRateCombiner postRasterizerRate,
 							       ShadingRateCombiner finalRate, const Window* const window = TRAP::Application::GetWindow());
+		//TODO EXPERIMENTAL
+		/// <summary>
+		/// Set the pipeline fragment shading rate via texture.
+		/// </summary>
+		/// <param name="texture">
+		/// Shading rate texture to use.
+		/// Note: The texture must be in ResourceState::ShadingRateSource.
+		/// </param>
+		/// <param name="window">Window to set shading rate for. Default: Main Window.</param>
+		static void SetShadingRate(Ref<Texture> texture, const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
 		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.

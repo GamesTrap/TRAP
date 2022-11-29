@@ -19,9 +19,16 @@ private:
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
+	TRAP::Ref<TRAP::Graphics::Texture> m_shadingRateTexture;
+
     TRAP::Graphics::ShadingRate m_shadingRate;
     std::vector<TRAP::Graphics::ShadingRate> m_supportedShadingRates;
     std::vector<const char*> m_supportedShadingRatesStrings;
+
+	bool m_supportsPerDrawVRS;
+	bool m_supportsPerTileVRS;
+
+	bool m_perDrawActive;
 };
 
 #endif /*GAMESTRAP_VRSTESTS_H*/

@@ -578,23 +578,89 @@ constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFo
 	{
 	case API::ImageFormat::R8_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R8_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8_SRGB:
+		[[fallthrough]];
 	case API::ImageFormat::R16_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R16_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R16_SBFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R32_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R32_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R32_UINT:
 		return Image::ColorFormat::GrayScale;
 
 	case API::ImageFormat::R8G8_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R8G8_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8_SRGB:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R16G16_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_SBFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32_UINT:
 		return Image::ColorFormat::GrayScaleAlpha;
 
 	case API::ImageFormat::R8G8B8A8_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_SRGB:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16B16A16_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SBFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32B32A32_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32B32A32_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32B32A32_SINT:
 		return Image::ColorFormat::RGBA;
 
 	default:
@@ -610,23 +676,87 @@ constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(con
 	{
 	case API::ImageFormat::R8_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R8_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8_SRGB:
+		[[fallthrough]];
 	case API::ImageFormat::R8G8_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R8G8_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8_SRGB:
+		[[fallthrough]];
 	case API::ImageFormat::R8G8B8A8_UNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R8G8B8A8_SRGB:
 		return 8;
 
 	case API::ImageFormat::R16_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R16_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16_SFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16_UNORM:
 		[[fallthrough]];
+	case API::ImageFormat::R16G16_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16_SBFLOAT:
+		[[fallthrough]];
 	case API::ImageFormat::R16G16B16A16_UNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SNORM:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R16G16B16A16_SBFLOAT:
 		return 16;
 
 	case API::ImageFormat::R32_SFLOAT:
 		[[fallthrough]];
+	case API::ImageFormat::R32_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R32_UINT:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32_SFLOAT:
 		[[fallthrough]];
+	case API::ImageFormat::R32G32_SINT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32_UINT:
+		[[fallthrough]];
 	case API::ImageFormat::R32G32B32A32_SFLOAT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32B32A32_UINT:
+		[[fallthrough]];
+	case API::ImageFormat::R32G32B32A32_SINT:
 		return 32;
 
 	default:
