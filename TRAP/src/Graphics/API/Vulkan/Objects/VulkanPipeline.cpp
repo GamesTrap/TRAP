@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
-#include "Utils/Utils.h"
 #include "VulkanPipeline.h"
 
+#include "Utils/Utils.h"
 #include "VulkanRenderPass.h"
 #include "VulkanRootSignature.h"
 #include "VulkanShader.h"
@@ -10,6 +10,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Graphics/Textures/Texture.h"
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 	: m_vkPipeline(VK_NULL_HANDLE),
