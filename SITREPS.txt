@@ -3467,3 +3467,8 @@ SITREP 11/29/2022|22w48a2
     - VulkanRenderPass Added support for VkFragmentShadingRateAttachmentInfoKHR ~<15 mins
     - Added support for Tier 2 Variable Rate Shading (Texture attachment) ~>60 mins
     - VRSTests Added Tier 2 example ~<15 mins
+
+SITREP 11/30/2022|22w48a3
+    - Changed TRAP Engine version to 22w48a3(0.8.75)
+    - Updated README ~<5 mins
+    - Fixed VulkanPipeline.cpp compiler error ~<5 mins

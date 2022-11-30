@@ -2,8 +2,8 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="Branding/TRAPWhiteLogoMedia.svg">
-        <img alt="TRAP™ logo" src="Branding/TRAPBlackLogoMedia.svg">
+        <source media="(prefers-color-scheme: dark)" srcset="Branding/TRAPWhiteLogoMedia2048x2048.png">
+        <img alt="TRAP™ logo" src="Branding/TRAPBlackLogoMedia2048x2048.png" width="512" height="512">
     </picture>
 </p>
 
