@@ -167,6 +167,16 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	if(p->Recording)
 		return;
 
+	//Set Shading rate texture
+	if(p->NewShadingRateTexture &&
+	   p->NewShadingRateTexture->GetWidth() == static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(p->Window->GetFrameBufferSize().x) / static_cast<float>(GPUSettings.ShadingRateTexelWidth))) &&
+	   p->NewShadingRateTexture->GetHeight() == static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(p->Window->GetFrameBufferSize().y) / static_cast<float>(GPUSettings.ShadingRateTexelHeight))))
+	{
+		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = p->NewShadingRateTexture;
+	}
+	else
+		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = nullptr;
+
 	//Start Recording
 	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
@@ -207,9 +217,6 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &MSAABarrier);
 	}
 #endif
-
-	//Set Shading rate texture
-	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = p->NewShadingRateTexture;
 
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;

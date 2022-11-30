@@ -1,7 +1,6 @@
 #ifndef GAMESTRAP_VRSTESTS_H
 #define GAMESTRAP_VRSTESTS_H
 
-#include "Graphics/RenderCommand.h"
 #include <TRAP.h>
 
 class VRSTests final : public TRAP::Layer
@@ -16,6 +15,9 @@ public:
 
 private:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
+
+	TRAP::Ref<TRAP::Graphics::Texture> CreateShadingRateTexture(uint32_t framebufferWidth, uint32_t framebufferHeight);
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
