@@ -2,24 +2,18 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark">
-<meta property="og:title" content="File TCPListener.h" />
-  
+    <meta name="color-scheme" content="light dark"><meta property="og:title" content="File TCPListener.h" />
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://gamestrap.github.io/TRAP/api/file_TRAP_src_Network_TCPListener.h.html" />
-  
 <meta property="og:site_name" content="TRAP Documentation" />
-  
 <meta property="og:description" content="↰ Parent directory( TRAP/src/Network) Contents: Definition ( TRAP/src/Network/TCPListener.h), Includes, Included By, Namespaces, Classes. Definition ( TRAP/src/Network/TCPListener.h): Includes: IP/..." />
-  
 <meta property="og:image" content="https://gamestrap.github.io/TRAP/_static/TRAPWhiteLogo.png" />
-  
 <meta property="og:image:alt" content="TRAP Documentation" />
-  <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
+<meta name="description" content="↰ Parent directory( TRAP/src/Network) Contents: Definition ( TRAP/src/Network/TCPListener.h), Includes, Included By, Namespaces, Classes. Definition ( TRAP/src/Network/TCPListener.h): Includes: IP/..." />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
 
     <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
-        <title>File TCPListener.h - TRAP 0.8.61 documentation</title>
+        <title>File TCPListener.h - TRAP 0.8.72 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -144,7 +138,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">TRAP 0.8.61 documentation</div></a>
+      <a href="../index.html"><div class="brand">TRAP 0.8.72 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -216,6 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Memory.html">Namespace TRAP::Utils::Memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Steam.html">Namespace TRAP::Utils::Steam</a></li>
 <li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__String.html">Namespace TRAP::Utils::String</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_TRAP__Utils__Windows.html">Namespace TRAP::Utils::Windows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkan__InitInfo.html">Struct ImGui_ImplVulkan_InitInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkanH__Frame.html">Struct ImGui_ImplVulkanH_Frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structImGui__ImplVulkanH__FrameSemaphores.html">Struct ImGui_ImplVulkanH_FrameSemaphores</a></li>
@@ -522,6 +517,7 @@
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Utils_1_1Config.html">Class Config</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Utils_1_1Timer.html">Class Timer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Utils_1_1UID.html">Class UID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Utils_1_1Windows_1_1COMInitializer.html">Class COMInitializer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classTRAP_1_1Window.html">Class Window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_Base_8h_1a397c09c05d9ad0890c219a29518fe751.html">Enum ProfileSystems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="enum_Event_8h_1a6e576a87cab897cd5c494c8703df6ff8.html">Enum EventCategory</a></li>
@@ -544,6 +540,9 @@
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a28e1e10c076d148eadd46831f940b4da.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, const TRAP::Graphics::Sampler *, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a65578dcccea1ddf1f754e0d867b90d11.html">Function ImGui::Image(TRAP::Ref&lt;TRAP::Graphics::Texture&gt;, const ImVec2&amp;, const ImVec2&amp;, const ImVec2&amp;, const ImVec4&amp;, const ImVec4&amp;)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1aaeffa375ece15976150ab0a2dd020148.html">Function ImGui::ImageButton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1acc74e6ec8b3e2ebe289e22b667c9a88f.html">Function ImGui::InputText</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ac922202d59d812bf39ba60c3632fa859.html">Function ImGui::InputTextMultiline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1aff5ed6c427bfbaf113ad5ebcca2ee879.html">Function ImGui::InputTextWithHint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1ae3b06628f574f48e8fca5c52737dc359.html">Function ImGui::IsInputEnabled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiLayer_8h_1a472e04e081a04ea70c92a5bc3596b671.html">Function ImGui::SetInputEnabled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_ImGuiVulkanBackend_8h_1a59d10f31b5e6e31d6518e5a711a2469b.html">Function ImGui_ImplVulkan_AddTexture</a></li>
@@ -644,25 +643,25 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a36695e6aabcf72d0cd1e9b2465078ebc.html">Function TRAP::Graphics::API::DetermineVkPipelineStageFlags</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1afbfa774feaee1e4d814422e8ccc732d0.html">Function TRAP::Graphics::API::ErrorCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a7925195fd191831c335618503dcb4764.html">Function TRAP::Graphics::API::FilterTypeToVkFilter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a4b32d8f5a7a5b2bf2c2cd231ed227edf.html">Function TRAP::Graphics::API::ImageFormatBitSizeOfBlock</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a1ae89d0ced9fb14c9bde0fe37b3e0ec9.html">Function TRAP::Graphics::API::ImageFormatChannelCount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ae22a0cb3b950151a6fdffc5bf6d50661.html">Function TRAP::Graphics::API::ImageFormatBitSizeOfBlock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ac76768e4cf847080f85158220faf60bb.html">Function TRAP::Graphics::API::ImageFormatChannelCount</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a01540a22737b64cca2e6ceaf1e450486.html">Function TRAP::Graphics::API::ImageFormatFromVkFormat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1aa5c39e143c2947111e92b4124f2de43a.html">Function TRAP::Graphics::API::ImageFormatHasStencil</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ab2baafb827cf587f8ecb1c4e0501facc.html">Function TRAP::Graphics::API::ImageFormatHeightOfBlock</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a454eab3bb044cb386deddd977da2d222.html">Function TRAP::Graphics::API::ImageFormatIsCompressed</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1aeb30a04e798fecd65e1ec0505c109ae0.html">Function TRAP::Graphics::API::ImageFormatIsDepthAndStencil</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a22d7dbc4f49f2582981a25e67012b3a9.html">Function TRAP::Graphics::API::ImageFormatIsDepthOnly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a9ebf6e94bab722926ab083d0f47ea11e.html">Function TRAP::Graphics::API::ImageFormatIsFloat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a503090c9381dce335052204f83389995.html">Function TRAP::Graphics::API::ImageFormatIsPlanar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1aae630bd2222d323fda51c9e256a13931.html">Function TRAP::Graphics::API::ImageFormatIsSinglePlane</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a51ee80b8ddb620178a61368ba712fed3.html">Function TRAP::Graphics::API::ImageFormatIsStencilOnly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a39928c8a346a4ae3d232b784d0e527c6.html">Function TRAP::Graphics::API::ImageFormatIsU16</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ad02d54da3f8e31e756d75f582b1b4b8c.html">Function TRAP::Graphics::API::ImageFormatNumOfPlanes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1af8414705b14c702f6c7f846c44bc74fa.html">Function TRAP::Graphics::API::ImageFormatPlaneHeight</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a956f14a7ada92b645134f4b9cc514c84.html">Function TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ac47869e7ed492bbe579626291d144021.html">Function TRAP::Graphics::API::ImageFormatPlaneWidth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a096f17691c65763e9a0ff24719dee020.html">Function TRAP::Graphics::API::ImageFormatHasStencil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a768d9f55b9b78950212a826194809e48.html">Function TRAP::Graphics::API::ImageFormatHeightOfBlock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ad9487bbd552d662785a18e8174bc1531.html">Function TRAP::Graphics::API::ImageFormatIsCompressed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a97256ff1e92d2ba9f7ac76df3e61cbd3.html">Function TRAP::Graphics::API::ImageFormatIsDepthAndStencil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a0c75ec647c57ca6d100d83e16904d754.html">Function TRAP::Graphics::API::ImageFormatIsDepthOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a7fd53f2f4f335c175a40cb1ba67706d8.html">Function TRAP::Graphics::API::ImageFormatIsFloat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a3fe256d1e1ef63729b396496511b057c.html">Function TRAP::Graphics::API::ImageFormatIsPlanar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1abfdbc423440a5d77741d112f5a986913.html">Function TRAP::Graphics::API::ImageFormatIsSinglePlane</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a9381be976a357ade89e05dc0b08341f2.html">Function TRAP::Graphics::API::ImageFormatIsStencilOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a7bdb8ee77997e07fe39d46dae1dfb7b9.html">Function TRAP::Graphics::API::ImageFormatIsU16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1aa3b72e0fe756888599ae222e2a0ff143.html">Function TRAP::Graphics::API::ImageFormatNumOfPlanes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a5fc7bcc01fac4b0880583bc6300ed56d.html">Function TRAP::Graphics::API::ImageFormatPlaneHeight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a7f1f792a7bbe942046ddc9ba72c1bff1.html">Function TRAP::Graphics::API::ImageFormatPlaneSizeOfBlock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1acf8bf4ea31557039644003b14505623b.html">Function TRAP::Graphics::API::ImageFormatPlaneWidth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a021c13121cc30c2a8e4f32ee7262bef6.html">Function TRAP::Graphics::API::ImageFormatToVkFormat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1ab92628840d392d5092255a5cba8afaf9.html">Function TRAP::Graphics::API::ImageFormatWidthOfBlock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_ImageFormat_8h_1a40c68e1727dcfa9899a057ce1850bdd1.html">Function TRAP::Graphics::API::ImageFormatWidthOfBlock</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a2baf03474e1e896b3702678f313ac82b.html">Function TRAP::Graphics::API::MipMapModeToVkMipMapMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a17e4fb974606cdd3ccefa7e825454010.html">Function TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanCommon_8h_1a1d92dbcbf7346d9dd740f66632a8dfb7.html">Function TRAP::Graphics::API::QueryTypeToVkQueryType</a></li>
@@ -705,7 +704,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4846ec5bd05516bb81ce7e461d8120b1.html">Function TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a3c063045e5543a6ec8b3b4ea84e080ea.html">Function TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a4df5fab5a3fe40a5050e3e23db11dac3.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1ae26f0b67af777f4262fedc6aeecdf493.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a777dddd6aa0f13e41a52a3e7d45e72d3.html">Function TRAP::Graphics::API::VulkanInits::ImageCopy(uint64_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, VkImageSubresourceLayers)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a86b3b6ac7414bfc0ad8b1cb1d8c1cd4a.html">Function TRAP::Graphics::API::VulkanInits::ImageCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a019c7ffab0d72b5e7a696c2f9b077097.html">Function TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_VulkanInits_8h_1a97c65cfd4f1be54e9fb3537ed6ee518d.html">Function TRAP::Graphics::API::VulkanInits::InstanceCreateInfo</a></li>
@@ -1243,7 +1242,7 @@
 <li class="toctree-l2"><a class="reference internal" href="function_Dialogs_8h_1aa9165b7d4abc42460ab544a7b56e82f3.html">Function TRAP::Utils::Dialogs::ShowMsgBox(const std::string&amp;, const std::string&amp;, Style)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Dialogs_8h_1a63e2c7e32aaa06e5957e9f66ee6c98c6.html">Function TRAP::Utils::Dialogs::ShowMsgBox(const std::string&amp;, const std::string&amp;, Buttons)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_Dialogs_8h_1ac68bc245096eeb0307dba0f50af708b0.html">Function TRAP::Utils::Dialogs::ShowMsgBox(const std::string&amp;, const std::string&amp;)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1a0adcb417ce020c98e74bc4a58d12c7d9.html">Function TRAP::Utils::Discord::Create</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1a62e2db9e08629fd59a00337edc4908a8.html">Function TRAP::Utils::Discord::Create</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1a523c4cbfee4924fe08ee4de31e89076e.html">Function TRAP::Utils::Discord::Destroy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1aac924cb397b1fc4a559f6f594e7fb35e.html">Function TRAP::Utils::Discord::RunCallbacks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_DiscordGameSDK_8h_1afd98b14564a5594b4780fd100bfd95a5.html">Function TRAP::Utils::Discord::SetActivity</a></li>
@@ -1337,6 +1336,7 @@
 <li class="toctree-l2"><a class="reference internal" href="variable_Log_8h_1a10069101162e5c48db7400622d7df638.html">Variable TRAP::TRAPLog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Inflate_8h_1ab1028cb247241f573d58667e8e97f9dc.html">Variable TRAP::Utils::Decompress::INTERNAL::FirstLengthCodeIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Inflate_8h_1a890d804aebd91e05937d9357b9b70fda.html">Variable TRAP::Utils::Decompress::INTERNAL::LastLengthCodeIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_DiscordGameSDK_8h_1a82d697857ab629c6f65c8a6d8657aa0a.html">Variable TRAP::Utils::Discord::TRAPDiscordAppID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="variable_Base_8h_1a320950fed6e83354e84eaedd12fcbc34.html">Variable TRAP_VERSION</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1ac50762666aa00bd3a4308158510f1748.html">Define _WIN32_WINNT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a5464d3c7dccb650c7900dd408f6c96b3.html">Define _WIN32_WINNT_WIN8</a></li>
@@ -1350,6 +1350,7 @@
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a9f918755b601cf4bffca775992e6fb90.html">Define NOMINMAX</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a9a96efea829ad3f6577700fd829c8e26.html">Define OCR_HAND</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Win_8h_1a3a75770af38d05856eb2e9d1867b471c.html">Define OEMRESOURCE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="define_Base_8h_1a6a89a1bfca5f0fb7b66654f576a04338.html">Define TracyLockable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Base_8h_1a0d25b0b4d122e7ec92efb2ba3beb490c.html">Define TRAP_EXPAND_MACRO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_Log_8inl_1aac7fbd38802951a5e37dd2614af0e17e.html">Define TRAP_LOG_INL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="define_String_8inl_1aa10e0f94eee33231d94abc6769d76df7.html">Define TRAP_STRING_INL</a></li>
