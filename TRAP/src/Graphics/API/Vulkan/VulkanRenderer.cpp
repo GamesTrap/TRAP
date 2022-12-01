@@ -1678,6 +1678,9 @@ void TRAP::Graphics::API::VulkanRenderer::ReflexMarker([[maybe_unused]] const ui
 #ifdef NVIDIA_REFLEX_AVAILABLE
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	if(!GPUSettings.ReflexSupported)
+		return;
+
 	NVSTATS_MARKER(marker, frame);
 
 	if(marker == NVSTATS_PC_LATENCY_PING)
