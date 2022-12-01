@@ -2511,7 +2511,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 	if (s_multiView && physicalDevice->IsExtensionSupported(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME))
 	{
-		extensions.emplace_back(VK_KHR_MULTIVIEW_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
 		s_renderPass2 = true;
 	}
 

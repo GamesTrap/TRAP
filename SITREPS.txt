@@ -3473,3 +3473,8 @@ SITREP 11/30/2022|22w48a3
     - Updated README ~<5 mins
     - Fixed VulkanPipeline.cpp compiler error ~<5 mins
     - VRSTests Added resizing of shading rate texture ~<10 mins
+
+SITREP 12/01/2022|22w48a4
+    - Changed TRAP Engine version to 22w48a4(0.8.76)
+    - VulkanRenderer Fixed VK_KHR_multiview used instead of VK_KHR_create_renderpass2 ~<5 mins
+    - VRSTests Fixed issues with GPUs that dont support VRS ~<10 mins

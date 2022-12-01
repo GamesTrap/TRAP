@@ -19,7 +19,7 @@ void VRSTests::OnImGuiRender()
 	ImGui::Text("Press ESC to close");
     ImGui::Separator();
 
-    if(ImGui::BeginCombo("Shading Rate Mode", m_perDrawActive ? "Per Draw" : "Per Tile"))
+    if((m_supportsPerDrawVRS || m_supportsPerTileVRS) && ImGui::BeginCombo("Shading Rate Mode", m_perDrawActive ? "Per Draw" : "Per Tile"))
     {
         if(m_supportsPerDrawVRS)
         {
@@ -61,8 +61,11 @@ void VRSTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Variable Rate Shading");
 
-    const auto fbSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
-	m_shadingRateTexture = CreateShadingRateTexture(fbSize.x, fbSize.y);
+    if(m_supportsPerTileVRS)
+    {
+        const auto fbSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
+        m_shadingRateTexture = CreateShadingRateTexture(fbSize.x, fbSize.y);
+    }
 
     if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full))
     {
@@ -124,7 +127,7 @@ void VRSTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Render
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::ClearBuffer::Color_Depth);
 
-    if(m_perDrawActive)
+    if(m_supportsPerDrawVRS && m_perDrawActive)
     {
         TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRate,
                                                       TRAP::Graphics::ShadingRateCombiner::Max,
@@ -163,10 +166,13 @@ bool VRSTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 bool VRSTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
 {
-    m_shadingRateTexture = CreateShadingRateTexture(event.GetWidth(), event.GetHeight());
+    if(m_supportsPerTileVRS)
+    {
+        m_shadingRateTexture = CreateShadingRateTexture(event.GetWidth(), event.GetHeight());
 
-    if(!m_perDrawActive)
-        TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
+        if(!m_perDrawActive)
+            TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
+    }
 
     return false;
 }
