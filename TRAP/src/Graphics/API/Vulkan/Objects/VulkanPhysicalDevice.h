@@ -173,12 +173,13 @@ namespace TRAP::Graphics::API
 		/// 15. Optionally supports RayTracing extensions (2000 score).
 		/// 16. Optionally supports geometry shaders (1000 score).
 		/// 17. Optionally supports tessellation shaders (1000 score).
-		/// 18. Optionally supports fill mode non solid (250 score).
-		/// 19. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
-		/// 20. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
-		/// 21. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
-		/// 22. Optionally check max sample count for MSAA. (Sample count * 10 score).
-		/// 23. Optionally check if anisotropic filtering is supported (500 score).
+		/// 18. Optionally supports Variable Rate Shading extensions and Tier 1/Tier 2 (1000 + 100/200 score).
+		/// 19. Optionally supports fill mode non solid (250 score).
+		/// 20. Optionally does surface has optimal format (B8G8R8A8 Unorm & SRGB Non-linear) (250 score) (Disabled for Headless mode).
+		/// 21. Optionally check VRAM size (size / 1 Gigabyte * 100 score).
+		/// 22. Optionally check max resolution of 2D and cube images. (Max image resolution is score).
+		/// 23. Optionally check max sample count for MSAA. (Sample count * 10 score).
+		/// 24. Optionally check if anisotropic filtering is supported (500 score).
 		/// </summary>
 		/// <param name="physicalDevices">Vulkan physical devices to rate.</param>
 		/// <param name="instance">Vulkan instance used to retrieve the physical devices.</param>

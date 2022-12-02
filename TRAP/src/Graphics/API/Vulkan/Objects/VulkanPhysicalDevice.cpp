@@ -8,6 +8,7 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Utils/Dialogs/Dialogs.h"
+#include <vulkan/vulkan_core.h>
 
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::s_availablePhysicalDeviceUUIDs{};
 
@@ -757,7 +758,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		// Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = true;
-		const std::vector<std::string> raytracingExt =
+		constexpr std::array<const char*, 8> raytracingExt =
 		{
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
 			VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME,
@@ -768,12 +769,12 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
 			VK_KHR_RAY_QUERY_EXTENSION_NAME
 		};
-		for (const std::string_view str : raytracingExt)
+		for (const char* str : raytracingExt)
 		{
 			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
 											 [str](const VkExtensionProperties &props)
 											 {
-												 return std::strcmp(str.data(), props.extensionName) == 0;
+												 return std::strcmp(str, props.extensionName) == 0;
 											 });
 
 			if (extRes == extensions.end())
@@ -804,6 +805,52 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		else
 			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName,
 					"\" Failed Tessellation Shader Test!");
+
+		// Big Optionally: Check if Variable Rate Shading is supported and Tier 1/Tier 2
+		bool VRS = true;
+		const std::array<const char*, 2> VRSExt =
+		{
+			VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
+			VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME
+		};
+		for (const char* str : VRSExt)
+		{
+			const auto extRes = std::find_if(extensions.begin(), extensions.end(),
+											 [str](const VkExtensionProperties &props)
+											 {
+												 return std::strcmp(str, props.extensionName) == 0;
+											 });
+
+			if (extRes == extensions.end())
+			{
+				VRS = false;
+				break;
+			}
+		}
+
+		if (VRS)
+		{
+			//VRS Tier 1/Tier 2
+			VkPhysicalDeviceFragmentShadingRateFeaturesKHR fsrFeatures{};
+			fsrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
+			fsrFeatures.pNext = nullptr;
+			VkPhysicalDeviceFeatures2KHR devFeatures2{};
+			devFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
+			devFeatures2.pNext = &fsrFeatures;
+			vkGetPhysicalDeviceFeatures2KHR(dev, &devFeatures2);
+
+			if(!fsrFeatures.pipelineFragmentShadingRate && !fsrFeatures.attachmentFragmentShadingRate)
+				TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Variable Rate Shading Test!");
+			else
+				score += 1000;
+
+			if(fsrFeatures.pipelineFragmentShadingRate) //Tier 1
+				score += 100;
+			if(fsrFeatures.attachmentFragmentShadingRate) //Tier 2
+				score += 200;
+		}
+		else
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Variable Rate Shading Test!");
 
 		// Optionally: Check if device support fill mode non solid
 		if (devFeatures.fillModeNonSolid)

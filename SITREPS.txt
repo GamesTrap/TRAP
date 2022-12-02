@@ -3479,3 +3479,7 @@ SITREP 12/01/2022|22w48a4
     - VulkanRenderer Fixed VK_KHR_multiview used instead of VK_KHR_create_renderpass2 ~<5 mins
     - VRSTests Fixed issues with GPUs that dont support VRS ~<10 mins
     - VulkanRenderer Fixed ReflexMarker() trying to call NVIDIA Reflex SDK API while not using supported NVIDIA GPU ~<5 mins
+
+SITREP 12/02/2022|22w48b1
+    - Changed TRAP Engine version to 22w48b1(0.8.77)
+    - VulkanPhysicalDevice RatePhysicalDevices() Added checks for VRS ~<15 mins
