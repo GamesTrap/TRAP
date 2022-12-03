@@ -179,7 +179,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 77);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 78);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -3483,3 +3483,12 @@ SITREP 12/01/2022|22w48a4
 SITREP 12/02/2022|22w48b1
     - Changed TRAP Engine version to 22w48b1(0.8.77)
     - VulkanPhysicalDevice RatePhysicalDevices() Added checks for VRS ~<15 mins
+
+SITREP 12/03/2022|22w48b2
+    - Changed TRAP Engine version to 22w48b2(0.8.78)
+    - RendererAPI/RenderCommand Added Get/SetAnisotropyLevel() ~<5 mins
+    - Sampler constructor now injects engine set anisotropy level if EnableAnisotropy is true and OverrideAnisotropyLevel is 0 ~<5 mins
+    - Engine.cfg Added AnisotropyLevel ~<10 mins
+    - Renderer2D Added SetCustomSampler() to specify a custom sampler to use ~<5 mins
+    - Renderer2D/Cube3D Added check if anisotropy level changed ~<5 mins
+    - Tests Added AnisotropyTests ~<15 mins

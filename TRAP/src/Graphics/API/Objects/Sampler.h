@@ -10,6 +10,7 @@ namespace TRAP::Graphics
 	using AddressMode = TRAP::Graphics::RendererAPI::AddressMode;
 	using CompareMode = TRAP::Graphics::RendererAPI::CompareMode;
 	using MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode;
+	using SampleCount = TRAP::Graphics::RendererAPI::SampleCount;
 
 	class Sampler
 	{
@@ -19,7 +20,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Sampler description.</param>
 		/// <returns>Created sampler.</returns>
-		static TRAP::Ref<Sampler> Create(const SamplerDesc& desc);
+		static TRAP::Ref<Sampler> Create(SamplerDesc desc);
 
 		/// <summary>
 		/// Destructor.
@@ -82,12 +83,13 @@ namespace TRAP::Graphics
 		/// Retrieve the max anisotropy of the sampler.
 		/// </summary>
 		/// <returns>Max anisotropy.</returns>
-		float GetMaxAnisotropy() const;
+		float GetAnisotropyLevel() const;
 		/// <summary>
 		/// Retrieve the compare function of the sampler.
 		/// </summary>
 		/// <returns>Compare function.</returns>
 		CompareMode GetCompareFunc() const;
+		bool UsesEngineAnisotropyLevel() const;
 
 		/// <summary>
 		/// Clear all cached samplers.
@@ -101,6 +103,7 @@ namespace TRAP::Graphics
 		Sampler();
 
 		SamplerDesc m_samplerDesc;
+		bool m_usesEngineAnisotropyLevel = false;
 
 	private:
 		static std::unordered_map<SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;

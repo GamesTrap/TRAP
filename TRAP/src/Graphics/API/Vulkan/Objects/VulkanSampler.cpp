@@ -23,12 +23,6 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 	m_samplerDesc = desc;
 
-	if(m_samplerDesc.MaxAnisotropy > RendererAPI::GPUSettings.MaxAnisotropy)
-	{
-		TP_ERROR(Log::RendererVulkanSamplerPrefix, "Sampler Anisotropy is greater than the maximum supported by the GPU! Clamping to GPU maximum");
-		m_samplerDesc.MaxAnisotropy = RendererAPI::GPUSettings.MaxAnisotropy;
-	}
-
 	//Default sampler lod values
 	//Used if not overriden by SetLogRange or not Linear mipmaps
 	float minSamplerLod = 0;
@@ -50,7 +44,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		                                                      m_samplerDesc.MipLodBias,
 															  minSamplerLod,
 															  maxSampledLod,
-		                                                      m_samplerDesc.MaxAnisotropy,
+		                                                      m_samplerDesc.EnableAnisotropy ? m_samplerDesc.OverrideAnisotropyLevel : 0.0f,
 		                                                      VkComparisonFuncTranslator[static_cast<uint32_t>(m_samplerDesc.CompareFunc)]);
 
 	if(!TRAP::Graphics::API::ImageFormatIsPlanar(m_samplerDesc.SamplerConversionDesc.Format))

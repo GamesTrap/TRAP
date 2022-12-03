@@ -273,6 +273,19 @@ namespace TRAP::Graphics
 		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
 		/// <param name="outSampleCount">Output: Used sample count.</param>
 		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount);
+		/// <summary>
+		/// Retrieve the currently used anisotropy level.
+		/// </summary>
+		/// <returns>Used anisotropy level.</returns>
+		static SampleCount GetAnisotropyLevel();
+		/// <summary>
+		/// Set the anisotropy level.
+		/// A value of SampleCount::One effectively disables anisotropic filtering.
+		///
+		/// Note: Samplers need to be recreated in order to use the new anisotropy level.
+		/// </summary>
+		/// <param name="anisotropyLevel">Anisotropy level to use.</param>
+		static void SetAnisotropyLevel(SampleCount anisotropyLevel);
 
 		//Blending functions
 

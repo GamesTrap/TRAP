@@ -1,5 +1,6 @@
 #include <TRAP.h>
 
+#include "Anisotropy/AnisotropyTests.h"
 #include "AntiAliasing/AntiAliasingTests.h"
 #include "Clipboard/ClipboardTests.h"
 #include "Controllers/ControllerTests.h"
@@ -33,6 +34,7 @@ public:
 	explicit Tests(std::string gameName)
 		: Application(std::move(gameName))
 	{
+		PushLayer(std::make_unique<AnisotropyTests>());
 		// PushLayer(std::make_unique<AntiAliasingTests>());
 		// PushLayer(std::make_unique<ClipboardTests>());
 		// PushLayer(std::make_unique<ControllerTests>());
@@ -55,7 +57,7 @@ public:
 		// PushLayer(std::make_unique<SPIRVTests>());
 		// PushLayer(std::make_unique<SpriteSheetTests>());
 		// PushLayer(std::make_unique<TitleTests>());
-		PushLayer(std::make_unique<VRSTests>());
+		// PushLayer(std::make_unique<VRSTests>());
 		// PushLayer(std::make_unique<VulkanTextureTests>());
 		// PushLayer(std::make_unique<WindowStateTests>());
 		// PushLayer(std::make_unique<WindowFeaturesTests>());

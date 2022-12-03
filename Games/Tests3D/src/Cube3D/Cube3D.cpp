@@ -2,6 +2,7 @@
 
 Cube3D::Cube3D()
     : Layer("Cube3D"),
+      m_textureSamplerDesc(),
       m_diffuseReflectionDataBuffer(),
 	  m_phongLightningDataBuffer(),
 	  m_cubePosition(0.0f, 0.0f, -5.0f),
@@ -164,14 +165,14 @@ void Cube3D::OnAttach()
     };
     m_skyBoxVertexBuffer->SetLayout(skyBoxLayout);
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
-    samplerDesc.AddressU = TRAP::Graphics::AddressMode::ClampToEdge;
-    samplerDesc.AddressV = TRAP::Graphics::AddressMode::ClampToEdge;
-    samplerDesc.AddressW = TRAP::Graphics::AddressMode::ClampToEdge;
-    samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-    samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
-    samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
-    m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
+    m_textureSamplerDesc.AddressU = TRAP::Graphics::AddressMode::ClampToEdge;
+    m_textureSamplerDesc.AddressV = TRAP::Graphics::AddressMode::ClampToEdge;
+    m_textureSamplerDesc.AddressW = TRAP::Graphics::AddressMode::ClampToEdge;
+    m_textureSamplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
+    m_textureSamplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
+    m_textureSamplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    m_textureSamplerDesc.EnableAnisotropy = true;
+    m_textureSampler = TRAP::Graphics::Sampler::Create(m_textureSamplerDesc);
 
 	//Camera setup
     m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f);
@@ -332,6 +333,13 @@ void Cube3D::OnImGuiRender()
 
 void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
+    //Update sampler
+	if(m_textureSampler->UsesEngineAnisotropyLevel() &&
+	   static_cast<float>(TRAP::Graphics::RenderCommand::GetAnisotropyLevel()) != m_textureSampler->GetAnisotropyLevel())
+	{
+		m_textureSampler = TRAP::Graphics::Sampler::Create(m_textureSamplerDesc);
+	}
+
     //Use Textures
     TRAP::Graphics::ShaderManager::Get("Texture")->UseTexture(0, 0, TRAP::Graphics::TextureManager::Get2D("UVGrid"));
     TRAP::Graphics::ShaderManager::Get("Texture")->UseSampler(0, 1, m_textureSampler.get());

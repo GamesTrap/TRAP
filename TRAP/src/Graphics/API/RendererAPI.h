@@ -119,14 +119,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
 		/// <param name="renderAPI">Render API to use.</param>
-		/// <param name="antiAliasing">Optional anti aliasing method to use.</param>
-		/// <param name="antiAliasingSamples">
-		/// Optional number of samples to use by anti aliasing if enabled.
-		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.
-		/// </param>
-		static void Init(std::string_view gameName, RenderAPI renderAPI,
-		                 AntiAliasing antiAliasing = AntiAliasing::Off,
-						 SampleCount antiAliasingSamples = SampleCount::One);
+		static void Init(std::string_view gameName, RenderAPI renderAPI);
 		/// <summary>
 		/// Shutdown the Renderer.
 		/// </summary>
@@ -757,6 +750,21 @@ namespace TRAP::Graphics
 		/// <param name="antiAliasing">Anti aliasing method to use.</param>
 		/// <param name="sampleCount">Sample count to use.</param>
 		static void SetAntiAliasing(AntiAliasing antiAliasing, SampleCount sampleCount);
+
+		/// <summary>
+		/// Retrieve the currently used anisotropy level.
+		/// </summary>
+		/// <returns>Used anisotropy level.</returns>
+		static SampleCount GetAnisotropyLevel();
+
+		/// <summary>
+		/// Set the anisotropy level.
+		/// A value of SampleCount::One effectively disables anisotropic filtering.
+		///
+		/// Note: User created samplers need to be recreated in order to use the new anisotropy level.
+		/// </summary>
+		/// <param name="anisotropyLevel">Anisotropy level to use.</param>
+		static void SetAnisotropyLevel(SampleCount anisotropyLevel);
 
 		/// <summary>
 		/// Notify the RendererAPI that the SwapChain needs to be resized.
@@ -1683,8 +1691,10 @@ namespace TRAP::Graphics
 			float MinLod{};
 			//Maximum lod value
 			float MaxLod{};
-			//Max anisotropy
-			float MaxAnisotropy{};
+			//Enable/Disable Anisotropic filtering
+			bool EnableAnisotropy = true;
+			//Override Anisotropic filtering level (0.0f = auto)
+			float OverrideAnisotropyLevel{};
 			//Comparison function compares sampled data against existing sampled data
 			CompareMode CompareFunc{};
 
@@ -2584,6 +2594,7 @@ namespace TRAP::Graphics
 		static RendererAPI::AntiAliasing s_currentAntiAliasing;
 		static RendererAPI::SampleCount s_newSampleCount;
 		static RendererAPI::AntiAliasing s_newAntiAliasing;
+		static RendererAPI::SampleCount s_Anisotropy;
 
 		static std::array<uint8_t, 16> s_newGPUUUID;
 
@@ -2668,8 +2679,9 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const Sample
 	//Deep equality
 	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
 		   this->AddressU == s.AddressU && this->AddressV == s.AddressV && this->AddressW == s.AddressW &&
-		   this->MipLodBias == s.MipLodBias && this->MaxAnisotropy == s.MaxAnisotropy &&
-		   this->CompareFunc == s.CompareFunc && this->SamplerConversionDesc == s.SamplerConversionDesc;
+		   this->MipLodBias == s.MipLodBias && this->EnableAnisotropy == s.EnableAnisotropy &&
+		   this->OverrideAnisotropyLevel == s.OverrideAnisotropyLevel && this->CompareFunc == s.CompareFunc &&
+		   this->SamplerConversionDesc == s.SamplerConversionDesc;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

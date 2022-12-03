@@ -2696,6 +2696,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	samplerDesc.AddressU = AddressMode::ClampToBorder;
 	samplerDesc.AddressV = AddressMode::ClampToBorder;
 	samplerDesc.AddressW = AddressMode::ClampToBorder;
+	samplerDesc.EnableAnisotropy = false;
 	s_NullDescriptors->DefaultSampler = TRAP::MakeRef<VulkanSampler>(samplerDesc);
 
 	BlendStateDesc blendStateDesc{};

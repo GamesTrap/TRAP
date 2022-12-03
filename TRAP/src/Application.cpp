@@ -256,18 +256,38 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 #ifdef TRAP_HEADLESS_MODE
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
-		//Get Anti aliasing from engine.cfg
-		const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-		const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+		//Retrieve RendererAPI values from engine.cfg
+		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
+		m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::One;
+		m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
+		std::string anisotropyLevelStr = "16";
+		m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
 
-		Graphics::RendererAPI::Init(m_gameName, renderAPI, antiAliasing, sampleCount);
+		Graphics::RendererAPI::Init(m_gameName, renderAPI);
+		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+		if(!anisotropyLevelStr.empty())
+		{
+			const Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ? Graphics::SampleCount::One : Utils::String::ConvertToType<Graphics::SampleCount>(anisotropyLevelStr);
+			Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
+		}
 	}
 #else
-	//Get Anti aliasing from engine.cfg
-	const Graphics::AntiAliasing antiAliasing = m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing");
-	const Graphics::SampleCount sampleCount = m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality");
+	//Retrieve RendererAPI values from engine.cfg
+	Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
+	m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
+	Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::One;
+	m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
+	std::string anisotropyLevelStr = "16";
+	m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
 
-	Graphics::RendererAPI::Init(m_gameName, renderAPI, antiAliasing, sampleCount);
+	Graphics::RendererAPI::Init(m_gameName, renderAPI);
+	Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+	if(!anisotropyLevelStr.empty())
+	{
+		const Graphics::SampleCount anisotropyLevel = (anisotropyLevelStr == "Off") ? Graphics::SampleCount::One : Utils::String::ConvertToType<Graphics::SampleCount>(anisotropyLevelStr);
+		Graphics::RenderCommand::SetAnisotropyLevel(anisotropyLevel);
+	}
 #endif
 
 	//Window creation stuff
@@ -406,10 +426,12 @@ TRAP::Application::~Application()
 		m_config.Set("VulkanGPU", Utils::UUIDToString(GPUUUID));
 
 		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
-		Graphics::SampleCount sampleCount = Graphics::SampleCount::One;
-		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, sampleCount);
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::One;
+		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, antiAliasingSampleCount);
+		const Graphics::SampleCount anisotropyLevel = Graphics::RenderCommand::GetAnisotropyLevel();
 		m_config.Set("AntiAliasing", antiAliasing);
-		m_config.Set("AntiAliasingQuality", sampleCount);
+		m_config.Set("AntiAliasingQuality", antiAliasingSampleCount);
+		m_config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : Utils::String::ConvertToString(anisotropyLevel));
 
 		//NVIDIA Reflex
 #if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)

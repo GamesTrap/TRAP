@@ -192,6 +192,20 @@ void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::SetAnisotropyLevel(const SampleCount anisotropyLevel)
+{
+	RendererAPI::SetAnisotropyLevel(anisotropyLevel);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::SampleCount TRAP::Graphics::RenderCommand::GetAnisotropyLevel()
+{
+	return RendererAPI::GetAnisotropyLevel();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha, const Window* const window)
 {
 	RendererAPI::GetRenderer()->SetBlendMode(modeRGB, modeAlpha, window);

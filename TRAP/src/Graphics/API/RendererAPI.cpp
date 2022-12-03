@@ -29,10 +29,11 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = n
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_transferQueue = nullptr;
 
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_currentSampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_currentSampleCount = TRAP::Graphics::RendererAPI::SampleCount::Two;
 TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_currentAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_newSampleCount = TRAP::Graphics::RendererAPI::SampleCount::One;
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_newSampleCount = TRAP::Graphics::RendererAPI::SampleCount::Two;
 TRAP::Graphics::RendererAPI::AntiAliasing TRAP::Graphics::RendererAPI::s_newAntiAliasing = TRAP::Graphics::RendererAPI::AntiAliasing::Off;
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::s_Anisotropy = TRAP::Graphics::RendererAPI::SampleCount::Sixteen;
 
 std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::s_newGPUUUID{};
 
@@ -44,8 +45,7 @@ bool TRAP::Graphics::RendererAPI::s_diagnosticCheckPointsSupport = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const RenderAPI renderAPI,
-                                       const AntiAliasing antiAliasing , SampleCount antiAliasingSamples)
+void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const RenderAPI renderAPI)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -85,21 +85,7 @@ void TRAP::Graphics::RendererAPI::Init(const std::string_view gameName, const Re
 	queueDesc.Type = QueueType::Transfer;
 	s_transferQueue = Queue::Create(queueDesc);
 
-	//Anti aliasing setup
-
-	TRAP_ASSERT(GPUSettings.MaxMSAASampleCount >= antiAliasingSamples, "RendererAPI::Init(): Sample count is higher than max supported by GPU");
-
-	if(antiAliasing == AntiAliasing::MSAA && antiAliasingSamples > GPUSettings.MaxMSAASampleCount)
-		antiAliasingSamples = GPUSettings.MaxMSAASampleCount;
-	else if(antiAliasing != AntiAliasing::Off && antiAliasingSamples == SampleCount::One)
-	{
-		TRAP_ASSERT(false, "RendererAPI::Init(): Sample count must be greater than one when anti aliasing is enabled");
-	}
-	else if(antiAliasing == AntiAliasing::Off)
-		antiAliasingSamples = SampleCount::One;
-
-	s_newAntiAliasing = s_currentAntiAliasing = antiAliasing;
-	s_newSampleCount = s_currentSampleCount = antiAliasingSamples;
+	s_Anisotropy = static_cast<SampleCount>(GPUSettings.MaxAnisotropy);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -401,6 +387,26 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 	s_newAntiAliasing = antiAliasing;
 	s_newSampleCount = sampleCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return s_Anisotropy;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::SetAnisotropyLevel(const SampleCount anisotropyLevel)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(GPUSettings.MaxAnisotropy >= static_cast<float>(anisotropyLevel), "RendererAPI::SetAnisotropyLevel(): Anisotropy level is higher than max supported by GPU");
+
+	s_Anisotropy = static_cast<SampleCount>(TRAP::Math::Clamp(static_cast<float>(anisotropyLevel), 1.0f, GPUSettings.MaxAnisotropy));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

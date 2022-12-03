@@ -3955,7 +3955,7 @@ T TRAP::Math::Pow(const T base, const T exponent)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return std::pow(base, exponent);
+	return static_cast<T>(std::pow(static_cast<float>(base), static_cast<float>(exponent)));
 }
 
 template<uint32_t L, typename T>
@@ -3965,7 +3965,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Pow(const Vec<L, T>& base, const Vec<L, T>& ex
 
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::pow(base[i], exponent[i]);
+		result[i] = static_cast<T>(std::pow(static_cast<float>(base[i]), static_cast<float>(exponent[i])));
 	return result;
 }
 

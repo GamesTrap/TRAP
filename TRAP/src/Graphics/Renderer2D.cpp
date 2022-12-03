@@ -731,6 +731,26 @@ void TRAP::Graphics::Renderer2D::Reset()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
+	//Update sampler
+	if(Renderer2DData::QuadData::TextureSampler->UsesEngineAnisotropyLevel() &&
+	   static_cast<float>(RenderCommand::GetAnisotropyLevel()) != Renderer2DData::QuadData::TextureSampler->GetAnisotropyLevel())
+	{
+		const auto& tex = Renderer2DData::QuadData::TextureSampler;
+
+		RendererAPI::SamplerDesc desc{};
+		desc.MinFilter = tex->GetMinFilter();
+		desc.MagFilter = tex->GetMagFilter();
+		desc.MipMapMode = tex->GetMipMapMode();
+		desc.AddressU = tex->GetAddressU();
+		desc.AddressV = tex->GetAddressV();
+		desc.AddressW = tex->GetAddressW();
+		desc.MipLodBias = tex->GetMipLodBias();
+		desc.EnableAnisotropy = true;
+		desc.CompareFunc = tex->GetCompareFunc();
+
+		Renderer2DData::QuadData::TextureSampler = Sampler::Create(desc);
+	}
+
 	s_dataIndex = 0;
 }
 
@@ -757,11 +777,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 	currData.LineData.Reset();
 	currData.CircleData.Reset();
 	currData.QuadData.Reset();
-
-	//TODO To be removed
-	// const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
-	// for(auto& buffers : currData.QuadData.DataBuffers[imageIndex])
-	// 	std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), Renderer2DData::QuadData::WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -787,11 +802,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	currData.LineData.Reset();
 	currData.CircleData.Reset();
 	currData.QuadData.Reset();
-
-	//TODO To be removed
-	// const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
-	// for(auto& buffers : currData.QuadData.DataBuffers[imageIndex])
-	// 	std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), Renderer2DData::QuadData::WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -817,11 +827,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const EditorCamera& camera)
 	currData.LineData.Reset();
 	currData.CircleData.Reset();
 	currData.QuadData.Reset();
-
-	//TODO To be removed
-	// const uint32_t imageIndex = RendererAPI::GetCurrentImageIndex(TRAP::Application::GetWindow());
-	// for(auto& buffers : currData.QuadData.DataBuffers[imageIndex])
-	// 	std::fill(buffers.TextureSlots.begin(), buffers.TextureSlots.end(), Renderer2DData::QuadData::WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -837,6 +842,19 @@ void TRAP::Graphics::Renderer2D::EndScene()
 	currData.Stats.DrawCalls += currData.LineData.DrawBuffers(currData.CameraUniformBuffer.get());
 
 	s_dataIndex++;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::SetCustomSampler(TRAP::Ref<TRAP::Graphics::Sampler> sampler)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	TRAP_ASSERT(sampler, "Renderer2D::SetCustomSampler(): Sampler is nullptr!");
+	if(!sampler)
+		return;
+
+	Renderer2DData::QuadData::TextureSampler = sampler;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

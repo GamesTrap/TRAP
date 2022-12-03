@@ -57,6 +57,7 @@ void ComputeTests::OnAttach()
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;
+    samplerDesc.EnableAnisotropy = false;
     m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
     //Wait for all pending resources (Just in case)

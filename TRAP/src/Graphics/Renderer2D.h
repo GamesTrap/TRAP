@@ -13,6 +13,7 @@ namespace TRAP::Graphics
 	class OrthographicCamera;
 	class EditorCamera;
 	class Texture;
+	class Sampler;
 	class SubTexture2D;
 	struct Renderer2DData;
 
@@ -55,6 +56,12 @@ namespace TRAP::Graphics
 		/// End a running Renderer2D scene.
 		/// </summary>
 		static void EndScene();
+
+		/// <summary>
+		/// Set a custom sampler to use by the 2D renderer.
+		/// </summary>
+		/// <param name="sampler">Sampler to use.</param>
+		static void SetCustomSampler(TRAP::Ref<TRAP::Graphics::Sampler> sampler);
 
 		/// <summary>
 		/// Struct to describe position, rotation and scale.

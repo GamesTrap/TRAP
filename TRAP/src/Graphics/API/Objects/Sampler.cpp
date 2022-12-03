@@ -30,9 +30,23 @@ TRAP::Graphics::Sampler::~Sampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const SamplerDesc& desc)
+TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(SamplerDesc desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	if(desc.EnableAnisotropy && desc.OverrideAnisotropyLevel > RendererAPI::GPUSettings.MaxAnisotropy)
+	{
+		TP_ERROR(Log::RendererSamplerPrefix, "Sampler Anisotropy is greater than the maximum supported by the GPU! Clamping to GPU maximum");
+		desc.OverrideAnisotropyLevel = RendererAPI::GPUSettings.MaxAnisotropy;
+	}
+
+	//Inject engine set Anisotropy level
+	bool injectedAnisotropy = false;
+	if(desc.EnableAnisotropy && desc.OverrideAnisotropyLevel == 0.0f)
+	{
+		desc.OverrideAnisotropyLevel = static_cast<float>(RendererAPI::GetAnisotropyLevel());
+		injectedAnisotropy = true;
+	}
 
 	//Try to use cached Sampler
 	if(s_cachedSamplers.find(desc) != s_cachedSamplers.end())
@@ -45,18 +59,14 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 		return s_cachedSamplers.begin()->second;
 	}
 
+	TRAP::Ref<Sampler> result = nullptr;
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 	{
-		const TRAP::Ref<Sampler> result = TRAP::MakeRef<API::VulkanSampler>(desc);
-
-#ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererSamplerPrefix, "Caching Sampler");
-#endif
-		s_cachedSamplers[desc] = result;
-
-		return result;
+		result = TRAP::MakeRef<API::VulkanSampler>(desc);
+		break;
 	}
 
 	case RenderAPI::NONE:
@@ -66,8 +76,16 @@ TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(const Sampler
 		TRAP_ASSERT(false, "Sampler::Create(): Unknown RenderAPI");
 		return nullptr;
 	}
-}
 
+	result->m_usesEngineAnisotropyLevel = injectedAnisotropy;
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererSamplerPrefix, "Caching Sampler");
+#endif
+	s_cachedSamplers[desc] = result;
+
+	return result;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -134,11 +152,14 @@ float TRAP::Graphics::Sampler::GetMipLodBias() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::Sampler::GetMaxAnisotropy() const
+float TRAP::Graphics::Sampler::GetAnisotropyLevel() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	return m_samplerDesc.MaxAnisotropy;
+	if(!m_samplerDesc.EnableAnisotropy)
+		return 0.0f;
+
+	return m_samplerDesc.OverrideAnisotropyLevel;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -148,6 +169,15 @@ TRAP::Graphics::CompareMode TRAP::Graphics::Sampler::GetCompareFunc() const
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_samplerDesc.CompareFunc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::Sampler::UsesEngineAnisotropyLevel() const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return m_usesEngineAnisotropyLevel;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -175,7 +205,8 @@ std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(cons
 		desc.AddressV,
 		desc.AddressW,
 		desc.MipLodBias,
-		desc.MaxAnisotropy,
+		desc.EnableAnisotropy,
+		desc.OverrideAnisotropyLevel,
 		desc.CompareFunc
 	);
 

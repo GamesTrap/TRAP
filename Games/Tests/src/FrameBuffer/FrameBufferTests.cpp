@@ -49,7 +49,7 @@ void FrameBufferTests::OnAttach()
 	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
-	samplerDesc.MaxAnisotropy = 0.0f;
+    samplerDesc.EnableAnisotropy = false;
 	samplerDesc.CompareFunc = TRAP::Graphics::CompareMode::Never;
 	samplerDesc.MipLodBias = 0.0f;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;

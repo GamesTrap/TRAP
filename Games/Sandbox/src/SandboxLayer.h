@@ -115,6 +115,7 @@ public:
 		samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 		samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 		samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;
+		samplerDesc.EnableAnisotropy = false;
 		m_sampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 		TRAP::Graphics::RenderCommand::SetBlendMode(TRAP::Graphics::BlendMode::Add, TRAP::Graphics::BlendMode::Add);
