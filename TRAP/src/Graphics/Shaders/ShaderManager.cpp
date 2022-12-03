@@ -245,3 +245,12 @@ bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path
 
 	return false;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::ShaderManager::Shutdown()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	Shaders.clear();
+}

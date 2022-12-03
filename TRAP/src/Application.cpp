@@ -456,11 +456,11 @@ TRAP::Application::~Application()
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down SpriteManager");
 		Graphics::SpriteManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
-		Graphics::TextureManager::Clean();
+		Graphics::TextureManager::Shutdown();
 		Graphics::TextureManager::Remove("Fallback2D");
 		Graphics::TextureManager::Remove("FallbackCube");
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");
-		Graphics::ShaderManager::Clean();
+		Graphics::ShaderManager::Shutdown();
 		Graphics::ShaderManager::Remove("FallbackGraphics");
 		Graphics::ShaderManager::Remove("FallbackCompute");
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down RendererAPI");

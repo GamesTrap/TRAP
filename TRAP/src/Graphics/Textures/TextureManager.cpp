@@ -389,3 +389,12 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 
 	return false;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::TextureManager::Shutdown()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	Textures.clear();
+}

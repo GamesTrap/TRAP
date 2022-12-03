@@ -64,6 +64,7 @@ namespace TRAP::Graphics::ShaderManager
 	const std::unordered_map<std::string, Ref<Shader>>& GetShaders();
 	/// <summary>
 	/// Clear all shaders from the ShaderManager.
+	/// Except fallback shaders.
 	/// </summary>
 	void Clean();
 
@@ -102,6 +103,11 @@ namespace TRAP::Graphics::ShaderManager
 	/// <param name="path">Path of shader to check.</param>
 	/// <returns>True if shader exists, false otherwise.</returns>
 	bool ExistsPath(const std::filesystem::path& path);
+
+	/// <summary>
+	/// Shutdown the ShaderManager.
+	/// </summary>
+	void Shutdown();
 }
 
 #endif /*TRAP_SHADERMANAGER_H*/

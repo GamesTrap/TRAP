@@ -120,6 +120,7 @@ namespace TRAP::Graphics::TextureManager
 	const std::unordered_map<std::string, Ref<Texture>>& GetTextures();
 	/// <summary>
 	/// Clear all textures from the TextureManager.
+	/// Except fallback textures.
 	/// </summary>
 	void Clean();
 
@@ -158,6 +159,11 @@ namespace TRAP::Graphics::TextureManager
 	/// <param name="path">Path of texture to check.</param>
 	/// <returns>True if texture exists, false otherwise.</returns>
 	bool ExistsPath(const std::filesystem::path& path);
+
+	/// <summary>
+	/// Shutdown the TextureManager.
+	/// </summary>
+	void Shutdown();
 }
 
 #endif /*TRAP_TEXTUREMANAGER_H*/
