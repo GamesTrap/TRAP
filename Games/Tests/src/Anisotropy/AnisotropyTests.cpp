@@ -23,7 +23,7 @@ void AnisotropyTests::OnAttach()
                              TRAP::Application::GetWindow()->GetFrameBufferSize().y);
 
 	//Use a bilinear sampler for Renderer2D (makes anisotropic filtering stand out more than point filtering)
-	TRAP::Graphics::SamplerDesc samplerDesc{};
+	TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
 	samplerDesc.MinFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MagFilter = TRAP::Graphics::FilterType::Linear;
 	samplerDesc.MipMapMode = TRAP::Graphics::MipMapMode::Linear;

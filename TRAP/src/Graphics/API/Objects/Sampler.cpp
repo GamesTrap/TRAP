@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanSampler.h"
 #include "Utils/Utils.h"
 
-std::unordered_map<TRAP::Graphics::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
+std::unordered_map<TRAP::Graphics::RendererAPI::SamplerDesc, TRAP::Ref<TRAP::Graphics::Sampler>> TRAP::Graphics::Sampler::s_cachedSamplers;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -30,7 +30,7 @@ TRAP::Graphics::Sampler::~Sampler()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(SamplerDesc desc)
+TRAP::Ref<TRAP::Graphics::Sampler> TRAP::Graphics::Sampler::Create(RendererAPI::SamplerDesc desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

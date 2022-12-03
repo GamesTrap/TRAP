@@ -2,6 +2,7 @@
 #define TRAP_UNIFORMBUFFER_H
 
 #include "Graphics/API/ResourceLoader.h"
+#include "Graphics/RenderCommand.h"
 
 namespace TRAP
 {
@@ -10,8 +11,6 @@ namespace TRAP
 
 namespace TRAP::Graphics
 {
-	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
-
 	class UniformBuffer
 	{
 	protected:

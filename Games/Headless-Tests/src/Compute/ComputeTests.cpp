@@ -50,7 +50,7 @@ void ComputeTests::OnAttach()
     TRAP::Graphics::ShaderManager::LoadFile("Texture", "./Assets/Shaders/testtextureseperate.shader");
     TRAP::Graphics::ShaderManager::LoadFile("ComputeEmboss", "./Assets/Shaders/emboss.compute.shader");
 
-    TRAP::Graphics::SamplerDesc samplerDesc{};
+    TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressV = TRAP::Graphics::AddressMode::Repeat;
 	samplerDesc.AddressW = TRAP::Graphics::AddressMode::Repeat;

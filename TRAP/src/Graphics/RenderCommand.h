@@ -2,7 +2,6 @@
 #define TRAP_RENDERCOMMAND_H
 
 #include "Application.h"
-#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics
 {
@@ -67,9 +66,25 @@ namespace TRAP::Graphics
 	/// </summary>
 	using SampleCount = RendererAPI::SampleCount;
 	/// <summary>
-	/// Different different latency modes.
+	/// Different latency modes.
 	/// </summary>
 	using LatencyMode = RendererAPI::LatencyMode;
+	/// <summary>
+	/// Different texture filtering modes.
+	/// </summary>
+	using FilterType = TRAP::Graphics::RendererAPI::FilterType;
+	/// <summary>
+	/// Different texture addressing modes.
+	/// </summary>
+	using AddressMode = TRAP::Graphics::RendererAPI::AddressMode;
+	/// <summary>
+	/// Different texture mip mapping modes.
+	/// </summary>
+	using MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode;
+	/// <summary>
+	/// Different update frequencies.
+	/// </summary>
+	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
 
 	/// <summary>
 	/// Utility class for high level rendering commands.

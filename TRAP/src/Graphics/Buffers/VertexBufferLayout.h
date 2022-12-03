@@ -2,6 +2,7 @@
 #define TRAP_VERTEXBUFFERLAYOUT_H
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/RenderCommand.h"
 
 namespace TRAP::Graphics
 {
@@ -17,8 +18,6 @@ namespace TRAP::Graphics
 		UInt, UInt2, UInt3, UInt4,
 		Bool
 	};
-
-	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
 
 	/// <summary>
 	/// Retrieve the byte size of a given shader data type.

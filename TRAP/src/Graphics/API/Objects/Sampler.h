@@ -1,17 +1,10 @@
 #ifndef TRAP_SAMPLER_H
 #define TRAP_SAMPLER_H
 
-#include "Graphics/API/RendererAPI.h"
+#include "Graphics/RenderCommand.h"
 
 namespace TRAP::Graphics
 {
-	using SamplerDesc = TRAP::Graphics::RendererAPI::SamplerDesc;
-	using FilterType = TRAP::Graphics::RendererAPI::FilterType;
-	using AddressMode = TRAP::Graphics::RendererAPI::AddressMode;
-	using CompareMode = TRAP::Graphics::RendererAPI::CompareMode;
-	using MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode;
-	using SampleCount = TRAP::Graphics::RendererAPI::SampleCount;
-
 	class Sampler
 	{
 	public:
@@ -20,7 +13,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="desc">Sampler description.</param>
 		/// <returns>Created sampler.</returns>
-		static TRAP::Ref<Sampler> Create(SamplerDesc desc);
+		static TRAP::Ref<Sampler> Create(RendererAPI::SamplerDesc desc);
 
 		/// <summary>
 		/// Destructor.
@@ -89,6 +82,10 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <returns>Compare function.</returns>
 		CompareMode GetCompareFunc() const;
+		/// <summary>
+		/// Retrieve whether the sampler uses the engines anisotropy level or not.
+		/// </summary>
+		/// <returns>True if engine set anisotropy level is used, false otherwise.</returns>
 		bool UsesEngineAnisotropyLevel() const;
 
 		/// <summary>
@@ -102,11 +99,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		Sampler();
 
-		SamplerDesc m_samplerDesc;
+		RendererAPI::SamplerDesc m_samplerDesc;
 		bool m_usesEngineAnisotropyLevel = false;
 
 	private:
-		static std::unordered_map<SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
+		static std::unordered_map<RendererAPI::SamplerDesc, TRAP::Ref<Sampler>> s_cachedSamplers;
 	};
 }
 

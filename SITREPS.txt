@@ -3494,3 +3494,4 @@ SITREP 12/03/2022|22w48b2
     - Tests Added AnisotropyTests ~<15 mins
     - Engine.cfg AntiAliasingQuality now defaults to 2 instead of (invalid) 1 ~<20 mins
     - TextureManager/ShaderManager Added Shutdown() ~<5 mins
+    - Moved RendererAPI usings to RenderCommand ~<10 mins

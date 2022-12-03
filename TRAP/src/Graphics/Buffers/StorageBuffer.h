@@ -3,6 +3,7 @@
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/Buffer.h"
+#include "Graphics/RenderCommand.h"
 #include "Application.h"
 
 namespace TRAP
@@ -12,8 +13,6 @@ namespace TRAP
 
 namespace TRAP::Graphics
 {
-	using UpdateFrequency = RendererAPI::DescriptorUpdateFrequency;
-
 	class StorageBuffer
 	{
 	protected:
