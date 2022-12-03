@@ -742,7 +742,7 @@ namespace TRAP::Graphics
 
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
-		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
+		/// Use AntiAliasing::Off to disable anti aliasing.
 		///
 		/// Note: This won't affect the currently recorded frame.
 		/// Note: A sample count of 1 is only valid if anti aliasing is disabled.

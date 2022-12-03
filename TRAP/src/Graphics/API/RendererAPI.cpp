@@ -381,9 +381,10 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 	else if(antiAliasing != AntiAliasing::Off && sampleCount == SampleCount::One)
 	{
 		TRAP_ASSERT(false, "RendererAPI::SetAntiAliasing(): Sample count must be greater than one when anti aliasing is enabled");
+		sampleCount = SampleCount::Two; //Fail safe
 	}
 	else if(antiAliasing == AntiAliasing::Off)
-		sampleCount = SampleCount::One;
+		sampleCount = SampleCount::Two;
 
 	s_newAntiAliasing = antiAliasing;
 	s_newSampleCount = sampleCount;

@@ -259,7 +259,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 		//Retrieve RendererAPI values from engine.cfg
 		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
 		m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
-		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::One;
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
 		m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
 		std::string anisotropyLevelStr = "16";
 		m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
@@ -276,7 +276,7 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	//Retrieve RendererAPI values from engine.cfg
 	Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
 	m_config.Get<TRAP::Graphics::AntiAliasing>("AntiAliasing", antiAliasing);
-	Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::One;
+	Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
 	m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
 	std::string anisotropyLevelStr = "16";
 	m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
@@ -426,7 +426,7 @@ TRAP::Application::~Application()
 		m_config.Set("VulkanGPU", Utils::UUIDToString(GPUUUID));
 
 		Graphics::AntiAliasing antiAliasing = Graphics::AntiAliasing::Off;
-		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::One;
+		Graphics::SampleCount antiAliasingSampleCount = Graphics::SampleCount::Two;
 		Graphics::RenderCommand::GetAntiAliasing(antiAliasing, antiAliasingSampleCount);
 		const Graphics::SampleCount anisotropyLevel = Graphics::RenderCommand::GetAnisotropyLevel();
 		m_config.Set("AntiAliasing", antiAliasing);

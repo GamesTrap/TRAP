@@ -260,7 +260,7 @@ namespace TRAP::Graphics
 		static void SetShadingRate(Ref<Texture> texture, const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
-		/// Use AntiAliasing::Off and SampleCount::One to disable anti aliasing.
+		/// Use AntiAliasing::Off to disable anti aliasing.
 		///
 		/// Note: This will not affect the currently recorded frame.
 		/// </summary>

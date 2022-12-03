@@ -34,8 +34,8 @@ public:
 	explicit Tests(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		PushLayer(std::make_unique<AnisotropyTests>());
-		// PushLayer(std::make_unique<AntiAliasingTests>());
+		// PushLayer(std::make_unique<AnisotropyTests>());
+		PushLayer(std::make_unique<AntiAliasingTests>());
 		// PushLayer(std::make_unique<ClipboardTests>());
 		// PushLayer(std::make_unique<ControllerTests>());
 		// PushLayer(std::make_unique<ComputeTests>());

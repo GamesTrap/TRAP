@@ -418,7 +418,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(PerWindowData* const p)
 		swapChainDesc.ClearDepth = p->ClearDepth;
 		swapChainDesc.ClearStencil = p->ClearStencil;
 		swapChainDesc.EnableVSync = p->CurrentVSync;
-		if(s_currentAntiAliasing == AntiAliasing::Off || s_currentAntiAliasing == AntiAliasing::MSAA)
+		if(s_currentAntiAliasing == AntiAliasing::MSAA)
 			swapChainDesc.SampleCount = s_currentSampleCount;
 		else
 			swapChainDesc.SampleCount = SampleCount::One;
@@ -602,7 +602,7 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 
 #ifndef TRAP_HEADLESS_MODE
 	if(updateImGui) //To set MSAA sample count for ImGui we need a running render pass.
-		TRAP::Application::GetImGuiLayer().SetMSAASamples(static_cast<uint32_t>(s_currentSampleCount));
+		TRAP::Application::GetImGuiLayer().SetMSAASamples(s_currentAntiAliasing != AntiAliasing::Off ? static_cast<uint32_t>(s_currentSampleCount) : 1);
 #endif
 }
 
@@ -2019,11 +2019,15 @@ bool TRAP::Graphics::API::VulkanRenderer::UpdateAntiAliasingRenderTargets(PerWin
 		s_currentAntiAliasing = s_newAntiAliasing;
 		s_currentSampleCount = s_newSampleCount;
 
-		std::get<GraphicsPipelineDesc>(winData->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
+		if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+			std::get<GraphicsPipelineDesc>(winData->GraphicsPipelineDesc.Pipeline).SampleCount = s_currentSampleCount;
+		else
+			std::get<GraphicsPipelineDesc>(winData->GraphicsPipelineDesc.Pipeline).SampleCount = SampleCount::One;
+
 #ifndef TRAP_HEADLESS_MODE
 		if(winData->SwapChain)
 		{
-			if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA || s_currentAntiAliasing == RendererAPI::AntiAliasing::Off)
+			if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 				winData->SwapChain->SetSampleCount(s_currentSampleCount);
 			else //Every other anti aliasing doesn't set the swapchains sample count
 				winData->SwapChain->SetSampleCount(RendererAPI::SampleCount::One);
@@ -2194,7 +2198,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	swapChainDesc.ClearColor = p->ClearColor;
 	swapChainDesc.ClearDepth = p->ClearDepth;
 	swapChainDesc.ClearStencil = p->ClearStencil;
-	if(s_currentAntiAliasing == AntiAliasing::Off || s_currentAntiAliasing == AntiAliasing::MSAA)
+	if(s_currentAntiAliasing == AntiAliasing::MSAA)
 		swapChainDesc.SampleCount = s_currentSampleCount;
 	else
 		swapChainDesc.SampleCount = SampleCount::One;
@@ -2758,6 +2762,9 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	if(!s_NullDescriptors)
+		return;
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying DefaultResources");

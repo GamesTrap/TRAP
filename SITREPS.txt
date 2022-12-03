@@ -3492,3 +3492,4 @@ SITREP 12/03/2022|22w48b2
     - Renderer2D Added SetCustomSampler() to specify a custom sampler to use ~<5 mins
     - Renderer2D/Cube3D Added check if anisotropy level changed ~<5 mins
     - Tests Added AnisotropyTests ~<15 mins
+    - Engine.cfg AntiAliasingQuality now defaults to 2 instead of (invalid) 1 ~<20 mins

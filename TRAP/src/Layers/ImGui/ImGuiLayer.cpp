@@ -158,7 +158,7 @@ void TRAP::ImGuiLayer::OnAttach()
 			m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(TRAP::Graphics::RendererAPI::PipelineCacheDesc{});
 
 		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
-		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::Two;
 		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
 
 		//This initializes ImGui for Vulkan
@@ -268,7 +268,7 @@ void TRAP::ImGuiLayer::Begin()
 			winData.GraphicCommandBuffers[winData.ImageIndex]
 		);
 		TRAP::Graphics::AntiAliasing aaMethod = TRAP::Graphics::AntiAliasing::Off;
-		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::One;
+		TRAP::Graphics::SampleCount aaSamples = TRAP::Graphics::SampleCount::Two;
 		TRAP::Graphics::RenderCommand::GetAntiAliasing(aaMethod, aaSamples);
 
 		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
