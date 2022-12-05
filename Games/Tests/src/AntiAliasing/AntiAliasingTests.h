@@ -25,6 +25,24 @@ private:
 	TRAP::Graphics::SampleCount m_sampleCount;
 
 	TRAP::Graphics::OrthographicCamera m_camera;
+
+	static std::vector<TRAP::Graphics::AntiAliasing> AntiAliasingMethods;
+
+	struct SampleData
+	{
+		const char* Name;
+		TRAP::Graphics::SampleCount Samples;
+	};
+
+	static constexpr std::array<SampleData, 4> Samples
+	{
+		{
+			{ "x2", TRAP::Graphics::SampleCount::Two },
+			{ "x4", TRAP::Graphics::SampleCount::Four },
+			{ "x8", TRAP::Graphics::SampleCount::Eight },
+			{ "x16", TRAP::Graphics::SampleCount::Sixteen }
+		}
+	};
 };
 
 #endif /*GAMESTRAP_ANTIALIASINGTESTS_H*/

@@ -14,6 +14,13 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
+	struct RateData
+	{
+		TRAP::Graphics::ShadingRate ShadingRate;
+		std::string Name;
+		bool Supported;
+	};
+
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
 
@@ -24,8 +31,7 @@ private:
 	TRAP::Ref<TRAP::Graphics::Texture> m_shadingRateTexture;
 
     TRAP::Graphics::ShadingRate m_shadingRate;
-    std::vector<TRAP::Graphics::ShadingRate> m_supportedShadingRates;
-    std::vector<const char*> m_supportedShadingRatesStrings;
+    std::vector<RateData> m_shadingRates;
 
 	bool m_supportsPerDrawVRS;
 	bool m_supportsPerTileVRS;

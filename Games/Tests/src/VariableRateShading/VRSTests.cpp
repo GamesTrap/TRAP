@@ -3,7 +3,7 @@
 VRSTests::VRSTests()
 	: Layer("Variable Rate Shading"),
 	m_cameraController(TRAP::Application::GetWindow()->GetAspectRatio(), true),
-    m_shadingRateTexture(nullptr), m_shadingRate(), m_supportedShadingRates(), m_supportedShadingRatesStrings(),
+    m_shadingRateTexture(nullptr), m_shadingRate(), m_shadingRates(),
     m_supportsPerDrawVRS(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw)),
     m_supportsPerTileVRS(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerTile)),
     m_perDrawActive(true)
@@ -21,19 +21,13 @@ void VRSTests::OnImGuiRender()
 
     if((m_supportsPerDrawVRS || m_supportsPerTileVRS) && ImGui::BeginCombo("Shading Rate Mode", m_perDrawActive ? "Per Draw" : "Per Tile"))
     {
-        if(m_supportsPerDrawVRS)
+        if(ImGui::Selectable("Per Draw", m_perDrawActive, m_supportsPerDrawVRS ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
+            m_perDrawActive = true;
+        if(ImGui::Selectable("Per Tile", !m_perDrawActive, m_supportsPerTileVRS ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
         {
-            if(ImGui::Selectable("Per Draw", m_perDrawActive))
-                m_perDrawActive = true;
-        }
-        if(m_supportsPerTileVRS)
-        {
-            if(ImGui::Selectable("Per Tile", !m_perDrawActive))
-            {
-                m_perDrawActive = false;
+            m_perDrawActive = false;
 
-                TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
-            }
+            TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
         }
 
         ImGui::EndCombo();
@@ -42,10 +36,19 @@ void VRSTests::OnImGuiRender()
     if(m_supportsPerDrawVRS && m_perDrawActive)
     {
         static int32_t selectedPerDrawShadingRate = 0;
-        if(ImGui::Combo("##Shading rate", &selectedPerDrawShadingRate, m_supportedShadingRatesStrings.data(), static_cast<int32_t>(m_supportedShadingRatesStrings.size())))
+        if(ImGui::BeginCombo("##Shading rate", m_shadingRates[selectedPerDrawShadingRate].Name.c_str()))
         {
-            if(m_supportedShadingRates[selectedPerDrawShadingRate] != m_shadingRate)
-                m_shadingRate = m_supportedShadingRates[selectedPerDrawShadingRate];
+            for(int32_t i = 0; i < static_cast<int32_t>(m_shadingRates.size()); ++i)
+            {
+                bool isSelected = i == selectedPerDrawShadingRate;
+                if(ImGui::Selectable(m_shadingRates[i].Name.c_str(), isSelected, m_shadingRates[i].Supported ? ImGuiSelectableFlags_None : ImGuiSelectableFlags_Disabled))
+                {
+                    selectedPerDrawShadingRate = i;
+                    m_shadingRate = m_shadingRates[selectedPerDrawShadingRate].ShadingRate;
+                }
+            }
+
+            ImGui::EndCombo();
         }
     }
 
@@ -67,46 +70,14 @@ void VRSTests::OnAttach()
         m_shadingRateTexture = CreateShadingRateTexture(fbSize.x, fbSize.y);
     }
 
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::Full);
-        m_supportedShadingRatesStrings.emplace_back("1x1");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Half))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::Half);
-        m_supportedShadingRatesStrings.emplace_back("2x2");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Quarter))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::Quarter);
-        m_supportedShadingRatesStrings.emplace_back("4x4");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Eighth))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::Eighth);
-        m_supportedShadingRatesStrings.emplace_back("8x8");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::OneXTwo))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::OneXTwo);
-        m_supportedShadingRatesStrings.emplace_back("1x2");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXOne))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::TwoXOne);
-        m_supportedShadingRatesStrings.emplace_back("2x1");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXFour))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::TwoXFour);
-        m_supportedShadingRatesStrings.emplace_back("2x4");
-    }
-    if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::FourXTwo))
-    {
-        m_supportedShadingRates.emplace_back(TRAP::Graphics::ShadingRate::FourXTwo);
-        m_supportedShadingRatesStrings.emplace_back("4x2");
-    }
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Full, "1x1", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::OneXTwo, "1x2", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::OneXTwo)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXOne, "2x1", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXOne)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Half, "2x2", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Half)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::TwoXFour, "2x4", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::TwoXFour)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::FourXTwo, "4x2", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::FourXTwo)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Quarter, "4x4", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Quarter)});
+    m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Eighth, "8x8", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Eighth)});
 
     if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateCaps & TRAP::Graphics::RendererAPI::ShadingRateCaps::PerDraw))
         m_shadingRate = TRAP::Graphics::ShadingRate::Full;

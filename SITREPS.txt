@@ -3495,3 +3495,7 @@ SITREP 12/03/2022|22w48b2
     - Engine.cfg AntiAliasingQuality now defaults to 2 instead of (invalid) 1 ~<20 mins
     - TextureManager/ShaderManager Added Shutdown() ~<5 mins
     - Moved RendererAPI usings to RenderCommand ~<10 mins
+
+SITREP 12/05/2022|22w49a1
+    - Changed TRAP Engine version to 22w49a1(0.8.79)
+    - VRSTests/AntiAliasingTests unsupported values are now greyed out in combo boxes ~<10 mins

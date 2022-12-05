@@ -1,7 +1,10 @@
 #include "AntiAliasingTests.h"
-#include "Graphics/RenderCommand.h"
 
 #include <ImageLoader/PortableMaps/PPMImage.h>
+
+std::vector<TRAP::Graphics::AntiAliasing> AntiAliasingTests::AntiAliasingMethods{};
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 AntiAliasingTests::AntiAliasingTests()
 	: Layer("AntiAliasing"), m_fpsTimer(), m_antiAliasing(), m_sampleCount(),
@@ -18,8 +21,9 @@ void AntiAliasingTests::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("AntiAliasing");
 
 	TRAP::Graphics::RenderCommand::GetAntiAliasing(m_antiAliasing, m_sampleCount);
-	if(m_sampleCount == TRAP::Graphics::SampleCount::One)
-		m_sampleCount = TRAP::Graphics::SampleCount::Two;
+
+	for(uint32_t i = static_cast<uint32_t>(TRAP::Graphics::AntiAliasing::Off); i < (static_cast<uint32_t>(TRAP::Graphics::AntiAliasing::MSAA) + 1); ++i)
+		AntiAliasingMethods.emplace_back(static_cast<TRAP::Graphics::AntiAliasing>(i));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -59,38 +63,54 @@ void AntiAliasingTests::OnImGuiRender()
 	                                      ImGuiWindowFlags_AlwaysAutoResize);
 
 	bool updateAA = false;
-
-	static constexpr std::array<const char*, 2> antiAliasingMethods{"Off", "MSAA"};
-	static int32_t currentAA = static_cast<uint32_t>(m_antiAliasing);
-	if(ImGui::Combo("Anti aliasing", &currentAA, antiAliasingMethods.data(), static_cast<int32_t>(antiAliasingMethods.size())))
+	const uint32_t currentAA = static_cast<uint32_t>(m_antiAliasing);
+	if(ImGui::BeginCombo("Anti aliasing", TRAP::Utils::String::ConvertToString(AntiAliasingMethods[currentAA]).c_str()))
 	{
-		if(currentAA == 0)
-			m_antiAliasing = TRAP::Graphics::AntiAliasing::Off;
-		else if(currentAA == 1)
-			m_antiAliasing = TRAP::Graphics::AntiAliasing::MSAA;
+		for(uint32_t i = 0; i < AntiAliasingMethods.size(); ++i)
+		{
+			const bool isSelected = (currentAA == i);
+			if(ImGui::Selectable(TRAP::Utils::String::ConvertToString(AntiAliasingMethods[i]).c_str(), isSelected))
+			{
+				updateAA = true;
+				m_antiAliasing = AntiAliasingMethods[i];
+			}
+			if(isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
 
-		updateAA = true;
+		ImGui::EndCombo();
 	}
 
-	if(currentAA != 0)
+	if(m_antiAliasing != TRAP::Graphics::AntiAliasing::Off)
 	{
-		static int32_t maxSupportedQualitySize = static_cast<int32_t>((TRAP::Math::Log(static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)) / TRAP::Math::Log(2.0f)));
-		static constexpr std::array<const char*, 4> sampleCounts{"x2", "x4", "x8", "x16"};
-		static int32_t currentAAQuality = static_cast<int32_t>(TRAP::Math::Log(static_cast<float>(m_sampleCount)) / TRAP::Math::Log(2.0f) - 1);
-		if(currentAAQuality == -1)
-			currentAAQuality = 0;
-		if(ImGui::Combo("Anti aliasing quality", &currentAAQuality, sampleCounts.data(), maxSupportedQualitySize)) //TODO Replace With BeginCombo/EndCombo
+		uint32_t currSample = 0;
+		for(uint32_t i = 0; i < Samples.size(); ++i)
 		{
-			if(currentAAQuality == 0)
-				m_sampleCount = TRAP::Graphics::SampleCount::Two;
-			else if(currentAAQuality == 1)
-				m_sampleCount = TRAP::Graphics::SampleCount::Four;
-			else if(currentAAQuality == 2)
-				m_sampleCount = TRAP::Graphics::SampleCount::Eight;
-			else if(currentAAQuality == 3)
-				m_sampleCount = TRAP::Graphics::SampleCount::Sixteen;
+			if(Samples[i].Samples == m_sampleCount)
+			{
+				currSample = i;
+				break;
+			}
+		}
 
-			updateAA = true;
+		if(ImGui::BeginCombo("Quality", Samples[currSample].Name))
+		{
+			for(uint32_t i = 0; i < Samples.size(); ++i)
+			{
+				const bool isSelected = (m_sampleCount == Samples[i].Samples);
+				ImGuiSelectableFlags flags = ImGuiSelectableFlags_None;
+				if(m_antiAliasing == TRAP::Graphics::AntiAliasing::MSAA && Samples[i].Samples > TRAP::Graphics::RendererAPI::GPUSettings.MaxMSAASampleCount)
+					flags = ImGuiSelectableFlags_Disabled;
+				if(ImGui::Selectable(Samples[i].Name, isSelected, flags))
+				{
+					updateAA = true;
+					m_sampleCount = Samples[i].Samples;
+				}
+				if(isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
 		}
 	}
 
