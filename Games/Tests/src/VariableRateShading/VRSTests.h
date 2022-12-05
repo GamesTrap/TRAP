@@ -37,6 +37,8 @@ private:
 	bool m_supportsPerTileVRS;
 
 	bool m_perDrawActive;
+
+	bool m_visualizeShadingRate;
 };
 
 #endif /*GAMESTRAP_VRSTESTS_H*/

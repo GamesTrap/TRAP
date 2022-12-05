@@ -3499,3 +3499,5 @@ SITREP 12/03/2022|22w48b2
 SITREP 12/05/2022|22w49a1
     - Changed TRAP Engine version to 22w49a1(0.8.79)
     - VRSTests/AntiAliasingTests unsupported values are now greyed out in combo boxes ~<10 mins
+    - VRSTests now uses a circular pattern for shading rate texture ~<20 mins
+    - VRSTests Added visualization pass for shading rate ~<10 mins
