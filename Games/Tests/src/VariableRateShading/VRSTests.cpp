@@ -92,7 +92,8 @@ void VRSTests::OnAttach()
     TRAP::Graphics::TextureManager::Load("TRAP", "./Assets/Textures/TRAPWhiteLogo2048x2048.png")->AwaitLoading();
 
     //Load Shader
-    TRAP::Graphics::ShaderManager::LoadFile("ShadingRateVisualizer", "./Assets/Shaders/shadingratevisualizer.shader");
+    if(m_supportsPerDrawVRS || m_supportsPerTileVRS)
+        TRAP::Graphics::ShaderManager::LoadFile("ShadingRateVisualizer", "./Assets/Shaders/shadingratevisualizer.shader");
 
     //Wait for all pending resources (Just in case)
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -124,7 +125,7 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
                                          { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
 	TRAP::Graphics::Renderer2D::EndScene();
 
-    if(m_visualizeShadingRate)
+    if((m_supportsPerDrawVRS || m_supportsPerTileVRS) && m_visualizeShadingRate)
     {
         //Fullscreen pass
         TRAP::Graphics::ShaderManager::Get("ShadingRateVisualizer")->Use();

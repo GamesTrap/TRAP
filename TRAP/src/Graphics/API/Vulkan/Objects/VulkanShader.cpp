@@ -153,49 +153,52 @@ void TRAP::Graphics::API::VulkanShader::Use(const Window* const window)
 
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer())->BindShader(this, window);
 
-	//Following some descriptor set allocation and reusing logic
-
-	const uint32_t currImageIndex = RendererAPI::GetCurrentImageIndex(window);
-
-	if(m_lastImageIndex != std::numeric_limits<uint32_t>::max())
+	if(m_rootSignature) //Only do the following if the shader actually uses descriptors
 	{
-		//Move last dirty descriptor sets to cleaned descriptor sets
-		if(currImageIndex != m_lastImageIndex && !m_dirtyDescriptorSets[m_lastImageIndex].empty())
-			m_cleanedDescriptorSets[m_lastImageIndex] = std::move(m_dirtyDescriptorSets[m_lastImageIndex]);
+		//Following some descriptor set allocation and reusing logic
 
-		//Set current descriptor sets as dirty
-		for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
-			m_dirtyDescriptorSets[currImageIndex].push_back(std::move(m_descriptorSets[i]));
-	}
+		const uint32_t currImageIndex = RendererAPI::GetCurrentImageIndex(window);
 
-	//Get a clean descriptor set
-	if(m_lastImageIndex == std::numeric_limits<uint32_t>::max() ||
-	   m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
-	{
-		//Descriptor sets are now dirty, so we need new ones
-		const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
-		RendererAPI::DescriptorSetDesc setDesc{};
-		setDesc.RootSignature = m_rootSignature;
-		for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
+		if(m_lastImageIndex != std::numeric_limits<uint32_t>::max())
 		{
-			if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
+			//Move last dirty descriptor sets to cleaned descriptor sets
+			if(currImageIndex != m_lastImageIndex && !m_dirtyDescriptorSets[m_lastImageIndex].empty())
+				m_cleanedDescriptorSets[m_lastImageIndex] = std::move(m_dirtyDescriptorSets[m_lastImageIndex]);
+
+			//Set current descriptor sets as dirty
+			for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
+				m_dirtyDescriptorSets[currImageIndex].push_back(std::move(m_descriptorSets[i]));
+		}
+
+		//Get a clean descriptor set
+		if(m_lastImageIndex == std::numeric_limits<uint32_t>::max() ||
+		m_cleanedDescriptorSets[currImageIndex].empty()) //Slow path
+		{
+			//Descriptor sets are now dirty, so we need new ones
+			const Ref<VulkanRootSignature> root = std::dynamic_pointer_cast<VulkanRootSignature>(m_rootSignature);
+			RendererAPI::DescriptorSetDesc setDesc{};
+			setDesc.RootSignature = m_rootSignature;
+			for(std::size_t i = 0; i < m_descriptorSets.size(); ++i)
 			{
-				setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
-				setDesc.Set = static_cast<uint32_t>(i);
-				m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
+				if(root->GetVkDescriptorSetLayouts()[i] != VK_NULL_HANDLE)
+				{
+					setDesc.MaxSets = (i == 0) ? 1 : RendererAPI::ImageCount;
+					setDesc.Set = static_cast<uint32_t>(i);
+					m_descriptorSets[i] = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
+				}
 			}
 		}
-	}
-	else //Fast path
-	{
-		for(auto it = m_descriptorSets.rbegin(); it != m_descriptorSets.rend(); ++it)
+		else //Fast path
 		{
-			*it = std::move(m_cleanedDescriptorSets[currImageIndex].back());
-			m_cleanedDescriptorSets[currImageIndex].pop_back();
+			for(auto it = m_descriptorSets.rbegin(); it != m_descriptorSets.rend(); ++it)
+			{
+				*it = std::move(m_cleanedDescriptorSets[currImageIndex].back());
+				m_cleanedDescriptorSets[currImageIndex].pop_back();
+			}
 		}
-	}
 
-	m_lastImageIndex = currImageIndex;
+		m_lastImageIndex = currImageIndex;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

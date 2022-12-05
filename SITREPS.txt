@@ -3501,3 +3501,5 @@ SITREP 12/05/2022|22w49a1
     - VRSTests/AntiAliasingTests unsupported values are now greyed out in combo boxes ~<10 mins
     - VRSTests now uses a circular pattern for shading rate texture ~<20 mins
     - VRSTests Added visualization pass for shading rate ~<10 mins
+    - VRSTests Added check if VRS is actually supported before trying to load the visualization shader ~<5 mins
+    - VulkanShader Fixed crash when shader does not use any descriptors ~<5 mins
