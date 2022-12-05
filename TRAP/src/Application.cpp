@@ -499,7 +499,11 @@ void TRAP::Application::Run()
 		else if (m_fpsLimit)
 #endif
 		{
-			const auto limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
+			std::chrono::duration<float, std::milli> limitMs{}; 
+			if(m_fpsLimit)
+				limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
+			else //If engine is not focused, set engine to 30 FPS so other applications dont lag
+				limitMs = std::chrono::duration<float, std::milli>(1000.0f / 30.0f - limiterTimer.ElapsedMilliseconds());
 			std::this_thread::sleep_for(limitMs); //If this is too inaccurate, resort to using nanosleep
 			limiterTimer.Reset();
 		}
