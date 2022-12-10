@@ -75,6 +75,13 @@ namespace TRAP::Graphics::API
 		void Flush(const Window* const window) const override;
 
 		/// <summary>
+		/// On post update function.
+		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
+		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
+		/// </summary>
+		void OnPostUpdate() const override;
+
+		/// <summary>
 		/// Dispatch to the given window.
 		/// </summary>
 		/// <param name="workGroupElements">
@@ -101,6 +108,19 @@ namespace TRAP::Graphics::API
 		/// <param name="limit">FPS target to limit to.</param>
 		void SetReflexFPSLimit(uint32_t limit) override;
 
+		/// <summary>
+		/// Set the render scale for the given window.
+		/// Note: This functon takes effect on the next frame.
+		/// </summary>
+		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// <param name="window">Window to set render scale for.</param>
+		void SetRenderScale(float scale, const Window* const window) const override;
+		/// <summary>
+		/// Retrieve the used render scale value of the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve render scale from.</param>
+		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		float GetRenderScale(const Window* const window) const override;
 		/// <summary>
 		/// Set the clear color to be used by the given window.
 		/// </summary>

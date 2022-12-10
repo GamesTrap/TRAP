@@ -608,6 +608,22 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::OnPostUpdate() const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	//TODO Perform scaling for each PerWindowData dependening on set render scale
+
+	// for(const auto& [window, data] : s_perWindowDataMap)
+	// {
+	// 	const PerWindowData* const p = data.get();
+
+	// 	RenderScalePass(p);
+	// }
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::Dispatch(std::array<uint32_t, 3> workGroupElements, const Window* const window) const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
@@ -669,6 +685,33 @@ void TRAP::Graphics::API::VulkanRenderer::SetReflexFPSLimit([[maybe_unused]] con
 			SetLatencyMode(LatencyMode::Disabled, win);
 	}
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale, const Window* const window) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
+	TRAP_ASSERT(scale >= 0.5f && scale <= 1.0f, "VulkanRenderer::GetRenderScale(): Scale must be between 0.5f and 2.0f inclusive!");
+
+	scale = TRAP::Math::Clamp(scale, 0.5f, 2.0f);
+
+	s_perWindowDataMap.at(window)->RenderScale = scale;
+
+	//TODO Trigger SwapChain resize?!
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::API::VulkanRenderer::GetRenderScale(const Window* const window) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
+
+	return s_perWindowDataMap.at(window)->RenderScale;
 }
 
 //------------------------------------------------------------------------------------------------------------------//

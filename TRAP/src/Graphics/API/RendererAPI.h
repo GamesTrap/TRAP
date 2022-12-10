@@ -185,6 +185,13 @@ namespace TRAP::Graphics
 		virtual void Flush(const Window* const window) const = 0;
 
 		/// <summary>
+		/// On post update function.
+		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
+		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
+		/// </summary>
+		virtual void OnPostUpdate() const = 0;
+
+		/// <summary>
 		/// Dispatch to the given window.
 		/// </summary>
 		/// <param name="workGroupElements">
@@ -217,6 +224,20 @@ namespace TRAP::Graphics
 		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
 
 		//RenderTarget Stuff
+
+		/// <summary>
+		/// Set the render scale for the given window.
+		/// Note: This functon takes effect on the next frame.
+		/// </summary>
+		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// <param name="window">Window to set render scale for.</param>
+		virtual void SetRenderScale(float scale, const Window* const window) const = 0;
+		/// <summary>
+		/// Retrieve the used render scale value of the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve render scale from.</param>
+		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		virtual float GetRenderScale(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Set the clear color to be used by the given window.
@@ -706,6 +727,12 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve the graphics root signature from.</param>
 		/// <returns>Graphics root signature.</returns>
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* const window);
+		/// <summary>
+		/// Retrieve the currently used internal render resolution of the given window.
+		/// </summary>
+		/// <param name="window">Window to get internal render resolution from.</param>
+		/// <returns>Internal render resolution.</returns>
+		static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
 
 		/// <summary>
 		/// Start a render pass for the given window.
@@ -2627,6 +2654,7 @@ namespace TRAP::Graphics
 			bool Recording;
 			TRAP::Ref<Texture> NewShadingRateTexture;
 
+			float RenderScale = 1.0f;
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
 #ifdef TRAP_HEADLESS_MODE

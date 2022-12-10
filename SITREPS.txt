@@ -3504,3 +3504,9 @@ SITREP 12/05/2022|22w49a1
     - VRSTests Added check if VRS is actually supported before trying to load the visualization shader ~<5 mins
     - VulkanShader Fixed a crash when shaders do not use any descriptors ~<5 mins
     - Fixed Windows freezing when application focus is lost ~<5 mins
+
+SITREP 12/05/2022|22w49a1
+    - Changed TRAP Engine version to 22w49a1(0.8.79)
+    - Branch decouple-resolution:
+        - RenderCommand/RendererAPI/VulkanRenderer Added SetRenderScale(), GetRenderScale() and OnPostUpdate() functions ~<10 mins
+        - Engine.cfg Added RenderScale ~<5 mins

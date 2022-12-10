@@ -255,6 +255,20 @@ void TRAP::Graphics::RenderCommand::SetResolution(const uint32_t width, const ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RenderCommand::SetRenderScale(const float scale, const Window* const window)
+{
+	RendererAPI::GetRenderer()->SetRenderScale(scale, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RenderCommand::GetRenderScale(const Window* const window)
+{
+	return RendererAPI::GetRenderer()->GetRenderScale(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RenderCommand::Draw(const uint32_t vertexCount, const uint32_t firstVertex, const Window* const window)
 {
 	RendererAPI::GetRenderer()->Draw(vertexCount, firstVertex, window);

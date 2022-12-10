@@ -260,6 +260,38 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(const Window* window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	if (!window)
+		window = TRAP::Application::GetWindow();
+
+	const float renderScale = s_perWindowDataMap.at(window)->RenderScale;
+	const Math::Vec2 frameBufferSize
+	{
+		static_cast<float>(window->GetFrameBufferSize().x),
+		static_cast<float>(window->GetFrameBufferSize().y)
+	};
+	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
+
+	Math::Vec2 finalRes = frameBufferSize * renderScale;
+
+	//Make sure the resolution is an integer scale of the framebuffer size.
+	//This is done to avoid scaling artifacts (like blurriness).
+	while((finalRes.x / finalRes.y) != aspectRatio)
+	{
+		if((finalRes.x / finalRes.y) <= aspectRatio)
+			++finalRes.x;
+		else
+			++finalRes.y;
+	}
+
+	return static_cast<Math::Vec2ui>(finalRes);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
