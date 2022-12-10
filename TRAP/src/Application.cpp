@@ -263,8 +263,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 		m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
 		std::string anisotropyLevelStr = "16";
 		m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
-		float renderScale = 1.0f;
-		m_config.Get<float>("RenderScale", renderScale);
 
 		Graphics::RendererAPI::Init(m_gameName, renderAPI);
 		Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
@@ -282,8 +280,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	m_config.Get<TRAP::Graphics::SampleCount>("AntiAliasingQuality", antiAliasingSampleCount);
 	std::string anisotropyLevelStr = "16";
 	m_config.Get<std::string>("AnisotropyLevel", anisotropyLevelStr);
-	float renderScale = 1.0f;
-	m_config.Get<float>("RenderScale", renderScale);
 
 	Graphics::RendererAPI::Init(m_gameName, renderAPI);
 	Graphics::RenderCommand::SetAntiAliasing(antiAliasing, antiAliasingSampleCount);
@@ -347,6 +343,8 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
+		float renderScale = 1.0f;
+		m_config.Get<float>("RenderScale", renderScale);
 		Graphics::RenderCommand::SetRenderScale(renderScale);
 
 		//Always added as a fallback shader

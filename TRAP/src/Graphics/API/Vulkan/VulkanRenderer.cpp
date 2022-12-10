@@ -2302,7 +2302,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	                             p->RenderTargetsMSAA[0] :
 								 p->SwapChain->GetRenderTargets()[0];
 #else
-	const auto& rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? p->RenderTargetsMSAA : p->RenderTargets;
+	const auto& rT = s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA ? p->RenderTargetsMSAA[0] : p->RenderTargets[0];
 #endif
 	p->GraphicsPipelineDesc = {};
 	p->GraphicsPipelineDesc.Type = PipelineType::Graphics;
