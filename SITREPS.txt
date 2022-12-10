@@ -3510,3 +3510,4 @@ SITREP 12/05/2022|22w49a1
     - Branch decouple-resolution:
         - RenderCommand/RendererAPI/VulkanRenderer Added SetRenderScale(), GetRenderScale() and OnPostUpdate() functions ~<10 mins
         - Engine.cfg Added RenderScale ~<5 mins
+        - Moved MSAA RenderTarget from SwapChain to PerWindowData ~<20 mins

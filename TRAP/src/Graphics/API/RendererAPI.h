@@ -2657,9 +2657,9 @@ namespace TRAP::Graphics
 			float RenderScale = 1.0f;
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
-			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
 			bool Resize = false;
 			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif

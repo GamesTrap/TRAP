@@ -56,11 +56,6 @@ namespace TRAP::Graphics::API
 		void ToggleVSync() override;
 
 		/// <summary>
-		/// Set sample count used by anti aliasing.
-		/// </summary>
-		void SetSampleCount(RendererAPI::SampleCount sampleCount) override;
-
-		/// <summary>
 		/// Retrieve the Vulkan swap chain handle.
 		/// </summary>
 		/// <returns>Vulkan swap chain handle.</returns>

@@ -274,7 +274,7 @@ void TRAP::ImGuiLayer::Begin()
 		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
 
 		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
-			rT = winData.SwapChain->GetRenderTargetsMSAA()[winData.CurrentSwapChainImageIndex];
+			rT = winData.RenderTargetsMSAA[winData.CurrentSwapChainImageIndex];
 		else //No MSAA
 			rT = winData.SwapChain->GetRenderTargets()[winData.CurrentSwapChainImageIndex];
 

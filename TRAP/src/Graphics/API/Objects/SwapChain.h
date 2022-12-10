@@ -62,21 +62,11 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <returns>Render targets used by the swapchain.</returns>
 		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const;
-		/// <summary>
-		/// Retrieve the render targets used by the swapchain to resolve MSAA.
-		/// </summary>
-		/// <returns>Render targets used by the swapchain to resolve MSAA.</returns>
-		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargetsMSAA() const;
 
 		/// <summary>
 		/// Toggle Vsync on and off.
 		/// </summary>
 		virtual void ToggleVSync() = 0;
-
-		/// <summary>
-		/// Set sample count used by anti aliasing.
-		/// </summary>
-		virtual void SetSampleCount(RendererAPI::SampleCount sampleCount) = 0;
 
 	protected:
 		/// <summary>
@@ -86,7 +76,6 @@ namespace TRAP::Graphics
 
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
-		std::vector<TRAP::Ref<RenderTarget>> m_renderTargetsMSAA;
 	};
 }
 

@@ -62,7 +62,6 @@ TRAP::Graphics::SwapChain::~SwapChain()
 	TP_DEBUG(Log::RendererSwapChainPrefix, "Destroying SwapChain");
 #endif
 
-	m_renderTargetsMSAA.clear();
 	m_renderTargets.clear();
 }
 
@@ -73,13 +72,4 @@ const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::Swap
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
 	return m_renderTargets;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const std::vector<TRAP::Ref<TRAP::Graphics::RenderTarget>>& TRAP::Graphics::SwapChain::GetRenderTargetsMSAA() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_renderTargetsMSAA;
 }
