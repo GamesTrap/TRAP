@@ -296,6 +296,7 @@ void TRAPEditorLayer::OnAttach()
 	TRAP::Graphics::RenderCommand::SetBlendConstant(TRAP::Graphics::BlendConstant::SrcAlpha,
 	                                                TRAP::Graphics::BlendConstant::OneMinusSrcAlpha); //Blending
 
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

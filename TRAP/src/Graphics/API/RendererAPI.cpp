@@ -206,8 +206,17 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 		data->State = PerWindowState::PostUpdate;
 
 		if(data->RenderScale != 1.0f)
+		{
+			TRAP::Ref<RenderTarget> outputTarget = nullptr;
+#ifndef TRAP_HEADLESS_MODE
+			outputTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
+#else
+			outputTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];
+#endif
+
 			GetRenderer()->RenderScalePass(data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
-			                               data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex], win);
+			                               outputTarget, win);
+		}
 	}
 }
 
@@ -285,13 +294,28 @@ TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(cons
 
 	const float renderScale = s_perWindowDataMap.at(window)->RenderScale;
 
+#ifdef TRAP_HEADLESS_MODE
+	const auto& winData = s_perWindowDataMap.at(window);
+#endif
+
 	if(renderScale == 1.0f)
+	{
+#ifndef TRAP_HEADLESS_MODE
 		return window->GetFrameBufferSize();
+#else
+		return {winData->NewWidth, winData->NewHeight};
+#endif
+	}
 
 	const Math::Vec2 frameBufferSize
 	{
+#ifndef TRAP_HEADLESS_MODE
 		static_cast<float>(window->GetFrameBufferSize().x),
 		static_cast<float>(window->GetFrameBufferSize().y)
+#else
+		static_cast<float>(winData->NewWidth),
+		static_cast<float>(winData->NewHeight),
+#endif
 	};
 	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
 

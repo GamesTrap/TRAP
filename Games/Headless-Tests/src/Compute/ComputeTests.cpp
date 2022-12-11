@@ -85,8 +85,6 @@ void ComputeTests::OnUpdate(const TRAP::Utils::TimeStep& /*deltaTime*/)
     static uint32_t frames = 0;
     if(frames == 3)
     {
-        TRAP::Graphics::RendererAPI::GetGraphicsQueue()->WaitQueueIdle();
-        TRAP::Graphics::RendererAPI::GetComputeQueue()->WaitQueueIdle();
 
         //Screenshot
 	    TRAP::Scope<TRAP::Image> testImage = TRAP::Graphics::RenderCommand::CaptureScreenshot();

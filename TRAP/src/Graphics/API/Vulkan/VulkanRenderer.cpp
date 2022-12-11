@@ -1093,11 +1093,11 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 
 	TRAP::Ref<RenderTarget> renderTarget;
-#ifndef TRAP_HEADLESS_MODE
 	if(data->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 		renderTarget = data->InternalRenderTargets[data->CurrentSwapChainImageIndex];
 	else
 	{
+#ifndef TRAP_HEADLESS_MODE
 		renderTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
 #else
 		renderTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];

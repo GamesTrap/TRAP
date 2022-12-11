@@ -3530,3 +3530,4 @@ SITREP 12/11/2022|22w49b2
         - ImGuiLayer Removed SetMSAASamples() ~<5 mins
         - VulkanRenderer Finished MSAA RenderScale support ~>30 mins
         - VulkanRenderer RenderScalePass() removed code redundancy ~<5 mins
+        - Headless-Mode Added support for RenderScale ~<10 mins
