@@ -32,6 +32,7 @@ private:
 
     TRAP::Graphics::ShadingRate m_shadingRate;
     std::vector<RateData> m_shadingRates;
+    float m_currRenderScale;
 
 	bool m_supportsPerDrawVRS;
 	bool m_supportsPerTileVRS;

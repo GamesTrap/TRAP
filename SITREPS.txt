@@ -3516,3 +3516,7 @@ SITREP 12/11/2022|22w49b2
     - Changed TRAP Engine version to 22w49a1(0.8.81)
     - Branch decouple-resolution:
         - Added initial support for render scaling (doesnt support resizing and MSAA yet) ~>60 mins
+        - Added window resizing support for render scaling ~<10 mins
+        - Disabled VRS after render scaling pass ~<5 mins
+        - VulkanRenderer StartGraphicRecording() now checks with internal resolution against VRS image attachment ~<10 mins
+        - Updated VRSTests ~<5 mins

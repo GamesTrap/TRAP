@@ -284,6 +284,10 @@ TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(cons
 		window = TRAP::Application::GetWindow();
 
 	const float renderScale = s_perWindowDataMap.at(window)->RenderScale;
+
+	if(renderScale == 1.0f)
+		return window->GetFrameBufferSize();
+
 	const Math::Vec2 frameBufferSize
 	{
 		static_cast<float>(window->GetFrameBufferSize().x),

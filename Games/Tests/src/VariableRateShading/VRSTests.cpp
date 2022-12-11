@@ -70,10 +70,12 @@ void VRSTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Variable Rate Shading");
 
+    m_currRenderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
+
     if(m_supportsPerTileVRS)
     {
-        const auto fbSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
-        m_shadingRateTexture = CreateShadingRateTexture(fbSize.x, fbSize.y);
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
     }
 
     m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Full, "1x1", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full)});
@@ -106,6 +108,14 @@ void VRSTests::OnAttach()
 
 void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
+    if(m_supportsPerTileVRS && TRAP::Graphics::RenderCommand::GetRenderScale() != m_currRenderScale)
+    {
+        m_currRenderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
+
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
+    }
+
 	//Update
 	m_cameraController.OnUpdate(deltaTime);
 
@@ -118,8 +128,10 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
                                                       TRAP::Graphics::ShadingRateCombiner::Max,
                                                       TRAP::Graphics::ShadingRateCombiner::Max);
     }
+    else if(m_supportsPerTileVRS && !m_perDrawActive)
+        TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
 
-	TRAP::Graphics::Renderer2D::ResetStats();
+    TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
     TRAP::Graphics::Renderer2D::DrawQuad({ {}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {2.0f, 2.0f, 1.0f} },
                                          { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
@@ -156,14 +168,12 @@ bool VRSTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VRSTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
+bool VRSTests::OnFrameBufferResize([[maybe_unused]] TRAP::Events::FrameBufferResizeEvent& event)
 {
     if(m_supportsPerTileVRS)
     {
-        m_shadingRateTexture = CreateShadingRateTexture(event.GetWidth(), event.GetHeight());
-
-        if(!m_perDrawActive)
-            TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
     }
 
     return false;
