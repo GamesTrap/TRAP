@@ -3529,3 +3529,4 @@ SITREP 12/11/2022|22w49b2
         - ImGuiLayer now automatically sets appropriate MSAA sample count ~<5 mins
         - ImGuiLayer Removed SetMSAASamples() ~<5 mins
         - VulkanRenderer Finished MSAA RenderScale support ~>30 mins
+        - VulkanRenderer RenderScalePass() removed code redundancy ~<5 mins

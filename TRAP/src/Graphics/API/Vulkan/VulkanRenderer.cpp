@@ -2071,9 +2071,6 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
                                                           TRAP::Ref<RenderTarget> destination,
 		                                                  const Window* const window) const
 {
-	//TODO Replace window paramter with CommandBuffer
-	//TODO Remove code redundancy
-
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(window, "VulkanRenderer::RenderScalePass(): Window is nullptr!");
@@ -2084,7 +2081,12 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 	VulkanCommandBuffer* const cmd = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex]);
 
-	if(source->GetSampleCount() != SampleCount::One)
+	//Stop running render pass
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+															   std::numeric_limits<uint32_t>::max(),
+															   std::numeric_limits<uint32_t>::max());
+
+	if(source->GetSampleCount() != SampleCount::One) //Extra work to resolve MSAA
 	{
 		TRAP::Ref<RenderTarget> tempTarget = p->TemporaryResolveRenderTargets[p->ImageIndex];
 
@@ -2116,105 +2118,53 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 		//1. Do MSAAResolvePass() to resolve the multi sampled image into a single sampled image with same resolution
 		MSAAResolvePass(source, tempTarget, cmd);
 
-		//2. Scale the temporary image to the final output image
-
-		//Transition layout for copying
-		TextureBarrier barrier{};
-		barrier.Texture = tempTarget->GetTexture().get();
-		barrier.CurrentState = ResourceState::RenderTarget;
-		barrier.NewState = ResourceState::CopySource;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
-		barrier.Texture = destination->GetTexture().get();
-		barrier.CurrentState = ResourceState::RenderTarget;
-		barrier.NewState = ResourceState::CopyDestination;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
-
-		//Do scaling
-		TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(tempTarget->GetTexture());
-		TRAP::Ref<VulkanTexture> texOutput = std::dynamic_pointer_cast<VulkanTexture>(destination->GetTexture());
-
-		VkImage internal = texInternal->GetVkImage();
-		VkImage output = texOutput->GetVkImage();
-
-		VkImageBlit region{};
-		region.srcOffsets[0] = {0, 0, 0};
-		region.srcOffsets[1] = { static_cast<int32_t>(texInternal->GetWidth()), static_cast<int32_t>(texInternal->GetHeight()), 1};
-		region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		region.srcSubresource.mipLevel = 0;
-		region.srcSubresource.baseArrayLayer = 0;
-		region.srcSubresource.layerCount = 1;
-		region.dstOffsets[0] = {0, 0, 0};
-		region.dstOffsets[1] = {static_cast<int32_t>(texOutput->GetWidth()), static_cast<int32_t>(texOutput->GetHeight()), 1};
-		region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		region.dstSubresource.mipLevel = 0;
-		region.dstSubresource.baseArrayLayer = 0;
-		region.dstSubresource.layerCount = 1;
-
-		vkCmdBlitImage(cmd->GetVkCommandBuffer(), internal, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, output,
-		               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_LINEAR);
-
-		//Transition layout back
-		barrier.Texture = tempTarget->GetTexture().get();
-		barrier.CurrentState = ResourceState::CopySource;
-		barrier.NewState = ResourceState::RenderTarget;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
-		barrier.Texture = destination->GetTexture().get();
-		barrier.CurrentState = ResourceState::CopyDestination;
-		barrier.NewState = ResourceState::RenderTarget;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+		source = tempTarget;
 	}
-	else
-	{
-		//Stop running render pass
-		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
-																   std::numeric_limits<uint32_t>::max(),
-																   std::numeric_limits<uint32_t>::max());
 
-		//Transition layout for copying
-		TextureBarrier barrier{};
-		barrier.Texture = source->GetTexture().get();
-		barrier.CurrentState = ResourceState::RenderTarget;
-		barrier.NewState = ResourceState::CopySource;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
-		barrier.Texture = destination->GetTexture().get();
-		barrier.CurrentState = ResourceState::RenderTarget;
-		barrier.NewState = ResourceState::CopyDestination;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+	//Transition layout for copying
+	TextureBarrier barrier{};
+	barrier.Texture = source->GetTexture().get();
+	barrier.CurrentState = ResourceState::RenderTarget;
+	barrier.NewState = ResourceState::CopySource;
+	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+	barrier.Texture = destination->GetTexture().get();
+	barrier.CurrentState = ResourceState::RenderTarget;
+	barrier.NewState = ResourceState::CopyDestination;
+	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
 
-		//Do scaling
-		TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(source->GetTexture());
-		TRAP::Ref<VulkanTexture> texOutput = std::dynamic_pointer_cast<VulkanTexture>(destination->GetTexture());
+	//Do scaling
+	TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(source->GetTexture());
+	TRAP::Ref<VulkanTexture> texOutput = std::dynamic_pointer_cast<VulkanTexture>(destination->GetTexture());
 
-		VkImage internal = texInternal->GetVkImage();
-		VkImage output = texOutput->GetVkImage();
+	VkImage internal = texInternal->GetVkImage();
+	VkImage output = texOutput->GetVkImage();
 
-		VkImageBlit region{};
-		region.srcOffsets[0] = {0, 0, 0};
-		region.srcOffsets[1] = { static_cast<int32_t>(texInternal->GetWidth()), static_cast<int32_t>(texInternal->GetHeight()), 1};
-		region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		region.srcSubresource.mipLevel = 0;
-		region.srcSubresource.baseArrayLayer = 0;
-		region.srcSubresource.layerCount = 1;
-		region.dstOffsets[0] = {0, 0, 0};
-		region.dstOffsets[1] = {static_cast<int32_t>(texOutput->GetWidth()), static_cast<int32_t>(texOutput->GetHeight()), 1};
-		region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		region.dstSubresource.mipLevel = 0;
-		region.dstSubresource.baseArrayLayer = 0;
-		region.dstSubresource.layerCount = 1;
+	VkImageBlit region{};
+	region.srcOffsets[0] = {0, 0, 0};
+	region.srcOffsets[1] = { static_cast<int32_t>(texInternal->GetWidth()), static_cast<int32_t>(texInternal->GetHeight()), 1};
+	region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	region.srcSubresource.mipLevel = 0;
+	region.srcSubresource.baseArrayLayer = 0;
+	region.srcSubresource.layerCount = 1;
+	region.dstOffsets[0] = {0, 0, 0};
+	region.dstOffsets[1] = {static_cast<int32_t>(texOutput->GetWidth()), static_cast<int32_t>(texOutput->GetHeight()), 1};
+	region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	region.dstSubresource.mipLevel = 0;
+	region.dstSubresource.baseArrayLayer = 0;
+	region.dstSubresource.layerCount = 1;
 
-		vkCmdBlitImage(cmd->GetVkCommandBuffer(), internal, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, output,
-		               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_LINEAR);
+	vkCmdBlitImage(cmd->GetVkCommandBuffer(), internal, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, output,
+					VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_LINEAR);
 
-		//Transition layout back
-		barrier.Texture = source->GetTexture().get();
-		barrier.CurrentState = ResourceState::CopySource;
-		barrier.NewState = ResourceState::RenderTarget;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
-		barrier.Texture = destination->GetTexture().get();
-		barrier.CurrentState = ResourceState::CopyDestination;
-		barrier.NewState = ResourceState::RenderTarget;
-		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
-	}
+	//Transition layout back
+	barrier.Texture = source->GetTexture().get();
+	barrier.CurrentState = ResourceState::CopySource;
+	barrier.NewState = ResourceState::RenderTarget;
+	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+	barrier.Texture = destination->GetTexture().get();
+	barrier.CurrentState = ResourceState::CopyDestination;
+	barrier.NewState = ResourceState::RenderTarget;
+	ResourceTextureBarrier(barrier, QueueType::Graphics, window);
 
 	//Start render pass
 	cmd->BindRenderTargets({destination}, nullptr, nullptr, nullptr, nullptr,
