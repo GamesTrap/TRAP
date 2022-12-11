@@ -2086,26 +2086,41 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 
 	if(source->GetSampleCount() != SampleCount::One)
 	{
-		//Create temporary resolve render target
-		RenderTargetDesc rTDesc{};
-		rTDesc.Width = source->GetWidth();
-		rTDesc.Height = source->GetHeight();
-		rTDesc.Depth = 1;
-		rTDesc.ArraySize = 1;
-		rTDesc.MipLevels = 1;
-		rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
-		rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
-		rTDesc.SampleCount = SampleCount::One;
-		p->TemporaryResolveRenderTargets[p->ImageIndex] = RenderTarget::Create(rTDesc);
+		TRAP::Ref<RenderTarget> tempTarget = p->TemporaryResolveRenderTargets[p->ImageIndex];
+
+		bool updateTempTarget = !tempTarget;
+		if(tempTarget &&
+		   (tempTarget->GetWidth() != source->GetWidth() ||
+	 	    tempTarget->GetHeight() != source->GetHeight()))
+		{
+			updateTempTarget = true;
+		}
+
+		if(updateTempTarget)
+		{
+			//Create temporary resolve render target
+			RenderTargetDesc rTDesc{};
+			rTDesc.Width = source->GetWidth();
+			rTDesc.Height = source->GetHeight();
+			rTDesc.Depth = 1;
+			rTDesc.ArraySize = 1;
+			rTDesc.MipLevels = 1;
+			rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+			rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+			rTDesc.SampleCount = SampleCount::One;
+			tempTarget = RenderTarget::Create(rTDesc);
+
+			p->TemporaryResolveRenderTargets[p->ImageIndex] = tempTarget;
+		}
 
 		//1. Do MSAAResolvePass() to resolve the multi sampled image into a single sampled image with same resolution
-		MSAAResolvePass(source, p->TemporaryResolveRenderTargets[p->ImageIndex], cmd);
+		MSAAResolvePass(source, tempTarget, cmd);
 
 		//2. Scale the temporary image to the final output image
 
 		//Transition layout for copying
 		TextureBarrier barrier{};
-		barrier.Texture = p->TemporaryResolveRenderTargets[p->ImageIndex]->GetTexture().get();
+		barrier.Texture = tempTarget->GetTexture().get();
 		barrier.CurrentState = ResourceState::RenderTarget;
 		barrier.NewState = ResourceState::CopySource;
 		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
@@ -2115,7 +2130,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
 
 		//Do scaling
-		TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(p->TemporaryResolveRenderTargets[p->ImageIndex]->GetTexture());
+		TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(tempTarget->GetTexture());
 		TRAP::Ref<VulkanTexture> texOutput = std::dynamic_pointer_cast<VulkanTexture>(destination->GetTexture());
 
 		VkImage internal = texInternal->GetVkImage();
@@ -2139,7 +2154,7 @@ void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget
 		               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_LINEAR);
 
 		//Transition layout back
-		barrier.Texture = p->TemporaryResolveRenderTargets[p->ImageIndex]->GetTexture().get();
+		barrier.Texture = tempTarget->GetTexture().get();
 		barrier.CurrentState = ResourceState::CopySource;
 		barrier.NewState = ResourceState::RenderTarget;
 		ResourceTextureBarrier(barrier, QueueType::Graphics, window);

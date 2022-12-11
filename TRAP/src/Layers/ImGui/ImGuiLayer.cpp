@@ -273,7 +273,8 @@ void TRAP::ImGuiLayer::Begin()
 																				std::numeric_limits<uint32_t>::max(),
 																				std::numeric_limits<uint32_t>::max());
 
-		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA)
+		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)
+		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && winData.RenderScale == 1.0f)
 			ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(aaSamples));
 		else
 			ImGui_ImplVulkan_SetMSAASamples(VK_SAMPLE_COUNT_1_BIT);
