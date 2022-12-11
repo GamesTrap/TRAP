@@ -3505,9 +3505,14 @@ SITREP 12/05/2022|22w49a1
     - VulkanShader Fixed a crash when shaders do not use any descriptors ~<5 mins
     - Fixed Windows freezing when application focus is lost ~<5 mins
 
-SITREP 12/05/2022|22w49a1
-    - Changed TRAP Engine version to 22w49a1(0.8.79)
+SITREP 12/10/2022|22w49b1
+    - Changed TRAP Engine version to 22w49b1(0.8.80)
     - Branch decouple-resolution:
         - RenderCommand/RendererAPI/VulkanRenderer Added SetRenderScale(), GetRenderScale() and OnPostUpdate() functions ~<10 mins
         - Engine.cfg Added RenderScale ~<5 mins
         - Moved MSAA RenderTarget from SwapChain to PerWindowData ~<20 mins
+
+SITREP 12/11/2022|22w49b2
+    - Changed TRAP Engine version to 22w49a1(0.8.81)
+    - Branch decouple-resolution:
+        - Added initial support for render scaling (doesnt support resizing and MSAA yet) ~>60 mins

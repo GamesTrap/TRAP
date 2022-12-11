@@ -178,19 +178,10 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 		std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture = nullptr;
 
 	//Start Recording
-	TRAP::Ref<RenderTarget> renderTarget;
 #ifndef TRAP_HEADLESS_MODE
 	p->CurrentSwapChainImageIndex = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-		renderTarget = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
-	else
-		renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
 #else
 	p->CurrentSwapChainImageIndex = (p->CurrentSwapChainImageIndex + 1) % RendererAPI::ImageCount;
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-		renderTarget = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
-	else
-		renderTarget = p->RenderTargets[p->CurrentSwapChainImageIndex];
 #endif
 
 	const TRAP::Ref<Fence> renderCompleteFence = p->RenderCompleteFences[p->ImageIndex];
@@ -207,35 +198,47 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(PerWindowData* c
 	BeginGPUFrameProfile(QueueType::Graphics, p);
 
 #ifndef TRAP_HEADLESS_MODE
-	RenderTargetBarrier barrier{renderTarget, ResourceState::Present, ResourceState::RenderTarget};
+
+	RenderTargetBarrier barrier{p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex], ResourceState::Present, ResourceState::RenderTarget};
 	p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //Also transition the non-MSAA render target
+	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //Also transition the MSAA render target
 	{
-		const TRAP::Ref<RenderTarget> nonMSAARenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
-		RenderTargetBarrier MSAABarrier{nonMSAARenderTarget, ResourceState::Present, ResourceState::RenderTarget};
-		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &MSAABarrier);
+		barrier.RenderTarget = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier(nullptr, nullptr, &barrier);
 	}
 #endif
+
+	TRAP::Ref<RenderTarget> bindRenderTarget{};
+	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
+		bindRenderTarget = p->RenderTargetsMSAA[p->CurrentSwapChainImageIndex];
+	else
+	{
+		if(p->RenderScale != 1.0f)
+			bindRenderTarget = p->InternalRenderTargets[p->CurrentSwapChainImageIndex];
+		else
+		{
+#ifndef TRAP_HEADLESS_MODE
+			bindRenderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+#else
+			bindRenderTarget = p->RenderTargets[p->CurrentSwapChainImageIndex];
+#endif
+		}
+	}
 
 	LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = LoadActionType::Clear;
 	loadActions.ClearColorValues[0] = p->ClearColor;
 	loadActions.ClearDepth = p->ClearDepth;
 	loadActions.ClearStencil = p->ClearStencil;
-	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, nullptr, nullptr,
+	p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ bindRenderTarget }, nullptr, &loadActions, nullptr, nullptr,
 	                                                           std::numeric_limits<uint32_t>::max(),
 															   std::numeric_limits<uint32_t>::max(), std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).ShadingRateTexture);
 
 	//Set Default Dynamic Viewport & Scissor
-	uint32_t width = 0, height = 0;
-#ifndef TRAP_HEADLESS_MODE
-	width = p->Window->GetWidth();
-	height = p->Window->GetHeight();
-#else
-	width = renderTarget->GetWidth();
-	height = renderTarget->GetHeight();
-#endif
+	uint32_t width = bindRenderTarget->GetWidth();
+	uint32_t height = bindRenderTarget->GetHeight();
+
 	p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, static_cast<float>(width),
 														 static_cast<float>(height), 0.0f, 1.0f);
 	p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, width, height);
@@ -316,6 +319,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartComputeRecording(PerWindowData* c
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(p, "VulkanRenderer::StartComputeRecording(): PerWindowData is nullptr!");
+
+	p->State = PerWindowState::PreUpdate;
 
 	if(p->RecordingCompute)
 		return;
@@ -596,6 +601,12 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 
 	[[maybe_unused]] const bool updateImGui = UpdateAntiAliasingRenderTargets(p);
 
+	if(p->RenderScale != p->NewRenderScale)
+	{
+		p->RenderScale = p->NewRenderScale;
+		UpdateInternalRenderTargets(p);
+	}
+
 	StartComputeRecording(p);
 	StartGraphicRecording(p);
 
@@ -603,22 +614,6 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 	if(updateImGui) //To set MSAA sample count for ImGui we need a running render pass.
 		TRAP::Application::GetImGuiLayer().SetMSAASamples(s_currentAntiAliasing != AntiAliasing::Off ? static_cast<uint32_t>(s_currentSampleCount) : 1);
 #endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::OnPostUpdate() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	//TODO Perform scaling for each PerWindowData dependening on set render scale
-
-	// for(const auto& [window, data] : s_perWindowDataMap)
-	// {
-	// 	const PerWindowData* const p = data.get();
-
-	// 	RenderScalePass(p);
-	// }
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -693,13 +688,11 @@ void TRAP::Graphics::API::VulkanRenderer::SetRenderScale(float scale, const Wind
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(window, "VulkanRenderer::GetRenderScale(): Window is nullptr!");
-	TRAP_ASSERT(scale >= 0.5f && scale <= 1.0f, "VulkanRenderer::GetRenderScale(): Scale must be between 0.5f and 2.0f inclusive!");
+	TRAP_ASSERT(scale >= 0.5f && scale <= 2.0f, "VulkanRenderer::GetRenderScale(): Scale must be between 0.5f and 2.0f inclusive!");
 
 	scale = TRAP::Math::Clamp(scale, 0.5f, 2.0f);
 
-	s_perWindowDataMap.at(window)->RenderScale = scale;
-
-	//TODO Trigger SwapChain resize?!
+	s_perWindowDataMap.at(window)->NewRenderScale = scale;
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -1135,13 +1128,17 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearBufferType clearType,
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
 		renderTarget = data->RenderTargetsMSAA[data->CurrentSwapChainImageIndex];
 	else
-		renderTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
+	{
+		if(data->RenderScale != 1.0f)
+			renderTarget = data->InternalRenderTargets[data->CurrentSwapChainImageIndex];
+		else
+		{
+			renderTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
 #else
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA)
-		renderTarget = data->RenderTargetsMSAA[data->CurrentSwapChainImageIndex];
-	else
-		renderTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];
+			renderTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];
 #endif
+		}
+	}
 
 	if(static_cast<uint32_t>(clearType & ClearBufferType::Color) != 0)
 	{
@@ -2121,6 +2118,126 @@ bool TRAP::Graphics::API::VulkanRenderer::UpdateAntiAliasingRenderTargets(PerWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::UpdateInternalRenderTargets(PerWindowData* const winData) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(winData, "VulkanRenderer::UpdateInternalRenderTargets(): winData is nullptr!");
+
+	winData->InternalRenderTargets = {};
+
+	const auto resolution = GetInternalRenderResolution(winData->Window);
+
+	for(uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+	{
+		RendererAPI::RenderTargetDesc rTDesc{};
+		rTDesc.Width = resolution.x;
+		rTDesc.Height = resolution.y;
+		rTDesc.Depth = 1;
+		rTDesc.ArraySize = 1;
+		rTDesc.MipLevels = 1;
+		rTDesc.Format = SwapChain::GetRecommendedSwapchainFormat(true, false);
+		rTDesc.StartState = RendererAPI::ResourceState::RenderTarget;
+		rTDesc.SampleCount = SampleCount::One;
+		winData->InternalRenderTargets[i] = RenderTarget::Create(rTDesc);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::RenderScalePass(TRAP::Ref<RenderTarget> source,
+                                                          TRAP::Ref<RenderTarget> destination,
+		                                                  const Window* const window) const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(window, "VulkanRenderer::RenderScalePass(): Window is nullptr!");
+
+	const PerWindowData* const p = s_perWindowDataMap.at(window).get();
+
+	TRAP_ASSERT(p->RenderScale != 1.0f, "VulkanRenderer::RenderScalePass(): RenderScale must not be 1.0f!");
+
+	if(s_currentAntiAliasing == AntiAliasing::MSAA)
+	{
+		//TODO
+		//1. Resolve to image with same resolution
+		//2. Blit to swapchain image
+		//vkCmdResolveImage
+
+		// VkCommandBuffer cmd = dynamic_cast<VulkanCommandBuffer*>(data->GraphicCommandBuffers[data->ImageIndex])->GetVkCommandBuffer();
+
+		// VkImage internalMSAA = std::dynamic_pointer_cast<VulkanTexture>(data->InternalRenderTargets[data->CurrentSwapChainImageIndex]->GetTexture())->GetVkImage();
+		// VkImage outputMSAA = std::dynamic_pointer_cast<VulkanTexture>(data->RenderTargetsMSAA[data->CurrentSwapChainImageIndex]->GetTexture())->GetVkImage();
+
+		// VkImageResolve region{};
+
+		// vkCmdResolveImage(cmd, internalMSAA, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, outputMSAA,
+		//                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+	}
+	else
+	{
+		//Stop running render pass
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, nullptr, nullptr,
+																   std::numeric_limits<uint32_t>::max(),
+																   std::numeric_limits<uint32_t>::max(), nullptr);
+
+
+		//Transition layout for copying
+		TextureBarrier barrier{};
+		barrier.Texture = source->GetTexture().get();
+		barrier.CurrentState = ResourceState::RenderTarget;
+		barrier.NewState = ResourceState::CopySource;
+		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+		barrier.Texture = destination->GetTexture().get();
+		barrier.CurrentState = ResourceState::RenderTarget;
+		barrier.NewState = ResourceState::CopyDestination;
+		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+
+		//Do scaling
+		VkCommandBuffer cmd = dynamic_cast<VulkanCommandBuffer*>(p->GraphicCommandBuffers[p->ImageIndex])->GetVkCommandBuffer();
+
+		TRAP::Ref<VulkanTexture> texInternal = std::dynamic_pointer_cast<VulkanTexture>(source->GetTexture());
+		TRAP::Ref<VulkanTexture> texOutput = std::dynamic_pointer_cast<VulkanTexture>(destination->GetTexture());
+
+		VkImage internal = texInternal->GetVkImage();
+		VkImage output = texOutput->GetVkImage();
+
+		VkImageBlit region{};
+		region.srcOffsets[0] = {0, 0, 0};
+		region.srcOffsets[1] = { static_cast<int32_t>(texInternal->GetWidth()), static_cast<int32_t>(texInternal->GetHeight()), 1};
+		region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		region.srcSubresource.mipLevel = 0;
+		region.srcSubresource.baseArrayLayer = 0;
+		region.srcSubresource.layerCount = 1;
+		region.dstOffsets[0] = {0, 0, 0};
+		region.dstOffsets[1] = {static_cast<int32_t>(texOutput->GetWidth()), static_cast<int32_t>(texOutput->GetHeight()), 1};
+		region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		region.dstSubresource.mipLevel = 0;
+		region.dstSubresource.baseArrayLayer = 0;
+		region.dstSubresource.layerCount = 1;
+
+		vkCmdBlitImage(cmd, internal, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, output,
+		               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_LINEAR);
+
+		//Transition layout back
+		barrier.Texture = source->GetTexture().get();
+		barrier.CurrentState = ResourceState::CopySource;
+		barrier.NewState = ResourceState::RenderTarget;
+		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+		barrier.Texture = destination->GetTexture().get();
+		barrier.CurrentState = ResourceState::CopyDestination;
+		barrier.NewState = ResourceState::RenderTarget;
+		ResourceTextureBarrier(barrier, QueueType::Graphics, window);
+
+		//Start render pass
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({destination}, nullptr, nullptr, nullptr, nullptr,
+															   std::numeric_limits<uint32_t>::max(),
+															   std::numeric_limits<uint32_t>::max(), nullptr);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetLatencyMode([[maybe_unused]] const LatencyMode mode,
                                                          [[maybe_unused]] const Window* const window)
 {
@@ -2187,7 +2304,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* const window
 	TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
-	p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
+	if(Application::GetFPSLimit() == 0)
+		p->SleepModeParams.minimumIntervalUs = 0;
+	else
+		p->SleepModeParams.minimumIntervalUs = static_cast<uint32_t>(((1000.0f / Application::GetFPSLimit()) * 1000.0f));
 #endif
 
 	p->Window = window;

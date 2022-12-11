@@ -168,6 +168,13 @@ namespace TRAP::Graphics
 		static std::array<uint8_t, 16> GetNewGPU();
 
 		/// <summary>
+		/// On post update function.
+		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
+		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
+		/// </summary>
+		static void OnPostUpdate();
+
+		/// <summary>
 		/// Initialize the internal renderer.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
@@ -183,13 +190,6 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="window">Window to flush.</param>
 		virtual void Flush(const Window* const window) const = 0;
-
-		/// <summary>
-		/// On post update function.
-		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
-		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
-		/// </summary>
-		virtual void OnPostUpdate() const = 0;
 
 		/// <summary>
 		/// Dispatch to the given window.
@@ -680,6 +680,18 @@ namespace TRAP::Graphics
 		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
 		/// <param name="window">Window to do the resolve pass on.</param>
 		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
+		                             const Window* const window) const = 0;
+
+		/// <summary>
+		/// Scale image from internal resolution to the final output resolution.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source render target to resolve.</param>
+		/// <param name="destination">Destination render target to resolve into.</param>
+		/// <param name="window">Window to do the scaling pass on.</param>
+		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
+									 TRAP::Ref<RenderTarget> destination,
 		                             const Window* const window) const = 0;
 
 		/// <summary>
@@ -2626,6 +2638,12 @@ namespace TRAP::Graphics
 		static std::array<uint8_t, 16> s_newGPUUUID;
 
 	public:
+		enum class PerWindowState
+		{
+			PreUpdate,
+			PostUpdate,
+		};
+
 		/// <summary>
 		/// Per window data used for rendering.
 		/// </summary>
@@ -2637,6 +2655,8 @@ namespace TRAP::Graphics
 			~PerWindowData();
 
 			TRAP::Window* Window;
+
+			PerWindowState State{};
 
 			//Swapchain/Graphics stuff
 			uint32_t ImageIndex = 0;
@@ -2654,10 +2674,12 @@ namespace TRAP::Graphics
 			bool Recording;
 			TRAP::Ref<Texture> NewShadingRateTexture;
 
+			float NewRenderScale = 1.0f;
 			float RenderScale = 1.0f;
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> InternalRenderTargets; //Used when RenderScale is not 1.0f
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
 			bool Resize = false;

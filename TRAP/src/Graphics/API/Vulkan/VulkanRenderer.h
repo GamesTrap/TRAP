@@ -75,13 +75,6 @@ namespace TRAP::Graphics::API
 		void Flush(const Window* const window) const override;
 
 		/// <summary>
-		/// On post update function.
-		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
-		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
-		/// </summary>
-		void OnPostUpdate() const override;
-
-		/// <summary>
 		/// Dispatch to the given window.
 		/// </summary>
 		/// <param name="workGroupElements">
@@ -566,6 +559,24 @@ namespace TRAP::Graphics::API
 		/// <param name="winData">PerWindowData to update.</param>
 		/// <returns>True if RenderTargets got updated, false otherwise.</returns>
 		bool UpdateAntiAliasingRenderTargets(PerWindowData* const winData) const;
+
+		/// <summary>
+		/// Update the internal RenderTargets used for render scaling.
+		/// </summary>
+		/// <param name="winData">PerWindowData to update.</param>
+		void UpdateInternalRenderTargets(PerWindowData* const winData) const;
+
+		/// <summary>
+		/// Scale image from internal resolution to the final output resolution.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source render target to resolve.</param>
+		/// <param name="destination">Destination render target to resolve into.</param>
+		/// <param name="window">Window to do the scaling pass on.</param>
+		void RenderScalePass(TRAP::Ref<RenderTarget> source,
+		                     TRAP::Ref<RenderTarget> destination,
+		                     const Window* const window) const override;
 
 		/// <summary>
 		/// Set the latency mode.

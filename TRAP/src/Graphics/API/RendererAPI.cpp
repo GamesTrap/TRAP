@@ -197,6 +197,22 @@ std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RendererAPI::OnPostUpdate()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	for(const auto& [win, data] : s_perWindowDataMap)
+	{
+		data->State = PerWindowState::PostUpdate;
+
+		if(data->RenderScale != 1.0f)
+			GetRenderer()->RenderScalePass(data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
+			                               data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex], win);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -307,7 +323,12 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
 		renderTarget = winData->RenderTargetsMSAA[winData->CurrentSwapChainImageIndex];
 	else //No MSAA
-		renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
+	{
+		if(winData->RenderScale != 1.0f && winData->State == PerWindowState::PreUpdate)
+			renderTarget = winData->InternalRenderTargets[winData->CurrentSwapChainImageIndex];
+		else
+			renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
+	}
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
@@ -315,7 +336,12 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
 		renderTarget = winData->RenderTargetsMSAA[winData->ImageIndex];
 	else //No MSAA
-		renderTarget = winData->RenderTargets[winData->ImageIndex];
+	{
+		if(winData->RenderScale != 1.0f && winData->State == PerWindowState::PreUpdate)
+			renderTarget = winData->InternalRenderTargets[winData->ImageIndex];
+		else
+			renderTarget = winData->RenderTargets[winData->ImageIndex];
+	}
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);

@@ -335,10 +335,6 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	Graphics::RenderCommand::SetLatencyMode(latencyMode);
 	NVSTATS_INIT(0, 0);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
-
-	//Update Viewport
-	const auto frameBufferSize = m_window->GetFrameBufferSize();
-	Graphics::RenderCommand::SetViewport(0, 0, frameBufferSize.x, frameBufferSize.y);
 #endif
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
@@ -560,7 +556,7 @@ void TRAP::Application::Run()
 			}
 
 			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
-				Graphics::RendererAPI::GetRenderer()->OnPostUpdate();
+				Graphics::RendererAPI::OnPostUpdate();
 
 #ifndef TRAP_HEADLESS_MODE
 			ImGuiLayer::Begin();
@@ -907,7 +903,6 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
 	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
 
 	return false;
