@@ -403,7 +403,7 @@ namespace TRAP::Graphics
 		/// Note: The texture must be in ResourceState::ShadingRateSource.
 		/// </param>
 		/// <param name="window">Window to set shading rate for.</param>
-		virtual void SetShadingRate(Ref<Texture> texture, const Window* const window) const = 0;
+		virtual void SetShadingRate(Ref<RenderTarget> texture, const Window* const window) const = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -678,9 +678,9 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="source">Source MSAA render target to resolve.</param>
 		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
-		/// <param name="window">Window to do the resolve pass on.</param>
+		/// <param name="cmd">CommadBuffer to resolve on.</param>
 		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
-		                             const Window* const window) const = 0;
+		                             CommandBuffer* const cmd) const = 0;
 
 		/// <summary>
 		/// Scale image from internal resolution to the final output resolution.
@@ -2082,7 +2082,7 @@ namespace TRAP::Graphics
 			//Shading rate combiners to use (only if supported)
 			std::array<TRAP::Graphics::RendererAPI::ShadingRateCombiner, 2> ShadingRateCombiners{};
 			//Shading rate texture to use (only if ShadingRateCaps::PerTile is supported, disables fixed ShadingRate)
-			TRAP::Ref<TRAP::Graphics::Texture> ShadingRateTexture{};
+			TRAP::Ref<TRAP::Graphics::RenderTarget> ShadingRateTexture{};
 		};
 
 		/// <summary>
@@ -2672,13 +2672,14 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 			float GraphicsFrameTime;
 			bool Recording;
-			TRAP::Ref<Texture> NewShadingRateTexture;
+			TRAP::Ref<RenderTarget> NewShadingRateTexture;
+			std::array<TRAP::Ref<TRAP::Graphics::RenderTarget>, 3> CachedShadingRateTextures{};
 
 			float NewRenderScale = 1.0f;
 			float RenderScale = 1.0f;
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
-			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> TemporaryResolveRenderTargets; //Used to resolve MSAA RenderTarget before applying RenderScale
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> InternalRenderTargets; //Used when RenderScale is not 1.0f
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;

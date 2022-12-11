@@ -1808,6 +1808,9 @@ void ImGui_ImplVulkan_SetMSAASamples(const VkSampleCountFlagBits sampleCount)
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
 
+    if(sampleCount == v->MSAASamples)
+        return;
+
     v->MSAASamples = sampleCount;
     bd->RenderPass = dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>
 		(

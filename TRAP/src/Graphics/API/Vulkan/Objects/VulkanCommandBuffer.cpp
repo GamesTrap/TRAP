@@ -18,7 +18,6 @@
 #include "VulkanInits.h"
 #include "VulkanQueue.h"
 #include "VulkanTexture.h"
-#include <memory>
 
 TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 {
@@ -249,7 +248,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 																 const std::vector<uint32_t>* const colorMipSlices,
 																 const uint32_t depthArraySlice,
 																 const uint32_t depthMipSlice,
-																 const TRAP::Ref<Texture>& shadingRate)
+																 const TRAP::Ref<RenderTarget>& shadingRate)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
@@ -338,9 +337,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	{
 		const Ref<VulkanTexture> vkTex = std::dynamic_pointer_cast<VulkanTexture>(shadingRate);
 
-		const uint32_t hashValue = static_cast<uint32_t>(shadingRate->GetImageFormat());
+		uint32_t hashValue = static_cast<uint32_t>(shadingRate->GetImageFormat());
 		renderPassHash = HashAlg<uint32_t>(&hashValue, 1, renderPassHash);
-		const uint32_t ID = static_cast<uint32_t>(RendererAPI::ResourceState::ShadingRateSource);
+		const uint32_t ID = std::dynamic_pointer_cast<VulkanRenderTarget>(shadingRate)->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 	}
 
@@ -405,7 +404,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		VulkanRenderer::FrameBufferDesc desc{};
 		desc.RenderTargets = renderTargets;
 		desc.DepthStencil = depthStencil;
-		desc.ShadingRateTexture = shadingRate;
+		desc.ShadingRate = shadingRate;
 		desc.RenderPass = renderPass;
 		if(colorArraySlices)
 			desc.ColorArraySlices = *colorArraySlices;

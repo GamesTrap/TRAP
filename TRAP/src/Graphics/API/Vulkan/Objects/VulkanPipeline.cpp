@@ -10,7 +10,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
-#include "Graphics/Textures/Texture.h"
+#include "Graphics/API/Objects/RenderTarget.h"
 
 TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
 	: m_vkPipeline(VK_NULL_HANDLE),

@@ -131,7 +131,7 @@ namespace TRAP::Graphics::API
 		                       const std::vector<uint32_t>* colorMipSlices,
 							   uint32_t depthArraySlice,
 							   uint32_t depthMipSlice,
-							   const TRAP::Ref<Texture>& shadingRate = nullptr) override;
+							   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) override;
 
 		/// <summary>
 		/// Add a debug marker to the command buffer.

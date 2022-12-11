@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 
 	const uint32_t colorAttachmentCount = static_cast<uint32_t>(desc.RenderTargets.size());
 	const uint32_t depthAttachmentCount = desc.DepthStencil ? 1 : 0;
-	const uint32_t shadingRateAttachmentCount = desc.ShadingRateTexture ? 1 : 0;
+	const uint32_t shadingRateAttachmentCount = desc.ShadingRate ? 1 : 0;
 
 	if(colorAttachmentCount)
 	{
@@ -117,11 +117,11 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	}
 
 	//Shading rate
-	if(desc.ShadingRateTexture)
+	if(desc.ShadingRate)
 	{
-		const Ref<VulkanTexture> tex = std::dynamic_pointer_cast<VulkanTexture>(desc.ShadingRateTexture);
+		const Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.ShadingRate);
 
-		*iterAttachments = tex->GetSRVVkImageView();
+		*iterAttachments = rTarget->GetVkImageView();
 		++iterAttachments;
 	}
 

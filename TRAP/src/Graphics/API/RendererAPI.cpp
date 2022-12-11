@@ -324,28 +324,18 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 #ifndef TRAP_HEADLESS_MODE
 	//Get correct RenderTarget
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
-		renderTarget = winData->RenderTargetsMSAA[winData->CurrentSwapChainImageIndex];
-	else //No MSAA
-	{
-		if(winData->RenderScale != 1.0f && winData->State == PerWindowState::PreUpdate)
-			renderTarget = winData->InternalRenderTargets[winData->CurrentSwapChainImageIndex];
-		else
-			renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
-	}
+	if((winData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && winData->State == PerWindowState::PreUpdate)
+		renderTarget = winData->InternalRenderTargets[winData->CurrentSwapChainImageIndex];
+	else
+		renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 #else
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
-		renderTarget = winData->RenderTargetsMSAA[winData->ImageIndex];
-	else //No MSAA
-	{
-		if(winData->RenderScale != 1.0f && winData->State == PerWindowState::PreUpdate)
-			renderTarget = winData->InternalRenderTargets[winData->ImageIndex];
-		else
-			renderTarget = winData->RenderTargets[winData->ImageIndex];
-	}
+	if((winData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && winData->State == PerWindowState::PreUpdate)
+		renderTarget = winData->InternalRenderTargets[winData->ImageIndex];
+	else
+		renderTarget = winData->RenderTargets[winData->ImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 	                                nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);

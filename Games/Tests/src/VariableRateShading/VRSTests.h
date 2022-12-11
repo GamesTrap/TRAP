@@ -24,11 +24,11 @@ private:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
 
-	TRAP::Ref<TRAP::Graphics::Texture> CreateShadingRateTexture(uint32_t framebufferWidth, uint32_t framebufferHeight);
+	TRAP::Ref<TRAP::Graphics::RenderTarget> CreateShadingRateTexture(uint32_t framebufferWidth, uint32_t framebufferHeight);
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
-	TRAP::Ref<TRAP::Graphics::Texture> m_shadingRateTexture;
+	TRAP::Ref<TRAP::Graphics::RenderTarget> m_shadingRateTexture;
 
     TRAP::Graphics::ShadingRate m_shadingRate;
     std::vector<RateData> m_shadingRates;

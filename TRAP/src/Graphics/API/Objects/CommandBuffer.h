@@ -109,7 +109,7 @@ namespace TRAP::Graphics
 			                           const std::vector<uint32_t>* colorArraySlices,
 			                           const std::vector<uint32_t>* colorMipSlices,
 			                           uint32_t depthArraySlice, uint32_t depthMipSlice,
-									   const TRAP::Ref<Texture>& shadingRate = nullptr) = 0;
+									   const TRAP::Ref<RenderTarget>& shadingRate = nullptr) = 0;
 
 		/// <summary>
 		/// Add a debug marker to the command buffer.

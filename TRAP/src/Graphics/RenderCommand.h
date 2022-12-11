@@ -272,7 +272,7 @@ namespace TRAP::Graphics
 		/// Note: The texture must be in ResourceState::ShadingRateSource.
 		/// </param>
 		/// <param name="window">Window to set shading rate for. Default: Main Window.</param>
-		static void SetShadingRate(Ref<Texture> texture, const Window* const window = TRAP::Application::GetWindow());
+		static void SetShadingRate(Ref<RenderTarget> texture, const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
 		/// Use AntiAliasing::Off to disable anti aliasing.

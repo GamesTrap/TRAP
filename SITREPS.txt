@@ -3520,3 +3520,11 @@ SITREP 12/11/2022|22w49b2
         - Disabled VRS after render scaling pass ~<5 mins
         - VulkanRenderer StartGraphicRecording() now checks with internal resolution against VRS image attachment ~<10 mins
         - Updated VRSTests ~<5 mins
+        - RendererAPI MSAAResolvePass replaced Window* with CommandBuffer* ~<5 mins
+        - RendererAPI Removed RenderTargetsMSAA ~<10 mins
+        - VulkanRenderer Combined UpdateAntiAliasingRenderTargets() with UpdateInternalRenderTargets() ~<10 mins
+        - RendererAPI ShadingRateTextures are now cached so they dont get destroyed while being in use by command buffers ~<5 mins
+        - RendererAPI RenderScalePass() WIP MSAA support ~>20 mins
+        - RendererAPI ShadingRateTexture is now of type RenderTarget instead of Texture ~<20 mins
+        - ImGuiLayer now automatically sets appropriate MSAA sample count ~<5 mins
+        - ImGuiLayer Removed SetMSAASamples() ~<5 mins
