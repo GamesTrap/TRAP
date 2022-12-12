@@ -30,15 +30,16 @@ void OnGPUCrashDump([[maybe_unused]] const void* gpuCrashDump,
     TRAP_ASSERT(gpuCrashDump, "OnGPUCrashDump(): gpuCrashDump is nullptr!");
     TRAP_ASSERT(gpuCrashDumpSize, "OnGPUCrashDump(): gpuCrashDumpSize is 0!");
 
-    const auto docsFolder = TRAP::FileSystem::GetDocumentsFolderPath();
-    if(!docsFolder)
-        return;
-
+#ifndef TRAP_HEADLESS_MODE
+    const auto targetFolder = TRAP::FileSystem::GetGameDocumentsFolderPath();
+#else
+    const auto targetFolder = TRAP::FileSystem::GetCurrentFolderPath();
+#endif
     std::string dateTimeStamp = TRAP::Utils::String::GetDateTimeStamp(std::chrono::system_clock::now());
     std::replace(dateTimeStamp.begin(), dateTimeStamp.end(), ':', '-');
 
-    const std::filesystem::path folderPath = *docsFolder / "TRAP" / TRAP::Application::GetGameName() / "crash-dumps";
-    const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".dump");
+    const std::filesystem::path folderPath = *targetFolder / "crash-dumps";
+    const std::filesystem::path filePath = folderPath / ("crash_" + dateTimeStamp + ".nv-gpudmp");
     std::lock_guard lock(AftermathMutex);
     LockMark(AftermathMutex);
     std::vector<uint8_t> buffer(gpuCrashDumpSize);

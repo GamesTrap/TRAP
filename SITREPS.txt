@@ -3536,3 +3536,6 @@ SITREP 12/11/2022|22w49b2
 SITREP 12/12/2022|22w50a1
     - Changed TRAP Engine version to 22w50a1(0.8.82)
     - Application Fixed Fallback Shader/Texture destruction error ~<5 mins
+    - Headless FileSystem now doesnt create game documents folder ~<5 mins
+    - Headless AftermathTracker now uses current path instead of game documents path ~<5 mins
+    - AftermathTracker Changed crash dump file ending from ".dump" to ".nv-gpudmp" ~<5 mins

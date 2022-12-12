@@ -32,11 +32,13 @@ void TRAP::FileSystem::Init()
 
     //Create game document folder
     const auto gameDocsFolder = GetGameDocumentsFolderPath();
+#ifndef TRAP_HEADLESS_MODE
     if(gameDocsFolder && !Exists(*gameDocsFolder))
     {
         if(!CreateFolder(*gameDocsFolder))
             TP_ERROR(Log::FileSystemPrefix, "Failed to create game documents folder: \"", gameDocsFolder->u8string(), "\"!");
     }
+#endif
 
     //Create game log folder
     const auto gameLogFolder = GetGameLogFolderPath();
