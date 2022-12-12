@@ -458,12 +458,8 @@ TRAP::Application::~Application()
 		Graphics::SpriteManager::Clean();
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down TextureManager");
 		Graphics::TextureManager::Shutdown();
-		Graphics::TextureManager::Remove("Fallback2D");
-		Graphics::TextureManager::Remove("FallbackCube");
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down ShaderManager");
 		Graphics::ShaderManager::Shutdown();
-		Graphics::ShaderManager::Remove("FallbackGraphics");
-		Graphics::ShaderManager::Remove("FallbackCompute");
 		TP_TRACE(Log::ApplicationPrefix, "Shutting down RendererAPI");
 		Graphics::RendererAPI::Shutdown();
 	}

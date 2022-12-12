@@ -3513,7 +3513,7 @@ SITREP 12/10/2022|22w49b1
         - Moved MSAA RenderTarget from SwapChain to PerWindowData ~<20 mins
 
 SITREP 12/11/2022|22w49b2
-    - Changed TRAP Engine version to 22w49a1(0.8.81)
+    - Changed TRAP Engine version to 22w49b1(0.8.81)
     - Branch decouple-resolution:
         - Added initial support for render scaling (doesnt support resizing and MSAA yet) ~>60 mins
         - Added window resizing support for render scaling ~<10 mins
@@ -3532,3 +3532,7 @@ SITREP 12/11/2022|22w49b2
         - VulkanRenderer RenderScalePass() removed code redundancy ~<5 mins
         - Headless-Mode Added support for RenderScale ~<10 mins
         - Tests Added RenderScaleTests ~<10 mins
+
+SITREP 12/12/2022|22w50a1
+    - Changed TRAP Engine version to 22w50a1(0.8.82)
+    - Application Fixed Fallback Shader/Texture destruction error ~<5 mins
