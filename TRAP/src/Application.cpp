@@ -335,14 +335,14 @@ TRAP::Application::Application(std::string gameName, const uint32_t appID)
 	Graphics::RenderCommand::SetLatencyMode(latencyMode);
 	NVSTATS_INIT(0, 0);
 #endif /*NVIDIA_REFLEX_AVAILABLE*/
-
-	//Update Viewport
-	const auto frameBufferSize = m_window->GetFrameBufferSize();
-	Graphics::RenderCommand::SetViewport(0, 0, frameBufferSize.x, frameBufferSize.y);
 #endif
 
 	if(renderAPI != Graphics::RenderAPI::NONE)
 	{
+		float renderScale = 1.0f;
+		m_config.Get<float>("RenderScale", renderScale);
+		Graphics::RenderCommand::SetRenderScale(renderScale);
+
 		//Always added as a fallback shader
 		Graphics::ShaderManager::LoadSource("FallbackGraphics", std::string(Embed::FallbackGraphicsShader))->Use();
 		Graphics::ShaderManager::LoadSource("FallbackCompute", std::string(Embed::FallbackComputeShader))->Use();
@@ -432,6 +432,7 @@ TRAP::Application::~Application()
 		m_config.Set("AntiAliasing", antiAliasing);
 		m_config.Set("AntiAliasingQuality", antiAliasingSampleCount);
 		m_config.Set("AnisotropyLevel", (anisotropyLevel == Graphics::SampleCount::One) ? "Off" : Utils::String::ConvertToString(anisotropyLevel));
+		m_config.Set("RenderScale", Graphics::RenderCommand::GetRenderScale());
 
 		//NVIDIA Reflex
 #if !defined(TRAP_HEADLESS_MODE) && defined(NVIDIA_REFLEX_AVAILABLE)
@@ -499,7 +500,7 @@ void TRAP::Application::Run()
 		else if (m_fpsLimit)
 #endif
 		{
-			std::chrono::duration<float, std::milli> limitMs{}; 
+			std::chrono::duration<float, std::milli> limitMs{};
 			if(m_fpsLimit)
 				limitMs = std::chrono::duration<float, std::milli>(1000.0f / static_cast<float>(m_fpsLimit) - limiterTimer.ElapsedMilliseconds());
 			else //If engine is not focused, set engine to 30 FPS so other applications dont lag
@@ -553,6 +554,9 @@ void TRAP::Application::Run()
 				}
 				// TP_TRACE("After: ", tickTimerSeconds, "s of tick time remaining");
 			}
+
+			if(Graphics::RendererAPI::GetRenderAPI() != Graphics::RenderAPI::NONE)
+				Graphics::RendererAPI::OnPostUpdate();
 
 #ifndef TRAP_HEADLESS_MODE
 			ImGuiLayer::Begin();
@@ -899,7 +903,6 @@ bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight(), e.GetWindow());
 	Graphics::RendererAPI::GetRenderer()->ResizeSwapChain(e.GetWindow());
 
 	return false;

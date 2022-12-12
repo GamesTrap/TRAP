@@ -170,7 +170,7 @@ void TRAP::Graphics::RenderCommand::SetShadingRate(const ShadingRate shadingRate
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetShadingRate(TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex,
+void TRAP::Graphics::RenderCommand::SetShadingRate(TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex,
                                                    const Window* const window)
 {
 	RendererAPI::GetRenderer()->SetShadingRate(shadingRateTex, window);
@@ -252,6 +252,20 @@ void TRAP::Graphics::RenderCommand::SetResolution(const uint32_t width, const ui
 	RendererAPI::GetRenderer()->SetResolution(width, height, window);
 }
 #endif
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetRenderScale(const float scale, const Window* const window)
+{
+	RendererAPI::GetRenderer()->SetRenderScale(scale, window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::RenderCommand::GetRenderScale(const Window* const window)
+{
+	return RendererAPI::GetRenderer()->GetRenderScale(window);
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -434,7 +448,12 @@ void TRAP::Graphics::RenderCommand::Transition(Ref<Texture> texture, const Rende
 void TRAP::Graphics::RenderCommand::MSAAResolvePass(TRAP::Ref<RenderTarget> source,
                                                     TRAP::Ref<RenderTarget> destination, const Window* const window)
 {
-	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, window);
+	TRAP_ASSERT(window, "RenderCommand::MSAAResolvePass(): Window is nullptr!");
+
+	const auto& winData = TRAP::Graphics::RendererAPI::GetWindowData(window);
+	CommandBuffer* const cmd = winData.GraphicCommandBuffers[winData.ImageIndex];
+
+	RendererAPI::GetRenderer()->MSAAResolvePass(source, destination, cmd);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

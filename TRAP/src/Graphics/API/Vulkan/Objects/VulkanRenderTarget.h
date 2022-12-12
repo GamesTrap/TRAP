@@ -70,7 +70,7 @@ namespace TRAP::Graphics::API
 			                                                                    const std::vector<uint32_t>* colorMipSlices,
 			                                                                    uint32_t depthArraySlice,
 			                                                                    uint32_t depthMipSlice,
-							   												    const TRAP::Ref<Texture>& shadingRate);
+							   												    const TRAP::Ref<RenderTarget>& shadingRate);
 
 		/// <summary>
 		/// Set the name of the render target.

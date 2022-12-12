@@ -263,8 +263,8 @@ namespace TRAP::Graphics
 		static void SetShadingRate(ShadingRate shadingRate,
 		                           ShadingRateCombiner postRasterizerRate,
 							       ShadingRateCombiner finalRate, const Window* const window = TRAP::Application::GetWindow());
-		//TODO EXPERIMENTAL
 		/// <summary>
+		/// TODO EXPERIMENTAL
 		/// Set the pipeline fragment shading rate via texture.
 		/// </summary>
 		/// <param name="texture">
@@ -272,7 +272,7 @@ namespace TRAP::Graphics
 		/// Note: The texture must be in ResourceState::ShadingRateSource.
 		/// </param>
 		/// <param name="window">Window to set shading rate for. Default: Main Window.</param>
-		static void SetShadingRate(Ref<Texture> texture, const Window* const window = TRAP::Application::GetWindow());
+		static void SetShadingRate(Ref<RenderTarget> texture, const Window* const window = TRAP::Application::GetWindow());
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
 		/// Use AntiAliasing::Off to disable anti aliasing.
@@ -361,6 +361,22 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to set resolution for. Default: Main Window.</param>
 		static void SetResolution(uint32_t width, uint32_t height, const Window* const window = TRAP::Application::GetWindow());
 #endif
+
+		/// <summary>
+		/// TODO EXPERIMENTAL
+		/// Set the render scale for the given window.
+		/// Note: This functon takes effect on the next frame.
+		/// </summary>
+		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// <param name="window">Window to set render scale for. Default: Main Window.</param>
+		static void SetRenderScale(float scale, const Window* const window = TRAP::Application::GetWindow());
+		/// <summary>
+		/// TODO EXPERIMENTAL
+		/// Retrieve the used render scale value of the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve render scale from. Default: Main Window.</param>
+		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		static float GetRenderScale(const Window* const window = TRAP::Application::GetWindow());
 
 		//Drawing functions
 

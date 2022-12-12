@@ -3504,3 +3504,31 @@ SITREP 12/05/2022|22w49a1
     - VRSTests Added check if VRS is actually supported before trying to load the visualization shader ~<5 mins
     - VulkanShader Fixed a crash when shaders do not use any descriptors ~<5 mins
     - Fixed Windows freezing when application focus is lost ~<5 mins
+
+SITREP 12/10/2022|22w49b1
+    - Changed TRAP Engine version to 22w49b1(0.8.80)
+    - Branch decouple-resolution:
+        - RenderCommand/RendererAPI/VulkanRenderer Added SetRenderScale(), GetRenderScale() and OnPostUpdate() functions ~<10 mins
+        - Engine.cfg Added RenderScale ~<5 mins
+        - Moved MSAA RenderTarget from SwapChain to PerWindowData ~<20 mins
+
+SITREP 12/11/2022|22w49b2
+    - Changed TRAP Engine version to 22w49a1(0.8.81)
+    - Branch decouple-resolution:
+        - Added initial support for render scaling (doesnt support resizing and MSAA yet) ~>60 mins
+        - Added window resizing support for render scaling ~<10 mins
+        - Disabled VRS after render scaling pass ~<5 mins
+        - VulkanRenderer StartGraphicRecording() now checks with internal resolution against VRS image attachment ~<10 mins
+        - Updated VRSTests ~<5 mins
+        - RendererAPI MSAAResolvePass replaced Window* with CommandBuffer* ~<5 mins
+        - RendererAPI Removed RenderTargetsMSAA ~<10 mins
+        - VulkanRenderer Combined UpdateAntiAliasingRenderTargets() with UpdateInternalRenderTargets() ~<10 mins
+        - RendererAPI ShadingRateTextures are now cached so they dont get destroyed while being in use by command buffers ~<5 mins
+        - RendererAPI RenderScalePass() WIP MSAA support ~>20 mins
+        - RendererAPI ShadingRateTexture is now of type RenderTarget instead of Texture ~<20 mins
+        - ImGuiLayer now automatically sets appropriate MSAA sample count ~<5 mins
+        - ImGuiLayer Removed SetMSAASamples() ~<5 mins
+        - VulkanRenderer Finished MSAA RenderScale support ~>30 mins
+        - VulkanRenderer RenderScalePass() removed code redundancy ~<5 mins
+        - Headless-Mode Added support for RenderScale ~<10 mins
+        - Tests Added RenderScaleTests ~<10 mins

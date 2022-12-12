@@ -168,6 +168,13 @@ namespace TRAP::Graphics
 		static std::array<uint8_t, 16> GetNewGPU();
 
 		/// <summary>
+		/// On post update function.
+		/// This function performs several tasks that need to be done after LayerStack::OnUpdate() calls.
+		/// Currently this only performs scaling of the render targets, dependening on the current render scale.
+		/// </summary>
+		static void OnPostUpdate();
+
+		/// <summary>
 		/// Initialize the internal renderer.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
@@ -217,6 +224,20 @@ namespace TRAP::Graphics
 		virtual void SetReflexFPSLimit(uint32_t limit) = 0;
 
 		//RenderTarget Stuff
+
+		/// <summary>
+		/// Set the render scale for the given window.
+		/// Note: This functon takes effect on the next frame.
+		/// </summary>
+		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// <param name="window">Window to set render scale for.</param>
+		virtual void SetRenderScale(float scale, const Window* const window) const = 0;
+		/// <summary>
+		/// Retrieve the used render scale value of the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve render scale from.</param>
+		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		virtual float GetRenderScale(const Window* const window) const = 0;
 
 		/// <summary>
 		/// Set the clear color to be used by the given window.
@@ -382,7 +403,7 @@ namespace TRAP::Graphics
 		/// Note: The texture must be in ResourceState::ShadingRateSource.
 		/// </param>
 		/// <param name="window">Window to set shading rate for.</param>
-		virtual void SetShadingRate(Ref<Texture> texture, const Window* const window) const = 0;
+		virtual void SetShadingRate(Ref<RenderTarget> texture, const Window* const window) const = 0;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -657,8 +678,20 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="source">Source MSAA render target to resolve.</param>
 		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
-		/// <param name="window">Window to do the resolve pass on.</param>
+		/// <param name="cmd">CommadBuffer to resolve on.</param>
 		virtual void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
+		                             CommandBuffer* const cmd) const = 0;
+
+		/// <summary>
+		/// Scale image from internal resolution to the final output resolution.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source render target to resolve.</param>
+		/// <param name="destination">Destination render target to resolve into.</param>
+		/// <param name="window">Window to do the scaling pass on.</param>
+		virtual void RenderScalePass(TRAP::Ref<RenderTarget> source,
+									 TRAP::Ref<RenderTarget> destination,
 		                             const Window* const window) const = 0;
 
 		/// <summary>
@@ -706,6 +739,12 @@ namespace TRAP::Graphics
 		/// <param name="window">Window to retrieve the graphics root signature from.</param>
 		/// <returns>Graphics root signature.</returns>
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(const Window* const window);
+		/// <summary>
+		/// Retrieve the currently used internal render resolution of the given window.
+		/// </summary>
+		/// <param name="window">Window to get internal render resolution from.</param>
+		/// <returns>Internal render resolution.</returns>
+		static TRAP::Math::Vec2ui GetInternalRenderResolution(const Window* window);
 
 		/// <summary>
 		/// Start a render pass for the given window.
@@ -2043,7 +2082,7 @@ namespace TRAP::Graphics
 			//Shading rate combiners to use (only if supported)
 			std::array<TRAP::Graphics::RendererAPI::ShadingRateCombiner, 2> ShadingRateCombiners{};
 			//Shading rate texture to use (only if ShadingRateCaps::PerTile is supported, disables fixed ShadingRate)
-			TRAP::Ref<TRAP::Graphics::Texture> ShadingRateTexture{};
+			TRAP::Ref<TRAP::Graphics::RenderTarget> ShadingRateTexture{};
 		};
 
 		/// <summary>
@@ -2599,6 +2638,12 @@ namespace TRAP::Graphics
 		static std::array<uint8_t, 16> s_newGPUUUID;
 
 	public:
+		enum class PerWindowState
+		{
+			PreUpdate,
+			PostUpdate,
+		};
+
 		/// <summary>
 		/// Per window data used for rendering.
 		/// </summary>
@@ -2610,6 +2655,8 @@ namespace TRAP::Graphics
 			~PerWindowData();
 
 			TRAP::Window* Window;
+
+			PerWindowState State{};
 
 			//Swapchain/Graphics stuff
 			uint32_t ImageIndex = 0;
@@ -2625,13 +2672,17 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 			float GraphicsFrameTime;
 			bool Recording;
-			TRAP::Ref<Texture> NewShadingRateTexture;
+			TRAP::Ref<RenderTarget> NewShadingRateTexture;
+			std::array<TRAP::Ref<TRAP::Graphics::RenderTarget>, 3> CachedShadingRateTextures{};
 
+			float NewRenderScale = 1.0f;
+			float RenderScale = 1.0f;
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			bool ResizeSwapChain = false;
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> TemporaryResolveRenderTargets; //Used to resolve MSAA RenderTarget before applying RenderScale
+			std::array<TRAP::Ref<RenderTarget>, ImageCount> InternalRenderTargets; //Used when RenderScale is not 1.0f
 #ifdef TRAP_HEADLESS_MODE
 			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargets;
-			std::array<TRAP::Ref<RenderTarget>, ImageCount> RenderTargetsMSAA;
 			bool Resize = false;
 			uint32_t NewWidth = 1920, NewHeight = 1080; //Default RenderTargets to use Full HD
 #endif

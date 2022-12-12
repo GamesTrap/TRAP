@@ -245,16 +245,6 @@ void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::ImGuiLayer::SetMSAASamples(const uint32_t sampleCount)
-{
-	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
-
-	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-		ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(sampleCount));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::ImGuiLayer::Begin()
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
@@ -273,15 +263,22 @@ void TRAP::ImGuiLayer::Begin()
 
 		TRAP::Ref<TRAP::Graphics::RenderTarget> rT = nullptr;
 
-		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA) //MSAA
-			rT = winData.SwapChain->GetRenderTargetsMSAA()[winData.CurrentSwapChainImageIndex];
-		else //No MSAA
+		if(aaMethod == TRAP::Graphics::RendererAPI::AntiAliasing::MSAA && winData.RenderScale == 1.0f) //MSAA and no RenderScale
+			rT = winData.InternalRenderTargets[winData.CurrentSwapChainImageIndex];
+		else
 			rT = winData.SwapChain->GetRenderTargets()[winData.CurrentSwapChainImageIndex];
 
 		//Cant use TRAP::Graphics::RenderCommand::StartRenderPass() here, because it would also bind the shading rate image
 		vkCmdBuffer->BindRenderTargets({ rT }, nullptr, nullptr, nullptr, nullptr,
 																				std::numeric_limits<uint32_t>::max(),
 																				std::numeric_limits<uint32_t>::max());
+
+		//Only apply MSAA if no RenderScale is used (else it got already resolved to a non-MSAA texture)
+		if(aaMethod == TRAP::Graphics::AntiAliasing::MSAA && winData.RenderScale == 1.0f)
+			ImGui_ImplVulkan_SetMSAASamples(static_cast<VkSampleCountFlagBits>(aaSamples));
+		else
+			ImGui_ImplVulkan_SetMSAASamples(VK_SAMPLE_COUNT_1_BIT);
+
 		ImGui_ImplVulkan_NewFrame();
 	}
 

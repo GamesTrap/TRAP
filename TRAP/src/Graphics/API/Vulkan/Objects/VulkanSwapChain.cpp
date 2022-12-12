@@ -295,15 +295,6 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
 	}
 
-	//Create MSAA resolve images if needed
-	if(desc.SampleCount != RendererAPI::SampleCount::One)
-	{
-		descColor.NativeHandle = nullptr;
-		descColor.SampleCount = desc.SampleCount;
-		for (uint32_t i = 0; i < imageCount; ++i)
-			m_renderTargetsMSAA.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
-	}
-
 	//////////////
 
 	m_desc = desc;
@@ -323,7 +314,6 @@ void TRAP::Graphics::API::VulkanSwapChain::DeInitSwapchain()
 
 	m_device->WaitIdle();
 
-	m_renderTargetsMSAA.clear();
 	m_renderTargets.clear();
 
 	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
@@ -392,19 +382,6 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 	//Toggle VSync on or off
 	//For Vulkan we need to remove the SwapChain and recreate it with correct VSync option
-	DeInitSwapchain();
-	InitSwapchain(desc);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanSwapChain::SetSampleCount(const RendererAPI::SampleCount sampleCount)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	RendererAPI::SwapChainDesc desc = m_desc;
-	desc.SampleCount = sampleCount;
-
 	DeInitSwapchain();
 	InitSwapchain(desc);
 }

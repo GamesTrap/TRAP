@@ -197,6 +197,31 @@ std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RendererAPI::OnPostUpdate()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
+
+	for(const auto& [win, data] : s_perWindowDataMap)
+	{
+		data->State = PerWindowState::PostUpdate;
+
+		if(data->RenderScale != 1.0f)
+		{
+			TRAP::Ref<RenderTarget> outputTarget = nullptr;
+#ifndef TRAP_HEADLESS_MODE
+			outputTarget = data->SwapChain->GetRenderTargets()[data->CurrentSwapChainImageIndex];
+#else
+			outputTarget = data->RenderTargets[data->CurrentSwapChainImageIndex];
+#endif
+
+			GetRenderer()->RenderScalePass(data->InternalRenderTargets[data->CurrentSwapChainImageIndex],
+			                               outputTarget, win);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -260,6 +285,57 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2ui TRAP::Graphics::RendererAPI::GetInternalRenderResolution(const Window* window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	if (!window)
+		window = TRAP::Application::GetWindow();
+
+	const float renderScale = s_perWindowDataMap.at(window)->RenderScale;
+
+#ifdef TRAP_HEADLESS_MODE
+	const auto& winData = s_perWindowDataMap.at(window);
+#endif
+
+	if(renderScale == 1.0f)
+	{
+#ifndef TRAP_HEADLESS_MODE
+		return window->GetFrameBufferSize();
+#else
+		return {winData->NewWidth, winData->NewHeight};
+#endif
+	}
+
+	const Math::Vec2 frameBufferSize
+	{
+#ifndef TRAP_HEADLESS_MODE
+		static_cast<float>(window->GetFrameBufferSize().x),
+		static_cast<float>(window->GetFrameBufferSize().y)
+#else
+		static_cast<float>(winData->NewWidth),
+		static_cast<float>(winData->NewHeight),
+#endif
+	};
+	const float aspectRatio = frameBufferSize.x / frameBufferSize.y;
+
+	Math::Vec2 finalRes = frameBufferSize * renderScale;
+
+	//Make sure the resolution is an integer scale of the framebuffer size.
+	//This is done to avoid scaling artifacts (like blurriness).
+	while((finalRes.x / finalRes.y) != aspectRatio)
+	{
+		if((finalRes.x / finalRes.y) <= aspectRatio)
+			++finalRes.x;
+		else
+			++finalRes.y;
+	}
+
+	return static_cast<Math::Vec2ui>(finalRes);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -272,17 +348,17 @@ void TRAP::Graphics::RendererAPI::StartRenderPass(const Window* window)
 	TRAP::Ref<Graphics::RenderTarget> renderTarget = nullptr;
 #ifndef TRAP_HEADLESS_MODE
 	//Get correct RenderTarget
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
-		renderTarget = winData->SwapChain->GetRenderTargetsMSAA()[winData->CurrentSwapChainImageIndex];
-	else //No MSAA
+	if((winData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && winData->State == PerWindowState::PreUpdate)
+		renderTarget = winData->InternalRenderTargets[winData->CurrentSwapChainImageIndex];
+	else
 		renderTarget = winData->SwapChain->GetRenderTargets()[winData->CurrentSwapChainImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,
 									nullptr, nullptr, static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), window);
 #else
-	if(s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) //MSAA enabled
-		renderTarget = winData->RenderTargetsMSAA[winData->ImageIndex];
-	else //No MSAA
+	if((winData->RenderScale != 1.0f || s_currentAntiAliasing == RendererAPI::AntiAliasing::MSAA) && winData->State == PerWindowState::PreUpdate)
+		renderTarget = winData->InternalRenderTargets[winData->ImageIndex];
+	else
 		renderTarget = winData->RenderTargets[winData->ImageIndex];
 
 	GetRenderer()->BindRenderTarget(renderTarget, nullptr, nullptr,

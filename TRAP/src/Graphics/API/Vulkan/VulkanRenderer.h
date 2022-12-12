@@ -102,6 +102,19 @@ namespace TRAP::Graphics::API
 		void SetReflexFPSLimit(uint32_t limit) override;
 
 		/// <summary>
+		/// Set the render scale for the given window.
+		/// Note: This functon takes effect on the next frame.
+		/// </summary>
+		/// <param name="scale">Render scale value (valid range: 0.5f-1.0f inclusive).</param>
+		/// <param name="window">Window to set render scale for.</param>
+		void SetRenderScale(float scale, const Window* const window) const override;
+		/// <summary>
+		/// Retrieve the used render scale value of the given window.
+		/// </summary>
+		/// <param name="window">Window to retrieve render scale from.</param>
+		/// <returns>Render scale (between 0.5f and 2.0f inclusive).</returns>
+		float GetRenderScale(const Window* const window) const override;
+		/// <summary>
 		/// Set the clear color to be used by the given window.
 		/// </summary>
 		/// <param name="color">New clear color.</param>
@@ -262,7 +275,7 @@ namespace TRAP::Graphics::API
 		/// Note: The texture must be in ResourceState::ShadingRateSource.
 		/// </param>
 		/// <param name="window">Window to set shading rate for.</param>
-		void SetShadingRate(Ref<Texture> texture, const Window* const window) const override;
+		void SetShadingRate(Ref<RenderTarget> texture, const Window* const window) const override;
 
 		/// <summary>
 		/// Clear the given window's render target.
@@ -537,15 +550,27 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <param name="source">Source MSAA render target to resolve.</param>
 		/// <param name="destination">Destination non MSAA render target to resolve into.</param>
-		/// <param name="window">Window to do the resolve pass on.</param>
+		/// <param name="cmd">CommadBuffer to resolve on.</param>
 		void MSAAResolvePass(TRAP::Ref<RenderTarget> source, TRAP::Ref<RenderTarget> destination,
-		                     const Window* const window) const override;
+		                     CommandBuffer* const cmd) const override;
+
 		/// <summary>
-		/// Update the RenderTargets on anti aliasing changes.
+		/// Update the internal RenderTargets used for render scaling.
 		/// </summary>
 		/// <param name="winData">PerWindowData to update.</param>
-		/// <returns>True if RenderTargets got updated, false otherwise.</returns>
-		bool UpdateAntiAliasingRenderTargets(PerWindowData* const winData) const;
+		void UpdateInternalRenderTargets(PerWindowData* const winData) const;
+
+		/// <summary>
+		/// Scale image from internal resolution to the final output resolution.
+		///
+		/// Note: source and destination must be in ResourceState::RenderTarget.
+		/// </summary>
+		/// <param name="source">Source render target to resolve.</param>
+		/// <param name="destination">Destination render target to resolve into.</param>
+		/// <param name="window">Window to do the scaling pass on.</param>
+		void RenderScalePass(TRAP::Ref<RenderTarget> source,
+		                     TRAP::Ref<RenderTarget> destination,
+		                     const Window* const window) const override;
 
 		/// <summary>
 		/// Set the latency mode.
@@ -638,7 +663,7 @@ namespace TRAP::Graphics::API
 			//Depth/Stencil render target to use
 			TRAP::Ref<RenderTarget> DepthStencil;
 			//Shading rate texture to use
-			TRAP::Ref<Texture> ShadingRateTexture;
+			TRAP::Ref<RenderTarget> ShadingRate;
 			//Array layer to use from color render targets
 			std::vector<uint32_t> ColorArraySlices;
 			//Mip level to use from color render targets

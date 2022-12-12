@@ -70,10 +70,12 @@ void VRSTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Variable Rate Shading");
 
+    m_currRenderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
+
     if(m_supportsPerTileVRS)
     {
-        const auto fbSize = TRAP::Application::GetWindow()->GetFrameBufferSize();
-        m_shadingRateTexture = CreateShadingRateTexture(fbSize.x, fbSize.y);
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
     }
 
     m_shadingRates.push_back({TRAP::Graphics::ShadingRate::Full, "1x1", static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Full)});
@@ -106,6 +108,14 @@ void VRSTests::OnAttach()
 
 void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
 {
+    if(m_supportsPerTileVRS && TRAP::Graphics::RenderCommand::GetRenderScale() != m_currRenderScale)
+    {
+        m_currRenderScale = TRAP::Graphics::RenderCommand::GetRenderScale();
+
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
+    }
+
 	//Update
 	m_cameraController.OnUpdate(deltaTime);
 
@@ -118,8 +128,10 @@ void VRSTests::OnUpdate([[maybe_unused]] const TRAP::Utils::TimeStep& deltaTime)
                                                       TRAP::Graphics::ShadingRateCombiner::Max,
                                                       TRAP::Graphics::ShadingRateCombiner::Max);
     }
+    else if(m_supportsPerTileVRS && !m_perDrawActive)
+        TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
 
-	TRAP::Graphics::Renderer2D::ResetStats();
+    TRAP::Graphics::Renderer2D::ResetStats();
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
     TRAP::Graphics::Renderer2D::DrawQuad({ {}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {2.0f, 2.0f, 1.0f} },
                                          { 0.2f, 0.8f, 0.3f, 1.0f }, TRAP::Graphics::TextureManager::Get2D("TRAP"));
@@ -156,14 +168,12 @@ bool VRSTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool VRSTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
+bool VRSTests::OnFrameBufferResize([[maybe_unused]] TRAP::Events::FrameBufferResizeEvent& event)
 {
     if(m_supportsPerTileVRS)
     {
-        m_shadingRateTexture = CreateShadingRateTexture(event.GetWidth(), event.GetHeight());
-
-        if(!m_perDrawActive)
-            TRAP::Graphics::RenderCommand::SetShadingRate(m_shadingRateTexture);
+        const auto texRes = TRAP::Graphics::RendererAPI::GetInternalRenderResolution(TRAP::Application::GetWindow());
+        m_shadingRateTexture = CreateShadingRateTexture(texRes.x, texRes.y);
     }
 
     return false;
@@ -178,19 +188,33 @@ struct ShadingRateData
     uint8_t H;
 };
 
-TRAP::Ref<TRAP::Graphics::Texture> VRSTests::CreateShadingRateTexture(const uint32_t framebufferWidth,
-                                                                      const uint32_t framebufferHeight)
+TRAP::Ref<TRAP::Graphics::RenderTarget> VRSTests::CreateShadingRateTexture(const uint32_t framebufferWidth,
+                                                                           const uint32_t framebufferHeight)
 {
     //Create empty texture for shading rate
-	TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
-	texDesc.Width = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(framebufferWidth) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth)));
-	texDesc.Height = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(framebufferHeight) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight)));
-	texDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
-	texDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
-	texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
-	texDesc.Name = "Shading Rate Texture";
-	TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex = TRAP::Graphics::Texture::CreateCustom(texDesc);
-	shadingRateTex->AwaitLoading();
+    TRAP::Graphics::RendererAPI::RenderTargetDesc rTDesc{};
+    rTDesc.Width = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(framebufferWidth) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth)));
+	rTDesc.Height = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(framebufferHeight) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight)));
+	rTDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
+	rTDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
+	rTDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+    rTDesc.Depth = 1;
+    rTDesc.ArraySize = 1;
+    rTDesc.MipLevels = 1;
+    rTDesc.SampleCount = TRAP::Graphics::SampleCount::One;
+	rTDesc.Name = "Shading Rate Texture";
+
+    TRAP::Ref<TRAP::Graphics::RenderTarget> shadingRateTex = TRAP::Graphics::RenderTarget::Create(rTDesc);
+
+	// TRAP::Graphics::RendererAPI::TextureDesc texDesc{};
+	// texDesc.Width = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(framebufferWidth) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelWidth)));
+	// texDesc.Height = static_cast<uint32_t>(TRAP::Math::Ceil(static_cast<float>(framebufferHeight) / static_cast<float>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRateTexelHeight)));
+	// texDesc.Format = TRAP::Graphics::API::ImageFormat::R8_UINT;
+	// texDesc.StartState = TRAP::Graphics::ResourceState::ShadingRateSource;
+	// texDesc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::Texture;
+	// texDesc.Name = "Shading Rate Texture";
+	// TRAP::Ref<TRAP::Graphics::Texture> shadingRateTex = TRAP::Graphics::Texture::CreateCustom(texDesc);
+	// shadingRateTex->AwaitLoading();
 
     std::vector<ShadingRateData> supportedShadingRates{};
     if(static_cast<bool>(TRAP::Graphics::RendererAPI::GPUSettings.ShadingRates & TRAP::Graphics::ShadingRate::Eighth))
@@ -212,7 +236,7 @@ TRAP::Ref<TRAP::Graphics::Texture> VRSTests::CreateShadingRateTexture(const uint
 
 
     //Fill texture with lowest supported shading rate
-	std::vector<uint8_t> pixels(texDesc.Width * texDesc.Height, supportedShadingRates[0].V | supportedShadingRates[0].H);
+	std::vector<uint8_t> pixels(rTDesc.Width * rTDesc.Height, supportedShadingRates[0].V | supportedShadingRates[0].H);
 
     //Create a circular pattern from the available list of fragment shadring rates with decreasing sampling rates outwards (max. range, pattern)
     //See https://github.com/KhronosGroup/Vulkan-Samples/blob/master/samples/extensions/fragment_shading_rate/fragment_shading_rate.cpp
@@ -226,12 +250,12 @@ TRAP::Ref<TRAP::Graphics::Texture> VRSTests::CreateShadingRateTexture(const uint
     }
 
     uint8_t* pixelData = pixels.data();
-    for(uint32_t y = 0; y < texDesc.Height; ++y)
+    for(uint32_t y = 0; y < rTDesc.Height; ++y)
     {
-        for(uint32_t x = 0; x < texDesc.Width; ++x)
+        for(uint32_t x = 0; x < rTDesc.Width; ++x)
         {
-            const float deltaX = (static_cast<float>(texDesc.Width) / 2.0f - static_cast<float>(x)) / static_cast<float>(texDesc.Width) * 100.0f;
-            const float deltaY = (static_cast<float>(texDesc.Height) / 2.0f - static_cast<float>(y)) / static_cast<float>(texDesc.Height) * 100.0f;
+            const float deltaX = (static_cast<float>(rTDesc.Width) / 2.0f - static_cast<float>(x)) / static_cast<float>(rTDesc.Width) * 100.0f;
+            const float deltaY = (static_cast<float>(rTDesc.Height) / 2.0f - static_cast<float>(y)) / static_cast<float>(rTDesc.Height) * 100.0f;
             const float distance = TRAP::Math::Sqrt(deltaX * deltaX + deltaY * deltaY);
             for(auto pattern : patternLookup)
             {
@@ -246,9 +270,13 @@ TRAP::Ref<TRAP::Graphics::Texture> VRSTests::CreateShadingRateTexture(const uint
         }
     }
 
-	shadingRateTex->Update(pixels.data(), static_cast<uint32_t>(pixels.size()) * sizeof(uint8_t));
-	shadingRateTex->AwaitLoading();
-	TRAP::Graphics::RenderCommand::Transition(shadingRateTex, TRAP::Graphics::ResourceState::ShaderResource, TRAP::Graphics::ResourceState::ShadingRateSource);
+    shadingRateTex->GetTexture()->Update(pixels.data(), static_cast<uint32_t>(pixels.size()) * sizeof(uint8_t));
+    shadingRateTex->GetTexture()->AwaitLoading();
+	TRAP::Graphics::RenderCommand::Transition(shadingRateTex->GetTexture(), TRAP::Graphics::ResourceState::ShaderResource, TRAP::Graphics::ResourceState::ShadingRateSource);
+
+	// shadingRateTex->Update(pixels.data(), static_cast<uint32_t>(pixels.size()) * sizeof(uint8_t));
+	// shadingRateTex->AwaitLoading();
+	// TRAP::Graphics::RenderCommand::Transition(shadingRateTex, TRAP::Graphics::ResourceState::ShaderResource, TRAP::Graphics::ResourceState::ShadingRateSource);
 
     return shadingRateTex;
 }
