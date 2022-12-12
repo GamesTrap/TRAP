@@ -76,7 +76,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 		textureDesc.StartState |= RendererAPI::ResourceState::RenderTarget;
 	else
 		textureDesc.StartState |= RendererAPI::ResourceState::DepthWrite;
-	if(desc.StartState == RendererAPI::ResourceState::ShadingRateSource)
+	if(static_cast<bool>(desc.StartState & RendererAPI::ResourceState::ShadingRateSource))
 		textureDesc.StartState |= RendererAPI::ResourceState::ShadingRateSource;
 
 	//Set this by default to be able to sample the renderTarget in shader
