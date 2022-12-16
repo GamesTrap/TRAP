@@ -3539,3 +3539,7 @@ SITREP 12/12/2022|22w50a1
     - Headless FileSystem now doesnt create game documents folder ~<5 mins
     - Headless AftermathTracker now uses current path instead of game documents path ~<5 mins
     - AftermathTracker Changed crash dump file ending from ".dump" to ".nv-gpudmp" ~<5 mins
+
+SITREP 12/16/2022|22w50b1
+    - Changed TRAP Engine version to 22w50b1(0.8.83)
+    - Sampler Added automatic updating of anisotropy level for samplers that use the engine default ~>30 mins

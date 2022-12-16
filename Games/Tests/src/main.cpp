@@ -35,7 +35,7 @@ public:
 	explicit Tests(std::string gameName)
 		: Application(std::move(gameName))
 	{
-		// PushLayer(std::make_unique<AnisotropyTests>());
+		PushLayer(std::make_unique<AnisotropyTests>());
 		// PushLayer(std::make_unique<AntiAliasingTests>());
 		// PushLayer(std::make_unique<ClipboardTests>());
 		// PushLayer(std::make_unique<ControllerTests>());
@@ -54,7 +54,7 @@ public:
 		// PushLayer(std::make_unique<OpacityTests>());
 		// PushLayer(std::make_unique<RendererAPIInfo>());
 		// PushLayer(std::make_unique<RendererAPITests>());
-		PushLayer(std::make_unique<RenderScaleTests>());
+		// PushLayer(std::make_unique<RenderScaleTests>());
 		// PushLayer(std::make_unique<ScreenshotTests>());
 		// PushLayer(std::make_unique<SPIRVTests>());
 		// PushLayer(std::make_unique<SpriteSheetTests>());

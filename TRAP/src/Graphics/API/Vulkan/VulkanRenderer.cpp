@@ -565,6 +565,8 @@ void TRAP::Graphics::API::VulkanRenderer::Flush(const Window* const window) cons
 
 	Present(p);
 
+	Sampler::UpdateSamplers();
+
 #ifndef TRAP_HEADLESS_MODE
 	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
 	{

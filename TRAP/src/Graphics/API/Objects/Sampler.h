@@ -93,11 +93,19 @@ namespace TRAP::Graphics
 		/// </summary>
 		static void ClearCache();
 
+		/// <summary>
+		/// Updates all samplers currently in use.
+		/// Only call this between Frames!
+		/// </summary>
+		static void UpdateSamplers();
+
 	protected:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		Sampler();
+
+		virtual void UpdateAnisotropy(float anisotropy) = 0;
 
 		RendererAPI::SamplerDesc m_samplerDesc;
 		bool m_usesEngineAnisotropyLevel = false;

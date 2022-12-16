@@ -17,22 +17,59 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 	TRAP_ASSERT(m_device, "VulkanSampler(): Vulkan Device is nullptr");
 
+	m_samplerDesc = desc;
+
+	Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	Shutdown();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	return m_vkSampler;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSampler::UpdateAnisotropy(const float anisotropy)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	m_samplerDesc.OverrideAnisotropyLevel = anisotropy;
+
+	Shutdown();
+	Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanSampler::Init()
+{
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");
 #endif
 
-	m_samplerDesc = desc;
-
 	//Default sampler lod values
 	//Used if not overriden by SetLogRange or not Linear mipmaps
 	float minSamplerLod = 0;
-	float maxSampledLod = desc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
+	float maxSampledLod = m_samplerDesc.MipMapMode == RendererAPI::MipMapMode::Linear ? VK_LOD_CLAMP_NONE : 0;
 
 	//User provided lods
-	if(desc.SetLodRange)
+	if(m_samplerDesc.SetLodRange)
 	{
-		minSamplerLod = desc.MinLod;
-		maxSampledLod = desc.MaxLod;
+		minSamplerLod = m_samplerDesc.MinLod;
+		maxSampledLod = m_samplerDesc.MaxLod;
 	}
 
 	VkSamplerCreateInfo info = VulkanInits::SamplerCreateInfo(FilterTypeToVkFilter(m_samplerDesc.MagFilter),
@@ -97,10 +134,8 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
+void TRAP::Graphics::API::VulkanSampler::Shutdown()
 {
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
 	TRAP_ASSERT(m_vkSampler, "~VulkanSampler(): Vulkan Sampler is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
@@ -111,13 +146,4 @@ TRAP::Graphics::API::VulkanSampler::~VulkanSampler()
 
 	if(m_vkSamplerYcbcrConversion != VK_NULL_HANDLE)
 		vkDestroySamplerYcbcrConversion(m_device->GetVkDevice(), m_vkSamplerYcbcrConversion, nullptr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkSampler TRAP::Graphics::API::VulkanSampler::GetVkSampler() const
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_vkSampler;
 }

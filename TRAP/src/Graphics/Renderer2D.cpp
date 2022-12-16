@@ -731,26 +731,6 @@ void TRAP::Graphics::Renderer2D::Reset()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
-	//Update sampler
-	if(Renderer2DData::QuadData::TextureSampler->UsesEngineAnisotropyLevel() &&
-	   static_cast<float>(RenderCommand::GetAnisotropyLevel()) != Renderer2DData::QuadData::TextureSampler->GetAnisotropyLevel())
-	{
-		const auto& tex = Renderer2DData::QuadData::TextureSampler;
-
-		RendererAPI::SamplerDesc desc{};
-		desc.MinFilter = tex->GetMinFilter();
-		desc.MagFilter = tex->GetMagFilter();
-		desc.MipMapMode = tex->GetMipMapMode();
-		desc.AddressU = tex->GetAddressU();
-		desc.AddressV = tex->GetAddressV();
-		desc.AddressW = tex->GetAddressW();
-		desc.MipLodBias = tex->GetMipLodBias();
-		desc.EnableAnisotropy = true;
-		desc.CompareFunc = tex->GetCompareFunc();
-
-		Renderer2DData::QuadData::TextureSampler = Sampler::Create(desc);
-	}
-
 	s_dataIndex = 0;
 }
 

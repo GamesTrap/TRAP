@@ -191,6 +191,40 @@ void TRAP::Graphics::Sampler::ClearCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Sampler::UpdateSamplers()
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	const float usedSamples = static_cast<float>(RenderCommand::GetAnisotropyLevel());
+
+	std::vector<Ref<Sampler>> samplersToUpdate{};
+	for(const auto& [desc, sampler] : s_cachedSamplers)
+	{
+		//Ignore Samplers that dont use anisotropic filtering, or already use the engine anisotropy level
+		if(!desc.EnableAnisotropy || !sampler->UsesEngineAnisotropyLevel() || sampler->GetAnisotropyLevel() == usedSamples)
+			continue;
+
+		samplersToUpdate.emplace_back(sampler);
+	}
+
+	if(samplersToUpdate.empty()) //Early exit
+		return;
+
+	//Wait for all GPU to finish processing
+	RendererAPI::GetRenderer()->WaitIdle();
+
+	for(const auto& sampler : samplersToUpdate)
+	{
+		s_cachedSamplers.erase(sampler->m_samplerDesc);
+
+		sampler->UpdateAnisotropy(usedSamples);
+
+		s_cachedSamplers[sampler->m_samplerDesc] = sampler;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::size_t std::hash<TRAP::Graphics::RendererAPI::SamplerDesc>::operator()(const TRAP::Graphics::RendererAPI::SamplerDesc& desc) const noexcept
 {
 	std::size_t res = 0;

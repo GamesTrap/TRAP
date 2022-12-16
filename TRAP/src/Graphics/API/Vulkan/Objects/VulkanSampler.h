@@ -45,6 +45,11 @@ namespace TRAP::Graphics::API
 		VkSampler GetVkSampler() const;
 
 	private:
+		void UpdateAnisotropy(float anisotropy) override;
+
+		void Init();
+		void Shutdown();
+
 		TRAP::Ref<VulkanDevice> m_device;
 
 		//Native handle of the underlying resource
