@@ -5,6 +5,7 @@ project "ImGui"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")

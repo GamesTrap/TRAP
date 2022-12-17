@@ -431,16 +431,16 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 					if(!isHorizontal && face == 5)
 						offset = faceWidth - (x + 1);
 					const uint32_t xp = cx * faceWidth + offset;
-					switch(stride)
+
+					if(stride == 1)
 					{
-					case 1:
 						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
 							(
 								image->GetPixelData()
 							)[(xp + yp * image->GetWidth()) * stride + 0];
-						break;
-
-					case 2:
+					}
+					else if(stride == 2)
+					{
 						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
 							(
 								image->GetPixelData()
@@ -449,9 +449,9 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 							(
 								image->GetPixelData()
 							)[(xp + yp * image->GetWidth()) * stride + 1];
-						break;
-
-					case 3:
+					}
+					else if(stride == 3)
+					{
 						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
 							(
 								image->GetPixelData()
@@ -464,9 +464,9 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 							(
 								image->GetPixelData()
 							)[(xp + yp * image->GetWidth()) * stride + 2];
-						break;
-
-					case 4:
+					}
+					else if(stride == 4)
+					{
 						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>
 							(
 								image->GetPixelData()
@@ -483,10 +483,6 @@ std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::Texture::SplitImageFromC
 							(
 								image->GetPixelData()
 							)[(xp + yp * image->GetWidth()) * stride + 3];
-						break;
-
-					default:
-						break;
 					}
 				}
 			}

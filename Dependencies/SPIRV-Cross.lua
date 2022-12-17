@@ -5,6 +5,7 @@ project "SPIRV-Cross-Core"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -51,6 +52,7 @@ project "SPIRV-Cross-Reflect"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -87,6 +89,7 @@ project "SPIRV-Cross-GLSL"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -125,6 +128,7 @@ project "SPIRV-Cross-HLSL"
     staticruntime "off"
     systemversion "latest"
     warnings "off"
+	architecture "x86_64"
 
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")

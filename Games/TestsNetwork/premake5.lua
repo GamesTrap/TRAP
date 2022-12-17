@@ -7,6 +7,7 @@ project "TestsNetwork"
 	systemversion "latest"
 	vectorextensions "AVX2"
 	warnings "Extra"
+	architecture "x86_64"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
