@@ -198,7 +198,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 
 	private:
 		//This points to the internal compiler class
-		TRAP::Scope<spirv_cross::Compiler> m_compiler;
+		spirv_cross::Compiler m_compiler;
 
 		//Resources
 		std::vector<Resource> m_shaderResources;
