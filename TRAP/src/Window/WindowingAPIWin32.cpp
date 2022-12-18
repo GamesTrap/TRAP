@@ -2095,7 +2095,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 		for (i = 0; i < count; i++)
 		{
-			if (CompareVideoModes(result[i], mode) == 0)
+			if (IsSameVideoMode(result[i], mode))
 				break;
 		}
 

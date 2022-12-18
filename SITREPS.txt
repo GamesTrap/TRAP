@@ -3552,3 +3552,4 @@ SITREP 12/18/2022|22w50c2
     - Changed TRAP Engine version to 22w50c2(0.8.85)
     - Added noexcept to some constructors ~<20 mins
     - SPIRVTools Moved CrossCompiler::m_compiler to stack ~<5 mins
+    - WindowingAPI Fixed retrieving of monitor resolutions ~>10 mins

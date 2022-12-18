@@ -2750,8 +2750,8 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Lexically compare video modes, used by qsort
-int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
+//Lexically compare video modes
+bool TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm)
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -2762,18 +2762,32 @@ int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const InternalVideoMode&
 
 	//First sort on color bits per pixel
 	if (fbpp != sbpp)
-		return fbpp - sbpp;
+		return fbpp < sbpp;
 
 	//Then sort on screen area
 	if (farea != sarea)
-		return farea - sarea;
+		return farea < sarea;
 
 	//Then sort on width
 	if (fm.Width != sm.Width)
-		return fm.Width - sm.Width;
+		return fm.Width < sm.Width;
 
 	//Lastly sort on refresh rate
-	return static_cast<int32_t>(fm.RefreshRate - sm.RefreshRate);
+	return fm.RefreshRate < sm.RefreshRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::IsSameVideoMode(const InternalVideoMode& fm, const InternalVideoMode& sm)
+{
+	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::WindowingAPI) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	const int32_t fbpp = fm.RedBits + fm.GreenBits + fm.BlueBits;
+	const int32_t sbpp = sm.RedBits + sm.GreenBits + sm.BlueBits;
+	const int32_t farea = fm.Width * fm.Height;
+	const int32_t sarea = sm.Width * sm.Height;
+
+	return fbpp == sbpp && farea == sarea && fm.Width == sm.Width && fm.RefreshRate == sm.RefreshRate;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

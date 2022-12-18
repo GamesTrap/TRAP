@@ -3622,12 +3622,19 @@ namespace TRAP::INTERNAL
 		/// <param name="window">Internal window which to release from current acquired monitor.</param>
 		static void ReleaseMonitor(const InternalWindow* window);
 		/// <summary>
-		/// Lexically compare video modes, used by sort.
+		/// Lexically compare video modes, used for sorting.
 		/// </summary>
 		/// <param name="fm">Internal video mode to sort.</param>
 		/// <param name="sm">Internal video mode to sort.</param>
 		/// <returns>Index for the sorted internal video mode.</returns>
-		static int32_t CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm);
+		static bool CompareVideoModes(const InternalVideoMode& fm, const InternalVideoMode& sm);
+		/// <summary>
+		/// Check if two video modes are equal.
+		/// </summary>
+		/// <param name="fm">Internal video mode to check.</param>
+		/// <param name="sm">Internal video mode to check.</param>
+		/// <returns>True if both video modes are equal, false otherwise.</returns>
+		static bool IsSameVideoMode(const InternalVideoMode& fm, const InternalVideoMode& sm);
 		/// <summary>
 		/// Updates the cursor image according to its cursor mode.
 		/// </summary>

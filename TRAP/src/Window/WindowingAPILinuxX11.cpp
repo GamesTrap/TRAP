@@ -2178,7 +2178,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 
 			for(j = 0; j < count; j++)
 			{
-				if(CompareVideoModes(result[j], mode) == 0)
+				if(IsSameVideoMode(result[j], mode))
 					break;
 			}
 
@@ -2196,7 +2196,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 	}
 	else
 	{
-		count = 1;
+		// count = 1;
 		result.push_back(PlatformGetVideoMode(monitor));
 	}
 
@@ -4695,7 +4695,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* const monito
 			continue;
 
 		const InternalVideoMode mode = VideoModeFromModeInfo(mi, ci);
-		if(CompareVideoModes(*best, mode) == 0)
+		if(IsSameVideoMode(*best, mode))
 		{
 			native = mi->id;
 			break;
