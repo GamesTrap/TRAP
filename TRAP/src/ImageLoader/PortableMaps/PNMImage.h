@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PNMImage(const PNMImage&) = default;
+		PNMImage(const PNMImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PNMImage& operator=(const PNMImage&) = default;
+		PNMImage& operator=(const PNMImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PNMImage(PNMImage&&) = default;
+		PNMImage(PNMImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PNMImage& operator=(PNMImage&&) = default;
+		PNMImage& operator=(PNMImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

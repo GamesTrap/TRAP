@@ -19,23 +19,23 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="debugName">Layer name for debugging.</param>
-		explicit Layer(std::string debugName = "Layer");
+		explicit Layer(std::string debugName = "Layer") noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Layer(const Layer&) = default;
+		Layer(const Layer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Layer& operator=(const Layer&) = default;
+		Layer& operator=(const Layer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Layer(Layer&&) = default;
+		Layer(Layer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Layer& operator=(Layer&&) = default;
+		Layer& operator=(Layer&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

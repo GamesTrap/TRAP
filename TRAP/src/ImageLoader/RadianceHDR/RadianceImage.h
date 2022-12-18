@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		RadianceImage(const RadianceImage&) = default;
+		RadianceImage(const RadianceImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		RadianceImage& operator=(const RadianceImage&) = default;
+		RadianceImage& operator=(const RadianceImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RadianceImage(RadianceImage&&) = default;
+		RadianceImage(RadianceImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RadianceImage& operator=(RadianceImage&&) = default;
+		RadianceImage& operator=(RadianceImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

@@ -24,19 +24,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanPipelineCache(const VulkanPipelineCache&) = default;
+		VulkanPipelineCache(const VulkanPipelineCache&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanPipelineCache& operator=(const VulkanPipelineCache&) = default;
+		VulkanPipelineCache& operator=(const VulkanPipelineCache&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanPipelineCache(VulkanPipelineCache&&) = default;
+		VulkanPipelineCache(VulkanPipelineCache&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanPipelineCache& operator=(VulkanPipelineCache&&) = default;
+		VulkanPipelineCache& operator=(VulkanPipelineCache&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the cached pipeline data.

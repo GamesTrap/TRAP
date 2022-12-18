@@ -46,22 +46,22 @@ namespace TRAP::Graphics
         /// <summary>
         /// Copy constructor.
         /// </summary>
-        EditorCamera(const EditorCamera&) = default;
+        EditorCamera(const EditorCamera&) noexcept = default;
         /// <summary>
         /// Move constructor.
         /// </summary>
-        EditorCamera(EditorCamera&&) = default;
+        EditorCamera(EditorCamera&&) noexcept = default;
 
         /// <summary>
         /// Copy assignment operator.
         /// </summary>
         /// <returns>EditorCamera.</returns>
-        EditorCamera& operator=(const EditorCamera&) = default;
+        EditorCamera& operator=(const EditorCamera&) noexcept = default;
         /// <summary>
         /// Move assignment operator.
         /// </summary>
         /// <returns>EditorCamera.</returns>
-        EditorCamera& operator=(EditorCamera&&) = default;
+        EditorCamera& operator=(EditorCamera&&) noexcept = default;
 
         /// <summary>
         /// Initialize the camera.

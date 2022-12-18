@@ -25,19 +25,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanRenderPass(const VulkanRenderPass&) = default;
+		VulkanRenderPass(const VulkanRenderPass&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanRenderPass& operator=(const VulkanRenderPass&) = default;
+		VulkanRenderPass& operator=(const VulkanRenderPass&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanRenderPass(VulkanRenderPass&&) = default;
+		VulkanRenderPass(VulkanRenderPass&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanRenderPass& operator=(VulkanRenderPass&&) = default;
+		VulkanRenderPass& operator=(VulkanRenderPass&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan render pass handle.

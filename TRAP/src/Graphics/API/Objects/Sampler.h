@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Sampler(const Sampler&) = default;
+		Sampler(const Sampler&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Sampler& operator=(const Sampler&) = default;
+		Sampler& operator=(const Sampler&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Sampler(Sampler&&) = default;
+		Sampler(Sampler&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Sampler& operator=(Sampler&&) = default;
+		Sampler& operator=(Sampler&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the minification filter of the sampler.

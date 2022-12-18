@@ -29,19 +29,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		TextureReloadEvent(const TextureReloadEvent&) = default;
+		TextureReloadEvent(const TextureReloadEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		TextureReloadEvent& operator=(const TextureReloadEvent&) = default;
+		TextureReloadEvent& operator=(const TextureReloadEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		TextureReloadEvent(TextureReloadEvent&&) = default;
+		TextureReloadEvent(TextureReloadEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		TextureReloadEvent& operator=(TextureReloadEvent&&) = default;
+		TextureReloadEvent& operator=(TextureReloadEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve a pointer to the affected texture.
@@ -98,19 +98,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ShaderReloadEvent(const ShaderReloadEvent&) = default;
+		ShaderReloadEvent(const ShaderReloadEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ShaderReloadEvent& operator=(const ShaderReloadEvent&) = default;
+		ShaderReloadEvent& operator=(const ShaderReloadEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ShaderReloadEvent(ShaderReloadEvent&&) = default;
+		ShaderReloadEvent(ShaderReloadEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ShaderReloadEvent& operator=(ShaderReloadEvent&&) = default;
+		ShaderReloadEvent& operator=(ShaderReloadEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the affected shader.

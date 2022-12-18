@@ -27,19 +27,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSwapChain(const VulkanSwapChain&) = default;
+		VulkanSwapChain(const VulkanSwapChain&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSwapChain& operator=(const VulkanSwapChain&) = default;
+		VulkanSwapChain& operator=(const VulkanSwapChain&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSwapChain(VulkanSwapChain&&) = default;
+		VulkanSwapChain(VulkanSwapChain&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSwapChain& operator=(VulkanSwapChain&&) = default;
+		VulkanSwapChain& operator=(VulkanSwapChain&&) noexcept = default;
 
 		/// <summary>
 		/// Acquire the next presentable image from the swapchain to render to.

@@ -25,7 +25,7 @@ namespace TRAP::Events
         /// <param name="path">Path to a file or folder.</param>
         /// <param name="oldName">Optional: Old name of the file or folder. Only set if status is FileStatus::Renamed.</param>
 		FileChangeEvent(TRAP::FileSystem::FileStatus status, std::filesystem::path path,
-                        std::optional<std::filesystem::path> oldName = std::nullopt);
+                        std::optional<std::filesystem::path> oldName = std::nullopt) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -33,19 +33,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		FileChangeEvent(const FileChangeEvent&) = default;
+		FileChangeEvent(const FileChangeEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		FileChangeEvent& operator=(const FileChangeEvent&) = default;
+		FileChangeEvent& operator=(const FileChangeEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		FileChangeEvent(FileChangeEvent&&) = default;
+		FileChangeEvent(FileChangeEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		FileChangeEvent& operator=(FileChangeEvent&&) = default;
+		FileChangeEvent& operator=(FileChangeEvent&&) noexcept = default;
 
         /// <summary>
         /// Get the status of the file.

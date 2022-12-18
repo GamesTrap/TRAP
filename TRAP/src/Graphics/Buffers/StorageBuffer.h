@@ -24,19 +24,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		StorageBuffer(const StorageBuffer&) = default;
+		StorageBuffer(const StorageBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		StorageBuffer& operator=(const StorageBuffer&) = default;
+		StorageBuffer& operator=(const StorageBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		StorageBuffer(StorageBuffer&&) = default;
+		StorageBuffer(StorageBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		StorageBuffer& operator=(StorageBuffer&&) = default;
+		StorageBuffer& operator=(StorageBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>

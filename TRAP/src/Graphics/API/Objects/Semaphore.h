@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Semaphore(const Semaphore&) = default;
+		Semaphore(const Semaphore&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Semaphore& operator=(const Semaphore&) = default;
+		Semaphore& operator=(const Semaphore&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Semaphore(Semaphore&&) = default;
+		Semaphore(Semaphore&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Semaphore& operator=(Semaphore&&) = default;
+		Semaphore& operator=(Semaphore&&) noexcept = default;
 
 		/// <summary>
 		/// Is the semaphore signaled?

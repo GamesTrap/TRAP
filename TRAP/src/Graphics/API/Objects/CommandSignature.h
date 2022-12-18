@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CommandSignature(const CommandSignature&) = default;
+		CommandSignature(const CommandSignature&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CommandSignature& operator=(const CommandSignature&) = default;
+		CommandSignature& operator=(const CommandSignature&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CommandSignature(CommandSignature&&) = default;
+		CommandSignature(CommandSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CommandSignature& operator=(CommandSignature&&) = default;
+		CommandSignature& operator=(CommandSignature&&) noexcept = default;
 
 	protected:
 		/// <summary>

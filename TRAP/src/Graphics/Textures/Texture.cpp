@@ -1041,7 +1041,7 @@ TRAP::Scope<TRAP::Image> TRAP::Graphics::Texture::Rotate90CounterClockwise(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture::Texture()
+TRAP::Graphics::Texture::Texture() noexcept
 	: m_name(),
 	  m_syncToken(0),
 	  m_textureType(TextureType::Texture2D),

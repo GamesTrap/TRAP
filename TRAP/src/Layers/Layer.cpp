@@ -3,7 +3,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Layer::Layer(std::string debugName)
+TRAP::Layer::Layer(std::string debugName) noexcept
 	: m_DebugName(std::move(debugName))
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

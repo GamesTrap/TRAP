@@ -287,7 +287,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		HTTP();
+		HTTP() noexcept;
 
 		/// <summary>
 		/// Construct the HTTP client with the target host.
@@ -306,11 +306,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		HTTP(HTTP&&) = default;
+		HTTP(HTTP&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		HTTP& operator=(HTTP&&) = default;
+		HTTP& operator=(HTTP&&) noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>

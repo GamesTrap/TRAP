@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		QueryPool(const QueryPool&) = default;
+		QueryPool(const QueryPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		QueryPool& operator=(const QueryPool&) = default;
+		QueryPool& operator=(const QueryPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		QueryPool(QueryPool&&) = default;
+		QueryPool(QueryPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		QueryPool& operator=(QueryPool&&) = default;
+		QueryPool& operator=(QueryPool&&) noexcept = default;
 
 	protected:
 		/// <summary>

@@ -25,19 +25,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CommandBuffer(const CommandBuffer&) = default;
+		CommandBuffer(const CommandBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CommandBuffer& operator=(const CommandBuffer&) = default;
+		CommandBuffer& operator=(const CommandBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CommandBuffer(CommandBuffer&&) = default;
+		CommandBuffer(CommandBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CommandBuffer& operator=(CommandBuffer&&) = default;
+		CommandBuffer& operator=(CommandBuffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the queue used by the command buffer.

@@ -33,11 +33,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RenderTarget(RenderTarget&&) = default;
+		RenderTarget(RenderTarget&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RenderTarget& operator=(RenderTarget&&) = default;
+		RenderTarget& operator=(RenderTarget&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the width of the render target.

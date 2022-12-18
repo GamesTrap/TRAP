@@ -9,12 +9,12 @@ namespace TRAP
 	class ScriptableEntity
 	{
 	public:
-		ScriptableEntity() = default;
+		ScriptableEntity() noexcept = default;
 		virtual ~ScriptableEntity() = default;
-		ScriptableEntity(const ScriptableEntity&) = default;
-		ScriptableEntity(ScriptableEntity&&) = default;
-		ScriptableEntity& operator=(const ScriptableEntity&) = default;
-		ScriptableEntity& operator=(ScriptableEntity&&) = default;
+		ScriptableEntity(const ScriptableEntity&) noexcept = default;
+		ScriptableEntity(ScriptableEntity&&) noexcept = default;
+		ScriptableEntity& operator=(const ScriptableEntity&) noexcept = default;
+		ScriptableEntity& operator=(ScriptableEntity&&) noexcept = default;
 
 		template<typename T>
 		T& GetComponent()

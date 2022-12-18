@@ -34,7 +34,7 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType)
+TRAP::Graphics::IndexBuffer::IndexBuffer(const RendererAPI::IndexType indexType) noexcept
 	: m_indexBuffer(nullptr), m_token(), m_indexType(indexType)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

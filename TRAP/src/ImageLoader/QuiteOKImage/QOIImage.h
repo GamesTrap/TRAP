@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		QOIImage(const QOIImage&) = default;
+		QOIImage(const QOIImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		QOIImage& operator=(const QOIImage&) = default;
+		QOIImage& operator=(const QOIImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		QOIImage(QOIImage&&) = default;
+		QOIImage(QOIImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		QOIImage& operator=(QOIImage&&) = default;
+		QOIImage& operator=(QOIImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

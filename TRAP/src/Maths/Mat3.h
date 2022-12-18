@@ -50,7 +50,7 @@ namespace TRAP::Math
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		constexpr Mat(Mat&&) = default;
+		constexpr Mat(Mat&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -58,11 +58,11 @@ namespace TRAP::Math
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr Mat<3, 3, T>& operator=(Mat&&) = default;
+		constexpr Mat<3, 3, T>& operator=(Mat&&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		constexpr Mat<3, 3, T>& operator=(const Mat&) = default;
+		constexpr Mat<3, 3, T>& operator=(const Mat&) noexcept = default;
 
 		using colType = Vec<3, T>;
 		using rowType = Vec<3, T>;
@@ -77,26 +77,26 @@ namespace TRAP::Math
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		constexpr Mat() = default;
+		constexpr Mat() noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		constexpr Mat(const Mat<3, 3, T> & m) = default;
+		constexpr Mat(const Mat<3, 3, T> & m) noexcept = default;
 
 		/// <summary>
 		/// Scalar constructor.
 		/// </summary>
-		explicit constexpr Mat(T scalar);
+		explicit constexpr Mat(T scalar) noexcept;
 		/// <summary>
 		/// Value constructor.
 		/// </summary>
 		constexpr Mat(T x0, T y0, T z0,
 			          T x1, T y1, T z1,
-			          T x2, T y2, T z2);
+			          T x2, T y2, T z2) noexcept;
 		/// <summary>
 		/// Column constructor.
 		/// </summary>
-		constexpr Mat(const colType & v0, const colType & v1, const colType & v2);
+		constexpr Mat(const colType & v0, const colType & v1, const colType & v2) noexcept;
 
 		/// <summary>
 		/// Value conversion constructor.
@@ -106,24 +106,24 @@ namespace TRAP::Math
 			     typename X3, typename Y3, typename Z3>
 		constexpr Mat(X1 x1, Y1 y1, Z1 z1,
 			          X2 x2, Y2 y2, Z2 z2,
-			          X3 x3, Y3 y3, Z3 z3);
+			          X3 x3, Y3 y3, Z3 z3) noexcept;
 
 		/// <summary>
 		/// Column conversion constructor.
 		/// </summary>
 		template<typename V1, typename V2, typename V3>
-		constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3);
+		constexpr Mat(const Vec<3, V1> & v1, const Vec<3, V2> & v2, const Vec<3, V3> & v3) noexcept;
 
 		/// <summary>
 		/// Copy conversion constructor.
 		/// </summary>
 		template<typename U>
-		constexpr Mat(const Mat<3, 3, U> & m);
+		constexpr Mat(const Mat<3, 3, U> & m) noexcept;
 
 		/// <summary>
 		/// Copy conversion constructor.
 		/// </summary>
-		constexpr Mat(const Mat<4, 4, T> & x);
+		constexpr Mat(const Mat<4, 4, T> & x) noexcept;
 
 		/// <summary>
 		/// Retrieve the length of the matrix.
@@ -261,19 +261,19 @@ namespace std
 //Constructors
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T scalar)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T scalar) noexcept
 	: value{ colType(scalar, 0, 0), colType(0, scalar, 0), colType(0, 0, scalar) }
 {}
 
 template<typename T>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const T x0, const T y0, const T z0,
 	                                    const T x1, const T y1, const T z1,
-	                                    const T x2, const T y2, const T z2)
+	                                    const T x2, const T y2, const T z2) noexcept
 	: value{ colType(x0, y0, z0), colType(x1, y1, z1), colType(x2, y2, z2) }
 {}
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const colType& v0, const colType& v1, const colType& v2)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const colType& v0, const colType& v1, const colType& v2) noexcept
 	: value{ colType(v0), colType(v1), colType(v2) }
 {}
 
@@ -286,13 +286,13 @@ template<typename X1, typename Y1, typename Z1,
 	     typename X3, typename Y3, typename Z3>
 constexpr TRAP::Math::Mat<3, 3, T>::Mat(const X1 x1, const Y1 y1, const Z1 z1,
 	                                    const X2 x2, const Y2 y2, const Z2 z2,
-	                                    const X3 x3, const Y3 y3, const Z3 z3)
+	                                    const X3 x3, const Y3 y3, const Z3 z3) noexcept
 	: value{ colType(x1, y1, z1), colType(x2, y2, z2), colType(x3, y3, z3) }
 {}
 
 template<typename T>
 template<typename V1, typename V2, typename V3>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& v2, const Vec<3, V3>& v3)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& v2, const Vec<3, V3>& v3) noexcept
 	: value{ colType(v1), colType(v2), colType(v3) }
 {}
 
@@ -300,12 +300,12 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Vec<3, V1>& v1, const Vec<3, V2>& 
 //Matrix conversions
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<3, 3, U>& m)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<3, 3, U>& m) noexcept
 	: value{ colType(m[0]), colType(m[1]), colType(m[2]) }
 {}
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x)
+constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x) noexcept
 	: value{ colType(x[0]), colType(x[1]), colType(x[2]) }
 {}
 

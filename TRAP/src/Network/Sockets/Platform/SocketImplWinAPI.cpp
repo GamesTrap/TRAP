@@ -158,10 +158,10 @@ struct SocketInitializer
 		WSACleanup();
 	}
 
-	SocketInitializer(const SocketInitializer&) = default;
-	SocketInitializer& operator= (const SocketInitializer&) = default;
-	SocketInitializer(SocketInitializer&&) = default;
-	SocketInitializer& operator= (SocketInitializer&&) = default;
+	SocketInitializer(const SocketInitializer&) noexcept = default;
+	SocketInitializer& operator= (const SocketInitializer&) noexcept = default;
+	SocketInitializer(SocketInitializer&&) noexcept = default;
+	SocketInitializer& operator= (SocketInitializer&&) noexcept = default;
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

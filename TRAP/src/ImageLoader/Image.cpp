@@ -29,7 +29,7 @@ const std::array<std::string, 15> TRAP::Image::SupportedImageFormatSuffixes
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Image::Image()
+TRAP::Image::Image() noexcept
 	: m_width(0), m_height(0), m_isHDR(false), m_colorFormat(ColorFormat::NONE), m_bitsPerPixel(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);

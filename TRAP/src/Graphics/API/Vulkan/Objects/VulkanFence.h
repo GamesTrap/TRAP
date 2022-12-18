@@ -26,19 +26,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanFence(const VulkanFence&) = default;
+		VulkanFence(const VulkanFence&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanFence& operator=(const VulkanFence&) = default;
+		VulkanFence& operator=(const VulkanFence&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanFence(VulkanFence&&) = default;
+		VulkanFence(VulkanFence&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanFence& operator=(VulkanFence&&) = default;
+		VulkanFence& operator=(VulkanFence&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkFence handle.

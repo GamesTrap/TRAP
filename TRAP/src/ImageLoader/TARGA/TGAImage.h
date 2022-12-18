@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		TGAImage(const TGAImage&) = default;
+		TGAImage(const TGAImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		TGAImage& operator=(const TGAImage&) = default;
+		TGAImage& operator=(const TGAImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		TGAImage(TGAImage&&) = default;
+		TGAImage(TGAImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		TGAImage& operator=(TGAImage&&) = default;
+		TGAImage& operator=(TGAImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

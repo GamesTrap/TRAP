@@ -31,11 +31,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanRootSignature(VulkanRootSignature&&) = default;
+		VulkanRootSignature(VulkanRootSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanRootSignature& operator=(VulkanRootSignature&&) = default;
+		VulkanRootSignature& operator=(VulkanRootSignature&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the pipeline type used by the shaders of the root signature.

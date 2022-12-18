@@ -24,19 +24,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanInstance(const VulkanInstance&) = default;
+		VulkanInstance(const VulkanInstance&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanInstance& operator=(const VulkanInstance&) = default;
+		VulkanInstance& operator=(const VulkanInstance&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanInstance(VulkanInstance&&) = default;
+		VulkanInstance(VulkanInstance&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanInstance& operator=(VulkanInstance&&) = default;
+		VulkanInstance& operator=(VulkanInstance&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan instance handle.

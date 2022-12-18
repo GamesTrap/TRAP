@@ -60,11 +60,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanShader(VulkanShader&&) = default;
+		VulkanShader(VulkanShader&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanShader& operator=(VulkanShader&&) = default;
+		VulkanShader& operator=(VulkanShader&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan shader module handles of each contained shader stage.

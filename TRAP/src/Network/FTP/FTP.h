@@ -204,7 +204,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		FTP() = default;
+		FTP() noexcept = default;
 
 		/// <summary>
 		/// Automatically closes the connection with the server if it is still opened.
@@ -224,12 +224,12 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		FTP(FTP&&) = default;
+		FTP(FTP&&) noexcept = default;
 
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		FTP& operator=(FTP&&) = default;
+		FTP& operator=(FTP&&) noexcept = default;
 
 		/// <summary>
 		/// Connect to the specified FTP server.

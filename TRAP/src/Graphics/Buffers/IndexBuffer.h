@@ -15,23 +15,23 @@ namespace TRAP::Graphics
 		/// Constructor.
 		/// </summary>
 		/// <param name="indexType">Index type of the index buffer.</param>
-		explicit IndexBuffer(RendererAPI::IndexType indexType);
+		explicit IndexBuffer(RendererAPI::IndexType indexType) noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		IndexBuffer(const IndexBuffer&) = default;
+		IndexBuffer(const IndexBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		IndexBuffer& operator=(const IndexBuffer&) = default;
+		IndexBuffer& operator=(const IndexBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		IndexBuffer(IndexBuffer&&) = default;
+		IndexBuffer(IndexBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		IndexBuffer& operator=(IndexBuffer&&) = default;
+		IndexBuffer& operator=(IndexBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>

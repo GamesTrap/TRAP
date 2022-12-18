@@ -62,11 +62,11 @@ namespace TRAP
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Window(Window&&) = default;
+		Window(Window&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Window& operator=(Window&&) = default;
+		Window& operator=(Window&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

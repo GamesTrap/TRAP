@@ -18,10 +18,10 @@ namespace TRAP
 		SceneCamera();
 		virtual ~SceneCamera() = default;
 
-		SceneCamera(const SceneCamera&) = default;
-		SceneCamera(SceneCamera&&) = default;
-		SceneCamera& operator=(const SceneCamera&) = default;
-		SceneCamera& operator=(SceneCamera&&) = default;
+		SceneCamera(const SceneCamera&) noexcept = default;
+		SceneCamera(SceneCamera&&) noexcept = default;
+		SceneCamera& operator=(const SceneCamera&) noexcept = default;
+		SceneCamera& operator=(SceneCamera&&) noexcept = default;
 
 		void SetPerspective(float verticalFOV, float nearClip);
 		void SetOrthographic(float size, float nearClip, float farClip);

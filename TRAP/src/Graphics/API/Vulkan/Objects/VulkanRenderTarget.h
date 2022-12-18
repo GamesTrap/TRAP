@@ -34,11 +34,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanRenderTarget(VulkanRenderTarget&&) = default;
+		VulkanRenderTarget(VulkanRenderTarget&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanRenderTarget& operator=(VulkanRenderTarget&&) = default;
+		VulkanRenderTarget& operator=(VulkanRenderTarget&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the render target's Vulkan image view.

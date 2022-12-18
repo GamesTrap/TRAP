@@ -47,7 +47,7 @@ namespace TRAP::Math
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		constexpr tQuat(tQuat&&) = default;
+		constexpr tQuat(tQuat&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -55,7 +55,7 @@ namespace TRAP::Math
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		constexpr tQuat<T>& operator=(tQuat&&) = default;
+		constexpr tQuat<T>& operator=(tQuat&&) noexcept = default;
 
 		//Implementation detail
 		using valueType = T;
@@ -69,25 +69,25 @@ namespace TRAP::Math
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		constexpr tQuat() = default;
+		constexpr tQuat() noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		constexpr tQuat(const tQuat& q) = default;
+		constexpr tQuat(const tQuat& q) noexcept = default;
 
 		/// <summary>
 		/// Explicit basic constructor.
 		/// </summary>
-		constexpr tQuat(T s, const Vec<3, T>& v);
+		constexpr tQuat(T s, const Vec<3, T>& v) noexcept;
 		/// <summary>
 		/// Explicit basic constructor.
 		/// </summary>
-		constexpr tQuat(T w_, T x_, T y_, T z_);
+		constexpr tQuat(T w_, T x_, T y_, T z_) noexcept;
 
 		//Conversion constructors
 
 		template<typename U>
-		explicit constexpr tQuat(const tQuat<T>& q);
+		explicit constexpr tQuat(const tQuat<T>& q) noexcept;
 
 		//Explicit conversion operators
 		//explicit operator Mat<3, 3, T>() const;
@@ -209,13 +209,13 @@ namespace std
 //-------------------------------------------------------------------------------------------------------------------//
 //Explicit basic constructors
 template <typename T>
-constexpr TRAP::Math::tQuat<T>::tQuat(const T s, const Vec<3, T>& v)
+constexpr TRAP::Math::tQuat<T>::tQuat(const T s, const Vec<3, T>& v) noexcept
 	: x(v.x), y(v.y), z(v.z), w(s)
 {
 }
 
 template <typename T>
-constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const T z_)
+constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const T z_) noexcept
 	: x(x_), y(y_), z(z_), w(w_)
 {
 }
@@ -225,7 +225,7 @@ constexpr TRAP::Math::tQuat<T>::tQuat(const T w_, const T x_, const T y_, const 
 
 template <typename T>
 template <typename U>
-constexpr TRAP::Math::tQuat<T>::tQuat(const tQuat<T>& q)
+constexpr TRAP::Math::tQuat<T>::tQuat(const tQuat<T>& q) noexcept
 	: x(static_cast<T>(q.x)), y(static_cast<T>(q.y)), z(static_cast<T>(q.z)), w(static_cast<T>(q.w))
 {
 }

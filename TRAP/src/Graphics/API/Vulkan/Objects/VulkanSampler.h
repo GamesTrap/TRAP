@@ -24,19 +24,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSampler(const VulkanSampler&) = default;
+		VulkanSampler(const VulkanSampler&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSampler& operator=(const VulkanSampler&) = default;
+		VulkanSampler& operator=(const VulkanSampler&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSampler(VulkanSampler&&) = default;
+		VulkanSampler(VulkanSampler&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSampler& operator=(VulkanSampler&&) = default;
+		VulkanSampler& operator=(VulkanSampler&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan sampler handle.

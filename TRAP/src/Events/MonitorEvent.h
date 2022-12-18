@@ -34,23 +34,23 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Affected monitor.</param>
-		explicit MonitorEvent(Monitor monitor);
+		explicit MonitorEvent(Monitor monitor) noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		MonitorEvent(const MonitorEvent&) = default;
+		MonitorEvent(const MonitorEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		MonitorEvent& operator=(const MonitorEvent&) = default;
+		MonitorEvent& operator=(const MonitorEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		MonitorEvent(MonitorEvent&&) = default;
+		MonitorEvent(MonitorEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		MonitorEvent& operator=(MonitorEvent&&) = default;
+		MonitorEvent& operator=(MonitorEvent&&) noexcept = default;
 
 		Monitor m_monitor;
 	};
@@ -65,7 +65,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Newly connected monitor.</param>
-		explicit MonitorConnectEvent(Monitor monitor);
+		explicit MonitorConnectEvent(Monitor monitor)noexcept ;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -73,19 +73,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		MonitorConnectEvent(const MonitorConnectEvent&) = default;
+		MonitorConnectEvent(const MonitorConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		MonitorConnectEvent& operator=(const MonitorConnectEvent&) = default;
+		MonitorConnectEvent& operator=(const MonitorConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		MonitorConnectEvent(MonitorConnectEvent&&) = default;
+		MonitorConnectEvent(MonitorConnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		MonitorConnectEvent& operator=(MonitorConnectEvent&&) = default;
+		MonitorConnectEvent& operator=(MonitorConnectEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Get a string representation of the MonitorConnectEvent.
@@ -120,7 +120,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Disconnected monitor.</param>
-		explicit MonitorDisconnectEvent(Monitor monitor);
+		explicit MonitorDisconnectEvent(Monitor monitor) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -128,19 +128,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		MonitorDisconnectEvent(const MonitorDisconnectEvent&) = default;
+		MonitorDisconnectEvent(const MonitorDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) = default;
+		MonitorDisconnectEvent& operator=(const MonitorDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		MonitorDisconnectEvent(MonitorDisconnectEvent&&) = default;
+		MonitorDisconnectEvent(MonitorDisconnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		MonitorDisconnectEvent& operator=(MonitorDisconnectEvent&&) = default;
+		MonitorDisconnectEvent& operator=(MonitorDisconnectEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Get a string representation of the MonitorDisconnectEvent.

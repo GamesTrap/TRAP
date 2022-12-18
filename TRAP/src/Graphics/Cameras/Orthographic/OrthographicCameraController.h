@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		/// <param name="useController">Use the mouse and keyboard to control the camera or a controller.</param>
 		/// <param name="controller">Which controller slot to use when useController is set to true.</param>
 		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false,
-		                                      Input::Controller controller = Input::Controller::One); //TODO Could be split into 2 constructors, one containing controller.
+		                                      Input::Controller controller = Input::Controller::One) noexcept; //TODO Could be split into 2 constructors, one containing controller.
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -46,7 +46,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		OrthographicCameraController(const OrthographicCameraController&) = default;
+		OrthographicCameraController(const OrthographicCameraController&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -54,7 +54,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		OrthographicCameraController(OrthographicCameraController&&) = default;
+		OrthographicCameraController(OrthographicCameraController&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>

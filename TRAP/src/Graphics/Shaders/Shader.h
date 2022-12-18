@@ -37,7 +37,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Shader() = default;
+		Shader() noexcept = default;
 	public:
 		/// <summary>
 		/// Copy constructor.
@@ -50,11 +50,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Shader(Shader&&) = default;
+		Shader(Shader&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Shader& operator=(Shader&&) = default;
+		Shader& operator=(Shader&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

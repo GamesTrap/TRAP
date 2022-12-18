@@ -32,7 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-TRAP::Network::Packet::Packet()
+TRAP::Network::Packet::Packet() noexcept
 	: m_readPos(0), m_sendPos(0), m_isValid(true)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

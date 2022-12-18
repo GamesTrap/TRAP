@@ -26,19 +26,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanBuffer(const VulkanBuffer&) = default;
+		VulkanBuffer(const VulkanBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanBuffer& operator=(const VulkanBuffer&) = default;
+		VulkanBuffer& operator=(const VulkanBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanBuffer(VulkanBuffer&&) = default;
+		VulkanBuffer(VulkanBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanBuffer& operator=(VulkanBuffer&&) = default;
+		VulkanBuffer& operator=(VulkanBuffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkBuffer handle.

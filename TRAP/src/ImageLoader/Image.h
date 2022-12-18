@@ -29,24 +29,24 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Image();
+		Image() noexcept;
 	public:
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Image(const Image&) = default;
+		Image(const Image&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Image& operator=(const Image&) = default;
+		Image& operator=(const Image&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Image(Image&&) = default;
+		Image(Image&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Image& operator=(Image&&) = default;
+		Image& operator=(Image&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

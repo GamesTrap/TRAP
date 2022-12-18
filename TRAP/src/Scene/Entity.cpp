@@ -4,7 +4,7 @@
 #include "Scene/Components.h"
 #include "Utils/Hash/UID.h"
 
-TRAP::Entity::Entity(const entt::entity handle, Scene* const scene)
+TRAP::Entity::Entity(const entt::entity handle, Scene* const scene) noexcept
 	: m_entityHandle(handle), m_scene(scene)
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);

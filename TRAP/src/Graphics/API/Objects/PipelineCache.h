@@ -29,19 +29,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PipelineCache(const PipelineCache&) = default;
+		PipelineCache(const PipelineCache&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PipelineCache& operator=(const PipelineCache&) = default;
+		PipelineCache& operator=(const PipelineCache&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PipelineCache(PipelineCache&&) = default;
+		PipelineCache(PipelineCache&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PipelineCache& operator=(PipelineCache&&) = default;
+		PipelineCache& operator=(PipelineCache&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the cached pipeline data.

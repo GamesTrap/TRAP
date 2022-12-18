@@ -34,7 +34,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		explicit VulkanRenderer();
+		explicit VulkanRenderer() noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -51,11 +51,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanRenderer(VulkanRenderer&&) = delete;
+		VulkanRenderer(VulkanRenderer&&) noexcept = delete;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanRenderer& operator=(VulkanRenderer&&) = delete;
+		VulkanRenderer& operator=(VulkanRenderer&&) noexcept = delete;
 
 		/// <summary>
 		/// Initialize the internal Vulkan renderer.

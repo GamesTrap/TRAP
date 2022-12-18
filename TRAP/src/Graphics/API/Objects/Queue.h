@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Queue(const Queue&) = default;
+		Queue(const Queue&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Queue& operator=(const Queue&) = default;
+		Queue& operator=(const Queue&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Queue(Queue&&) = default;
+		Queue(Queue&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Queue& operator=(Queue&&) = default;
+		Queue& operator=(Queue&&) noexcept = default;
 
 		/// <summary>
 		/// Wait for the queue to finish all submitted commands.

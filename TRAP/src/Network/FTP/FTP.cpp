@@ -40,11 +40,11 @@ namespace TRAP::Network
 	public:
 		DataChannel(const DataChannel&) = delete;
 		DataChannel& operator=(const DataChannel&) = delete;
-		DataChannel(DataChannel&&) = default;
-		DataChannel& operator=(DataChannel&&) = delete;
+		DataChannel(DataChannel&&) noexcept = default;
+		DataChannel& operator=(DataChannel&&) noexcept = delete;
 		~DataChannel() = default;
 
-		explicit DataChannel(FTP& owner);
+		explicit DataChannel(FTP& owner) noexcept;
 
 		Response Open(TransferMode mode);
 
@@ -576,7 +576,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::GetResponse()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::DataChannel::DataChannel(FTP& owner)
+TRAP::Network::FTP::DataChannel::DataChannel(FTP& owner) noexcept
 	: m_ftp(owner)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

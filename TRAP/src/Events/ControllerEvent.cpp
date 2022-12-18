@@ -10,7 +10,7 @@ TRAP::Events::EventCategory TRAP::Events::ControllerEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::ControllerEvent::ControllerEvent(const Input::Controller controller)
+TRAP::Events::ControllerEvent::ControllerEvent(const Input::Controller controller) noexcept
 	: m_controller(controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -20,7 +20,7 @@ TRAP::Events::ControllerEvent::ControllerEvent(const Input::Controller controlle
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Input::Controller controller)
+TRAP::Events::ControllerConnectEvent::ControllerConnectEvent(const Input::Controller controller) noexcept
 	: ControllerEvent(controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -55,7 +55,7 @@ std::string TRAP::Events::ControllerConnectEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::Controller controller)
+TRAP::Events::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::Controller controller) noexcept
 	: ControllerEvent(controller)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

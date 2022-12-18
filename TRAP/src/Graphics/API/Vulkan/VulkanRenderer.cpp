@@ -104,7 +104,7 @@ std::unordered_map<uint64_t,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
+TRAP::Graphics::API::VulkanRenderer::VulkanRenderer() noexcept
 	: m_instance(nullptr),
 	  m_debug(nullptr),
 	  m_device(nullptr),

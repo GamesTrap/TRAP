@@ -30,11 +30,11 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		RootSignature(RootSignature&&) = default;
+		RootSignature(RootSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		RootSignature& operator=(RootSignature&&) = default;
+		RootSignature& operator=(RootSignature&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the pipeline type used by the shaders of the root signature.

@@ -49,24 +49,24 @@ namespace TRAP::Graphics
         /// <param name="texture">Sprite sheet to use.</param>
         /// <param name="min">Min texture coordinates to use.</param>
         /// <param name="max">Max texture coordinates to use.</param>
-        SubTexture2D(std::string name, Ref<TRAP::Graphics::Texture> texture, const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max);
+        SubTexture2D(std::string name, Ref<TRAP::Graphics::Texture> texture, const TRAP::Math::Vec2& min, const TRAP::Math::Vec2& max) noexcept;
 
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-        SubTexture2D(const SubTexture2D&) = default;
+        SubTexture2D(const SubTexture2D&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-        SubTexture2D(SubTexture2D&&) = default;
+        SubTexture2D(SubTexture2D&&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-        SubTexture2D& operator=(const SubTexture2D&) = default;
+        SubTexture2D& operator=(const SubTexture2D&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-        SubTexture2D& operator=(SubTexture2D&&) = default;
+        SubTexture2D& operator=(SubTexture2D&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

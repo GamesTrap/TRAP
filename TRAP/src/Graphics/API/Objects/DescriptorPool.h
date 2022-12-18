@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		DescriptorPool(const DescriptorPool&) = default;
+		DescriptorPool(const DescriptorPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		DescriptorPool& operator=(const DescriptorPool&) = default;
+		DescriptorPool& operator=(const DescriptorPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		DescriptorPool(DescriptorPool&&) = default;
+		DescriptorPool(DescriptorPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		DescriptorPool& operator=(DescriptorPool&&) = default;
+		DescriptorPool& operator=(DescriptorPool&&) noexcept = default;
 
 		/// <summary>
 		/// Reset the descriptor pool.

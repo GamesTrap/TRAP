@@ -25,7 +25,7 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VertexBuffer::VertexBuffer()
+TRAP::Graphics::VertexBuffer::VertexBuffer() noexcept
 	: m_vertexBuffer(nullptr), m_token()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

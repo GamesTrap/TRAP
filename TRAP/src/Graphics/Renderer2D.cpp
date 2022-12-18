@@ -26,8 +26,8 @@ namespace TRAP::Graphics
 		Renderer2DData();
 		Renderer2DData(const Renderer2DData&) = delete;
 		Renderer2DData& operator=(const Renderer2DData&) = delete;
-		Renderer2DData(Renderer2DData&&) = default;
-		Renderer2DData& operator=(Renderer2DData&&) = default;
+		Renderer2DData(Renderer2DData&&) noexcept = default;
+		Renderer2DData& operator=(Renderer2DData&&) noexcept = default;
 		~Renderer2DData() = default;
 
 		struct QuadData

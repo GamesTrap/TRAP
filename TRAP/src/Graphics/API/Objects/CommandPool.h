@@ -25,19 +25,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CommandPool(const CommandPool&) = default;
+		CommandPool(const CommandPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CommandPool& operator=(const CommandPool&) = default;
+		CommandPool& operator=(const CommandPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CommandPool(CommandPool&&) = default;
+		CommandPool(CommandPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CommandPool& operator=(CommandPool&&) = default;
+		CommandPool& operator=(CommandPool&&) noexcept = default;
 
 		/// <summary>
 		/// Allocate a new command buffer.

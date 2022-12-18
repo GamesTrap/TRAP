@@ -33,23 +33,23 @@ namespace TRAP::Graphics
 		/// <param name="name">Name for the animation.</param>
 		/// <param name="sprites">Sprites used by the animation.</param>
 		/// <param name="speed">Speed of the animation in seconds.</param>
-		SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed);
+		SpriteAnimation(std::string name, std::vector<TRAP::Ref<SubTexture2D>> sprites, float speed) noexcept;
 		/// <summary>
 		/// Copy Constructor.
 		/// </summary>
-		SpriteAnimation(const SpriteAnimation&) = default;
+		SpriteAnimation(const SpriteAnimation&) noexcept = default;
 		/// <summary>
 		/// Move Constructor.
 		/// </summary>
-		SpriteAnimation(SpriteAnimation&&) = default;
+		SpriteAnimation(SpriteAnimation&&) noexcept = default;
 		/// <summary>
 		/// Copy Assignment Operator.
 		/// </summary>
-		SpriteAnimation& operator=(const SpriteAnimation&) = default;
+		SpriteAnimation& operator=(const SpriteAnimation&) noexcept = default;
 		/// <summary>
 		/// Move Assignment Operator.
 		/// </summary>
-		SpriteAnimation& operator=(SpriteAnimation&&) = default;
+		SpriteAnimation& operator=(SpriteAnimation&&) noexcept = default;
 
 		/// <summary>
 		/// Destructor.

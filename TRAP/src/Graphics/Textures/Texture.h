@@ -128,19 +128,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Texture(const Texture&) = default;
+		Texture(const Texture&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Texture& operator=(const Texture&) = default;
+		Texture& operator=(const Texture&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Texture(Texture&&) = default;
+		Texture(Texture&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Texture& operator=(Texture&&) = default;
+		Texture& operator=(Texture&&) noexcept = default;
 
 		/// <summary>
 		/// Initialize the Texture.
@@ -366,7 +366,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Texture();
+		Texture() noexcept;
 
 		//RenderAPI independent data
 		std::string m_name;

@@ -24,19 +24,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Fence(const Fence&) = default;
+		Fence(const Fence&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Fence& operator=(const Fence&) = default;
+		Fence& operator=(const Fence&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Fence(Fence&&) = default;
+		Fence(Fence&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Fence& operator=(Fence&&) = default;
+		Fence& operator=(Fence&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve whether the Fence was submitted or not.

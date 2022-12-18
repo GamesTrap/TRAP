@@ -36,19 +36,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanCommandBuffer(const VulkanCommandBuffer&) = default;
+		VulkanCommandBuffer(const VulkanCommandBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) = delete;
+		VulkanCommandBuffer& operator=(const VulkanCommandBuffer&) noexcept = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanCommandBuffer(VulkanCommandBuffer&&) = default;
+		VulkanCommandBuffer(VulkanCommandBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) = delete;
+		VulkanCommandBuffer& operator=(VulkanCommandBuffer&&) noexcept = delete;
 
 		/// <summary>
 		/// Retrieve the VkCommandBuffer handle.

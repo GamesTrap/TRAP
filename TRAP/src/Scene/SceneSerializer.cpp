@@ -264,7 +264,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene)
+TRAP::SceneSerializer::SceneSerializer(Ref<Scene> scene) noexcept
 	: m_scene(std::move(scene))
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);

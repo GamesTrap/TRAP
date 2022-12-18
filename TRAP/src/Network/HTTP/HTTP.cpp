@@ -317,7 +317,7 @@ void TRAP::Network::HTTP::Response::ParseFields(std::istream& in)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::HTTP()
+TRAP::Network::HTTP::HTTP() noexcept
 	: m_port(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

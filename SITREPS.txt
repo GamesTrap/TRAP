@@ -3547,3 +3547,7 @@ SITREP 12/16/2022|22w50b1
 SITREP 12/17/2022|22w50c1
     - Changed TRAP Engine version to 22w50c1(0.8.84)
     - Premake Added architecture option to all files ~<5 mins
+
+SITREP 12/18/2022|22w50c2
+    - Changed TRAP Engine version to 22w50c2(0.8.85)
+    - Added noexcept to some constructors ~<20 mins

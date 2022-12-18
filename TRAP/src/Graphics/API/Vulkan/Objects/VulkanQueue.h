@@ -24,7 +24,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanQueue(const VulkanQueue&) = default;
+		VulkanQueue(const VulkanQueue&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanQueue(VulkanQueue&&) = default;
+		VulkanQueue(VulkanQueue&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>

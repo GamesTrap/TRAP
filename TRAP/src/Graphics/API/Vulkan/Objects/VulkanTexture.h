@@ -45,19 +45,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanTexture(const VulkanTexture&) = default;
+		VulkanTexture(const VulkanTexture&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanTexture& operator=(const VulkanTexture&) = default;
+		VulkanTexture& operator=(const VulkanTexture&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanTexture(VulkanTexture&&) = default;
+		VulkanTexture(VulkanTexture&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanTexture& operator=(VulkanTexture&&) = default;
+		VulkanTexture& operator=(VulkanTexture&&) noexcept = default;
 
 		/// <summary>
 		/// Initialize the Texture.

@@ -53,23 +53,23 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Event() = default;
+		Event() noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Event(const Event&) = default;
+		Event(const Event&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Event& operator=(const Event&) = default;
+		Event& operator=(const Event&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Event(Event&&) = default;
+		Event(Event&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Event& operator=(Event&&) = default;
+		Event& operator=(Event&&) noexcept = default;
 
 	public:
 		/// <summary>
@@ -122,7 +122,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="event">Event to dispatch.</param>
-		explicit constexpr EventDispatcher(Event& event);
+		explicit constexpr EventDispatcher(Event& event) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -130,19 +130,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		EventDispatcher(const EventDispatcher&) = default;
+		EventDispatcher(const EventDispatcher&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		EventDispatcher& operator=(const EventDispatcher&) = delete;
+		EventDispatcher& operator=(const EventDispatcher&) noexcept = delete;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		EventDispatcher(EventDispatcher&&) = default;
+		EventDispatcher(EventDispatcher&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		EventDispatcher& operator=(EventDispatcher&&) = delete;
+		EventDispatcher& operator=(EventDispatcher&&) noexcept = delete;
 
 		/// <summary>
 		/// Dispatch a specific event to a function.
@@ -161,7 +161,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event)
+constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event) noexcept
 	: m_event(event)
 {}
 

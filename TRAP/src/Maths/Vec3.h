@@ -54,36 +54,36 @@ namespace TRAP::Math
 		T x, y, z;
 
 		//Implicit basic constructors
-		constexpr Vec() = default;
-		constexpr Vec(const Vec & v) = default;
+		constexpr Vec() noexcept = default;
+		constexpr Vec(const Vec & v) noexcept = default;
 
 		//Explicit basic constructors
-		explicit constexpr Vec(T scalar);
-		constexpr Vec(T x_, T y_, T z_);
+		explicit constexpr Vec(T scalar) noexcept;
+		constexpr Vec(T x_, T y_, T z_) noexcept;
 
 		//Explicit conversions
 		template<typename X, typename Y, typename Z>
-		constexpr Vec(X x_, Y y_, Z z_);
+		constexpr Vec(X x_, Y y_, Z z_) noexcept;
 
 		//Conversion vector constructors
 
 		//Explicit conversions
 		template<typename A, typename B>
-		constexpr Vec(const Vec<2, A> & xy, B z_);
+		constexpr Vec(const Vec<2, A> & xy, B z_) noexcept;
 		//Explicit conversions
 		template<typename A, typename B>
-		constexpr Vec(A x_, const Vec<2, B> & yz);
+		constexpr Vec(A x_, const Vec<2, B> & yz) noexcept;
 		//Explicit conversions
 		template<typename U>
-		explicit constexpr Vec(const Vec<4, U> & v);
+		explicit constexpr Vec(const Vec<4, U> & v) noexcept;
 
 		//Explicit conversions
 		template<typename U>
-		explicit constexpr Vec(const Vec<3, U> & v);
+		explicit constexpr Vec(const Vec<3, U> & v) noexcept;
 
-		constexpr Vec(Vec&&) = default;
+		constexpr Vec(Vec&&) noexcept = default;
 		~Vec() = default;
-		constexpr Vec<3, T>& operator=(Vec&&) = default;
+		constexpr Vec<3, T>& operator=(Vec&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the count of components of the vector.
@@ -290,12 +290,12 @@ namespace std
 
 //Explicit basic constructors
 template<typename T>
-constexpr TRAP::Math::Vec<3, T>::Vec(const T scalar)
+constexpr TRAP::Math::Vec<3, T>::Vec(const T scalar) noexcept
 	: x(scalar), y(scalar), z(scalar)
 {}
 
 template<typename T>
-constexpr TRAP::Math::Vec<3, T>::Vec(T x_, T y_, T z_)
+constexpr TRAP::Math::Vec<3, T>::Vec(T x_, T y_, T z_) noexcept
 	: x(x_), y(y_), z(z_)
 {}
 
@@ -304,7 +304,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(T x_, T y_, T z_)
 
 template<typename T>
 template<typename X, typename Y, typename Z>
-constexpr TRAP::Math::Vec<3, T>::Vec(const X x_, const Y y_, const Z z_)
+constexpr TRAP::Math::Vec<3, T>::Vec(const X x_, const Y y_, const Z z_) noexcept
 	: x(static_cast<T>(x_)),
 	  y(static_cast<T>(y_)),
 	  z(static_cast<T>(z_))
@@ -315,7 +315,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const X x_, const Y y_, const Z z_)
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z_)
+constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z_) noexcept
 	: x(static_cast<T>(xy.x)),
 	  y(static_cast<T>(xy.y)),
 	  z(static_cast<T>(z_))
@@ -323,7 +323,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<2, A>& xy, const B z_)
 
 template<typename T>
 template<typename A, typename B>
-constexpr TRAP::Math::Vec<3, T>::Vec(const A x_, const Vec<2, B>& yz)
+constexpr TRAP::Math::Vec<3, T>::Vec(const A x_, const Vec<2, B>& yz) noexcept
 	: x(static_cast<T>(x_)),
 	  y(static_cast<T>(yz.x)),
 	  z(static_cast<T>(yz.y))
@@ -331,7 +331,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const A x_, const Vec<2, B>& yz)
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<3, U>& v)
+constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<3, U>& v) noexcept
 	: x(static_cast<T>(v.x)),
 	  y(static_cast<T>(v.y)),
 	  z(static_cast<T>(v.z))
@@ -339,7 +339,7 @@ constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<3, U>& v)
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<3, T>::Vec(const Vec<4, U>& v) noexcept
 	: x(static_cast<T>(v.x)),
 	  y(static_cast<T>(v.y)),
 	  z(static_cast<T>(v.z))

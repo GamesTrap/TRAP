@@ -15,23 +15,23 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		VertexBuffer();
+		VertexBuffer() noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VertexBuffer(const VertexBuffer&) = default;
+		VertexBuffer(const VertexBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VertexBuffer& operator=(const VertexBuffer&) = default;
+		VertexBuffer& operator=(const VertexBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VertexBuffer(VertexBuffer&&) = default;
+		VertexBuffer(VertexBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VertexBuffer& operator=(VertexBuffer&&) = default;
+		VertexBuffer& operator=(VertexBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>

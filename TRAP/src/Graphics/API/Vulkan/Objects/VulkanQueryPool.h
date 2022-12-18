@@ -24,19 +24,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanQueryPool(const VulkanQueryPool&) = default;
+		VulkanQueryPool(const VulkanQueryPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanQueryPool& operator=(const VulkanQueryPool&) = default;
+		VulkanQueryPool& operator=(const VulkanQueryPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanQueryPool(VulkanQueryPool&&) = default;
+		VulkanQueryPool(VulkanQueryPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanQueryPool& operator=(VulkanQueryPool&&) = default;
+		VulkanQueryPool& operator=(VulkanQueryPool&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan query pool handle.

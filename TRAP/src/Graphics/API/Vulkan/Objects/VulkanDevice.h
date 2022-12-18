@@ -40,11 +40,11 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanDevice(VulkanDevice&&) = default;
+		VulkanDevice(VulkanDevice&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanDevice& operator=(VulkanDevice&&) = default;
+		VulkanDevice& operator=(VulkanDevice&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkDevice.

@@ -22,19 +22,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		CustomImage(const CustomImage&) = default;
+		CustomImage(const CustomImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		CustomImage& operator=(const CustomImage&) = default;
+		CustomImage& operator=(const CustomImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		CustomImage(CustomImage&&) = default;
+		CustomImage(CustomImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		CustomImage& operator=(CustomImage&&) = default;
+		CustomImage& operator=(CustomImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

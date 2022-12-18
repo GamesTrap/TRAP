@@ -22,19 +22,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		UniformBuffer(const UniformBuffer&) = default;
+		UniformBuffer(const UniformBuffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		UniformBuffer& operator=(const UniformBuffer&) = default;
+		UniformBuffer& operator=(const UniformBuffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		UniformBuffer(UniformBuffer&&) = default;
+		UniformBuffer(UniformBuffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		UniformBuffer& operator=(UniformBuffer&&) = default;
+		UniformBuffer& operator=(UniformBuffer&&) noexcept = default;
 
 	public:
 		/// <summary>

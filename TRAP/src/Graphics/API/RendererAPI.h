@@ -91,7 +91,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		RendererAPI() = default;
+		RendererAPI() noexcept = default;
 	public:
 		/// <summary>
 		/// Destructor.

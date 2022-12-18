@@ -34,23 +34,23 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="controller">Affected controller.</param>
-		explicit ControllerEvent(Input::Controller controller);
+		explicit ControllerEvent(Input::Controller controller) noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ControllerEvent(const ControllerEvent&) = default;
+		ControllerEvent(const ControllerEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ControllerEvent& operator=(const ControllerEvent&) = default;
+		ControllerEvent& operator=(const ControllerEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ControllerEvent(ControllerEvent&&) = default;
+		ControllerEvent(ControllerEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ControllerEvent& operator=(ControllerEvent&&) = default;
+		ControllerEvent& operator=(ControllerEvent&&) noexcept = default;
 
 		Input::Controller m_controller;
 	};
@@ -65,7 +65,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="controller">Newly connected controller.</param>
-		explicit ControllerConnectEvent(Input::Controller controller);
+		explicit ControllerConnectEvent(Input::Controller controller) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -73,19 +73,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ControllerConnectEvent(const ControllerConnectEvent&) = default;
+		ControllerConnectEvent(const ControllerConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ControllerConnectEvent& operator=(const ControllerConnectEvent&) = default;
+		ControllerConnectEvent& operator=(const ControllerConnectEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ControllerConnectEvent(ControllerConnectEvent&&) = default;
+		ControllerConnectEvent(ControllerConnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ControllerConnectEvent& operator=(ControllerConnectEvent&&) = default;
+		ControllerConnectEvent& operator=(ControllerConnectEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Get a string representation of the ControllerConnectEvent.
@@ -120,7 +120,7 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="controller">Disconnected controller.</param>
-		explicit ControllerDisconnectEvent(Input::Controller controller);
+		explicit ControllerDisconnectEvent(Input::Controller controller) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -128,19 +128,19 @@ namespace TRAP::Events
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		ControllerDisconnectEvent(const ControllerDisconnectEvent&) = default;
+		ControllerDisconnectEvent(const ControllerDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) = default;
+		ControllerDisconnectEvent& operator=(const ControllerDisconnectEvent&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		ControllerDisconnectEvent(ControllerDisconnectEvent&&) = default;
+		ControllerDisconnectEvent(ControllerDisconnectEvent&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) = default;
+		ControllerDisconnectEvent& operator=(ControllerDisconnectEvent&&) noexcept = default;
 
 		/// <summary>
 		/// Get a string representation of the ControllerDisconnectEvent.

@@ -25,7 +25,7 @@ float TRAP::Graphics::OrthographicCameraBounds::GetHeight() const
 TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(const float aspectRatio,
 																		   const bool rotation,
 																		   const bool useController,
-																		   const Input::Controller controller)
+																		   const Input::Controller controller) noexcept
 	: m_aspectRatio(aspectRatio),
 	  m_bounds({ -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel }),
 	  m_camera(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, 1.0f, -1.0f),

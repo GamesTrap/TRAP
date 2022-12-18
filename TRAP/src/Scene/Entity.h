@@ -27,14 +27,14 @@ namespace TRAP
 	class Entity
 	{
 	public:
-		Entity() = default;
+		Entity() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// Creates a new Entity.
 		/// </summary>
 		/// <param name="handle">Handle to entt::entity.</param>
 		/// <param name="scene">Scene which the new Entity is associated with.</param>
-		Entity(entt::entity handle, Scene* scene);
+		Entity(entt::entity handle, Scene* scene) noexcept;
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)

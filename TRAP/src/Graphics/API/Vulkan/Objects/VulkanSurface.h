@@ -28,19 +28,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanSurface(const VulkanSurface&) = default;
+		VulkanSurface(const VulkanSurface&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanSurface& operator=(const VulkanSurface&) = default;
+		VulkanSurface& operator=(const VulkanSurface&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanSurface(VulkanSurface&&) = default;
+		VulkanSurface(VulkanSurface&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanSurface& operator=(VulkanSurface&&) = default;
+		VulkanSurface& operator=(VulkanSurface&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan surface handle.

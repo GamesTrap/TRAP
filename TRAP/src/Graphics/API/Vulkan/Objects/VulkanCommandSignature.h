@@ -22,19 +22,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanCommandSignature(const VulkanCommandSignature&) = default;
+		VulkanCommandSignature(const VulkanCommandSignature&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanCommandSignature& operator=(const VulkanCommandSignature&) = default;
+		VulkanCommandSignature& operator=(const VulkanCommandSignature&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanCommandSignature(VulkanCommandSignature&&) = default;
+		VulkanCommandSignature(VulkanCommandSignature&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanCommandSignature& operator=(VulkanCommandSignature&&) = default;
+		VulkanCommandSignature& operator=(VulkanCommandSignature&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the draw type used for indirect drawing.

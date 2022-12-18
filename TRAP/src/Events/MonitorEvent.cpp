@@ -19,7 +19,7 @@ TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MonitorEvent::MonitorEvent(Monitor monitor)
+TRAP::Events::MonitorEvent::MonitorEvent(Monitor monitor) noexcept
 	: m_monitor(std::move(monitor))
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -29,7 +29,7 @@ TRAP::Events::MonitorEvent::MonitorEvent(Monitor monitor)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor)
+TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor) noexcept
 	: MonitorEvent(monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -64,7 +64,7 @@ std::string TRAP::Events::MonitorConnectEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monitor)
+TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monitor) noexcept
 	: MonitorEvent(monitor)
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

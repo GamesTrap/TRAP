@@ -28,7 +28,7 @@ namespace TRAP
 			/// <param name="width">Width.</param>
 			/// <param name="height">Height.</param>
 			/// <param name="refreshRate">Refresh rate.</param>
-			constexpr VideoMode(int32_t width, int32_t height, double refreshRate);
+			constexpr VideoMode(int32_t width, int32_t height, double refreshRate) noexcept;
 
 			int32_t Width = 0;
 			int32_t Height = 0;
@@ -43,19 +43,19 @@ namespace TRAP
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Monitor(const Monitor&) = default;
+		Monitor(const Monitor&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Monitor& operator=(const Monitor&) = default;
+		Monitor& operator=(const Monitor&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Monitor(Monitor&&) = default;
+		Monitor(Monitor&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Monitor& operator=(Monitor&&) = default;
+		Monitor& operator=(Monitor&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the name of a monitor.
@@ -172,7 +172,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const double refreshRate)
+constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t height, const double refreshRate) noexcept
 	: Width(width), Height(height), RefreshRate(refreshRate)
 {}
 

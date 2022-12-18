@@ -27,19 +27,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanPhysicalDevice(const VulkanPhysicalDevice&) = default;
+		VulkanPhysicalDevice(const VulkanPhysicalDevice&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) = default;
+		VulkanPhysicalDevice& operator=(const VulkanPhysicalDevice&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanPhysicalDevice(VulkanPhysicalDevice&&) = default;
+		VulkanPhysicalDevice(VulkanPhysicalDevice&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) = default;
+		VulkanPhysicalDevice& operator=(VulkanPhysicalDevice&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan physical device handle.

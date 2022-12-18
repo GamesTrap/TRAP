@@ -33,19 +33,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanMemoryAllocator(const VulkanMemoryAllocator&) = default;
+		VulkanMemoryAllocator(const VulkanMemoryAllocator&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) = default;
+		VulkanMemoryAllocator& operator=(const VulkanMemoryAllocator&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanMemoryAllocator(VulkanMemoryAllocator&&) = default;
+		VulkanMemoryAllocator(VulkanMemoryAllocator&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) = default;
+		VulkanMemoryAllocator& operator=(VulkanMemoryAllocator&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the Vulkan memory allocator (VMA) allocator handle.

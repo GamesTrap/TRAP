@@ -26,19 +26,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanCommandPool(const VulkanCommandPool&) = default;
+		VulkanCommandPool(const VulkanCommandPool&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanCommandPool& operator=(const VulkanCommandPool&) = default;
+		VulkanCommandPool& operator=(const VulkanCommandPool&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanCommandPool(VulkanCommandPool&&) = default;
+		VulkanCommandPool(VulkanCommandPool&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanCommandPool& operator=(VulkanCommandPool&&) = default;
+		VulkanCommandPool& operator=(VulkanCommandPool&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkCommandPool handle.

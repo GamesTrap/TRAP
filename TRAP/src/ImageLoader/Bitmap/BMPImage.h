@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		BMPImage(const BMPImage&) = default;
+		BMPImage(const BMPImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		BMPImage& operator=(const BMPImage&) = default;
+		BMPImage& operator=(const BMPImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		BMPImage(BMPImage&&) = default;
+		BMPImage(BMPImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		BMPImage& operator=(BMPImage&&) = default;
+		BMPImage& operator=(BMPImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

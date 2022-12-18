@@ -211,8 +211,8 @@ namespace TRAP::Utils::Windows
 		COMInitializer(const COMInitializer&) = delete;
 		COMInitializer& operator=(const COMInitializer&) = delete;
 
-		COMInitializer(COMInitializer&&) = default;
-		COMInitializer& operator=(COMInitializer&&) = default;
+		COMInitializer(COMInitializer&&) noexcept = default;
+		COMInitializer& operator=(COMInitializer&&) noexcept = default;
 
 	private:
 		//Flags whether COM was properly initialized or not

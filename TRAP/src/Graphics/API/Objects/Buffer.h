@@ -23,19 +23,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Buffer(const Buffer&) = default;
+		Buffer(const Buffer&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Buffer& operator=(const Buffer&) = default;
+		Buffer& operator=(const Buffer&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Buffer(Buffer&&) = default;
+		Buffer(Buffer&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Buffer& operator=(Buffer&&) = default;
+		Buffer& operator=(Buffer&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the size of the buffer in bytes.

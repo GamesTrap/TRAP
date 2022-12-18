@@ -51,7 +51,7 @@ namespace TRAP::Network
 		/// Constructor.
 		/// Creates an empty packet.
 		/// </summary>
-		Packet();
+		Packet() noexcept;
 
 		/// <summary>
 		/// Destructor.
@@ -61,11 +61,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		Packet(const Packet&) = default;
+		Packet(const Packet&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		Packet& operator=(const Packet&) = default;
+		Packet& operator=(const Packet&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>

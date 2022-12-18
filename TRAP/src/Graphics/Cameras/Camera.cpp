@@ -3,7 +3,7 @@
 
 #include "Maths/Math.h"
 
-TRAP::Graphics::Camera::Camera(const TRAP::Math::Mat4& projection)
+TRAP::Graphics::Camera::Camera(const TRAP::Math::Mat4& projection) noexcept
 	: m_projection(projection)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);

@@ -114,7 +114,7 @@ TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout)
+TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexcept
 	: m_layout(std::move(layout))
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

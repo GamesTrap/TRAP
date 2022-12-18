@@ -34,19 +34,19 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		SwapChain(const SwapChain&) = default;
+		SwapChain(const SwapChain&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		SwapChain& operator=(const SwapChain&) = default;
+		SwapChain& operator=(const SwapChain&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		SwapChain(SwapChain&&) = default;
+		SwapChain(SwapChain&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		SwapChain& operator=(SwapChain&&) = default;
+		SwapChain& operator=(SwapChain&&) noexcept = default;
 
 		/// <summary>
 		/// Acquire the next presentable image from the swapchain to render to.

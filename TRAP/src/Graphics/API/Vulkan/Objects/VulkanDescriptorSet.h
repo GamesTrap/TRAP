@@ -29,19 +29,19 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		VulkanDescriptorSet(const VulkanDescriptorSet&) = default;
+		VulkanDescriptorSet(const VulkanDescriptorSet&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) = default;
+		VulkanDescriptorSet& operator=(const VulkanDescriptorSet&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		VulkanDescriptorSet(VulkanDescriptorSet&&) = default;
+		VulkanDescriptorSet(VulkanDescriptorSet&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) = default;
+		VulkanDescriptorSet& operator=(VulkanDescriptorSet&&) noexcept = default;
 
 		/// <summary>
 		/// Retrieve the VkDescriptorSet handles.

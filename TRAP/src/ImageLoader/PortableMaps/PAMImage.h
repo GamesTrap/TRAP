@@ -16,19 +16,19 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
-		PAMImage(const PAMImage&) = default;
+		PAMImage(const PAMImage&) noexcept = default;
 		/// <summary>
 		/// Copy assignment operator.
 		/// </summary>
-		PAMImage& operator=(const PAMImage&) = default;
+		PAMImage& operator=(const PAMImage&) noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		PAMImage(PAMImage&&) = default;
+		PAMImage(PAMImage&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		PAMImage& operator=(PAMImage&&) = default;
+		PAMImage& operator=(PAMImage&&) noexcept = default;
 		/// <summary>
 		/// Destructor.
 		/// </summary>

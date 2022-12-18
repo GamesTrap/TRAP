@@ -41,15 +41,15 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Socket() = default;
+		Socket() noexcept = default;
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		Socket(Socket&&) = default;
+		Socket(Socket&&) noexcept = default;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		Socket& operator=(Socket&&) = default;
+		Socket& operator=(Socket&&) noexcept = default;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
