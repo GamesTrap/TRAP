@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "MonitorEvent.h"
 
-TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
+TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -10,7 +10,7 @@ TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -18,23 +18,7 @@ TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::MonitorEvent::MonitorEvent(Monitor monitor) noexcept
-	: m_monitor(std::move(monitor))
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor) noexcept
-	: MonitorEvent(monitor)
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-}
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::MonitorConnectEvent::ToString() const
@@ -46,7 +30,7 @@ std::string TRAP::Events::MonitorConnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -64,14 +48,6 @@ std::string TRAP::Events::MonitorConnectEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monitor) noexcept
-	: MonitorEvent(monitor)
-{
-	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -81,7 +57,7 @@ std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

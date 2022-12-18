@@ -21,13 +21,13 @@ namespace TRAP::Events
 		/// Retrieve the affected key.
 		/// </summary>
 		/// <returns>Key.</returns>
-		constexpr Input::Key GetKey() const;
+		constexpr Input::Key GetKey() const noexcept;
 
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
 		/// <summary>
@@ -67,7 +67,7 @@ namespace TRAP::Events
 		/// <param name="key">Pressed key.</param>
 		/// <param name="repeatCount">Amount of key press repeats.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		constexpr KeyPressEvent(Input::Key key, uint32_t repeatCount, TRAP::Window* window) noexcept;
+		KeyPressEvent(Input::Key key, uint32_t repeatCount, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -93,12 +93,12 @@ namespace TRAP::Events
 		/// Retrieve tha amount of key press repeats.
 		/// </summary>
 		/// <returns>Repeat count.</returns>
-		constexpr uint32_t GetRepeatCount() const;
+		constexpr uint32_t GetRepeatCount() const noexcept;
 		/// <summary>
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the KeyPressEvent.
@@ -110,12 +110,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -138,7 +138,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="key">Released key.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit constexpr KeyReleaseEvent(Input::Key key, TRAP::Window* window) noexcept;
+		explicit KeyReleaseEvent(Input::Key key, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -164,7 +164,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the KeyReleaseEvent.
@@ -176,12 +176,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -203,7 +203,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="codePoint">Unicode code point entered.</param>
 		/// <param name="window">Pointer to the affected window.</param>
-		explicit constexpr KeyTypeEvent(uint32_t codePoint, TRAP::Window* window) noexcept;
+		explicit KeyTypeEvent(uint32_t codePoint, TRAP::Window* window);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -229,12 +229,12 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected window.
 		/// </summary>
 		/// <returns>Window pointer.</returns>
-		constexpr TRAP::Window* GetWindow() const;
+		constexpr TRAP::Window* GetWindow() const noexcept;
 		/// <summary>
 		/// Retrieve the entered Unicode code point.
 		/// </summary>
 		/// <returns>Unicode code point.</returns>
-		constexpr uint32_t GetCodePoint() const;
+		constexpr uint32_t GetCodePoint() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the KeyTypeEvent.
@@ -246,12 +246,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -261,7 +261,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		TRAP::Window* m_window;
@@ -304,7 +304,7 @@ namespace TRAP::Events
 		/// Retrieve the human-readable name of the new keyboard layout.
 		/// </summary>
 		/// <returns>Name of new keyboard layout.</returns>
-		std::string GetLayout() const;
+		std::string GetLayout() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the KeyLayoutEvent.
@@ -316,12 +316,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -331,7 +331,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
 		std::string m_layout;
@@ -340,7 +340,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Input::Key TRAP::Events::KeyEvent::GetKey() const
+constexpr TRAP::Input::Key TRAP::Events::KeyEvent::GetKey() const noexcept
 {
 	return m_key;
 }
@@ -355,28 +355,21 @@ constexpr TRAP::Events::KeyEvent::KeyEvent(const Input::Key key) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t repeatCount,
-                                                     TRAP::Window* window) noexcept
-	: KeyEvent(key), m_repeatCount(repeatCount), m_window(window)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr uint32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
+constexpr uint32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const noexcept
 {
 	return m_repeatCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Window* TRAP::Events::KeyPressEvent::GetWindow() const
+constexpr TRAP::Window* TRAP::Events::KeyPressEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetStaticType() noexcept
 {
 	return EventType::KeyPress;
 }
@@ -385,20 +378,14 @@ constexpr TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetStaticType()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window* window) noexcept
-	: KeyEvent(key), m_window(window)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Window* TRAP::Events::KeyReleaseEvent::GetWindow() const
+constexpr TRAP::Window* TRAP::Events::KeyReleaseEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetStaticType() noexcept
 {
 	return EventType::KeyRelease;
 }
@@ -407,34 +394,30 @@ constexpr TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetStaticType()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window* window) noexcept
-	: m_window(window), m_codePoint(codePoint)
-{}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-constexpr TRAP::Window* TRAP::Events::KeyTypeEvent::GetWindow() const
+constexpr TRAP::Window* TRAP::Events::KeyTypeEvent::GetWindow() const noexcept
 {
 	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Events::KeyTypeEvent::GetCodePoint() const
+constexpr uint32_t TRAP::Events::KeyTypeEvent::GetCodePoint() const noexcept
 {
 	return m_codePoint;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetStaticType() noexcept
 {
 	return EventType::KeyType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetStaticType() noexcept
 {
 	return EventType::KeyLayout;
 }

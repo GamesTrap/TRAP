@@ -3553,3 +3553,4 @@ SITREP 12/18/2022|22w50c2
     - Added noexcept to some constructors ~<20 mins
     - SPIRVTools Moved CrossCompiler::m_compiler to stack ~<5 mins
     - WindowingAPI Fixed retrieving of monitor resolutions ~>10 mins
+    - Added noexcept to Events ~>30 mins

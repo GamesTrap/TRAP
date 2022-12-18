@@ -51,18 +51,18 @@ namespace TRAP::Events
         /// Get the status of the file.
         /// </summary>
         /// <returns>The status of the file.</returns>
-        constexpr TRAP::FileSystem::FileStatus GetStatus() const;
+        constexpr TRAP::FileSystem::FileStatus GetStatus() const noexcept;
         /// <summary>
         /// Get the path of the file.
         /// </summary>
         /// <returns>The path of the file.</returns>
-        std::filesystem::path GetPath() const;
+        std::filesystem::path GetPath() const noexcept;
         /// <summary>
         /// Get the old name of the file.
         /// Only set when FileStatus::Renamed.
         /// </summary>
         /// <returns>The old name of the file.</returns>
-        std::optional<std::filesystem::path> GetOldName() const;
+        std::optional<std::filesystem::path> GetOldName() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the FileEvent.
@@ -74,12 +74,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -89,7 +89,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::FileSystem::FileStatus m_status;
@@ -100,14 +100,14 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::FileSystem::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const
+constexpr TRAP::FileSystem::FileStatus TRAP::Events::FileChangeEvent::GetStatus() const noexcept
 {
 	return m_status;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetStaticType() noexcept
 {
 	return EventType::FileChange;
 }

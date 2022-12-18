@@ -3,6 +3,17 @@
 
 #include "Window/Window.h"
 
+TRAP::Events::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height,
+   												   TRAP::Window* window)
+	: m_width(width), m_height(height), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowResizeEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::WindowResizeEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -12,7 +23,7 @@ std::string TRAP::Events::WindowResizeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowResizeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -30,7 +41,7 @@ std::string TRAP::Events::WindowResizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -39,6 +50,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() 
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowMinimizeEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowMinimizeEvent::ToString() const
@@ -50,7 +71,7 @@ std::string TRAP::Events::WindowMinimizeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowMinimizeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -68,7 +89,7 @@ std::string TRAP::Events::WindowMinimizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -77,6 +98,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags(
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowMaximizeEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowMaximizeEvent::ToString() const
@@ -88,7 +119,7 @@ std::string TRAP::Events::WindowMaximizeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowMaximizeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -106,7 +137,7 @@ std::string TRAP::Events::WindowMaximizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -115,6 +146,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags(
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowRestoreEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowRestoreEvent::ToString() const
@@ -126,7 +167,7 @@ std::string TRAP::Events::WindowRestoreEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowRestoreEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -144,7 +185,7 @@ std::string TRAP::Events::WindowRestoreEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -153,6 +194,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags()
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowCloseEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowCloseEvent::ToString() const
@@ -166,7 +217,7 @@ std::string TRAP::Events::WindowCloseEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowCloseEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -184,7 +235,7 @@ std::string TRAP::Events::WindowCloseEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -193,6 +244,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowMoveEvent::WindowMoveEvent(const int32_t x, const int32_t y, TRAP::Window* window)
+	: m_x(x), m_y(y), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowMoveEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowMoveEvent::ToString() const
@@ -204,7 +265,7 @@ std::string TRAP::Events::WindowMoveEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowMoveEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -222,7 +283,7 @@ std::string TRAP::Events::WindowMoveEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -231,6 +292,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowFocusEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowFocusEvent::ToString() const
@@ -244,7 +315,7 @@ std::string TRAP::Events::WindowFocusEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -262,7 +333,7 @@ std::string TRAP::Events::WindowFocusEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -271,6 +342,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::WindowLostFocusEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowLostFocusEvent::ToString() const
@@ -284,7 +365,7 @@ std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowLostFocusEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -302,7 +383,7 @@ std::string TRAP::Events::WindowLostFocusEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -318,12 +399,12 @@ TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, T
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	TRAP_ASSERT(m_window, "WindowDropEvent(): Window is nullptr!");
+	TRAP_ASSERT(m_window, "Events::WindowDropEvent(): Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const
+const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -345,7 +426,7 @@ std::string TRAP::Events::WindowDropEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowDropEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -363,7 +444,7 @@ std::string TRAP::Events::WindowDropEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -372,6 +453,17 @@ TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() co
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale,
+	                                                           TRAP::Window* window)
+	: m_XScale(xScale), m_YScale(yScale), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(m_window, "Events::WindowContentScaleEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowContentScaleEvent::ToString() const
@@ -383,7 +475,7 @@ std::string TRAP::Events::WindowContentScaleEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::WindowContentScaleEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -401,7 +493,7 @@ std::string TRAP::Events::WindowContentScaleEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -410,6 +502,17 @@ TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFl
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height,
+                                                             TRAP::Window* window)
+	: m_width(width), m_height(height), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(m_window, "Events::FrameBufferResizeEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
@@ -421,7 +524,7 @@ std::string TRAP::Events::FrameBufferResizeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::FrameBufferResizeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -439,7 +542,7 @@ std::string TRAP::Events::FrameBufferResizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

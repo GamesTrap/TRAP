@@ -108,14 +108,14 @@ enum class ProfileSystems
 	             Network | Scene | ThreadPool | Utils | Window | WindowingAPI | Verbose
 };
 
-constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs)
+constexpr bool operator&(const ProfileSystems lhs, const ProfileSystems rhs) noexcept
 {
 	return static_cast<bool>(static_cast<std::underlying_type_t<ProfileSystems>>(lhs) &
 			                 static_cast<std::underlying_type_t<ProfileSystems>>(rhs));
 }
 
 //Set this macro to specify which systems should be profiled.
-constexpr ProfileSystems TRAP_PROFILE_SYSTEMS()
+constexpr ProfileSystems TRAP_PROFILE_SYSTEMS() noexcept
 {
 	return ProfileSystems::All;
 }
@@ -133,10 +133,7 @@ constexpr ProfileSystems TRAP_PROFILE_SYSTEMS()
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
-{
-	return major << 22 | minor << 12 | patch;
-}
+uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -179,24 +176,24 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version) noexcept
 /// <summary>
 /// TRAP version number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 85);
+const uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 85);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifndef MAKE_ENUM_FLAG
 #define MAKE_ENUM_FLAG(ENUM_TYPE) \
-	constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) \
+	constexpr inline ENUM_TYPE operator|(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
 		 							  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) \
+	constexpr inline ENUM_TYPE operator&(const ENUM_TYPE a, const ENUM_TYPE b) noexcept \
 	{ \
 		return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
 									  static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); \
 	} \
-	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a | b); }\
-	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) { return a = (a & b); }
+	constexpr inline ENUM_TYPE operator|=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a | b); }\
+	constexpr inline ENUM_TYPE operator&=(ENUM_TYPE& a, const ENUM_TYPE b) noexcept { return a = (a & b); }
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -226,7 +223,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 85);
 		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		constexpr void TRAP_DEBUG_BREAK()
+		constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
 	#endif
 #else
@@ -234,7 +231,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 85);
 		/// Sets a cross platform debug break.
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		constexpr void TRAP_DEBUG_BREAK()
+		constexpr void TRAP_DEBUG_BREAK() noexcept
 		{}
 #endif
 
@@ -252,7 +249,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 8, 85);
 /// <param name="x">Amount to shift.</param>
 /// <returns>Shifted value.</returns>
 template <typename T>
-constexpr T BIT(T x)
+constexpr T BIT(const T x) noexcept
 {
 	return T(1) << x;
 }

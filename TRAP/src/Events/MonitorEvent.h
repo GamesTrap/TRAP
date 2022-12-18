@@ -21,20 +21,21 @@ namespace TRAP::Events
 		/// Retrieve the affected monitor.
 		/// </summary>
 		/// <returns>Monitor.</returns>
-		Monitor GetMonitor() const;
+		Monitor GetMonitor() const noexcept;
 
 		/// <summary>
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	protected:
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Affected monitor.</param>
-		explicit MonitorEvent(Monitor monitor) noexcept;
+		// explicit MonitorEvent(Monitor monitor) noexcept;
+		explicit constexpr MonitorEvent(const Monitor& monitor) noexcept;
 		/// <summary>
 		/// Copy constructor.
 		/// </summary>
@@ -65,7 +66,8 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Newly connected monitor.</param>
-		explicit MonitorConnectEvent(Monitor monitor)noexcept ;
+		// explicit MonitorConnectEvent(Monitor monitor) noexcept;
+		explicit constexpr MonitorConnectEvent(const Monitor& monitor) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -97,12 +99,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -120,7 +122,8 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="monitor">Disconnected monitor.</param>
-		explicit MonitorDisconnectEvent(Monitor monitor) noexcept;
+		// explicit MonitorDisconnectEvent(Monitor monitor) noexcept;
+		explicit constexpr MonitorDisconnectEvent(const Monitor& monitor) noexcept;
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -152,12 +155,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -168,7 +171,21 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticType()
+constexpr TRAP::Events::MonitorEvent::MonitorEvent(const Monitor& monitor) noexcept
+	: m_monitor(monitor)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor& monitor) noexcept
+	: MonitorEvent(monitor)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticType() noexcept
 {
 	return EventType::MonitorConnect;
 }
@@ -177,7 +194,13 @@ constexpr TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticTy
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType()
+constexpr TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor& monitor) noexcept
+	: MonitorEvent(monitor)
+{}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType() noexcept
 {
 	return EventType::MonitorDisconnect;
 }

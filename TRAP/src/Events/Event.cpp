@@ -10,7 +10,7 @@ std::string TRAP::Events::Event::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Events::Event::IsInCategory(const EventCategory category) const
+bool TRAP::Events::Event::IsInCategory(const EventCategory category) const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

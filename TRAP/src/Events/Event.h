@@ -92,7 +92,7 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		virtual EventType GetEventType() const = 0;
+		virtual EventType GetEventType() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -102,14 +102,14 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		virtual EventCategory GetCategoryFlags() const = 0;
+		virtual EventCategory GetCategoryFlags() const noexcept = 0;
 
 		/// <summary>
 		/// Check if an event is in the specified category.
 		/// </summary>
 		/// <param name="category">Category to check.</param>
 		/// <returns>True if event is in the category, false otherwise.</returns>
-		bool IsInCategory(EventCategory category) const;
+		bool IsInCategory(EventCategory category) const noexcept;
 	};
 
 	/// <summary>
@@ -152,7 +152,7 @@ namespace TRAP::Events
 		/// <param name="func">Function to call.</param>
 		/// <returns>True if the received event matches the event to dispatch, false otherwise.</returns>
 		template<typename T, typename F>
-		constexpr bool Dispatch(const F& func);
+		constexpr bool Dispatch(const F& func) noexcept;
 
 	private:
 		Event& m_event;
@@ -168,7 +168,7 @@ constexpr TRAP::Events::EventDispatcher::EventDispatcher(Event& event) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename F>
-constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func)
+constexpr bool TRAP::Events::EventDispatcher::Dispatch(const F& func) noexcept
 {
 	if (m_event.GetEventType() != T::GetStaticType() || m_event.Handled)
 		return false;
@@ -185,7 +185,7 @@ std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
 MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
 
 constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCategory lhs,
-                                                 const TRAP::Events::EventCategory rhs)
+                                                 const TRAP::Events::EventCategory rhs) noexcept
 {
 	return static_cast<TRAP::Events::EventCategory>
 		(
@@ -193,7 +193,7 @@ constexpr TRAP::Events::EventCategory operator ^(const TRAP::Events::EventCatego
 			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
 		);
 }
-constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCategory rhs)
+constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCategory rhs) noexcept
 {
 	return static_cast<TRAP::Events::EventCategory>
 		(
@@ -201,7 +201,7 @@ constexpr TRAP::Events::EventCategory operator ~(const TRAP::Events::EventCatego
 		);
 }
 constexpr TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs,
-                                                   const TRAP::Events::EventCategory rhs)
+                                                   const TRAP::Events::EventCategory rhs) noexcept
 {
 	lhs = static_cast<TRAP::Events::EventCategory>
 		(

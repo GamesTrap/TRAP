@@ -3,6 +3,16 @@
 
 #include "Utils/String/String.h"
 
+TRAP::Events::MouseMoveEvent::MouseMoveEvent(const float x, const float y, TRAP::Window* window)
+	: m_mouseX(x), m_mouseY(y), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::MouseMoveEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -12,7 +22,7 @@ std::string TRAP::Events::MouseMoveEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -30,7 +40,7 @@ std::string TRAP::Events::MouseMoveEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -39,6 +49,17 @@ TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() con
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::MouseScrollEvent::MouseScrollEvent(const float xOffset, const float yOffset,
+												 TRAP::Window* window)
+	: m_xOffset(xOffset), m_yOffset(yOffset), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::MouseScrollEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::MouseScrollEvent::ToString() const
@@ -50,7 +71,7 @@ std::string TRAP::Events::MouseScrollEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -68,7 +89,7 @@ std::string TRAP::Events::MouseScrollEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -79,7 +100,7 @@ TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() c
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -88,6 +109,17 @@ TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() c
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseButton button,
+   														   TRAP::Window* window)
+	: MouseButtonEvent(button), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::MouseButtonPressEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::MouseButtonPressEvent::ToString() const
@@ -100,7 +132,7 @@ std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -120,6 +152,17 @@ std::string TRAP::Events::MouseButtonPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::MouseButton button,
+															   TRAP::Window* window)
+	: MouseButtonEvent(button), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::MouseButtonReleaseEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -130,7 +173,7 @@ std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -150,7 +193,17 @@ std::string TRAP::Events::MouseButtonReleaseEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
+TRAP::Events::MouseEnterEvent::MouseEnterEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::MouseEnterEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -168,7 +221,7 @@ std::string TRAP::Events::MouseEnterEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -179,7 +232,17 @@ TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() co
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
+TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(TRAP::Window* window)
+	: m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::MouseLeaveEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -197,7 +260,7 @@ std::string TRAP::Events::MouseLeaveEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

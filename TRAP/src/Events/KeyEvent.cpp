@@ -4,7 +4,7 @@
 #include "Utils/String/String.h"
 #include "Window/WindowingAPI.h"
 
-TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -13,6 +13,17 @@ TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t repeatCount,
+                                           TRAP::Window* window)
+	: KeyEvent(key), m_repeatCount(repeatCount), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::KeyPressEvent(): Window is nullptr!");
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::KeyPressEvent::ToString() const
@@ -27,7 +38,7 @@ std::string TRAP::Events::KeyPressEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -47,6 +58,16 @@ std::string TRAP::Events::KeyPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window* window)
+	: KeyEvent(key), m_window(window)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::KeyReleaseEvent(): Window is nullptr!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -58,7 +79,7 @@ std::string TRAP::Events::KeyReleaseEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -78,6 +99,16 @@ std::string TRAP::Events::KeyReleaseEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window* window)
+	: m_window(window), m_codePoint(codePoint)
+{
+	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
+
+	TRAP_ASSERT(window, "Events::KeyTypeEvent(): Window is nullptr!")
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
@@ -87,7 +118,7 @@ std::string TRAP::Events::KeyTypeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -105,7 +136,7 @@ std::string TRAP::Events::KeyTypeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -122,7 +153,7 @@ TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
+std::string TRAP::Events::KeyLayoutEvent::GetLayout() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -140,7 +171,7 @@ std::string TRAP::Events::KeyLayoutEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -158,7 +189,7 @@ std::string TRAP::Events::KeyLayoutEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

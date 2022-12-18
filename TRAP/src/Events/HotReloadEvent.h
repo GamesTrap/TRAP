@@ -47,7 +47,7 @@ namespace TRAP::Events
 		/// Retrieve a pointer to the affected texture.
 		/// </summary>
 		/// <returns>Texture pointer.</returns>
-		TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const;
+		TRAP::Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the TextureReloadEvent.
@@ -59,12 +59,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -74,7 +74,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Texture> m_texture;
@@ -116,7 +116,7 @@ namespace TRAP::Events
 		/// Retrieve the affected shader.
 		/// </summary>
 		/// <returns>Shader.</returns>
-		TRAP::Ref<TRAP::Graphics::Shader> GetShader() const;
+		TRAP::Ref<TRAP::Graphics::Shader> GetShader() const noexcept;
 
 		/// <summary>
 		/// Get a string representation of the ShaderReloadEvent.
@@ -128,12 +128,12 @@ namespace TRAP::Events
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		static constexpr EventType GetStaticType();
+		static constexpr EventType GetStaticType() noexcept;
 		/// <summary>
 		/// Retrieve the EventType of the event.
 		/// </summary>
 		/// <returns>EventType.</returns>
-		EventType GetEventType() const override;
+		EventType GetEventType() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the event.
 		/// </summary>
@@ -143,7 +143,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		EventCategory GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const noexcept override;
 
 	private:
         TRAP::Ref<TRAP::Graphics::Shader> m_shader;
@@ -152,7 +152,7 @@ namespace TRAP::Events
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticType() noexcept
 {
 	return EventType::TextureReload;
 }
@@ -161,7 +161,7 @@ constexpr TRAP::Events::EventType TRAP::Events::TextureReloadEvent::GetStaticTyp
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetStaticType()
+constexpr TRAP::Events::EventType TRAP::Events::ShaderReloadEvent::GetStaticType() noexcept
 {
 	return EventType::ShaderReload;
 }

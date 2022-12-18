@@ -13,7 +13,7 @@ TRAP::Events::FileChangeEvent::FileChangeEvent(TRAP::FileSystem::FileStatus stat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
+std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -22,7 +22,7 @@ std::filesystem::path TRAP::Events::FileChangeEvent::GetPath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName() const
+std::optional<std::filesystem::path> TRAP::Events::FileChangeEvent::GetOldName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -41,7 +41,7 @@ std::string TRAP::Events::FileChangeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::FileChangeEvent::GetEventType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -59,7 +59,7 @@ std::string TRAP::Events::FileChangeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::FileChangeEvent::GetCategoryFlags() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Purple, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Events) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
