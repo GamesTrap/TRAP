@@ -69,12 +69,12 @@ namespace TRAP::FileSystem
         /// Sets the callback function that is called when a file event occurs.
         /// </summary>
         /// <param name="callback">Callback function used to report events to.</param>
-        void SetEventCallback(const EventCallbackFn& callback);
+        void SetEventCallback(const EventCallbackFn& callback) noexcept;
 		/// <summary>
 		/// Get the function to call when an file event occurred.
 		/// </summary>
 		/// <returns>EventCallbackFn.</returns>
-		EventCallbackFn GetEventCallback() const;
+		EventCallbackFn GetEventCallback() const noexcept;
 
         /// <summary>Adds a new folder path to the tracked paths.</summary>
         /// <param name="path">Folder path to track.</param>
@@ -94,7 +94,7 @@ namespace TRAP::FileSystem
         /// Returns the paths that are being watched.
         /// </summary>
         /// <returns>The paths that are being watched.</returns>
-        std::vector<std::filesystem::path> GetFolders() const;
+        std::vector<std::filesystem::path> GetFolders() const noexcept;
 
     private:
         /// <summary>

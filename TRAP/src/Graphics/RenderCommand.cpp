@@ -185,7 +185,7 @@ void TRAP::Graphics::RenderCommand::SetAntiAliasing(const AntiAliasing antiAlias
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount)
+void TRAP::Graphics::RenderCommand::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
 {
 	RendererAPI::GetAntiAliasing(outAntiAliasing, outSampleCount);
 }
@@ -199,7 +199,7 @@ void TRAP::Graphics::RenderCommand::SetAnisotropyLevel(const SampleCount anisotr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::SampleCount TRAP::Graphics::RenderCommand::GetAnisotropyLevel()
+TRAP::Graphics::SampleCount TRAP::Graphics::RenderCommand::GetAnisotropyLevel() noexcept
 {
 	return RendererAPI::GetAnisotropyLevel();
 }

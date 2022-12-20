@@ -401,7 +401,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::BMPImage::GetPixelData() const
+const void* TRAP::INTERNAL::BMPImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -410,7 +410,7 @@ const void* TRAP::INTERNAL::BMPImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -420,7 +420,7 @@ uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields,
-	                                             std::array<uint32_t, 4>& masks) const
+	                                             std::array<uint32_t, 4>& masks) const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -457,7 +457,7 @@ bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFie
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask)
+bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -481,7 +481,7 @@ bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mas
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSpan)
+uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSpan) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 
@@ -504,7 +504,7 @@ uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSp
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField)
+uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -513,7 +513,7 @@ uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bit
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField)
+uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

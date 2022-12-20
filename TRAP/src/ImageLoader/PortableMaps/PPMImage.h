@@ -38,12 +38,12 @@ namespace TRAP::INTERNAL
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		const void* GetPixelData() const override;
+		const void* GetPixelData() const noexcept override;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		uint64_t GetPixelDataSize() const override;
+		uint64_t GetPixelDataSize() const noexcept override;
 
 		/// <summary>
 		/// Save an TRAP::Image as a Portable Pixmap (PPM) file.

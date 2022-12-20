@@ -87,13 +87,13 @@ namespace TRAP::Network
 		/// The next read operation will read data from this position.
 		/// </summary>
 		/// <returns>The bytes offset of the current read position.</returns>
-		std::size_t GetReadPosition() const;
+		std::size_t GetReadPosition() const noexcept;
 
 		/// <summary>
 		/// Clear the packet.
 		/// After calling Clear, the packet is empty.
 		/// </summary>
-		void Clear();
+		void Clear() noexcept;
 
 		/// <summary>
 		/// Get a pointer to the data contained in the packet.
@@ -113,7 +113,7 @@ namespace TRAP::Network
 		/// what GetData returns.
 		/// </summary>
 		/// <returns>Data size, in bytes.</returns>
-		std::size_t GetDataSize() const;
+		std::size_t GetDataSize() const noexcept;
 
 		/// <summary>
 		/// Tell if the reading position has reached the
@@ -123,7 +123,7 @@ namespace TRAP::Network
 		/// left to be read, without actually reading it.
 		/// </summary>
 		/// <returns>True if all data was read, false otherwise.</returns>
-		bool EndOfPacket() const;
+		bool EndOfPacket() const noexcept;
 
 	public:
 		/// <summary>
@@ -142,7 +142,7 @@ namespace TRAP::Network
 		/// pointer types.
 		/// </summary>
 		/// <returns>True if last data extraction from packet was successful.</returns>
-		explicit operator bool() const;
+		explicit operator bool() const noexcept;
 
 		/// <summary>
 		/// Overload of operator >> to read data from the packet.
@@ -234,7 +234,7 @@ namespace TRAP::Network
 		/// </summary>
 		/// <param name="size">Size to check.</param>
 		/// <returns>True if size bytes can be read from the packet.</returns>
-		bool CheckSize(std::size_t size);
+		bool CheckSize(std::size_t size) noexcept;
 
 		std::vector<char> m_data; //Data stored in the packet
 		std::size_t m_readPos;    //Current reading position in the packet

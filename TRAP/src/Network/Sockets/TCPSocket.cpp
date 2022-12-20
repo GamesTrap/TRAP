@@ -52,7 +52,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::TCPSocket()
+TRAP::Network::TCPSocket::TCPSocket() noexcept
 	: Socket(Type::TCP)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -434,7 +434,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::PendingPacket::PendingPacket()
+TRAP::Network::TCPSocket::PendingPacket::PendingPacket() noexcept
 	: Size(0), SizeReceived(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

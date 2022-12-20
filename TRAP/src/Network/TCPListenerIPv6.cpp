@@ -36,7 +36,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Utils/Utils.h"
 #include "Utils/Memory.h"
 
-TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
+TRAP::Network::TCPListenerIPv6::TCPListenerIPv6() noexcept
 	: Socket(Type::TCP)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

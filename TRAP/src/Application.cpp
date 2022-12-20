@@ -883,7 +883,7 @@ void TRAP::Application::SetHotReloading(const bool enable)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
+bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -933,7 +933,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
+bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -944,7 +944,7 @@ bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
+bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -956,7 +956,7 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
+bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -968,7 +968,7 @@ bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
+bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&) noexcept
 {
 	ZoneNamed(__tracy, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

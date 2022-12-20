@@ -388,7 +388,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
+VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -397,7 +397,7 @@ VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const
+VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -46,7 +46,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv4Address() = default;
+		IPv4Address() noexcept = default;
 
 		/// <summary>
 		/// Construct the address from a string.

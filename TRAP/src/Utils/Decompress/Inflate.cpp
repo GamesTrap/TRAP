@@ -170,7 +170,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::GreaterOverflow(const std::si
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Get bits without advancing the bit pointer. Must have enough bits available with EnsureBits
-uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_t nBits) const
+uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_t nBits) const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -180,7 +180,7 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::BitReader::PeekBits(const std::size_
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Must have enough bits available with EnsureBits
-void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t nBits)
+void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t nBits) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -193,7 +193,7 @@ void TRAP::Utils::Decompress::INTERNAL::BitReader::AdvanceBits(const std::size_t
 //Safely check if multiplying two integers will overflow(no undefined behavior, compiler removing the code, etc...)
 //and output result
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::size_t a, const std::size_t b,
-                                                                    std::size_t& result)
+                                                                    std::size_t& result) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -205,7 +205,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::MultiplyOverflow(const std::s
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t a, const std::size_t b,
-                                                               std::size_t& result)
+                                                               std::size_t& result) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -216,7 +216,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
+TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree() noexcept
 	: MaxBitLength(0), NumCodes(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
@@ -672,7 +672,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint32_t bits, const uint32_t num)
+uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint32_t bits, const uint32_t num) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

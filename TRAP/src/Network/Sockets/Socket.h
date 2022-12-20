@@ -105,7 +105,7 @@ namespace TRAP::Network
 		/// Tell whether the socket is in blocking or non-blocking mode.
 		/// </summary>
 		/// <returns>True if the socket is blocking, false otherwise.</returns>
-		bool IsBlocking() const;
+		bool IsBlocking() const noexcept;
 
 	protected:
 		/// <summary>
@@ -123,7 +123,7 @@ namespace TRAP::Network
 		/// This constructor can only be accessed by derived classes.
 		/// </summary>
 		/// <param name="type">Type of the socket (TCP or UDP).</param>
-		explicit Socket(Type type);
+		explicit Socket(Type type) noexcept;
 
 		/// <summary>
 		/// Return the internal handle of the socket.
@@ -133,7 +133,7 @@ namespace TRAP::Network
 		/// This function can only be accessed by derived classes.
 		/// </summary>
 		/// <returns>The internal (OS-specific) handle of the socket.</returns>
-		SocketHandle GetHandle() const;
+		SocketHandle GetHandle() const noexcept;
 
 		/// <summary>
 		/// Create the internal representation of the socket.

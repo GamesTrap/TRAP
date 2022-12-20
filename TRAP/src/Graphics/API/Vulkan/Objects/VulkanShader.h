@@ -70,17 +70,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan shader module handles of each contained shader stage.
 		/// </summary>
 		/// <returns>Vulkan shader module handles.</returns>
-		const std::vector<VkShaderModule>& GetVkShaderModules() const;
+		const std::vector<VkShaderModule>& GetVkShaderModules() const noexcept;
 		/// <summary>
 		/// Retrieve the reflection data of each contained shader stage.
 		/// </summary>
 		/// <returns>Shader reflection data.</returns>
-		TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const;
+		TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const noexcept;
 		/// <summary>
 		/// Retrieve the entry point names used by each contained shader stage.
 		/// </summary>
 		/// <returns>Entry point names.</returns>
-		const std::vector<std::string>& GetEntryNames() const;
+		const std::vector<std::string>& GetEntryNames() const noexcept;
 
 		/// <summary>
 		/// Use shader for rendering on the given window.
@@ -152,7 +152,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const override;
+		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept override;
 
 	protected:
 		/// <summary>

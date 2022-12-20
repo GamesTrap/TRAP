@@ -15,12 +15,12 @@ namespace TRAP::Utils
 		/// Constructor.
 		/// Creates and starts a new timer.
 		/// </summary>
-		Timer();
+		Timer() noexcept;
 
 		/// <summary>
 		/// Resets and restarts the timer.
 		/// </summary>
-		void Reset();
+		void Reset() noexcept;
 		/// <summary>
 		/// Retrieve elapsed time in seconds.
 		/// </summary>

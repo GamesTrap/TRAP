@@ -56,82 +56,82 @@ namespace TRAP
 		/// Retrieve the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Constant pointer to the raw pixel data.</returns>
-		virtual const void* GetPixelData() const = 0;
+		virtual const void* GetPixelData() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the size of the raw pixel data of the image.
 		/// </summary>
 		/// <returns>Size of the raw pixel data in bytes.</returns>
-		virtual uint64_t GetPixelDataSize() const = 0;
+		virtual uint64_t GetPixelDataSize() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the amount of bits used for a single pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bits.</returns>
-		uint32_t GetBitsPerPixel() const;
+		uint32_t GetBitsPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of bytes used for a single pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bytes.</returns>
-		uint32_t GetBytesPerPixel() const;
+		uint32_t GetBytesPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of bits used for a single channel of a pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bits.</returns>
-		uint32_t GetBitsPerChannel() const;
+		uint32_t GetBitsPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of bytes used for a single channel of a pixel in the image.
 		/// </summary>
 		/// <returns>Amount of bytes.</returns>
-		uint32_t GetBytesPerChannel() const;
+		uint32_t GetBytesPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the width of the image.
 		/// </summary>
 		/// <returns>Width of the image.</returns>
-		uint32_t GetWidth() const;
+		uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the image.
 		/// </summary>
 		/// <returns>Height of the image.</returns>
-		uint32_t GetHeight() const;
+		uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the size of the image.
 		/// </summary>
 		/// <returns>Size of the image as a Math::Vec2ui.</returns>
-		Math::Vec2ui GetSize() const;
+		Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image has an alpha channel or not.
 		/// </summary>
 		/// <returns>True if image has an alpha channel, false otherwise.</returns>
-		bool HasAlphaChannel() const;
+		bool HasAlphaChannel() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is gray scale or not.
 		/// </summary>
 		/// <returns>True if image is gray scale, false otherwise.</returns>
-		bool IsImageGrayScale() const;
+		bool IsImageGrayScale() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is colored or not.
 		/// </summary>
 		/// <returns>True if image is colored, false otherwise.</returns>
-		bool IsImageColored() const;
+		bool IsImageColored() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is HDR(High Dynamic Range) or not.
 		/// </summary>
 		/// <returns>True if image is HDR, false otherwise.</returns>
-		bool IsHDR() const;
+		bool IsHDR() const noexcept;
 		/// <summary>
 		/// Retrieve whether the image is LDR(Low Dynamic Range) or not.
 		/// </summary>
 		/// <returns>True if image is LDR, false otherwise.</returns>
-		bool IsLDR() const;
+		bool IsLDR() const noexcept;
 		/// <summary>
 		/// Retrieve the file path of the image.
 		/// </summary>
 		/// <returns>Path to the image file, or empty string for custom images.</returns>
-		const std::filesystem::path& GetFilePath() const;
+		const std::filesystem::path& GetFilePath() const noexcept;
 		/// <summary>
 		/// Retrieve the color format used by the image.
 		/// </summary>
 		/// <returns>Color format of the image.</returns>
-		ColorFormat GetColorFormat() const;
+		ColorFormat GetColorFormat() const noexcept;
 
 		/// <summary>
 		/// Load an image from disk.

@@ -48,17 +48,17 @@ namespace TRAP::Graphics
 		/// Retrieve the byte size of the SSBO.
 		/// </summary>
 		/// <returns>Byte size of the SSBO.</returns>
-		uint64_t GetSize() const;
+		uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency of the SSBO.
 		/// </summary>
 		/// <returns>Update frequency of the SSBO.</returns>
-		UpdateFrequency GetUpdateFrequency() const;
+		UpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the underlying buffers.
 		/// </summary>
 		/// <returns>Underlying buffers.</returns>
-		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const;
+		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetSSBOs() const noexcept;
 
 		/// <summary>
 		/// Update data of the SSBO.
@@ -92,7 +92,7 @@ namespace TRAP::Graphics
 		/// Calculate the aligned size of the SSBO.
 		/// </summary>
 		/// <param name="byteSize">Byte size of the SSBO.</param>
-		static uint64_t CalculateAlignedSize(const uint64_t byteSize);
+		static uint64_t CalculateAlignedSize(const uint64_t byteSize) noexcept;
 
 		/// <summary>
 		/// Create a new shader storage buffer and set its size.

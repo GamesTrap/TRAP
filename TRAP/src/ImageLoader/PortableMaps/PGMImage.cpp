@@ -107,7 +107,7 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PGMImage::GetPixelData() const
+const void* TRAP::INTERNAL::PGMImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -119,7 +119,7 @@ const void* TRAP::INTERNAL::PGMImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PGMImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::PGMImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

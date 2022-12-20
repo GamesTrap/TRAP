@@ -83,7 +83,7 @@ void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::EndScene()
+void TRAP::Graphics::Renderer::EndScene() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 }

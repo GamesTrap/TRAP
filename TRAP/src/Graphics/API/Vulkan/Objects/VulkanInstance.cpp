@@ -104,7 +104,7 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const
+VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -113,7 +113,7 @@ VkInstance TRAP::Graphics::API::VulkanInstance::GetVkInstance() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const
+const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -122,7 +122,7 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInst
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const
+const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

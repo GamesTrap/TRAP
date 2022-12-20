@@ -41,57 +41,57 @@ namespace TRAP::Graphics
 		/// Retrieve the minification filter of the sampler.
 		/// </summary>
 		/// <returns>Minification filter.</returns>
-		FilterType GetMinFilter() const;
+		FilterType GetMinFilter() const noexcept;
 		/// <summary>
 		/// Retrieve the magnification filter of the sampler.
 		/// </summary>
 		/// <returns>Magnification filter.</returns>
-		FilterType GetMagFilter() const;
+		FilterType GetMagFilter() const noexcept;
 		/// <summary>
 		/// Retrieve the mip map mode of the sampler.
 		/// </summary>
 		/// <returns>Mip map mode.</returns>
-		MipMapMode GetMipMapMode() const;
+		MipMapMode GetMipMapMode() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the U coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		AddressMode GetAddressU() const;
+		AddressMode GetAddressU() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the V coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		AddressMode GetAddressV() const;
+		AddressMode GetAddressV() const noexcept;
 		/// <summary>
 		/// Retrieve the address mode of the W coordinate of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		AddressMode GetAddressW() const;
+		AddressMode GetAddressW() const noexcept;
 		/// <summary>
 		/// Retrieve the mip lod bias of the sampler.
 		/// </summary>
 		/// <returns>Address mode.</returns>
-		float GetMipLodBias() const;
+		float GetMipLodBias() const noexcept;
 		/// <summary>
 		/// Retrieve the max anisotropy of the sampler.
 		/// </summary>
 		/// <returns>Max anisotropy.</returns>
-		float GetAnisotropyLevel() const;
+		float GetAnisotropyLevel() const noexcept;
 		/// <summary>
 		/// Retrieve the compare function of the sampler.
 		/// </summary>
 		/// <returns>Compare function.</returns>
-		CompareMode GetCompareFunc() const;
+		CompareMode GetCompareFunc() const noexcept;
 		/// <summary>
 		/// Retrieve whether the sampler uses the engines anisotropy level or not.
 		/// </summary>
 		/// <returns>True if engine set anisotropy level is used, false otherwise.</returns>
-		bool UsesEngineAnisotropyLevel() const;
+		bool UsesEngineAnisotropyLevel() const noexcept;
 
 		/// <summary>
 		/// Clear all cached samplers.
 		/// </summary>
-		static void ClearCache();
+		static void ClearCache() noexcept;
 
 		/// <summary>
 		/// Updates all samplers currently in use.

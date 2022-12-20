@@ -33,7 +33,7 @@ namespace TRAP::Graphics
 		///
 		/// Note: This functions gets called by TRAP::Application
 		/// </summary>
-		static void Reset();
+		static void Reset() noexcept;
 
 		/// <summary>
 		/// Begin a Renderer2D scene.
@@ -178,22 +178,22 @@ namespace TRAP::Graphics
 			/// Retrieve the current total number of vertices.
 			/// </summary>
 			/// <returns>Total vertices count.</returns>
-			uint32_t GetTotalVertexCount() const;
+			uint32_t GetTotalVertexCount() const noexcept;
 			/// <summary>
 			/// Retrieve the current total number of indices.
 			/// </summary>
 			/// <returns>Total indices count.</returns>
-			uint32_t GetTotalIndexCount() const;
+			uint32_t GetTotalIndexCount() const noexcept;
 		};
 		/// <summary>
 		/// Retrieve the current Renderer2D statistics.
 		/// </summary>
 		/// <returns>Renderer2D statistics.</returns>
-		static Statistics GetStats();
+		static Statistics GetStats() noexcept;
 		/// <summary>
 		/// Reset the Renderer2D statistics.
 		/// </summary>
-		static void ResetStats();
+		static void ResetStats() noexcept;
 
 	private:
 		static std::vector<Renderer2DData> s_data;

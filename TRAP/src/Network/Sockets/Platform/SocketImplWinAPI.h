@@ -69,7 +69,7 @@ namespace TRAP::INTERNAL::Network
 		/// Return the value of the invalid socket.
 		/// </summary>
 		/// <returns>Special value of the invalid socket.</returns>
-		static TRAP::Network::SocketHandle InvalidSocket();
+		static TRAP::Network::SocketHandle InvalidSocket() noexcept;
 
 		/// <summary>
 		/// Close and destroy a socket.

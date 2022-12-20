@@ -2,7 +2,7 @@
 #include "VertexBufferLayout.h"
 
 TRAP::Graphics::VertexBufferElement::VertexBufferElement(const ShaderDataType type, std::string name,
-                                                         const bool normalized)
+                                                         const bool normalized) noexcept
 	: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -36,7 +36,7 @@ uint32_t TRAP::Graphics::VertexBufferElement::GetComponentCount() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements)
+TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) noexcept
 	: m_elements(elements)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
@@ -46,7 +46,7 @@ TRAP::Graphics::VertexBufferLayout::VertexBufferLayout(const std::initializer_li
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const
+uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -55,7 +55,7 @@ uint32_t TRAP::Graphics::VertexBufferLayout::GetStride() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const
+const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBufferLayout::GetElements() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -64,7 +64,7 @@ const std::vector<TRAP::Graphics::VertexBufferElement>& TRAP::Graphics::VertexBu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin()
+std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::begin() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -73,7 +73,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::Verte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end()
+std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::VertexBufferLayout::end() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -82,7 +82,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::iterator TRAP::Graphics::Verte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const
+std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::begin() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -91,7 +91,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const
+std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics::VertexBufferLayout::end() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -100,7 +100,7 @@ std::vector<TRAP::Graphics::VertexBufferElement>::const_iterator TRAP::Graphics:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBufferLayout::CalculateOffsetsAndStride()
+void TRAP::Graphics::VertexBufferLayout::CalculateOffsetsAndStride() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

@@ -379,7 +379,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
+VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -388,7 +388,7 @@ VkPipeline TRAP::Graphics::API::VulkanPipeline::GetVkPipeline() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const
+TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

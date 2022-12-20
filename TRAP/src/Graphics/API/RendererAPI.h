@@ -134,7 +134,7 @@ namespace TRAP::Graphics
 		/// Retrieve the resource loader singleton.
 		/// </summary>
 		/// <returns>Resource loader.</returns>
-		static API::ResourceLoader* GetResourceLoader();
+		static API::ResourceLoader* GetResourceLoader() noexcept;
 
 		/// <summary>
 		/// Auto select a supported render API.
@@ -150,7 +150,7 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used render API.
 		/// </summary>
 		/// <returns>Currently used render API.</returns>
-		static RenderAPI GetRenderAPI();
+		static RenderAPI GetRenderAPI() noexcept;
 
 		/// <summary>
 		/// Set a new GPU to use.
@@ -158,14 +158,14 @@ namespace TRAP::Graphics
 		/// Note: This only takes effect after a restart of the engine.
 		/// </summary>
 		/// <param name="GPUUUID">UUID of the GPU to use.</param>
-		static void SetNewGPU(std::array<uint8_t, 16> GPUUUID);
+		static void SetNewGPU(std::array<uint8_t, 16> GPUUUID) noexcept;
 		/// <summary>
 		/// Get the UUID of the new GPU to use.
 		///
 		/// Note: This will return an empty UUID if no new GPU was set.
 		/// </summary>
 		/// <returns>UUID of the new GPU to use.</returns>
-		static std::array<uint8_t, 16> GetNewGPU();
+		static std::array<uint8_t, 16> GetNewGPU() noexcept;
 
 		/// <summary>
 		/// On post update function.
@@ -639,23 +639,23 @@ namespace TRAP::Graphics
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		virtual std::string GetTitle() const = 0;
+		virtual std::string GetTitle() const noexcept = 0;
 
 		/// <summary>
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() const = 0;
+		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU's name.</returns>
-		virtual std::string GetCurrentGPUName() const = 0;
+		virtual std::string GetCurrentGPUName() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the vendor of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU vendor.</returns>
-		virtual GPUVendor GetCurrentGPUVendor() const = 0;
+		virtual GPUVendor GetCurrentGPUVendor() const noexcept = 0;
 		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
@@ -717,22 +717,22 @@ namespace TRAP::Graphics
 		/// Retrieve the used descriptor pool.
 		/// </summary>
 		/// <returns>Descriptor pool.</returns>
-		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
+		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool() noexcept;
 		/// <summary>
 		/// Retrieve the used graphics queue.
 		/// </summary>
 		/// <returns>Graphics queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
+		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue() noexcept;
 		/// <summary>
 		/// Retrieve the used compute queue.
 		/// </summary>
 		/// <returns>Compute queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
+		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue() noexcept;
 		/// <summary>
 		/// Retrieve the used transfer queue.
 		/// </summary>
 		/// <returns>Transfer queue.</returns>
-		static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue();
+		static TRAP::Ref<TRAP::Graphics::Queue> GetTransferQueue() noexcept;
 		/// <summary>
 		/// Retrieve the currently used graphics root signature of the given window.
 		/// </summary>
@@ -777,7 +777,7 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="outAntiAliasing">Output: Used anti aliasing method.</param>
 		/// <param name="outSampleCount">Output: Used sample count.</param>
-		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount);
+		static void GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept;
 
 		/// <summary>
 		/// Set the anti aliasing method and the sample count.
@@ -794,7 +794,7 @@ namespace TRAP::Graphics
 		/// Retrieve the currently used anisotropy level.
 		/// </summary>
 		/// <returns>Used anisotropy level.</returns>
-		static SampleCount GetAnisotropyLevel();
+		static SampleCount GetAnisotropyLevel() noexcept;
 
 		/// <summary>
 		/// Set the anisotropy level.
@@ -1757,10 +1757,10 @@ namespace TRAP::Graphics
 				//Explicitly force the reconstruction
 				bool ForceExplicitReconstruction;
 
-				constexpr bool operator==(const SamplerConversionDesc& s) const;
+				constexpr bool operator==(const SamplerConversionDesc& s) const noexcept;
 			} SamplerConversionDesc{};
 
-			constexpr bool operator==(const SamplerDesc& s) const;
+			constexpr bool operator==(const SamplerDesc& s) const noexcept;
 		};
 
 		/// <summary>
@@ -2725,7 +2725,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const
+constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const noexcept
 {
 	//Deep equality
 	return this->MinFilter == s.MinFilter && this->MagFilter == s.MagFilter && this->MipMapMode == s.MipMapMode &&
@@ -2737,7 +2737,7 @@ constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const Sample
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const
+constexpr bool TRAP::Graphics::RendererAPI::SamplerDesc::SamplerConversionDesc::operator==(const SamplerConversionDesc& s) const noexcept
 {
 	//Deep equality
 	return this->Format == s.Format && this->Model == s.Model && this->Range == s.Range &&

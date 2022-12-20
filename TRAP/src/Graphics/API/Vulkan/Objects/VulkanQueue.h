@@ -42,40 +42,40 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan queue handle.
 		/// </summary>
 		/// <returns>Vulkan queue handle.</returns>
-		VkQueue GetVkQueue() const;
+		VkQueue GetVkQueue() const noexcept;
 		/// <summary>
 		/// Retrieve the queue family index.
 		/// </summary>
 		/// <returns>Queue family index.</returns>
-		uint8_t GetQueueFamilyIndex() const;
+		uint8_t GetQueueFamilyIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the queue index.
 		/// </summary>
 		/// <returns>Queue index.</returns>
-		uint8_t GetQueueIndex() const;
+		uint8_t GetQueueIndex() const noexcept;
 		/// <summary>
 		/// Retrieve the queue type.
 		/// </summary>
 		/// <returns>Queue type.</returns>
-		RendererAPI::QueueType GetQueueType() const;
+		RendererAPI::QueueType GetQueueType() const noexcept;
 		/// <summary>
 		/// Retrieve the queue flags.
 		/// Indicates capabilities of the queue.
 		/// </summary>
 		/// <returns>Queue flags.</returns>
-		uint32_t GetFlags() const;
+		uint32_t GetFlags() const noexcept;
 		/// <summary>
 		/// Retrieve the number of nanoseconds required
 		/// for a timestamp to be incremented by 1.
 		/// </summary>
 		/// <returns>Nanoseconds per timestamp increment.</returns>
-		float GetTimestampPeriod() const;
+		float GetTimestampPeriod() const noexcept;
 		/// <summary>
 		/// Retrieve the number of ticks per second
 		/// required to increment a timestamp by 1.
 		/// </summary>
 		/// <returns>Ticks per second.</returns>
-		double GetTimestampFrequency() const;
+		double GetTimestampFrequency() const noexcept;
 
 		/// <summary>
 		/// Wait for the queue to finish all submitted commands.

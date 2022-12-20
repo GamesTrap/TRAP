@@ -35,7 +35,7 @@ namespace TRAP
 
 	namespace Utils
 	{
-		class TimeStep;
+		struct TimeStep;
 	}
 
 	class Application
@@ -228,7 +228,7 @@ namespace TRAP
 		/// </summary>
 		/// <param name="e">Window close event that occurred.</param>
 		/// <returns>Always true.</returns>
-		bool OnWindowClose(Events::WindowCloseEvent& e);
+		bool OnWindowClose(Events::WindowCloseEvent& e) noexcept;
 		/// <summary>
 		/// Handles window framebuffer resizes for the main render window.
 		/// </summary>
@@ -246,25 +246,25 @@ namespace TRAP
 		/// </summary>
 		/// <param name="e">Window focus event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowFocus(Events::WindowFocusEvent& e);
+		bool OnWindowFocus(Events::WindowFocusEvent& e) noexcept;
 		/// <summary>
 		/// Handles window lost focus for the main render window.
 		/// </summary>
 		/// <param name="e">Window lost focus event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e);
+		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e) noexcept;
 		/// <summary>
 		/// Handles window minimize events for the main render window.
 		/// </summary>
 		/// <param name="e">Window minimize event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowMinimize(Events::WindowMinimizeEvent& e);
+		bool OnWindowMinimize(Events::WindowMinimizeEvent& e) noexcept;
 		/// <summary>
 		/// Handles window restore events for the main render window.
 		/// </summary>
 		/// <param name="e">Window restore event that occurred.</param>
 		/// <returns>Always false.</returns>
-		bool OnWindowRestore(Events::WindowRestoreEvent& e);
+		bool OnWindowRestore(Events::WindowRestoreEvent& e) noexcept;
 
 		/// <summary>
 		/// Handles file change events for the application.

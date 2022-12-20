@@ -17,12 +17,12 @@ namespace TRAP::Graphics
 		/// Retrieve the width of the camera bounds.
 		/// </summary>
 		/// <returns>Width of the camera bounds.</returns>
-		float GetWidth() const;
+		float GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the camera bounds.
 		/// </summary>
 		/// <returns>Height of the camera bounds.</returns>
-		float GetHeight() const;
+		float GetHeight() const noexcept;
 	};
 
 	class OrthographicCameraController
@@ -88,40 +88,40 @@ namespace TRAP::Graphics
 		/// Retrieve the Orthographic/2D camera.
 		/// </summary>
 		/// <returns>Orthographic/2D camera.</returns>
-		OrthographicCamera& GetCamera();
+		OrthographicCamera& GetCamera() noexcept;
 		/// <summary>
 		/// Retrieve the Orthographic/2D camera.
 		/// </summary>
 		/// <returns>Orthographic/2D camera.</returns>
-		const OrthographicCamera& GetCamera() const;
+		const OrthographicCamera& GetCamera() const noexcept;
 
 		/// <summary>
 		/// Retrieve the currently used translation/movement speed.
 		/// </summary>
 		/// <returns>Translation/movement speed.</returns>
-		float GetTranslationSpeed() const;
+		float GetTranslationSpeed() const noexcept;
 		/// <summary>
 		/// Set the translation/movement speed.
 		/// </summary>
 		/// <param name="translationSpeed">New translation/movement speed.</param>
-		void SetTranslationSpeed(float translationSpeed);
+		void SetTranslationSpeed(float translationSpeed) noexcept;
 
 		/// <summary>
 		/// Retrieve the currently used rotation speed.
 		/// </summary>
 		/// <returns>Rotation speed.</returns>
-		float GetRotationSpeed() const;
+		float GetRotationSpeed() const noexcept;
 		/// <summary>
 		/// Set the rotation speed.
 		/// </summary>
 		/// <param name="rotationSpeed">New rotation speed.</param>
-		void SetRotationSpeed(float rotationSpeed);
+		void SetRotationSpeed(float rotationSpeed) noexcept;
 
 		/// <summary>
 		/// Retrieve the current zoom level.
 		/// </summary>
 		/// <returns>Zoom level.</returns>
-		float GetZoomLevel() const;
+		float GetZoomLevel() const noexcept;
 		/// <summary>
 		/// Set the zoom level.
 		/// </summary>
@@ -132,7 +132,7 @@ namespace TRAP::Graphics
 		/// Retrieve the current camera bounds.
 		/// </summary>
 		/// <returns>Camera bounds.</returns>
-		const OrthographicCameraBounds& GetBounds() const;
+		const OrthographicCameraBounds& GetBounds() const noexcept;
 
 	private:
 		/// <summary>

@@ -55,12 +55,20 @@ namespace TRAP::Utils::String
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <summary>
-	/// Check if a string starts with contents another string or char.
+	/// Check if a string begins with the given prefix.
 	/// </summary>
 	/// <param name="string">String to check.</param>
-	/// <param name="start">Content to check.</param>
-	/// <returns>If content is inside the string to check against true, false otherwise.</returns>
+	/// <param name="start">Prefix to check.</param>
+	/// <returns>True if the string begins with the provided prefix, false otherwise.</returns>
 	bool StartsWith(std::string_view str, std::string_view start);
+
+	/// <summary>
+	/// Check if a string ends with the given suffix.
+	/// </summary>
+	/// <param name="string">String to check.</param>
+	/// <param name="end">Suffix to check.</param>
+	/// <returns>True if the string ends with the provided suffix, false otherwise.</returns>
+	bool EndsWith(std::string_view str, std::string_view end);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

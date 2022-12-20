@@ -44,22 +44,22 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkBuffer handle.
 		/// </summary>
 		/// <returns>VkBuffer handle.</returns>
-		VkBuffer GetVkBuffer() const;
+		VkBuffer GetVkBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the storage texel view.
 		/// </summary>
 		/// <returns>VkBufferView for storage texel.</returns>
-		VkBufferView GetStorageTexelView() const;
+		VkBufferView GetStorageTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the uniform texel view.
 		/// </summary>
 		/// <returns>VkBufferView for uniform texel.</returns>
-		VkBufferView GetUniformTexelView() const;
+		VkBufferView GetUniformTexelView() const noexcept;
 		/// <summary>
 		/// Retrieve the byte offset to the first element in the buffer.
 		/// </summary>
 		/// <returns>Byte offset to the first element in the buffer.</returns>
-		uint64_t GetOffset() const;
+		uint64_t GetOffset() const noexcept;
 		/// <summary>
 		/// Retrieve the VkDeviceMemory handle.
 		/// </summary>
@@ -75,17 +75,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the size of the buffer in bytes.
 		/// </summary>
 		/// <returns>Size of the buffer in bytes.</returns>
-		uint64_t GetSize() const override;
+		uint64_t GetSize() const noexcept override;
 		/// <summary>
 		/// Retrieve the type of descriptor.
 		/// </summary>
 		/// <returns>Type of descriptor.</returns>
-		RendererAPI::DescriptorType GetDescriptors() const override;
+		RendererAPI::DescriptorType GetDescriptors() const noexcept override;
 		/// <summary>
 		/// Retrieve the usage of the buffer memory.
 		/// </summary>
 		/// <returns>Usage of the buffer memory.</returns>
-		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const override;
+		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept override;
 
 		/// <summary>
 		/// Retrieve the CPU mapped address of the buffer.
@@ -93,7 +93,7 @@ namespace TRAP::Graphics::API
 		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
 		/// </summary>
 		/// <returns>CPU mapped address of the buffer.</returns>
-		void* GetCPUMappedAddress() const override;
+		void* GetCPUMappedAddress() const noexcept override;
 
 		/// <summary>
 		/// Map a region of the buffer to the CPU.

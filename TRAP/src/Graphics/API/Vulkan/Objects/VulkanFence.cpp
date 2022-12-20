@@ -41,7 +41,7 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const
+VkFence TRAP::Graphics::API::VulkanFence::GetVkFence() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -58,7 +58,7 @@ namespace TRAP
 		/// Block ImGui event handling.
 		/// </summary>
 		/// <param name="block">Whether to block events or not</param>
-		void BlockEvents(bool block);
+		void BlockEvents(bool block) noexcept;
 
 		/// <summary>
 		/// Sets a dark theme for ImGui.

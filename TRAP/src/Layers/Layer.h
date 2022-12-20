@@ -74,7 +74,7 @@ namespace TRAP
 		/// Retrieve the debug name of the layer.
 		/// </summary>
 		/// <returns>Name of the layer.</returns>
-		std::string GetName() const;
+		std::string GetName() const noexcept;
 
 	protected:
 		std::string m_DebugName;

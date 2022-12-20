@@ -40,22 +40,22 @@ namespace TRAP::Graphics
 		/// Retrieve the pipeline type used by the shaders of the root signature.
 		/// </summary>
 		/// <returns>Pipeline type.</returns>
-		virtual RendererAPI::PipelineType GetPipelineType() const = 0;
+		virtual RendererAPI::PipelineType GetPipelineType() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the amount of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>Amount of descriptors.</returns>
-		virtual uint32_t GetDescriptorCount() const = 0;
+		virtual uint32_t GetDescriptorCount() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the list of descriptors contained in the root signature.
 		/// </summary>
 		/// <returns>List of descriptors.</returns>
-		virtual const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const = 0;
+		virtual const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the map which converts a descriptor name to its index.
 		/// </summary>
 		/// <returns>Map which converts a descriptor name to its index.</returns>
-		virtual const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const = 0;
+		virtual const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const noexcept = 0;
 
 	protected:
 		/// <summary>

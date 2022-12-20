@@ -46,7 +46,7 @@ TRAP::Graphics::Fence::~Fence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Fence::IsSubmitted() const
+bool TRAP::Graphics::Fence::IsSubmitted() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

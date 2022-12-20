@@ -109,7 +109,7 @@ void TRAP::Log::Clear() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Log::GetTimeStamp() noexcept
+std::string TRAP::Log::GetTimeStamp()
 {
 	ZoneScoped;
 

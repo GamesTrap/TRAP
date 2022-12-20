@@ -43,7 +43,7 @@ namespace TRAP::Graphics
 		/// Retrieve the vertex buffer layout of this buffer.
 		/// </summary>
 		/// <returns>Vertex buffer layout.</returns>
-		const VertexBufferLayout& GetLayout() const;
+		const VertexBufferLayout& GetLayout() const noexcept;
 		/// <summary>
 		/// Set the vertex buffer layout to be used by this buffer.
 		/// </summary>
@@ -53,17 +53,17 @@ namespace TRAP::Graphics
 		/// Retrieve the total byte size of the buffer.
 		/// </summary>
 		/// <returns>Total buffer byte size.</returns>
-		uint64_t GetSize() const;
+		uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the count of vertex elements inside this buffer.
 		/// </summary>
 		/// <returns>Count of vertex elements.</returns>
-		uint32_t GetCount() const;
+		uint32_t GetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by this buffer.
 		/// </summary>
 		/// <returns>Update frequency.</returns>
-		UpdateFrequency GetUpdateFrequency() const;
+		UpdateFrequency GetUpdateFrequency() const noexcept;
 
 		/// <summary>
 		/// Update the buffers vertex data.

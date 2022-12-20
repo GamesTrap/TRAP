@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		VertexBufferElement() = default;
+		VertexBufferElement() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// Initialize the vertex buffer element with the given data.
@@ -48,7 +48,7 @@ namespace TRAP::Graphics
 		/// <param name="type">Shader data type.</param>
 		/// <param name="name">Name of the vertex attribute.</param>
 		/// <param name="normalized">Whether data is normalized.</param>
-		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false);
+		VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false) noexcept;
 
 		/// <summary>
 		/// Retrieve the component count of this vertex attribute.
@@ -66,34 +66,34 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		VertexBufferLayout() = default;
+		VertexBufferLayout() noexcept = default;
 		/// <summary>
 		/// Constructor.
 		/// Initialize the vertex buffer layout with the given elements.
 		/// </summary>
 		/// <param name="elements">Vertex buffer elements.</param>
-		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements);
+		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements) noexcept;
 
 		/// <summary>
 		/// Retrieve the total byte size of all vertex buffer elements used in this layout.
 		/// </summary>
-		uint32_t GetStride() const;
+		uint32_t GetStride() const noexcept;
 		/// <summary>
 		/// Retrieve the vertex buffer elements described by this layout.
 		/// </summary>
 		/// <returns>Vertex buffer elements.</returns>
-		const std::vector<VertexBufferElement>& GetElements() const;
+		const std::vector<VertexBufferElement>& GetElements() const noexcept;
 
-		std::vector<VertexBufferElement>::iterator begin();
-		std::vector<VertexBufferElement>::iterator end();
-		std::vector<VertexBufferElement>::const_iterator begin() const;
-		std::vector<VertexBufferElement>::const_iterator end() const;
+		std::vector<VertexBufferElement>::iterator begin() noexcept;
+		std::vector<VertexBufferElement>::iterator end() noexcept;
+		std::vector<VertexBufferElement>::const_iterator begin() const noexcept;
+		std::vector<VertexBufferElement>::const_iterator end() const noexcept;
 
 	private:
 		/// <summary>
 		/// Update the offset and stride values of all vertex buffer elements.
 		/// </summary>
-		void CalculateOffsetsAndStride();
+		void CalculateOffsetsAndStride() noexcept;
 
 		std::vector<VertexBufferElement> m_elements;
 		uint32_t m_stride = 0;

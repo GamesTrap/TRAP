@@ -54,7 +54,7 @@ TRAP::Graphics::API::VulkanCommandPool::~VulkanCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const
+VkCommandPool TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -76,13 +76,12 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuff
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	TRAP_ASSERT(cmdBuffer, "VulkanCommandPool::FreeCommandBuffer(): CommandBuffer is nullptr");
+
 	for(std::size_t i = 0; i < m_commandBuffers.size(); i++)
 	{
 		if(m_commandBuffers[i].get() != cmdBuffer)
 			continue;
-
-		TRAP::Scope<CommandBuffer> cmdBuf = std::move(m_commandBuffers[i]);
-		cmdBuf.reset();
 
 		m_commandBuffers[i] = std::move(m_commandBuffers.back());
 		m_commandBuffers.pop_back();
@@ -94,6 +93,9 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const CommandBuff
 void TRAP::Graphics::API::VulkanCommandPool::Reset() const
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(m_device, "VulkanCommandPool::Reset(): Vulkan Device is nullptr");
+	TRAP_ASSERT(m_vkCommandPool, "VulkanCommandPool::Reset(): Vulkan CommandPool is nullptr");
 
 	VkCall(vkResetCommandPool(m_device->GetVkDevice(), m_vkCommandPool, 0));
 }

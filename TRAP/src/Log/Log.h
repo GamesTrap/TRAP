@@ -147,7 +147,7 @@ namespace TRAP
 		/// </summary>
 		void Clear() noexcept;
 
-		inline static constexpr auto WindowVersion =                        "[22w50c2]";
+		inline static constexpr auto WindowVersion =                        "[22w51a1]";
 		inline static constexpr auto WindowPrefix =                         "[Window] ";
 		inline static constexpr auto WindowIconPrefix =                     "[Window][Icon] ";
 		inline static constexpr auto ConfigPrefix =                         "[Config] ";
@@ -281,7 +281,7 @@ namespace TRAP
 		/// Get a time stamp with [HH:MM:SS] format.
 		/// </summary>
 		/// <returns>Time stamp as a string.</returns>
-		static std::string GetTimeStamp() noexcept;
+		static std::string GetTimeStamp();
 		/// <summary>
 		/// Get a date time stamp with YYYY-MM-DDTHH-MM-SS format.
 		/// </summary>
@@ -302,18 +302,18 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static constexpr inline TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b)
+static constexpr inline TRAP::Log::Level operator|(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
 {
 	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) |
 		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
 }
-static constexpr inline TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b)
+static constexpr inline TRAP::Log::Level operator&(const TRAP::Log::Level a, const TRAP::Log::Level b) noexcept
 {
 	return static_cast<TRAP::Log::Level>(static_cast<std::underlying_type<TRAP::Log::Level>::type>(a) &
 		static_cast<std::underlying_type<TRAP::Log::Level>::type>(b));
 }
-static constexpr inline TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) { return a = (a | b); }
-static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) { return a = (a & b); }
+static constexpr inline TRAP::Log::Level operator|=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a | b); }
+static constexpr inline TRAP::Log::Level operator&=(TRAP::Log::Level& a, const TRAP::Log::Level b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 

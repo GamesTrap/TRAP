@@ -241,7 +241,7 @@ float TRAP::Window::GetAspectRatio() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::Window::GetInternalWindow() const
+void* TRAP::Window::GetInternalWindow() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

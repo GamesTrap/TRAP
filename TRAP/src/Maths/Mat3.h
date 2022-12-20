@@ -129,7 +129,7 @@ namespace TRAP::Math
 		/// Retrieve the length of the matrix.
 		/// </summary>
 		/// <returns>Length.</returns>
-		static constexpr int32_t Length();
+		static constexpr int32_t Length() noexcept;
 
 		/// <summary>
 		/// Retrieve a column of the matrix.
@@ -144,79 +144,79 @@ namespace TRAP::Math
 
 		//Unary arithmetic operators
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator=(const Mat<3, 3, U>& m);
+		constexpr Mat<3, 3, T>& operator=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator+=(U s);
+		constexpr Mat<3, 3, T>& operator+=(U s) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator+=(const Mat<3, 3, U>& m);
+		constexpr Mat<3, 3, T>& operator+=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator-=(U s);
+		constexpr Mat<3, 3, T>& operator-=(U s) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator-=(const Mat<3, 3, U>& m);
+		constexpr Mat<3, 3, T>& operator-=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator*=(U s);
+		constexpr Mat<3, 3, T>& operator*=(U s) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator*=(const Mat<3, 3, U>& m);
+		constexpr Mat<3, 3, T>& operator*=(const Mat<3, 3, U>& m) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator/=(U s);
+		constexpr Mat<3, 3, T>& operator/=(U s) noexcept;
 		template<typename U>
-		constexpr Mat<3, 3, T>& operator/=(const Mat<3, 3, U>& m);
+		constexpr Mat<3, 3, T>& operator/=(const Mat<3, 3, U>& m) ;
 
 		//Increment and decrement operators
-		constexpr Mat<3, 3, T>& operator++();
-		constexpr Mat<3, 3, T>& operator--();
-		constexpr Mat<3, 3, T> operator++(int32_t);
-		constexpr Mat<3, 3, T> operator--(int32_t);
+		constexpr Mat<3, 3, T>& operator++() noexcept;
+		constexpr Mat<3, 3, T>& operator--() noexcept;
+		constexpr Mat<3, 3, T> operator++(int32_t) noexcept;
+		constexpr Mat<3, 3, T> operator--(int32_t) noexcept;
 
 		std::string ToString() const;
 	};
 
 	//Unary operators
 	template<typename T>
-	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m);
+	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m);
+	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m) noexcept;
 
 	//Binary operators
 	template<typename T>
-	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m, T scalar);
+	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator+(T scalar, const Mat<3, 3, T>& m);
+	constexpr Mat<3, 3, T> operator+(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+	constexpr Mat<3, 3, T> operator+(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m, T scalar);
+	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator-(T scalar, const Mat<3, 3, T>& m);
+	constexpr Mat<3, 3, T> operator-(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+	constexpr Mat<3, 3, T> operator-(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator*(const Mat<3, 3, T>& m, T scalar);
+	constexpr Mat<3, 3, T> operator*(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator*(T scalar, const Mat<3, 3, T>& m);
+	constexpr Mat<3, 3, T> operator*(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	constexpr typename Mat<3, 3, T>::colType operator*(const Mat<3, 3, T>& m, const typename Mat<3, 3, T>::rowType& v);
+	constexpr typename Mat<3, 3, T>::colType operator*(const Mat<3, 3, T>& m, const typename Mat<3, 3, T>::rowType& v) noexcept;
 
 	template<typename T>
-	constexpr typename Mat<3, 3, T>::rowType operator*(const typename Mat<3, 3, T>::colType& v, const Mat<3, 3, T>& m);
+	constexpr typename Mat<3, 3, T>::rowType operator*(const typename Mat<3, 3, T>::colType& v, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator*(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+	constexpr Mat<3, 3, T> operator*(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator/(const Mat<3, 3, T>& m, T scalar);
+	constexpr Mat<3, 3, T> operator/(const Mat<3, 3, T>& m, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator/(T scalar, const Mat<3, 3, T>& m);
+	constexpr Mat<3, 3, T> operator/(T scalar, const Mat<3, 3, T>& m) noexcept;
 
 	template<typename T>
 	constexpr typename Mat<3, 3, T>::colType operator/(const Mat<3, 3, T>& m, const typename Mat<3, 3, T>::rowType& v);
@@ -225,14 +225,14 @@ namespace TRAP::Math
 	constexpr typename Mat<3, 3, T>::rowType operator/(const typename Mat<3, 3, T>::colType& v, const Mat<3, 3, T>& m);
 
 	template<typename T>
-	constexpr Mat<3, 3, T> operator/(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+	constexpr Mat<3, 3, T> operator/(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	//Boolean operators
 	template<typename T>
-	constexpr bool operator==(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+	constexpr bool operator==(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 
 	template<typename T>
-	constexpr bool operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2);
+	constexpr bool operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -244,7 +244,7 @@ namespace std
 	template<typename T>
 	struct hash<TRAP::Math::Mat<3, 3, T>>
 	{
-		constexpr std::size_t operator()(const TRAP::Math::Mat<3, 3, T>& m) const
+		constexpr std::size_t operator()(const TRAP::Math::Mat<3, 3, T>& m) const noexcept
 		{
 			std::size_t seed = 0;
 			hash<TRAP::Math::Vec<3, T>> hasher;
@@ -312,7 +312,7 @@ constexpr TRAP::Math::Mat<3, 3, T>::Mat(const Mat<4, 4, T>& x) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr int TRAP::Math::Mat<3, 3, T>::Length()
+constexpr int TRAP::Math::Mat<3, 3, T>::Length() noexcept
 {
 	return 3;
 }
@@ -341,7 +341,7 @@ constexpr const typename TRAP::Math::Mat<3, 3, T>::colType& TRAP::Math::Mat<3, 3
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Mat<3, 3, U>& m)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Mat<3, 3, U>& m) noexcept
 {
 	this->value[0] = m[0];
 	this->value[1] = m[1];
@@ -352,7 +352,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator=(const Ma
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U s) noexcept
 {
 	this->value[0] += s;
 	this->value[1] += s;
@@ -363,7 +363,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const U
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const Mat<3, 3, U>& m)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const Mat<3, 3, U>& m) noexcept
 {
 	this->value[0] += m[0];
 	this->value[1] += m[1];
@@ -374,7 +374,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator+=(const M
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U s) noexcept
 {
 	this->value[0] -= s;
 	this->value[1] -= s;
@@ -385,7 +385,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const U
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const Mat<3, 3, U>& m)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const Mat<3, 3, U>& m) noexcept
 {
 	this->value[0] -= m[0];
 	this->value[1] -= m[1];
@@ -396,7 +396,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator-=(const M
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U s) noexcept
 {
 	this->value[0] *= s;
 	this->value[1] *= s;
@@ -407,14 +407,14 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const U
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const Mat<3, 3, U>& m)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator*=(const Mat<3, 3, U>& m) noexcept
 {
 	return (*this = *this * m);
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U s)
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const U s) noexcept
 {
 	this->value[0] /= s;
 	this->value[1] /= s;
@@ -434,7 +434,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator/=(const M
 //Increment and decrement operators
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++()
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++() noexcept
 {
 	++this->value[0];
 	++this->value[1];
@@ -444,7 +444,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator++()
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--()
+constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--() noexcept
 {
 	--this->value[0];
 	--this->value[1];
@@ -454,7 +454,7 @@ constexpr TRAP::Math::Mat<3, 3, T>& TRAP::Math::Mat<3, 3, T>::operator--()
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int) noexcept
 {
 	Mat<3, 3, T> result(*this);
 	++*this;
@@ -463,7 +463,7 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator++(int)
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::Mat<3, 3, T>::operator--(int) noexcept
 {
 	Mat<3, 3, T> result(*this);
 	--*this;
@@ -496,13 +496,13 @@ std::string TRAP::Math::Mat<3, 3, T>::ToString() const
 //Unary arithmetic operators
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m) noexcept
 {
 	return m;
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(-m[0], -m[1], -m[2]);
 }
@@ -511,56 +511,56 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m)
 //Binary arithmetic operators
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m, const T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(m[0] + scalar, m[1] + scalar, m[2] + scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator+(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return Mat<3, 3, T>(m1[0] + m2[0], m1[1] + m2[1], m1[2] + m2[2]);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m, const T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] - scalar, m[1] - scalar, m[2] - scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(scalar - m[0], scalar - m[1], scalar - m[2]);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator-(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return Mat<3, 3, T>(m1[0] - m2[0], m1[1] - m2[1], m1[2] - m2[2]);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m, const T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(m[0] * scalar, m[1] * scalar, m[2] * scalar);
 }
 
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator*(const Mat<3, 3, T>& m,
-                                                                           const typename Mat<3, 3, T>::rowType& v)
+                                                                           const typename Mat<3, 3, T>::rowType& v) noexcept
 {
 	return typename Mat<3, 3, T>::colType(m[0][0] * v.x + m[1][0] * v.y + m[2][0] * v.z,
 		                                  m[0][1] * v.x + m[1][1] * v.y + m[2][1] * v.z,
@@ -569,7 +569,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::colType TRAP::Math::operator*(const
 
 template<typename T>
 constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator*(const typename Mat<3, 3, T>::colType& v,
-                                                                           const Mat<3, 3, T>& m)
+                                                                           const Mat<3, 3, T>& m) noexcept
 {
 	return typename Mat<3, 3, T>::rowType(m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z,
 		                                  m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z,
@@ -577,7 +577,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator*(const
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	const T srcA00 = m1[0][0];
 	const T srcA01 = m1[0][1];
@@ -614,13 +614,13 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator*(const Mat<3, 3, T>& m1,
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m, const T scalar)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m, const T scalar) noexcept
 {
 	return Mat<3, 3, T>(m[0] / scalar, m[1] / scalar, m[2] / scalar);
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const T scalar, const Mat<3, 3, T>& m)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const T scalar, const Mat<3, 3, T>& m) noexcept
 {
 	return Mat<3, 3, T>(scalar / m[0], scalar / m[1], scalar / m[2]);
 }
@@ -640,7 +640,7 @@ constexpr typename TRAP::Math::Mat<3, 3, T>::rowType TRAP::Math::operator/(const
 }
 
 template<typename T>
-constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
+constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	Mat<3, 3, T> m1Copy(m1);
 
@@ -651,13 +651,13 @@ constexpr TRAP::Math::Mat<3, 3, T> TRAP::Math::operator/(const Mat<3, 3, T>& m1,
 //Boolean operators
 
 template<typename T>
-constexpr bool TRAP::Math::operator==(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
+constexpr bool TRAP::Math::operator==(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return (m1[0] == m2[0]) && (m1[1] == m2[1]) && (m1[2] == m2[2]);
 }
 
 template<typename T>
-constexpr bool TRAP::Math::operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2)
+constexpr bool TRAP::Math::operator!=(const Mat<3, 3, T>& m1, const Mat<3, 3, T>& m2) noexcept
 {
 	return (m1[0] != m2[0]) || (m1[1] != m2[1]) || (m1[2] != m2[2]);
 }

@@ -451,7 +451,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void* const /*userData*/, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-ImGuiKey TRAP::INTERNAL::ImGuiWindowing::KeyToImGuiKey(const TRAP::Input::Key key)
+ImGuiKey TRAP::INTERNAL::ImGuiWindowing::KeyToImGuiKey(const TRAP::Input::Key key) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -733,7 +733,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline constexpr float Saturate(const float v)
+inline constexpr float Saturate(const float v) noexcept
 {
 	return v < 0.0f ? 0.0f : v > 1.0f ? 1.0f : v;
 }

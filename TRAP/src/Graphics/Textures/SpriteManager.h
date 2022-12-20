@@ -70,11 +70,11 @@ namespace TRAP::Graphics::SpriteManager
 	/// Retrieve all loaded sprites from the SpriteManager.
 	/// </summary>
 	/// <returns>Map of all loaded sprites.</returns>
-	const std::unordered_map<std::string, Ref<SubTexture2D>>& GetSprites();
+	const std::unordered_map<std::string, Ref<SubTexture2D>>& GetSprites() noexcept;
 	/// <summary>
 	/// Clear all sprites from the SpriteManager.
 	/// </summary>
-	void Clean();
+	void Clean() noexcept;
 
 	/// <summary>
 	/// Reload a sprite via its name or path.

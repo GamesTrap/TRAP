@@ -202,7 +202,7 @@ namespace TRAP::Utils::Windows
 		/// Retrieve whether the COM library was successfully initialized or not.
 		/// </summary>
 		/// <returns>True on successful COM library initialization, false otherwise.</returns>
-		bool IsInitialized() const
+		bool IsInitialized() const noexcept
 		{
 			return m_COMInitialized;
 		}

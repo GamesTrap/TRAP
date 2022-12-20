@@ -43,17 +43,17 @@ namespace TRAP::Graphics
 		/// Retrieve the count of indices inside this buffer.
 		/// </summary>
 		/// <returns>Count of indices.</returns>
-		uint32_t GetCount() const;
+		uint32_t GetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the total byte size of the buffer.
 		/// </summary>
 		/// <returns>Total buffer byte size.</returns>
-		uint64_t GetSize() const;
+		uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by this buffer.
 		/// </summary>
 		/// <returns>Update frequency.</returns>
-		UpdateFrequency GetUpdateFrequency() const;
+		UpdateFrequency GetUpdateFrequency() const noexcept;
 
 		/// <summary>
 		/// Use this buffer for rendering on the given window.

@@ -124,7 +124,7 @@ TRAP::Graphics::RendererAPI* TRAP::Graphics::RendererAPI::GetRenderer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader()
+TRAP::Graphics::API::ResourceLoader* TRAP::Graphics::RendererAPI::GetResourceLoader() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -174,7 +174,7 @@ bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
+TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -183,14 +183,14 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::SetNewGPU(std::array<uint8_t, 16> GPUUUID)
+void TRAP::Graphics::RendererAPI::SetNewGPU(std::array<uint8_t, 16> GPUUUID) noexcept
 {
 	s_newGPUUUID = std::move(GPUUUID);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU()
+std::array<uint8_t, 16> TRAP::Graphics::RendererAPI::GetNewGPU() noexcept
 {
 	return s_newGPUUUID;
 }
@@ -222,7 +222,7 @@ void TRAP::Graphics::RendererAPI::OnPostUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
+TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -231,7 +231,7 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -240,7 +240,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -249,7 +249,7 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue()
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetTransferQueue() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -436,7 +436,7 @@ void TRAP::Graphics::RendererAPI::Transition(Ref<TRAP::Graphics::Texture> textur
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount)
+void TRAP::Graphics::RendererAPI::GetAntiAliasing(AntiAliasing& outAntiAliasing, SampleCount& outSampleCount) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -468,7 +468,7 @@ void TRAP::Graphics::RendererAPI::SetAntiAliasing(const AntiAliasing antiAliasin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel()
+TRAP::Graphics::RendererAPI::SampleCount TRAP::Graphics::RendererAPI::GetAnisotropyLevel() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

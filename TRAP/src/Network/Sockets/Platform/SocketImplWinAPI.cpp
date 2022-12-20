@@ -76,7 +76,7 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket()
+TRAP::Network::SocketHandle TRAP::INTERNAL::Network::SocketImpl::InvalidSocket() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

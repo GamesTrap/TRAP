@@ -249,7 +249,7 @@ TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
+VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -258,7 +258,7 @@ VkDevice TRAP::Graphics::API::VulkanDevice::GetVkDevice() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const
+TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::GetPhysicalDevice() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -267,7 +267,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice* TRAP::Graphics::API::VulkanDevice::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const
+const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -464,7 +464,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const
+uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -473,7 +473,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
+uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -482,7 +482,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
+uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -491,7 +491,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const
+std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -500,7 +500,7 @@ std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const
+uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -509,7 +509,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
+uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -518,7 +518,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
+uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -528,7 +528,7 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef NVIDIA_REFLEX_AVAILABLE
-VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore()
+VkSemaphore& TRAP::Graphics::API::VulkanDevice::GetReflexSemaphore() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

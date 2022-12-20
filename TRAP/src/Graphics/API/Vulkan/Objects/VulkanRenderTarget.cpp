@@ -206,7 +206,7 @@ TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
+VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -215,7 +215,7 @@ VkImageView TRAP::Graphics::API::VulkanRenderTarget::GetVkImageView() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const
+const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkImageViewSlices() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -224,7 +224,7 @@ const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkIm
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const
+uint32_t TRAP::Graphics::API::VulkanRenderTarget::GetID() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -43,43 +43,43 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan render pass handle.
 		/// </summary>
 		/// <returns>Vulkan render pass handle.</returns>
-		VkRenderPass GetVkRenderPass() const;
+		VkRenderPass GetVkRenderPass() const noexcept;
 
 		/// <summary>
 		/// Retrieve the used color formats.
 		/// </summary>
 		/// <returns>Used color formats.</returns>
-		const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const;
+		const std::vector<TRAP::Graphics::API::ImageFormat>& GetColorFormats() const noexcept;
 		/// <summary>
 		/// Retrieve the used color load action types.
 		/// </summary>
 		/// <returns>Used color load action types.</returns>
-		const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const;
+		const std::vector<RendererAPI::LoadActionType>& GetLoadActionsColor() const noexcept;
 		/// <summary>
 		/// Retrieve the number of used render targets.
 		/// </summary>
 		/// <returns>Number of used render targets.</returns>
-		uint32_t GetRenderTargetCount() const;
+		uint32_t GetRenderTargetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the used sample count.
 		/// </summary>
 		/// <returns>Used sample count.</returns>
-		RendererAPI::SampleCount GetSampleCount() const;
+		RendererAPI::SampleCount GetSampleCount() const noexcept;
 		/// <summary>
 		/// Retrieve the used depth stencil format.
 		/// </summary>
 		/// <returns>Used depth stencil format.</returns>
-		TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const;
+		TRAP::Graphics::API::ImageFormat GetDepthStencilFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the used depth load action type.
 		/// </summary>
 		/// <returns>Used depth load action type.</returns>
-		RendererAPI::LoadActionType GetLoadActionTypeDepth() const;
+		RendererAPI::LoadActionType GetLoadActionTypeDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the used stencil load action type.
 		/// </summary>
 		/// <returns>Used stencil load action type.</returns>
-		RendererAPI::LoadActionType GetLoadActionTypeStencil() const;
+		RendererAPI::LoadActionType GetLoadActionTypeStencil() const noexcept;
 
 	private:
 		static VkRenderPass CreateRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);

@@ -59,12 +59,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan swap chain handle.
 		/// </summary>
 		/// <returns>Vulkan swap chain handle.</returns>
-		VkSwapchainKHR GetVkSwapChain() const;
+		VkSwapchainKHR GetVkSwapChain() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue used for presentation.
 		/// </summary>
 		/// <returns>Vulkan queue used for presentation.</returns>
-		VkQueue GetPresentVkQueue() const;
+		VkQueue GetPresentVkQueue() const noexcept;
 
 	private:
 		/// <summary>

@@ -165,7 +165,7 @@ namespace TRAP
 		/// Get the internal handle of the window.
 		/// </summary>
 		/// <returns>Pointer to the internal window handle.</returns>
-		void* GetInternalWindow() const;
+		void* GetInternalWindow() const noexcept;
 
 		/// <summary>
 		/// Set a new title for the window.

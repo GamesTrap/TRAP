@@ -47,37 +47,37 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkDescriptorSet handles.
 		/// </summary>
 		/// <returns>VkDescriptorSet handles.</returns>
-		const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const;
+		const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const noexcept;
 		/// <summary>
 		/// Retrieve the root signature.
 		/// </summary>
 		/// <returns>Root signature.</returns>
-		TRAP::Ref<VulkanRootSignature> GetRootSignature() const;
+		TRAP::Ref<VulkanRootSignature> GetRootSignature() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency used by the descriptor set.
 		/// </summary>
 		/// <returns>Update frequency.</returns>
-		RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const;
+		RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the amount of dynamic offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Amount of dynamic offsets.</returns>
-		uint8_t GetDynamicOffsetCount() const;
+		uint8_t GetDynamicOffsetCount() const noexcept;
 		/// <summary>
 		/// Retrieve the dynamic size offsets used by the descriptor set.
 		/// </summary>
 		/// <returns>Dynamic size offsets.</returns>
-		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
+		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const noexcept;
 		/// <summary>
 		/// Retrieve the max number of sets for the descriptor set.
 		/// </summary>
 		/// <returns>Max number of sets.</returns>
-		uint32_t GetMaxSets() const;
+		uint32_t GetMaxSets() const noexcept;
 		/// <summary>
 		/// Retrieve the index of the set for the descriptor set.
 		/// </summary>
 		/// <returns>Index of the set.</returns>
-		uint32_t GetSet() const;
+		uint32_t GetSet() const noexcept;
 
 		/// <summary>
 		/// Update the descriptor set.

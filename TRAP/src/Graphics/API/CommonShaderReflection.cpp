@@ -2,7 +2,7 @@
 #include "ShaderReflection.h"
 
 constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::ShaderResource& a,
-                                 const TRAP::Graphics::API::ShaderReflection::ShaderResource& b)
+                                 const TRAP::Graphics::API::ShaderReflection::ShaderResource& b) noexcept
 {
 	bool isSame = true;
 
@@ -16,7 +16,7 @@ constexpr bool ShaderResourceCmp(const TRAP::Graphics::API::ShaderReflection::Sh
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr bool ShaderVariableCmp(const TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
-                                 const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b)
+                                 const TRAP::Graphics::API::ShaderReflection::ShaderVariable& b) noexcept
 {
 	bool isSame = true;
 

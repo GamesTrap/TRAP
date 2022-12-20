@@ -37,7 +37,7 @@ TRAP::Image::Image() noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBitsPerPixel() const
+uint32_t TRAP::Image::GetBitsPerPixel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -46,7 +46,7 @@ uint32_t TRAP::Image::GetBitsPerPixel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBytesPerPixel() const
+uint32_t TRAP::Image::GetBytesPerPixel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -55,7 +55,7 @@ uint32_t TRAP::Image::GetBytesPerPixel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBitsPerChannel() const
+uint32_t TRAP::Image::GetBitsPerChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -64,7 +64,7 @@ uint32_t TRAP::Image::GetBitsPerChannel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetBytesPerChannel() const
+uint32_t TRAP::Image::GetBytesPerChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -73,7 +73,7 @@ uint32_t TRAP::Image::GetBytesPerChannel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetWidth() const
+uint32_t TRAP::Image::GetWidth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -82,7 +82,7 @@ uint32_t TRAP::Image::GetWidth() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Image::GetHeight() const
+uint32_t TRAP::Image::GetHeight() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -91,7 +91,7 @@ uint32_t TRAP::Image::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Image::GetSize() const
+TRAP::Math::Vec2ui TRAP::Image::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -100,7 +100,7 @@ TRAP::Math::Vec2ui TRAP::Image::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::HasAlphaChannel() const
+bool TRAP::Image::HasAlphaChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -109,7 +109,7 @@ bool TRAP::Image::HasAlphaChannel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsImageGrayScale() const
+bool TRAP::Image::IsImageGrayScale() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -118,7 +118,7 @@ bool TRAP::Image::IsImageGrayScale() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsImageColored() const
+bool TRAP::Image::IsImageColored() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -127,7 +127,7 @@ bool TRAP::Image::IsImageColored() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsHDR() const
+bool TRAP::Image::IsHDR() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -136,7 +136,7 @@ bool TRAP::Image::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Image::IsLDR() const
+bool TRAP::Image::IsLDR() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -145,7 +145,7 @@ bool TRAP::Image::IsLDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Image::GetFilePath() const
+const std::filesystem::path& TRAP::Image::GetFilePath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -154,7 +154,7 @@ const std::filesystem::path& TRAP::Image::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const
+TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader);
 

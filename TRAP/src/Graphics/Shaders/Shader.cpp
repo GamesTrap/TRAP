@@ -127,7 +127,7 @@ bool TRAP::Graphics::Shader::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::Shader::GetName() const
+std::string TRAP::Graphics::Shader::GetName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -136,7 +136,7 @@ std::string TRAP::Graphics::Shader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
+std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -145,7 +145,7 @@ std::filesystem::path TRAP::Graphics::Shader::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const
+TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -154,7 +154,7 @@ TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const
+const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMacros() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -163,7 +163,7 @@ const std::vector<TRAP::Graphics::Shader::Macro>& TRAP::Graphics::Shader::GetMac
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const
+TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -173,7 +173,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignatur
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
-                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const
+                 TRAP::Graphics::RendererAPI::MaxDescriptorSets>& TRAP::Graphics::Shader::GetDescriptorSets() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -182,7 +182,7 @@ const std::array<TRAP::Scope<TRAP::Graphics::DescriptorSet>,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Shader::IsShaderValid() const
+bool TRAP::Graphics::Shader::IsShaderValid() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

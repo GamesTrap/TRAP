@@ -126,8 +126,8 @@ struct ImGui_ImplVulkan_ViewportData
     ImGui_ImplVulkanH_Window                Window;             // Used by secondary viewports only
     ImGui_ImplVulkanH_WindowRenderBuffers   RenderBuffers;      // Used by all viewports
 
-    ImGui_ImplVulkan_ViewportData()         { WindowOwned = false; RenderBuffers = {}; }
-    ~ImGui_ImplVulkan_ViewportData()        { }
+    ImGui_ImplVulkan_ViewportData() noexcept { WindowOwned = false; RenderBuffers = {}; }
+    ~ImGui_ImplVulkan_ViewportData()         { }
 };
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -159,7 +159,7 @@ struct ImGui_ImplVulkan_Data
     // Render buffers for main window
     ImGui_ImplVulkanH_WindowRenderBuffers MainWindowRenderBuffers;
 
-    ImGui_ImplVulkan_Data()
+    ImGui_ImplVulkan_Data() noexcept
         : VulkanInitInfo(), RenderPass(VK_NULL_HANDLE), BufferMemoryAlignment(256), PipelineCreateFlags(),
           DescriptorSetLayout(VK_NULL_HANDLE), PipelineLayout(VK_NULL_HANDLE), DescriptorSet(VK_NULL_HANDLE),
           Pipeline(VK_NULL_HANDLE), Subpass(), ShaderModuleVert(VK_NULL_HANDLE), ShaderModuleFrag(VK_NULL_HANDLE),
@@ -218,7 +218,7 @@ void main()
     gl_Position = vec4(aPos * pc.uScale + pc.uTranslate, 0, 1);
 }
 */
-static uint32_t __glsl_shader_vert_spv[] =
+static constexpr std::array<uint32_t, 324> __glsl_shader_vert_spv =
 {
     0x07230203,0x00010000,0x00080001,0x0000002e,0x00000000,0x00020011,0x00000001,0x0006000b,
     0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -277,7 +277,7 @@ void main()
     fColor = In.Color * texture(sTexture, In.UV.st);
 }
 */
-static uint32_t __glsl_shader_frag_spv[] =
+static constexpr std::array<uint32_t, 193> __glsl_shader_frag_spv =
 {
     0x07230203,0x00010000,0x00080001,0x0000001e,0x00000000,0x00020011,0x00000001,0x0006000b,
     0x00000001,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -790,7 +790,7 @@ static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAlloca
         VkShaderModuleCreateInfo vert_info = {};
         vert_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         vert_info.codeSize = sizeof(__glsl_shader_vert_spv);
-        vert_info.pCode = static_cast<uint32_t*>(__glsl_shader_vert_spv);
+        vert_info.pCode = __glsl_shader_vert_spv.data();
         const VkResult err = vkCreateShaderModule(device, &vert_info, allocator, &bd->ShaderModuleVert);
         check_vk_result(err);
     }
@@ -799,7 +799,7 @@ static void ImGui_ImplVulkan_CreateShaderModules(VkDevice device, const VkAlloca
         VkShaderModuleCreateInfo frag_info = {};
         frag_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         frag_info.codeSize = sizeof(__glsl_shader_frag_spv);
-        frag_info.pCode = static_cast<uint32_t*>(__glsl_shader_frag_spv);
+        frag_info.pCode = __glsl_shader_frag_spv.data();
         const VkResult err = vkCreateShaderModule(device, &frag_info, allocator, &bd->ShaderModuleFrag);
         check_vk_result(err);
     }
@@ -1791,7 +1791,7 @@ ImTextureID ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, Vk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImGui_ImplVulkan_ClearCache()
+void ImGui_ImplVulkan_ClearCache() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers);
 

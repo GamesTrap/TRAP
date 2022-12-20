@@ -11,7 +11,7 @@ namespace TRAP::Utils
     {
     public:
         UID();
-        UID(uint64_t uid);
+        UID(uint64_t uid) noexcept;
 
         ~UID() = default;
 
@@ -21,8 +21,8 @@ namespace TRAP::Utils
         UID& operator=(const UID& other) noexcept = default;
         UID& operator=(UID&& other) noexcept = default;
 
-        operator uint64_t();
-        operator uint64_t() const;
+        operator uint64_t() noexcept;
+        operator uint64_t() const noexcept;
 
     private:
         uint64_t m_uid;
@@ -36,7 +36,7 @@ namespace std
     template<>
     struct hash<TRAP::Utils::UID>
     {
-        std::size_t operator()(const TRAP::Utils::UID& uid) const
+        std::size_t operator()(const TRAP::Utils::UID& uid) const noexcept
         {
             return uid;
         }

@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan sampler handle.
 		/// </summary>
 		/// <returns>Vulkan sampler handle.</returns>
-		VkSampler GetVkSampler() const;
+		VkSampler GetVkSampler() const noexcept;
 
 	private:
 		void UpdateAnisotropy(float anisotropy) override;

@@ -43,7 +43,7 @@ namespace TRAP::Graphics
 		/// Retrieve the queue used by the command buffer.
 		/// </summary>
 		/// <returns>Queue used by the command buffer.</returns>
-		virtual TRAP::Ref<Queue> GetQueue() const;
+		TRAP::Ref<Queue> GetQueue() const noexcept;
 
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.

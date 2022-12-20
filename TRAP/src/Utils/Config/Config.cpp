@@ -6,7 +6,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Config::Config()
+TRAP::Utils::Config::Config() noexcept
 	: m_hasChanged(false)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
@@ -138,7 +138,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::filesystem::path& file)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::HasChanged() const
+bool TRAP::Utils::Config::HasChanged() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

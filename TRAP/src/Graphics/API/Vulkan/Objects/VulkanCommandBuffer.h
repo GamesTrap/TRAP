@@ -54,7 +54,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkCommandBuffer handle.
 		/// </summary>
 		/// <returns>VkCommandBuffer handle.</returns>
-		VkCommandBuffer GetVkCommandBuffer() const;
+		VkCommandBuffer GetVkCommandBuffer() const noexcept;
 		/// <summary>
 		/// Retrieve the queue type used for resource barriers.
 		/// </summary>
@@ -64,7 +64,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve whether this is a secondary command buffer.
 		/// </summary>
 		/// <returns>True of this is a secondary command buffer, false otherwise.</returns>
-		bool IsSecondary() const;
+		bool IsSecondary() const noexcept;
 
 		/// <summary>
 		/// Bind push constant buffer data to the command buffer.
@@ -372,7 +372,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the currently active VkRenderPass.
 		/// </summary>
 		/// <returns>Currently active VkRenderPass.</returns>
-		VkRenderPass GetActiveVkRenderPass() const;
+		VkRenderPass GetActiveVkRenderPass() const noexcept;
 
 	private:
 		/// <summary>

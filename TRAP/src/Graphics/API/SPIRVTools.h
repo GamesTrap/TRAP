@@ -182,19 +182,19 @@ namespace TRAP::Graphics::API::SPIRVTools
 		/// Retrieve the shader resources.
 		/// </summary>
 		/// <returns>Shader resources.</returns>
-		const std::vector<Resource>& GetShaderResources() const;
+		const std::vector<Resource>& GetShaderResources() const noexcept;
 
 		/// <summary>
 		/// Retrieve the uniform variables.
 		/// </summary>
 		/// <returns>Uniform variables.</returns>
-		const std::vector<Variable>& GetUniformVariables() const;
+		const std::vector<Variable>& GetUniformVariables() const noexcept;
 
 		/// <summary>
 		/// Rertieve the name of the entry point.
 		/// </summary>
 		/// <returns>Name of entry point.</returns>
-		std::string GetEntryPoint() const;
+		std::string GetEntryPoint() const noexcept;
 
 	private:
 		//This points to the internal compiler class

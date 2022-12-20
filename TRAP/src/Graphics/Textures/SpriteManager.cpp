@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteManager::Get(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites()
+const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteManager::GetSprites() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -142,7 +142,7 @@ const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::SubTexture2D>>& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::SpriteManager::Clean()
+void TRAP::Graphics::SpriteManager::Clean() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

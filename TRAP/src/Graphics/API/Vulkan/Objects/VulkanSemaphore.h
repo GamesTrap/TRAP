@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan semaphore handle.
 		/// </summary>
 		/// <returns>Vulkan semaphore handle.</returns>
-		VkSemaphore GetVkSemaphore() const;
+		VkSemaphore GetVkSemaphore() const noexcept;
 
 	private:
 		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore,

@@ -10,7 +10,7 @@
 /// <param name="minor">Minor version number.</param>
 /// <param name="patch">Patch version number.</param>
 /// <returns>Version number packed into a single uint32_t.</returns>
-constexpr uint32_t CONVERTTOSPIRV_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
+constexpr uint32_t CONVERTTOSPIRV_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch) noexcept
 {
 	return major << 22 | minor << 12 | patch;
 }

@@ -587,13 +587,13 @@ namespace TRAP
 		/// Get the function to call when an input event occurred.
 		/// </summary>
 		/// <returns>EventCallbackFn.</returns>
-		static EventCallbackFn GetEventCallback();
+		static EventCallbackFn GetEventCallback() noexcept;
 	private:
 		/// <summary>
 		/// Set the function to call when an input event occurred.
 		/// </summary>
 		/// <param name="callback">Function to call.</param>
-		static void SetEventCallback(const EventCallbackFn& callback);
+		static void SetEventCallback(const EventCallbackFn& callback) noexcept;
 
 		/// <summary>
 		/// Initialize input.

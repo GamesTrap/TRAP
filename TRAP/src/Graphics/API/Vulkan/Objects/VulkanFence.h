@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkFence handle.
 		/// </summary>
 		/// <returns>VkFence handle.</returns>
-		VkFence GetVkFence() const;
+		VkFence GetVkFence() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current status of the fence.

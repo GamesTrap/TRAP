@@ -88,35 +88,35 @@ namespace TRAP::Graphics
         /// Retrieve whether the camera is active or not.
         /// </summary>
         /// <returns>True if camera is active, false otherwise.</returns>
-        bool IsActive() const;
+        bool IsActive() const noexcept;
         /// <summary>
         /// Set camera active or inactive
         /// </summary>
         /// <param name="active">Active or inactive.</param>
-        void SetActive(bool active);
+        void SetActive(bool active) noexcept;
 
         /// <summary>
         /// Retrieve the current mode of the camera.
         /// </summary>
         /// <returns>Current mode of the camera.</returns>
-        CameraMode GetCurrentMode() const;
+        CameraMode GetCurrentMode() const noexcept;
 
         /// <summary>
         /// Retrieve the distance between the camera and the focal point.
         /// </summary>
         /// <returns>Distance.</returns>
-        float GetDistance() const;
+        float GetDistance() const noexcept;
         /// <summary>
         /// Set the distance between the camera and the focal point.
         /// </summary>
         /// <param name="distance">Distance to set.</param>
-        void SetDistance(float distance);
+        void SetDistance(float distance) noexcept;
 
         /// <summary>
         /// Retrieve the current focal point of the camera.
         /// </summary>
         /// <returns>Current focal point.</returns>
-        const TRAP::Math::Vec3& GetFocalPoint() const;
+        const TRAP::Math::Vec3& GetFocalPoint() const noexcept;
 
         /// <summary>
         /// Set the viewport of the camera.
@@ -130,7 +130,7 @@ namespace TRAP::Graphics
         /// Retrieve the view matrix.
         /// </summary>
         /// <returns>View matrix.</returns>
-        const TRAP::Math::Mat4& GetViewMatrix() const;
+        const TRAP::Math::Mat4& GetViewMatrix() const noexcept;
 
         /// <summary>
         /// Retrieve the current up direction.
@@ -152,7 +152,7 @@ namespace TRAP::Graphics
         /// Retrieve the current camera position.
         /// </summary>
         /// <returns>Camera position.</returns>
-        const TRAP::Math::Vec3& GetPosition() const;
+        const TRAP::Math::Vec3& GetPosition() const noexcept;
 
         /// <summary>
         /// Retrieve the current camera orientation.
@@ -164,27 +164,27 @@ namespace TRAP::Graphics
         /// Retrieve the current field of view in degrees.
         /// </summary>
         /// <returns>Field of view in degrees.</returns>
-        float GetFOV() const;
+        float GetFOV() const noexcept;
         /// <summary>
         /// Retrieve the current aspect ration.
         /// </summary>
         /// <returns>Aspect ratio.</returns>
-        float GetAspectRatio() const;
+        float GetAspectRatio() const noexcept;
         /// <summary>
         /// Retrieve the nera clip plane.
         /// </summary>
         /// <returns>Near clip plane.</returns>
-        float GetNearClip() const;
+        float GetNearClip() const noexcept;
         /// <summary>
         /// Retrieve the camera pitch.
         /// </summary>
         /// <returns>Pitch.</returns>
-        float GetPitch() const;
+        float GetPitch() const noexcept;
         /// <summary>
         /// Retrieve the camera yaw.
         /// </summary>
         /// <returns>Yaw.</returns>
-        float GetYaw() const;
+        float GetYaw() const noexcept;
         /// <summary>
         /// Retrieve the current camera speed.
         /// </summary>
@@ -240,7 +240,7 @@ namespace TRAP::Graphics
         /// Retrieve the rotation speed to use.
         /// </summary>
         /// <returns>Rotation speed.</returns>
-        constexpr float RotationSpeed() const;
+        constexpr float RotationSpeed() const noexcept;
         /// <summary>
         /// Retrieve the zoom speed to use.
         /// </summary>
@@ -301,7 +301,7 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr float TRAP::Graphics::EditorCamera::RotationSpeed() const
+constexpr float TRAP::Graphics::EditorCamera::RotationSpeed() const noexcept
 {
     return 0.3f;
 }

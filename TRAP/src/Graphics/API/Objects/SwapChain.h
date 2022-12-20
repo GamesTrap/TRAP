@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 		/// <param name="HDR">Use HDR?</param>
 		/// <param name="SRGB">Use SRGB?</param>
 		/// <returns>Recommended swap chain image format.</returns>
-		static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR, bool SRGB);
+		static TRAP::Graphics::API::ImageFormat GetRecommendedSwapchainFormat(bool HDR, bool SRGB) noexcept;
 
 		/// <summary>
 		/// Destructor.
@@ -61,7 +61,7 @@ namespace TRAP::Graphics
 		/// Retrieve the render targets used by the swapchain.
 		/// </summary>
 		/// <returns>Render targets used by the swapchain.</returns>
-		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const;
+		virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const noexcept;
 
 		/// <summary>
 		/// Toggle Vsync on and off.

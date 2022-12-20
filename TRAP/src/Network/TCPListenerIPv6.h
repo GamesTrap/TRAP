@@ -17,7 +17,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TCPListenerIPv6();
+		TCPListenerIPv6() noexcept;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.

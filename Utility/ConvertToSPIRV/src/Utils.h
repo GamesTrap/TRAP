@@ -10,7 +10,7 @@
 #include <algorithm>
 
 template <typename T>
-constexpr T BIT(T x)
+constexpr T BIT(T x) noexcept
 {
 	return T(1) << x;
 }
@@ -98,7 +98,7 @@ inline std::vector<std::string> GetLines(const std::string& string)
 
 inline bool StartsWith(const std::string_view string, const std::string_view start)
 {
-	return string.find(start) == 0;
+	return string.substr(0, start.size()) == start;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -114,12 +114,10 @@ inline std::string GetSuffix(const std::string& name)
 
 inline std::string ToLower(std::string string)
 {
-	std::transform(string.begin(), string.end(), string.begin(), [](const int32_t c) -> char
-	{
-		return static_cast<char>(::tolower(c));
-	});
+    for(char& c : string)
+        c = static_cast<char>(::tolower(c));
 
-	return string;
+    return string;
 }
 
 #endif /*CONVERTTOSPIRV_UTILS_H*/

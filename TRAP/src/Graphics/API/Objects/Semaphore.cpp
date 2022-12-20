@@ -46,7 +46,7 @@ TRAP::Graphics::Semaphore::~Semaphore()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Semaphore::IsSignaled() const
+bool TRAP::Graphics::Semaphore::IsSignaled() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

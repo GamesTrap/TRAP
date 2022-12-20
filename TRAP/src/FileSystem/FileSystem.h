@@ -53,7 +53,7 @@ namespace TRAP
 		///
 		/// This functions creates the following folders if they don't exist:
 		/// - Temp/TRAP/<GameName>
-		/// - Documents/TRAP/<GameName>
+		/// - Documents/TRAP/<GameName> (only when not using Headless mode)
 		/// - Documents/TRAP/<GameName>/logs (only when not using Headless mode)
 		/// </summary>
 		void Init();

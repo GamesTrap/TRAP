@@ -106,7 +106,19 @@ bool TRAP::Utils::String::StartsWith(const std::string_view str, const std::stri
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	return str.find(start) == 0;
+	return str.substr(0, start.size()) == start;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Utils::String::EndsWith(const std::string_view str, const std::string_view end)
+{
+	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
+
+	if (end.size() > str.size())
+		return false;
+
+	return str.size() >= end.size() && str.compare(str.size() - end.size(), std::string_view::npos, end) == 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -137,10 +149,8 @@ std::string TRAP::Utils::String::ToLower(std::string str)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	std::transform(str.begin(), str.end(), str.begin(), [](const int32_t c) -> char
-	{
-		return static_cast<char>(::tolower(c));
-	});
+	for(char& c : str)
+		c = static_cast<char>(::tolower(c));
 
 	return str;
 }
@@ -151,10 +161,8 @@ std::string TRAP::Utils::String::ToUpper(std::string str)
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
-	std::transform(str.begin(), str.end(), str.begin(), [](const int32_t c) -> char
-	{
-		return static_cast<char>(::toupper(c));
-	});
+	for(char& c : str)
+		c = static_cast<char>(::toupper(c));
 
 	return str;
 }

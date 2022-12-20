@@ -11,7 +11,7 @@ namespace TRAP::Utils
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Config();
+		Config() noexcept;
 
 		/// <summary>
 		/// Load a config file from disk.
@@ -30,7 +30,7 @@ namespace TRAP::Utils
 		/// Check if config has changed after last load/save.
 		/// </summary>
 		/// <returns>True if config has changed, false otherwise.</returns>
-		bool HasChanged() const;
+		bool HasChanged() const noexcept;
 
 		/// <summary>
 		/// Retrieve the value of a specific key in the config.

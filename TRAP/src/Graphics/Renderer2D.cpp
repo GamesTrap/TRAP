@@ -88,7 +88,7 @@ namespace TRAP::Graphics
 
 			static void Init();
 			void InitBuffers();
-			static void Shutdown();
+			static void Shutdown() noexcept;
 			void Reset();
 			void ExtendBuffers(); //Extend buffers to allow for an additional draw call
 			uint32_t DrawBuffers(UniformBuffer* camera);
@@ -145,7 +145,7 @@ namespace TRAP::Graphics
 
 			static void Init();
 			void InitBuffers();
-			static void Shutdown();
+			static void Shutdown() noexcept;
 			void Reset();
 			void ExtendBuffers(); //Extend buffers to allow for an additional draw call
 			uint32_t DrawBuffers(UniformBuffer* camera);
@@ -190,7 +190,7 @@ namespace TRAP::Graphics
 
 			static void Init();
 			void InitBuffers();
-			static void Shutdown();
+			static void Shutdown() noexcept;
 			void Reset();
 			void ExtendBuffers(); //Extend buffers to allow for an additional draw call
 			uint32_t DrawBuffers(UniformBuffer* camera);
@@ -297,7 +297,7 @@ void TRAP::Graphics::Renderer2DData::QuadData::InitBuffers()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2DData::QuadData::Shutdown()
+void TRAP::Graphics::Renderer2DData::QuadData::Shutdown() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -479,7 +479,7 @@ void TRAP::Graphics::Renderer2DData::CircleData::InitBuffers()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2DData::CircleData::Shutdown()
+void TRAP::Graphics::Renderer2DData::CircleData::Shutdown() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -600,7 +600,7 @@ void TRAP::Graphics::Renderer2DData::LineData::InitBuffers()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2DData::LineData::Shutdown()
+void TRAP::Graphics::Renderer2DData::LineData::Shutdown() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -727,7 +727,7 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::Reset()
+void TRAP::Graphics::Renderer2D::Reset() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -1076,7 +1076,7 @@ void TRAP::Graphics::Renderer2D::DrawRect(const TRAP::Math::Mat4& transform, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const
+uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1085,7 +1085,7 @@ uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const
+uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1094,7 +1094,7 @@ uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats()
+TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -1103,7 +1103,7 @@ TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::ResetStats()
+void TRAP::Graphics::Renderer2D::ResetStats() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

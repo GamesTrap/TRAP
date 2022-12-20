@@ -11,7 +11,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="appName">Application name.</param>
 	/// <returns>VkApplicationInfo.</returns>
-	VkApplicationInfo ApplicationInfo(const std::string_view appName) noexcept;
+	VkApplicationInfo ApplicationInfo(const std::string_view appName);
 
 	/// <summary>
 	/// Create a Vulkan instance create info from app info, instance layers and extensions.
@@ -31,14 +31,14 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// </summary>
 	/// <param name="callback">Debug callback.</param>
 	/// <returns>VkDebugUtilsMessengerCreateInfoEXT.</returns>
-	VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback) noexcept;
+	VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 	/// <summary>
 	/// Create a Vulkan debug report callback create info.
 	/// </summary>
 	/// <param name="callback">Debug callback.</param>
 	/// <returns>VkDebugReportCallbackCreateInfoEXT.</returns>
-	VkDebugReportCallbackCreateInfoEXT DebugReportCallbackCreateInfo(PFN_vkDebugReportCallbackEXT callback) noexcept;
+	VkDebugReportCallbackCreateInfoEXT DebugReportCallbackCreateInfo(PFN_vkDebugReportCallbackEXT callback);
 
 	/// <summary>
 	/// Create a Vulkan debug utils object name info.
@@ -48,7 +48,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugUtilsObjectNameInfoEXT.</returns>
 	VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle,
-	                                                       const std::string_view name) noexcept;
+	                                                       const std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug marker object name info.
@@ -58,7 +58,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Debug object name to set.</param>
 	/// <returns>VkDebugMarkerObjectNameInfoEXT.</returns>
 	VkDebugMarkerObjectNameInfoEXT DebugMarkerObjectNameInfo(VkDebugReportObjectTypeEXT type, uint64_t handle,
-	                                                         const std::string_view name) noexcept;
+	                                                         const std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug utils label.
@@ -68,7 +68,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugUtilsLabelEXT.</returns>
-	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, std::string_view name) noexcept;
+	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan debug marker.
@@ -78,7 +78,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="b">Blue color.</param>
 	/// <param name="name">Name for the label.</param>
 	/// <returns>VkDebugMarkerMarkerInfoEXT.</returns>
-	VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, std::string_view name) noexcept;
+	VkDebugMarkerMarkerInfoEXT DebugMarkerMarkerInfo(float r, float g, float b, std::string_view name);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -91,7 +91,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkDeviceCreateInfo.</returns>
 	VkDeviceCreateInfo DeviceCreateInfo(const void* pNext,
 	                                    const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
-	                                    const std::vector<const char*>& deviceExtensions) noexcept;
+	                                    const std::vector<const char*>& deviceExtensions);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -104,7 +104,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="vulkanFunctions">VMA Vulkan functions.</param>
 	/// <returns>VmaAllocatorCreateInfo.</returns>
 	VmaAllocatorCreateInfo VMAAllocatorCreateInfo(VkDevice device, VkPhysicalDevice physicalDevice,
-	                                              VkInstance instance, const VmaVulkanFunctions& vulkanFunctions) noexcept;
+	                                              VkInstance instance, const VmaVulkanFunctions& vulkanFunctions);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -115,7 +115,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="numDescriptorSets">Max number of descriptor sets which should be allocated from the pool.</param>
 	/// <returns>VkDescriptorPoolCreateInfo.</returns>
 	VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
-	                                                    uint32_t numDescriptorSets) noexcept;
+	                                                    uint32_t numDescriptorSets);
 
 	/// <summary>
 	/// Create a Vulkan descriptor set allocation info.
@@ -124,7 +124,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="descriptorLayout">Vulkan descriptor set layout to use.</param>
 	/// <returns>VkDescriptorSetAllocateInfo.</returns>
 	VkDescriptorSetAllocateInfo DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
-														  const VkDescriptorSetLayout& descriptorLayout) noexcept;
+														  const VkDescriptorSetLayout& descriptorLayout);
 
 	/// <summary>
 	/// Create a Vulkan descriptor set layout create info.
@@ -148,7 +148,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		                                                                    const VkDescriptorUpdateTemplateEntry* const entries,
 		                                                                    VkPipelineBindPoint bindPoint,
 		                                                                    VkPipelineLayout pipelineLayout,
-		                                                                    uint32_t setIndex) noexcept;
+		                                                                    uint32_t setIndex);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -170,7 +170,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="semaphore">Semaphore to wait on.</param>
 	/// <param name="value">Signal value to set.</param>
 	/// <returns>VkSemaphoreWaitInfoKHR</returns>
-	VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore& semaphore, uint64_t& value) noexcept;
+	VkSemaphoreWaitInfoKHR SemaphoreWaitInfo(VkSemaphore& semaphore, uint64_t& value);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -201,7 +201,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                              VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
 	                                              VkAttachmentLoadOp stencilLoadOp,
 												  VkAttachmentStoreOp stencilStoreOp,
-	                                              VkImageLayout layout, VkImageLayout finalLayout) noexcept;
+	                                              VkImageLayout layout, VkImageLayout finalLayout);
 
 	/// <summary>
 	/// Create a Vulkan attachment description.
@@ -219,7 +219,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                   VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp,
 	                                                   VkAttachmentLoadOp stencilLoadOp,
 												       VkAttachmentStoreOp stencilStoreOp,
-	                                                   VkImageLayout layout, VkImageLayout finalLayout) noexcept;
+	                                                   VkImageLayout layout, VkImageLayout finalLayout);
 
 	/// <summary>
 	/// Create a Vulkan subpass description.
@@ -314,7 +314,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="colorValues">List of Vulkan clear values for color attachments.</param>
 	/// <returns>VkRenderPassBeginInfo.</returns>
 	VkRenderPassBeginInfo RenderPassBeginInfo(VkRenderPass renderPass, VkFramebuffer frameBuffer,
-	                                          VkRect2D renderArea, const std::vector<VkClearValue>& colorValues) noexcept;
+	                                          VkRect2D renderArea, const std::vector<VkClearValue>& colorValues);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -329,7 +329,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <returns>VkFramebufferCreateInfo.</returns>
 	VkFramebufferCreateInfo FramebufferCreateInfo(VkRenderPass renderPass,
 	                                              const std::vector<VkImageView>& attachments, uint32_t width,
-		                                          uint32_t height, uint32_t layerCount) noexcept;
+		                                          uint32_t height, uint32_t layerCount);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -343,7 +343,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="layerCount">Number of layers.</param>
 	/// <returns>VkImageViewCreateInfo.</returns>
 	VkImageViewCreateInfo ImageViewCreateInfo(VkImage image, VkImageViewType imageViewType, VkFormat format,
-		                                      uint32_t levelCount, uint32_t layerCount) noexcept;
+		                                      uint32_t levelCount, uint32_t layerCount);
 
 	/// <summary>
 	/// Create a Vulkan image create info.
@@ -362,7 +362,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkImageCreateInfo ImageCreateInfo(VkImageType imageType, VkFormat imageFormat, uint32_t width, uint32_t height,
 		                              uint32_t depth, uint32_t mipLevels, uint32_t arrayLayers,
 		                              VkSampleCountFlagBits sampleCount, VkImageTiling tiling,
-									  VkImageUsageFlags usage) noexcept;
+									  VkImageUsageFlags usage);
 
 	/// <summary>
 	/// Create a Vulkan buffer image copy.
@@ -373,7 +373,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="depth">Depth of the image.</param>
 	/// <param name="layers">Number of Vulkan image subresource layers.</param>
 	VkBufferImageCopy ImageCopy(uint32_t bufferRowLength, uint32_t width, uint32_t height, uint32_t depth,
-							    VkImageSubresourceLayers layers) noexcept;
+							    VkImageSubresourceLayers layers);
 
 	/// <summary>
 	/// Create a Vulkan buffer image copy.
@@ -386,7 +386,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="depth">Depth of the image.</param>
 	/// <param name="layers">Number of Vulkan image subresource layers.</param>
 	VkBufferImageCopy ImageCopy(uint64_t bufferOffset, uint32_t bufferRowLength, uint32_t bufferImageHeight,
-							    uint32_t width, uint32_t height, uint32_t depth, VkImageSubresourceLayers layers) noexcept;
+							    uint32_t width, uint32_t height, uint32_t depth, VkImageSubresourceLayers layers);
 
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -397,7 +397,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="allocationSize">Size of the buffer.</param>
 	/// <param name="usageFlags">Vulkan buffer usage flags.</param>
 	/// <returns>VkBufferCreateInfo.</returns>
-	VkBufferCreateInfo BufferCreateInfo(uint64_t allocationSize, VkBufferUsageFlags usageFlags) noexcept;
+	VkBufferCreateInfo BufferCreateInfo(uint64_t allocationSize, VkBufferUsageFlags usageFlags);
 
 	/// <summary>
 	/// Create a Vulkan buffer view create info.
@@ -407,7 +407,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="offset">Offset of the buffer.</param>
 	/// <param name="range">Range of the buffer.</param>
 	/// <returns>VkBufferViewCreateInfo.</returns>
-	VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, uint64_t offset, uint64_t range) noexcept;
+	VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, uint64_t offset, uint64_t range);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -424,7 +424,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="commandPool">Vulkan command pool to use.</param>
 	/// <param name="secondary">True to allocate as a secondary command buffer.</param>
 	/// <returns>VkCommandBufferAllocateInfo.</returns>
-	VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary) noexcept;
+	VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary);
 
 	/// <summary>
 	/// Create a Vulkan command buffer begin info.
@@ -452,7 +452,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkSamplerCreateInfo SamplerCreateInfo(VkFilter magFilter, VkFilter minFilter, VkSamplerMipmapMode mipMapMode,
 		                                  VkSamplerAddressMode u, VkSamplerAddressMode v, VkSamplerAddressMode w,
 		                                  float mipLodBias, float minLod, float maxLod, float maxAnisotropy,
-										  VkCompareOp compareOp) noexcept;
+										  VkCompareOp compareOp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -507,7 +507,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="name">Shader entry point name.</param>
 	/// <returns>VkPipelineShaderStageCreateInfo.</returns>
 	VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule module,
-	                                                              std::string_view name) noexcept;
+	                                                              std::string_view name);
 
 	/// <summary>
 	/// Create a Vulkan pipeline vertex input state create info.
@@ -562,7 +562,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="rateCombiners">Shading rate combiners.</param>
 	/// <returns>VkPipelineFragmentShadingRateStateCreateInfoKHR</returns>
 	VkPipelineFragmentShadingRateStateCreateInfoKHR PipelineFragmentShadingRateStateCreateInfo(VkExtent2D fragmentSize,
-	                                                                                           const std::array<VkFragmentShadingRateCombinerOpKHR, 2>& rateCombiners);
+	                                                                                           const std::array<VkFragmentShadingRateCombinerOpKHR, 2>& rateCombiners) noexcept;
 
 	/// <summary>
 	/// Create a Vulkan pipeline dynamic state create info.
@@ -578,7 +578,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	/// <param name="layout">Vulkan pipeline layout.</param>
 	/// <returns>VkComputePipelineCreateInfo.</returns>
 	VkComputePipelineCreateInfo ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
-	                                                      VkPipelineLayout layout) noexcept;
+	                                                      VkPipelineLayout layout);
 
 	/// <summary>
 	/// Create a Vulkan graphics pipeline create info.
@@ -657,7 +657,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                const std::array<uint32_t, 2>& queueFamilyIndices,
 	                                                VkSurfaceTransformFlagBitsKHR preTransform,
 													VkCompositeAlphaFlagBitsKHR compositeAlpha,
-													VkPresentModeKHR presentMode) noexcept;
+													VkPresentModeKHR presentMode);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

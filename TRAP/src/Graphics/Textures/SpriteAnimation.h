@@ -60,13 +60,13 @@ namespace TRAP::Graphics
 		/// Update the sprite animation.
 		/// </summary>
 		/// <param name="deltaTime">Delta time.</param>
-		void OnUpdate(const Utils::TimeStep& deltaTime);
+		void OnUpdate(const Utils::TimeStep& deltaTime) noexcept;
 
 		/// <summary>
 		/// Retrieve all sprites used by the animation.
 		/// </summary>
 		/// <returns>List of sprites.</returns>
-		const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const;
+		const std::vector<TRAP::Ref<SubTexture2D>>& GetAllSprites() const noexcept;
 
 		/// <summary>
 		/// Retrieve the current sprite of the animation.
@@ -78,26 +78,26 @@ namespace TRAP::Graphics
 		/// Set the animation speed.
 		/// </summary>
 		/// <param name="speed">Speed in seconds.</param>
-		void SetSpeed(float speed);
+		void SetSpeed(float speed) noexcept;
 
 		/// <summary>
 		/// Retrieve the animation speed.
 		/// </summary>
 		/// <returns>Animation speed:</returns>
-		float GetSpeed() const;
+		float GetSpeed() const noexcept;
 
 		/// <summary>
 		/// Play the animation.
 		/// </summary>
-		void Play();
+		void Play() noexcept;
 		/// <summary>
 		/// Pause the animation
 		/// </summary>
-		void Pause();
+		void Pause() noexcept;
 		/// <summary>
 		/// Stop the animation.
 		/// </summary>
-		void Stop();
+		void Stop() noexcept;
 
 	private:
 		std::string m_name;

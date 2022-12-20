@@ -117,7 +117,7 @@ namespace TRAP::Graphics::TextureManager
 	/// Retrieve all loaded textures from the TextureManager.
 	/// </summary>
 	/// <returns>Map of all loaded textures.</returns>
-	const std::unordered_map<std::string, Ref<Texture>>& GetTextures();
+	const std::unordered_map<std::string, Ref<Texture>>& GetTextures() noexcept;
 	/// <summary>
 	/// Clear all textures from the TextureManager.
 	/// Except fallback textures.
@@ -163,7 +163,7 @@ namespace TRAP::Graphics::TextureManager
 	/// <summary>
 	/// Shutdown the TextureManager.
 	/// </summary>
-	void Shutdown();
+	void Shutdown() noexcept;
 }
 
 #endif /*TRAP_TEXTUREMANAGER_H*/

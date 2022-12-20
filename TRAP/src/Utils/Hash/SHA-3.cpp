@@ -18,8 +18,8 @@ template<class T> T Rotatel64(const T x, const int64_t y)
 {
     ZoneNamedC(__tracy, tracy::Color::Violet, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	static const uint32_t thisSize = sizeof(T) * 8;
-	static const uint32_t mask = thisSize - 1;
+	constexpr uint32_t thisSize = sizeof(T) * 8;
+	constexpr uint32_t mask = thisSize - 1;
 	TRAP_ASSERT(y < thisSize, "Rotatel64(): y must be less than the size of the type!");
 
 	return T((x << y) | (x >> (-y & mask)));

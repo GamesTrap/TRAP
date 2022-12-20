@@ -64,11 +64,11 @@ namespace TRAP::Network
 		/// <summary>
 		/// Move constructor.
 		/// </summary>
-		SocketSelector(SocketSelector&&);
+		SocketSelector(SocketSelector&&) noexcept;
 		/// <summary>
 		/// Move assignment operator.
 		/// </summary>
-		SocketSelector& operator=(SocketSelector&&);
+		SocketSelector& operator=(SocketSelector&&) noexcept;
 
 		/// <summary>
 		/// Add a new socket to the selector.

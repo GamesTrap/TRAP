@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Timer.h"
 
-TRAP::Utils::Timer::Timer()
+TRAP::Utils::Timer::Timer() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -10,7 +10,7 @@ TRAP::Utils::Timer::Timer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::Timer::Reset()
+void TRAP::Utils::Timer::Reset() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

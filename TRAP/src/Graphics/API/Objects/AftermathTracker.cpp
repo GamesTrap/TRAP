@@ -161,7 +161,7 @@ void TRAP::Graphics::AftermathTracker::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name)
+void TRAP::Graphics::AftermathTracker::SetAftermathMarker([[maybe_unused]] const std::string_view name) noexcept
 {
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

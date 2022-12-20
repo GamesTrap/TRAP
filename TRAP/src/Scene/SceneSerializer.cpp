@@ -133,7 +133,7 @@ namespace TRAP
 		return out;
 	}
 
-	static void SerializeEntity(YAML::Emitter& out, Entity entity)
+	void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		ZoneNamedC(__tracy, tracy::Color::Turquoise, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene);
 

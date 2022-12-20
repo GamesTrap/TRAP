@@ -150,7 +150,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
+VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -159,7 +159,7 @@ VkFramebuffer TRAP::Graphics::API::VulkanFrameBuffer::GetVkFrameBuffer() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
+uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -168,7 +168,7 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetWidth() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
+uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -177,7 +177,7 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const
+uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetArraySize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

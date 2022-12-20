@@ -133,7 +133,7 @@ TRAP::Ref<TRAP::Graphics::Shader> TRAP::Graphics::ShaderManager::Get(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
+const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -248,7 +248,7 @@ bool TRAP::Graphics::ShaderManager::ExistsPath(const std::filesystem::path& path
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Shutdown()
+void TRAP::Graphics::ShaderManager::Shutdown() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

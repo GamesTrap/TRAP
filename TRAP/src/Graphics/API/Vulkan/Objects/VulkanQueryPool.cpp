@@ -44,7 +44,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const
+VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -53,7 +53,7 @@ VkQueryPool TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkQueryType TRAP::Graphics::API::VulkanQueryPool::GetVkQueryType() const
+VkQueryType TRAP::Graphics::API::VulkanQueryPool::GetVkQueryType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -62,7 +62,7 @@ VkQueryType TRAP::Graphics::API::VulkanQueryPool::GetVkQueryType() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanQueryPool::GetCount() const
+uint32_t TRAP::Graphics::API::VulkanQueryPool::GetCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

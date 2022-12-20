@@ -95,7 +95,7 @@ namespace TRAP::Network
 			/// The method is HTTP::Request::GET by default.
 			/// </summary>
 			/// <param name="method">Method to use for the request.</param>
-			void SetMethod(Method method);
+			void SetMethod(Method method) noexcept;
 
 			/// <summary>
 			/// Set the requested URI.
@@ -114,7 +114,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="major">Major HTTP version number.</param>
 			/// <param name="minor">Minor HTTP version number.</param>
-			void SetHTTPVersion(uint32_t major, uint32_t minor);
+			void SetHTTPVersion(uint32_t major, uint32_t minor) noexcept;
 
 			/// <summary>
 			/// Set the body of the request.
@@ -206,7 +206,7 @@ namespace TRAP::Network
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			Response();
+			Response() noexcept;
 
 			/// <summary>
 			/// Get the value of a field.
@@ -228,19 +228,19 @@ namespace TRAP::Network
 			/// enumeration).
 			/// </summary>
 			/// <returns>Status code of the response.</returns>
-			Status GetStatus() const;
+			Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the major HTTP version number of the response.
 			/// </summary>
 			/// <returns>Major HTTP version number.</returns>
-			uint32_t GetMajorHTTPVersion() const;
+			uint32_t GetMajorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the minor HTTP version number of the response.
 			/// </summary>
 			/// <returns>Minor HTTP version number.</returns>
-			uint32_t GetMinorHTTPVersion() const;
+			uint32_t GetMinorHTTPVersion() const noexcept;
 
 			/// <summary>
 			/// Get the body of the response.
@@ -252,7 +252,7 @@ namespace TRAP::Network
 			/// - an error message (in case of an error)
 			/// </summary>
 			/// <returns>The response body.</returns>
-			std::string GetBody() const;
+			std::string GetBody() const noexcept;
 
 		private:
 			friend class HTTP;

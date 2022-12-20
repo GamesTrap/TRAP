@@ -19,7 +19,7 @@ namespace TRAP::Graphics::AftermathTracker
 	/// Set a marker.
 	/// </summary>
 	/// <param name="name">Name of the marker.</param>
-	void SetAftermathMarker(const std::string_view name);
+	void SetAftermathMarker(const std::string_view name) noexcept;
 
 #ifdef ENABLE_NSIGHT_AFTERMATH
 	/// <summary>

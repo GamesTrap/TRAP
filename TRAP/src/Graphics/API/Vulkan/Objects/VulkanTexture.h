@@ -69,33 +69,33 @@ namespace TRAP::Graphics::API
 		/// Retrieve the read only color Vulkan image view handle of the texture.
 		/// </summary>
 		/// <returns>Vulkan image view handle.</returns>
-		VkImageView GetSRVVkImageView() const;
+		VkImageView GetSRVVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve the read only  stencil Vulkan image view handle of the texture.
 		/// </summary>
 		/// <returns>Vulkan image view handle.</returns>
-		VkImageView GetSRVStencilVkImageView() const;
+		VkImageView GetSRVStencilVkImageView() const noexcept;
 		/// <summary>
 		/// Retrieve all read-writable Vulkan image view handles of the texture.
 		/// </summary>
 		/// <returns>
-		const std::vector<VkImageView>& GetUAVVkImageViews() const;
+		const std::vector<VkImageView>& GetUAVVkImageViews() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan image handle.
 		/// </summary>
 		/// <returns>Vulkan image handle.</returns>
-		VkImage GetVkImage() const;
+		VkImage GetVkImage() const noexcept;
 		/// <summary>
 		/// Retrieve the VMA allocation handle used by the texture.
 		/// </summary>
 		/// <returns>VMA allocation handle.</returns>
-		VmaAllocation GetVMAAllocation() const;
+		VmaAllocation GetVMAAllocation() const noexcept;
 
 		/// <summary>
 		/// Retrieve whether the texture is lazily allocated or not.
 		/// </summary>
 		/// <returns>True if the texture is lazily allocated, false otherwise.</returns>
-		bool IsLazilyAllocated() const;
+		bool IsLazilyAllocated() const noexcept;
 
 		/// <summary>
 		/// Set the name of the texture.

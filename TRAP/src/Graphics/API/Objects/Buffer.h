@@ -41,17 +41,17 @@ namespace TRAP::Graphics
 		/// Retrieve the size of the buffer in bytes.
 		/// </summary>
 		/// <returns>Size of the buffer in bytes.</returns>
-		virtual uint64_t GetSize() const = 0;
+		virtual uint64_t GetSize() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the type of descriptor.
 		/// </summary>
 		/// <returns>Type of descriptor.</returns>
-		virtual RendererAPI::DescriptorType GetDescriptors() const = 0;
+		virtual RendererAPI::DescriptorType GetDescriptors() const noexcept = 0;
 		/// <summary>
 		/// Retrieve the usage of the buffer memory.
 		/// </summary>
 		/// <returns>Usage of the buffer memory.</returns>
-		virtual RendererAPI::ResourceMemoryUsage GetMemoryUsage() const = 0;
+		virtual RendererAPI::ResourceMemoryUsage GetMemoryUsage() const noexcept = 0;
 
 		/// <summary>
 		/// Retrieve the CPU mapped address of the buffer.
@@ -59,7 +59,7 @@ namespace TRAP::Graphics
 		/// Note: MapBuffer must be called before accessing the buffer on the CPU.
 		/// </summary>
 		/// <returns>CPU mapped address of the buffer.</returns>
-		virtual void* GetCPUMappedAddress() const = 0;
+		virtual void* GetCPUMappedAddress() const noexcept = 0;
 
 		/// <summary>
 		/// Map a region of the buffer to the CPU.

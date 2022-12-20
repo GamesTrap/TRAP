@@ -155,12 +155,12 @@ enum class ShaderStage
 	SHADER_STAGE_COUNT = 7
 };
 
-static inline ShaderStage operator|(ShaderStage a, ShaderStage b) { return static_cast<ShaderStage>(static_cast<std::underlying_type<ShaderStage>::type>(a) |
-																		                            static_cast<std::underlying_type<ShaderStage>::type>(b)); }
-static inline ShaderStage operator&(ShaderStage a, ShaderStage b) { return static_cast<ShaderStage>(static_cast<std::underlying_type<ShaderStage>::type>(a) &
-																		                            static_cast<std::underlying_type<ShaderStage>::type>(b)); }
-static inline ShaderStage operator|=(ShaderStage& a, ShaderStage b) { return a = (a | b); }
-// static inline ShaderStage operator&=(ShaderStage& a, ShaderStage b) { return a = (a & b); }
+static inline ShaderStage operator|(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(static_cast<std::underlying_type<ShaderStage>::type>(a) |
+																		                                     static_cast<std::underlying_type<ShaderStage>::type>(b)); }
+static inline ShaderStage operator&(ShaderStage a, ShaderStage b) noexcept { return static_cast<ShaderStage>(static_cast<std::underlying_type<ShaderStage>::type>(a) &
+																		                                     static_cast<std::underlying_type<ShaderStage>::type>(b)); }
+static inline ShaderStage operator|=(ShaderStage& a, ShaderStage b) noexcept { return a = (a | b); }
+// static inline ShaderStage operator&=(ShaderStage& a, ShaderStage b) noexcept { return a = (a & b); }
 
 //-------------------------------------------------------------------------------------------------------------------//
 

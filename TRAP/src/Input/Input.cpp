@@ -251,7 +251,7 @@ float TRAP::Input::GetMouseY(const Window* const window)
 /// </summary>
 /// <param name="key">Key to get.</param>
 /// <returns>String representation.</returns>
-std::string NonPrintableKeyToString(const TRAP::Input::Key key)
+std::string NonPrintableKeyToString(const TRAP::Input::Key key) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -688,7 +688,7 @@ std::string TRAP::Input::GetClipboard()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
+void TRAP::Input::SetEventCallback(const EventCallbackFn &callback) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -722,7 +722,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::EventCallbackFn TRAP::Input::GetEventCallback()
+TRAP::Input::EventCallbackFn TRAP::Input::GetEventCallback() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Gold, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Input) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

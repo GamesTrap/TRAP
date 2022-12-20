@@ -85,7 +85,7 @@ void TRAP::Graphics::API::VulkanDescriptorPool::Reset()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const
+VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescriptorPool() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -94,7 +94,7 @@ VkDescriptorPool TRAP::Graphics::API::VulkanDescriptorPool::GetCurrentVkDescript
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const
+const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorPoolSizes() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -103,7 +103,7 @@ const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const
+uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -115,6 +115,8 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 TRAP::Scope<TRAP::Graphics::DescriptorSet> TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	TRAP_ASSERT(desc.RootSignature, "VulkanDescriptorPool::RetrieveDescriptorSet(): RootSignature is nullptr");
 
 	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>
 		(

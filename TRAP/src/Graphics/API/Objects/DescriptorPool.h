@@ -47,7 +47,7 @@ namespace TRAP::Graphics
 		/// Max number of descriptor sets managed by the pool.
 		/// </summary>
 		/// <returns>
-		virtual uint32_t GetDescriptorSetsNum() const;
+		uint32_t GetDescriptorSetsNum() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.

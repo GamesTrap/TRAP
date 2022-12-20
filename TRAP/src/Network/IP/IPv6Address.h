@@ -19,7 +19,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// This constructor creates an empty (invalid) address.
 		/// </summary>
-		IPv6Address() = default;
+		IPv6Address() noexcept = default;
 
 		/// <summary>
 		/// Construct the address from a string.
@@ -46,7 +46,7 @@ namespace TRAP::Network
 		/// Construct the address from 16 bytes array.
 		/// </summary>
 		/// <param name="addressBytes">Array containing 16 bytes address.</param>
-		explicit IPv6Address(const std::array<uint8_t, 16>& addressBytes);
+		explicit IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept;
 
 		/// <summary>
 		/// Get a string representation of the address.
@@ -66,7 +66,7 @@ namespace TRAP::Network
 		/// from a host name.
 		/// </summary>
 		/// <returns>Byte representation of the address.</returns>
-		std::array<uint8_t, 16> ToArray() const;
+		std::array<uint8_t, 16> ToArray() const noexcept;
 
 		/// <summary>
 		/// Get the computer's local address.

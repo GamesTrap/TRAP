@@ -30,7 +30,7 @@ const std::string& TRAP::Entity::GetName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Entity::operator bool() const
+TRAP::Entity::operator bool() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -39,7 +39,7 @@ TRAP::Entity::operator bool() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Entity::operator uint32_t() const
+TRAP::Entity::operator uint32_t() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -50,7 +50,7 @@ TRAP::Entity::operator uint32_t() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Entity::operator entt::entity() const
+TRAP::Entity::operator entt::entity() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -61,7 +61,7 @@ TRAP::Entity::operator entt::entity() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Entity::operator==(const Entity other) const
+bool TRAP::Entity::operator==(const Entity other) const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -70,7 +70,7 @@ bool TRAP::Entity::operator==(const Entity other) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Entity::operator!=(const Entity other) const
+bool TRAP::Entity::operator!=(const Entity other) const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

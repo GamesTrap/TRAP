@@ -21,7 +21,7 @@ void TRAP::Graphics::OrthographicCamera::SetProjection(const float left, const f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetPosition() const
+const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetPosition() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -40,7 +40,7 @@ void TRAP::Graphics::OrthographicCamera::SetPosition(const Math::Vec3& position)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetRotation() const
+const TRAP::Math::Vec3& TRAP::Graphics::OrthographicCamera::GetRotation() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -59,7 +59,7 @@ void TRAP::Graphics::OrthographicCamera::SetRotation(const Math::Vec3& rotation)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetProjectionMatrix() const
+const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetProjectionMatrix() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -68,7 +68,7 @@ const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetProjectionMatrix(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetViewMatrix() const
+const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetViewMatrix() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

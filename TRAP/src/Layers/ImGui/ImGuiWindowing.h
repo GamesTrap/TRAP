@@ -27,6 +27,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef TRAP_IMGUIWINDOWING_H
 #define TRAP_IMGUIWINDOWING_H
 
+#include <imgui.h>
+
 #include "Core/PlatformDetection.h"
 #include "Graphics/API/RendererAPI.h"
 
@@ -127,7 +129,7 @@ namespace TRAP::INTERNAL
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			ImGuiViewportDataTRAP()
+			ImGuiViewportDataTRAP() noexcept
 				: Window(nullptr), WindowPtr(nullptr), WindowOwned(false),
 				  IgnoreWindowPosEventFrame(-1), IgnoreWindowSizeEventFrame(-1)
 			{}
@@ -219,7 +221,7 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		/// <param name="key">Key to convert.</param>
 		/// <returns>Converted key.</returns>
-		static ImGuiKey KeyToImGuiKey(Input::Key key);
+		static ImGuiKey KeyToImGuiKey(Input::Key key) noexcept;
 
 		/// <summary>
 		/// Update modifier keys.

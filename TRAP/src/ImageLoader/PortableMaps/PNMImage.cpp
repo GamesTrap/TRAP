@@ -147,7 +147,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
+const void* TRAP::INTERNAL::PNMImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -159,7 +159,7 @@ const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

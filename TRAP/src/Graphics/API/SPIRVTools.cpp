@@ -111,7 +111,10 @@ void TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectEntryPoint()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
-	m_entryPoint = m_compiler.get_entry_points_and_stages()[0].name;
+	const auto entryPoints = m_compiler.get_entry_points_and_stages();
+
+	if(!entryPoints.empty())
+		m_entryPoint = entryPoints[0].name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -346,7 +349,7 @@ uint32_t TRAP::Graphics::API::SPIRVTools::CrossCompiler::ReflectTessellationCont
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const
+const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetShaderResources() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -355,7 +358,7 @@ const std::vector<TRAP::Graphics::API::SPIRVTools::Resource>& TRAP::Graphics::AP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const
+const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetUniformVariables() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -364,7 +367,7 @@ const std::vector<TRAP::Graphics::API::SPIRVTools::Variable>& TRAP::Graphics::AP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const
+std::string TRAP::Graphics::API::SPIRVTools::CrossCompiler::GetEntryPoint() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

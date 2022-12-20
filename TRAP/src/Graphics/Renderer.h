@@ -40,7 +40,7 @@ namespace TRAP::Graphics
 		/// <summary>
 		/// End a running Renderer scene.
 		/// </summary>
-		static void EndScene();
+		static void EndScene() noexcept;
 
 		/// <summary>
 		/// Submit a non-indexed draw call.

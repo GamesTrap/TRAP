@@ -31,7 +31,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "SocketImpl.h"
 
-TRAP::Network::Socket::Socket(const Type type)
+TRAP::Network::Socket::Socket(const Type type) noexcept
 	: m_type(type), m_socket(INTERNAL::Network::SocketImpl::InvalidSocket()), m_isBlocking(true)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -62,7 +62,7 @@ void TRAP::Network::Socket::SetBlocking(const bool blocking)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Network::Socket::IsBlocking() const
+bool TRAP::Network::Socket::IsBlocking() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -71,7 +71,7 @@ bool TRAP::Network::Socket::IsBlocking() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
+TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

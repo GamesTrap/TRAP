@@ -42,17 +42,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan instance handle.
 		/// </summary>
 		/// <returns>Vulkan instance handle.</returns>
-		VkInstance GetVkInstance() const;
+		VkInstance GetVkInstance() const noexcept;
 		/// <summary>
 		/// Retrieve a list of used instance layers.
 		/// </summary>
 		/// <returns>List of used instance layers.</returns>
-		const std::vector<std::string>& GetUsedInstanceLayers() const;
+		const std::vector<std::string>& GetUsedInstanceLayers() const noexcept;
 		/// <summary>
 		/// Retrieve a list of used instance extensions.
 		/// </summary>
 		/// <returns>List of used instance extensions.</returns>
-		const std::vector<std::string>& GetUsedInstanceExtensions() const;
+		const std::vector<std::string>& GetUsedInstanceExtensions() const noexcept;
 
 		/// <summary>
 		/// Retrieve the Vulkan instance version packed by VK_MAKE_API_VERSION.

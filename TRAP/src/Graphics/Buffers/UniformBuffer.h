@@ -46,17 +46,17 @@ namespace TRAP::Graphics
 		/// Retrieve the byte size of the UBO.
 		/// </summary>
 		/// <returns>Byte size of the UBO.</returns>
-		uint64_t GetSize() const;
+		uint64_t GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the update frequency of the UBO.
 		/// </summary>
 		/// <returns>Update frequency of the UBO.</returns>
-		UpdateFrequency GetUpdateFrequency() const;
+		UpdateFrequency GetUpdateFrequency() const noexcept;
 		/// <summary>
 		/// Retrieve the underlying buffers.
 		/// </summary>
 		/// <returns>Underlying buffers.</returns>
-		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const;
+		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const noexcept;
 
 		/// <summary>
 		/// Update data of the UBO.
@@ -80,7 +80,7 @@ namespace TRAP::Graphics
 		/// Calculate the aligned size of the UBO.
 		/// </summary>
 		/// <param name="byteSize">Byte size of the UBO.</param>
-		static uint64_t CalculateAlignedSize(const uint64_t byteSize);
+		static uint64_t CalculateAlignedSize(const uint64_t byteSize) noexcept;
 
 		/// <summary>
 		/// Create a new uniform buffer and set its size.

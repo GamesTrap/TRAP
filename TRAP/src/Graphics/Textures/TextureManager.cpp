@@ -246,7 +246,7 @@ TRAP::Ref<TRAP::Graphics::Texture> TRAP::Graphics::TextureManager::GetCube(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures()
+const std::unordered_map<std::string, TRAP::Ref<TRAP::Graphics::Texture>>& TRAP::Graphics::TextureManager::GetTextures() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -392,7 +392,7 @@ bool TRAP::Graphics::TextureManager::ExistsPath(const std::filesystem::path& pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::TextureManager::Shutdown()
+void TRAP::Graphics::TextureManager::Shutdown() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 

@@ -79,7 +79,7 @@ TRAP::Network::SocketSelector::SocketSelector(const SocketSelector& copy)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other)
+TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other) noexcept
 	: m_impl(std::move(other.m_impl))
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -87,7 +87,7 @@ TRAP::Network::SocketSelector::SocketSelector(SocketSelector&& other)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other)
+TRAP::Network::SocketSelector& TRAP::Network::SocketSelector::operator=(SocketSelector&& other) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
 

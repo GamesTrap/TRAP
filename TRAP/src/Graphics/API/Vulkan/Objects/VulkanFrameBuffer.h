@@ -42,23 +42,23 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkFramebuffer handle.
 		/// </summary>
 		/// <returns>VkFramebuffer handle.</returns>
-		VkFramebuffer GetVkFrameBuffer() const;
+		VkFramebuffer GetVkFrameBuffer() const noexcept;
 
 		/// <summary>
 		/// Retrieve the width of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer width.</returns>
-		uint32_t GetWidth() const;
+		uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the height of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer height.</returns>
-		uint32_t GetHeight() const;
+		uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the array size of the framebuffer.
 		/// </summary>
 		/// <returns>Framebuffer array size.</returns>
-		uint32_t GetArraySize() const;
+		uint32_t GetArraySize() const noexcept;
 
 	private:
 		VkFramebuffer m_framebuffer;

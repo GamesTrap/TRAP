@@ -120,7 +120,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve whether all submitted resource loads and updates have been completed.
 		/// </summary>
 		/// <returns>True if all loads and updates have finished, false otherwise.</returns>
-		bool AllResourceLoadsCompleted() const;
+		bool AllResourceLoadsCompleted() const noexcept;
 
 		//Blocks the calling thread until AllResourceLoadsCompleted() returns true.
 		//Note that if more resource loads or updates are submitted from a different thread
@@ -143,7 +143,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the last sync token which has finished loading or updating.
 		/// </summary>
 		/// <returns>Last value for which IsTokenCompleted(token) is guaranteed to return true.</returns>
-		SyncToken GetLastTokenCompleted() const;
+		SyncToken GetLastTokenCompleted() const noexcept;
 		/// <summary>
 		/// Retrieve whether a sync token has finished loading or updating.
 		/// </summary>
@@ -180,13 +180,13 @@ namespace TRAP::Graphics::API
 		/// Retrieve the row alignment for textures used by the GPU.
 		/// </summary>
 		/// <returns>Row alignment used by the GPU.</returns>
-		static uint64_t UtilGetTextureRowAlignment();
+		static uint64_t UtilGetTextureRowAlignment() noexcept;
 		/// <summary>
 		/// Retrieve the subresource alignment for textures used by the GPU.
 		/// </summary>
 		/// <param name="fmt">Format of the texture. Default: ImageFormat::Undefined.</param>
 		/// <returns>Subresource alignment used by the GPU.</returns>
-		static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined);
+		static uint64_t UtilGetTextureSubresourceAlignment(TRAP::Graphics::API::ImageFormat fmt = TRAP::Graphics::API::ImageFormat::Undefined) noexcept;
 		/// <summary>
 		///	Retrieve the total surface size of a texture.
 		/// </summary>
@@ -204,7 +204,7 @@ namespace TRAP::Graphics::API
 		static uint64_t UtilGetSurfaceSize(TRAP::Graphics::API::ImageFormat fmt, uint32_t width, uint32_t height,
 		                                   uint32_t depth, uint64_t rowStride, uint64_t sliceStride,
 										   uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer,
-										   uint32_t arrayLayers);
+										   uint32_t arrayLayers) noexcept;
 		/// <summary>
 		/// Retrieve information about a texture.
 		/// </summary>
@@ -275,7 +275,7 @@ namespace TRAP::Graphics::API
 		/// <summary>
 		/// Free all upload memory and temporary buffers.
 		/// </summary>
-		void FreeAllUploadMemory();
+		void FreeAllUploadMemory() noexcept;
 
 		/// <summary>
 		/// Initialize the copy engine.
@@ -315,20 +315,20 @@ namespace TRAP::Graphics::API
 		/// Check whether there are tasks pending for the resource loader.
 		/// </summary>
 		/// <returns>True if there are tasks pending, false otherwise.</returns>
-		bool AreTasksAvailable() const;
+		bool AreTasksAvailable() const noexcept;
 
 		/// <summary>
 		/// Determine the resources start state from a buffer description.
 		/// </summary>
 		/// <param name="desc">Buffer description.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
+		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept;
 		/// <summary>
 		/// Determine the resources start state.
 		/// </summary>
 		/// <param name="uav">Is unordered access view.</param>
 		/// <returns>Determined start state of the buffer.</returns>
-		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
+		static constexpr RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav) noexcept;
 
 		/// <summary>
 		/// Generate mip maps for a texture.
@@ -412,32 +412,32 @@ namespace TRAP::Graphics::API
 			/// Constructor for buffer update request.
 			/// </summary>
 			/// <param name="buffer">Description of buffer update.</param>
-			explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer);
+			explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer) noexcept;
 			/// <summary>
 			/// Constructor for texture load request.
 			/// </summary>
 			/// <param name="texture">Description of texture load.</param>
-			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture);
+			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture) noexcept;
 			/// <summary>
 			/// Constructor for texture copy request.
 			/// </summary>
 			/// <param name="texture">Description of texture copy.</param>
-			explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy);
+			explicit UpdateRequest(const RendererAPI::TextureCopyDesc& textureCopy) noexcept;
 			/// <summary>
 			/// Constructor for texture update request.
 			/// </summary>
 			/// <param name="texture">Description of texture update.</param>
-			explicit UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture);
+			explicit UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture) noexcept;
 			/// <summary>
 			/// Constructor for buffer barrier request.
 			/// </summary>
 			/// <param name="buffer">Description of buffer barrier.</param>
-			explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier);
+			explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier) noexcept;
 			/// <summary>
 			/// Constructor for texture barrier request.
 			/// </summary>
 			/// <param name="texture">Description of texture barrier.</param>
-			explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier);
+			explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier) noexcept;
 
 			UpdateRequestType Type = UpdateRequestType::Invalid;
 			uint64_t WaitIndex = 0;
@@ -484,7 +484,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc)
+constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc) noexcept
 {
 	//Host visible (Upload Heap)
 	if (desc.MemoryUsage == RendererAPI::ResourceMemoryUsage::CPUOnly ||
@@ -516,7 +516,7 @@ constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::Resour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav)
+constexpr TRAP::Graphics::RendererAPI::ResourceState TRAP::Graphics::API::ResourceLoader::UtilDetermineResourceStartState(const bool uav) noexcept
 {
 	if(uav)
 		return RendererAPI::ResourceState::UnorderedAccess;

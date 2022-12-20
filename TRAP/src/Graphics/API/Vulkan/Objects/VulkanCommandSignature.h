@@ -40,12 +40,12 @@ namespace TRAP::Graphics::API
 		/// Retrieve the draw type used for indirect drawing.
 		/// </summary>
 		/// <returns>Draw type.</returns>
-		RendererAPI::IndirectArgumentType GetDrawType() const;
+		RendererAPI::IndirectArgumentType GetDrawType() const noexcept;
 		/// <summary>
 		/// Retrieve the byte stride between successive sets of draw parameters.
 		/// </summary>
 		/// <returns>Byte stride.</returns>
-		uint32_t GetStride() const;
+		uint32_t GetStride() const noexcept;
 
 	private:
 		RendererAPI::IndirectArgumentType m_drawType;

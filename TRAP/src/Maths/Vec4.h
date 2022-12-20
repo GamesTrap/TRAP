@@ -98,180 +98,180 @@ namespace TRAP::Math
 		/// Retrieve the count of components of the vector.
 		/// </summary>
 		/// <returns>Count of components.</returns>
-		static constexpr int Length();
+		static constexpr int Length() noexcept;
 
 		//Comoponent accesses
 		constexpr T& operator[](int i);
 		constexpr const T& operator[](int i) const;
 
 		//Unary arithmetic operators
-		constexpr Vec<4, T>& operator=(const Vec<4, T> & v) = default;
+		constexpr Vec<4, T>& operator=(const Vec<4, T> & v) noexcept = default;
 
 		template<typename U>
-		constexpr Vec<4, T>& operator=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator+=(U scalar);
+		constexpr Vec<4, T>& operator+=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator+=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator+=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator-=(U scalar);
+		constexpr Vec<4, T>& operator-=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator-=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator-=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator*=(U scalar);
+		constexpr Vec<4, T>& operator*=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator*=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator*=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator/=(U scalar);
+		constexpr Vec<4, T>& operator/=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator/=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator/=(const Vec<4, U> & v) noexcept;
 
 		//Increment and decrement operators
-		constexpr Vec<4, T>& operator++();
-		constexpr Vec<4, T>& operator--();
-		constexpr Vec<4, T> operator++(int);
-		constexpr Vec<4, T> operator--(int);
+		constexpr Vec<4, T>& operator++() noexcept;
+		constexpr Vec<4, T>& operator--() noexcept;
+		constexpr Vec<4, T> operator++(int) noexcept;
+		constexpr Vec<4, T> operator--(int) noexcept;
 
 		//Unary bit operators
 		template<typename U>
-		constexpr Vec<4, T>& operator%=(U scalar);
+		constexpr Vec<4, T>& operator%=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator%=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator%=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator&=(U scalar);
+		constexpr Vec<4, T>& operator&=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator&=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator&=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator|=(U scalar);
+		constexpr Vec<4, T>& operator|=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator|=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator|=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator^=(U scalar);
+		constexpr Vec<4, T>& operator^=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator^=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator^=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator<<=(U scalar);
+		constexpr Vec<4, T>& operator<<=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator<<=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator<<=(const Vec<4, U> & v) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator>>=(U scalar);
+		constexpr Vec<4, T>& operator>>=(U scalar) noexcept;
 		template<typename U>
-		constexpr Vec<4, T>& operator>>=(const Vec<4, U> & v);
+		constexpr Vec<4, T>& operator>>=(const Vec<4, U> & v) noexcept;
 
 		std::string ToString() const;
 	};
 
 	//Unary operators
 	template<typename T>
-	constexpr Vec<4, T> operator+(const Vec<4, T>& v);
+	constexpr Vec<4, T> operator+(const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator-(const Vec<4, T>& v);
+	constexpr Vec<4, T> operator-(const Vec<4, T>& v) noexcept;
 
 	//Binary operators
 	template<typename T>
-	constexpr Vec<4, T> operator+(const Vec<4, T>& v, const T& scalar);
+	constexpr Vec<4, T> operator+(const Vec<4, T>& v, const T& scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator+(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator+(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator+(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator+(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator-(const Vec<4, T>& v, const T& scalar);
+	constexpr Vec<4, T> operator-(const Vec<4, T>& v, const T& scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator-(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator-(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator-(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator-(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const T& scalar);
+	constexpr Vec<4, T> operator*(const Vec<4, T>& v, const T& scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator*(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator*(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator*(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator*(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator/(const Vec<4, T>& v, const T& scalar);
+	constexpr Vec<4, T> operator/(const Vec<4, T>& v, const T& scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator/(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator/(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator/(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator/(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator%(const Vec<4, T>& v, T scalar);
+	constexpr Vec<4, T> operator%(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator%(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator%(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator%(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator%(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator&(const Vec<4, T>& v, T scalar);
+	constexpr Vec<4, T> operator&(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator&(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator&(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator&(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator&(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator|(const Vec<4, T>& v, T scalar);
+	constexpr Vec<4, T> operator|(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator|(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator|(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator|(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator|(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator^(const Vec<4, T>& v, T scalar);
+	constexpr Vec<4, T> operator^(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator^(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator^(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator^(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator^(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator<<(const Vec<4, T>& v, T scalar);
+	constexpr Vec<4, T> operator<<(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator<<(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator<<(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator<<(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator<<(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator>>(const Vec<4, T>& v, T scalar);
+	constexpr Vec<4, T> operator>>(const Vec<4, T>& v, T scalar) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator>>(T scalar, const Vec<4, T>& v);
+	constexpr Vec<4, T> operator>>(T scalar, const Vec<4, T>& v) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator>>(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr Vec<4, T> operator>>(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr Vec<4, T> operator~(const Vec<4, T>& v);
+	constexpr Vec<4, T> operator~(const Vec<4, T>& v) noexcept;
 
 	//Boolean operators
 	template<typename T>
-	constexpr bool operator==(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr bool operator==(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
 	template<typename T>
-	constexpr bool operator!=(const Vec<4, T>& v1, const Vec<4, T>& v2);
+	constexpr bool operator!=(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept;
 
-	constexpr Vec<4, bool> operator&&(const Vec<4, bool>& v1, const Vec<4, bool>& v2);
+	constexpr Vec<4, bool> operator&&(const Vec<4, bool>& v1, const Vec<4, bool>& v2) noexcept;
 
-	constexpr Vec<4, bool> operator||(const Vec<4, bool>& v1, const Vec<4, bool>& v2);
+	constexpr Vec<4, bool> operator||(const Vec<4, bool>& v1, const Vec<4, bool>& v2) noexcept;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -283,7 +283,7 @@ namespace std
 	template<typename T>
 	struct hash<TRAP::Math::Vec<4, T>>
 	{
-		constexpr std::size_t operator()(const TRAP::Math::Vec<4, T>& v) const
+		constexpr std::size_t operator()(const TRAP::Math::Vec<4, T>& v) const noexcept
 		{
 			std::size_t seed = 0;
 			hash<T> hasher;
@@ -389,7 +389,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(const Vec<4, U>& v) noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-constexpr int TRAP::Math::Vec<4, T>::Length()
+constexpr int TRAP::Math::Vec<4, T>::Length() noexcept
 {
 	return 4;
 }
@@ -447,7 +447,7 @@ constexpr const T& TRAP::Math::Vec<4, T>::operator[](const int i) const
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator=(const Vec<4, U>& v) noexcept
 {
 	this->x = static_cast<T>(v.x);
 	this->y = static_cast<T>(v.y);
@@ -459,56 +459,56 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator=(const Vec<4, U
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x + scalar, this->y + scalar, this->z + scalar, this->w + scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator+=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x + v.x, this->y + v.y, this->z + v.z, this->w + v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x - scalar, this->y - scalar, this->z - scalar, this->w - scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator-=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x - v.x, this->y - v.y, this->z - v.z, this->w - v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x * scalar, this->y * scalar, this->z * scalar, this->w * scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator*=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x * v.x, this->y * v.y, this->z * v.z, this->w * v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x / scalar, this->y / scalar, this->z / scalar, this->w / scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x / v.x, this->y / v.y, this->z / v.z, this->w / v.w));
 }
@@ -517,7 +517,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator/=(const Vec<4, 
 //Increment and decrement operators
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator++()
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator++() noexcept
 {
 	++this->x;
 	++this->y;
@@ -528,7 +528,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator++()
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator--()
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator--() noexcept
 {
 	--this->x;
 	--this->y;
@@ -539,7 +539,7 @@ constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator--()
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const int)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const int) noexcept
 {
 	Vec<4, T> Result(*this);
 	++*this;
@@ -548,7 +548,7 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator++(const int)
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(const int)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(const int) noexcept
 {
 	Vec<4, T> Result(*this);
 	--*this;
@@ -561,84 +561,84 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::Vec<4, T>::operator--(const int)
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x % scalar, this->y % scalar, this->z % scalar, this->w % scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator%=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x % v.x, this->y % v.y, this->z % v.z, this->w % v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x & scalar, this->y & scalar, this->z & scalar, this->w & scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator&=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x & v.x, this->y & v.y, this->z & v.z, this->w & v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x | scalar, this->y | scalar, this->z | scalar, this->w | scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator|=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x | v.x, this->y | v.y, this->z | v.z, this->w | v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x ^ scalar, this->y ^ scalar, this->z ^ scalar, this->w ^ scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator^=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x ^ v.x, this->y ^ v.y, this->z ^ v.z, this->w ^ v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x << scalar, this->y << scalar, this->z << scalar, this->w << scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator<<=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x << v.x, this->y << v.y, this->z << v.z, this->w << v.w));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const U scalar)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const U scalar) noexcept
 {
 	return (*this = Vec<4, T>(this->x >> scalar, this->y >> scalar, this->z >> scalar, this->w >> scalar));
 }
 
 template<typename T>
 template<typename U>
-constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const Vec<4, U>& v)
+constexpr TRAP::Math::Vec<4, T>& TRAP::Math::Vec<4, T>::operator>>=(const Vec<4, U>& v) noexcept
 {
 	return (*this = Vec<4, T>(this->x >> v.x, this->y >> v.y, this->z >> v.z, this->w >> v.w));
 }
@@ -690,13 +690,13 @@ std::string TRAP::Math::Vec<4, T>::ToString() const
 //Unary constant operators
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v) noexcept
 {
 	return v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(0) -= v;
 }
@@ -705,74 +705,74 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v)
 //Binary arithmetic operators
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v, const T& scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v, const T& scalar) noexcept
 {
 	return Vec<4, T>(v) += scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(v) += scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator+(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) += v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v, const T& scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v, const T& scalar) noexcept
 {
 	return Vec<4, T>(v) -= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) -= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator-(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) -= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const T& scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v, const T& scalar) noexcept
 {
 	return Vec<4, T>(v) *= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(v) *= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator*(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) *= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v, const T& scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v, const T& scalar) noexcept
 {
 	return Vec<4, T>(v) /= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) /= v;
 }
 
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) /= v2;
 }
@@ -781,115 +781,115 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator/(const Vec<4, T>& v1, const
 //Binary bit operators
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v, const T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) %= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) %= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator%(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) %= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v, const T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) &= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) &= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator&(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) &= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v, const T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) |= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) |= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator|(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) |= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v, const T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) ^= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) ^= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator^(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) ^= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v, const T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) <<= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) <<= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator<<(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) <<= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v, const T scalar)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v, const T scalar) noexcept
 {
 	return Vec<4, T>(v) >>= scalar;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const T scalar, const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const T scalar, const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(scalar) >>= v;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator>>(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return Vec<4, T>(v1) >>= v2;
 }
 
 template<typename T>
-constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator~(const Vec<4, T>& v)
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator~(const Vec<4, T>& v) noexcept
 {
 	return Vec<4, T>(~v.x, ~v.y, ~v.z, ~v.w);
 }
@@ -898,23 +898,23 @@ constexpr TRAP::Math::Vec<4, T> TRAP::Math::operator~(const Vec<4, T>& v)
 //Boolean operators
 
 template<typename T>
-constexpr bool TRAP::Math::operator==(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr bool TRAP::Math::operator==(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w;
 }
 
 template<typename T>
-constexpr bool TRAP::Math::operator!=(const Vec<4, T>& v1, const Vec<4, T>& v2)
+constexpr bool TRAP::Math::operator!=(const Vec<4, T>& v1, const Vec<4, T>& v2) noexcept
 {
 	return !(v1 == v2);
 }
 
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator&&(const Vec<4, bool>& v1, const Vec<4, bool>& v2)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator&&(const Vec<4, bool>& v1, const Vec<4, bool>& v2) noexcept
 {
 	return Vec<4, bool>(v1.x && v2.x, v1.y && v2.y, v1.z && v2.z, v1.w && v2.w);
 }
 
-constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator||(const Vec<4, bool>& v1, const Vec<4, bool>& v2)
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::operator||(const Vec<4, bool>& v1, const Vec<4, bool>& v2) noexcept
 {
 	return Vec<4, bool>(v1.x || v2.x, v1.y || v2.y, v1.z || v2.z, v1.w || v2.w);
 }

@@ -58,7 +58,7 @@ namespace TRAP::Utils::Discord
     /// Get the Discord Game SDK discord::Core* instance.
     /// </summary>
     /// <returns>Handle to internal Discord Game SDK discord::Core*, nullptr when not initialized.</returns>
-    discord::Core* GetDiscordCore();
+    discord::Core* GetDiscordCore() noexcept;
 #endif
 }
 

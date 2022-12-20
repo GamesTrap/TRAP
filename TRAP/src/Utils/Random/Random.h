@@ -19,7 +19,7 @@ namespace TRAP::Utils
         /// Use std::seed_seq with additional seed from C++ chrono.
         /// </summary>
         /// <returns>Seed sequence.</returns>
-        std::seed_seq& operator()()
+        std::seed_seq& operator()() noexcept
         {
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1084,7 +1084,7 @@ namespace TRAP::Utils
         /// </summary>
         /// <param name="other">Engine, with which the internal engine will be compared.</param>
         /// <returns>True if other and internal engine are equal, false otherwise.</returns>
-        bool IsEqual(const engine& other)
+        bool IsEqual(const engine& other) noexcept
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1360,7 +1360,7 @@ namespace TRAP::Utils
         /// Retrieve internal engine by copy.
         /// </summary>
         /// <returns>Internal engine.</returns>
-        engine GetEngine() const
+        engine GetEngine() const noexcept
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 
@@ -1371,7 +1371,7 @@ namespace TRAP::Utils
         /// Retrieve internal engine by ref.
         /// </summary>
         /// <returns>Internal engine-</returns>
-        engine& Engine()
+        engine& Engine() noexcept
     	{
 	        ZoneNamedC(__tracy, tracy::Color::Violet, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Utils);
 

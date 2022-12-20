@@ -319,7 +319,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::filesystem::path filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const void* TRAP::INTERNAL::TGAImage::GetPixelData() const
+const void* TRAP::INTERNAL::TGAImage::GetPixelData() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -328,7 +328,7 @@ const void* TRAP::INTERNAL::TGAImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Green, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::ImageLoader) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

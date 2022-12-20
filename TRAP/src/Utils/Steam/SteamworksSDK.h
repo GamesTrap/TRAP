@@ -43,7 +43,7 @@ namespace TRAP::Utils::Steam
     /// Check whether the Steamworks SDK is initialized or not.
     /// </summary>
     /// <returns>True if Steamworks SDK is initialized, false otherwise.</returns>
-    bool IsInitialized();
+    bool IsInitialized() noexcept;
 
 #ifdef USE_STEAMWORKS_SDK
     /// <summary>

@@ -45,7 +45,7 @@ void TRAP::SceneCamera::SetViewportSize(const uint32_t width, const uint32_t hei
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const
+float TRAP::SceneCamera::GetPerspectiveVerticalFOV() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -64,7 +64,7 @@ void TRAP::SceneCamera::SetPerspectiveVerticalFOV(const float verticalFov)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::SceneCamera::GetPerspectiveNearClip() const
+float TRAP::SceneCamera::GetPerspectiveNearClip() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -83,7 +83,7 @@ void TRAP::SceneCamera::SetPerspectiveNearClip(const float nearClip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::SceneCamera::GetOrthographicSize() const
+float TRAP::SceneCamera::GetOrthographicSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -102,7 +102,7 @@ void TRAP::SceneCamera::SetOrthographicSize(const float size)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::SceneCamera::GetOrthographicClip() const
+TRAP::Math::Vec2 TRAP::SceneCamera::GetOrthographicClip() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -122,7 +122,7 @@ void TRAP::SceneCamera::SetOrthographicClip(const Math::Vec2 clip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::SceneCamera::GetOrthographicNearClip() const
+float TRAP::SceneCamera::GetOrthographicNearClip() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -141,7 +141,7 @@ void TRAP::SceneCamera::SetOrthographicNearClip(const float nearClip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::SceneCamera::GetOrthographicFarClip() const
+float TRAP::SceneCamera::GetOrthographicFarClip() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -160,7 +160,7 @@ void TRAP::SceneCamera::SetOrthographicFarClip(const float farClip)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::SceneCamera::ProjectionType TRAP::SceneCamera::GetProjectionType() const
+TRAP::SceneCamera::ProjectionType TRAP::SceneCamera::GetProjectionType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Turquoise, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Scene) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

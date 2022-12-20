@@ -3554,3 +3554,7 @@ SITREP 12/18/2022|22w50c2
     - SPIRVTools Moved CrossCompiler::m_compiler to stack ~<5 mins
     - WindowingAPI Fixed retrieving of monitor resolutions ~>10 mins
     - Added noexcept to Events ~>30 mins
+
+SITREP 12/20/2022|22w51a1
+    - Changed TRAP Engine version to 22w51a1(0.8.86)
+    - Added noexcept where applicable ~>120 mins

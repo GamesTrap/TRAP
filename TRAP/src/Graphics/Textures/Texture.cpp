@@ -548,7 +548,7 @@ bool TRAP::Graphics::Texture::Reload()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::Texture::GetName() const
+std::string TRAP::Graphics::Texture::GetName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -557,7 +557,7 @@ std::string TRAP::Graphics::Texture::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
+TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -566,7 +566,7 @@ TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetWidth() const
+uint32_t TRAP::Graphics::Texture::GetWidth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -575,7 +575,7 @@ uint32_t TRAP::Graphics::Texture::GetWidth() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetHeight() const
+uint32_t TRAP::Graphics::Texture::GetHeight() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -584,7 +584,7 @@ uint32_t TRAP::Graphics::Texture::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const
+TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -593,7 +593,7 @@ TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetDepth() const
+uint32_t TRAP::Graphics::Texture::GetDepth() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -602,7 +602,7 @@ uint32_t TRAP::Graphics::Texture::GetDepth() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetArraySize() const
+uint32_t TRAP::Graphics::Texture::GetArraySize() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -611,7 +611,7 @@ uint32_t TRAP::Graphics::Texture::GetArraySize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetMipLevels() const
+uint32_t TRAP::Graphics::Texture::GetMipLevels() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -620,7 +620,7 @@ uint32_t TRAP::Graphics::Texture::GetMipLevels() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetAspectMask() const
+uint32_t TRAP::Graphics::Texture::GetAspectMask() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -629,7 +629,7 @@ uint32_t TRAP::Graphics::Texture::GetAspectMask() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const
+TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -638,7 +638,7 @@ TRAP::Image::ColorFormat TRAP::Graphics::Texture::GetColorFormat() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const
+TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -647,7 +647,7 @@ TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::GetImageFormat() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const
+TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescriptorTypes() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -656,7 +656,7 @@ TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::Texture::GetDescript
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const
+uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -665,7 +665,7 @@ uint32_t TRAP::Graphics::Texture::GetBitsPerChannel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const
+uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -674,7 +674,7 @@ uint32_t TRAP::Graphics::Texture::GetBytesPerChannel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const
+uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -683,7 +683,7 @@ uint32_t TRAP::Graphics::Texture::GetBitsPerPixel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const
+uint32_t TRAP::Graphics::Texture::GetBytesPerPixel() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -725,7 +725,7 @@ TRAP::Math::Vec2ui TRAP::Graphics::Texture::GetMipSize(const uint32_t mipLevel) 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const
+const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -734,7 +734,7 @@ const std::filesystem::path& TRAP::Graphics::Texture::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const
+const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePaths() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -743,7 +743,7 @@ const std::array<std::filesystem::path, 6>& TRAP::Graphics::Texture::GetFilePath
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const
+TRAP::Graphics::TextureCubeFormat TRAP::Graphics::Texture::GetCubeFormat() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -796,7 +796,7 @@ void TRAP::Graphics::Texture::Update(const void* const data, const uint32_t size
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Texture::OwnsImage() const
+bool TRAP::Graphics::Texture::OwnsImage() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -43,112 +43,112 @@ static constexpr std::array<uint64_t, 80> SHA512_K =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Rotr(const uint32_t x, const int32_t n)
+constexpr uint32_t Rotr(const uint32_t x, const int32_t n) noexcept
 {
 	return (x >> n) | (x << (32 - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Rotr(const uint64_t x, const int32_t n)
+constexpr uint64_t Rotr(const uint64_t x, const int32_t n) noexcept
 {
 	return (x >> n) | (x << (64 - n));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Shr(const uint32_t x, const int32_t n)
+constexpr uint32_t Shr(const uint32_t x, const int32_t n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Shr(const uint64_t x, const int32_t n)
+constexpr uint64_t Shr(const uint64_t x, const int32_t n) noexcept
 {
 	return x >> n;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Ch(const uint32_t x, const uint32_t y, const uint32_t z)
+constexpr uint32_t Ch(const uint32_t x, const uint32_t y, const uint32_t z) noexcept
 {
 	return (x & y) ^ (~x & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Ch(const uint64_t x, const uint64_t y, const uint64_t z)
+constexpr uint64_t Ch(const uint64_t x, const uint64_t y, const uint64_t z) noexcept
 {
 	return (x & y) ^ (~x & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Maj(const uint32_t x, const uint32_t y, const uint32_t z)
+constexpr uint32_t Maj(const uint32_t x, const uint32_t y, const uint32_t z) noexcept
 {
 	return (x & y) ^ (x & z) ^ (y & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Maj(const uint64_t x, const uint64_t y, const uint64_t z)
+constexpr uint64_t Maj(const uint64_t x, const uint64_t y, const uint64_t z) noexcept
 {
 	return (x & y) ^ (x & z) ^ (y & z);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Sum0(const uint32_t x)
+constexpr uint32_t Sum0(const uint32_t x) noexcept
 {
 	return Rotr(x, 2) ^ Rotr(x, 13) ^ Rotr(x, 22);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Sum0(const uint64_t x)
+constexpr uint64_t Sum0(const uint64_t x) noexcept
 {
 	return Rotr(x, 28) ^ Rotr(x, 34) ^ Rotr(x, 39);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Sum1(const uint32_t x)
+constexpr uint32_t Sum1(const uint32_t x) noexcept
 {
 	return Rotr(x, 6) ^ Rotr(x, 11) ^ Rotr(x, 25);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Sum1(const uint64_t x)
+constexpr uint64_t Sum1(const uint64_t x) noexcept
 {
 	return Rotr(x, 14) ^ Rotr(x, 18) ^ Rotr(x, 41);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Sigma0(const uint32_t x)
+constexpr uint32_t Sigma0(const uint32_t x) noexcept
 {
 	return Rotr(x, 7) ^ Rotr(x, 18) ^ Shr(x, 3);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Sigma0(const uint64_t x)
+constexpr uint64_t Sigma0(const uint64_t x) noexcept
 {
 	return Rotr(x, 1) ^ Rotr(x, 8) ^ Shr(x, 7);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t Sigma1(const uint32_t x)
+constexpr uint32_t Sigma1(const uint32_t x) noexcept
 {
 	return Rotr(x, 17) ^ Rotr(x, 19) ^ Shr(x, 10);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint64_t Sigma1(const uint64_t x)
+constexpr uint64_t Sigma1(const uint64_t x) noexcept
 {
 	return Rotr(x, 19) ^ Rotr(x, 61) ^ Shr(x, 6);
 }

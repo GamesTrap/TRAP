@@ -28,21 +28,21 @@ namespace TRAP
 
 		void SetViewportSize(uint32_t width, uint32_t height);
 
-		float GetPerspectiveVerticalFOV() const;
+		float GetPerspectiveVerticalFOV() const noexcept;
 		void SetPerspectiveVerticalFOV(float verticalFov);
-		float GetPerspectiveNearClip() const;
+		float GetPerspectiveNearClip() const noexcept;
 		void SetPerspectiveNearClip(float nearClip);
 
-		float GetOrthographicSize() const;
+		float GetOrthographicSize() const noexcept;
 		void SetOrthographicSize(float size);
-		Math::Vec2 GetOrthographicClip() const;
+		Math::Vec2 GetOrthographicClip() const noexcept;
 		void SetOrthographicClip(Math::Vec2 clip);
-		float GetOrthographicNearClip() const;
+		float GetOrthographicNearClip() const noexcept;
 		void SetOrthographicNearClip(float nearClip);
-		float GetOrthographicFarClip() const;
+		float GetOrthographicFarClip() const noexcept;
 		void SetOrthographicFarClip(float farClip);
 
-		ProjectionType GetProjectionType() const;
+		ProjectionType GetProjectionType() const noexcept;
 		void SetProjectionType(ProjectionType type);
 	private:
 		void RecalculateProjection();

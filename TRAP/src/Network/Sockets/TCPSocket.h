@@ -49,7 +49,7 @@ namespace TRAP::Network
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		TCPSocket();
+		TCPSocket() noexcept;
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.
@@ -170,7 +170,7 @@ namespace TRAP::Network
 		/// </summary>
 		struct PendingPacket
 		{
-			PendingPacket();
+			PendingPacket() noexcept;
 
 			uint32_t Size;            //Data of packet size
 			std::size_t SizeReceived; //Number of size bytes received so far

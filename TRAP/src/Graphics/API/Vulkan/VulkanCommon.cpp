@@ -41,7 +41,7 @@ void TRAP::Graphics::API::VkSetObjectName([[maybe_unused]] VkDevice device, [[ma
 
 //Determines pipeline stages involved for given accesses
 VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags,
-                                                                        const RendererAPI::QueueType queueType)
+                                                                        const RendererAPI::QueueType queueType) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -298,7 +298,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool /*HDR*/,
-																						  const bool SRGB)
+																						  const bool SRGB) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

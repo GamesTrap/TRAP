@@ -92,7 +92,7 @@ IMGUI_IMPL_API void           ImGui_ImplVulkan_DestroyFontUploadObjects();
 IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count); // To override MinImageCount after initialization (e.g. if swap chain is recreated)
 IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
 IMGUI_IMPL_API ImTextureID    ImGui_ImplVulkan_UpdateTextureInfo(VkDescriptorSet descriptorSet, VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
-IMGUI_IMPL_API void           ImGui_ImplVulkan_ClearCache();
+IMGUI_IMPL_API void           ImGui_ImplVulkan_ClearCache() noexcept;
 IMGUI_IMPL_API void           ImGui_ImplVulkan_SetMSAASamples(VkSampleCountFlagBits sampleCount);
 
 //-------------------------------------------------------------------------
@@ -160,7 +160,7 @@ struct ImGui_ImplVulkanH_Window
     ImGui_ImplVulkanH_Frame*            Frames;
     ImGui_ImplVulkanH_FrameSemaphores*  FrameSemaphores;
 
-    ImGui_ImplVulkanH_Window()
+    ImGui_ImplVulkanH_Window() noexcept
         : Width(), Height(), Swapchain(VK_NULL_HANDLE), Surface(VK_NULL_HANDLE), SurfaceFormat(),
           PresentMode(VK_PRESENT_MODE_MAX_ENUM_KHR), RenderPass(VK_NULL_HANDLE),
           Pipeline(VK_NULL_HANDLE), ClearEnable(true), ClearValue(), FrameIndex(), ImageCount(),

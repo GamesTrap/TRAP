@@ -145,7 +145,7 @@ bool TRAP::Utils::Discord::SetActivity([[maybe_unused]] const Activity& activity
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef USE_DISCORD_GAME_SDK
-discord::Core* TRAP::Utils::Discord::GetDiscordCore()
+discord::Core* TRAP::Utils::Discord::GetDiscordCore() noexcept
 {
     return core;
 }

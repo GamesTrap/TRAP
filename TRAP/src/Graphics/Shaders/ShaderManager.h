@@ -61,7 +61,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// Retrieve all loaded shader from the ShaderManager.
 	/// </summary>
 	/// <returns>Map of all loaded shaders.</returns>
-	const std::unordered_map<std::string, Ref<Shader>>& GetShaders();
+	const std::unordered_map<std::string, Ref<Shader>>& GetShaders() noexcept;
 	/// <summary>
 	/// Clear all shaders from the ShaderManager.
 	/// Except fallback shaders.
@@ -107,7 +107,7 @@ namespace TRAP::Graphics::ShaderManager
 	/// <summary>
 	/// Shutdown the ShaderManager.
 	/// </summary>
-	void Shutdown();
+	void Shutdown() noexcept;
 }
 
 #endif /*TRAP_SHADERMANAGER_H*/

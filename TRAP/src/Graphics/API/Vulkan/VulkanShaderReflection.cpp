@@ -42,7 +42,7 @@ constexpr std::array<TRAP::Graphics::API::ShaderReflection::TextureDimension,
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource,
-                              const TRAP::Graphics::RendererAPI::ShaderStage currentStage)
+                              const TRAP::Graphics::RendererAPI::ShaderStage currentStage) noexcept
 {
 	bool filter = false;
 

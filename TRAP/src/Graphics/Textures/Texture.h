@@ -158,84 +158,84 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the texture.
 		/// </summary>
 		/// <returns>Name of the texture.</returns>
-		std::string GetName() const;
+		std::string GetName() const noexcept;
 		/// <summary>
 		/// Retrieve the texture type.
 		/// </summary>
 		/// <returns>Texture type.</returns>
-		TextureType GetType() const;
+		TextureType GetType() const noexcept;
 		/// <summary>
 		/// Retrieve the texture width.
 		/// </summary>
 		/// <returns>Texture width.</returns>
-		uint32_t GetWidth() const;
+		uint32_t GetWidth() const noexcept;
 		/// <summary>
 		/// Retrieve the texture height.
 		/// </summary>
 		/// <returns>Texture height.</returns>
-		uint32_t GetHeight() const;
+		uint32_t GetHeight() const noexcept;
 		/// <summary>
 		/// Retrieve the texture size.
 		/// </summary>
 		/// <returns>Texture size.</returns>
-		Math::Vec2ui GetSize() const;
+		Math::Vec2ui GetSize() const noexcept;
 		/// <summary>
 		/// Retrieve the texture depth.
 		/// </summary>
 		/// <returns>Texture depth.</returns>
-		uint32_t GetDepth() const;
+		uint32_t GetDepth() const noexcept;
 		/// <summary>
 		/// Retrieve the texture array size.
 		/// </summary>
 		/// <returns>Texture array size.</returns>
-		uint32_t GetArraySize() const;
+		uint32_t GetArraySize() const noexcept;
 		/// <summary>
 		/// Retrieve the textures mip level count.
 		/// </summary>
 		/// <returns>Textures mip level count.</returns>
-		uint32_t GetMipLevels() const;
+		uint32_t GetMipLevels() const noexcept;
 		/// <summary>
 		/// Retrieve the textures aspect mask.
 		/// Aspect mask specifies which aspects (Color, Depth, Stencil) are included in the texture.
 		/// </summary>
 		/// <returns>Aspect mask.</returns>
-		uint32_t GetAspectMask() const;
+		uint32_t GetAspectMask() const noexcept;
 		/// <summary>
 		/// Retrieve the textures color format.
 		/// </summary>
 		/// <returns>Textures color format.</returns>
-		Image::ColorFormat GetColorFormat() const;
+		Image::ColorFormat GetColorFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the textures image format.
 		/// </summary>
 		/// <returns>Image format.</returns>
-		TRAP::Graphics::API::ImageFormat GetImageFormat() const;
+		TRAP::Graphics::API::ImageFormat GetImageFormat() const noexcept;
 		/// <summary>
 		/// Retrieve the textures used descriptor types.
 		/// </summary>
 		/// <returns>Used descriptor types.</returns>
-		RendererAPI::DescriptorType GetDescriptorTypes() const;
+		RendererAPI::DescriptorType GetDescriptorTypes() const noexcept;
 
 		/// <summary>
 		/// Retrieve the textures bits per channel.
 		/// </summary>
 		/// <returns>Textures bits per channel.</returns>
-		uint32_t GetBitsPerChannel() const;
+		uint32_t GetBitsPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bytes per channel.
 		/// </summary>
 		/// <returns>Textures bytes per channel.</returns>
-		uint32_t GetBytesPerChannel() const;
+		uint32_t GetBytesPerChannel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bits per pixel.
 		/// </summary>
 		/// <returns>Textures bits per pixel.</returns>
-		uint32_t GetBitsPerPixel() const;
+		uint32_t GetBitsPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures bytes per pixel.
 		/// </summary>
 		/// <returns>Textures bytes per pixel.</returns>
-		uint32_t GetBytesPerPixel() const;
+		uint32_t GetBytesPerPixel() const noexcept;
 		/// <summary>
 		/// Retrieve the textures mip width of a specific level.
 		/// </summary>
@@ -258,17 +258,17 @@ namespace TRAP::Graphics
 		/// Retrieve the file path of the texture.
 		/// </summary>
 		/// <returns>File path of the texture.</returns>
-		const std::filesystem::path& GetFilePath() const;
+		const std::filesystem::path& GetFilePath() const noexcept;
 		/// <summary>
 		/// Retrieve the file path of the texture.
 		/// </summary>
 		/// <returns>File path of the texture.</returns>
-		const std::array<std::filesystem::path, 6>& GetFilePaths() const;
+		const std::array<std::filesystem::path, 6>& GetFilePaths() const noexcept;
 		/// <summary>
 		/// Retrieve the cube format of the texture.
 		/// </summary>
 		/// <returns>Cube format of the texture.</returns>
-		TextureCubeFormat GetCubeFormat() const;
+		TextureCubeFormat GetCubeFormat() const noexcept;
 
 		/// <summary>
 		/// Update the texture with raw pixel data.
@@ -291,7 +291,7 @@ namespace TRAP::Graphics
 		/// Retrieve whether the texture owns the image data.
 		/// </summary>
 		/// <returns>True if texture owns the image data, false otherwise.</returns>
-		bool OwnsImage() const;
+		bool OwnsImage() const noexcept;
 
 		/// <summary>
 		/// Check if texture finished loading.
@@ -343,13 +343,13 @@ namespace TRAP::Graphics
 		/// </summary>
 		/// <param name="imageFormat">Image format.</param>
 		/// <returns>Color format.</returns>
-		static constexpr Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat);
+		static constexpr Image::ColorFormat ImageFormatToColorFormat(API::ImageFormat imageFormat) noexcept;
 		/// <summary>
 		/// Retrieve bits per channel from image format.
 		/// </summary>
 		/// <param name="imageFormat">Image format.</param>
 		/// <returns>Bits per channel.</returns>
-		static constexpr uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat);
+		static constexpr uint32_t GetBitsPerChannelFromImageFormat(API::ImageFormat imageFormat) noexcept;
 		/// <summary>
 		/// Rotate image 90 degrees clockwise.
 		/// </summary>
@@ -568,7 +568,7 @@ constexpr TRAP::Graphics::API::ImageFormat TRAP::Graphics::Texture::ColorFormatB
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFormat(const API::ImageFormat imageFormat)
+constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFormat(const API::ImageFormat imageFormat) noexcept
 {
 	switch(imageFormat)
 	{
@@ -666,7 +666,7 @@ constexpr TRAP::Image::ColorFormat TRAP::Graphics::Texture::ImageFormatToColorFo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat)
+constexpr uint32_t TRAP::Graphics::Texture::GetBitsPerChannelFromImageFormat(const API::ImageFormat imageFormat) noexcept
 {
 	switch(imageFormat)
 	{

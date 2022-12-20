@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the VkCommandPool handle.
 		/// </summary>
 		/// <returns>VkCommandPool handle.</returns>
-		VkCommandPool GetVkCommandPool() const;
+		VkCommandPool GetVkCommandPool() const noexcept;
 
 		/// <summary>
 		/// Allocate a new command buffer.

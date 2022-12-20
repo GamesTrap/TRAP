@@ -50,7 +50,7 @@ void TRAP::Network::HTTP::Request::SetField(const std::string& field, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::Request::SetMethod(const Method method)
+void TRAP::Network::HTTP::Request::SetMethod(const Method method) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -72,7 +72,7 @@ void TRAP::Network::HTTP::Request::SetURI(std::string uri)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const uint32_t minor)
+void TRAP::Network::HTTP::Request::SetHTTPVersion(const uint32_t major, const uint32_t minor) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -154,7 +154,7 @@ bool TRAP::Network::HTTP::Request::HasField(const std::string& field) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::Response::Response()
+TRAP::Network::HTTP::Response::Response() noexcept
 	: m_status(Status::ConnectionFailed),
 	  m_majorVersion(0),
 	  m_minorVersion(0)
@@ -177,7 +177,7 @@ std::string TRAP::Network::HTTP::Response::GetField(const std::string& field) co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus() const
+TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -186,7 +186,7 @@ TRAP::Network::HTTP::Response::Status TRAP::Network::HTTP::Response::GetStatus()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const
+uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -195,7 +195,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMajorHTTPVersion() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const
+uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -204,7 +204,7 @@ uint32_t TRAP::Network::HTTP::Response::GetMinorHTTPVersion() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Network::HTTP::Response::GetBody() const
+std::string TRAP::Network::HTTP::Response::GetBody() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

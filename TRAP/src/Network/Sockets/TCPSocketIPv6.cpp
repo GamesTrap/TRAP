@@ -24,7 +24,7 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocketIPv6::TCPSocketIPv6()
+TRAP::Network::TCPSocketIPv6::TCPSocketIPv6() noexcept
 	: Socket(Type::TCP)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -406,7 +406,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocketIPv6::PendingPacket::PendingPacket()
+TRAP::Network::TCPSocketIPv6::PendingPacket::PendingPacket() noexcept
 	: Size(0), SizeReceived(0)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);

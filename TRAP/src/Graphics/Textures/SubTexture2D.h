@@ -76,24 +76,24 @@ namespace TRAP::Graphics
         /// Retrieve the used sprite sheet texture.
         /// </summary>
         /// <returns>Sprite sheet texture.</returns>
-        Ref<TRAP::Graphics::Texture> GetTexture() const;
+        Ref<TRAP::Graphics::Texture> GetTexture() const noexcept;
 
         /// <summary>
         /// Retrieve the texture coordinates for this sub texture.
         /// </summary>
         /// <returns>Texture coordinates.</returns>
-        const std::array<TRAP::Math::Vec2, 4>& GetTexCoords() const;
+        const std::array<TRAP::Math::Vec2, 4>& GetTexCoords() const noexcept;
 
         /// <summary>
         /// Retrieve the name of the sprite.
         /// </summary>
         /// <returns>Name of the sprite.</returns>
-        std::string GetName();
+        std::string GetName() noexcept;
         /// <summary>
         /// Retrieve the name of the sprite.
         /// </summary>
         /// <returns>Name of the sprite.</returns>
-        const std::string& GetName() const;
+        const std::string& GetName() const noexcept;
 
     private:
         Ref<TRAP::Graphics::Texture> m_texture;

@@ -71,7 +71,7 @@ void TRAP::Utils::Steam::RunCallbacks()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Steam::IsInitialized()
+bool TRAP::Utils::Steam::IsInitialized() noexcept
 {
 #ifdef USE_STEAMWORKS_SDK
     return steamInitialized;

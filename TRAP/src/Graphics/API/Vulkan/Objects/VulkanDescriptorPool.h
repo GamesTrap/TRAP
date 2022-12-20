@@ -53,17 +53,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the current VkDescriptorPool handle.
 		/// </summary>
 		/// <returns>VkDescriptorPool handle.</returns>
-		VkDescriptorPool GetCurrentVkDescriptorPool() const;
+		VkDescriptorPool GetCurrentVkDescriptorPool() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor pool sizes for each descriptor type.
 		/// </summary>
 		/// <returns>Descriptor pool sizes.</returns>
-		const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const;
+		const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const noexcept;
 		/// <summary>
 		/// Retrieve the count of used descriptor sets.
 		/// </summary>
 		/// <returns>Count of used descriptor sets.</returns>
-		uint32_t GetUsedDescriptorSetsCount() const;
+		uint32_t GetUsedDescriptorSetsCount() const noexcept;
 
 		/// <summary>
 		/// Retrieve a new descriptor set from description.

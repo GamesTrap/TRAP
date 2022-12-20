@@ -29,7 +29,7 @@ TRAP::Graphics::SpriteAnimation::SpriteAnimation(std::string name, std::vector<T
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime)
+void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics);
 
@@ -47,7 +47,7 @@ void TRAP::Graphics::SpriteAnimation::OnUpdate(const Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteAnimation::GetAllSprites() const
+const std::vector<TRAP::Ref<TRAP::Graphics::SubTexture2D>>& TRAP::Graphics::SpriteAnimation::GetAllSprites() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -65,7 +65,7 @@ TRAP::Ref<TRAP::Graphics::SubTexture2D> TRAP::Graphics::SpriteAnimation::GetCurr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::SpriteAnimation::SetSpeed(const float speed)
+void TRAP::Graphics::SpriteAnimation::SetSpeed(const float speed) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -74,7 +74,7 @@ void TRAP::Graphics::SpriteAnimation::SetSpeed(const float speed)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Graphics::SpriteAnimation::GetSpeed() const
+float TRAP::Graphics::SpriteAnimation::GetSpeed() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -83,7 +83,7 @@ float TRAP::Graphics::SpriteAnimation::GetSpeed() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::SpriteAnimation::Play()
+void TRAP::Graphics::SpriteAnimation::Play() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -92,7 +92,7 @@ void TRAP::Graphics::SpriteAnimation::Play()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::SpriteAnimation::Pause()
+void TRAP::Graphics::SpriteAnimation::Pause() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -101,7 +101,7 @@ void TRAP::Graphics::SpriteAnimation::Pause()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::SpriteAnimation::Stop()
+void TRAP::Graphics::SpriteAnimation::Stop() noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

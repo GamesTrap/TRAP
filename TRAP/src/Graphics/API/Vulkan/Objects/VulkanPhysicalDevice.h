@@ -45,7 +45,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan physical device handle.
 		/// </summary>
 		/// <returns>Vulkan physical device handle.</returns>
-		VkPhysicalDevice GetVkPhysicalDevice() const;
+		VkPhysicalDevice GetVkPhysicalDevice() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device format properties for a specific format.
 		/// </summary>
@@ -56,37 +56,37 @@ namespace TRAP::Graphics::API
 		/// Retrieve the Vulkan physical device properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceProperties.</returns>
-		const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const;
+		const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device subgroup properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceSubgroupProperties.</returns>
-		const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const;
+		const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device id properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceIDProperties.</returns>
-		const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const;
+		const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device memory properties.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceMemoryProperties.</returns>
-		const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const;
+		const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFeatures.</returns>
-		const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const;
+		const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan physical device fragment shader interlock features.
 		/// </summary>
 		/// <returns>VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT.</returns>
-		const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const;
+		const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const noexcept;
 		/// <summary>
 		/// Retrieve the Vulkan queue family properties of each queue family.
 		/// </summary>
 		/// <returns>List of VkQueueFamilyProperties.</returns>
-		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const;
+		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const noexcept;
 		/// <summary>
 		/// Check whether an extension is supported by the physical device or not.
 		/// </summary>
@@ -104,7 +104,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the physical device's UUID.
 		/// </summary>
 		/// <returns>Physical device UUID.</returns>
-		const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const;
+		const std::array<uint8_t, 16>& GetPhysicalDeviceUUID() const noexcept;
 
 		/// <summary>
 		/// Retrieve the physical device fragment shader interlock features.
@@ -116,7 +116,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the vendor of the physical device.
 		/// </summary>
 		/// <returns>Vendor.</returns>
-		RendererAPI::GPUVendor GetVendor() const;
+		RendererAPI::GPUVendor GetVendor() const noexcept;
 
 		/// <summary>
 		/// Retrieve a list of all rated physical devices.
@@ -194,7 +194,7 @@ namespace TRAP::Graphics::API
 		/// Retrieve the max usable MSAA sample count for the GPU.
 		/// </summary>
 		/// <returns>Max usable MSAA sample count.</returns>
-		uint32_t GetMaxUsableMSAASampleCount() const;
+		uint32_t GetMaxUsableMSAASampleCount() const noexcept;
 
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;

@@ -11,7 +11,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Monitor::GetName() const
+std::string TRAP::Monitor::GetName() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::DarkOrange, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Window) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

@@ -11,7 +11,7 @@ TRAP::Graphics::Camera::Camera(const TRAP::Math::Mat4& projection) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Math::Mat4& TRAP::Graphics::Camera::GetProjectionMatrix() const
+const TRAP::Math::Mat4& TRAP::Graphics::Camera::GetProjectionMatrix() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

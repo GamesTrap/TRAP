@@ -505,7 +505,7 @@ namespace TRAP::Graphics::API
 		/// Example title: "[Vulkan 1.3.0]".
 		/// </summary>
 		/// <returns>Renderer title.</returns>
-		std::string GetTitle() const override;
+		std::string GetTitle() const noexcept override;
 		/// <summary>
 		/// Retrieve whether VSync is enabled or not for the given window.
 		/// </summary>
@@ -517,17 +517,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the currently used GPUs UUID.
 		/// </summary>
 		/// <returns>GPU's UUID.</returns>
-		std::array<uint8_t, 16> GetCurrentGPUUUID() const override;
+		std::array<uint8_t, 16> GetCurrentGPUUUID() const noexcept override;
 		/// <summary>
 		/// Retrieve the name of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU's name.</returns>
-		std::string GetCurrentGPUName() const override;
+		std::string GetCurrentGPUName() const noexcept override;
 		/// <summary>
 		/// Retrieve the vendor of the currently used GPU.
 		/// </summary>
 		/// <returns>GPU vendor.</returns>
-		GPUVendor GetCurrentGPUVendor() const override;
+		GPUVendor GetCurrentGPUVendor() const noexcept override;
 		/// <summary>
 		/// Retrieve a list of all supported GPUs.
 		/// The list contains the GPUs name and UUID.
@@ -770,17 +770,17 @@ namespace TRAP::Graphics::API
 		/// Retrieve the vulkan instance used by the renderer.
 		/// </summary>
 		/// <returns>Vulkan instance.</returns>
-		TRAP::Ref<VulkanInstance> GetInstance() const;
+		TRAP::Ref<VulkanInstance> GetInstance() const noexcept;
 		/// <summary>
 		/// Retrieve the vulkan device used by the renderer.
 		/// </summary>
 		/// <returns>Vulkan device.</returns>
-		TRAP::Ref<VulkanDevice> GetDevice() const;
+		TRAP::Ref<VulkanDevice> GetDevice() const noexcept;
 		/// <summary>
 		/// Retrieve the vulkan memory allocator used by the renderer.
 		/// </summary>
 		/// <returns>Vulkan memory allocator.</returns>
-		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
+		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const noexcept;
 
 		/// <summary>
 		/// Utility to retrieve a pipeline.

@@ -41,7 +41,7 @@ TRAP::Network::IPv6Address::IPv6Address(const char* const address)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes)
+TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBytes) noexcept
 	: m_address(addressBytes), m_valid(true)
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network);
@@ -69,7 +69,7 @@ std::string TRAP::Network::IPv6Address::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const
+std::array<uint8_t, 16> TRAP::Network::IPv6Address::ToArray() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Azure, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Network) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

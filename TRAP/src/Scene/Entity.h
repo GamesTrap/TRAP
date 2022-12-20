@@ -88,12 +88,12 @@ namespace TRAP
 		Utils::UID GetUID();
 		const std::string& GetName();
 
-		operator bool() const;
-		operator entt::entity() const;
-		operator uint32_t() const;
+		operator bool() const noexcept;
+		operator uint32_t() const noexcept;
+		operator entt::entity() const noexcept;
 
-		bool operator==(Entity other) const;
-		bool operator!=(Entity other) const;
+		bool operator==(Entity other) const noexcept;
+		bool operator!=(Entity other) const noexcept;
 
 	private:
 		entt::entity m_entityHandle{ entt::null };

@@ -433,7 +433,7 @@ void TRAP::Graphics::API::VulkanTexture::Init(const RendererAPI::TextureDesc &de
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const
+VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -442,7 +442,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVVkImageView() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
+VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -451,7 +451,7 @@ VkImageView TRAP::Graphics::API::VulkanTexture::GetSRVStencilVkImageView() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const
+const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImageViews() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -460,7 +460,7 @@ const std::vector<VkImageView> &TRAP::Graphics::API::VulkanTexture::GetUAVVkImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const
+VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -469,7 +469,7 @@ VkImage TRAP::Graphics::API::VulkanTexture::GetVkImage() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const
+VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 
@@ -478,7 +478,7 @@ VmaAllocation TRAP::Graphics::API::VulkanTexture::GetVMAAllocation() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const
+bool TRAP::Graphics::API::VulkanTexture::IsLazilyAllocated() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

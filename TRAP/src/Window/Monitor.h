@@ -61,7 +61,7 @@ namespace TRAP
 		/// Retrieve the name of a monitor.
 		/// </summary>
 		/// <returns>Name of the monitor.</returns>
-		std::string GetName() const;
+		std::string GetName() const noexcept;
 		/// <summary>
 		/// Retrieve a list of available video modes for the monitor.
 		/// </summary>
@@ -71,7 +71,7 @@ namespace TRAP
 		/// Retrieve the current video mode.
 		/// </summary>
 		/// <returns>Current video mode</returns>
-		constexpr VideoMode GetCurrentVideoMode() const;
+		constexpr VideoMode GetCurrentVideoMode() const noexcept;
 		/// <summary>
 		/// Retrieve the monitors content scale.
 		/// </summary>
@@ -133,7 +133,7 @@ namespace TRAP
 		/// Check whether the monitor is currently used by a window.
 		/// </summary>
 		/// <returns>True if monitor is currently used, false otherwise.</returns>
-		constexpr bool IsInUse() const;
+		constexpr bool IsInUse() const noexcept;
 		/// <summary>
 		/// Retrieve the monitors ID.
 		///
@@ -146,7 +146,7 @@ namespace TRAP
 		/// Retrieve a pointer to the internal monitor.
 		/// </summary>
 		/// <returns>Pointer to the internal monitor of the Monitor.</returns>
-		constexpr void* GetInternalMonitor() const;
+		constexpr void* GetInternalMonitor() const noexcept;
 
 		/// <summary>
 		/// Retrieve all currently connected monitors.
@@ -178,7 +178,7 @@ constexpr TRAP::Monitor::VideoMode::VideoMode(const int32_t width, const int32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
+constexpr TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const noexcept
 {
 	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height,
 	                  m_handle->CurrentMode.RefreshRate };
@@ -186,14 +186,14 @@ constexpr TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr bool TRAP::Monitor::IsInUse() const
+constexpr bool TRAP::Monitor::IsInUse() const noexcept
 {
 	return m_handle->Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr void* TRAP::Monitor::GetInternalMonitor() const
+constexpr void* TRAP::Monitor::GetInternalMonitor() const noexcept
 {
 	return m_handle;
 }

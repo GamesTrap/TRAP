@@ -85,13 +85,13 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="nBits">How many bits up to 31.</param>
 			/// <returns>N bits read.</returns>
-			uint32_t PeekBits(std::size_t nBits) const;
+			uint32_t PeekBits(std::size_t nBits) const noexcept;
 			/// <summary>
 			/// Advance n amount of bits in the reader.
 			/// Note: Must have enough bits available with EnsureBits.
 			/// </summary>
 			/// <param name="nBits">How many bits.</param>
-			void AdvanceBits(std::size_t nBits);
+			void AdvanceBits(std::size_t nBits) noexcept;
 
 		private:
 			/// <summary>
@@ -100,14 +100,14 @@ namespace TRAP::Utils::Decompress
 			/// </summary>
 			/// <param name="result">Output variable for the result of the multiplication.</param>
 			/// <returns>True if no overflow happens, false otherwise.</returns>
-			static bool MultiplyOverflow(std::size_t a, std::size_t b, std::size_t& result);
+			static bool MultiplyOverflow(std::size_t a, std::size_t b, std::size_t& result) noexcept;
 			/// <summary>
 			/// Safely check if adding two integers will overflow(no undefined behavior,
 			/// compiler removing the code, etc...) and output result.
 			/// </summary>
 			/// <param name="result">Output variable for the result of the sum.</param>
 			/// <returns>True if no overflow happens, false otherwise.</returns>
-			static bool AddOverflow(std::size_t a, std::size_t b, std::size_t& result);
+			static bool AddOverflow(std::size_t a, std::size_t b, std::size_t& result) noexcept;
 		};
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace TRAP::Utils::Decompress
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			HuffmanTree();
+			HuffmanTree() noexcept;
 
 			std::vector<uint32_t> Codes; //The Huffman codes(bit patterns representing the symbols)
 			std::vector<uint32_t> Lengths; //The lengths of the huffman codes
@@ -241,7 +241,7 @@ namespace TRAP::Utils::Decompress
 			/// <summary>
 			/// Reverse bits.
 			/// </summary>
-			static uint32_t ReverseBits(uint32_t bits, uint32_t num);
+			static uint32_t ReverseBits(uint32_t bits, uint32_t num) noexcept;
 
 			static constexpr uint16_t NumDeflateCodeSymbols = 288;
 			static constexpr uint8_t NumDistanceSymbols = 32;

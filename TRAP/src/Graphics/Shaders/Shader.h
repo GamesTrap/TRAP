@@ -70,42 +70,42 @@ namespace TRAP::Graphics
 		/// Retrieve the name of the shader.
 		/// </summary>
 		/// <returns>Name of the shader.</returns>
-		std::string GetName() const;
+		std::string GetName() const noexcept;
 
 		/// <summary>
 		/// Retrieve the file path of the shader.
 		/// </summary>
 		/// <returns>File path of the shader.</returns>
-		std::filesystem::path GetFilePath() const;
+		std::filesystem::path GetFilePath() const noexcept;
 
 		/// <summary>
 		/// Retrieve the shader stages of the shader.
 		/// <summary>
 		/// <returns>Shader stages of the shader.</returns>
-		RendererAPI::ShaderStage GetShaderStages() const;
+		RendererAPI::ShaderStage GetShaderStages() const noexcept;
 
 		/// <summary>
 		/// Retrieve the used macros of the shader.
 		/// </summary>
 		/// <returns>Used macros.</returns>
-		const std::vector<Macro>& GetMacros() const;
+		const std::vector<Macro>& GetMacros() const noexcept;
 
 		/// <summary>
 		/// Retrieve the root signature of the shader.
 		/// </summary>
 		/// <returns>Root signature of the shader.</returns>
-		TRAP::Ref<RootSignature> GetRootSignature() const;
+		TRAP::Ref<RootSignature> GetRootSignature() const noexcept;
 		/// <summary>
 		/// Retrieve the descriptor sets of the shader.
 		/// </summary>
 		/// <returns>Descriptor sets of the shader.</returns>
-		const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const;
+		const std::array<TRAP::Scope<DescriptorSet>, RendererAPI::MaxDescriptorSets>& GetDescriptorSets() const noexcept;
 
 		/// <summary>
 		/// Retrieve whether the shader is valid (i.e. loaded and compiled) or not.
 		/// </summary>
 		/// <returns>True if shader is valid, false otherwise.</returns>
-		bool IsShaderValid() const;
+		bool IsShaderValid() const noexcept;
 
 		/// <summary>
 		/// Use shader for rendering on the given window.
@@ -176,7 +176,7 @@ namespace TRAP::Graphics
 		/// Retrieve the shaders thread count per work group.
 		/// </summary>
 		/// <returns>Shaders thread count per work group.</returns>
-		virtual const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const = 0;
+		virtual const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const noexcept = 0;
 
 		/// <summary>
 		/// Create a shader from file.

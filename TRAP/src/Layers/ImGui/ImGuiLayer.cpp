@@ -322,7 +322,7 @@ void TRAP::ImGuiLayer::End()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::ImGuiLayer::BlockEvents(const bool block)
+void TRAP::ImGuiLayer::BlockEvents(const bool block) noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Brown, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Layers) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
 

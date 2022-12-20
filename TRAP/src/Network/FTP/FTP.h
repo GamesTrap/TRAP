@@ -128,7 +128,7 @@ namespace TRAP::Network
 			/// </summary>
 			/// <param name="code">Response status code.</param>
 			/// <param name="message">Response message.</param>
-			explicit Response(Status code = Status::InvalidResponse, std::string message = "");
+			explicit Response(Status code = Status::InvalidResponse, std::string message = "") noexcept;
 
 			/// <summary>
 			/// Check if the status code means a success.
@@ -137,19 +137,19 @@ namespace TRAP::Network
 			/// equivalent to testing if the status code is < 400.
 			/// </summary>
 			/// <returns>True if the status is a success, false if it is a failure.</returns>
-			bool IsOK() const;
+			bool IsOK() const noexcept;
 
 			/// <summary>
 			/// Get the status code of the response.
 			/// </summary>
 			/// <returns>Status code.</returns>
-			Status GetStatus() const;
+			Status GetStatus() const noexcept;
 
 			/// <summary>
 			/// Get the full message contained in the response.
 			/// </summary>
 			/// <returns>The response message.</returns>
-			std::string GetMessage() const;
+			std::string GetMessage() const noexcept;
 
 		private:
 			Status m_status; //Status code returned from the server
@@ -172,7 +172,7 @@ namespace TRAP::Network
 			/// Get the directory returned in the response.
 			/// </summary>
 			/// <returns>Directory name.</returns>
-			const std::filesystem::path& GetDirectory() const;
+			const std::filesystem::path& GetDirectory() const noexcept;
 
 		private:
 			std::filesystem::path m_directory; //Directory extracted from the response message
@@ -195,7 +195,7 @@ namespace TRAP::Network
 			/// Return the array of directory/file names.
 			/// </summary>
 			/// <returns>Array containing the requested listing.</returns>
-			const std::vector<std::filesystem::path>& GetListing() const;
+			const std::vector<std::filesystem::path>& GetListing() const noexcept;
 
 		private:
 			std::vector<std::filesystem::path> m_listing; //Directory/file names extracted from the data
