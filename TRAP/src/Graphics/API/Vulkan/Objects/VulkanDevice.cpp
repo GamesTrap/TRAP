@@ -191,6 +191,7 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	                                                                          extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
+	TRAP_ASSERT(m_device, "VulkanDevice(): No Vulkan device!");
 
 	VkLoadDevice(m_device);
 
@@ -226,8 +227,6 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 TRAP::Graphics::API::VulkanDevice::~VulkanDevice()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_device, "~VulkanDevice(): No Vulkan device!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Device");

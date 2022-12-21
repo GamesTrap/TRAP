@@ -37,8 +37,6 @@ TRAP::Graphics::API::VulkanSwapChain::~VulkanSwapChain()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_swapChain, "~VulkanSwapChain(): Vulkan SwapChain is nullptr!");
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Destroying SwapChain");
 #endif
@@ -263,6 +261,7 @@ void TRAP::Graphics::API::VulkanSwapChain::InitSwapchain(RendererAPI::SwapChainD
 		                                                                                     presentMode);
 
 	VkCall(vkCreateSwapchainKHR(m_device->GetVkDevice(), &swapChainCreateInfo, nullptr, &swapChain));
+	TRAP_ASSERT(swapChain, "VulkanSwapChain::InitSwapchain(): Vulkan SwapChain is nullptr!");
 
 	desc.ColorFormat = ImageFormatFromVkFormat(surfaceFormat.format);
 
@@ -327,7 +326,6 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan Device is nullptr!");
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE, "VulkanSwapChain::AcquireNextImage(): Vulkan SwapChain is nullptr!");
 	TRAP_ASSERT(signalSemaphore || fence, "VulkanSwapChain::AcquireNextImage(): Semaphore and Fence are nullptr!");
 

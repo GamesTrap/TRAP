@@ -24,6 +24,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 	const VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(desc.QueryCount,
 	                                                                    QueryTypeToVkQueryType(desc.Type));
 	VkCall(vkCreateQueryPool(device->GetVkDevice(), &info, nullptr, &m_vkQueryPool));
+	TRAP_ASSERT(m_vkQueryPool, "VulkanQueryPool(): Vulkan QueryPool is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -31,8 +32,6 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPo
 TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_vkQueryPool, "~VulkanQueryPool(): Vulkan QueryPool is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Destroying QueryPool");

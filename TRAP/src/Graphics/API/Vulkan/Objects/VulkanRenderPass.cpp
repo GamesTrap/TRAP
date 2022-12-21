@@ -30,6 +30,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 		m_renderPass = CreateRenderPass2(m_device, desc);
 	else
 		m_renderPass = CreateRenderPass(m_device, desc);
+	TRAP_ASSERT(m_renderPass, "VulkanRenderPass(): Vulkan RenderPass is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -37,8 +38,6 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 TRAP::Graphics::API::VulkanRenderPass::~VulkanRenderPass()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_renderPass, "~VulkanRenderPass(): Vulkan RenderPass is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderPassPrefix, "Destroying RenderPass");

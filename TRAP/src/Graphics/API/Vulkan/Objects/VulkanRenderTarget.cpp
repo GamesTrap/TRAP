@@ -123,6 +123,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 	textureDesc.Name = desc.Name;
 
 	m_texture = TRAP::MakeRef<VulkanTexture>();
+	TRAP_ASSERT(m_texture, "VulkanRenderTarget(): Texture is nullptr!");
 	m_texture->Init(textureDesc);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
@@ -137,6 +138,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 																	 depthOrArraySize);
 
 	VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr, &m_vkDescriptor));
+	TRAP_ASSERT(m_vkDescriptor, "VulkanRenderTarget(): Vulkan Descriptor is nullptr!");
 
 	for(uint32_t i = 0; i < m_mipLevels; ++i)
 	{
@@ -168,9 +170,6 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 TRAP::Graphics::API::VulkanRenderTarget::~VulkanRenderTarget()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_texture, "~VulkanRenderTarget(): Texture is nullptr!");
-	TRAP_ASSERT(m_vkDescriptor, "~VulkanRenderTarget(): Vulkan Descriptor is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Destroying RenderTarget");

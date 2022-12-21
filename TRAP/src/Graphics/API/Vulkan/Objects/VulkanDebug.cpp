@@ -22,6 +22,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	{
 		const VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugUtilsCallback);
 		const VkResult res = vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugUtils);
+		TRAP_ASSERT(m_debugUtils, "VulkanDebug(): Debug Utils Messenger is nullptr");
 		if(res != VK_SUCCESS)
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Utils Messenger!");
 	}
@@ -30,6 +31,7 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	{
 		const VkDebugReportCallbackCreateInfoEXT info = VulkanInits::DebugReportCallbackCreateInfo(VulkanDebugReportCallback);
 		const VkResult res = vkCreateDebugReportCallbackEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport);
+		TRAP_ASSERT(m_debugReport, "VulkanDebug(): Debug Report Messenger is nullptr");
 		if(res != VK_SUCCESS)
 			TP_ERROR(TRAP::Log::RendererVulkanPrefix, "Couldn't create Debug Report Messenger!");
 	}
@@ -47,11 +49,9 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 #endif
 
 #ifdef ENABLE_DEBUG_UTILS_EXTENSION
-	TRAP_ASSERT(m_debugUtils, "~VulkanDebug(): Debug Utils Messenger is nullptr");
 	vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugUtils, nullptr);
 	m_debugUtils = nullptr;
 #else
-	TRAP_ASSERT(m_debugReport, "~VulkanDebug(): Debug Report Messenger is nullptr");
 	vkDestroyDebugReportCallbackEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
 	m_debugReport = nullptr;
 #endif

@@ -82,6 +82,7 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 		                                                                    instance->GetVkInstance(), vulkanFunctions);
 
 	VkCall(vmaCreateAllocator(&info, &m_allocator));
+	TRAP_ASSERT(m_allocator, "VulkanMemoryAllocator(): Vulkan Allocator is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -89,8 +90,6 @@ TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Re
 TRAP::Graphics::API::VulkanMemoryAllocator::~VulkanMemoryAllocator()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_allocator, "~VulkanMemoryAllocator(): Vulkan Allocator is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Destroying Allocator");

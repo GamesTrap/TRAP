@@ -29,6 +29,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(TRAP::Ref<VulkanDe
 
 	TRAP_ASSERT(m_device, "VulkanDescriptorSet(): Vulkan Device is nullptr");
 	TRAP_ASSERT(m_rootSignature, "VulkanDescriptorSet(): Vulkan RootSignature is nullptr");
+	TRAP_ASSERT(!m_vkDescriptorSetHandles.empty(), "VulkanDescriptorSet(): No Vulkan DescriptorSets available!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -115,7 +116,6 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(const uint32_t index,
 #define VALIDATE_DESCRIPTOR(descriptor, ...)
 #endif
 
-	TRAP_ASSERT(!m_vkDescriptorSetHandles.empty(), "VulkanDescriptorSet::Update(): No Vulkan DescriptorSets available!");
 	TRAP_ASSERT(index < m_maxSets, "VulkanDescriptorSet::Update(): Index out of range!");
 
 	const TRAP::Ref<VulkanRootSignature>& rootSignature = m_rootSignature;

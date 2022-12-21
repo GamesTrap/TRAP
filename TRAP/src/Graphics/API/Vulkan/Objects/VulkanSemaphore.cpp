@@ -20,6 +20,7 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 
 	VkSemaphoreCreateInfo info = VulkanInits::SemaphoreCreateInfo();
 	VkCall(vkCreateSemaphore(m_device->GetVkDevice(), &info, nullptr, &m_semaphore));
+	TRAP_ASSERT(m_semaphore, "VulkanSemaphore(): Vulkan Semaphore is nullptr");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -27,8 +28,6 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
 TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_semaphore, "~VulkanSemaphore(): Vulkan Semaphore is nullptr");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");

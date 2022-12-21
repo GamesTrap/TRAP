@@ -64,8 +64,6 @@ TRAP::Graphics::API::VulkanQueue::~VulkanQueue()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_vkQueue, "~VulkanQueue(): Vulkan Queue is nullptr");
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Destroying Queue");
 #endif
@@ -156,7 +154,6 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
 	TRAP_ASSERT(!desc.Cmds.empty(), "VulkanQueue::Submit(): No CommandBuffers to submit!");
-	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE, "VulkanQueue::Submit(): Vulkan Queue is nullptr");
 
 	std::vector<VkCommandBuffer> cmds(desc.Cmds.size());
 	for (uint32_t i = 0; i < desc.Cmds.size(); ++i)
@@ -222,8 +219,6 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 
 	if(!desc.SwapChain)
 		return presentStatus;
-
-	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE, "VulkanQueue::Present(): Vulkan Queue is nullptr");
 
 	std::vector<VkSemaphore> wSemaphores;
 	if (!waitSemaphores.empty())

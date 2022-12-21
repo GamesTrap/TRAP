@@ -73,6 +73,7 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 #endif
 
 	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
+	TRAP_ASSERT(m_instance, "VulkanInstance(): Vulkan Instance is nullptr!");
 
 	if (m_instance)
 		VkLoadInstance(m_instance);
@@ -92,8 +93,6 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string_view appNa
 TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_instance, "~VulkanInstance(): Vulkan Instance is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");

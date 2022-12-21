@@ -1160,7 +1160,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uin
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(window, "VulkanRenderer::SetScissor(): VulkanRenderer::SetScissor(): Window is nullptr!");
+	TRAP_ASSERT(window, "VulkanRenderer::SetScissor(): Window is nullptr!");
 
 	const PerWindowData* const data = s_perWindowDataMap.at(window).get();
 

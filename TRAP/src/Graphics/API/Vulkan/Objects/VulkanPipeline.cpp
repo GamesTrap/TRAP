@@ -62,9 +62,6 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
-	TRAP_ASSERT(m_device, "~VulkanPipeline(): Vulkan Device is nullptr!");
-	TRAP_ASSERT(m_vkPipeline, "~VulkanPipeline(): Vulkan Pipeline is nullptr!");
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPipelinePrefix, "Destroying Pipeline");
 #endif
@@ -108,6 +105,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitComputePipeline(const RendererAPI:
 		);
 
 		VkCall(vkCreateComputePipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
+		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
 	}
 }
 
@@ -372,6 +370,7 @@ void TRAP::Graphics::API::VulkanPipeline::InitGraphicsPipeline(const RendererAPI
 			info.pNext = &fsr; //Add shading rate extension
 
 		VkCall(vkCreateGraphicsPipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline));
+		TRAP_ASSERT(m_vkPipeline, "VulkanPipeline::InitComputePipeline(): Vulkan Pipeline is nullptr!");
 
 		renderPass.reset();
 	}

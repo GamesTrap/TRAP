@@ -30,6 +30,7 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	TRAP_ASSERT(instance, "VulkanPhysicalDevice(): Vulkan Instance is nullptr");
 
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
+	TRAP_ASSERT(m_physicalDevice, "VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
 	if (!m_physicalDevice)
 	{
@@ -202,8 +203,6 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 TRAP::Graphics::API::VulkanPhysicalDevice::~VulkanPhysicalDevice()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(m_physicalDevice, "~VulkanPhysicalDevice(): Vulkan Physical Device is nullptr!");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanPhysicalDevicePrefix, "Destroying PhysicalDevice");

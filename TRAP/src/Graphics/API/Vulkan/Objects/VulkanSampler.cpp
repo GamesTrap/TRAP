@@ -130,14 +130,13 @@ void TRAP::Graphics::API::VulkanSampler::Init()
 	info.pNext = &m_vkSamplerYcbcrConversionInfo;
 
 	VkCall(vkCreateSampler(m_device->GetVkDevice(), &info, nullptr, &m_vkSampler));
+	TRAP_ASSERT(m_vkSampler, "VulkanSampler(): Vulkan Sampler is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanSampler::Shutdown()
 {
-	TRAP_ASSERT(m_vkSampler, "~VulkanSampler(): Vulkan Sampler is nullptr!");
-
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Destroying Sampler");
 #endif

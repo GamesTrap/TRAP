@@ -234,8 +234,6 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc
 
 	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES, "UtilToRasterizerDesc(): Invalid FillMode!");
 	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES, "UtilToRasterizerDesc(): Invalid CullMode!");
-	TRAP_ASSERT(desc.FrontFace == RendererAPI::FrontFace::CounterClockwise ||
-	            desc.FrontFace == RendererAPI::FrontFace::Clockwise, "UtilToRasterizerDesc(): Invalid FrontFace!");
 
 	VkPipelineRasterizationStateCreateInfo rs{};
 	rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;

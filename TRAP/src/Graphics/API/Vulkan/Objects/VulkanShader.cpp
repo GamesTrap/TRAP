@@ -32,6 +32,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
+
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
 	m_valid = valid;
@@ -39,8 +41,6 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 
 	if(userMacros)
 		m_macros = *userMacros;
-
-	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
 	if(!m_valid)
 		return;
@@ -63,14 +63,14 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const Renderer
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
+
 	m_name = std::move(name);
 	m_valid = valid;
 	m_shaderStages = desc.Stages;
 
 	if(userMacros)
 		m_macros = *userMacros;
-
-	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
 	if(!m_valid)
 		return;
@@ -94,6 +94,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
 
+	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
+
 	m_name = std::move(name);
 	m_filepath = std::move(filepath);
 	m_valid = false;
@@ -101,8 +103,6 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::filesyste
 
 	if(userMacros)
 		m_macros = *userMacros;
-
-	TRAP_ASSERT(m_device, "VulkanShader(): Vulkan Device is nullptr");
 
 	//Intentionally not calling InitShader() as this is always an invalid shader
 }

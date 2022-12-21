@@ -7,6 +7,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include <vulkan/vulkan_core.h>
 
 std::array<VkDescriptorPoolSize, TRAP::Graphics::API::VulkanDescriptorPool::DESCRIPTOR_TYPE_RANGE_SIZE>
 TRAP::Graphics::API::VulkanDescriptorPool::s_descriptorPoolSizes =
@@ -53,8 +54,10 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 	const VkDescriptorPoolCreateInfo info = VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes,
 	                                                                              m_numDescriptorSets);
 	VkCall(vkCreateDescriptorPool(m_device->GetVkDevice(), &info, nullptr, &m_currentPool));
+	TRAP_ASSERT(m_currentPool, "VulkanDescriptorPool(): Failed to create DescriptorPool");
 
-	m_descriptorPools.emplace_back(m_currentPool);
+	if(m_currentPool != VK_NULL_HANDLE)
+		m_descriptorPools.emplace_back(m_currentPool);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -62,8 +65,6 @@ TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t n
 TRAP::Graphics::API::VulkanDescriptorPool::~VulkanDescriptorPool()
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	TRAP_ASSERT(!m_descriptorPools.empty(), "~VulkanDescriptorPool(): No DescriptorPools to destroy");
 
 #ifdef VERBOSE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDescriptorPoolPrefix, "Destroying DescriptorPool");
