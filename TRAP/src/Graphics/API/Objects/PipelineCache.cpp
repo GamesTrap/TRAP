@@ -26,6 +26,26 @@ TRAP::Graphics::PipelineCache::~PipelineCache()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::PipelineCache::Save(const std::filesystem::path& path)
+{
+	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
+
+	std::vector<uint8_t> data{};
+	std::size_t dataSize = 0;
+
+	GetPipelineCacheData(&dataSize, nullptr);
+	if (dataSize == 0)
+		return;
+	data.resize(dataSize);
+	GetPipelineCacheData(&dataSize, data.data());
+
+	if (!TRAP::FileSystem::WriteFile(path, data))
+		TP_ERROR(Log::RendererPipelineCachePrefix, "Saving of PipelineCache to path: \"",
+		         path.u8string(), "\" failed!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 [[nodiscard]] TRAP::Ref<TRAP::Graphics::PipelineCache> TRAP::Graphics::PipelineCache::Create(const RendererAPI::PipelineCacheDesc& desc)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Graphics) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

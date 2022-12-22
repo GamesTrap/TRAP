@@ -61,7 +61,7 @@ namespace TRAP::Graphics
 		/// Retrieve the render targets used by the swapchain.
 		/// </summary>
 		/// <returns>Render targets used by the swapchain.</returns>
-		[[nodiscard]] virtual const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const noexcept;
+		[[nodiscard]] const std::vector<TRAP::Ref<RenderTarget>>& GetRenderTargets() const noexcept;
 
 		/// <summary>
 		/// Toggle Vsync on and off.

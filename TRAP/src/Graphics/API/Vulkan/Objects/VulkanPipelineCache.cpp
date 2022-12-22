@@ -49,26 +49,6 @@ void TRAP::Graphics::API::VulkanPipelineCache::GetPipelineCacheData(std::size_t*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanPipelineCache::Save(const std::filesystem::path& path)
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);
-
-	std::vector<uint8_t> data{};
-	std::size_t dataSize = 0;
-
-	GetPipelineCacheData(&dataSize, nullptr);
-	if (dataSize == 0)
-		return;
-	data.resize(dataSize);
-	GetPipelineCacheData(&dataSize, data.data());
-
-	if (!TRAP::FileSystem::WriteFile(path, data))
-		TP_ERROR(Log::RendererVulkanPipelineCachePrefix, "Saving of PipelineCache to path: \"",
-		         path.u8string(), "\" failed!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 [[nodiscard]] VkPipelineCache TRAP::Graphics::API::VulkanPipelineCache::GetVkPipelineCache() const noexcept
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));

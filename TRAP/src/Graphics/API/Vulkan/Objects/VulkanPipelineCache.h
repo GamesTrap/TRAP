@@ -48,12 +48,6 @@ namespace TRAP::Graphics::API
 		void GetPipelineCacheData(std::size_t* size, void* data) const override;
 
 		/// <summary>
-		/// Save a pipeline to disk.
-		/// </summary>
-		/// <param name="path">Path to save the pipeline to.</param>
-		void Save(const std::filesystem::path& path) override;
-
-		/// <summary>
 		/// Retrieve the Vulkan pipeline cache handle.
 		/// </summary>
 		/// <returns>Vulkan pipeline cache handle</returns>

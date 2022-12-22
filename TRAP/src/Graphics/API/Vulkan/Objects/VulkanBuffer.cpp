@@ -209,42 +209,6 @@ TRAP::Graphics::API::VulkanBuffer::~VulkanBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-[[nodiscard]] uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_size;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::DescriptorType TRAP::Graphics::API::VulkanBuffer::GetDescriptors() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_descriptors;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] TRAP::Graphics::RendererAPI::ResourceMemoryUsage TRAP::Graphics::API::VulkanBuffer::GetMemoryUsage() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_memoryUsage;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-[[nodiscard]] void* TRAP::Graphics::API::VulkanBuffer::GetCPUMappedAddress() const noexcept
-{
-	ZoneNamedC(__tracy, tracy::Color::Red, (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan) && (TRAP_PROFILE_SYSTEMS() & ProfileSystems::Verbose));
-
-	return m_CPUMappedAddress;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanBuffer::MapBuffer(const RendererAPI::ReadRange* const range)
 {
 	ZoneNamedC(__tracy, tracy::Color::Red, TRAP_PROFILE_SYSTEMS() & ProfileSystems::Vulkan);

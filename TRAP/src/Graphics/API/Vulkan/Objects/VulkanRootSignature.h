@@ -38,11 +38,6 @@ namespace TRAP::Graphics::API
 		VulkanRootSignature& operator=(VulkanRootSignature&&) noexcept = default;
 
 		/// <summary>
-		/// Retrieve the pipeline type used by the shaders of the root signature.
-		/// </summary>
-		/// <returns>Pipeline type.</returns>
-		[[nodiscard]] RendererAPI::PipelineType GetPipelineType() const noexcept override;
-		/// <summary>
 		/// Retrieve the Vulkan pipeline layout.
 		/// </summary>
 		/// <returns>Vulkan pipeline layout.</returns>
@@ -107,21 +102,6 @@ namespace TRAP::Graphics::API
 		/// </summary>
 		/// <returns>Descriptor if found, nullptr otherwise.</returns>
 		[[nodiscard]] const RendererAPI::DescriptorInfo* GetDescriptor(const char* resName) const;
-		/// <summary>
-		/// Retrieve the amount of descriptors contained in the root signature.
-		/// </summary>
-		/// <returns>Amount of descriptors.</returns>
-		[[nodiscard]] uint32_t GetDescriptorCount() const noexcept override;
-		/// <summary>
-		/// Retrieve the list of descriptors contained in the root signature.
-		/// </summary>
-		/// <returns>List of descriptors.</returns>
-		[[nodiscard]] const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const noexcept override;
-		/// <summary>
-		/// Retrieve the map which converts a descriptor name to its index.
-		/// </summary>
-		/// <returns>Map which converts a descriptor name to its index.</returns>
-		[[nodiscard]] const RendererAPI::DescriptorIndexMap& GetDescriptorNameToIndexMap() const noexcept override;
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
 

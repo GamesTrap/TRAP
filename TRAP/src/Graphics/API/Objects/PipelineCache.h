@@ -56,7 +56,7 @@ namespace TRAP::Graphics
 		/// Save a pipeline to disk.
 		/// </summary>
 		/// <param name="path">Path to save the pipeline to.</param>
-		virtual void Save(const std::filesystem::path& path) = 0;
+		void Save(const std::filesystem::path& path);
 
 	protected:
 		/// <summary>
